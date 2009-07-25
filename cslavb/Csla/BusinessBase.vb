@@ -235,7 +235,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
       End If
 
     ElseIf (Not IsValid) AndAlso (Not IsDeleted) Then
-      Dim [error] As New Validation.ValidationException(My.Resources.NoSaveEditingException)
+      Dim [error] As New Validation.ValidationException(My.Resources.NoSaveInvalidException)
       OnSaved(Nothing, [error], userState)
       If handler IsNot Nothing Then
         handler(Me, New Core.SavedEventArgs(Nothing, [error], userState))
@@ -467,11 +467,65 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </summary>
   ''' <typeparam name="P">Type of property</typeparam>
   ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="relationship">Relationship with referenced object.</param>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, relationship))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
   ''' <returns></returns>
   Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <param name="relationship">Default Value for the property</param>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, relationship))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <param name="defaultValue">Default Value for the property</param>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue))
+  End Function
+
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <param name="defaultValue">Default Value for the property</param>
+  ''' <param name="relationship">Relationship with referenced object.</param>
+  ''' <returns></returns>
+  ''' <remarks></remarks>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal defaultValue As P, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship))
   End Function
 
 #End Region

@@ -37,6 +37,17 @@ Public MustInherit Class CommandBase
 
 #Region " Constructors "
 
+#If SILVERLIGHT Then
+    ''' <summary>
+  ''' Creates an instance of the object.
+  ''' </summary>
+  Public Sub New()
+
+    Initialize()
+
+  End Sub
+#Else
+
   ''' <summary>
   ''' Creates an instance of the object.
   ''' </summary>
@@ -45,6 +56,9 @@ Public MustInherit Class CommandBase
     Initialize()
 
   End Sub
+
+#End If
+
 
 #End Region
 

@@ -526,7 +526,7 @@ Namespace Reflection
     ''' </summary>
     ''' <param name="typeName">Type name including assembly name.</param>
     ''' <param name="throwOnError">true to throw an exception if the type can't be found.</param>
-    Public Function GetTypeByName(ByVal typeName As String, ByVal throwOnError As Boolean) As Type
+    Public Function [GetType](ByVal typeName As String, ByVal throwOnError As Boolean) As Type
       Return Type.GetType(typeName, throwOnError)
     End Function
 
@@ -534,7 +534,7 @@ Namespace Reflection
     ''' Gets a Type object based on the type name.
     ''' </summary>
     ''' <param name="typeName">Type name including assembly name.</param>
-    Public Function GetTypeByName(ByVal typeName As String) As Type
+    Public Function [GetType](ByVal typeName As String) As Type
       Return Type.GetType(typeName)
     End Function
 

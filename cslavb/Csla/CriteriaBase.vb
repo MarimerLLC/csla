@@ -37,7 +37,7 @@ Public Class CriteriaBase
       If _objectType Is Nothing AndAlso FieldManager.FieldExists(TypeNameProperty) Then
         Dim typeName As String = ReadProperty(TypeNameProperty)
         If Not String.IsNullOrEmpty(typeName) Then
-          _objectType = Type.GetType(typeName, False)
+          _objectType = Csla.Reflection.MethodCaller.GetType(typeName, False)
         End If
       End If
       Return _objectType
@@ -60,12 +60,13 @@ Public Class CriteriaBase
 
 #If SILVERLIGHT Then
 
+  Private Shared _forceInit As Boolean = False
+
    ''' <summary>
     ''' Creates an instance of the object. For use by
     ''' MobileFormatter only - you must provide a 
     ''' Type parameter in your code.
     ''' </summary>
-    <Obsolete("For use by MobileFormatter only")> _
     Public Sub new()
       _forceInit = _forceInit andalso false
     End Sub
@@ -92,25 +93,6 @@ Public Class CriteriaBase
   ''' </summary>
   Protected Sub New()
 
-  End Sub
-
-  <System.Runtime.Serialization.OnDeserialized()> _
-  Private Sub OnDeserializedHandler(ByVal context As System.Runtime.Serialization.StreamingContext)
-    OnDeserialized(context)
-  End Sub
-
-  ''' <summary>
-  ''' This method is called on a newly deserialized object
-  ''' after deserialization is complete.
-  ''' </summary>
-  ''' <param name="context">Serialization context object.</param>
-  <EditorBrowsable(EditorBrowsableState.Advanced)> _
-  Protected Overridable Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
-
-    _forceInit = _forceInit And False
-    If FieldManager IsNot Nothing Then
-      FieldManager.SetPropertyList(Me.GetType())
-    End If
   End Sub
 #End If
 

@@ -992,10 +992,6 @@ Public Module DataPortal
 
 #Region "Design Time Support"
 
-  Private _isInDesignMode As Boolean = False
-  Private _isInDesignModeHasBeenSet As Boolean = False
-  Private _designModeLock As Object = New Object()
-
   ''' <summary>
   ''' Gets a value indicating whether the code is running
   ''' in WPF design mode.
@@ -1003,27 +999,7 @@ Public Module DataPortal
   ''' <remarks></remarks>
   Public ReadOnly Property IsInDesignMode() As Boolean
     Get
-      If Not _isInDesignModeHasBeenSet Then
-        If Application.Current IsNot Nothing AndAlso Application.Current.Dispatcher IsNot Nothing Then
-          Dim func As New Func(Of Boolean) _
-            (Function() _
-              CBool(IIf(Not Application.Current.MainWindow Is Nothing, _
-              DesignerProperties.GetIsInDesignMode(Application.Current.MainWindow), _
-              False)))
-
-          Dim params() As Object = Nothing
-          Dim tmp As Boolean = CType(Application.Current.Dispatcher.Invoke(func, params), Boolean)
-
-          SyncLock _designModeLock
-            If Not _isInDesignModeHasBeenSet Then
-              _isInDesignMode = tmp
-              _isInDesignModeHasBeenSet = True
-            End If
-          End SyncLock
-        End If
-      End If
-
-      Return _isInDesignMode
+      Return DesignerProperties.GetIsInDesignMode(New DependencyObject())
     End Get
   End Property
 

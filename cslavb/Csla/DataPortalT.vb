@@ -79,6 +79,7 @@ Public Class DataPortal(Of T)
     Private _result As T
     Private _globalContext As Core.ContextDictionary
     Private _userState As Object
+    Private _error As Exception
 
     Public Property Result() As T
       Get
@@ -107,11 +108,21 @@ Public Class DataPortal(Of T)
       End Set
     End Property
 
+    Public Property [Error]() As Exception
+      Get
+        Return _error
+      End Get
+      Set(ByVal value As Exception)
+        _error = value
+      End Set
+    End Property
+
     Public Sub New(ByVal result As T, ByVal globalContext As Core.ContextDictionary, ByVal userState As Object)
       Me.Result = result
       Me.GlobalContext = globalContext
       Me.UserState = userState
     End Sub
+
   End Class
 #End Region
 
@@ -221,10 +232,12 @@ Public Class DataPortal(Of T)
       Dim result = TryCast(e.Result, DataPortalAsyncResult)
       If result IsNot Nothing Then
         _globalContext = result.GlobalContext
+
+        Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
-          OnCreateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
-        Else
-          OnCreateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+          obj = CType(result.Result, T)
+
+          OnCreateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
         Return
       End If
@@ -335,10 +348,10 @@ Public Class DataPortal(Of T)
       Dim result = TryCast(e.Result, DataPortalAsyncResult)
       If result IsNot Nothing Then
         _globalContext = result.GlobalContext
+        Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
-          OnFetchCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
-        Else
-          OnFetchCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+          obj = CType(result.Result, T)
+          OnFetchCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
       End If
       Return
@@ -438,10 +451,10 @@ Public Class DataPortal(Of T)
       Dim result = TryCast(e.Result, DataPortalAsyncResult)
       If result IsNot Nothing Then
         _globalContext = result.GlobalContext
+        Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
-          OnUpdateCompleted(New DataPortalResult(Of T)(DirectCast(result.Result, T), Nothing, result.UserState))
-        Else
-          OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+          obj = CType(result.Result, T)
+          OnUpdateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
       End If
       Return
@@ -537,7 +550,8 @@ Public Class DataPortal(Of T)
       Dim result = TryCast(e.Result, DataPortalAsyncResult)
       If result IsNot Nothing Then
         _globalContext = result.GlobalContext
-        OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, Nothing, result.UserState))
+        Dim obj As T = Nothing
+        OnDeleteCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
       End If
       Return
     End If

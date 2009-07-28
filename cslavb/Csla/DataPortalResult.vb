@@ -9,6 +9,7 @@
 ''' </typeparam>
 Public Class DataPortalResult(Of T)
   Inherits EventArgs
+  Implements IDataPortalResult
 
   Private _object As T
   Private _error As Exception
@@ -69,4 +70,21 @@ Public Class DataPortalResult(Of T)
     Me.Error = ex
     Me.UserState = userState
   End Sub
+
+#Region " IDataPortalResult Members "
+
+  Public ReadOnly Property IDataPortalResult_Error() As System.Exception Implements IDataPortalResult.Error
+    Get
+      Return Me.Error
+    End Get
+  End Property
+
+  Public ReadOnly Property IDataPortalResult_Object() As Object Implements IDataPortalResult.Object
+    Get
+      Return Me.Object
+    End Get
+  End Property
+
+#End Region
+  
 End Class

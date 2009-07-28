@@ -172,6 +172,9 @@
     <Compile Include="..\..\cslacs\Csla\DataPortalOperations.cs">
       <Link>DataPortalOperations.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\IDataPortalResult.cs">
+      <Link>IDataPortalResult.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\IndexableAttribute.cs">
       <Link>IndexableAttribute.cs</Link>
     </Compile>

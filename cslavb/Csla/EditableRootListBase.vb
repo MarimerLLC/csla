@@ -92,7 +92,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
       ' commit all changes
       Dim editLevel As Integer = savable.EditLevel
       For tmp As Integer = 1 To editLevel
-        item.AcceptChanges(editLevel - tmp, False)
+        savable.AcceptChanges(editLevel - tmp, False)
       Next
 
       ' do the save
@@ -111,7 +111,7 @@ Public MustInherit Class EditableRootListBase(Of T As {Core.IEditableBusinessObj
         ' raise Saved event from original object
         Dim original As Core.ISavable = TryCast(item, Core.ISavable)
         If original IsNot Nothing Then
-          original.SaveComplete(Me.Item(index))
+          original.SaveComplete(result)
         End If
       End If
 

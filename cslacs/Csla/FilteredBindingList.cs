@@ -955,16 +955,16 @@ namespace Csla
     {
       ICancelAddNew can = _list as ICancelAddNew;
       if (can != null)
-        can.CancelNew(itemIndex);
+        can.CancelNew(OriginalIndex(itemIndex));
       else
-        _list.RemoveAt(itemIndex);
+        _list.RemoveAt(OriginalIndex(itemIndex));
     }
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
       ICancelAddNew can = _list as ICancelAddNew;
       if (can != null)
-        can.EndNew(itemIndex);
+        can.EndNew(OriginalIndex(itemIndex));
     }
 
     #endregion

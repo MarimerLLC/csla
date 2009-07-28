@@ -117,10 +117,11 @@ Public Class DataPortal(Of T)
       End Set
     End Property
 
-    Public Sub New(ByVal result As T, ByVal globalContext As Core.ContextDictionary, ByVal userState As Object)
+    Public Sub New(ByVal result As T, ByVal globalContext As Core.ContextDictionary, ByVal [error] As Exception, ByVal userState As Object)
       Me.Result = result
       Me.GlobalContext = globalContext
       Me.UserState = userState
+      Me.Error = [error]
     End Sub
 
   End Class
@@ -253,12 +254,17 @@ Public Class DataPortal(Of T)
 
     Dim state As Object = request.Argument
     Dim result As T = Nothing
-    If TypeOf state Is Integer Then
-      result = DirectCast(DataPortal.Create(Of T)(), T)
-    Else
-      result = DirectCast(DataPortal.Create(Of T)(state), T)
-    End If
-    e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, request.UserState)
+    Try
+      If TypeOf state Is Integer Then
+        result = DirectCast(DataPortal.Create(Of T)(), T)
+      Else
+        result = DirectCast(DataPortal.Create(Of T)(state), T)
+      End If
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, Nothing, request.UserState)
+    Catch ex As Exception
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, ex, request.UserState)
+    End Try
+   
   End Sub
 #End Region
 
@@ -366,12 +372,17 @@ Public Class DataPortal(Of T)
 
     Dim state As Object = request.Argument
     Dim result As T = Nothing
-    If TypeOf state Is Integer Then
-      result = DirectCast(Dataportal.Fetch(Of T)(), T)
-    Else
-      result = DirectCast(DataPortal.Fetch(Of T)(state), T)
-    End If
-    e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, request.UserState)
+    Try
+      If TypeOf state Is Integer Then
+        result = DirectCast(Dataportal.Fetch(Of T)(), T)
+      Else
+        result = DirectCast(DataPortal.Fetch(Of T)(state), T)
+      End If
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, Nothing, request.UserState)
+    Catch ex As Exception
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, ex, request.UserState)
+    End Try
+    
   End Sub
 
 #End Region
@@ -469,8 +480,13 @@ Public Class DataPortal(Of T)
 
     Dim state As Object = request.Argument
     Dim result As T = Nothing
-    result = DirectCast(DataPortal.Update(Of T)(DirectCast(state, T)), T)
-    e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, request.UserState)
+    Try
+      result = DirectCast(DataPortal.Update(Of T)(DirectCast(state, T)), T)
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, Nothing, request.UserState)
+    Catch ex As Exception
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, ex, request.UserState)
+    End Try
+    
   End Sub
 
 #End Region
@@ -564,8 +580,13 @@ Public Class DataPortal(Of T)
     SetThreadContext(request)
 
     Dim state As Object = request.Argument
-    DataPortal.Delete(Of T)(state)
-    e.Result = New DataPortalAsyncResult(Nothing, ApplicationContext.GlobalContext, request.UserState)
+    Try
+      DataPortal.Delete(Of T)(state)
+      e.Result = New DataPortalAsyncResult(Nothing, ApplicationContext.GlobalContext, Nothing, request.UserState)
+    Catch ex As Exception
+      e.Result = New DataPortalAsyncResult(Nothing, ApplicationContext.GlobalContext, ex, request.UserState)
+    End Try
+    
   End Sub
 
 #End Region
@@ -623,8 +644,13 @@ Public Class DataPortal(Of T)
 
     Dim state As Object = request.Argument
     Dim result As T = Nothing
-    result = DataPortal.Execute(Of T)(DirectCast(state, T))
-    e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, request.UserState)
+    Try
+      result = DataPortal.Execute(Of T)(DirectCast(state, T))
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, Nothing, request.UserState)
+    Catch ex As Exception
+      e.Result = New DataPortalAsyncResult(result, ApplicationContext.GlobalContext, ex, request.UserState)
+    End Try
+    
   End Sub
 
   ''' <summary>

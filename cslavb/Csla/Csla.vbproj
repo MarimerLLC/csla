@@ -172,6 +172,7 @@
     <Compile Include="Data\ObjectContextManager.vb" />
     <Compile Include="Data\ServiceClientManager.vb" />
     <Compile Include="Data\TransactionManager.vb" />
+    <Compile Include="IDataPortalResult.vb" />
     <Compile Include="LinqBindingList.vb" />
     <Compile Include="Linq\BalancedTreeIndex.vb" />
     <Compile Include="Linq\IBalancedSearch.vb" />

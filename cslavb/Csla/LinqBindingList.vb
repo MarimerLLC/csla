@@ -720,22 +720,9 @@ Public Class LinqBindingList(Of T)
   End Sub
 
   Friend Sub BuildFilterIndex()
-    ' Find the call to Where() and get the lambda expression predicate.
-    Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
-    Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-    Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
-    Dim subset = TryCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
-
-    If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
-      subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
-    End If
-
-    For Each expression As Expression In _thenByExpressions
-      If TypeOf (expression) Is MethodCallExpression Then
-        subset = BuildSortedSubset(subset, CType(expression, MethodCallExpression))
-      End If
-    Next
+    'centralize the code to create the subset
+    Dim subset = GetSubset()
 
     _filterIndex.Clear()
     Dim searchable = TryCast(_list, Linq.IIndexSearchable(Of T))
@@ -789,21 +776,9 @@ Public Class LinqBindingList(Of T)
     Dim itemList As New List(Of T)
 
     If isList IsNot Nothing AndAlso isMappable IsNot Nothing Then
-      'Find the call to Where() and get the lambda expression predicate.
-      Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder
-      Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
-      Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
 
-      Dim subset = TryCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
-      If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
-        subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
-      End If
-
-      For Each expression As Expression In _thenByExpressions
-        If TypeOf (expression) Is MethodCallExpression Then
-          subset = BuildSortedSubset(subset, CType(expression, MethodCallExpression))
-        End If
-      Next
+      'centralize the code to create the subset.
+      Dim subset = GetSubset()
 
       For Each item As T In subset
         itemList.Add(item)
@@ -819,6 +794,57 @@ Public Class LinqBindingList(Of T)
     End If
 
   End Function
+
+  ''' <summary>
+  ''' Called from GetEnumerator and BuildFilterIndex.
+  ''' </summary>
+  ''' <returns>IEnumerable</returns>
+  Private Function GetSubset() As IEnumerable(Of T)
+
+    ' Find the call to Where() and get the lambda expression predicate.
+    Dim whereFinder As InnermostWhereFinder = New InnermostWhereFinder()
+    Dim whereExpression As MethodCallExpression = whereFinder.GetInnermostWhere(_expression)
+    Dim whereBody As Expression(Of Func(Of T, Boolean)) = GetWhereBodyFromExpression(whereExpression)
+
+    'dynamic query behavior patch - it bundles the order by into the then by, need to tease it out here
+    If _thenByExpressions.Count > 0 AndAlso _sortExpression Is Nothing Then
+      _sortExpression = (New InnermostOrderByFinder()).GetInnermostOrderBy(_thenByExpressions(0))
+    End If
+
+    Dim subset = TryCast(_list, Linq.IIndexSearchable(Of T)).SearchByExpression(whereBody)
+
+    If _sortExpression IsNot Nothing AndAlso TypeOf (_sortExpression) Is MethodCallExpression Then
+      subset = BuildSortedSubset(subset, DirectCast(_sortExpression, MethodCallExpression))
+    End If
+
+    'See if we need to fix the list of ThenBy expressions.
+    If _thenByExpressions.Count = 1 Then
+      GetThenByExpressions(_thenByExpressions(0))
+    End If
+
+    For Each expression As Expression In _thenByExpressions
+      If TypeOf (expression) Is MethodCallExpression Then
+        subset = BuildSortedSubset(subset, CType(expression, MethodCallExpression))
+      End If
+    Next
+
+    Return subset
+
+  End Function
+
+  'JF 3/19/09 - If there is only a single ThenBy then it is possible that a MS Dynamic Query passed in a multi-value ThenBy.
+  'e.g. Sorting on 3 or more columns will have multiple ThenBy values in the expression.
+  'Parse them out into separate Then By expressions so the rest of 
+  'the code works the same for standard LINQ queries and MS Dynamic Queries.
+  'Is there a way to avoid this call if there is only a single ThenBy? How can you tell that case?
+  Private Sub GetThenByExpressions(ByVal expression As Expression)
+    Dim mex As MethodCallExpression = CType(expression, MethodCallExpression)
+
+    If mex.Method.Name.StartsWith("ThenBy") Then
+      _thenByExpressions = (New ThenByBuilder()).GetThenByExpressions(expression)
+    End If
+
+  End Sub
 
   Private Shared Function BuildSortedSubset(ByVal subset As IEnumerable(Of T), ByVal sortExpression As MethodCallExpression) As IEnumerable(Of T)
     'get the lambda buried in the second argument

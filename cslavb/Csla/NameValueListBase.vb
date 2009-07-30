@@ -166,6 +166,10 @@ Public MustInherit Class NameValueListBase(Of K, V)
     Private _key As K
     Private _value As V
 
+    Private Sub New()
+
+    End Sub
+
     ''' <summary>
     ''' The Key or Name value.
     ''' </summary>

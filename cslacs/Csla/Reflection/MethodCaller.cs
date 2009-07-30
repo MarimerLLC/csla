@@ -638,5 +638,41 @@ namespace Csla.Reflection
         }
       return result;
     }
+
+    /// <summary>
+    /// Gets information about a property.
+    /// </summary>
+    /// <param name="objectType">Object containing the property.</param>
+    /// <param name="propertyName">Name of the property.</param>
+    public static PropertyInfo GetProperty(Type objectType, string propertyName)
+    {
+      return objectType.GetProperty(propertyName, propertyFlags);
+    }
+
+    /// <summary>
+    /// Gets a property value.
+    /// </summary>
+    /// <param name="obj">Object containing the property.</param>
+    /// <param name="info">Property info object for the property.</param>
+    /// <returns>The value of the property.</returns>
+    public static object GetPropertyValue(object obj, PropertyInfo info)
+    {
+      object result = null;
+      try
+      {
+        result = info.GetValue(obj, null);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
+    }
+
   }
 }

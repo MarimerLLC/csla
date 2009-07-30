@@ -132,6 +132,7 @@
     <Compile Include="Core\IEditableBusinessObject.vb" />
     <Compile Include="Core\IExtendedBindingList.vb" />
     <Compile Include="Core\IManageProperties.vb" />
+    <Compile Include="Core\InnermostOrderByFinder.vb" />
     <Compile Include="Core\InnermostWhereFinder.vb" />
     <Compile Include="Core\INotifyBusy.vb" />
     <Compile Include="Core\INotifyChildChanged.vb" />
@@ -163,6 +164,7 @@
     <Compile Include="Core\RemovingItemEventArgs.vb" />
     <Compile Include="Core\SavedEventArgs.vb" />
     <Compile Include="Core\StateMode.vb" />
+    <Compile Include="Core\ThenByBuilder.vb" />
     <Compile Include="Core\TypeConverters\SmartDateConverter.vb" />
     <Compile Include="Core\TypeSystem.vb" />
     <Compile Include="Core\UndoableHandler.vb" />

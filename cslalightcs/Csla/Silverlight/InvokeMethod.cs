@@ -237,26 +237,18 @@ namespace Csla.Silverlight
               var p = invoke.GetParameters();
               if (p.Length == 2)
               {
-                if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
+                var p1Type = p[1].ParameterType;
+                if (typeof(EventArgs).IsAssignableFrom(p1Type))
                 {
-                  eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
-                  if (_target is CslaDataProvider)
-                  {
-                    ((CslaDataProvider)_target).PropertyChanged -= new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
-                    ((CslaDataProvider)_target).PropertyChanged += new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
-                  }
-                }
-                else if (typeof(EventArgs).IsAssignableFrom(p[1].ParameterType))
-                {
-                  eventRef.AddEventHandler(element, new EventHandler(CallMethod));
-                  if (_target is CslaDataProvider)
-                  {
-                    ((CslaDataProvider)_target).PropertyChanged -= new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
-                    ((CslaDataProvider)_target).PropertyChanged += new PropertyChangedEventHandler(InvokeMethod_PropertyChanged);
-                  }
+                  var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+                    this,
+                    this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  eventRef.AddEventHandler(element, del);
                 }
                 else
+                {
                   throw new NotSupportedException();
+                }
               }
               else
                 throw new NotSupportedException();
@@ -312,14 +304,18 @@ namespace Csla.Silverlight
       }
     }
 
-
     private void CallMethod(object sender, EventArgs e)
     {
       object p = _element.GetValue(MethodParameterProperty);
-      if (p == null)
+      var pCount = _targetMethod.GetParameters().Length;
+      if (pCount == 0)
         _targetMethod.Invoke(_target, null);
-      else
+      else if (pCount == 1)
         _targetMethod.Invoke(_target, new object[] { p });
+      else if (pCount == 2)
+        _targetMethod.Invoke(_target, new object[] { _element, p });
+      else if (pCount == 3)
+        _targetMethod.Invoke(_target, new object[] { _element, e, p });
     }
   }
 }

@@ -168,7 +168,7 @@ namespace Csla.Wpf
     /// </summary>
     /// <param name="element">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetManualEnableControl(DependencyObject element, object value)
+    public static void SetManualEnableControl(DependencyObject element, bool value)
     {
       element.SetValue(ManualEnableControlProperty, value);
     }
@@ -178,7 +178,7 @@ namespace Csla.Wpf
     /// manually enabled/disabled.
     /// </summary>
     /// <param name="element">Attached control</param>
-    public static object GetManageEnabledState(DependencyObject element)
+    public static bool GetManageEnabledState(DependencyObject element)
     {
       return (bool)element.GetValue(ManualEnableControlProperty);
     }
@@ -205,6 +205,8 @@ namespace Csla.Wpf
     private DependencyObject _element;
     private System.Reflection.MethodInfo _targetMethod;
     private object _target;
+
+    private delegate void OpenEventHandler(InvokeMethod @this, object sender, EventArgs e);
 
     /// <summary>
     /// Invokes the target method if all required attached
@@ -239,12 +241,18 @@ namespace Csla.Wpf
               var p = invoke.GetParameters();
               if (p.Length == 2)
               {
-                if (typeof(RoutedEventArgs).IsAssignableFrom(p[1].ParameterType))
-                  eventRef.AddEventHandler(element, new RoutedEventHandler(CallMethod));
-                else if (typeof(EventArgs).IsAssignableFrom(p[1].ParameterType))
-                  eventRef.AddEventHandler(element, new EventHandler(CallMethod));
+                var p1Type = p[1].ParameterType;
+                if (typeof(EventArgs).IsAssignableFrom(p1Type))
+                {
+                  var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+                    this,
+                    this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  eventRef.AddEventHandler(element, del);
+                }
                 else
+                {
                   throw new NotSupportedException();
+                }
               }
               else
                 throw new NotSupportedException();
@@ -282,10 +290,15 @@ namespace Csla.Wpf
     private void CallMethod(object sender, EventArgs e)
     {
       object p = _element.GetValue(MethodParameterProperty);
-      if (p == null)
+      var pCount = _targetMethod.GetParameters().Length;
+      if (pCount == 0)
         _targetMethod.Invoke(_target, null);
-      else
+      else if (pCount == 1)
         _targetMethod.Invoke(_target, new object[] { p });
+      else if (pCount == 2)
+        _targetMethod.Invoke(_target, new object[] { _element, p });
+      else if (pCount == 3)
+        _targetMethod.Invoke(_target, new object[] { _element, e, p });
     }
   }
 }

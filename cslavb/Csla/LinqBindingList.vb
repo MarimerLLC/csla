@@ -883,7 +883,16 @@ Public Class LinqBindingList(Of T)
 
   Private ReadOnly Property IQueryable_Expression() As Expression Implements IQueryable.Expression
     Get
+      If _thenByExpressions IsNot Nothing AndAlso _thenByExpressions.Count = 0 Then
+        Return _thenByExpressions.Last()
+      End If
+
+      If _sortExpression IsNot Nothing Then
+        Return _sortExpression
+      End If
+
       Return _expression
+
     End Get
   End Property
 

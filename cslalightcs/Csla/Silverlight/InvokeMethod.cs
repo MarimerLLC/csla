@@ -305,7 +305,7 @@ namespace Csla.Silverlight
                   _contentControl.IsEnabled = (bool)returnValue;
               }
               else
-                _contentControl.IsEnabled = false;
+                _contentControl.IsEnabled = true;
             }
           }
         }

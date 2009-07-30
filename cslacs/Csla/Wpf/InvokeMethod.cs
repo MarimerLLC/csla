@@ -272,7 +272,7 @@ namespace Csla.Wpf
                 _contentControl.IsEnabled = (bool)returnValue;
             }
             else
-              _contentControl.IsEnabled = false;
+              _contentControl.IsEnabled = true;
           }
         }
       }

@@ -215,7 +215,12 @@ namespace Csla.Reflection
       return result;
     }
 
-
+    /// <summary>
+    /// Gets a property value.
+    /// </summary>
+    /// <param name="obj">Object containing the property.</param>
+    /// <param name="info">Property info object for the property.</param>
+    /// <returns>The value of the property.</returns>
     public static object GetPropertyValue(object obj, PropertyInfo info)
     {
       object result = null;
@@ -303,6 +308,11 @@ namespace Csla.Reflection
       return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
 
+    /// <summary>
+    /// Gets information about a property.
+    /// </summary>
+    /// <param name="objectType">Object containing the property.</param>
+    /// <param name="propertyName">Name of the property.</param>
     public static PropertyInfo GetProperty(Type objectType, string propertyName)
     {
       return objectType.GetProperty(propertyName, propertyFlags);

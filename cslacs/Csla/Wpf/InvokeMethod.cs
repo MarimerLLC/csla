@@ -178,7 +178,7 @@ namespace Csla.Wpf
     /// manually enabled/disabled.
     /// </summary>
     /// <param name="element">Attached control</param>
-    public static bool GetManageEnabledState(DependencyObject element)
+    public static bool GetManualEnableControl(DependencyObject element)
     {
       return (bool)element.GetValue(ManualEnableControlProperty);
     }
@@ -206,8 +206,6 @@ namespace Csla.Wpf
     private System.Reflection.MethodInfo _targetMethod;
     private object _target;
 
-    private delegate void OpenEventHandler(InvokeMethod @this, object sender, EventArgs e);
-
     /// <summary>
     /// Invokes the target method if all required attached
     /// property values have been set.
@@ -215,16 +213,16 @@ namespace Csla.Wpf
     /// <param name="element">Attached UI control</param>
     public InvokeMethod(DependencyObject element)
     {
-      if (element is ContentControl)
-        _contentControl = (ContentControl)element;
       _element = element;
-      _target = element.GetValue(TargetProperty);
+      _contentControl = _element as ContentControl;
+      _target = GetTarget(_element);
+
       if (_target != null)
       {
-        var methodName = (string)element.GetValue(MethodNameProperty);
+        var methodName = GetMethodName(_element);
         if (!string.IsNullOrEmpty(methodName))
         {
-          var triggerEvent = (string)element.GetValue(TriggerEventProperty);
+          var triggerEvent = GetTriggerEvent(_element);
           if (!string.IsNullOrEmpty(triggerEvent))
           {
             // at this point all required fields have been set,
@@ -255,7 +253,9 @@ namespace Csla.Wpf
                 }
               }
               else
+              {
                 throw new NotSupportedException();
+              }
             }
           }
         }
@@ -264,23 +264,18 @@ namespace Csla.Wpf
 
     private void Refresh()
     {
-      if (_target != null && _element != null && _contentControl != null)
+      if (_target != null && _contentControl != null)
       {
-        if ((bool)_element.GetValue(ManualEnableControlProperty) == false)
+        var targetMethodName = GetMethodName(_element);
+        if (!string.IsNullOrEmpty(targetMethodName) && !GetManualEnableControl(_element))
         {
-          if (_element.GetValue(MethodNameProperty) != null)
+          string canPropertyName = "Can" + targetMethodName;
+          var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
+          if (propertyInfo != null)
           {
-            string targetMethodName = (string)_element.GetValue(MethodNameProperty);
-            string canPropertyName = "Can" + targetMethodName;
-            var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
-            if (propertyInfo != null)
-            {
-              object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
-              if (returnValue != null && returnValue is bool)
-                _contentControl.IsEnabled = (bool)returnValue;
-            }
-            else
-              _contentControl.IsEnabled = true;
+            object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
+            if (returnValue != null && returnValue is bool)
+              _contentControl.IsEnabled = (bool)returnValue;
           }
         }
       }
@@ -289,7 +284,7 @@ namespace Csla.Wpf
 
     private void CallMethod(object sender, EventArgs e)
     {
-      object p = _element.GetValue(MethodParameterProperty);
+      object p = GetMethodParameter(_element);
       var pCount = _targetMethod.GetParameters().Length;
       if (pCount == 0)
         _targetMethod.Invoke(_target, null);

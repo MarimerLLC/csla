@@ -45,7 +45,12 @@ namespace Csla.Silverlight
       DefaultStyleKey = typeof(PropertyStatus);
       IsTabStop = false;
 
-      Loaded += (o, e) => { GoToState(true); };
+      Loaded += (o, e) => 
+      { 
+        var b = new System.Windows.Data.Binding();
+        this.SetBinding(SourceProperty, b);
+        GoToState(true); 
+      };
     }
 
     /// <summary>
@@ -127,7 +132,7 @@ namespace Csla.Silverlight
     /// Gets or sets the source business
     /// object to which this control is bound.
     /// </summary>
-    public object Source
+    private object Source
     {
       get { return GetValue(SourceProperty); }
       set

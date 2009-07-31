@@ -20,29 +20,32 @@ namespace Csla.Silverlight
   /// trigger event is raised from the attached
   /// UI control.
   /// </summary>
-  public class InvokeMethod
+  public class InvokeMethod : FrameworkElement
   {
     #region Attached properties
 
     /// <summary>
     /// Object containing the method to be invoked.
     /// </summary>
-    public static readonly DependencyProperty ResourceProperty =
-      DependencyProperty.RegisterAttached("Resource",
+    public static readonly DependencyProperty TargetProperty =
+      DependencyProperty.RegisterAttached("Target",
       typeof(object),
       typeof(InvokeMethod),
-      null);
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }));
 
     /// <summary>
     /// Sets the object containing the method to be invoked.
     /// </summary>
-    /// <param name="element">Attached control</param>
+    /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetResource(UIElement element, object value)
+    public static void SetTarget(UIElement ctrl, object value)
     {
-      element.SetValue(ResourceProperty, value);
-      new InvokeMethod(element);
-
+      ctrl.SetValue(TargetProperty, value);
     }
 
     private void InvokeMethod_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -53,10 +56,10 @@ namespace Csla.Silverlight
     /// <summary>
     /// Gets the object containing the method to be invoked.
     /// </summary>
-    /// <param name="element">Attached control</param>
-    public static object GetResource(UIElement element)
+    /// <param name="ctrl">Attached control</param>
+    public static object GetTarget(UIElement ctrl)
     {
-      return element.GetValue(ResourceProperty);
+      return ctrl.GetValue(TargetProperty);
     }
 
     /// <summary>
@@ -66,26 +69,30 @@ namespace Csla.Silverlight
       DependencyProperty.RegisterAttached("MethodName",
       typeof(string),
       typeof(InvokeMethod),
-      null);
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }));
 
     /// <summary>
     /// Sets the name of method to be invoked.
     /// </summary>
-    /// <param name="element">Attached control</param>
+    /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetMethodName(UIElement element, string value)
+    public static void SetMethodName(UIElement ctrl, string value)
     {
-      element.SetValue(MethodNameProperty, value);
-      new InvokeMethod(element);
+      ctrl.SetValue(MethodNameProperty, value);
     }
 
     /// <summary>
     /// Gets the name of method to be invoked.
     /// </summary>
-    /// <param name="element">Attached control</param>
-    public static string GetMethodName(UIElement element)
+    /// <param name="ctrl">Attached control</param>
+    public static string GetMethodName(UIElement ctrl)
     {
-      return (string)element.GetValue(MethodNameProperty);
+      return (string)ctrl.GetValue(MethodNameProperty);
     }
 
     /// <summary>
@@ -96,28 +103,32 @@ namespace Csla.Silverlight
       DependencyProperty.RegisterAttached("TriggerEvent",
       typeof(string),
       typeof(InvokeMethod),
-      null);
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }));
 
     /// <summary>
     /// Sets the name of event raised by UI control that triggers
     /// invoking the target method.
     /// </summary>
-    /// <param name="element">Attached control</param>
+    /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetTriggerEvent(UIElement element, string value)
+    public static void SetTriggerEvent(UIElement ctrl, string value)
     {
-      element.SetValue(TriggerEventProperty, value);
-      new InvokeMethod(element);
+      ctrl.SetValue(TriggerEventProperty, value);
     }
 
     /// <summary>
     /// Gets the name of event raised by UI control that triggers
     /// invoking the target method.
     /// </summary>
-    /// <param name="element">Attached control</param>
-    public static string GetTriggerEvent(UIElement element)
+    /// <param name="ctrl">Attached control</param>
+    public static string GetTriggerEvent(UIElement ctrl)
     {
-      return (string)element.GetValue(TriggerEventProperty);
+      return (string)ctrl.GetValue(TriggerEventProperty);
     }
 
     /// <summary>
@@ -127,26 +138,30 @@ namespace Csla.Silverlight
       DependencyProperty.RegisterAttached("MethodParameter",
       typeof(object),
       typeof(InvokeMethod),
-      null);
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }));
 
     /// <summary>
     /// Sets the parameter value to be passed to invoked method.
     /// </summary>
-    /// <param name="element">Attached control</param>
+    /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetMethodParameter(UIElement element, object value)
+    public static void SetMethodParameter(UIElement ctrl, object value)
     {
-      element.SetValue(MethodParameterProperty, value);
-      new InvokeMethod(element);
+      ctrl.SetValue(MethodParameterProperty, value);
     }
 
     /// <summary>
     /// Gets the parameter value to be passed to invoked method.
     /// </summary>
-    /// <param name="element">Attached control</param>
-    public static object GetMethodParameter(UIElement element)
+    /// <param name="ctrl">Attached control</param>
+    public static object GetMethodParameter(UIElement ctrl)
     {
-      return (string)element.GetValue(MethodParameterProperty);
+      return (string)ctrl.GetValue(MethodParameterProperty);
     }
 
     /// <summary>
@@ -157,28 +172,32 @@ namespace Csla.Silverlight
       DependencyProperty.RegisterAttached("ManualEnableControl",
       typeof(bool),
       typeof(InvokeMethod),
-      null);
+      new PropertyMetadata((o, e) =>
+      {
+        var ctrl = o as UIElement;
+        if (ctrl != null)
+          new InvokeMethod(ctrl);
+      }));
 
     /// <summary>
     /// Sets the value indicating whether the UI control should be
     /// manually enabled/disabled.
     /// </summary>
-    /// <param name="element">Attached control</param>
+    /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetManualEnableControl(UIElement element, object value)
+    public static void SetManualEnableControl(UIElement ctrl, bool value)
     {
-      element.SetValue(ManualEnableControlProperty, value);
-      new InvokeMethod(element);
+      ctrl.SetValue(ManualEnableControlProperty, value);
     }
 
     /// <summary>
     /// Gets the value indicating whether the UI control should be
     /// manually enabled/disabled.
     /// </summary>
-    /// <param name="element">Attached control</param>
-    public static object GetManageEnabledState(UIElement element)
+    /// <param name="ctrl">Attached control</param>
+    public static bool GetManualEnableControl(UIElement ctrl)
     {
-      return (bool)element.GetValue(ManualEnableControlProperty);
+      return (bool)ctrl.GetValue(ManualEnableControlProperty);
     }
 
     private static List<int> processedControls = new List<int>();
@@ -208,19 +227,19 @@ namespace Csla.Silverlight
     /// Invokes the target method if all required attached
     /// property values have been set.
     /// </summary>
-    /// <param name="element">Attached UI control</param>
-    public InvokeMethod(UIElement element)
+    /// <param name="ctrl">Attached UI control</param>
+    public InvokeMethod(UIElement ctrl)
     {
-      if (element is ContentControl)
-        _contentControl = (ContentControl)element;
-      _element = element;
-      _target = element.GetValue(ResourceProperty);
+      _element = ctrl;
+      _contentControl = _element as ContentControl;
+      _target = GetTarget(_element);
+
       if (_target != null)
       {
-        var methodName = (string)element.GetValue(MethodNameProperty);
+        var methodName = GetMethodName(_element);
         if (!string.IsNullOrEmpty(methodName))
         {
-          var triggerEvent = (string)element.GetValue(TriggerEventProperty);
+          var triggerEvent = GetTriggerEvent(_element);
           if (!string.IsNullOrEmpty(triggerEvent))
           {
             // at this point all required fields have been set,
@@ -228,8 +247,8 @@ namespace Csla.Silverlight
 
             _targetMethod = _target.GetType().GetMethod(methodName);
 
-            var eventRef = element.GetType().GetEvent(triggerEvent);
-            if (eventRef != null && AddControl(element.GetHashCode()))
+            var eventRef = ctrl.GetType().GetEvent(triggerEvent);
+            if (eventRef != null && AddControl(ctrl.GetHashCode()))
             {
               Refresh();
 
@@ -243,7 +262,7 @@ namespace Csla.Silverlight
                   var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
                     this,
                     this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
-                  eventRef.AddEventHandler(element, del);
+                  eventRef.AddEventHandler(ctrl, del);
                 }
                 else
                 {
@@ -260,44 +279,38 @@ namespace Csla.Silverlight
 
     private void Refresh()
     {
-      if (_target != null && _element != null && _contentControl != null)
+      if (_target != null && _contentControl != null)
       {
-        if ((bool)_element.GetValue(ManualEnableControlProperty) == false)
+        var targetMethodName = GetMethodName(_element);
+        if (!string.IsNullOrEmpty(targetMethodName) && !GetManualEnableControl(_element))
         {
           CslaDataProvider targetProvider = _target as CslaDataProvider;
           if (targetProvider != null)
           {
-            string methodName = _element.GetValue(MethodNameProperty).ToString();
-            if (methodName == "Save")
+            if (targetMethodName == "Save")
               _contentControl.IsEnabled = targetProvider.CanSave;
-            if (methodName == "Cancel")
+            else if (targetMethodName == "Cancel")
               _contentControl.IsEnabled = targetProvider.CanCancel;
-            if (methodName == "Create")
+            else if (targetMethodName == "Create")
               _contentControl.IsEnabled = targetProvider.CanCreate;
-            if (methodName == "Fetch")
+            else if (targetMethodName == "Fetch")
               _contentControl.IsEnabled = targetProvider.CanFetch;
-            if (methodName == "Delete")
+            else if (targetMethodName == "Delete")
               _contentControl.IsEnabled = targetProvider.CanDelete;
-            if (methodName == "RemoveItem")
+            else if (targetMethodName == "RemoveItem")
               _contentControl.IsEnabled = targetProvider.CanRemoveItem;
-            if (methodName == "AddNewItem")
+            else if (targetMethodName == "AddNewItem")
               _contentControl.IsEnabled = targetProvider.CanAddNewItem;
           }
           else
           {
-            if (_element.GetValue(MethodNameProperty) != null)
+            string canPropertyName = "Can" + targetMethodName;
+            var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
+            if (propertyInfo != null)
             {
-              string targetMethodName = (string)_element.GetValue(MethodNameProperty);
-              string canPropertyName = "Can" + targetMethodName;
-              var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
-              if (propertyInfo != null)
-              {
-                object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
-                if (returnValue != null && returnValue is bool)
-                  _contentControl.IsEnabled = (bool)returnValue;
-              }
-              else
-                _contentControl.IsEnabled = true;
+              object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
+              if (returnValue != null && returnValue is bool)
+                _contentControl.IsEnabled = (bool)returnValue;
             }
           }
         }
@@ -306,7 +319,7 @@ namespace Csla.Silverlight
 
     private void CallMethod(object sender, EventArgs e)
     {
-      object p = _element.GetValue(MethodParameterProperty);
+      object p = GetMethodParameter(_element);
       var pCount = _targetMethod.GetParameters().Length;
       if (pCount == 0)
         _targetMethod.Invoke(_target, null);

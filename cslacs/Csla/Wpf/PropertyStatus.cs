@@ -42,6 +42,11 @@ namespace Csla.Wpf
       DefaultStyleKey = typeof(PropertyStatus);
       BrokenRules = new ObservableCollection<BrokenRule>();
 
+      DataContextChanged += (o, e) =>
+        {
+          SetSource(e.OldValue, e.NewValue);
+        };
+
       Loaded += (o, e) => { UpdateState(); };
     }
 
@@ -60,17 +65,17 @@ namespace Csla.Wpf
 
     #region Dependency properties
 
-    /// <summary>
-    /// Reference to the data source object.
-    /// </summary>
-    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-      "Source",
-      typeof(object),
-      typeof(PropertyStatus),
-      new FrameworkPropertyMetadata(
-        null,
-        FrameworkPropertyMetadataOptions.AffectsRender,
-        (o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
+    ///// <summary>
+    ///// Reference to the data source object.
+    ///// </summary>
+    //public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+    //  "Source",
+    //  typeof(object),
+    //  typeof(PropertyStatus),
+    //  new FrameworkPropertyMetadata(
+    //    null,
+    //    FrameworkPropertyMetadataOptions.AffectsRender,
+    //    (o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
 
     /// <summary>
     /// Defines the business object property to watch for
@@ -125,20 +130,20 @@ namespace Csla.Wpf
     private RuleSeverity _worst;
     private FrameworkElement _lastImage;
 
-    /// <summary>
-    /// Gets or sets a reference to the data source object.
-    /// </summary>
-    public object Source
-    {
-      get { return GetValue(SourceProperty); }
-      set
-      {
-        object oldValue = Source;
-        object newValue = value;
-        SetValue(SourceProperty, value);
-        SetSource(oldValue, newValue);
-      }
-    }
+    ///// <summary>
+    ///// Gets or sets a reference to the data source object.
+    ///// </summary>
+    //public object Source
+    //{
+    //  get { return GetValue(SourceProperty); }
+    //  set
+    //  {
+    //    object oldValue = Source;
+    //    object newValue = value;
+    //    SetValue(SourceProperty, value);
+    //    SetSource(oldValue, newValue);
+    //  }
+    //}
 
     /// <summary>
     /// Gets or sets the name of the business object
@@ -211,8 +216,11 @@ namespace Csla.Wpf
       UpdateState();
     }
 
+    private object Source { get; set; }
+
     private void AttachSource(object source)
     {
+      this.Source = source;
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged += new BusyChangedEventHandler(source_BusyChanged);

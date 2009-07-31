@@ -617,7 +617,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' <typeparam name="P">Type of property</typeparam>
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <returns></returns>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object))) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
   End Function
@@ -635,6 +635,19 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
   End Function
 
+  ''' <summary>
+  ''' Indicates that the specified property belongs
+  ''' to the business object type.
+  ''' </summary>
+  ''' <typeparam name="P">Type of property</typeparam>
+  ''' <param name="propertyLambdaExpression">Property Expression</param>
+  ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+  ''' <param name="defaultValue">Default Value for the property</param>
+  ''' <returns></returns>
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
+    Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+    Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue))
+  End Function
 #End Region
 
 #Region " Get Properties "
@@ -1422,6 +1435,10 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
 
   Private Function IManageProperties_ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
     Return ReadProperty(propertyInfo)
+  End Function
+
+  Private Function IManageProperties_ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
+    Return ReadProperty(Of P)(propertyInfo)
   End Function
 
   Private Sub SetProperty(ByVal propertyInfo As Core.IPropertyInfo, ByVal newValue As Object) Implements Core.IManageProperties.SetProperty

@@ -146,7 +146,7 @@ namespace Csla.Wpf
     /// <param name="element">Attached control</param>
     public static object GetMethodParameter(DependencyObject element)
     {
-      return (string)element.GetValue(MethodParameterProperty);
+      return element.GetValue(MethodParameterProperty);
     }
 
     /// <summary>

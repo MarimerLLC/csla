@@ -161,7 +161,7 @@ namespace Csla.Silverlight
     /// <param name="ctrl">Attached control</param>
     public static object GetMethodParameter(UIElement ctrl)
     {
-      return (string)ctrl.GetValue(MethodParameterProperty);
+      return ctrl.GetValue(MethodParameterProperty);
     }
 
     /// <summary>

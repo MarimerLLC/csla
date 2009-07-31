@@ -65,18 +65,6 @@ namespace Csla.Wpf
 
     #region Dependency properties
 
-    ///// <summary>
-    ///// Reference to the data source object.
-    ///// </summary>
-    //public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-    //  "Source",
-    //  typeof(object),
-    //  typeof(PropertyStatus),
-    //  new FrameworkPropertyMetadata(
-    //    null,
-    //    FrameworkPropertyMetadataOptions.AffectsRender,
-    //    (o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
-
     /// <summary>
     /// Defines the business object property to watch for
     /// validation, authorization and busy status.

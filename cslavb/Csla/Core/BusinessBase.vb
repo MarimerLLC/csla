@@ -1169,7 +1169,9 @@ Namespace Core
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnValidationComplete()
-      RaiseEvent ValidationComplete(Me, EventArgs.Empty)
+      If _validationCompleteHandlers IsNot Nothing Then
+        RaiseEvent ValidationComplete(Me, EventArgs.Empty)
+      End If
     End Sub
 
     Private Sub InitializeBusinessRules()
@@ -2932,7 +2934,9 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
-      RaiseEvent ChildChanged(Me, e)
+      If _childChangedHandlers IsNot Nothing Then
+        RaiseEvent ChildChanged(Me, e)
+      End If
     End Sub
 
     ''' <summary>

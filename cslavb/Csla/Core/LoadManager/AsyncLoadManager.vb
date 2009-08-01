@@ -107,7 +107,7 @@ Namespace Core.LoadManager
         _unhandledAsyncException = DirectCast([Delegate].Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
       End AddHandler
       RemoveHandler(ByVal value As EventHandler(Of ErrorEventArgs))
-        _unhandledAsyncException = DirectCast([Delegate].Combine(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
+        _unhandledAsyncException = DirectCast([Delegate].Remove(_unhandledAsyncException, value), EventHandler(Of ErrorEventArgs))
       End RemoveHandler
       RaiseEvent(ByVal sender As Object, ByVal e As ErrorEventArgs)
         If _unhandledAsyncException IsNot Nothing Then

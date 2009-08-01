@@ -137,7 +137,9 @@ Namespace Core
     ''' </summary>
     ''' <param name="args">Event arguments.</param>    
     Protected Overridable Sub OnBusyChanged(ByVal args As BusyChangedEventArgs)
-      RaiseEvent BusyChanged(Me, args)
+      If _busyChanged IsNot Nothing Then
+        RaiseEvent BusyChanged(Me, args)
+      End If
     End Sub
 
     ''' <summary>
@@ -207,7 +209,9 @@ Namespace Core
     ''' </summary>
     ''' <param name="e">Event arguments.</param>    
     Protected Overridable Sub OnUnhandledAsyncException(ByVal e As ErrorEventArgs)
-      RaiseEvent UnhandledAsyncException(Me, e)
+      If _unhandledAsyncException IsNot Nothing Then
+        RaiseEvent UnhandledAsyncException(Me, e)
+      End If
     End Sub
 
     ''' <summary>
@@ -362,7 +366,9 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
-      RaiseEvent ChildChanged(Me, e)
+      If _childChangedHandlers IsNot Nothing Then
+        RaiseEvent ChildChanged(Me, e)
+      End If
     End Sub
 
     ''' <summary>

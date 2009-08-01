@@ -54,7 +54,7 @@ Namespace Core.FieldManager
       Dim list = GetPropertyListCache(objectType)
       SyncLock list
         If list.IsLocked Then
-          Throw New InvalidOperationException(String.Format(My.Resources.PropertyRegisterNotAllowed, info.Name))
+          Throw New InvalidOperationException(String.Format(My.Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name))
         End If
         list.Add(info)
         list.Sort()

@@ -72,7 +72,7 @@ Namespace Core
     ''' <typeparam name="P">Type of property</typeparam>
     ''' <param name="propertyLambdaExpression">Property Expression</param>
     ''' <returns>The provided IPropertyInfo object.</returns>
-    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object))) As PropertyInfo(Of P)
       Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
       Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
     End Function
@@ -86,9 +86,24 @@ Namespace Core
     ''' <param name="propertyLambdaExpression">Property Expression</param>
     ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     ''' <returns>The provided IPropertyInfo object.</returns>
-    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
+    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String) As PropertyInfo(Of P)
       Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
       Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
+    End Function
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T">Type of Target</typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    ''' <param name="defaultValue">Default Value for the property</param>
+    ''' <returns></returns>
+    Protected Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue))
     End Function
 
 #End Region
@@ -327,5 +342,38 @@ Namespace Core
     End Sub
 
 #End Region
+
+#Region " OnDeserialized "
+
+#If SILVERLIGHT Then
+
+    ''' <summary>
+    ''' Method called by MobileFormatter when an object
+    ''' should be deserialized. The data should be
+    ''' deserialized from the SerializationInfo parameter.
+    ''' </summary>
+    ''' <param name="info">
+    ''' Object containing the serialized data.
+    ''' </param>
+    ''' <param name="mode">Serialization mode.</param>
+    Protected Overrides Sub OnSetState(ByVal info As Serialization.Mobile.SerializationInfo, ByVal mode As StateMode)
+      MyBase.OnSetState(info, mode)
+    End Sub
+#Else
+
+    <System.Runtime.Serialization.OnDeserialized()> _
+    Private Sub OnDeserializedHandler(ByVal context As System.Runtime.Serialization.StreamingContext)
+      OnDeserialized(context)
+    End Sub
+
+    Protected Overridable Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
+      If FieldManager IsNot Nothing Then
+        FieldManager.SetPropertyList(Me.GetType())
+      End If
+    End Sub
+
+#End If
+#End Region
+
   End Class
 End Namespace

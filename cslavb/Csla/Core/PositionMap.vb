@@ -1,8 +1,14 @@
-﻿Namespace Core
+﻿Imports System.Linq
+
+Namespace Core
 
   Friend Class PositionMap(Of T As Core.IEditableBusinessObject)
 
     Private _map As Dictionary(Of T, Integer)
+
+    'on rare occasions, we get duplicates.  Store those here
+    Private _duplicatePositions As Dictionary(Of T, Integer) = New Dictionary(Of T, Integer) 'T is the item, the int is the position count (if there is a dupe)
+
     Private _list As IList(Of T)
 
     Public Sub New(ByVal list As IList(Of T))
@@ -14,9 +20,25 @@
       _map = New Dictionary(Of T, Integer)(_list.Count)
     End Sub
 
+    Public Sub AddToDuplicates(ByVal item As T)
+      If Not _duplicatePositions.ContainsKey(item) Then 'if there is not a duplicate entry already
+        _duplicatePositions.Add(item, 1) 'number refers to # of dups
+      Else
+        _duplicatePositions(item) += 1
+      End If
+    End Sub
+
     Public Sub AddToMap(ByVal item As T)
       If Not _map.ContainsKey(item) Then
         _map.Add(item, _list.Count - 1)
+      Else
+        'its a duplicate - handle here
+        Dim duplicateCount = _list.LongCount(Function(checkItem As T) ReferenceEquals(item, checkItem))
+
+        If duplicateCount > 1 Then
+          AddToDuplicates(item)
+        End If
+
       End If
     End Sub
 
@@ -36,10 +58,23 @@
     End Sub
 
     Public Sub RemoveFromMap(ByVal item As T)
+     
+      If _duplicatePositions.ContainsKey(item) Then
+
+        If _duplicatePositions(item) = 1 Then
+          _duplicatePositions.Remove(item)
+        Else
+          _duplicatePositions(item) -= 1
+        End If
+
+        Return
+      End If
+
       Dim oldPosition As Integer = PositionOf(item)
       If oldPosition = -1 Then
         Return
       End If
+
       _map.Remove(item)
       For i As Integer = oldPosition + 1 To _list.Count - 1
         _map(_list(i)) -= 1

@@ -60,13 +60,25 @@ Namespace Linq
             Dim genArgs() As Type = arguments(i).GetType().GetGenericArguments()
             If parms(i).ParameterType.Name = genArgs(0).Name Then
               If genArgs(0).IsGenericType Then
+
+                'check if the second level
                 Dim genArgsLevel2 = genArgs(0).GetGenericArguments()
                 Dim parmsArgsLevel2 = parms(i).ParameterType.GetGenericArguments()
                 For j = 0 To genArgsLevel2.Length - 1
-                  If genArgsLevel2(j).Name <> parmsArgsLevel2(j).Name AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
-                    Return False
+                  If mex.Method.Name = "GroupJoin" Then
+
+                    'Matching on GroupJoin is a complex case where there are only two possibilities for a method match, and its by parameter
+                    'count - so we can optimize here
+                    If genArgsLevel2(j).Name <> parmsArgsLevel2(j).Name AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
+                      Return False
+                    End If
+                  Else
+                    If genArgsLevel2(j).GetType() IsNot parmsArgsLevel2(j).GetType() AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
+                      Return False
+                    End If
                   End If
                 Next
+
               End If
               Continue For
             End If
@@ -104,17 +116,24 @@ Namespace Linq
           'raw sort without previous where
           _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
           _filter.SortByExpression(expression)
-          Return CType(_filter, IQueryable(Of TElement))
+          Return CType(_filter, IOrderedQueryable(Of TElement))
 
         ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("OrderBy") Then
           'sort of previous where
           _filter.SortByExpression(expression)
-          Return CType(_filter, IQueryable(Of TElement))
+          Return CType(_filter, IOrderedQueryable(Of TElement))
+
+        ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("ThenBy") AndAlso _filter Is Nothing Then
+          'raw sort without previous where
+          _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
+          _filter.ThenByExpression(expression)
+          Return CType(_filter, IOrderedQueryable(Of TElement))
 
         ElseIf GetType(TElement) Is GetType(C) AndAlso mex.Method.Name.StartsWith("ThenBy") Then
           'sort of previous where
           _filter.ThenByExpression(expression)
-          Return CType(_filter, IQueryable(Of TElement))
+          Return CType(_filter, IOrderedQueryable(Of TElement))
+
         Else
           'handle non identity projections here
           Select Case mex.Method.Name
@@ -127,10 +146,9 @@ Namespace Linq
               Dim selector As Func(Of C, TElement) = selectorLambda.Compile()
 
               If _filter Is Nothing Then
-                'Return _parent.Select(Of C, TElement)(selector).AsQueryable()
-                Return _parent.Select(selector).AsQueryable() 'TODO: This is a good translation but please check
+                Return _parent.Select(selector).AsQueryable()
               Else
-                Return _filter.Select(selector).AsQueryable() 'TODO: This is a good translation but please check
+                Return _filter.Select(selector).AsQueryable()
               End If
             Case "Concat"
 
@@ -192,7 +210,7 @@ Namespace Linq
       If TypeOf expression Is MethodCallExpression Then
         Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
         methodName = mex.Method.Name
-        If mex.Method.Name = "OfType" OrElse mex.Method.Name = "Cast" Then
+        If methodName = "OfType" OrElse methodName = "Cast" Then
           Dim listType As Type = GetType(Enumerable)
           Dim listFrom As List(Of C) = _parent.ToList()
           Dim paramList As List(Of Object) = New List(Of Object)()
@@ -206,6 +224,38 @@ Namespace Linq
             End If
           Next method
         End If
+
+        'JF start change
+        '2/7/09 - only gets here if mex is a MethodCallExpresion - else it does what it was originally supposed to do.
+        If TypeOf elementType Is C AndAlso methodName = "Where" AndAlso _filter Is Nothing Then
+          _filter = New LinqBindingList(Of C)(_parent, Me, expression)
+          _filter.BuildFilterIndex()
+          Return CType(_filter, IQueryable)
+
+        ElseIf TypeOf elementType Is C AndAlso methodName.StartsWith("OrderBy") AndAlso _filter Is Nothing Then
+          'raw sort without previous where
+          _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
+          _filter.SortByExpression(expression)
+          Return CType(_filter, IQueryable)
+
+        ElseIf TypeOf elementType Is C AndAlso methodName.StartsWith("OrderBy") Then
+          'sort of previous where
+          _filter.SortByExpression(expression)
+          Return CType(_filter, IQueryable)
+
+        ElseIf TypeOf elementType Is C AndAlso methodName.StartsWith("ThenBy") AndAlso _filter Is Nothing Then
+          'raw sort without previous where
+          _filter = New LinqBindingList(Of C)(_parent, Me, Nothing)
+          _filter.ThenByExpression(expression)
+          Return CType(_filter, IQueryable)
+
+        ElseIf TypeOf elementType Is C AndAlso methodName.StartsWith("ThenBy") Then
+          'sort of previous where
+          _filter.ThenByExpression(expression)
+          Return CType(_filter, IQueryable)
+
+        End If
+
       End If
       _filter = New LinqBindingList(Of C)(_parent, Me, expression)
       Return _filter
@@ -241,8 +291,6 @@ Namespace Linq
         If i > 0 Then
           If TypeOf arg Is Expression Then
             'expressions have to be compiled in order to work with the method call on straight Enumerable
-            'somehow, LINQ to objects itself magically does this.  Reflector shows a mess, so I (Aaron) invented my
-            'own way.  God love unit tests!
             paramList.Add(Compile(TryCast(arg, Expression)))
           Else
             paramList.Add(arg)

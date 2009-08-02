@@ -32,6 +32,7 @@ Namespace Data
     Private _connection As C
     Private _transaction As T
     Private _connectionString As String
+    Private _label As String
 
     ''' <summary>
     ''' Gets the TransactionManager object for the 
@@ -49,6 +50,18 @@ Namespace Data
     ''' specified database.
     ''' </summary>
     ''' <param name="database">
+    ''' Database name as shown in the config file.
+    ''' </param>
+    ''' <param name="label">Label for this transaction.</param>
+    Public Shared Function GetManager(ByVal database As String, ByVal label As String) As TransactionManager(Of C, T)
+      Return GetManager(database, True, label)
+    End Function
+
+    ''' <summary>
+    ''' Gets the TransactionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
     ''' The database name or connection string.
     ''' </param>
     ''' <param name="isDatabaseName">
@@ -59,6 +72,24 @@ Namespace Data
     ''' </param>
     ''' <returns>TransactionManager object for the name.</returns>
     Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As TransactionManager(Of C, T)
+      Return GetManager(database, isDatabaseName, "default")
+    End Function
+
+    ''' <summary>
+    ''' Gets the TransactionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the Transaction string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a Transaction string.
+    ''' </param>
+    ''' <returns>TransactionManager object for the name.</returns>
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean, ByVal label As String) As TransactionManager(Of C, T)
 
       If isDatabaseName Then
         Dim conn As String = ConfigurationManager.ConnectionStrings(database).ConnectionString
@@ -70,19 +101,21 @@ Namespace Data
       End If
 
       SyncLock (_lock)
+        Dim contextLabel = GetContextName(database, label)
         Dim mgr As TransactionManager(Of C, T) = Nothing
-        If ApplicationContext.LocalContext.Contains("__transaction:" + database) Then
-          mgr = CType(ApplicationContext.LocalContext("__transaction:" + database), TransactionManager(Of C, T))
+        If ApplicationContext.LocalContext.Contains(contextLabel) Then
+          mgr = CType(ApplicationContext.LocalContext(contextLabel), TransactionManager(Of C, T))
         Else
-          mgr = New TransactionManager(Of C, T)(database)
-          ApplicationContext.LocalContext("__transaction:" + database) = mgr
+          mgr = New TransactionManager(Of C, T)(database, label)
+          ApplicationContext.LocalContext(contextLabel) = mgr
         End If
         mgr.AddRef()
         Return mgr
       End SyncLock
     End Function
 
-    Private Sub New(ByVal connectionString As String)
+    Private Sub New(ByVal connectionString As String, ByVal label As String)
+      _label = label
       _connectionString = connectionString
 
       'create and open connection
@@ -92,6 +125,10 @@ Namespace Data
       'start transaction
       _transaction = CType(_connection.BeginTransaction(), T)
     End Sub
+
+    Private Shared Function GetContextName(ByVal connectionString As String, ByVal label As String) As String
+      Return "__transaction:" + label + "-" + connectionString
+    End Function
 
     ''' <summary>
     ''' Gets a reference to the current ADO.NET
@@ -130,7 +167,7 @@ Namespace Data
         If mRefCount = 0 Then
           _transaction.Dispose()
           _connection.Dispose()
-          ApplicationContext.LocalContext.Remove("__transaction:" + _connectionString)
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label))
         End If
 
       End SyncLock

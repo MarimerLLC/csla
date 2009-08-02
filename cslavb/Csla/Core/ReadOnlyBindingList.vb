@@ -18,8 +18,8 @@ Namespace Core
   <Serializable()> _
   Public MustInherit Class ReadOnlyBindingList(Of C)
     Inherits Core.ExtendedBindingList(Of C)
-
     Implements Core.IBusinessObject
+    Implements Core.IReadOnlyBindingList
 
     Private _isReadOnly As Boolean = True
 
@@ -36,6 +36,15 @@ Namespace Core
         Return _isReadOnly
       End Get
       Protected Set(ByVal value As Boolean)
+        _isReadOnly = value
+      End Set
+    End Property
+
+    Public Property IReadOnlyBindingList_IsReadOnly() As Boolean Implements IReadOnlyBindingList.IsReadOnly
+      Get
+        Return IsReadOnly
+      End Get
+      Set(ByVal value As Boolean)
         _isReadOnly = value
       End Set
     End Property
@@ -281,7 +290,7 @@ Namespace Core
           listOf.Add(item)
         Next
         Return CType(listOf, IEnumerable(Of C))
-        
+
       End If
     End Function
 
@@ -333,6 +342,14 @@ Namespace Core
 
 #End Region
 
+    Public Property IsReadOnly1() As Boolean Implements IReadOnlyBindingList.IsReadOnly
+      Get
+
+      End Get
+      Set(ByVal value As Boolean)
+
+      End Set
+    End Property
   End Class
 
   ''' <summary>

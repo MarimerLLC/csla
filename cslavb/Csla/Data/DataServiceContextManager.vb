@@ -35,13 +35,14 @@ Namespace Data
     ''' </param>
     Public Shared Function GetManager(ByVal path As Uri) As DataServiceContextManager(Of C)
       SyncLock _lock
+        Dim contextLabel = GetContextName(path.ToString())
         Dim mgr As DataServiceContextManager(Of C) = Nothing
 
-        If ApplicationContext.LocalContext.Contains("__ctx:" & path.ToString()) Then
-          mgr = DirectCast(ApplicationContext.LocalContext("__ctx:" & path.ToString()), DataServiceContextManager(Of C))
+        If ApplicationContext.LocalContext.Contains(contextLabel) Then
+          mgr = DirectCast(ApplicationContext.LocalContext(contextLabel), DataServiceContextManager(Of C))
         Else
           mgr = New DataServiceContextManager(Of C)(path)
-          ApplicationContext.LocalContext("__ctx:" & path.ToString()) = mgr
+          ApplicationContext.LocalContext(contextLabel) = mgr
         End If
 
         Return mgr
@@ -60,6 +61,10 @@ Namespace Data
         Return _context
       End Get
     End Property
+
+    Private Shared Function GetContextName(ByVal path As String) As String
+      Return "__ctx:" + path
+    End Function
 
     ''' <summary>
     ''' Gets a list of the entities of the

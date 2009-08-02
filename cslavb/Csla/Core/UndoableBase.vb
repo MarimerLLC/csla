@@ -122,15 +122,14 @@ Namespace Core
             'make sure the variable has a value
             If value Is Nothing Then
               'variable has no value - store that fact
-              state.Add(h.MemberName, Nothing)
+              state.Add(GetFieldName(currentType.FullName, h.MemberName), Nothing)
             Else
               'this is a child object, cascade the call
               DirectCast(value, IUndoableObject).CopyState(Me.EditLevel + 1, BindingEdit)
             End If
           Else
             ' this is a normal field, simply trap the value
-            ' state.Add(h.MemberFullName, value);
-            state.Add(h.MemberName, value)
+            state.Add(GetFieldName(currentType.FullName, h.MemberName), value)
           End If
         Next
 
@@ -212,10 +211,10 @@ Namespace Core
 
               'this is a child object
               'see if the previous value was empty
-              If state.Contains(h.MemberName) Then
+              If state.Contains(GetFieldName(currentType.FullName, h.MemberName)) Then
 
                 'previous value was empty - restore to empty
-                h.DynamicMemberSet.Invoke(Me, Nothing) 'TODO: Is this correct
+                h.DynamicMemberSet.Invoke(Me, Nothing)
               Else
                 'make sure the variable has a value
                 If value IsNot Nothing Then
@@ -225,7 +224,7 @@ Namespace Core
               End If
             Else
               'this is a regular field, restore its value
-              h.DynamicMemberSet.Invoke(Me, state(h.MemberName)) 'TODO: Is this correct              
+              h.DynamicMemberSet.Invoke(Me, state(GetFieldName(currentType.FullName, h.MemberName)))
             End If
           Next
           currentType = currentType.BaseType
@@ -310,6 +309,16 @@ Namespace Core
 
       Return Attribute.IsDefined(field, GetType(NotUndoableAttribute))
 
+    End Function
+
+    ''' <summary>
+    ''' Returns the full name of a field, including
+    ''' the containing type name.
+    ''' </summary>
+    ''' <param name="typeName">Name of the containing type.</param>
+    ''' <param name="memberName">Name of the member (field).</param>
+    Private Function GetFieldName(ByVal typeName As String, ByVal memberName As String) As String
+      Return typeName + "." + memberName
     End Function
 
     Private Function GetFieldName(ByVal field As FieldInfo) As String

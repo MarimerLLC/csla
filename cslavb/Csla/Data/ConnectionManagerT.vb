@@ -26,6 +26,7 @@ Namespace Data
     Private Shared _lock As New Object()
     Private _connection As C
     Private _connectionString As String
+    Private _label As String
 
     ''' <summary>
     ''' Gets the ConnectionManager object for the 
@@ -43,6 +44,18 @@ Namespace Data
     ''' specified database.
     ''' </summary>
     ''' <param name="database">
+    ''' Database name as shown in the config file.
+    ''' </param>
+    ''' <param name="label">Label for this connection.</param>
+    Public Shared Function GetManager(ByVal database As String, ByVal label As String) As ConnectionManager(Of C)
+      Return GetManager(database, True, label)
+    End Function
+
+    ''' <summary>
+    ''' Gets the ConnectionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
     ''' The database name or connection string.
     ''' </param>
     ''' <param name="isDatabaseName">
@@ -53,36 +66,52 @@ Namespace Data
     ''' </param>
     ''' <returns>ConnectionManager object for the name.</returns>
     Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ConnectionManager(Of C)
+      Return GetManager(database, isDatabaseName, "default")
+    End Function
+
+    ''' <summary>
+    ''' Gets the ConnectionManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
+    ''' </param>
+    ''' <param name="label">Label for this connection.</param>
+    ''' <returns>ConnectionManager object for the name.</returns>
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean, ByVal label As String) As ConnectionManager(Of C)
+
       If isDatabaseName Then
-
-        Dim connection = ConfigurationManager.ConnectionStrings(database)
-
-        If connection Is Nothing Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
-
         Dim conn = ConfigurationManager.ConnectionStrings(database).ConnectionString
-
-        If String.IsNullOrEmpty(conn) Then Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
-
+        If String.IsNullOrEmpty(conn) Then
+          Throw New ConfigurationErrorsException(String.Format(My.Resources.DatabaseNameNotFound, database))
+        End If
         database = conn
       End If
 
       SyncLock _lock
+        Dim ctxName = GetContextName(database, label)
         Dim mgr As ConnectionManager(Of C) = Nothing
+        If ApplicationContext.LocalContext.Contains(ctxName) Then
+          mgr = CType(ApplicationContext.LocalContext(ctxName), ConnectionManager(Of C))
 
-        If (ApplicationContext.LocalContext.Contains("__db:" + database)) Then
-          mgr = DirectCast(ApplicationContext.LocalContext("__db:" + database), ConnectionManager(Of C))
         Else
-          mgr = New ConnectionManager(Of C)(database)
-          ApplicationContext.LocalContext("__db:" + database) = mgr
+          mgr = New ConnectionManager(Of C)(database, label)
+          ApplicationContext.LocalContext(ctxName) = mgr
         End If
         mgr.AddRef()
         Return mgr
       End SyncLock
+
     End Function
 
-    Private Sub New(ByVal connectionString As String)
-
-
+    Private Sub New(ByVal connectionString As String, ByVal label As String)
+      _label = label
       _connectionString = connectionString
 
       ' open connection
@@ -91,6 +120,10 @@ Namespace Data
       _connection.Open()
 
     End Sub
+
+    Private Shared Function GetContextName(ByVal connectionString As String, ByVal label As String) As String
+      Return "__db:" + label + "-" + connectionString
+    End Function
 
     ''' <summary>
     ''' Gets the open database connection object.
@@ -116,7 +149,7 @@ Namespace Data
 
         If mRefCount = 0 Then
           _connection.Dispose()
-          ApplicationContext.LocalContext.Remove("__db:" + _connectionString)
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label))
         End If
       End SyncLock
     End Sub

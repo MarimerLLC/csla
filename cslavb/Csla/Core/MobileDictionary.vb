@@ -60,6 +60,13 @@ Namespace Core
       DetermineTypes()
     End Sub
 
+#If Not Silverlight Then
+
+    Public Sub New(ByVal info As System.Runtime.Serialization.SerializationInfo, ByVal context As System.Runtime.Serialization.StreamingContext)
+      MyBase.New(info, context)
+    End Sub
+
+#End If
     Private Sub DetermineTypes()
       _keyIsMobile = GetType(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(GetType(K))
       _valueIsMobile = GetType(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(GetType(V))

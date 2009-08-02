@@ -157,7 +157,7 @@ Namespace Core
 
     Private Sub DeferredLoadIndexIfNotLoaded()
       If _indexSet Is Nothing Then
-        _indexSet = New Linq.IndexSet(Of C)()
+        _indexSet = New Csla.Linq.IndexSet(Of C)()
       End If
     End Sub
 

@@ -216,30 +216,11 @@ Namespace Linq
     End Function
 
     Public Function Execute(ByVal expression As Expression) As Object Implements IQueryProvider.Execute
-      'ok, this is a hairy, dirty, and nasty piece of code
-      'the alternatives are substantially worse than this though
-      'i.e. when you do your own provider, LINQ assumes that
-      'you are going to implement your own expression tree visitor and
-      'do it all yourself.  Frankly, I still have xmas shopping to do
-      'and I really don't want us to be foobared when we get
-      'even more extension methods added to LINQ
-      'therefore, we are pulling execute based on taking the calling the standard execute on
-      'enumerable, but using our own class
-      '
-      'optimization can occur from here on an as needed basis, that is
-      'check for the value of mex.Method.Name, and write a handler for
-      'that method
-      '
-      'also, it may not be a bad idea to rather than do this reflection each and every time
-      'somehow cache the reflected methodinfos and do lookups that way
-      'that said, we need a complete red/green/refactor cycle here before I am touching that one
-
       Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
 
-
       'convert the enumerated collection to a list
-
       Dim listFrom As List(Of C)
+
       If _filter IsNot Nothing Then
         listFrom = _filter.ToList(Of C)()
       Else

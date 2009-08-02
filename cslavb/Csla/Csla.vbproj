@@ -141,6 +141,7 @@
     <Compile Include="Core\IParent.vb" />
     <Compile Include="Core\IPositionMappable.vb" />
     <Compile Include="Core\IPropertyInfo.vb" />
+    <Compile Include="Core\IReadOnlyBindingList.vb" />
     <Compile Include="Core\IReportTotalRowCount.vb" />
     <Compile Include="Core\ISavable.vb" />
     <Compile Include="Core\ISmartField.vb" />

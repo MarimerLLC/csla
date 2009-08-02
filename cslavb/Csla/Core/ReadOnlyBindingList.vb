@@ -342,14 +342,6 @@ Namespace Core
 
 #End Region
 
-    Public Property IsReadOnly1() As Boolean Implements IReadOnlyBindingList.IsReadOnly
-      Get
-
-      End Get
-      Set(ByVal value As Boolean)
-
-      End Set
-    End Property
   End Class
 
   ''' <summary>

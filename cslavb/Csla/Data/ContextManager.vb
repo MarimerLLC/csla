@@ -30,6 +30,7 @@ Namespace Data
     Private Shared _lock As New Object
     Private _context As C
     Private _connectionString As String
+    Private _label As String
 
     ''' <summary>
     ''' Gets the ContextManager object for the 
@@ -49,6 +50,18 @@ Namespace Data
     ''' specified database.
     ''' </summary>
     ''' <param name="database">
+    ''' Database name as shown in the config file.
+    ''' </param>
+    ''' <param name="label">Label for this context.</param>
+    Public Shared Function GetManager(ByVal database As String, ByVal label As String) As ContextManager(Of C)
+      Return GetManager(database, True, label)
+    End Function
+
+    ''' <summary>
+    ''' Gets the ContextManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
     ''' The database name or connection string.
     ''' </param>
     ''' <param name="isDatabaseName">
@@ -59,6 +72,25 @@ Namespace Data
     ''' </param>
     ''' <returns>ContextManager object for the name.</returns>
     Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean) As ContextManager(Of C)
+      Return GetManager(database, isDatabaseName, "default")
+    End Function
+
+    ''' <summary>
+    ''' Gets the ContextManager object for the 
+    ''' specified database.
+    ''' </summary>
+    ''' <param name="database">
+    ''' The database name or connection string.
+    ''' </param>
+    ''' <param name="isDatabaseName">
+    ''' True to indicate that the connection string
+    ''' should be retrieved from the config file. If
+    ''' False, the database parameter is directly 
+    ''' used as a connection string.
+    ''' </param>
+    ''' <param name="label">Label for this context.</param>
+    ''' <returns>ContextManager object for the name.</returns>
+    Public Shared Function GetManager(ByVal database As String, ByVal isDatabaseName As Boolean, ByVal label As String) As ContextManager(Of C)
 
       If isDatabaseName Then
         Dim connection = ConfigurationManager.ConnectionStrings(database)
@@ -74,13 +106,14 @@ Namespace Data
       End If
 
       SyncLock _lock
+        Dim contextLabel = GetContextName(database, label)
         Dim mgr As ContextManager(Of C) = Nothing
-        If ApplicationContext.LocalContext.Contains("__ctx:" & database) Then
-          mgr = CType(ApplicationContext.LocalContext("__ctx:" & database), ContextManager(Of C))
+        If ApplicationContext.LocalContext.Contains(contextLabel) Then
+          mgr = CType(ApplicationContext.LocalContext(contextLabel), ContextManager(Of C))
 
         Else
-          mgr = New ContextManager(Of C)(database)
-          ApplicationContext.LocalContext("__ctx:" & database) = mgr
+          mgr = New ContextManager(Of C)(database, label)
+          ApplicationContext.LocalContext(contextLabel) = mgr
         End If
         mgr.AddRef()
         Return mgr
@@ -88,13 +121,17 @@ Namespace Data
 
     End Function
 
-    Private Sub New(ByVal connectionString As String)
-
+    Private Sub New(ByVal connectionString As String, ByVal label As String)
+      _label = label
       _connectionString = connectionString
 
       _context = DirectCast(Activator.CreateInstance(GetType(C), connectionString), C)
 
     End Sub
+
+    Private Shared Function GetContextName(ByVal connectionString As String, ByVal label As String) As String
+      Return "__ctx:" + label + "-" + connectionString
+    End Function
 
     ''' <summary>
     ''' Gets the LINQ data context object.
@@ -119,7 +156,7 @@ Namespace Data
         _refCount -= 1
         If _refCount = 0 Then
           _context.Dispose()
-          ApplicationContext.LocalContext.Remove("__ctx:" & _connectionString)
+          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label))
         End If
       End SyncLock
 

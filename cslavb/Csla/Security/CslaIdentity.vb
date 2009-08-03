@@ -1,11 +1,14 @@
 ﻿Option Infer On
 Option Strict Off
 Imports System
+Imports System.Linq.Expressions
 Imports System.Security.Principal
 Imports Csla.Serialization
 Imports System.Collections.Generic
 Imports Csla.Core.FieldManager
 Imports System.Runtime.Serialization
+Imports System.Reflection
+Imports Csla.Reflection
 Imports Csla.Core
 
 Namespace Security
@@ -13,6 +16,52 @@ Namespace Security
   Partial Public MustInherit Class CslaIdentity
     Inherits ReadOnlyBase(Of CslaIdentity)
     Implements ICheckRoles, IIdentity
+
+#Region " RegisterProperty "
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T">Type of object to which the property belongs.</typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <returns>The provided IPropertyInfo object.</returns>
+    Protected Overloads Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object))) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
+    End Function
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T"></typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    ''' <returns>The provided IPropertyInfo object.</returns>
+    Protected Overloads Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
+    End Function
+
+    ''' <summary>
+    ''' Indicates that the specified property belongs
+    ''' to the business object type.
+    ''' </summary>
+    ''' <typeparam name="T">Type of Target</typeparam>
+    ''' <typeparam name="P">Type of property</typeparam>
+    ''' <param name="propertyLambdaExpression">Property Expression</param>
+    ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    ''' <param name="defaultValue">Default Value for the property</param>
+    ''' <returns></returns>
+    Protected Overloads Shared Function RegisterProperty(Of T, P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
+      Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
+      Return RegisterProperty(GetType(T), New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue))
+    End Function
+
+#End Region
 
 #Region "UnauthenticatedIdentity"
 

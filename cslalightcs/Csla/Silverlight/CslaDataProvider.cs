@@ -134,6 +134,7 @@ namespace Csla.Silverlight
       }
       set
       {
+        SetError(null);
         SetObjectInstance(value);
         try
         {
@@ -161,7 +162,6 @@ namespace Csla.Silverlight
         ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
 
       _dataObject = value;
-      _error = null;
 
       if (_manageObjectLifetime)
       {
@@ -342,9 +342,12 @@ namespace Csla.Silverlight
 
     private void SetError(Exception value)
     {
-      _error = value;
+      var changed = !ReferenceEquals(_error, value);
+      if (changed)
+        _error = value;
       IsBusy = false;
-      OnPropertyChanged(new PropertyChangedEventArgs("Error"));
+      if (changed)
+        OnPropertyChanged(new PropertyChangedEventArgs("Error"));
     }
 
     private object _dataChangedHandler;
@@ -383,7 +386,7 @@ namespace Csla.Silverlight
     /// </summary>
     public void Cancel()
     {
-      _error = null;
+      SetError(null);
       if (_manageObjectLifetime)
       {
         try
@@ -415,7 +418,7 @@ namespace Csla.Silverlight
     /// </summary>
     public void Save()
     {
-      _error = null;
+      SetError(null);
       try
       {
 
@@ -466,7 +469,7 @@ namespace Csla.Silverlight
     /// </summary>
     public void Delete()
     {
-      _error = null;
+      SetError(null);
       try
       {
         var obj = _dataObject as Csla.Core.BusinessBase;
@@ -514,7 +517,7 @@ namespace Csla.Silverlight
     /// </summary>
     public void AddNewItem()
     {
-      _error = null;
+      SetError(null);
       try
       {
         var obj = _dataObject as Csla.Core.IBindingList;
@@ -547,7 +550,7 @@ namespace Csla.Silverlight
     {
       try
       {
-        _error = null;
+        SetError(null);
         var obj = _dataObject as System.Collections.IList;
         if (obj != null)
         {
@@ -586,7 +589,7 @@ namespace Csla.Silverlight
       if (_objectType != null && _factoryMethod != null)
         try
         {
-          _error = null;
+          SetError(null);
           this.IsBusy = true;
           List<object> parameters = new List<object>(FactoryParameters);
           Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);

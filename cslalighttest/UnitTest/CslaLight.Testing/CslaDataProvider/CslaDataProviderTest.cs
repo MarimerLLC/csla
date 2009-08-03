@@ -279,6 +279,27 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [TestMethod]
+    public void IF_BO_Throws_on_Fetch_Error_Is_Set()
+    {
+      var context = GetContext();
+
+      var provider = new Csla.Silverlight.CslaDataProvider();
+      provider.DataChanged += (o1, e1) =>
+        {
+          context.Assert.IsNotNull(provider.Error);
+          context.Assert.Success();
+        };
+      provider.IsInitialLoadEnabled = true;
+      provider.ManageObjectLifetime = true;
+      provider.FactoryMethod = "GetCustomerWithException";
+      provider.ObjectType = typeof(Customer).AssemblyQualifiedName;//"cslalighttest.CslaDataProvider.Customer, Csla.Testing.Business, Version=..., Culture=neutral, PublicKeyToken=null";
+      var tmp = provider.Data;
+
+      context.Complete();
+
+    }
+
+    [TestMethod]
     public void Refresh_Calls_FactoryMethod_second_time()
     {
       var context = GetContext();
@@ -309,13 +330,10 @@ namespace cslalighttest.CslaDataProvider
       var context = GetContext();
 
       var provider = new Csla.Silverlight.CslaDataProvider();
-      provider.PropertyChanged += (o1, e1) =>
+      provider.DataChanged += (o1, e1) =>
       {
-        if (e1.PropertyName == "Error")
-        {
-          context.Assert.IsNotNull(provider.Error);
-          context.Assert.Success();
-        }
+        context.Assert.IsNotNull(provider.Error);
+        context.Assert.Success();
       };
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;
@@ -337,13 +355,10 @@ namespace cslalighttest.CslaDataProvider
       var context = GetContext();
 
       var provider = new Csla.Silverlight.CslaDataProvider();
-      provider.PropertyChanged += (o1, e1) =>
+      provider.DataChanged += (o1, e1) =>
       {
-        if (e1.PropertyName == "Error")
-        {
-          context.Assert.IsNull(provider.Error);
-          context.Assert.Success();
-        }
+        context.Assert.IsNull(provider.Error);
+        context.Assert.Success();
       };
       provider.IsInitialLoadEnabled = true;
       provider.ManageObjectLifetime = true;

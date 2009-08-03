@@ -25,13 +25,6 @@ Namespace Security
 
     Private Shared _forceInit As Integer = 0
 
-    ''' <summary>
-    ''' Creates an instance of the class.
-    ''' </summary>
-    Protected Sub New()
-      _forceInit = _forceInit + 0
-    End Sub
-
 #End Region
 
 #Region "IsInRole"

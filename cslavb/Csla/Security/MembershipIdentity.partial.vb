@@ -12,14 +12,17 @@ Imports Csla.Core
 
 Namespace Security
 
-  ''' <summary>
-  ''' Implements a .NET identity object that automatically
-  ''' authenticates against the ASP.NET membership provider.
-  ''' </summary>
-  ''' <remarks></remarks>
   Partial Public Class MembershipIdentity
     Inherits ReadOnlyBase(Of MembershipIdentity)
     Implements IIdentity
+
+    ''' <summary>
+    ''' Creates an instance of the class
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Sub New()
+      _forceInit = _forceInit + 0
+    End Sub
 
     ''' <summary>
     ''' Authenticates the user's credentials against the ASP.NET

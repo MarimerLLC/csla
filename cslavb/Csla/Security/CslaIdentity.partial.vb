@@ -24,7 +24,7 @@ Namespace Security
     ''' Creates an instance of the object.
     ''' </summary>
     Protected Sub New()
-      _forceInit = _forceInit And False
+      _forceInit = _forceInit AndAlso False
     End Sub
 
 #End Region

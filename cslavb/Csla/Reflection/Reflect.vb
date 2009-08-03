@@ -52,7 +52,7 @@ Namespace Reflection
         Throw New ArgumentNullException("method")
       End If
 
-      Dim lambda As LambdaExpression = CType(method, LambdaExpression)
+      Dim lambda As LambdaExpression = TryCast(method, LambdaExpression)
       If lambda Is Nothing Then
         Throw New ArgumentException("Not a lambda expression", "method")
       End If
@@ -70,7 +70,7 @@ Namespace Reflection
     ''' <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     ''' <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a property access.</exception>
     Public Shared Function GetProperty(ByVal [property] As Expression(Of Func(Of TTarget, Object))) As PropertyInfo
-      Dim info As PropertyInfo = CType(GetMemberInfo([property]), PropertyInfo)
+      Dim info As PropertyInfo = TryCast(GetMemberInfo([property]), PropertyInfo)
 
       If info Is Nothing Then
         Throw New ArgumentException("Member is not a property")
@@ -88,7 +88,7 @@ Namespace Reflection
     ''' <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     ''' <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a property access.</exception>
     Public Shared Function GetProperty(Of P)(ByVal [property] As Expression(Of Func(Of TTarget, P))) As PropertyInfo
-      Dim info As PropertyInfo = CType(GetMemberInfo([property]), PropertyInfo)
+      Dim info As PropertyInfo = TryCast(GetMemberInfo([property]), PropertyInfo)
       If info Is Nothing Then
         Throw New ArgumentException("Member is not a property")
       End If
@@ -102,7 +102,7 @@ Namespace Reflection
     ''' <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     ''' <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a field access.</exception>
     Public Shared Function GetField(ByVal field As Expression(Of Func(Of TTarget, Object))) As FieldInfo
-      Dim info As FieldInfo = CType(GetMemberInfo(field), FieldInfo)
+      Dim info As FieldInfo = TryCast(GetMemberInfo(field), FieldInfo)
       If info Is Nothing Then
         Throw New ArgumentException("Member is not a field")
       End If
@@ -115,7 +115,7 @@ Namespace Reflection
         Throw New ArgumentNullException("member")
       End If
 
-      Dim lambda As LambdaExpression = CType(member, LambdaExpression)
+      Dim lambda As LambdaExpression = TryCast(member, LambdaExpression)
       If lambda Is Nothing Then
         Throw New ArgumentException("Not a lambda expression", "member")
       End If
@@ -128,9 +128,9 @@ Namespace Reflection
 
         'The cast is an unary expression, where the operand is the 
         'actual member access expression.
-        memberExpr = CType(CType(lambda.Body, UnaryExpression).Operand, MemberExpression)
+        memberExpr = TryCast(CType(lambda.Body, UnaryExpression).Operand, MemberExpression)
       ElseIf lambda.Body.NodeType = ExpressionType.MemberAccess Then
-        memberExpr = CType(lambda.Body, MemberExpression)
+        memberExpr = TryCast(lambda.Body, MemberExpression)
       End If
 
       If memberExpr Is Nothing Then

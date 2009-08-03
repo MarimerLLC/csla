@@ -49,10 +49,30 @@ Namespace Security
       End Set        
     End Property
 
+    ''' <summary>
+    ''' Creates a new instance of the object.
+    ''' </summary>
+    ''' <param name="username">
+    ''' Username value.
+    ''' </param>
+    ''' <param name="password">
+    ''' Password value.
+    ''' </param>
     Public Sub New(ByVal username As String, ByVal password As String)
       Me.Username = username
       Me.Password = password
     End Sub
+
+    'Creates a new instance of the object.
+#If SILVERLIGHT Then
+    Public Sub New()
+
+    End Sub
+#Else
+    Protected Sub New()
+
+    End Sub
+#End If
 
   End Class
 

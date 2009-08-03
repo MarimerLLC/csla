@@ -64,7 +64,7 @@ Namespace Security
           mIsInRoleProvider = AddressOf IsInRoleDefault
         Else
           Dim items() As String = provider.Split(","c)
-          Dim containingType As Type = Type.GetType(items(0) & "," & items(1))
+          Dim containingType As Type = Csla.Reflection.MethodCaller.GetType(items(0) & "," & items(1))
           mIsInRoleProvider = CType(System.Delegate.CreateDelegate(GetType(IsInRoleProvider), containingType, items(2)), IsInRoleProvider)
         End If
       End If

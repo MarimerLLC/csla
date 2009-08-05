@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
-using Csla.Core;
 using System.Collections.Generic;
 
 namespace Csla.Silverlight
@@ -161,6 +152,18 @@ namespace Csla.Silverlight
     /// <param name="ctrl">Attached control</param>
     public static object GetMethodParameter(UIElement ctrl)
     {
+      var fe = ctrl as FrameworkElement;
+      if (fe != null)
+      {
+        var be = fe.GetBindingExpression(MethodParameterProperty);
+        var dataItem = be.DataItem;
+        string path = be.ParentBinding.Path.Path;
+        if (dataItem != null && !string.IsNullOrEmpty(path))
+        {
+          var pi = Csla.Reflection.MethodCaller.GetProperty(dataItem.GetType(), path);
+          return Csla.Reflection.MethodCaller.GetPropertyValue(dataItem, pi);
+        }
+      }
       return ctrl.GetValue(MethodParameterProperty);
     }
 
@@ -215,11 +218,11 @@ namespace Csla.Silverlight
         }
       }
     }
-    private ContentControl _contentControl;
 
     #endregion
 
     private UIElement _element;
+    private ContentControl _contentControl;
     private System.Reflection.MethodInfo _targetMethod;
     private object _target;
 
@@ -231,11 +234,20 @@ namespace Csla.Silverlight
     public InvokeMethod(UIElement ctrl)
     {
       _element = ctrl;
-      _contentControl = _element as ContentControl;
       _target = GetTarget(_element);
+      if (_target == null)
+      {
+        var fe = ctrl as FrameworkElement;
+        if (fe != null)
+        {
+          var binding = new System.Windows.Data.Binding();
+          fe.SetBinding(TargetProperty, binding);
+        }
+      }
 
       if (_target != null)
       {
+        _contentControl = _element as ContentControl;
         var methodName = GetMethodName(_element);
         if (!string.IsNullOrEmpty(methodName))
         {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -13,7 +9,6 @@ using System.Windows.Media;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Validation;
-using System.Windows.Media.Animation;
 
 namespace Csla.Silverlight
 {
@@ -143,8 +138,12 @@ namespace Csla.Silverlight
       }
     }
 
+    private bool _settingSource;
+
     private void SetSource(object old, object @new)
     {
+      _settingSource = true;
+
       DetachSource(old);
       AttachSource(@new);
 
@@ -154,6 +153,8 @@ namespace Csla.Silverlight
 
       CheckProperty();
       UpdateState();
+
+      _settingSource = false;
     }
 
     /// <summary>
@@ -400,7 +401,7 @@ namespace Csla.Silverlight
 
     private void EnsureTarget()
     {
-      if (_target == null)
+      if (!_settingSource && _target == null)
       {
         _target = VisualTree.FindParent(RelativeTargetPath, this);
         if (!string.IsNullOrEmpty(RelativeTargetName))

@@ -156,15 +156,42 @@ namespace Csla.Silverlight
       if (fe != null)
       {
         var be = fe.GetBindingExpression(MethodParameterProperty);
-        var dataItem = be.DataItem;
-        string path = be.ParentBinding.Path.Path;
-        if (dataItem != null && !string.IsNullOrEmpty(path))
+        if (be != null && be.ParentBinding != null)
         {
-          var pi = Csla.Reflection.MethodCaller.GetProperty(dataItem.GetType(), path);
-          return Csla.Reflection.MethodCaller.GetPropertyValue(dataItem, pi);
+          var newBinding = CopyBinding(be.ParentBinding);
+          fe.SetBinding(MethodNameProperty, newBinding);
+
+          //var dataItem = be.DataItem;
+          //string path = be.ParentBinding.Path.Path;
+          //if (dataItem != null && !string.IsNullOrEmpty(path))
+          //{
+          //  var pi = Csla.Reflection.MethodCaller.GetProperty(dataItem.GetType(), path);
+          //  return Csla.Reflection.MethodCaller.GetPropertyValue(dataItem, pi);
+          //}
         }
       }
       return ctrl.GetValue(MethodParameterProperty);
+    }
+
+    private static System.Windows.Data.Binding CopyBinding(System.Windows.Data.Binding oldBinding)
+    {
+      var result = new System.Windows.Data.Binding();
+      result.BindsDirectlyToSource = oldBinding.BindsDirectlyToSource;
+      result.Converter = oldBinding.Converter;
+      result.ConverterCulture = oldBinding.ConverterCulture;
+      result.ConverterParameter = oldBinding.ConverterParameter;
+      result.Mode = oldBinding.Mode;
+      result.NotifyOnValidationError = oldBinding.NotifyOnValidationError;
+      result.Path = oldBinding.Path;
+      if (oldBinding.ElementName != null)
+        result.ElementName = oldBinding.ElementName;
+      else if (oldBinding.RelativeSource != null)
+        result.RelativeSource = oldBinding.RelativeSource;
+      else
+        result.Source = oldBinding.Source;
+      result.UpdateSourceTrigger = oldBinding.UpdateSourceTrigger;
+      result.ValidatesOnExceptions = oldBinding.ValidatesOnExceptions;
+      return result;
     }
 
     /// <summary>

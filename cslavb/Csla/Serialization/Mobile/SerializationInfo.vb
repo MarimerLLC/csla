@@ -27,6 +27,7 @@ Namespace Serialization.Mobile
 
       Private _Value As Object
       Private _IsDirty As Boolean
+      Private _EnumTypeName As String
 
       ''' <summary>
       ''' Field value.
@@ -38,6 +39,20 @@ Namespace Serialization.Mobile
         End Get
         Set(ByVal value As Object)
           _Value = value
+        End Set
+      End Property
+
+      ''' <summary>
+      ''' If non-null, indicates that the value is a integer value representing the
+      ''' specified enum type. Upon deserialization, the integer will be converted back
+      ''' to the enum type.
+      ''' </summary>
+      Public Property EnumTypeName() As String
+        Get
+          Return _EnumTypeName
+        End Get
+        Set(ByVal value As String)
+          _EnumTypeName = value
         End Set
       End Property
 

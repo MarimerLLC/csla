@@ -22,6 +22,13 @@ Namespace Wpf
       AddHandler _factoryParameters.CollectionChanged, AddressOf _factoryParameters_CollectionChanged
     End Sub
 
+    Public Event Saved As EventHandler(Of Csla.Core.SavedEventArgs)
+    Protected Sub OnSaved(ByVal newObject As Object, ByVal [error] As Exception, ByVal userState As Object)
+
+      RaiseEvent Saved(Me, New Csla.Core.SavedEventArgs(newObject, [error], userState))
+
+    End Sub
+
     Private Sub _factoryParameters_CollectionChanged(ByVal sender As Object, ByVal e As System.Collections.Specialized.NotifyCollectionChangedEventArgs)
       BeginQuery()
     End Sub
@@ -74,6 +81,31 @@ Namespace Wpf
       Set(ByVal value As Boolean)
         _manageLifetime = value
         OnPropertyChanged(New PropertyChangedEventArgs("ManageObjectLifetime"))
+      End Set
+    End Property
+
+    Private _dataChangedHandler As Object
+
+    ''' <summary>
+    ''' Gets or sets a reference to an object that
+    ''' will handle the DataChanged event raised
+    ''' by this data provider.
+    ''' </summary>
+    ''' <remarks>
+    ''' This property is designed to 
+    ''' reference an ErrorDialog control.
+    ''' </remarks>
+    Public Property DataChangedHandler() As Object
+      Get
+        Return _dataChangedHandler
+      End Get
+      Set(ByVal value As Object)
+        _dataChangedHandler = value
+        Dim dialog = TryCast(value, ErrorDialog)
+        If dialog IsNot Nothing Then
+          dialog.Register(Me)
+        End If
+        OnPropertyChanged(New PropertyChangedEventArgs("DataChangedHandler"))
       End Set
     End Property
 
@@ -228,6 +260,17 @@ Namespace Wpf
           result = factory.Invoke(Nothing, parameters)
         Catch ex As Csla.DataPortalException
           exceptionResult = ex.BusinessException
+        Catch ex As System.Reflection.TargetInvocationException
+          If ex.InnerException IsNot Nothing Then
+            exceptionResult = ex.InnerException
+            Dim dpe = TryCast(exceptionResult, Csla.DataPortalException)
+
+            If dpe IsNot Nothing AndAlso dpe.BusinessException IsNot Nothing Then
+              exceptionResult = dpe.BusinessException
+            End If
+          Else
+            exceptionResult = ex
+          End If
         Catch ex As Exception
           exceptionResult = ex
         End Try
@@ -391,6 +434,8 @@ Namespace Wpf
         MyBase.OnQueryFinished(Nothing, exceptionResult, Nothing, Nothing)
         ' return result to base class
         MyBase.OnQueryFinished(result, Nothing, Nothing, Nothing)
+        IsBusy = False
+        OnSaved(result, exceptionResult, Nothing)
       End If
 
     End Sub

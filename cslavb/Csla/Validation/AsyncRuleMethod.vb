@@ -13,8 +13,8 @@ Namespace Validation
     Private _handler As AsyncRuleHandler
     Private _args As AsyncRuleArgs
     Private _ruleName As String = String.Empty
-    Private _severity As RuleSeverity
-    Private Const _priority As Integer = 0
+    Private _severity As RuleSeverity = RuleSeverity.Error
+    Private _priority As Integer = 0
     Private _invokeCallback As AsyncRuleCompleteHandler
 
     ''' <summary>
@@ -81,6 +81,22 @@ Namespace Validation
       _handler = handler
       _args = args
       _severity = severity
+      _ruleName = String.Format("rule://{0}/{1}/{2}", _
+         Uri.EscapeDataString(_handler.Method.DeclaringType.FullName), _
+      _handler.Method.Name, _
+      _args.Properties(0).Name)
+    End Sub
+
+    ''' <summary>
+    ''' Creates and initializes the rule.
+    ''' </summary>
+    ''' <param name="handler">The address of the method implementing the rule.</param>
+    ''' <param name="args">A RuleArgs object.</param>
+    ''' <param name="priority">Priority of the rule.</param>
+    Public Sub New(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs, ByVal priority As Integer)
+      _handler = handler
+      _args = args
+      _priority = priority
       _ruleName = String.Format("rule://{0}/{1}/{2}", _
          Uri.EscapeDataString(_handler.Method.DeclaringType.FullName), _
       _handler.Method.Name, _

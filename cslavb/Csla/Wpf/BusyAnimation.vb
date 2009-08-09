@@ -52,7 +52,7 @@ Namespace Wpf
     ''' </summary>
     Public Shared ReadOnly IsRunningProperty As DependencyProperty = DependencyProperty.Register( _
                                                                       "IsRunning", _
-                                                                      GetType(Object), _
+                                                                      GetType(Boolean), _
                                                                       GetType(BusyAnimation), _
                                                                       New FrameworkPropertyMetadata( _
                                                                       False, _
@@ -123,7 +123,15 @@ Namespace Wpf
           _timer.Start()
         Else
           _timer.[Stop]()
-          _normalStoryboard.Begin(_root)
+
+          If _root Is Nothing Then
+            _root = CType(Template.FindName("root", Me), Canvas)
+          End If
+
+          If _root IsNot Nothing Then
+            _normalStoryboard.Begin(_root)
+          End If
+
         End If
       End If
     End Sub
@@ -131,8 +139,10 @@ Namespace Wpf
     Private _frame As Integer = 0
 
     Private Sub timer_Tick(ByVal sender As Object, ByVal e As EventArgs)
-      _isRunningStoryboard(_frame).Begin(_root)
-      _frame = (_frame + 1) Mod NUM_STATES
+      If _root IsNot Nothing Then
+        _isRunningStoryboard(_frame).Begin(_root)
+        _frame = (_frame + 1) Mod NUM_STATES
+      End If
     End Sub
 
 #End Region
@@ -158,7 +168,6 @@ Namespace Wpf
       ArrangeParts()
     End Sub
 
-
     Private Sub BusyAnimation_Loaded(ByVal sender As Object, ByVal e As System.Windows.RoutedEventArgs) Handles Me.Loaded
       ArrangeParts()
       BuildStoryboard()
@@ -170,12 +179,16 @@ Namespace Wpf
       ArrangeParts()
     End Sub
 
-
     Private Sub ArrangeParts()
       Dim width As Double = ActualWidth
       Dim height As Double = ActualHeight
       Dim scale As Double = Math.Min(ActualWidth, ActualHeight)
       Dim theta As Double = (2 * Math.PI) / NUM_STATES
+
+      If _root Is Nothing Then
+        _root = CType(Template.FindName("root", Me), Canvas)
+      End If
+
       For n As Integer = 0 To NUM_STATES - 1
 
         Dim item As FrameworkElement = DirectCast(Template.FindName("part" + (n + 1).ToString(), Me), FrameworkElement)

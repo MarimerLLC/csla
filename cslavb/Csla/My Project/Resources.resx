@@ -394,9 +394,30 @@
     <value>Member not found on object ({0})</value>
   </data>
   <data name="PropertyRegisterNotAllowed" xml:space="preserve">
-    <value>Can not register property {0} after containing type has been instantiated</value>
+    <value>Can not register property {0} after containing type ({1}) has been instantiated</value>
   </data>
   <data name="IEditableCollectionRequiredException" xml:space="preserve">
     <value>Target object must implement IEditableCollection</value>
+  </data>
+  <data name="ActionExtenderCloseConfirmation" xml:space="preserve">
+    <value>Are you sure you want to close?</value>
+  </data>
+  <data name="ActionExtenderDirtyWarningMessagePropertyDefault" xml:space="preserve">
+    <value>Object is currently in a dirty changed.</value>
+  </data>
+  <data name="ActionExtenderInvalidBindingSourceCast" xml:space="preserve">
+    <value>DataSource does not cast to a BindingSource</value>
+  </data>
+  <data name="ActionExtenderInvalidBusinessObjectBaseCast" xml:space="preserve">
+    <value>The underlying data source does not cast to a CSLA BusinessBase object</value>
+  </data>
+  <data name="ActionExtenderSourceMustBeBindingSource" xml:space="preserve">
+    <value>DataSource must be a BindingSource control instance</value>
+  </data>
+  <data name="ActionExtenderWarnOnCancelMessagePropertyDefault" xml:space="preserve">
+    <value>Are you sure you want to revert to the previous values?</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
   </data>
 </root>

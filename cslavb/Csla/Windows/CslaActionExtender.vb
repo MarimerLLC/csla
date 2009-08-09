@@ -1,6 +1,4 @@
-﻿#Region "Namespace imports"
-
-Imports System
+﻿Imports System
 Imports System.Data
 Imports System.Collections.Generic
 Imports System.ComponentModel
@@ -12,7 +10,6 @@ Imports Csla
 Imports Csla.Core
 Imports Csla.Validation
 
-#End Region
 
 Namespace Windows
 
@@ -30,50 +27,6 @@ Namespace Windows
 
     Inherits Component
     Implements IExtenderProvider
-
-#Region "Constants"
-
-    Private Const STR_InvalidDataSource As String = "DataSource must be a BindingSource control instance."
-    Private Const STR_InvalidBindingSourceCast As String = "DataSource does not cast to a BindingSource."
-    Private Const STR_InvalidBusinessObjectBaseCast As String = "The underlying data source does not cast to a CSLA BusinessBase object."
-    Private Const STR_ClickingEventDescription As String = "Event fires just before the attempted action."
-    Private Const STR_ClickedEventDescription As String = "Event fires after a successful action.  When button is set to Save, this event will only fire upon a successful save.  If button is set to Close, this event will never fire."
-    Private Const STR_ErrorEncounteredDescription As String = "Event fires upon encountering any exception during an action."
-    Private Const STR_SetForNewEventDescription As String = "Event fires upon a successful save when the PostSaveAction property is set to AndNew."
-    Private Const STR_BusinessObjectInvalidEventDescription As String = "Event fires when the object is in an invalid state.  Note that this event will work in conjunction with the InvalidateOnWarnings and InvalidateOnInformation properties."
-    Private Const STR_HasBrokenRulesEventDescription As String = "Event fires if there are any broken rules at all, despite severity."
-    Private Const STR_ActionTypePropertyDescription As String = "Gets or sets the type for this button."
-    Private Const STR_PostSaveActionTypeDescription As String = "Gets or sets the action performed after a save (if ActionType is set to Save)."
-    Private Const STR_DataSourcePropertyDescription As String = "Gets or sets the data source to which this button is bound for action purposes."
-    Private Const STR_RebindAfterSavePropertyDescription As String = "Determines if the binding source will rebind after business object saves."
-    Private Const STR_AutoShowBrokenRulesPropertyDescription As String = "If True, then the broken rules will be displayed in a message box, should the object be invalid."
-    Private Const STR_InvalidateOnWarningsPropertyDescription As String = "If True, then the business object will be considered invalid if there are any warnings in the broken rules."
-    Private Const STR_InvalidateOnInformationPropertyDescription As String = "If True, then the business object will be considered invalid if there are any information items in the broken rules."
-    Private Const STR_DisableWhenCleanPropertyDescription As String = "If True, then the dirtiness of the underlying business object will cause this button to enable or disable."
-    Private Const STR_ObjectSavedEventDescription As String = "Fires immediately after the underlying object successfully saves."
-    Private Const STR_WarnIfCloseOnDirtyPropertyDescription As String = "If True, then the control (when set to Close mode) will warn the user if the object is currently dirty."
-    Private Const STR_DirtyWarningMessagePropertyDescription As String = "Gets or sets the confirmation message that will display if a Close button is pressed and the object is dirty."
-    Private Const STR_CloseConfirmation As String = "Are you sure you want to close?"
-    Private Const STR_WarnOnCancelPropertyDescription As String = "If True, then the Cancel button will warn when pressed and the object is dirty."
-    Private Const STR_WarnOnCancelMessagePropertyDescription As String = "If the WarnOnCancel property is set to True, this is the message to be displayed."
-    Private Const STR_DirtyWarningMessagePropertyDefault As String = "Object is currently in a dirty changed."
-    Private Const STR_WarnOnCancelMessagePropertyDefault As String = "Are you sure you want to revert to the previous values?"
-    Private Const STR_PostSaveActionTypePropertyDescription As String = "Gets or sets the action performed after a save (if ActionType is set to Save)."
-    Private Const STR_CommandNamePropertyDescription As String = "Gets or sets the name of this command control for unique identification purposes."
-    Private Const STR_ObjectSavingEventDescription As String = "Fires just before a save action is performed."
-
-#End Region
-
-#Region "Variable defaults"
-
-    Private Shared DataSourceDefault As Object = Nothing
-    Private Shared AutoShowBrokenRulesDefault As Boolean = True
-    Private Shared WarnIfCloseOnDirtyDefault As Boolean = True
-    Private Shared DirtyWarningMessageDefault As String = STR_DirtyWarningMessagePropertyDefault
-    Private Shared WarnOnCancelDefault As Boolean = False
-    Private Shared WarnOnCancelMessageDefault As String = STR_WarnOnCancelMessagePropertyDefault
-
-#End Region
 
 #Region "Constructors"
 
@@ -93,12 +46,12 @@ Namespace Windows
 
     Private _Sources As New Dictionary(Of Control, CslaActionExtenderProperties)()
 
-    Private _DataSource As Object = DataSourceDefault
-    Private _AutoShowBrokenRules As Boolean = AutoShowBrokenRulesDefault
-    Private _WarnIfCloseOnDirty As Boolean = WarnIfCloseOnDirtyDefault
-    Private _DirtyWarningMessage As String = DirtyWarningMessageDefault
-    Private _WarnOnCancel As Boolean = WarnOnCancelDefault
-    Private _WarnOnCancelMessage As String = WarnOnCancelMessageDefault
+    Private _DataSource As Object = Nothing
+    Private _AutoShowBrokenRules As Boolean = True
+    Private _WarnIfCloseOnDirty As Boolean = True
+    Private _DirtyWarningMessage As String = My.Resources.ActionExtenderDirtyWarningMessagePropertyDefault
+    Private _WarnOnCancel As Boolean = False
+    Private _WarnOnCancelMessage As String = My.Resources.ActionExtenderWarnOnCancelMessagePropertyDefault
     Private _Container As IContainer = Nothing
     Private _BindingSourceTree As BindingSourceNode = Nothing
     Private _CloseForm As Boolean = False
@@ -123,7 +76,7 @@ Namespace Windows
     ''' Gets or sets a reference to the data source object.
     ''' </summary>
     <Category("Data")> _
-    <Description(STR_DataSourcePropertyDescription)> _
+    <Description("Gets or sets the data source to which this button is bound for action purposes.")> _
     <AttributeProvider(GetType(IListSource))> _
     Public Property DataSource() As Object
       Get
@@ -134,7 +87,7 @@ Namespace Windows
           If TypeOf value Is BindingSource Then
             _DataSource = value
           Else
-            Throw New ArgumentException(STR_InvalidDataSource)
+            Throw New ArgumentException(My.Resources.ActionExtenderSourceMustBeBindingSource)
           End If
         End If
       End Set
@@ -145,7 +98,7 @@ Namespace Windows
     ''' show broken rules.
     ''' </summary>
     <Category("Behavior")> _
-    <Description(STR_AutoShowBrokenRulesPropertyDescription)> _
+    <Description("If True, then the broken rules will be displayed in a message box, should the object be invalid.")> _
     <Bindable(True)> _
     <DefaultValue(True)> _
     Public Property AutoShowBrokenRules() As Boolean
@@ -162,7 +115,7 @@ Namespace Windows
     ''' user on close when the object is dirty.
     ''' </summary>
     <Category("Behavior")> _
-    <Description(STR_WarnIfCloseOnDirtyPropertyDescription)> _
+    <Description("If True, then the control (when set to Close mode) will warn the user if the object is currently dirty.")> _
     <Bindable(True)> _
     <DefaultValue(True)> _
     Public Property WarnIfCloseOnDirty() As Boolean
@@ -179,9 +132,9 @@ Namespace Windows
     ''' in a close on dirty warning.
     ''' </summary>
     <Category("Behavior")> _
-    <Description(STR_DirtyWarningMessagePropertyDescription)> _
+    <Description("Gets or sets the confirmation message that will display if a Close button is pressed and the object is dirty.")> _
     <Bindable(True)> _
-    <DefaultValue(STR_DirtyWarningMessagePropertyDefault)> _
+    <DefaultValue("Object is currently in a dirty changed.")> _
     <Localizable(True)> _
     Public Property DirtyWarningMessage() As String
       Get
@@ -197,7 +150,7 @@ Namespace Windows
     ''' the user on cancel.
     ''' </summary>
     <Category("Behavior")> _
-    <Description(STR_WarnOnCancelPropertyDescription)> _
+    <Description("If True, then the Cancel button will warn when pressed and the object is dirty.")> _
     <Bindable(True)> _
     <DefaultValue(False)> _
     Public Property WarnOnCancel() As Boolean
@@ -214,9 +167,9 @@ Namespace Windows
     ''' in a warn on cancel.
     ''' </summary>
     <Category("Behavior")> _
-    <Description(STR_WarnOnCancelMessagePropertyDescription)> _
+    <Description("If the WarnOnCancel property is set to True, this is the message to be displayed.")> _
     <Bindable(True)> _
-    <DefaultValue(STR_WarnOnCancelMessagePropertyDefault)> _s
+    <DefaultValue("Are you sure you want to revert to the previous values?")> _
     <Localizable(True)> _
     Public Property WarnOnCancelMessage() As String
       Get
@@ -239,7 +192,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <returns></returns>
     <Category("Csla")> _
-    <Description(STR_ActionTypePropertyDescription)> _
+    <Description("Gets or sets the type for this button.")> _
     <Bindable(True)> _
     <DefaultValue(CslaFormAction.None)> _
     Public Function GetActionType(ByVal ctl As Control) As CslaFormAction
@@ -256,7 +209,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
-    <Description(STR_ActionTypePropertyDescription)> _
+    <Description("Gets or sets the type for this button.")> _
     <Bindable(True)> _
     <DefaultValue(CslaFormAction.None)> _
     Public Sub SetActionType(ByVal ctl As Control, ByVal value As CslaFormAction)
@@ -279,7 +232,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <returns></returns>
     <Category("Csla")> _
-    <Description(STR_PostSaveActionTypePropertyDescription)> _
+    <Description("Gets or sets the action performed after a save (if ActionType is set to Save).")> _
     <Bindable(True)> _
     <DefaultValue(PostSaveActionType.None)> _
     Public Function GetPostSaveAction(ByVal ctl As Control) As PostSaveActionType
@@ -296,7 +249,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
-    <Description(STR_PostSaveActionTypePropertyDescription)> _
+    <Description("Gets or sets the action performed after a save (if ActionType is set to Save).")> _
     <Bindable(True)> _
     <DefaultValue(PostSaveActionType.None)> _
     Public Sub SetPostSaveAction(ByVal ctl As Control, ByVal value As PostSaveActionType)
@@ -318,7 +271,7 @@ Namespace Windows
     ''' </summary>
     ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
-    <Description(STR_RebindAfterSavePropertyDescription)> _
+    <Description("Determines if the binding source will rebind after business object saves.")> _
     <Bindable(True)> _
     <DefaultValue(True)> _
     Public Function GetRebindAfterSave(ByVal ctl As Control) As Boolean
@@ -335,7 +288,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
-    <Description(STR_RebindAfterSavePropertyDescription)> _
+    <Description("Determines if the binding source will rebind after business object saves.")> _
     <Bindable(True)> _
     <DefaultValue(True)> _
     Public Sub SetRebindAfterSave(ByVal ctl As Control, ByVal value As Boolean)
@@ -357,9 +310,9 @@ Namespace Windows
     ''' </summary>
     ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
-    <Description(STR_DisableWhenCleanPropertyDescription)> _
+    <Description("If True, then the dirtiness of the underlying business object will cause this button to enable or disable.")> _
     <Bindable(True)> _
-    <DefaultValue(True)> _
+    <DefaultValue(False)> _
     Public Function GetDisableWhenClean(ByVal ctl As Control) As Boolean
       If _Sources.ContainsKey(ctl) Then
         Return (DirectCast(_Sources(ctl), CslaActionExtenderProperties)).DisableWhenClean
@@ -374,7 +327,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
-    <Description(STR_DisableWhenCleanPropertyDescription)> _
+    <Description("If True, then the dirtiness of the underlying business object will cause this button to enable or disable.")> _
     <Bindable(True)> _
     <DefaultValue(True)> _
     Public Sub SetDisableWhenClean(ByVal ctl As Control, ByVal value As Boolean)
@@ -396,7 +349,7 @@ Namespace Windows
     ''' </summary>
     ''' <param name="ctl">Reference to control.</param>
     <Category("Csla")> _
-    <Description(STR_CommandNamePropertyDescription)> _
+    <Description("Gets or sets the name of this command control for unique identification purposes.")> _
     <Bindable(True)> _
     <DefaultValue("")> _
     Public Function GetCommandName(ByVal ctl As Control) As String
@@ -413,7 +366,7 @@ Namespace Windows
     ''' <param name="ctl">Reference to control.</param>
     ''' <param name="value">Value for property.</param>
     <Category("Csla")> _
-    <Description(STR_CommandNamePropertyDescription)> _
+    <Description("Gets or sets the name of this command control for unique identification purposes.")> _
     <Bindable(True)> _
     <DefaultValue("")> _
     Public Sub SetCommandName(ByVal ctl As Control, ByVal value As String)
@@ -435,56 +388,56 @@ Namespace Windows
     ''' Event indicating the user is clicking on the control.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_ClickingEventDescription)> _
+    <Description("Event fires just before the attempted action.")> _
     Public Event Clicking As EventHandler(Of CslaActionCancelEventArgs)
 
     ''' <summary>
     ''' Event indicating the user clicked on the control.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_ClickedEventDescription)> _
+    <Description("Event fires after a successful action.  When button is set to Save, this event will only fire upon a successful save.  If button is set to Close, this event will never fire.")> _
     Public Event Clicked As EventHandler(Of CslaActionEventArgs)
 
     ''' <summary>
     ''' Event indicating an error was encountered.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_ErrorEncounteredDescription)> _
+    <Description("Event fires upon encountering any exception during an action.")> _
     Public Event ErrorEncountered As EventHandler(Of ErrorEncounteredEventArgs)
 
     ''' <summary>
     ''' Event indicating the object is set for new.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_SetForNewEventDescription)> _
+    <Description("Event fires upon a successful save when the PostSaveAction property is set to AndNew.")> _
     Public Event SetForNew As EventHandler(Of CslaActionEventArgs)
 
     ''' <summary>
     ''' Event indicating the business object is in an invalid state.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_BusinessObjectInvalidEventDescription)> _
+    <Description("Event fires when the object is in an invalid state.  Note that this event will work in conjunction with the InvalidateOnWarnings and InvalidateOnInformation properties.")> _
     Public Event BusinessObjectInvalid As EventHandler(Of CslaActionEventArgs)
 
     ''' <summary>
     ''' Event indicating the business object has broken rules.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_HasBrokenRulesEventDescription)> _
+    <Description("Event fires if there are any broken rules at all, despite severity.")> _
     Public Event HasBrokenRules As EventHandler(Of HasBrokenRulesEventArgs)
 
     ''' <summary>
     ''' Event indicating that the object is saving.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_ObjectSavingEventDescription)> _
+    <Description("Fires just before a save action is performed.")> _
     Public Event ObjectSaving As EventHandler(Of CslaActionCancelEventArgs)
 
     ''' <summary>
     ''' Event indicating that the object has been saved.
     ''' </summary>
     <Category("Csla")> _
-    <Description(STR_ObjectSavedEventDescription)> _
+    <Description("Fires immediately after the underlying object successfully saves.")> _
     Public Event ObjectSaved As EventHandler(Of CslaActionEventArgs)
 
 #End Region
@@ -570,13 +523,33 @@ Namespace Windows
       Dim rootSource As BindingSource = TryCast(_DataSource, BindingSource)
 
       If rootSource IsNot Nothing Then
-        RemoveHandler rootSource.CurrentItemChanged, AddressOf BusinessObject_PropertyChanged
-        AddHandler rootSource.CurrentItemChanged, AddressOf BusinessObject_PropertyChanged
+        Dim propChangedObjParent As INotifyPropertyChanged = TryCast(objectToBind, INotifyPropertyChanged)
+
+        If propChangedObjParent IsNot Nothing Then
+          RemoveHandler propChangedObjParent.PropertyChanged, AddressOf propChangedObj_PropertyChanged
+          AddHandler propChangedObjParent.PropertyChanged, AddressOf propChangedObj_PropertyChanged
+        End If
+
+        Dim propChangedObjChild As INotifyChildChanged = TryCast(objectToBind, INotifyChildChanged)
+
+        If propChangedObjChild IsNot Nothing Then
+          RemoveHandler propChangedObjChild.ChildChanged, AddressOf propChangedObj_ChildChanged
+          AddHandler propChangedObjChild.ChildChanged, AddressOf propChangedObj_ChildChanged
+        End If
+
       End If
 
       _BindingSourceTree = BindingSourceHelper.InitializeBindingSourceTree(_Container, rootSource)
       _BindingSourceTree.Bind(objectToBind)
 
+    End Sub
+
+    Private Sub propChangedObj_ChildChanged(ByVal sender As Object, ByVal e As ChildChangedEventArgs)
+      ResetControls()
+    End Sub
+
+    Private Sub propChangedObj_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
+      ResetControls()
     End Sub
 
 #End Region
@@ -615,10 +588,10 @@ Namespace Windows
                 savableObject = TryCast(source.DataSource, Csla.Core.ISavable)
                 trackableObject = TryCast(source.DataSource, Csla.Core.ITrackStatus)
               Else
-                OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, New InvalidCastException(STR_InvalidBindingSourceCast)))
+                OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, New InvalidCastException(My.Resources.ActionExtenderInvalidBindingSourceCast)))
               End If
               If savableObject Is Nothing OrElse trackableObject Is Nothing Then
-                OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, New InvalidCastException(STR_InvalidBusinessObjectBaseCast)))
+                OnErrorEncountered(New ErrorEncounteredEventArgs(props.CommandName, New InvalidCastException(My.Resources.ActionExtenderInvalidBusinessObjectBaseCast)))
               End If
             End If
 
@@ -730,7 +703,7 @@ Namespace Windows
 
                 diagResult = System.Windows.Forms.DialogResult.Yes
                 If _WarnOnCancel AndAlso trackableObject.IsDirty Then
-                  diagResult = MessageBox.Show(_WarnOnCancelMessage, "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                  diagResult = MessageBox.Show(_WarnOnCancelMessage, My.Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 End If
 
                 If diagResult = System.Windows.Forms.DialogResult.Yes Then
@@ -742,7 +715,7 @@ Namespace Windows
                 diagResult = System.Windows.Forms.DialogResult.Yes
                 If trackableObject.IsDirty OrElse trackableObject.IsNew Then
                   If _WarnIfCloseOnDirty Then
-                    diagResult = MessageBox.Show(_DirtyWarningMessage + Environment.NewLine + STR_CloseConfirmation, "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                    diagResult = MessageBox.Show(_DirtyWarningMessage + Environment.NewLine + My.Resources.ActionExtenderCloseConfirmation, My.Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                   End If
                 End If
 
@@ -754,11 +727,18 @@ Namespace Windows
             End Select
 
             If raiseClicked Then
-              If props.ActionType = CslaFormAction.Save AndAlso source IsNot Nothing AndAlso props.RebindAfterSave Then
-                ' For some strange reason, this has to be done down here.
-                ' Putting it in the Select Case AfterSave... does not work.
-                _BindingSourceTree.ResetBindings(False)
-                InitializeControls(True)
+              If props.ActionType = CslaFormAction.Save AndAlso source IsNot Nothing Then
+
+                If props.RebindAfterSave Then
+                  ' For some strange reason, this has to be done down here.
+                  ' Putting it in the Select Case AfterSave... does not work.
+                  _BindingSourceTree.ResetBindings(False)
+                  InitializeControls(True)
+                End If
+              Else
+                If props.ActionType = CslaFormAction.Cancel Then
+                  InitializeControls(True)
+                End If
               End If
 
               OnClicked(New CslaActionEventArgs(props.CommandName))

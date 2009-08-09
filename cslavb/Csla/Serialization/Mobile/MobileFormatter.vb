@@ -6,9 +6,9 @@ Imports System.Xml.Linq
 Imports System.Linq
 Imports System.Runtime.Serialization
 Imports Csla.Validation
+Imports Csla.Reflection
 
 Namespace Serialization.Mobile
-
   ''' <summary>
   ''' Serializes and deserializes objects
   ''' at the field level. A Silverlight-
@@ -71,9 +71,47 @@ Namespace Serialization.Mobile
     Public Sub Serialize(ByVal writer As XmlWriter, ByVal graph As Object)
       _serializationReferences.Clear()
       SerializeObject(graph)
+      ConvertEnumsToIntegers()
       Dim serialized As List(Of SerializationInfo) = _serializationReferences.Values.ToList()
       Dim dc As DataContractSerializer = GetDataContractSerializer()
       dc.WriteObject(writer, serialized)
+    End Sub
+
+    ''' <summary>
+    ''' <para>
+    ''' Converts any enum values in the <see cref="SerializationInfo" /> objects to
+    ''' integer representations. Normally, <see cref="DataContractSerializer" /> requires
+    ''' all non-standard primitive types to be provided to it's constructor both upon
+    ''' serialization and deserialization. Since there is no way of knowing what enum
+    ''' values are being deserialized, there is no way to supply the types to the constructor
+    ''' at the time of deserialization.
+    ''' </para>
+    ''' <para>
+    ''' Instead we convert the enum values to integers prior to serialization and then back
+    ''' to proper enum objects after deserialization.
+    ''' </para>
+    ''' </summary>
+    Private Sub ConvertEnumsToIntegers()
+
+      For Each serializationInfo As SerializationInfo In _serializationReferences.Values
+        For Each fieldData As SerializationInfo.FieldData In serializationInfo.Values.Values
+
+          If fieldData.Value IsNot Nothing Then
+            Dim fieldType As Type = fieldData.Value.GetType()
+
+            If fieldType.IsEnum Then
+#If SILVERLIGHT Then
+              fieldData.Value = Convert.ChangeType(fieldData.Value, [Enum].GetUnderlyingType(fieldType), CultureInfo.CurrentCulture)
+#Else
+              fieldData.Value = Convert.ChangeType(fieldData.Value, [Enum].GetUnderlyingType(fieldType))
+#End If
+              fieldData.EnumTypeName = fieldType.AssemblyQualifiedName
+            End If
+          End If
+
+        Next
+      Next
+
     End Sub
 
     Private Function GetDataContractSerializer() As DataContractSerializer
@@ -91,7 +129,13 @@ Namespace Serialization.Mobile
       Dim info As SerializationInfo = Nothing
 
       If obj Is Nothing Then
+        Dim nullPlaceholder As New NullPlaceholder
+
         info = New SerializationInfo(_serializationReferences.Count + 1)
+
+        _serializationReferences.Add(nullPlaceholder, info)
+
+        info.TypeName = GetType(NullPlaceholder).AssemblyQualifiedName
 
       Else
         Dim thisType = obj.GetType()
@@ -171,34 +215,41 @@ Namespace Serialization.Mobile
     ''' <returns></returns>
     Public Function Deserialize(ByVal reader As XmlReader) As Object
       Dim dc As DataContractSerializer = GetDataContractSerializer()
-      Dim deserialized As List(Of SerializationInfo) = CType(dc.ReadObject(reader), List(Of SerializationInfo))
+      Dim deserialized As List(Of SerializationInfo) = TryCast(dc.ReadObject(reader), List(Of SerializationInfo))
 
       _deserializationReferences = New Dictionary(Of Integer, IMobileObject)
 
       For Each info As SerializationInfo In deserialized
-        Dim type As Type = System.Type.GetType(info.TypeName)
+        Dim type As Type = Csla.Reflection.MethodCaller.GetType(info.TypeName)
 
         If type Is Nothing Then
           Throw New SerializationException(String.Format(My.Resources.MobileFormatterUnableToDeserialize, info.TypeName))
-        End If
-
+        ElseIf type Is GetType(NullPlaceholder) Then
+          _deserializationReferences.Add(info.ReferenceId, Nothing)
+        Else
 #If SILVERLIGHT Then
         Dim mobile As IMobileObject  = CType(Activator.CreateInstance(type), IMobileObject)
 #Else
-        Dim mobile As IMobileObject = CType(Activator.CreateInstance(type, True), IMobileObject)
+          Dim mobile As IMobileObject = CType(Activator.CreateInstance(type, True), IMobileObject)
 #End If
-        _deserializationReferences.Add(info.ReferenceId, mobile)
+          _deserializationReferences.Add(info.ReferenceId, mobile)
 
-        mobile.SetState(info)
+          ConvertEnumsFromIntegers(info)
+          mobile.SetState(info)
+        End If
 
       Next
 
       For Each info As SerializationInfo In deserialized
         Dim mobile As IMobileObject = _deserializationReferences(info.ReferenceId)
-        mobile.SetChildren(info, Me)
+
+        If mobile IsNot Nothing Then
+          mobile.SetChildren(info, Me)
+        End If
+
       Next
 
-      For Each info In deserialized        
+      For Each info In deserialized
         Dim notifiable As ISerializationNotification = TryCast(_deserializationReferences(info.ReferenceId), ISerializationNotification)
         If notifiable IsNot Nothing Then
           notifiable.Deserialized()
@@ -213,6 +264,27 @@ Namespace Serialization.Mobile
 
     End Function
 
+    ''' <summary>
+    ''' Converts any enum values in the <see cref="SerializationInfo" /> object from their
+    ''' integer representations to normal enum objects.
+    ''' </summary>
+    ''' <param name="serializationInfo"></param>
+    ''' <remarks></remarks>
+    Private Shared Sub ConvertEnumsFromIntegers(ByVal serializationInfo As SerializationInfo)
+      For Each fieldData As SerializationInfo.FieldData In serializationInfo.Values.Values
+        If Not String.IsNullOrEmpty(fieldData.EnumTypeName) Then
+          Dim enumType As Type = MethodCaller.GetType(fieldData.EnumTypeName)
+          fieldData.Value = [Enum].ToObject(enumType, fieldData.Value)
+        End If
+      Next
+    End Sub
+
+    ''' <summary>
+    ''' Gets a deserialized object based on the object's
+    ''' reference id within the serialization stream.
+    ''' </summary>
+    ''' <param name="referenceId">Id of object in stream.</param>
+    ''' <returns></returns>
     Public Function GetObject(ByVal referenceId As Integer) As IMobileObject
       Return _deserializationReferences(referenceId)
     End Function

@@ -11,6 +11,7 @@ Namespace Web.Design
   ''' <remarks></remarks>
   Public Class CslaDataSourceConfiguration
 
+#If Not CLIENTONLY Then
     Private _control As DataSourceControl
 
     ''' <summary>
@@ -90,6 +91,7 @@ Namespace Web.Design
       Hide()
 
     End Sub
+#End If
 
   End Class
 

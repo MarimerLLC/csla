@@ -182,6 +182,7 @@ Namespace Windows
     <Description(STR_DirtyWarningMessagePropertyDescription)> _
     <Bindable(True)> _
     <DefaultValue(STR_DirtyWarningMessagePropertyDefault)> _
+    <Localizable(True)> _
     Public Property DirtyWarningMessage() As String
       Get
         Return _DirtyWarningMessage
@@ -215,7 +216,8 @@ Namespace Windows
     <Category("Behavior")> _
     <Description(STR_WarnOnCancelMessagePropertyDescription)> _
     <Bindable(True)> _
-    <DefaultValue(STR_WarnOnCancelMessagePropertyDefault)> _
+    <DefaultValue(STR_WarnOnCancelMessagePropertyDefault)> _s
+    <Localizable(True)> _
     Public Property WarnOnCancelMessage() As String
       Get
         Return _WarnOnCancelMessage

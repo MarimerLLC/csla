@@ -13,6 +13,19 @@ Namespace Server
   Public MustInherit Class ObjectFactory
 
     ''' <summary>
+    ''' Sets the IsReadOnly property on the specified
+    ''' object, if possible.
+    ''' </summary>
+    ''' <param name="obj">Object on which to operate.</param>
+    ''' <param name="value">New value for IsReadOnly.</param>
+    Protected Sub SetIsReadOnly(ByVal obj As Object, ByVal value As Boolean)
+      Dim list As Csla.Core.IReadOnlyBindingList = TryCast(obj, Csla.Core.IReadOnlyBindingList)
+      If list IsNot Nothing Then
+        list.IsReadOnly = value
+      End If
+    End Sub
+
+    ''' <summary>
     ''' Calls the ValidationRules.CheckRules() method 
     ''' on the specified object, if possible.
     ''' </summary>
@@ -106,6 +119,29 @@ Namespace Server
         Throw New ArgumentException(My.Resources.IManagePropertiesRequiredException)
       End If
     End Sub
+
+    ''' <summary>
+    ''' Reads a property's managed field value.
+    ''' </summary>
+    ''' <typeparam name="P"></typeparam>
+    ''' <param name="obj">
+    ''' Object on which to call the method. 
+    ''' </param>
+    ''' <param name="propertyInfo">
+    ''' PropertyInfo object containing property metadata.</param>
+    ''' <remarks>
+    ''' No authorization checks occur when this method is called.
+    ''' </remarks>
+    Protected Function ReadProperty(Of P)(ByVal obj As Object, ByVal propertyInfo As PropertyInfo(Of P)) As P
+      Dim target As Core.IManageProperties = TryCast(obj, Core.IManageProperties)
+
+      If target IsNot Nothing Then
+        Return CType(target.ReadProperty(propertyInfo), P)
+      Else
+        Throw New ArgumentException(My.Resources.IManagePropertiesRequiredException)
+      End If
+
+    End Function
 
     ''' <summary>
     ''' By wrapping this property inside Using block

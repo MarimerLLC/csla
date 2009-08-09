@@ -45,12 +45,12 @@ Namespace Validation
 
 #Region " Adding Rules "
 
-    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal severity As RuleSeverity, ByVal args As AsyncRuleArgs)
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs, ByVal priority As Integer)
       'get the list of rules for the primary property
       Dim list As List(Of IRuleMethod) = GetRulesForProperty(args.Properties(0).Name, True).GetList(False)
 
       'we have the list, add our new rule
-      list.Add(New AsyncRuleMethod(handler, args, severity))
+      list.Add(New AsyncRuleMethod(handler, args, priority))
     End Sub
 
     ''' <summary>

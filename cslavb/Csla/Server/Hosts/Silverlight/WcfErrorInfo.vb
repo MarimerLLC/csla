@@ -101,7 +101,10 @@ Namespace Server.Hosts.Silverlight
       Me.Message = ex.Message
       Me.StackTrace = ex.StackTrace
       Me.Source = ex.Source
-      Me.TargetSiteName = ex.TargetSite.Name
+
+      If ex.TargetSite IsNot Nothing Then
+        Me.TargetSiteName = ex.TargetSite.Name
+      End If
 
       If ex.InnerException IsNot Nothing Then
         Me.InnerError = New WcfErrorInfo(ex.InnerException)

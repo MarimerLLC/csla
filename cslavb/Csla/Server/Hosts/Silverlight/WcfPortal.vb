@@ -67,7 +67,7 @@ Namespace Server.Hosts.Silverlight
         Dim factoryInfo = GetMobileFactoryAttribute(t)
         If factoryInfo Is Nothing Then
           If criteria IsNot Nothing Then
-            o = Csla.DataPortal.Create(criteria)
+            o = Csla.DataPortal.Create(t, criteria)
           Else
             o = Csla.DataPortal.Create(t)
           End If

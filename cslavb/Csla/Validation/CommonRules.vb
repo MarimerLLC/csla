@@ -1245,6 +1245,17 @@ Namespace Validation
 
 #Region "CanRead"
 
+    ''' <summary>
+    ''' Rule indicating whether the user is authorized
+    ''' to read the property value.
+    ''' </summary>
+    ''' <param name="target">Target object.</param>
+    ''' <param name="e">Rule arguments.</param>
+    ''' <remarks>
+    ''' Combine this property with short-circuiting to
+    ''' prevent evaluation of other rules in the case
+    ''' that the user isn't allowed to read the value.
+    ''' </remarks>
     Public Function CanRead(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim isAuthorized As Boolean = True
 
@@ -1255,7 +1266,6 @@ Namespace Validation
 
       If Not isAuthorized Then
         e.Severity = RuleSeverity.Information
-        'TODO: Evaluate this resource
         e.Description = String.Format(My.Resources.CanReadAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
       End If
 
@@ -1264,6 +1274,18 @@ Namespace Validation
 #End Region
 
 #Region "CanWrite"
+
+    ''' <summary>
+    ''' Rule indicating whether the user is authorized
+    ''' to change the property value.
+    ''' </summary>
+    ''' <param name="target">Target object.</param>
+    ''' <param name="e">Rule arguments.</param>
+    ''' <remarks>
+    ''' Combine this property with short-circuiting to
+    ''' prevent evaluation of other rules in the case
+    ''' that the user isn't allowed to change the value.
+    ''' </remarks>
     Public Function CanWrite(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim isAuthorized As Boolean = True
 
@@ -1274,7 +1296,6 @@ Namespace Validation
 
       If Not isAuthorized Then
         e.Severity = RuleSeverity.Information
-        'TODO: Evaluate this resource
         e.Description = String.Format(My.Resources.CanWriteAuthorizationRuleDescription, RuleArgs.GetPropertyName(e))
       End If
 

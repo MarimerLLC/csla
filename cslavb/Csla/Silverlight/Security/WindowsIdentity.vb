@@ -91,6 +91,18 @@ Namespace Silverlight.Security
     Private Shared ReadOnly RolesProperty As PropertyInfo(Of MobileList(Of String)) = RegisterProperty(Of MobileList(Of String))(New PropertyInfo(Of MobileList(Of String))("Roles"))
 
     ''' <summary>
+    ''' Gets or sets the list of roles for this user.
+    ''' </summary>
+    Protected Property Roles() As MobileList(Of String)
+      Get
+        Return ReadProperty(RolesProperty)
+      End Get
+      Set(ByVal value As MobileList(Of String))
+        LoadProperty(RolesProperty, value)
+      End Set
+    End Property
+
+    ''' <summary>
     ''' Returns a value indicating whether the current user
     ''' is in the specified role.
     ''' </summary>

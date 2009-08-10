@@ -18,7 +18,6 @@ Namespace Wpf
     Inherits Decorator
 
     Private _dataObject As Object
-
     ''' <summary>
     ''' Gets a reference to the current
     ''' data object.

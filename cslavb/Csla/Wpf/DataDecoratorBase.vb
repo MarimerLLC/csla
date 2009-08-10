@@ -17,7 +17,6 @@ Namespace Wpf
   Public Class DataDecoratorBase
     Inherits Decorator
 
-    Private _loaded As Boolean
     Private _dataObject As Object
 
     ''' <summary>
@@ -38,49 +37,15 @@ Namespace Wpf
     End Property
 
     ''' <summary>
-    ''' This method is called when a property
-    ''' of the data object to which the 
-    ''' control is bound has changed.
-    ''' </summary>
-    Protected Overridable Sub DataPropertyChanged(ByVal e As PropertyChangedEventArgs)
-      ' may be overridden by subclass
-    End Sub
-
-    ''' <summary>
-    ''' This method is called if the data
-    ''' object is an IBindingList, and the 
-    ''' ListChanged event was raised by
-    ''' the data object.
-    ''' </summary>
-    Protected Overridable Sub DataBindingListChanged(ByVal e As ListChangedEventArgs)
-      ' may be overridden by subclass
-    End Sub
-
-    ''' <summary>
-    ''' This method is called if the data
-    ''' object is an INotifyCollectionChanged, 
-    ''' and the CollectionChanged event was 
-    ''' raised by the data object.
-    ''' </summary>
-    Protected Overridable Sub DataObservableCollectionChanged(ByVal e As NotifyCollectionChangedEventArgs)
-      ' may be overridden by subclass
-    End Sub
-
-    ''' <summary>
-    ''' This method is called when the data
-    ''' object to which the control is bound
-    ''' has changed.
-    ''' </summary>
-    Protected Overridable Sub DataObjectChanged()
-      ' may be overridden by subclass
-    End Sub
-
-    ''' <summary>
     ''' Creates an instance of the object.
     ''' </summary>
     Public Sub New()
       AddHandler DataContextChanged, AddressOf Panel_DataContextChanged
       AddHandler Loaded, AddressOf Panel_Loaded
+    End Sub
+
+    Private Sub Panel_Loaded(ByVal sender As Object, ByVal e As RoutedEventArgs)
+      UpdateDataObject(Nothing, _dataObject)
     End Sub
 
     ''' <summary>
@@ -90,9 +55,6 @@ Namespace Wpf
     Private Sub Panel_DataContextChanged(ByVal sender As Object, ByVal e As DependencyPropertyChangedEventArgs)
 
       UpdateDataObject(e.OldValue, e.NewValue)
-      If _loaded Then
-        DataObjectChanged()
-      End If
 
     End Sub
 
@@ -112,20 +74,30 @@ Namespace Wpf
     Private Sub DataProvider_DataChanged(ByVal sender As Object, ByVal e As EventArgs)
 
       UpdateDataObject(_dataObject, (CType(sender, DataSourceProvider)).Data)
-      DataObjectChanged()
 
     End Sub
 
     Private Sub UpdateDataObject(ByVal oldObject As Object, ByVal newObject As Object)
 
-      UnHookDataContextEvents(oldObject)
+      If Not ReferenceEquals(oldObject, newObject) Then
 
-      ' store a ref to the data object
-      _dataObject = GetDataObject(newObject)
+        If oldObject IsNot Nothing Then
+          UnHookDataContextEvents(oldObject)
+        End If
 
-      HookDataContextEvents(newObject)
+        ' store a ref to the data object
+        _dataObject = GetDataObject(newObject)
 
+        If newObject IsNot Nothing Then
+          HookDataContextEvents(newObject)
+        End If
+
+        DataObjectChanged()
+
+      End If
     End Sub
+
+#Region " Hook/unhook events "
 
     Private Sub UnHookDataContextEvents(ByVal oldValue As Object)
       ' unhook any old event handling
@@ -179,6 +151,18 @@ Namespace Wpf
       End If
     End Sub
 
+    Private Sub UnHookChildChanged(ByVal oldContext As Csla.Core.INotifyChildChanged)
+      If oldContext IsNot Nothing Then
+        RemoveHandler oldContext.ChildChanged, AddressOf DataObject_ChildChanged
+      End If
+    End Sub
+
+    Private Sub HookChildChanged(ByVal newContext As Csla.Core.INotifyChildChanged)
+      If newContext IsNot Nothing Then
+        AddHandler newContext.ChildChanged, AddressOf DataObject_ChildChanged
+      End If
+    End Sub
+
     Private Sub UnHookBindingListChanged(ByVal oldContext As IBindingList)
       If Not oldContext Is Nothing Then
         RemoveHandler oldContext.ListChanged, AddressOf DataObject_ListChanged
@@ -203,15 +187,16 @@ Namespace Wpf
       End If
     End Sub
 
-    Private Sub Panel_Loaded(ByVal sender As Object, ByVal e As RoutedEventArgs)
-      _loaded = True
-      If Not _dataObject Is Nothing Then
-        DataObjectChanged()
-      End If
-    End Sub
+#End Region
+
+#Region " Handle events "
 
     Private Sub DataObject_PropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
       DataPropertyChanged(e)
+    End Sub
+
+    Private Sub DataObject_ChildChanged(ByVal sender As Object, ByVal e As Csla.Core.ChildChangedEventArgs)
+      DataPropertyChanged(e.PropertyChangedArgs)
     End Sub
 
     Private Sub DataObject_ListChanged(ByVal sender As Object, ByVal e As ListChangedEventArgs)
@@ -221,6 +206,52 @@ Namespace Wpf
     Private Sub DataObject_CollectionChanged(ByVal sender As Object, ByVal e As NotifyCollectionChangedEventArgs)
       DataObservableCollectionChanged(e)
     End Sub
+
+#End Region
+
+#Region " Virtual methods "
+
+    ''' <summary>
+    ''' This method is called when a property
+    ''' of the data object to which the 
+    ''' control is bound has changed.
+    ''' </summary>
+    Protected Overridable Sub DataPropertyChanged(ByVal e As PropertyChangedEventArgs)
+      ' may be overridden by subclass
+    End Sub
+
+    ''' <summary>
+    ''' This method is called if the data
+    ''' object is an IBindingList, and the 
+    ''' ListChanged event was raised by
+    ''' the data object.
+    ''' </summary>
+    Protected Overridable Sub DataBindingListChanged(ByVal e As ListChangedEventArgs)
+      ' may be overridden by subclass
+    End Sub
+
+    ''' <summary>
+    ''' This method is called if the data
+    ''' object is an INotifyCollectionChanged, 
+    ''' and the CollectionChanged event was 
+    ''' raised by the data object.
+    ''' </summary>
+    Protected Overridable Sub DataObservableCollectionChanged(ByVal e As NotifyCollectionChangedEventArgs)
+      ' may be overridden by subclass
+    End Sub
+
+    ''' <summary>
+    ''' This method is called when the data
+    ''' object to which the control is bound
+    ''' has changed.
+    ''' </summary>
+    Protected Overridable Sub DataObjectChanged()
+      ' may be overridden by subclass
+    End Sub
+
+#End Region
+    
+#Region " FindingBindings "
 
     ''' <summary>
     ''' Scans all child controls of this panel
@@ -266,6 +297,8 @@ Namespace Wpf
     Protected Overridable Sub FoundBinding(ByVal bnd As Binding, ByVal control As FrameworkElement, ByVal prop As DependencyProperty)
       ' may be overridden by subclass
     End Sub
+
+#End Region
 
   End Class
 

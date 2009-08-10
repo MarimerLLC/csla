@@ -207,6 +207,8 @@
     <Compile Include="Serialization\Mobile\IMobileObject.vb" />
     <Compile Include="Serialization\Mobile\ISerializationNotification.vb" />
     <Compile Include="Serialization\Mobile\MobileFormatter.vb" />
+    <Compile Include="Serialization\Mobile\NullPlaceholder.vb" />
+    <Compile Include="Serialization\Mobile\ReferenceComparer.vb" />
     <Compile Include="Serialization\Mobile\SerializationInfo.vb" />
     <Compile Include="Server\AuthorizeRequest.vb" />
     <Compile Include="Server\DataPortalMethodCache.vb" />
@@ -427,6 +429,7 @@
     <Compile Include="Wpf\CslaDataProvider.vb" />
     <Compile Include="Wpf\CslaDataProviderCommandManager.vb" />
     <Compile Include="Wpf\DataDecoratorBase.vb" />
+    <Compile Include="Wpf\ErrorDialog.vb" />
     <Compile Include="Wpf\IdentityConverter.vb" />
     <Compile Include="Wpf\ObjectStatus.vb" />
     <Compile Include="Wpf\PropertyStatus.vb" />

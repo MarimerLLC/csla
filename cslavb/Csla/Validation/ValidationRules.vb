@@ -428,7 +428,7 @@ Namespace Validation
     ''' </param>
     Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs)
       ValidateHandler(handler)
-      GetTypeRules(True).AddRule(handler, RuleSeverity.Error, args)
+      GetTypeRules(True).AddRule(handler, args, 0)
     End Sub
 
     ''' <summary>

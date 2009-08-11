@@ -27,7 +27,7 @@ namespace cslalighttest.Serialization
       string xml = info.GetValue<string>("$items");
       using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
       {
-        XmlReader reader = XmlReader.Create(stream);
+        XmlReader reader = Csla.Serialization.Mobile.MobileFormatter.GetXmlReader(stream); // XmlReader.Create(stream);
         serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(typeof(MockNonBusinessObject[]));
         MockNonBusinessObject[] items = (MockNonBusinessObject[])dcs.ReadObject(reader);
                 
@@ -42,7 +42,7 @@ namespace cslalighttest.Serialization
     {
       using (MemoryStream stream = new MemoryStream())
       {
-        XmlWriter writer = XmlWriter.Create(stream);
+        XmlWriter writer = Csla.Serialization.Mobile.MobileFormatter.GetXmlWriter(stream); // XmlWriter.Create(stream);
         serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(typeof(MockNonBusinessObject[]));
         dcs.WriteObject(writer, Items.ToArray());
         writer.Flush();

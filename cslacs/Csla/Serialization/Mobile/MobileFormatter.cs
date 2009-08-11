@@ -38,7 +38,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(Stream serializationStream, object graph)
     {
-      XmlWriter writer = XmlWriter.Create(serializationStream);
+      XmlWriter writer = GetXmlWriter(serializationStream);
       Serialize(writer, graph);
       writer.Flush();
     }
@@ -204,7 +204,7 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(Stream serializationStream)
     {
-      XmlReader reader = XmlReader.Create(serializationStream);
+      XmlReader reader = GetXmlReader(serializationStream);
       return Deserialize(reader);
     }
 
@@ -355,6 +355,82 @@ namespace Csla.Serialization.Mobile
         var formatter = new MobileFormatter();
         return formatter.Deserialize(buffer);
       }
+    }
+
+    #endregion
+
+    #region XmlReader/XmlWriter
+
+#if SILVERLIGHT
+    private static bool _useBinaryXml = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use
+    /// binary XML for serialization. Defaults to true.
+    /// </summary>
+    public static bool UseBinaryXml
+    {
+      get { return _useBinaryXml; }
+      set { _useBinaryXml = value; }
+    }
+#else
+    private static bool _useBinaryXml;
+    private static bool _useBinaryXmlSet;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use
+    /// binary XML for serialization. Defaults to true.
+    /// </summary>
+    public static bool UseBinaryXml
+    {
+      get 
+      {
+        if (!_useBinaryXmlSet)
+        {
+          string tmp = System.Configuration.ConfigurationManager.AppSettings["CslaUseBinaryXml"];
+          if (string.IsNullOrEmpty(tmp))
+            _useBinaryXml = true;
+          else
+            _useBinaryXml = bool.Parse(tmp);
+          _useBinaryXmlSet = true;
+        }
+        return _useBinaryXml; 
+      }
+      set 
+      { 
+        _useBinaryXml = value;
+        _useBinaryXmlSet = true;
+      }
+    }
+#endif
+
+
+    /// <summary>
+    /// Gets a new XmlWriter object.
+    /// </summary>
+    /// <param name="stream">The stream to which you
+    /// want to write.</param>
+    /// <returns></returns>
+    public static XmlWriter GetXmlWriter(Stream stream)
+    {
+      if (UseBinaryXml)
+        return XmlDictionaryWriter.CreateBinaryWriter(stream);
+      else
+        return XmlWriter.Create(stream);
+    }
+
+    /// <summary>
+    /// Gets a new XmlReader object.
+    /// </summary>
+    /// <param name="stream">The stream from which you
+    /// want to read.</param>
+    /// <returns></returns>
+    public static XmlReader GetXmlReader(Stream stream)
+    {
+      if (UseBinaryXml)
+        return XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max);
+      else
+        return XmlReader.Create(stream);
     }
 
     #endregion

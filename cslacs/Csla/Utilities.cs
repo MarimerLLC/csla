@@ -239,33 +239,6 @@ namespace Csla
     }
 
     #endregion
-
-    #region Serialization
-
-    internal static string XmlSerialize(object graph)
-    {
-      using (var buffer = new MemoryStream())
-      {
-        XmlWriter writer = XmlWriter.Create(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(graph.GetType());
-        dcs.WriteObject(writer, graph);
-        writer.Flush();
-        byte[] data = buffer.ToArray();
-        return Encoding.UTF8.GetString(data, 0, data.Length);
-      }
-
-    }
-
-    internal static T XmlDeserialize<T>(string xml)
-    {
-      using (var buffer = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
-      {
-        XmlReader reader = XmlReader.Create(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(typeof(T));
-        return (T)dcs.ReadObject(reader);
-      }
-    }
-    #endregion
   }
 
   /// <summary>

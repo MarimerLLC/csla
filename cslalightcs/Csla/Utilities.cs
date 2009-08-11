@@ -312,25 +312,24 @@ namespace Csla
 
     #region Serialization
 
-    internal static string XmlSerialize(object graph)
+    internal static byte[] XmlSerialize(object graph)
     {
       using (var buffer = new MemoryStream())
       {
-        XmlWriter writer = XmlWriter.Create(buffer);
+        XmlWriter writer = Csla.Serialization.Mobile.MobileFormatter.GetXmlWriter(buffer);
         DataContractSerializer dcs = new DataContractSerializer(graph.GetType());
         dcs.WriteObject(writer, graph);
         writer.Flush();
-        byte[] data = buffer.ToArray();
-        return Encoding.UTF8.GetString(data, 0, data.Length);
+        return buffer.ToArray();
       }
     
     }
 
-    internal static T XmlDeserialize<T>(string xml)
+    internal static T XmlDeserialize<T>(byte[] data)
     {
-      using (var buffer = new MemoryStream(Encoding.UTF8.GetBytes(xml)))
+      using (var buffer = new MemoryStream(data))
       {
-        XmlReader reader = XmlReader.Create(buffer);
+        XmlReader reader = Csla.Serialization.Mobile.MobileFormatter.GetXmlReader(buffer);
         DataContractSerializer dcs = new DataContractSerializer(typeof(T));
         return (T)dcs.ReadObject(reader);
       }

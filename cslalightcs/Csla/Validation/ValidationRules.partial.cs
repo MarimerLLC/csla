@@ -89,7 +89,7 @@ namespace Csla.Validation
       {
         if (_stateStack.Count > 0)
         {
-          string xml = Utilities.XmlSerialize(_stateStack.ToArray());
+          byte[] xml = Utilities.XmlSerialize(_stateStack.ToArray());
           info.AddValue("_stateStack", xml);
         }
       }
@@ -105,7 +105,8 @@ namespace Csla.Validation
 
         if (info.Values.ContainsKey("_stateStack"))
         {
-          string xml = info.GetValue<string>("_stateStack");
+          //string xml = info.GetValue<string>("_stateStack");
+          byte[] xml = info.GetValue<byte[]>("_stateStack");
           SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
           Array.Reverse(layers);
           foreach (SerializationInfo layer in layers)

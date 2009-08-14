@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Csla.Properties;
@@ -7,7 +8,6 @@ using Csla.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using Csla.Core;
-using System.Windows;
 
 namespace Csla.Silverlight
 {
@@ -15,7 +15,8 @@ namespace Csla.Silverlight
   /// Creates, retrieves and manages business objects
   /// from XAML in a form.
   /// </summary>
-  public class CslaDataProvider : INotifyPropertyChanged
+  public class CslaDataProvider : FrameworkElement, 
+    INotifyPropertyChanged
   {
     #region Events
 
@@ -119,7 +120,27 @@ namespace Csla.Silverlight
     /// </summary>
     public static readonly DependencyProperty ObjectInstanceProperty =
      DependencyProperty.Register("ObjectInstance", typeof(object),
-     typeof(CslaDataProvider), new PropertyMetadata(null));
+     typeof(CslaDataProvider), new PropertyMetadata((o, e) => 
+     {
+       var caller = o as CslaDataProvider;
+       if (caller != null)
+       {
+         caller.SetError(null);
+         caller.SetObjectInstance(e.NewValue);
+         try
+         {
+           caller.OnDataChanged();
+         }
+         catch (Exception ex)
+         {
+           // Silverlight seems to throw a meaningless null ref exception
+           // and during page load there are possible timing issues
+           // where these events may cause non-useful exceptions
+           // and this is a workaround to ignore the issues
+           var tmp = ex;
+         }
+       }
+     }));
 
 
     /// <summary>
@@ -128,27 +149,8 @@ namespace Csla.Silverlight
     /// </summary>
     public object ObjectInstance
     {
-      get
-      {
-        return _dataObject;
-      }
-      set
-      {
-        SetError(null);
-        SetObjectInstance(value);
-        try
-        {
-          OnDataChanged();
-        }
-        catch (Exception ex)
-        {
-          // Silverlight seems to throw a meaningless null ref exception
-          // and during page load there are possible timing issues
-          // where these events may cause non-useful exceptions
-          // and this is a workaround to ignore the issues
-          var o = ex;
-        }
-      }
+      get { return this.GetValue(ObjectInstanceProperty); }
+      set { this.SetValue(ObjectInstanceProperty, value); }
     }
 
     private void SetObjectInstance(object value)
@@ -233,7 +235,7 @@ namespace Csla.Silverlight
       set
       {
         if (_dataObject != null)
-          throw new NotSupportedException(Resources.ObjectNotNull);
+          throw new NotSupportedException(Csla.Properties.Resources.ObjectNotNull);
         _manageObjectLifetime = value;
       }
     }
@@ -252,7 +254,7 @@ namespace Csla.Silverlight
       set
       {
         if (_dataObject != null)
-          throw new NotSupportedException(Resources.ObjectNotNull);
+          throw new NotSupportedException(Csla.Properties.Resources.ObjectNotNull);
         _isInitialLoadEnabled = value;
       }
     }

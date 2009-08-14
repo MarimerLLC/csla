@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace Csla.Silverlight
   /// objects for use with CSLA .NET business object models.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-  public abstract class CslaViewModel<T> : System.Windows.FrameworkElement,
-    System.ComponentModel.INotifyPropertyChanged
+  public abstract class CslaViewModel<T> : FrameworkElement,
+    INotifyPropertyChanged
   {
     /// <summary>
     /// Gets or sets the Model object.
@@ -34,7 +35,8 @@ namespace Csla.Silverlight
     /// lifetime of the Model.
     /// </summary>
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
-        DependencyProperty.Register("ManageObjectLifetime", typeof(bool), typeof(CslaViewModel<T>), new PropertyMetadata(true));
+        DependencyProperty.Register("ManageObjectLifetime", typeof(bool), 
+        typeof(CslaViewModel<T>), new PropertyMetadata(true));
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// ViewManageObjectLifetime should automatically managed the

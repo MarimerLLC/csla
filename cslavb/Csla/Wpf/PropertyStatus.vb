@@ -144,6 +144,7 @@ Namespace Wpf
       End Get
       Set(ByVal value As String)
         SetValue(PropertyProperty, value)
+        CheckProperty()
       End Set
     End Property
 

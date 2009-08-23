@@ -42,6 +42,7 @@ Namespace Wpf
       BrokenRules = New ObservableCollection(Of BrokenRule)()
 
       'TODO: Need to implement Lambda expression
+      AddHandler Loaded, Function(o, e) (UpdateState())
 
     End Sub
 
@@ -255,7 +256,7 @@ Namespace Wpf
       End If
     End Sub
 
-    Private Sub UpdateState()
+    Private Function UpdateState() As Boolean
       Dim popup As Popup = CType(FindName("popup"), Popup)
 
       If popup IsNot Nothing Then
@@ -306,7 +307,7 @@ Namespace Wpf
         End If
       End If
 
-    End Sub
+    End Function
 
 #End Region
 

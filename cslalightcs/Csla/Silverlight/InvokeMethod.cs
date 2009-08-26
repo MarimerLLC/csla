@@ -39,7 +39,7 @@ namespace Csla.Silverlight
       ctrl.SetValue(TargetProperty, value);
     }
 
-    private void InvokeMethod_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void MethodTarget_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       Refresh();
     }
@@ -302,6 +302,12 @@ namespace Csla.Silverlight
                     this,
                     this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
                   eventRef.AddEventHandler(ctrl, del);
+                  var npc = _target as INotifyPropertyChanged;
+                  if (npc != null)
+                  {
+                    npc.PropertyChanged -= MethodTarget_PropertyChanged;
+                    npc.PropertyChanged += MethodTarget_PropertyChanged;
+                  }
                 }
                 else
                 {

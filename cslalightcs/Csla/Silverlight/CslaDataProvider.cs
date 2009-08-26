@@ -71,7 +71,7 @@ namespace Csla.Silverlight
 
     #endregion
 
-    #region Properties
+    #region IsBusy
 
     private bool _isBusy = false;
 
@@ -85,8 +85,8 @@ namespace Csla.Silverlight
       protected set
       {
         _isBusy = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("IsBusy"));
-        OnPropertyChanged(new PropertyChangedEventArgs("IsNotBusy"));
+        OnPropertyChanged("IsBusy");
+        OnPropertyChanged("IsNotBusy");
         RefreshCanOperationsValues();
       }
     }
@@ -111,8 +111,11 @@ namespace Csla.Silverlight
         RefreshCanOperationsValues();
     }
 
+    #endregion
 
-    private object _dataObject;
+    #region ObjectInstance/Data Properties
+
+    private bool _runningQuery = false;
 
     /// <summary>
     /// Gets or sets a reference to the data
@@ -125,23 +128,10 @@ namespace Csla.Silverlight
        var caller = o as CslaDataProvider;
        if (caller != null)
        {
-         caller.SetError(null);
-         caller.SetObjectInstance(e.NewValue);
-         try
-         {
-           caller.OnDataChanged();
-         }
-         catch (Exception ex)
-         {
-           // Silverlight seems to throw a meaningless null ref exception
-           // and during page load there are possible timing issues
-           // where these events may cause non-useful exceptions
-           // and this is a workaround to ignore the issues
-           var tmp = ex;
-         }
+         caller.HookObjectEvents(e.OldValue, e.NewValue);
+         caller.RaiseDataChangedEvents();
        }
      }));
-
 
     /// <summary>
     /// Gets or sets a reference to the data
@@ -150,59 +140,58 @@ namespace Csla.Silverlight
     public object ObjectInstance
     {
       get { return this.GetValue(ObjectInstanceProperty); }
-      set { this.SetValue(ObjectInstanceProperty, value); }
+      set 
+      {
+        var oldValue = ObjectInstance;
+        this.SetValue(ObjectInstanceProperty, value);
+        if (ReferenceEquals(oldValue, value))
+          RaiseDataChangedEvents();
+      }
     }
 
-    private void SetObjectInstance(object value)
+    private void RaiseDataChangedEvents()
     {
-      //hook up event handlers for notificaiton propagation
-      if (_dataObject != null && _dataObject is INotifyPropertyChanged)
-        ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);
-      if (_dataObject != null && _dataObject is INotifyChildChanged)
-        ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
-      if (_dataObject != null && _dataObject is INotifyBusy)
-        ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
+      if (!_runningQuery)
+        SetError(null);
+      OnPropertyChanged("Data");
+      OnDataChanged();
+    }
 
-      _dataObject = value;
-
-      if (_manageObjectLifetime)
+    private void HookObjectEvents(object oldValue, object newValue)
+    {
+      // unhook events from old value
+      if (oldValue != null)
       {
-        var undoable = _dataObject as Csla.Core.ISupportUndo;
-        if (undoable != null)
-          undoable.BeginEdit();
+        var npc = oldValue as INotifyPropertyChanged;
+        if (npc != null)
+          npc.PropertyChanged -= dataObject_PropertyChanged;
+        var ncc = oldValue as INotifyChildChanged;
+        if (ncc != null)
+          ncc.ChildChanged -= dataObject_ChildChanged;
+        var nb = oldValue as INotifyBusy;
+        if (nb != null)
+          nb.BusyChanged -= CslaDataProvider_BusyChanged;
       }
 
-      if (_dataObject != null && _dataObject is INotifyPropertyChanged)
-        ((INotifyPropertyChanged)_dataObject).PropertyChanged += new PropertyChangedEventHandler(dataObject_PropertyChanged);
-      if (_dataObject != null && _dataObject is INotifyChildChanged)
-        ((INotifyChildChanged)_dataObject).ChildChanged += new EventHandler<ChildChangedEventArgs>(dataObject_ChildChanged);
+      // hook events on new value
+      if (newValue != null)
+      {
+        if (_manageObjectLifetime)
+        {
+          var undoable = newValue as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.BeginEdit();
+        }
 
-      if (_dataObject != null && _dataObject is INotifyBusy)
-        ((INotifyBusy)_dataObject).BusyChanged += new BusyChangedEventHandler(CslaDataProvider_BusyChanged);
-
-      try
-      {
-        OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
-      }
-      catch (Exception ex)
-      {
-        // Silverlight seems to throw a meaningless null ref exception
-        // and during page load there are possible timing issues
-        // where these events may cause non-useful exceptions
-        // and this is a workaround to ignore the issues
-        var o = ex;
-      }
-      try
-      {
-        OnPropertyChanged(new PropertyChangedEventArgs("Data"));
-      }
-      catch (Exception ex)
-      {
-        // Silverlight seems to throw a meaningless null ref exception
-        // and during page load there are possible timing issues
-        // where these events may cause non-useful exceptions
-        // and this is a workaround to ignore the issues
-        var o = ex;
+        var npc = newValue as INotifyPropertyChanged;
+        if (npc != null)
+          npc.PropertyChanged += dataObject_PropertyChanged;
+        var ncc = newValue as INotifyChildChanged;
+        if (ncc != null)
+          ncc.ChildChanged += dataObject_ChildChanged;
+        var nb = newValue as INotifyBusy;
+        if (nb != null)
+          nb.BusyChanged += CslaDataProvider_BusyChanged;
       }
     }
 
@@ -218,9 +207,13 @@ namespace Csla.Silverlight
           _isInitialLoadCompleted = true;
           Refresh();
         }
-        return _dataObject;
+        return ObjectInstance;
       }
     }
+
+    #endregion
+
+    #region ManageObjectLifetime
 
     private bool _manageObjectLifetime = true;
 
@@ -234,11 +227,15 @@ namespace Csla.Silverlight
       get { return _manageObjectLifetime; }
       set
       {
-        if (_dataObject != null)
+        if (ObjectInstance != null)
           throw new NotSupportedException(Csla.Properties.Resources.ObjectNotNull);
         _manageObjectLifetime = value;
       }
     }
+
+    #endregion
+
+    #region IsInitialLoadEnabled
 
     private bool _isInitialLoadEnabled = false;
     private bool _isInitialLoadCompleted = false;
@@ -253,11 +250,15 @@ namespace Csla.Silverlight
       get { return _isInitialLoadEnabled; }
       set
       {
-        if (_dataObject != null)
+        if (ObjectInstance != null)
           throw new NotSupportedException(Csla.Properties.Resources.ObjectNotNull);
         _isInitialLoadEnabled = value;
       }
     }
+
+    #endregion
+
+    #region ObjectType, FactoryMethod, Factory params
 
     private string _objectType;
 
@@ -275,7 +276,7 @@ namespace Csla.Silverlight
       set
       {
         _objectType = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
+        OnPropertyChanged("ObjectType");
       }
     }
 
@@ -295,7 +296,7 @@ namespace Csla.Silverlight
       set
       {
         _factoryMethod = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("FactoryMethod"));
+        OnPropertyChanged("FactoryMethod");
       }
     }
 
@@ -322,9 +323,13 @@ namespace Csla.Silverlight
         {
           _factoryParameters.Add(oneParameters);
         }
-        OnPropertyChanged(new PropertyChangedEventArgs("FactoryParameters"));
+        OnPropertyChanged("FactoryParameters");
       }
     }
+
+    #endregion
+
+    #region Error Property and Error handler
 
     private Exception _error;
 
@@ -349,7 +354,7 @@ namespace Csla.Silverlight
         _error = value;
       IsBusy = false;
       if (changed)
-        OnPropertyChanged(new PropertyChangedEventArgs("Error"));
+        OnPropertyChanged("Error");
     }
 
     private object _dataChangedHandler;
@@ -375,8 +380,57 @@ namespace Csla.Silverlight
         var dialog = value as ErrorDialog;
         if (dialog != null)
           dialog.Register(this);
-        OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
+        OnPropertyChanged("DataChangedHandler");
       }
+    }
+
+    #endregion
+
+    #region Refresh/Query
+
+    /// <summary>
+    /// Causes the data provider to execute the
+    /// factory method, refreshing the business
+    /// object by creating or retrieving a new
+    /// instance.
+    /// </summary>
+    public void Refresh()
+    {
+      if (_objectType != null && _factoryMethod != null)
+        try
+        {
+          SetError(null);
+          this.IsBusy = true;
+          List<object> parameters = new List<object>(FactoryParameters);
+          Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);
+          parameters.Add(CreateHandler(objectType));
+
+          MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());
+        }
+        catch (Exception ex)
+        {
+          this.Error = ex;
+        }
+    }
+
+    private Delegate CreateHandler(Type objectType)
+    {
+      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
+      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
+      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
+      return handler;
+    }
+
+
+    private void QueryCompleted(object sender, EventArgs e)
+    {
+      IDataPortalResult eventArgs = e as IDataPortalResult;
+      _runningQuery = true;
+      SetError(eventArgs.Error);
+      ObjectInstance = eventArgs.Object;
+      RefreshCanOperationsValues();
+      _runningQuery = false;
+      this.IsBusy = false;
     }
 
     #endregion
@@ -393,14 +447,14 @@ namespace Csla.Silverlight
       {
         try
         {
-          var undoable = _dataObject as Csla.Core.ISupportUndo;
+          var undoable = ObjectInstance as Csla.Core.ISupportUndo;
           if (undoable != null)
           {
             IsBusy = true;
             ObjectInstance = null;
             undoable.CancelEdit();
             ObjectInstance = undoable;
-            var trackable = _dataObject as ITrackStatus;
+            var trackable = ObjectInstance as ITrackStatus;
             if (trackable != null)
               IsBusy = trackable.IsBusy;
             else
@@ -424,14 +478,14 @@ namespace Csla.Silverlight
       try
       {
 
-        var obj = _dataObject as Csla.Core.ISavable;
+        var obj = ObjectInstance as Csla.Core.ISavable;
         if (obj != null)
         {
           if (_manageObjectLifetime)
           {
             // clone the object if possible
 
-            ICloneable clonable = _dataObject as ICloneable;
+            ICloneable clonable = ObjectInstance as ICloneable;
             if (clonable != null)
               obj = (Csla.Core.ISavable)clonable.Clone();
 
@@ -451,7 +505,7 @@ namespace Csla.Silverlight
       {
         IsBusy = false;
         this.Error = ex;
-        OnSaved(_dataObject, ex, null);
+        OnSaved(ObjectInstance, ex, null);
       }
     }
 
@@ -474,12 +528,12 @@ namespace Csla.Silverlight
       SetError(null);
       try
       {
-        var obj = _dataObject as Csla.Core.BusinessBase;
+        var obj = ObjectInstance as Csla.Core.BusinessBase;
         if (obj != null && !obj.IsChild)
         {
           IsBusy = true;
           obj.Delete();
-          var trackable = _dataObject as ITrackStatus;
+          var trackable = ObjectInstance as ITrackStatus;
           if (trackable != null)
             IsBusy = trackable.IsBusy;
           else
@@ -492,27 +546,6 @@ namespace Csla.Silverlight
       }
     }
 
-    private void QueryCompleted(object sender, EventArgs e)
-    {
-      IDataPortalResult eventArgs = e as IDataPortalResult;
-      SetError(eventArgs.Error);
-      SetObjectInstance(eventArgs.Object);
-      try
-      {
-        OnDataChanged();
-      }
-      catch (Exception ex)
-      {
-        // Silverlight seems to throw a meaningless null ref exception
-        // and during page load there are possible timing issues
-        // where these events may cause non-useful exceptions
-        // and this is a workaround to ignore the issues
-        var o = ex;
-      }
-      RefreshCanOperationsValues();
-      this.IsBusy = false;
-    }
-
     /// <summary>
     /// Begins an async add new operation to add a 
     /// new item to an editable list business object.
@@ -522,12 +555,12 @@ namespace Csla.Silverlight
       SetError(null);
       try
       {
-        var obj = _dataObject as Csla.Core.IBindingList;
+        var obj = ObjectInstance as Csla.Core.IBindingList;
         if (obj != null)
         {
           IsBusy = true;
           obj.AddNew();
-          var trackable = _dataObject as ITrackStatus;
+          var trackable = ObjectInstance as ITrackStatus;
           if (trackable != null)
             IsBusy = trackable.IsBusy;
           else
@@ -553,12 +586,12 @@ namespace Csla.Silverlight
       try
       {
         SetError(null);
-        var obj = _dataObject as System.Collections.IList;
+        var obj = ObjectInstance as System.Collections.IList;
         if (obj != null)
         {
           IsBusy = true;
           obj.Remove(item);
-          var trackable = _dataObject as ITrackStatus;
+          var trackable = ObjectInstance as ITrackStatus;
           if (trackable != null)
             IsBusy = trackable.IsBusy;
           else
@@ -570,39 +603,6 @@ namespace Csla.Silverlight
       {
         this.Error = ex;
       }
-    }
-
-    private Delegate CreateHandler(Type objectType)
-    {
-      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
-      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
-      return handler;
-    }
-
-    /// <summary>
-    /// Causes the data provider to execute the
-    /// factory method, refreshing the business
-    /// object by creating or retrieving a new
-    /// instance.
-    /// </summary>
-    public void Refresh()
-    {
-      if (_objectType != null && _factoryMethod != null)
-        try
-        {
-          SetError(null);
-          this.IsBusy = true;
-          List<object> parameters = new List<object>(FactoryParameters);
-          Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);
-          parameters.Add(CreateHandler(objectType));
-
-          MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());
-        }
-        catch (Exception ex)
-        {
-          this.Error = ex;
-        }
     }
 
     /// <summary>
@@ -637,7 +637,7 @@ namespace Csla.Silverlight
         if (_canSave != value)
         {
           _canSave = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanSave"));
+          OnPropertyChanged("CanSave");
         }
       }
     }
@@ -659,7 +659,7 @@ namespace Csla.Silverlight
         if (_canCancel != value)
         {
           _canCancel = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanCancel"));
+          OnPropertyChanged("CanCancel");
         }
       }
     }
@@ -682,7 +682,7 @@ namespace Csla.Silverlight
         if (_canCreate != value)
         {
           _canCreate = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanCreate"));
+          OnPropertyChanged("CanCreate");
         }
       }
     }
@@ -704,7 +704,7 @@ namespace Csla.Silverlight
         if (_canDelete != value)
         {
           _canDelete = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanDelete"));
+          OnPropertyChanged("CanDelete");
         }
       }
     }
@@ -727,7 +727,7 @@ namespace Csla.Silverlight
         if (_canFetch != value)
         {
           _canFetch = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanFetch"));
+          OnPropertyChanged("CanFetch");
         }
       }
     }
@@ -749,7 +749,7 @@ namespace Csla.Silverlight
         if (_canRemoveItem != value)
         {
           _canRemoveItem = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanRemoveItem"));
+          OnPropertyChanged("CanRemoveItem");
         }
       }
     }
@@ -771,7 +771,7 @@ namespace Csla.Silverlight
         if (_canAddNewItem != value)
         {
           _canAddNewItem = value;
-          OnPropertyChanged(new PropertyChangedEventArgs("CanAddNewItem"));
+          OnPropertyChanged("CanAddNewItem");
         }
       }
     }
@@ -890,7 +890,7 @@ namespace Csla.Silverlight
       protected set
       {
         _canCreateObject = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("CanCreateObject"));
+        OnPropertyChanged("CanCreateObject");
       }
     }
 
@@ -906,7 +906,7 @@ namespace Csla.Silverlight
       protected set
       {
         _canGetObject = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("CanGetObject"));
+        OnPropertyChanged("CanGetObject");
       }
     }
 
@@ -923,7 +923,7 @@ namespace Csla.Silverlight
       protected set
       {
         _canEditObject = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("CanEditObject"));
+        OnPropertyChanged("CanEditObject");
       }
     }
 
@@ -940,7 +940,7 @@ namespace Csla.Silverlight
       protected set
       {
         _canDeleteObject = value;
-        OnPropertyChanged(new PropertyChangedEventArgs("CanDeleteObject"));
+        OnPropertyChanged("CanDeleteObject");
       }
     }
 
@@ -988,31 +988,10 @@ namespace Csla.Silverlight
     /// <param name="e">
     /// Arguments for event.
     /// </param>
-    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+    protected virtual void OnPropertyChanged(string propertyName)
     {
       if (PropertyChanged != null)
-      {
-        Delegate[] targets = PropertyChanged.GetInvocationList();
-        foreach (var oneTarget in targets)
-        {
-          try
-          {
-            oneTarget.DynamicInvoke(this, e);
-          }
-          catch (TargetInvocationException ex)
-          {
-            if (ex.InnerException != null && ex.InnerException is NullReferenceException)
-            {
-              //TODO: should revisit after RTM - should uncomment code below
-              // can be thrown due to bug in SL
-            }
-            else
-              throw;
-          }
-        }
-      }
-      //if (PropertyChanged != null)
-      //  PropertyChanged(this, e);
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion

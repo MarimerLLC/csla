@@ -178,7 +178,7 @@ namespace Csla.Wpf
       get { return Data; }
       set 
       {
-        base.OnQueryFinished(value, null, null, null);
+        OnQueryFinished(value, null, null, null);
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
       }
     }
@@ -259,7 +259,7 @@ namespace Csla.Wpf
         // occurs - we really don't want to try the query twice
         // or report the error twice
         _endInitError = false;
-        base.OnQueryFinished(null);
+        OnQueryFinished(null);
         return;
       }
 
@@ -365,7 +365,7 @@ namespace Csla.Wpf
         _endInitError = true;
 
       // return result to base class
-      base.OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
     }
 
     #region QueryRequest Class
@@ -497,9 +497,9 @@ namespace Csla.Wpf
           exceptionResult = ex;
         }
         // clear previous object
-        base.OnQueryFinished(null, exceptionResult, null, null);
+        OnQueryFinished(null, exceptionResult, null, null);
         // return result to base class
-        base.OnQueryFinished(result, null, null, null);
+        OnQueryFinished(result, null, null, null);
         IsBusy = false;
         OnSaved(result, exceptionResult, null);
       }

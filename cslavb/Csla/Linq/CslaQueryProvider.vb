@@ -23,7 +23,7 @@ Namespace Linq
 
     Private Function Eval(ByVal ex As Expression) As Object
       If TypeOf ex Is ConstantExpression Then
-        Return (TryCast(ex, ConstantExpression)).Value
+        Return (CType(ex, ConstantExpression)).Value
       End If
       Dim lambdax As LambdaExpression = Expression.Lambda(ex)
       Return lambdax.Compile().DynamicInvoke()
@@ -73,7 +73,7 @@ Namespace Linq
                       Return False
                     End If
                   Else
-                    If genArgsLevel2(j).GetType() IsNot parmsArgsLevel2(j).GetType() AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
+                    If genArgsLevel2(j) IsNot parmsArgsLevel2(j) AndAlso Not parmsArgsLevel2(j).IsGenericParameter Then
                       Return False
                     End If
                   End If
@@ -266,7 +266,7 @@ Namespace Linq
     End Function
 
     Public Function Execute(ByVal expression As Expression) As Object Implements IQueryProvider.Execute
-      Dim mex As MethodCallExpression = TryCast(expression, MethodCallExpression)
+      Dim mex As MethodCallExpression = CType(expression, MethodCallExpression)
 
       'convert the enumerated collection to a list
       Dim listFrom As List(Of C)
@@ -291,7 +291,7 @@ Namespace Linq
         If i > 0 Then
           If TypeOf arg Is Expression Then
             'expressions have to be compiled in order to work with the method call on straight Enumerable
-            paramList.Add(Compile(TryCast(arg, Expression)))
+            paramList.Add(Compile(CType(arg, Expression)))
           Else
             paramList.Add(arg)
           End If

@@ -445,6 +445,7 @@
     <Compile Include="Silverlight\ValidatedDataGridColumn.cs" />
     <Compile Include="Silverlight\ValidatedDataGridTextColumn.cs" />
     <Compile Include="Silverlight\ViewModel.cs" />
+    <Compile Include="Silverlight\ViewModelBase.cs" />
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Threading\Semaphore.cs" />

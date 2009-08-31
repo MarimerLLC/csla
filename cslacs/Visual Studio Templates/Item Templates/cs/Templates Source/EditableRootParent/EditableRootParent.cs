@@ -1,5 +1,6 @@
 using System;
 using Csla;
+using System.Collections.Generic;
 
 namespace $rootnamespace$
 {
@@ -29,18 +30,18 @@ namespace $rootnamespace$
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<EditableChildList> ChildListProperty = 
-      RegisterProperty<EditableChildList>(typeof(EditableRootParent), new PropertyInfo<EditableChildList>("ChildList", "Child list"));
-    public EditableChildList ChildList
+    private static PropertyInfo<$childlist$> ChildListProperty = 
+      RegisterProperty<$childlist$>(typeof($safeitemname$), new PropertyInfo<$childlist$>("ChildList", "Child list"));
+    public $childlist$ ChildList
     {
-      get { return GetProperty<EditableChildList>(ChildListProperty); }
+      get { return GetProperty<$childlist$>(ChildListProperty); }
     }
 
-    private static PropertyInfo<EditableChild> ChildProperty = 
-      RegisterProperty(typeof(EditableRootParent), new PropertyInfo<EditableChild>("Child", "Child"));
-    public EditableChild Child
+    private static PropertyInfo<$childitem$> ChildProperty = 
+      RegisterProperty(typeof($safeitemname$), new PropertyInfo<$childitem$>("Child", "Child"));
+    public $childitem$ Child
     {
-      get { return GetProperty<EditableChild>(ChildProperty); }
+      get { return GetProperty<$childitem$>(ChildProperty); }
     }
     #endregion
 
@@ -65,7 +66,7 @@ namespace $rootnamespace$
     private static void AddObjectAuthorizationRules()
     {
       // TODO: add authorization rules
-      //AuthorizationRules.AllowEdit(typeof(EditableRootParent), "Role");
+      //AuthorizationRules.AllowEdit(typeof($safeitemname$), "Role");
     }
 
     #endregion
@@ -100,16 +101,16 @@ namespace $rootnamespace$
     {
       // TODO: load default values
       // omit this override if you have no defaults to set
-      LoadProperty(ChildListProperty, EditableChildList.NewEditableChildList());
-      LoadProperty(ChildProperty, EditableChild.NewEditableChild());
+      LoadProperty(ChildListProperty, $childlist$.New$childlist$());
+      LoadProperty(ChildProperty, $childitem$.New$childitem$());
       base.DataPortal_Create();
     }
 
     private void DataPortal_Fetch(SingleCriteria<$safeitemname$, int> criteria)
     {
       // TODO: load values
-      LoadProperty(ChildListProperty, EditableChildList.GetEditableChildList(null));
-      LoadProperty(ChildProperty, EditableChild.GetEditableChild(null));
+      LoadProperty(ChildListProperty, $childlist$.Get$childlist$(null));
+      LoadProperty(ChildProperty, $childitem$.Get$childitem$(null));
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
@@ -241,10 +242,10 @@ namespace $rootnamespace$
 
     internal static $childitem$ Get$childitem$(object childData)
     {
-      return DataPortal.FetchChild<$itemclassname$>(childData);
+      return DataPortal.FetchChild<$childitem$>(childData);
     }
 
-    private $itemclassname$()
+    private $childitem$()
     { /* Require use of factory methods */ }
 
     #endregion

@@ -25,13 +25,11 @@ namespace Csla.Silverlight
   [TemplateVisualState(Name = "Error", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Warning", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
-  public class PropertyStatus : ContentControl
+  public class PropertyStatus : ContentControl,
+    INotifyPropertyChanged
   {
     private bool _isReadOnly = false;
-    private bool _isValid = true;
-    private RuleSeverity _worst;
     private FrameworkElement _lastImage;
-    private bool _isBusy;
 
     #region Constructors
 
@@ -137,7 +135,7 @@ namespace Csla.Silverlight
         BusinessBase bb = _source as BusinessBase;
         if (bb != null)
         {
-          _isBusy = bb.IsPropertyBusy(_bindingPath);
+          IsBusy = bb.IsPropertyBusy(_bindingPath);
         }
       }
     }
@@ -165,9 +163,9 @@ namespace Csla.Silverlight
         if (bb != null)
           busy = bb.IsPropertyBusy(_bindingPath);
 
-        if (busy != _isBusy)
+        if (busy != IsBusy)
         {
-          _isBusy = busy;
+          IsBusy = busy;
           UpdateState();
         }
       }
@@ -217,6 +215,116 @@ namespace Csla.Silverlight
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
+    }
+
+    #endregion
+
+    #region State properties
+
+    private bool _canRead = true;
+    /// <summary>
+    /// Gets a value indicating whether the user
+    /// is authorized to read the property.
+    /// </summary>
+    public bool CanRead
+    {
+      get { return _canRead; }
+      private set
+      {
+        if (value != _canRead)
+        {
+          _canRead = value;
+          OnPropertyChanged("CanRead");
+        }
+      }
+    }
+
+    private bool _canWrite = true;
+    /// <summary>
+    /// Gets a value indicating whether the user
+    /// is authorized to write the property.
+    /// </summary>
+    public bool CanWrite
+    {
+      get { return _canWrite; }
+      private set
+      {
+        if (value != _canWrite)
+        {
+          _canWrite = value;
+          OnPropertyChanged("CanWrite");
+        }
+      }
+    }
+
+    private bool _isBusy = false;
+    /// <summary>
+    /// Gets a value indicating whether the property
+    /// is busy with an asynchronous operation.
+    /// </summary>
+    public bool IsBusy
+    {
+      get { return _isBusy; }
+      private set 
+      {
+        if (value != _isBusy)
+        {
+          _isBusy = value;
+          OnPropertyChanged("IsBusy");
+        }
+      }
+    }
+
+    private bool _isValid = true;
+    /// <summary>
+    /// Gets a value indicating whether the 
+    /// property is valid.
+    /// </summary>
+    public bool IsValid
+    {
+      get { return _isValid; }
+      private set
+      {
+        if (value != _isValid)
+        {
+          _isValid = value;
+          OnPropertyChanged("IsValid");
+        }
+      }
+    }
+
+    private RuleSeverity _worst;
+    /// <summary>
+    /// Gets a valud indicating the worst
+    /// severity of all broken rules
+    /// for this property (if IsValid is
+    /// false).
+    /// </summary>
+    public RuleSeverity RuleSeverity
+    {
+      get { return _worst; }
+      private set
+      {
+        if (value != _worst)
+        {
+          _worst = value;
+          OnPropertyChanged("RuleSeverity");
+        }
+      }
+    }
+
+    private string _ruleDescription = string.Empty;
+    public string RuleDescription
+    {
+      get { return _ruleDescription; }
+      private set
+      {
+        if (value != _ruleDescription)
+        {
+          _ruleDescription = value;
+          OnPropertyChanged("RuleDescription");
+        }
+      }
     }
 
     #endregion
@@ -306,15 +414,21 @@ namespace Csla.Silverlight
                             select r).FirstOrDefault();
 
         if (worst != null)
-          _worst = worst.Severity;
+        {
+          RuleSeverity = worst.Severity;
+          RuleDescription = worst.Description;
+        }
+        else
+          RuleDescription = string.Empty;
 
-        _isValid = BrokenRules.Count == 0;
+        IsValid = BrokenRules.Count == 0;
         GoToState(true);
       }
       else
       {
         BrokenRules.Clear();
-        _isValid = true;
+        RuleDescription = string.Empty;
+        IsValid = true;
         GoToState(true);
       }
     }
@@ -326,27 +440,27 @@ namespace Csla.Silverlight
 
       BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
       if (busy != null)
-        busy.IsRunning = _isBusy;
+        busy.IsRunning = IsBusy;
 
-      if (_isBusy)
+      if (IsBusy)
       {
         VisualStateManager.GoToState(this, "Busy", useTransitions);
       }
-      else if (_isValid)
+      else if (IsValid)
       {
         VisualStateManager.GoToState(this, "Valid", useTransitions);
       }
       else
       {
-        VisualStateManager.GoToState(this, _worst.ToString(), useTransitions);
-        _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", _worst.ToString().ToLower()));
+        VisualStateManager.GoToState(this, RuleSeverity.ToString(), useTransitions);
+        _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", RuleSeverity.ToString().ToLower()));
         EnablePopup(_lastImage);
       }
     }
 
     #endregion
 
-    #region RelativeTarget
+    #region TargetControl
 
     private void FindIsReadOnly()
     {
@@ -379,8 +493,8 @@ namespace Csla.Silverlight
         var b = _source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
-          bool canWrite = b.CanWriteProperty(_bindingPath);
-          if (canWrite && !_isReadOnly)
+          CanWrite = b.CanWriteProperty(_bindingPath);
+          if (CanWrite && !_isReadOnly)
           {
             if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
               MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
@@ -395,8 +509,8 @@ namespace Csla.Silverlight
               MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
           }
 
-          bool canRead = b.CanReadProperty(_bindingPath);
-          if (!canRead)
+          CanRead = b.CanReadProperty(_bindingPath);
+          if (!CanRead)
           {
             if (MethodCaller.IsMethodImplemented(TargetControl, "set_Content", null))
               MethodCaller.CallMethod(TargetControl, "set_Content", null);
@@ -428,6 +542,25 @@ namespace Csla.Silverlight
       }
 
       return found;
+    }
+
+    #endregion
+
+    #region INotifyPropertyChanged Members
+
+    /// <summary>
+    /// Event raised when a property has changed.
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <summary>
+    /// Raises the PropertyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Name of the changed property.</param>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion

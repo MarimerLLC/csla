@@ -27,6 +27,12 @@ namespace Csla.Silverlight
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
   public class PropertyStatus : ContentControl
   {
+    private bool _isReadOnly = false;
+    private bool _isValid = true;
+    private RuleSeverity _worst;
+    private FrameworkElement _lastImage;
+    private bool _isBusy;
+
     #region Constructors
 
     /// <summary>
@@ -35,17 +41,11 @@ namespace Csla.Silverlight
     public PropertyStatus()
       : base()
     {
-      RelativeTargetPath = "Parent";
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
       IsTabStop = false;
 
-      Loaded += (o, e) => 
-      { 
-        var b = new System.Windows.Data.Binding();
-        this.SetBinding(SourceProperty, b);
-        GoToState(true); 
-      };
+      Loaded += (o, e) => GoToState(true);
     }
 
     /// <summary>
@@ -59,28 +59,145 @@ namespace Csla.Silverlight
 
     #endregion
 
-    #region Dependency properties
+    #region Source property
 
     /// <summary>
     /// Gets or sets the source business
-    /// object to which this control is bound.
-    /// </summary>
-    public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-      "Source",
-      typeof(object),
-      typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource(e.OldValue, e.NewValue)));
-
-    /// <summary>
-    /// Gets or sets the name of the business object
-    /// property to use for authorization and validation
-    /// rule processing.
+    /// property to which this control is bound.
     /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
       "Property",
-      typeof(string),
+      typeof(object),
+      typeof(PropertyStatus),
+      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource()));
+
+    /// <summary>
+    /// Gets or sets the source business
+    /// property to which this control is bound.
+    /// </summary>
+    public object Property
+    {
+      get { return GetValue(PropertyProperty); }
+      set
+      {
+        SetValue(PropertyProperty, value);
+        SetSource();
+      }
+    }
+
+    private object _source = null;
+    private string _bindingPath = string.Empty;
+
+    private void SetSource()
+    {
+      var old = _source;
+      var binding = GetBindingExpression(PropertyProperty);
+      if (binding != null)
+      {
+        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
+          _bindingPath = binding.ParentBinding.Path.Path;
+        else
+          _bindingPath = string.Empty;
+        _source = GetRealSource(binding.DataItem, _bindingPath);
+        if (_bindingPath.IndexOf('.') > 0)
+          _bindingPath = _bindingPath.Substring(_bindingPath.LastIndexOf('.') + 1);
+      }
+      else
+      {
+        _source = null;
+        _bindingPath = string.Empty;
+      }
+
+      HandleIsBusy(old, _source);
+
+      FindIsReadOnly();
+      UpdateState();
+    }
+
+    private object GetRealSource(object source, string bindingPath)
+    {
+      if (bindingPath.IndexOf('.') > 0)
+      {
+        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+        var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
+        return GetRealSource(
+          MethodCaller.GetPropertyValue(source, p),
+          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+      }
+      else
+        return source;
+    }
+
+    private void HandleIsBusy(object old, object source)
+    {
+      if (!ReferenceEquals(old, source))
+      {
+        DetachSource(old);
+        AttachSource(source);
+        BusinessBase bb = _source as BusinessBase;
+        if (bb != null)
+        {
+          _isBusy = bb.IsPropertyBusy(_bindingPath);
+        }
+      }
+    }
+
+    private void DetachSource(object source)
+    {
+      INotifyBusy busy = source as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged -= source_BusyChanged;
+    }
+
+    private void AttachSource(object source)
+    {
+      INotifyBusy busy = source as INotifyBusy;
+      if (busy != null)
+        busy.BusyChanged += source_BusyChanged;
+    }
+
+    void source_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      if (e.PropertyName == _bindingPath)
+      {
+        bool busy = e.Busy;
+        BusinessBase bb = _source as BusinessBase;
+        if (bb != null)
+          busy = bb.IsPropertyBusy(_bindingPath);
+
+        if (busy != _isBusy)
+        {
+          _isBusy = busy;
+          UpdateState();
+        }
+      }
+    }
+
+    #endregion
+
+    #region Target property
+
+    /// <summary>
+    /// Gets or sets the target control to which this control is bound.
+    /// </summary>
+    public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
+      "TargetControl",
+      typeof(object),
       typeof(PropertyStatus),
       null);
+
+    /// <summary>
+    /// Gets or sets the target control to which this control is bound.
+    /// </summary>
+    public object TargetControl
+    {
+      get { return GetValue(TargetControlProperty); }
+      set { SetValue(TargetControlProperty, value); }
+    }
+
+    #endregion
+
+    #region BrokenRules property
 
     /// <summary>
     /// Gets the broken rules collection from the
@@ -93,86 +210,6 @@ namespace Csla.Silverlight
       null);
 
     /// <summary>
-    /// Gets or sets the path to the UI control
-    /// to manipulate based on authorization processing.
-    /// </summary>
-    public static readonly DependencyProperty RelativeTargetPathProperty = DependencyProperty.Register(
-      "RelativeTargetPath",
-      typeof(string),
-      typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).Target = null));
-
-    /// <summary>
-    /// Gets or sets the name of the UI control
-    /// to manipulate based on authorization processing.
-    /// </summary>
-    public static readonly DependencyProperty RelativeTargetNameProperty = DependencyProperty.Register(
-      "RelativeTargetName",
-      typeof(string),
-      typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).Target = null));
-
-    #endregion
-
-    #region Member fields and properties
-
-    private DependencyObject _target;
-    private bool _isReadOnly = false;
-    private bool _isValid = true;
-    private RuleSeverity _worst;
-    private FrameworkElement _lastImage;
-    private bool _isBusy;
-
-    /// <summary>
-    /// Gets or sets the source business
-    /// object to which this control is bound.
-    /// </summary>
-    private object Source
-    {
-      get { return GetValue(SourceProperty); }
-      set
-      {
-        object old = Source;
-        SetValue(SourceProperty, value);
-        SetSource(old, value);
-      }
-    }
-
-    private bool _settingSource;
-
-    private void SetSource(object old, object @new)
-    {
-      _settingSource = true;
-
-      DetachSource(old);
-      AttachSource(@new);
-
-      BusinessBase bb = @new as BusinessBase;
-      if (bb != null && !string.IsNullOrEmpty(Property))
-        _isBusy = bb.IsPropertyBusy(Property);
-
-      CheckProperty();
-      UpdateState();
-
-      _settingSource = false;
-    }
-
-    /// <summary>
-    /// Gets or sets the name of the business object
-    /// property to use for authorization and validation
-    /// rule processing.
-    /// </summary>
-    public string Property
-    {
-      get { return (string)GetValue(PropertyProperty); }
-      set 
-      { 
-        SetValue(PropertyProperty, value);
-        CheckProperty();
-      }
-    }
-
-    /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
@@ -180,137 +217,6 @@ namespace Csla.Silverlight
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
-    }
-
-    /// <summary>
-    /// Gets or sets the path to the UI control
-    /// to manipulate based on authorization processing.
-    /// </summary>
-    public string RelativeTargetPath
-    {
-      get { return (string)GetValue(RelativeTargetPathProperty); }
-      set
-      {
-        SetValue(RelativeTargetPathProperty, value);
-        _target = null;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the name of the UI control
-    /// to manipulate based on authorization processing.
-    /// </summary>
-    public string RelativeTargetName
-    {
-      get { return (string)GetValue(RelativeTargetNameProperty); }
-      set
-      {
-        SetValue(RelativeTargetNameProperty, value);
-        _target = null;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the UI control to manipulate
-    /// based on authorization processing.
-    /// </summary>
-    public DependencyObject Target
-    {
-      get { return _target; }
-      set { _target = value; }
-    }
-
-    #endregion
-
-    #region Source
-
-    private void AttachSource(object source)
-    {
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
-        busy.BusyChanged += new BusyChangedEventHandler(source_BusyChanged);
-
-      INotifyPropertyChanged changed = source as INotifyPropertyChanged;
-      if (changed != null)
-        changed.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
-    }
-
-    private void DetachSource(object source)
-    {
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
-        busy.BusyChanged -= new BusyChangedEventHandler(source_BusyChanged);
-
-      INotifyPropertyChanged changed = source as INotifyPropertyChanged;
-      if (changed != null)
-        changed.PropertyChanged -= new PropertyChangedEventHandler(source_PropertyChanged);
-    }
-
-    void source_BusyChanged(object sender, BusyChangedEventArgs e)
-    {
-      if (e.PropertyName == Property)
-      {
-        bool busy = e.Busy;
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
-          busy = bb.IsPropertyBusy(Property);
-
-        if (busy != _isBusy)
-        {
-          _isBusy = busy;
-          UpdateState();
-        }
-      }
-    }
-
-    private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      if (!_isBusy && e.PropertyName == Property || string.IsNullOrEmpty(e.PropertyName))
-        UpdateState();
-    }
-
-    private void UpdateState()
-    {
-      Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null)
-        popup.IsOpen = false;
-
-      BusinessBase businessObject = Source as BusinessBase;
-      if (businessObject != null)
-      {
-        var allRules = (from r in businessObject.BrokenRulesCollection
-                        where r.Property == Property
-                        select r).ToArray();
-
-        var removeRules = (from r in BrokenRules
-                           where !allRules.Contains(r)
-                           select r).ToArray();
-
-        var addRules = (from r in allRules
-                        where !BrokenRules.Contains(r)
-                        select r).ToArray();
-
-        foreach (var rule in removeRules)
-          BrokenRules.Remove(rule);
-        foreach (var rule in addRules)
-          BrokenRules.Add(rule);
-
-        BrokenRule worst = (from r in BrokenRules
-                            orderby r.Severity
-                            select r).FirstOrDefault();
-
-        if (worst != null)
-          _worst = worst.Severity;
-
-        _isValid = BrokenRules.Count == 0;
-        GoToState(true);
-      }
-      else
-      {
-        BrokenRules.Clear();
-        _isValid = true;
-        GoToState(true);
-      }
     }
 
     #endregion
@@ -369,10 +275,53 @@ namespace Csla.Silverlight
 
     #region State management
 
+    private void UpdateState()
+    {
+      Popup popup = (Popup)FindChild(this, "popup");
+      if (popup != null)
+        popup.IsOpen = false;
+
+      BusinessBase businessObject = _source as BusinessBase;
+      if (businessObject != null)
+      {
+        var allRules = (from r in businessObject.BrokenRulesCollection
+                        where r.Property == _bindingPath
+                        select r).ToArray();
+
+        var removeRules = (from r in BrokenRules
+                           where !allRules.Contains(r)
+                           select r).ToArray();
+
+        var addRules = (from r in allRules
+                        where !BrokenRules.Contains(r)
+                        select r).ToArray();
+
+        foreach (var rule in removeRules)
+          BrokenRules.Remove(rule);
+        foreach (var rule in addRules)
+          BrokenRules.Add(rule);
+
+        BrokenRule worst = (from r in BrokenRules
+                            orderby r.Severity
+                            select r).FirstOrDefault();
+
+        if (worst != null)
+          _worst = worst.Severity;
+
+        _isValid = BrokenRules.Count == 0;
+        GoToState(true);
+      }
+      else
+      {
+        BrokenRules.Clear();
+        _isValid = true;
+        GoToState(true);
+      }
+    }
+
     private void GoToState(bool useTransitions)
     {
       DisablePopup(_lastImage);
-      EnsureTarget();
       HandleTarget();
 
       BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
@@ -399,27 +348,17 @@ namespace Csla.Silverlight
 
     #region RelativeTarget
 
-    private void EnsureTarget()
+    private void FindIsReadOnly()
     {
-      if (!_settingSource && _target == null)
+      if (_source != null && !string.IsNullOrEmpty(_bindingPath))
       {
-        _target = VisualTree.FindParent(RelativeTargetPath, this);
-        if (!string.IsNullOrEmpty(RelativeTargetName))
-          _target = VisualTree.FindByName(RelativeTargetName, _target);
-      }
-    }
-
-    private void CheckProperty()
-    {
-      if (Source != null && !string.IsNullOrEmpty(Property))
-      {
-        var info = Source.GetType().GetProperty(Property);
+        var info = _source.GetType().GetProperty(_bindingPath);
         if (info != null)
         {
           _isReadOnly = !info.CanWrite;
           if (!_isReadOnly)
           {
-            var setter = Source.GetType().GetMethod("set_" + Property);
+            var setter = _source.GetType().GetMethod("set_" + _bindingPath);
             if (setter == null)
               _isReadOnly = true;
             else
@@ -435,34 +374,34 @@ namespace Csla.Silverlight
 
     private void HandleTarget()
     {
-      if (_target != null && !string.IsNullOrEmpty(Property))
+      if (TargetControl != null && !string.IsNullOrEmpty(_bindingPath))
       {
-        var b = Source as Csla.Security.IAuthorizeReadWrite;
+        var b = _source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
-          bool canWrite = b.CanWriteProperty(Property);
+          bool canWrite = b.CanWriteProperty(_bindingPath);
           if (canWrite && !_isReadOnly)
           {
-            if (MethodCaller.IsMethodImplemented(_target, "set_IsReadOnly", false))
-              MethodCaller.CallMethod(_target, "set_IsReadOnly", false);
+            if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
+              MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
             else
-              MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", true);
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", true);
           }
           else
           {
-            if (MethodCaller.IsMethodImplemented(_target, "set_IsReadOnly", true))
-              MethodCaller.CallMethod(_target, "set_IsReadOnly", true);
+            if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", true))
+              MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", true);
             else
-              MethodCaller.CallMethodIfImplemented(_target, "set_IsEnabled", false);
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
           }
 
-          bool canRead = b.CanReadProperty(Property);
+          bool canRead = b.CanReadProperty(_bindingPath);
           if (!canRead)
           {
-            if (MethodCaller.IsMethodImplemented(_target, "set_Content", null))
-              MethodCaller.CallMethod(_target, "set_Content", null);
+            if (MethodCaller.IsMethodImplemented(TargetControl, "set_Content", null))
+              MethodCaller.CallMethod(TargetControl, "set_Content", null);
             else
-              MethodCaller.CallMethodIfImplemented(_target, "set_Text", "");
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_Text", "");
           }
         }
       }

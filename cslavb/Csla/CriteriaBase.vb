@@ -15,14 +15,12 @@ Public Class CriteriaBase
   Inherits Core.ManagedObjectBase
   Implements ICriteria
 
-  Private Shared _forceInit As Boolean = True
-
   ''' <summary>
   ''' Defines the TypeName property.
   ''' </summary>
   <EditorBrowsable(EditorBrowsableState.Never)> _
   Public Shared ReadOnly TypeNameProperty As PropertyInfo(Of String) = _
-    RegisterProperty(Of CriteriaBase, String)(Function(c) (c.TypeName)) 'TODO: Is this correct?
+    RegisterProperty(Of CriteriaBase, String)(Function(c) (c.TypeName))
 
   <NonSerialized()> _
   <Csla.NotUndoable()> _
@@ -37,7 +35,7 @@ Public Class CriteriaBase
       If _objectType Is Nothing AndAlso FieldManager.FieldExists(TypeNameProperty) Then
         Dim typeName As String = ReadProperty(TypeNameProperty)
         If Not String.IsNullOrEmpty(typeName) Then
-          _objectType = Csla.Reflection.MethodCaller.GetType(typeName, False)
+          _objectType = Csla.Reflection.MethodCaller.[GetType](typeName, False)
         End If
       End If
       Return _objectType

@@ -4,7 +4,6 @@ Imports System.Collections.Generic
 Imports Csla.Serialization
 Imports System.Resources
 Imports Csla.Serialization.Mobile
-Imports System.Reflection
 
 Namespace Core.FieldManager
 
@@ -650,7 +649,7 @@ Namespace Core.FieldManager
 
       Dim t As Type = type
       While t IsNot Nothing
-        Dim fields() As FieldInfo = t.GetFields(attr)
+        Dim fields() = t.GetFields(attr)
         If fields.Length > 0 Then
           fields(0).GetValue(Nothing)
         End If

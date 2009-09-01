@@ -314,6 +314,10 @@ namespace Csla.Silverlight
     }
 
     private string _ruleDescription = string.Empty;
+    /// <summary>
+    /// Gets the description of the most severe
+    /// broken rule for this property.
+    /// </summary>
     public string RuleDescription
     {
       get { return _ruleDescription; }

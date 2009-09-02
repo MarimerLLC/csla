@@ -21,13 +21,13 @@ namespace Csla.Silverlight
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(T), typeof(ViewModel<T>), new PropertyMetadata(null));
+        DependencyProperty.Register("Model", typeof(object), typeof(ViewModelBase<T>), null);
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model
+    public object Model
     {
-      get { return (T)GetValue(ModelProperty); }
+      get { return GetValue(ModelProperty); }
       set { SetValue(ModelProperty, value); }
     }
 
@@ -38,7 +38,7 @@ namespace Csla.Silverlight
     /// </summary>
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
         DependencyProperty.Register("ManageObjectLifetime", typeof(bool),
-        typeof(ViewModel<T>), new PropertyMetadata(true));
+        typeof(ViewModelBase<T>), new PropertyMetadata(true));
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// ViewManageObjectLifetime should automatically managed the

@@ -227,6 +227,27 @@ namespace Csla.Test.Basic
       //it should bring back 1 item 
       Assert.IsTrue(anotherQuery.Count() == 1);
     }
+
+    [TestMethod]
+    public void AddNewItemToLBL()
+    {
+      var list = TestCollection.GetList();
+      Assert.AreEqual(list.Count, 5);
+
+      var filtered = from r in list
+                     where r.Id > 10
+                     select r;
+      Assert.AreEqual(filtered.Count(), 3);
+
+      var lbl = filtered as Csla.LinqBindingList<TestItem>;
+      Assert.IsNotNull(lbl);
+      Assert.AreEqual(lbl.Count, 3);
+
+      var @new = (TestItem)lbl.AddNew();
+      Assert.AreEqual(list.Count, 6);
+      Assert.AreEqual(lbl.Count, 3);
+      Assert.IsTrue(@new.HasParent());
+    }
   }
 
   [Serializable]
@@ -289,19 +310,59 @@ namespace Csla.Test.Basic
   [Serializable]
   public class TestCollection : BusinessListBase<TestCollection, TestItem>
   {
+    public TestCollection()
+    {
+      AllowNew = true;
+    }
+
+    protected override object AddNewCore()
+    {
+      var item = Csla.DataPortal.CreateChild<TestItem>();
+      Add(item);
+      return item;
+    }
+
+    public static TestCollection GetList()
+    {
+      return Csla.DataPortal.Fetch<TestCollection>();
+    }
+
+    private void DataPortal_Fetch()
+    {
+      Add(Csla.DataPortal.FetchChild<TestItem>(123));
+      Add(Csla.DataPortal.FetchChild<TestItem>(2));
+      Add(Csla.DataPortal.FetchChild<TestItem>(13));
+      Add(Csla.DataPortal.FetchChild<TestItem>(23));
+      Add(Csla.DataPortal.FetchChild<TestItem>(3));
+    }
   }
 
   [Serializable]
   public class TestItem : BusinessBase<TestItem>
   {
-    protected override object GetIdValue()
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
     {
-      return 0;
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    public bool HasParent()
+    {
+      return (Parent != null);
     }
 
     public TestItem()
     {
       MarkAsChild();
+    }
+
+    private void Child_Create()
+    { }
+
+    private void Child_Fetch(int id)
+    {
+      LoadProperty(IdProperty, id);
     }
   }
 

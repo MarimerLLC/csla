@@ -1169,9 +1169,7 @@ Namespace Core
     ''' </summary>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnValidationComplete()
-      If _validationCompleteHandlers IsNot Nothing Then
-        RaiseEvent ValidationComplete(Me, EventArgs.Empty)
-      End If
+      RaiseEvent ValidationComplete(Me, EventArgs.Empty)
     End Sub
 
     Private Sub InitializeBusinessRules()
@@ -1599,27 +1597,27 @@ Namespace Core
     ''' <param name="child">Child object.</param>
     <EditorBrowsable(EditorBrowsableState.Never)> _
     Protected Overridable Sub OnRemoveEventHooks(ByVal child As IBusinessObject)
-      Dim busy As INotifyBusy = DirectCast(child, INotifyBusy)
+      Dim busy As INotifyBusy = TryCast(child, INotifyBusy)
       If busy IsNot Nothing Then
         RemoveHandler busy.BusyChanged, AddressOf Child_BusyChanged
       End If
 
-      Dim unhandled As INotifyUnhandledAsyncException = DirectCast(child, INotifyUnhandledAsyncException)
+      Dim unhandled As INotifyUnhandledAsyncException = TryCast(child, INotifyUnhandledAsyncException)
       If unhandled IsNot Nothing Then
         RemoveHandler unhandled.UnhandledAsyncException, AddressOf Child_UnhandledAsyncException
       End If
 
-      Dim pc As INotifyPropertyChanged = DirectCast(child, INotifyPropertyChanged)
+      Dim pc As INotifyPropertyChanged = TryCast(child, INotifyPropertyChanged)
       If pc IsNot Nothing Then
         RemoveHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
       End If
 
-      Dim bl As IBindingList = DirectCast(child, IBindingList)
+      Dim bl As IBindingList = TryCast(child, IBindingList)
       If bl IsNot Nothing Then
         RemoveHandler bl.ListChanged, AddressOf Child_ListChanged
       End If
 
-      Dim cc As INotifyChildChanged = DirectCast(child, INotifyChildChanged)
+      Dim cc As INotifyChildChanged = TryCast(child, INotifyChildChanged)
       If cc IsNot Nothing Then
         RemoveHandler cc.ChildChanged, AddressOf Child_Changed
       End If
@@ -2518,7 +2516,7 @@ Namespace Core
       End If
 
       If valuesDiffer Then
-        
+
         Dim old As IBusinessObject = TryCast(oldValue, IBusinessObject)
         If old IsNot Nothing Then
           RemoveEventHooks(old)
@@ -2544,17 +2542,8 @@ Namespace Core
           Else
             FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
           End If
-          Dim child As IEditableBusinessObject = DirectCast(newValue, IEditableBusinessObject)
-          If child IsNot Nothing Then
-            child.SetParent(Me)
-            ' set child edit level
-            UndoableBase.ResetChildEditLevel(child, Me.EditLevel, Me.BindingEdit)
-            ' reset EditLevelAdded 
-            child.EditLevelAdded = Me.EditLevel
-            '' hook child event
-            'Dim pc As INotifyPropertyChanged = DirectCast(newValue, INotifyPropertyChanged)
-            'AddHandler pc.PropertyChanged, AddressOf Child_PropertyChanged
-          End If
+
+          ResetChildEditLevel(newValue)
 
         ElseIf GetType(IEditableCollection).IsAssignableFrom(propertyInfo.Type) Then
           '' remove old event hooks
@@ -2569,17 +2558,7 @@ Namespace Core
           Else
             FieldManager.LoadFieldData(Of P)(propertyInfo, newValue)
           End If
-          Dim child As IEditableCollection = DirectCast(newValue, IEditableCollection)
-          If child IsNot Nothing Then
-            child.SetParent(Me)
-            Dim undoChild As IUndoableObject = TryCast(child, IUndoableObject)
-            If undoChild IsNot Nothing Then
-              ' set child edit level
-              UndoableBase.ResetChildEditLevel(undoChild, Me.EditLevel, Me.BindingEdit)
-            End If
-            'Dim pc As IBindingList = DirectCast(newValue, IBindingList)
-            'AddHandler pc.ListChanged, AddressOf Child_ListChanged
-          End If
+          ResetChildEditLevel(newValue)
 
         Else
           If markDirty Then
@@ -2610,7 +2589,37 @@ Namespace Core
     ''' invoked.
     ''' </remarks>
     Protected Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
+      ResetChildEditLevel(newValue)
       FieldManager.LoadFieldData(propertyInfo, newValue)
+    End Sub
+
+    ''' <summary>
+    ''' Makes sure that a child object is set up properly
+    ''' to be a child of this object.
+    ''' </summary>
+    ''' <param name="newValue">Potential child object</param>
+    Private Shadows Sub ResetChildEditLevel(ByVal newValue As Object)
+      Dim child As IEditableBusinessObject = TryCast(newValue, IEditableBusinessObject)
+      If child IsNot Nothing Then
+        child.SetParent(Me)
+
+        'set child edit level
+        UndoableBase.ResetChildEditLevel(child, Me.EditLevel, Me.BindingEdit)
+
+        'reset EditLevelAdded 
+        child.EditLevelAdded = Me.EditLevel
+      Else
+        Dim col As IEditableCollection = TryCast(newValue, IEditableCollection)
+        If col IsNot Nothing Then
+          col.SetParent(Me)
+
+          Dim undo As IUndoableObject = TryCast(newValue, IUndoableObject)
+          If undo IsNot Nothing Then
+            'set child edit level
+            UndoableBase.ResetChildEditLevel(undo, Me.EditLevel, Me.BindingEdit)
+          End If
+        End If
+      End If
     End Sub
 
     <NonSerialized()> _
@@ -2934,9 +2943,7 @@ Namespace Core
     ''' </param>
     <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnChildChanged(ByVal e As ChildChangedEventArgs)
-      If _childChangedHandlers IsNot Nothing Then
-        RaiseEvent ChildChanged(Me, e)
-      End If
+      RaiseEvent ChildChanged(Me, e)
     End Sub
 
     ''' <summary>
@@ -3106,6 +3113,10 @@ Namespace Core
 
     Private Function IManageProperties_ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object Implements IManageProperties.ReadProperty
       Return ReadProperty(propertyInfo)
+    End Function
+
+    Private Function IManageProperties_ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P Implements IManageProperties.ReadProperty
+      Return ReadProperty(Of P)(propertyInfo)
     End Function
 
     Private Sub IManageProperties_SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object) Implements IManageProperties.SetProperty

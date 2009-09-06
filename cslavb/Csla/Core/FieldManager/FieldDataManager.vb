@@ -132,7 +132,7 @@ Namespace Core.FieldManager
     ''' The property corresponding to the field.
     ''' </param>
     <System.ComponentModel.EditorBrowsable(ComponentModel.EditorBrowsableState.Advanced)> _
-    Friend Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
+    Public Function GetFieldData(ByVal prop As IPropertyInfo) As IFieldData
       Try
         Return _fieldData(prop.Index)
 

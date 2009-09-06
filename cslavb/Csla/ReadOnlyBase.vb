@@ -957,7 +957,7 @@ Public MustInherit Class ReadOnlyBase(Of T As ReadOnlyBase(Of T))
   ''' </typeparam>
   ''' <param name="propertyInfo">
   ''' <see cref="PropertyInfo" /> object containing property metadata.</param>
-  Protected Function ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
+  Protected Function ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P Implements Core.IManageProperties.ReadProperty
 
     Dim result As P = Nothing
     Dim data As FieldManager.IFieldData = FieldManager.GetFieldData(propertyInfo)

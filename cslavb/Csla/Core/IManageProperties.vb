@@ -9,6 +9,7 @@ Namespace Core
     Function GetManagedProperties() As List(Of IPropertyInfo)
     Function GetProperty(ByVal propertyInfo As IPropertyInfo) As Object
     Function ReadProperty(ByVal propertyInfo As IPropertyInfo) As Object
+    Function ReadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P)) As P
     Sub SetProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
     Sub LoadProperty(ByVal propertyInfo As IPropertyInfo, ByVal newValue As Object)
     Sub LoadProperty(Of P)(ByVal propertyInfo As PropertyInfo(Of P), ByVal newValue As P)

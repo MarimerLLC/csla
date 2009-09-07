@@ -287,10 +287,10 @@ Namespace Core
 
     Private Custom Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
       AddHandler(ByVal value As PropertyChangedEventHandler)
-        _propertyChanged = DirectCast([Delegate].Combine(_propertyChanged, value), PropertyChangedEventHandler)
+        _propertyChanged = CType(System.Delegate.Combine(_propertyChanged, value), PropertyChangedEventHandler)
       End AddHandler
       RemoveHandler(ByVal value As PropertyChangedEventHandler)
-        _propertyChanged = DirectCast([Delegate].Remove(_propertyChanged, value), PropertyChangedEventHandler)
+        _propertyChanged = CType(System.Delegate.Remove(_propertyChanged, value), PropertyChangedEventHandler)
       End RemoveHandler
       RaiseEvent(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
         If _propertyChanged IsNot Nothing Then
@@ -366,6 +366,12 @@ Namespace Core
       OnDeserialized(context)
     End Sub
 
+    ''' <summary>
+    ''' This method is called on a newly deserialized object
+    ''' after deserialization is complete.
+    ''' </summary>
+    ''' <param name="context">Serialization context object.</param>
+    <EditorBrowsable(EditorBrowsableState.Advanced)> _
     Protected Overridable Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)
       If FieldManager IsNot Nothing Then
         FieldManager.SetPropertyList(Me.GetType())

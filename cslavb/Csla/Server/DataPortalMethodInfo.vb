@@ -30,7 +30,7 @@ Namespace Server
     End Sub
 
     Public Sub New(ByVal info As MethodInfo)
-      MyBase.New()
+      Me.New()
 
       If info IsNot Nothing Then
         Me.RunLocal = IsRunLocal(info)

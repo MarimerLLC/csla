@@ -117,7 +117,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Marks the field as unchanged.
     /// </summary>
-    public void MarkClean()
+    public virtual void MarkClean()
     {
 
       _isDirty = false;

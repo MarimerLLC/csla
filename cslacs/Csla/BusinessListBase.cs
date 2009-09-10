@@ -1132,9 +1132,7 @@ namespace Csla
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Create()
-    {
-      throw new NotSupportedException(Resources.CreateNotSupportedException);
-    }
+    { }
 
     /// <summary>
     /// Override this method to allow retrieval of an existing business

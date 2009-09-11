@@ -18,7 +18,7 @@ namespace Csla.Silverlight
     /// The MethodParameter value provided by
     /// the designer.
     /// </summary>
-    public object MethodParamter { get; set; }
+    public object MethodParameter { get; set; }
     /// <summary>
     /// The EventArgs parameter from the event
     /// that triggered invocation of this method.

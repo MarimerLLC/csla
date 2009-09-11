@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Reflection;
+using Csla.Reflection;
 
 namespace Csla.Silverlight
 {
@@ -48,6 +50,39 @@ namespace Csla.Silverlight
     {
       get { return (bool)GetValue(ManageObjectLifetimeProperty); }
       set { SetValue(ManageObjectLifetimeProperty, value); }
+    }
+
+    private Exception _error;
+
+    /// <summary>
+    /// Gets the Error object corresponding to the
+    /// last asyncronous operation.
+    /// </summary>
+    public Exception Error
+    {
+      get { return _error; }
+      protected set
+      {
+        _error = value;
+        OnPropertyChanged("Error");
+      }
+    }
+
+    private bool _isBusy;
+
+    /// <summary>
+    /// Gets a value indicating whether this object is
+    /// executing an asynchronous process.
+    /// </summary>
+    public bool IsBusy
+    {
+      get { return _isBusy; }
+      protected set
+      {
+        _isBusy = value;
+        OnPropertyChanged("IsBusy");
+        SetProperties();
+      }
     }
 
     #endregion
@@ -125,6 +160,60 @@ namespace Csla.Silverlight
     #region Verbs
 
     /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
+    /// <param name="factoryMethod">Name of the static factory method.</param>
+    /// <param name="factoryParameters">Factory method parameters.</param>
+    protected virtual void DoRefresh(string factoryMethod, params object[] factoryParameters)
+    {
+      if (typeof(T) != null)
+        try
+        {
+          Error = null;
+          this.IsBusy = true;
+          var parameters = new List<object>(factoryParameters);
+          parameters.Add(CreateHandler(typeof(T)));
+
+          MethodCaller.CallFactoryMethod(typeof(T), factoryMethod, parameters.ToArray());
+        }
+        catch (Exception ex)
+        {
+          this.Error = ex;
+        }
+    }
+
+    private Delegate CreateHandler(Type objectType)
+    {
+      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
+      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
+      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
+      return handler;
+    }
+
+
+    private void QueryCompleted(object sender, EventArgs e)
+    {
+      this.IsBusy = false;
+      var eventArgs = (IDataPortalResult)e;
+      if (eventArgs.Error == null)
+      {
+        Model = eventArgs.Object;
+        if (this.ManageObjectLifetime)
+        {
+          var undo = Model as Csla.Core.ISupportUndo;
+          if (undo != null)
+            undo.BeginEdit();
+        }
+        SetProperties();
+      }
+      else
+      {
+        Error = eventArgs.Error;
+      }
+    }
+
+    /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
@@ -141,15 +230,31 @@ namespace Csla.Silverlight
       var savable = (Csla.Core.ISavable)Model;
       savable.Saved += (o, e) =>
       {
-        var result = e.NewObject;
-        if (this.ManageObjectLifetime)
+        IsBusy = false;
+        if (e.Error == null)
         {
-          undo = result as Csla.Core.ISupportUndo;
-          if (undo != null)
-            undo.BeginEdit();
+          var result = e.NewObject;
+          if (this.ManageObjectLifetime)
+          {
+            undo = result as Csla.Core.ISupportUndo;
+            if (undo != null)
+              undo.BeginEdit();
+          }
+          Model = (T)result;
         }
-        Model = (T)result;
+        else
+        {
+          if (this.ManageObjectLifetime)
+          {
+            undo = Model as Csla.Core.ISupportUndo;
+            if (undo != null)
+              undo.BeginEdit();
+          }
+          Error = e.Error;
+        }
       };
+      Error = null;
+      IsBusy = true;
       savable.BeginSave();
     }
 

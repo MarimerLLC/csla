@@ -21,45 +21,81 @@ namespace Csla.Silverlight
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    public void Save()
+    public virtual void Save(object sender, ExecuteEventArgs e)
     {
-      base.DoSave();
+      Save();
+    }
+
+    /// <summary>
+    /// Saves the Model, first committing changes
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    public virtual void Save()
+    {
+      DoSave();
     }
 
     /// <summary>
     /// Cancels changes made to the model 
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    public void Cancel()
+    public virtual void Cancel(object sender, ExecuteEventArgs e)
     {
-      base.DoCancel();
+      Cancel();
+    }
+
+    /// <summary>
+    /// Cancels changes made to the model 
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    public virtual void Cancel()
+    {
+      DoCancel();
     }
 
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
     /// </summary>
-    public void AddNew()
+    public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
-      base.DoAddNew();
+      AddNew();
+    }
+
+    /// <summary>
+    /// Adds a new item to the Model (if it
+    /// is a collection).
+    /// </summary>
+    public virtual void AddNew()
+    {
+      DoAddNew();
     }
 
     /// <summary>
     /// Removes an item from the Model (if it
     /// is a collection).
     /// </summary>
-    public void Remove(T item)
+    public virtual void Remove(T item)
     {
-      base.DoRemove(item);
+      DoRemove(item);
     }
 
     /// <summary>
     /// Marks the Model for deletion (if it is an
     /// editable root object).
     /// </summary>
-    public void Delete()
+    public virtual void Delete(object sender, ExecuteEventArgs e)
     {
-      base.DoDelete();
+      Delete();
+    }
+
+    /// <summary>
+    /// Marks the Model for deletion (if it is an
+    /// editable root object).
+    /// </summary>
+    public virtual void Delete()
+    {
+      DoDelete();
     }
 
     #endregion

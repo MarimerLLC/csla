@@ -75,7 +75,7 @@ namespace Csla.Silverlight
           obj.CallMethod(methodName, this, new ExecuteEventArgs
           {
             TriggerSource = element,
-            MethodParamter = this.MethodParameter,
+            MethodParameter = this.MethodParameter,
             TriggerParameter = parameter
           });
         }

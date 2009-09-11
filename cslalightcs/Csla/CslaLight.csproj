@@ -104,8 +104,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoFactory.cs">
+      <Link>Core\FieldManager\PropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoManager.cs">
+      <Link>Core\FieldManager\PropertyInfoManager.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\CommandBase.cs">
       <Link>CommandBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
+      <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfoFactory.cs">
+      <Link>Core\IPropertyInfoFactory.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\DataPortalResult.cs">
       <Link>DataPortalResult.cs</Link>
@@ -367,7 +379,6 @@
     <Compile Include="Core\FieldManager\FieldDataManager.cs" />
     <Compile Include="Core\FieldManager\IFieldData.cs" />
     <Compile Include="Core\FieldManager\IFieldDataT.cs" />
-    <Compile Include="Core\FieldManager\PropertyInfoManager.cs" />
     <Compile Include="Core\IBusinessObject.cs" />
     <Compile Include="Core\IEditableBusinessObject.cs" />
     <Compile Include="Core\IExtendedBindingList.cs" />

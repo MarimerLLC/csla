@@ -76,7 +76,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T),new PropertyInfo<P>(reflectedPropertyInfo.Name));
+      return RegisterProperty(typeof(T),Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(reflectedPropertyInfo.Name));
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName));
+      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(reflectedPropertyInfo.Name, friendlyName));
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue));
+      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue));
     }
 
     #endregion

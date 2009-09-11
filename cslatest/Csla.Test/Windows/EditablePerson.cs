@@ -29,14 +29,14 @@ namespace Csla.Test.Windows
       return new EditablePerson();
     }
 
-    public static readonly PropertyInfo<string> FirstNameProperty = RegisterProperty(new PropertyInfo<string>("FirstName", "FirstName"));
+    public static readonly PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
       set { SetProperty(FirstNameProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> LastNameProperty = RegisterProperty(new PropertyInfo<string>("LastName", "LastName"));
+    public static readonly PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName, "Last name");
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }

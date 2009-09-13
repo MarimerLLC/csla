@@ -124,7 +124,8 @@ Namespace Data
     Private Sub New(ByVal connectionString As String, ByVal label As String)
       _label = label
       _connectionString = connectionString
-      _context = DirectCast(Activator.CreateInstance(GetType(C), connectionString), C)
+      _context = CType(Activator.CreateInstance(GetType(C), connectionString), C)
+      _context.Connection.Open()
     End Sub
 
     Private Shared Function GetContextName(ByVal connectionString As String, ByVal label As String) As String

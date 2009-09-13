@@ -237,12 +237,12 @@ Public Class DataPortal(Of T)
         Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
           obj = CType(result.Result, T)
-
-          OnCreateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
+
+        OnCreateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
+
         Return
       End If
-      Return
     End If
     
     OnCreateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -357,10 +357,11 @@ Public Class DataPortal(Of T)
         Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
           obj = CType(result.Result, T)
-          OnFetchCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
+        OnFetchCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
+        Return
       End If
-      Return
+
     End If
     
     OnFetchCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -465,10 +466,10 @@ Public Class DataPortal(Of T)
         Dim obj As T = Nothing
         If result.Result IsNot Nothing Then
           obj = CType(result.Result, T)
-          OnUpdateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
         End If
+        OnUpdateCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
+        Return
       End If
-      Return
     End If
     
     OnUpdateCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -568,8 +569,8 @@ Public Class DataPortal(Of T)
         _globalContext = result.GlobalContext
         Dim obj As T = Nothing
         OnDeleteCompleted(New DataPortalResult(Of T)(obj, result.Error, result.UserState))
+        Return
       End If
-      Return
     End If
     
     OnDeleteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))
@@ -632,7 +633,6 @@ Public Class DataPortal(Of T)
           OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, result.UserState))
         End If
       End If
-      Return
     End If
     
     OnExecuteCompleted(New DataPortalResult(Of T)(Nothing, e.Error, Nothing))

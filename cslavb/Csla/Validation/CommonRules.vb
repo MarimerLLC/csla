@@ -326,7 +326,7 @@ Namespace Validation
     ''' <returns><see langword="false"/> if the rule is broken.</returns>
     Public Function IntegerMaxValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim args As DecoratedRuleArgs = CType(e, DecoratedRuleArgs)
       Dim max As Integer = CInt(args("MaxValue"))
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value > max Then
@@ -341,10 +341,9 @@ Namespace Validation
         e.Description = String.Format(My.Resources.MaxValueRule, _
           RuleArgs.GetPropertyName(e), outValue)
         Return False
-
-      Else
-        Return True
       End If
+
+      Return True
     End Function
 
     ''' <summary>
@@ -454,7 +453,7 @@ Namespace Validation
     ''' <returns><see langword="false"/> if the rule is broken.</returns>
     Public Function IntegerMinValue(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim args As DecoratedRuleArgs = CType(e, DecoratedRuleArgs)
       Dim min As Integer = CInt(args("MinValue"))
       Dim value As Integer = CType(CallByName(target, e.PropertyName, CallType.Get), Integer)
       If value < min Then
@@ -583,9 +582,9 @@ Namespace Validation
     ''' allowed value.</param>
     Public Function MaxValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim args As DecoratedRuleArgs = CType(e, DecoratedRuleArgs)
       Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
-      Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
+      Dim value As T = CType(pi.GetValue(target, Nothing), T)
       Dim max As T = CType(args("MaxValue"), T)
 
       Dim result As Integer = value.CompareTo(max)
@@ -722,9 +721,9 @@ Namespace Validation
     ''' allowed value.</param>
     Public Function MinValue(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean
 
-      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
+      Dim args As DecoratedRuleArgs = CType(e, DecoratedRuleArgs)
       Dim pi As PropertyInfo = target.GetType.GetProperty(e.PropertyName)
-      Dim value As T = DirectCast(pi.GetValue(target, Nothing), T)
+      Dim value As T = CType(pi.GetValue(target, Nothing), T)
       Dim min As T = CType(args("MinValue"), T)
 
       Dim result As Integer = value.CompareTo(min)
@@ -738,6 +737,7 @@ Namespace Validation
           outValue = String.Format(String.Format("{{0:{0}}}", format), min)
         End If
         e.Description = String.Format(My.Resources.MinValueRule, RuleArgs.GetPropertyName(e), min.ToString)
+        Return False
 
       Else
         Return True
@@ -860,17 +860,13 @@ Namespace Validation
     ''' <remarks>
     ''' This implementation uses late binding.
     ''' </remarks>
-    Public Function RegExMatch(ByVal target As Object, _
-      ByVal e As RuleArgs) As Boolean
-
+    Public Function RegExMatch(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim ruleSatisfied As Boolean
-      Dim args As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)
-      Dim expression As Regex = DirectCast(args("RegEx"), Regex)
-      Dim nullOption As RegExRuleArgs.NullResultOptions = _
-        DirectCast(args("NullOption"), RegExRuleArgs.NullResultOptions)
+      Dim args As DecoratedRuleArgs = CType(e, DecoratedRuleArgs)
+      Dim expression As Regex = CType(args("RegEx"), Regex)
+      Dim nullOption As RegExRuleArgs.NullResultOptions = CType(args("NullOption"), RegExRuleArgs.NullResultOptions)
 
-      Dim value As Object = _
-        CallByName(target, e.PropertyName, CallType.Get)
+      Dim value As Object = CallByName(target, e.PropertyName, CallType.Get)
 
       If value Is Nothing AndAlso nullOption = RegExRuleArgs.NullResultOptions.ConvertToEmptyString Then
         value = String.Empty
@@ -888,8 +884,7 @@ Namespace Validation
       End If
 
       If (Not ruleSatisfied) Then
-        e.Description = _
-          String.Format(My.Resources.RegExMatchRule, RuleArgs.GetPropertyName(e))
+        e.Description = String.Format(My.Resources.RegExMatchRule, RuleArgs.GetPropertyName(e))
         Return False
 
       Else
@@ -1259,7 +1254,7 @@ Namespace Validation
     Public Function CanRead(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim isAuthorized As Boolean = True
 
-      Dim business As BusinessBase = CType(target, BusinessBase)
+      Dim business As BusinessBase = TryCast(target, BusinessBase)
       If business IsNot Nothing AndAlso Not String.IsNullOrEmpty(e.PropertyName) Then
         isAuthorized = business.CanReadProperty(e.PropertyName)
       End If
@@ -1289,7 +1284,7 @@ Namespace Validation
     Public Function CanWrite(ByVal target As Object, ByVal e As RuleArgs) As Boolean
       Dim isAuthorized As Boolean = True
 
-      Dim business As BusinessBase = CType(target, BusinessBase)
+      Dim business As BusinessBase = TryCast(target, BusinessBase)
       If business IsNot Nothing AndAlso Not String.IsNullOrEmpty(e.PropertyName) Then
         isAuthorized = business.CanWriteProperty(e.PropertyName)
       End If

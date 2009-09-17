@@ -432,6 +432,36 @@ Namespace Validation
     End Sub
 
     ''' <summary>
+    ''' Adds an async rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <param name="handler">
+    ''' The method that implements the rule.
+    ''' </param>
+    ''' <param name="primaryProperty">
+    ''' The primary property checked by this rule.
+    ''' </param>
+    ''' <param name="priority">Priority for the rule</param>
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal primaryProperty As IPropertyInfo, ByVal priority As Integer)
+      AddRule(handler, New AsyncRuleArgs(primaryProperty, Nothing), priority)
+    End Sub
+
+    ''' <summary>
+    ''' Adds an async rule to the list of rules to be enforced.
+    ''' </summary>
+    ''' <param name="handler">
+    ''' The method that implements the rule.
+    ''' </param>
+    ''' <param name="args">
+    ''' An AsyncRuleArgs object specifying the property name and other arguments
+    ''' passed to the rule method
+    ''' </param>
+    ''' <param name="priority">Priority for the rule</param>
+    Public Sub AddRule(ByVal handler As AsyncRuleHandler, ByVal args As AsyncRuleArgs, ByVal priority As Integer)
+      ValidateHandler(handler)
+      GetTypeRules(True).AddRule(handler, args, priority)
+    End Sub
+
+    ''' <summary>
     ''' Adds a rule to the list of rules to be enforced.
     ''' </summary>
     ''' <remarks>
@@ -1188,7 +1218,7 @@ Namespace Validation
           'throw a more detailed exception
           Throw New ValidationException( _
             String.Format(My.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex)
-        End Try        
+        End Try
       Next
     End Sub
 
@@ -1241,7 +1271,7 @@ Namespace Validation
       Return BrokenRulesList
     End Function
 
-    Public ReadOnly Property IsValidating() As Boolean
+    Friend ReadOnly Property IsValidating() As Boolean
       Get
         SyncLock (SyncRoot)
           Return ValidatingRules.Count > 0

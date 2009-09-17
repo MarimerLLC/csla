@@ -190,7 +190,7 @@ Namespace Validation
     ''' </summary>
     Private ReadOnly Property IRuleMethod_RuleArgs() As RuleArgs Implements IRuleMethod.RuleArgs
       Get
-        Return RuleArgs
+        Return Me.RuleArgs
       End Get
     End Property
 
@@ -241,7 +241,7 @@ Namespace Validation
     ''' </summary>
     ''' <returns>True if the data is valid, False if the data is invalid.</returns>
     Private Function IRuleMethod_Invoke(ByVal target As Object) As Boolean Implements IRuleMethod.Invoke
-      Return Invoke(DirectCast(target, T))
+      Return Me.Invoke(CType(target, T))
     End Function
 
     ''' <summary>

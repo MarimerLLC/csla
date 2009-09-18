@@ -69,7 +69,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' </returns>
   Public Overloads Function Clone() As T
 
-    Return DirectCast(GetClone(), T)
+    Return CType(GetClone(), T)
 
   End Function
 
@@ -113,18 +113,15 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Public Overridable Function Save() As T
 
     If Me.IsChild Then
-      Throw New NotSupportedException( _
-        My.Resources.NoSaveChildException)
+      Throw New NotSupportedException(My.Resources.NoSaveChildException)
     End If
 
     If EditLevel > 0 Then
-      Throw New Validation.ValidationException( _
-        My.Resources.NoSaveEditingException)
+      Throw New Validation.ValidationException(My.Resources.NoSaveEditingException)
     End If
 
     If Not IsValid AndAlso Not IsDeleted Then
-      Throw New Validation.ValidationException( _
-        My.Resources.NoSaveInvalidException)
+      Throw New Validation.ValidationException(My.Resources.NoSaveInvalidException)
     End If
 
     If IsBusy Then
@@ -133,9 +130,9 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
 
     Dim result As T
     If IsDirty Then
-      result = DirectCast(DataPortal.Update(Me), T)
+      result = CType(DataPortal.Update(Me), T)
     Else
-      result = DirectCast(Me, T)
+      result = CType(Me, T)
     End If
 
     OnSaved(result, Nothing, Nothing)
@@ -174,7 +171,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' Starts an async operation to save the object to the database.
   ''' </summary>
   Public Sub BeginSave() Implements Core.ISavable.BeginSave
-    Dim saved As SavedEventArgs = Nothing
+    Dim saved As EventHandler(Of SavedEventArgs) = Nothing
     BeginSave(saved)
   End Sub
 
@@ -369,7 +366,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   End Function
 
   Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
-    OnSaved(DirectCast(newObject, T), Nothing, Nothing)
+    OnSaved(CType(newObject, T), Nothing, Nothing)
   End Sub
 
   <NonSerialized()> _
@@ -419,12 +416,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   Protected Sub OnSaved(ByVal newObject As T, ByVal e As Exception, ByVal userState As Object)
     MarkIdle()
     Dim args As New Core.SavedEventArgs(newObject, e, userState)
-    If _nonSerializableSavedHandlers IsNot Nothing Then
-      _nonSerializableSavedHandlers.Invoke(Me, args)
-    End If
-    If _serializableSavedHandlers IsNot Nothing Then
-      _serializableSavedHandlers.Invoke(Me, args)
-    End If
+    RaiseEvent Saved(Me, args)
   End Sub
 #End Region
 
@@ -456,7 +448,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <typeparam name="P">Type of property</typeparam>
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <returns></returns>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P))) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object))) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name))
   End Function
@@ -468,7 +460,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <typeparam name="P">Type of property</typeparam>
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <param name="relationship">Relationship with referenced object.</param>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, relationship))
   End Function
@@ -481,7 +473,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
   ''' <returns></returns>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName))
   End Function
@@ -494,7 +486,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
   ''' <param name="relationship">Default Value for the property</param>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, relationship))
   End Function
@@ -507,7 +499,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="propertyLambdaExpression">Property Expression</param>
   ''' <param name="friendlyName">Friendly description for a property to be used in databinding</param>
   ''' <param name="defaultValue">Default Value for the property</param>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal defaultValue As P) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue))
   End Function
@@ -523,7 +515,7 @@ Public MustInherit Class BusinessBase(Of T As BusinessBase(Of T))
   ''' <param name="relationship">Relationship with referenced object.</param>
   ''' <returns></returns>
   ''' <remarks></remarks>
-  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, P)), ByVal friendlyName As String, ByVal defaultValue As P, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
+  Protected Overloads Shared Function RegisterProperty(Of P)(ByVal propertyLambdaExpression As Expression(Of Func(Of T, Object)), ByVal friendlyName As String, ByVal defaultValue As P, ByVal relationship As RelationshipTypes) As PropertyInfo(Of P)
     Dim reflectedPropertyInfo As PropertyInfo = Reflect(Of T).GetProperty(propertyLambdaExpression)
     Return RegisterProperty(New PropertyInfo(Of P)(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship))
   End Function

@@ -445,9 +445,9 @@ Public MustInherit Class BusinessListBase( _
   ''' </summary>
   ''' <param name="child">The child object to remove.</param>
   Private Sub RemoveChild(ByVal child As Core.IEditableBusinessObject) Implements Core.IEditableCollection.RemoveChild, IParent.RemoveChild
-    RemoveFromMap(DirectCast(child, C))
-    Remove(DirectCast(child, C))
-    RemoveIndexItem(DirectCast(child, C))
+    RemoveFromMap(CType(child, C))
+    Remove(CType(child, C))
+    RemoveIndexItem(CType(child, C))
   End Sub
 
   Private Function GetDeletedList() As Object Implements IEditableCollection.GetDeletedList
@@ -568,7 +568,9 @@ Public MustInherit Class BusinessListBase( _
       item.EditLevelAdded = Me.EditLevel
       ' update the indexes
       ReIndexItem(item)
-      RemoveFromMap(item)
+
+
+      'RemoveFromMap(item)
       'add to list
       MyBase.SetItem(index, item)
       InsertIntoMap(item, index)
@@ -772,7 +774,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <summary>
   ''' Determines the position of a specific item from the list
   ''' </summary>.
-  Private Function PositionOf(ByVal item As C) As Integer Implements IPositionMappable(Of C).PositionOf
+  Public Function PositionOf(ByVal item As C) As Integer Implements IPositionMappable(Of C).PositionOf
     DeferredLoadPositionMapIfNotLoaded()
     Return _positionMap.PositionOf(item)
   End Function
@@ -894,7 +896,7 @@ Public MustInherit Class BusinessListBase( _
   ''' <returns>A new object containing the exact data of the original object.</returns>
   Public Overloads Function Clone() As T
 
-    Return DirectCast(GetClone(), T)
+    Return CType(GetClone(), T)
 
   End Function
 
@@ -1021,9 +1023,9 @@ Public MustInherit Class BusinessListBase( _
 
     Dim result As T
     If IsDirty Then
-      result = DirectCast(DataPortal.Update(Me), T)
+      result = CType(DataPortal.Update(Me), T)
     Else
-      result = DirectCast(Me, T)
+      result = CType(Me, T)
     End If
 
     OnSaved(result, Nothing, Nothing)
@@ -1262,7 +1264,7 @@ Public MustInherit Class BusinessListBase( _
   End Function
 
   Private Sub ISavable_SaveComplete(ByVal newObject As Object) Implements Core.ISavable.SaveComplete
-    OnSaved(DirectCast(newObject, T), Nothing, Nothing)
+    OnSaved(CType(newObject, T), Nothing, Nothing)
   End Sub
 
   <NonSerialized()> _
@@ -1491,12 +1493,12 @@ Public MustInherit Class BusinessListBase( _
     Me.DataPortal_OnDataPortalInvokeComplete(e)
   End Sub
 
-  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
-    Me.Child_OnDataPortalInvoke(e)
-  End Sub
-
   Private Sub IDataPortalTarget_DataPortal_OnDataPortalException(ByVal e As DataPortalEventArgs, ByVal ex As Exception)
     Me.DataPortal_OnDataPortalException(e, ex)
+  End Sub
+
+  Private Sub IDataPortalTarget_Child_OnDataPortalInvoke(ByVal e As DataPortalEventArgs)
+    Me.Child_OnDataPortalInvoke(e)
   End Sub
 
   Private Sub IDataPortalTarget_Child_OnDataPortalInvokeComplete(ByVal e As DataPortalEventArgs)
@@ -1572,7 +1574,7 @@ Public MustInherit Class BusinessListBase( _
   Protected Overrides Sub OnSetChildren(ByVal info As Serialization.Mobile.SerializationInfo, ByVal formatter As Serialization.Mobile.MobileFormatter)
     If info.Children.ContainsKey("_deletedList") Then
       Dim childData = info.Children("_deletedList")
-      _deletedList = DirectCast(formatter.GetObject(childData.ReferenceId), MobileList(Of C))
+      _deletedList = CType(formatter.GetObject(childData.ReferenceId), MobileList(Of C))
     End If
     MyBase.OnSetChildren(info, formatter)
   End Sub

@@ -1222,7 +1222,17 @@ Namespace Validation
       Next
     End Sub
 
-    Private Sub asyncRule_Complete(ByVal target As Object, ByVal e As AsyncRuleResult)
+    ''' <summary>
+    ''' Note this method is slighly different than it's c# version, this is because
+    ''' of a change in the AsyncRuleCompleteHandler delegate declaration to allow it to be used
+    ''' in a Lambda expression in AsyncRulemethod.Invoke. The reason for this change is because in VB 9.0
+    ''' Lambda expression must have a single return value and the c# version does not.
+    ''' </summary>
+    ''' <param name="target"></param>
+    ''' <param name="e"></param>
+    ''' <returns></returns>
+    ''' <remarks></remarks>
+    Private Function asyncRule_Complete(ByVal target As Object, ByVal e As AsyncRuleResult) As Boolean
       Dim rule As IAsyncRuleMethod = CType(target, IAsyncRuleMethod)
       SyncLock (SyncRoot)
         If e.Result Then
@@ -1237,7 +1247,7 @@ Namespace Validation
       SyncLock (SyncRoot)
         ValidatingRules.Remove(rule)
       End SyncLock
-    End Sub
+    End Function
 #End Region
 
 #Region " Status retrieval "

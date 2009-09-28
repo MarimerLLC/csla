@@ -15,8 +15,12 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
     /// <param name="name">Name of the property.</param>
-    public Csla.PropertyInfo<T> Create<T>(string name)
+    public Csla.PropertyInfo<T> Create<T>(Type containingType, string name)
     {
       return new Csla.PropertyInfo<T>(name);
     }
@@ -24,11 +28,15 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    public Csla.PropertyInfo<T> Create<T>(string name, string friendlyName)
+    public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
     {
       return new Csla.PropertyInfo<T>(name, friendlyName);
     }
@@ -36,13 +44,17 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public Csla.PropertyInfo<T> Create<T>(string name, string friendlyName, RelationshipTypes relationship)
+    public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
       return new Csla.PropertyInfo<T>(name, friendlyName, relationship);
     }
@@ -50,6 +62,10 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
@@ -57,7 +73,7 @@ namespace Csla.Core.FieldManager
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public Csla.PropertyInfo<T> Create<T>(string name, string friendlyName, T defaultValue)
+    public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue);
     }
@@ -65,6 +81,10 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="friendlyName">
     /// Friendly display name for the property.
@@ -74,7 +94,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public Csla.PropertyInfo<T> Create<T>(string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
+    public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
     {
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue, relationship);
     }

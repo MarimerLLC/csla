@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -455,8 +455,6 @@
     <Compile Include="Serialization\SerializationAttribute.cs" />
     <Compile Include="Silverlight\ValidatedDataGridColumn.cs" />
     <Compile Include="Silverlight\ValidatedDataGridTextColumn.cs" />
-    <Compile Include="Silverlight\ViewModel.cs" />
-    <Compile Include="Silverlight\ViewModelBase.cs" />
     <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Threading\Semaphore.cs" />
@@ -468,6 +466,12 @@
     <Compile Include="Silverlight\BrokenRuleSeverityConverter.cs" />
     <Compile Include="Silverlight\PropertyStatus.cs" />
     <Compile Include="Silverlight\VisualTree.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModelBase.cs">
+      <Link>Silverlight\ViewModelBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModel.cs">
+      <Link>Silverlight\ViewModel.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Error.png" />

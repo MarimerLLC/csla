@@ -13,12 +13,22 @@ namespace Csla.Reflection
   /// </summary>
   public static class MethodCaller
   {
-
     private const BindingFlags allLevelFlags = BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private const BindingFlags oneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private const BindingFlags ctorFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+
+    private const BindingFlags factoryFlags =
+      BindingFlags.Static |
+      BindingFlags.Public |
+      BindingFlags.FlattenHierarchy;
+
+    private const BindingFlags privateMethodFlags =
+      BindingFlags.Public |
+      BindingFlags.NonPublic |
+      BindingFlags.Instance |
+      BindingFlags.FlattenHierarchy;
 
     #region Dynamic Method Cache
 
@@ -674,5 +684,118 @@ namespace Csla.Reflection
       return result;
     }
 
+    /// <summary>
+    /// Invokes an instance method on an object.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="info">Method info object.</param>
+    /// <returns>Any value returned from the method.</returns>
+    public static object CallMethod(object obj, MethodInfo info)
+    {
+      object result = null;
+      try
+      {
+        result = info.Invoke(obj, null);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Invokes a static factory method.
+    /// </summary>
+    /// <param name="objectType">Business class where the factory is defined.</param>
+    /// <param name="method">Name of the factory method</param>
+    /// <param name="parameters">Parameters passed to factory method.</param>
+    /// <returns>Result of the factory method invocation.</returns>
+    public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
+    {
+      object returnValue;
+      MethodInfo factory = objectType.GetMethod(
+           method, factoryFlags, null,
+           MethodCaller.GetParameterTypes(parameters), null);
+
+      if (factory == null)
+      {
+        // strongly typed factory couldn't be found
+        // so find one with the correct number of
+        // parameters 
+        int parameterCount = parameters.Length;
+        MethodInfo[] methods = objectType.GetMethods(factoryFlags);
+        foreach (MethodInfo oneMethod in methods)
+          if (oneMethod.Name == method && oneMethod.GetParameters().Length == parameterCount)
+          {
+            factory = oneMethod;
+            break;
+          }
+      }
+      if (factory == null)
+      {
+        // no matching factory could be found
+        // so throw exception
+        throw new InvalidOperationException(
+          string.Format(Resources.NoSuchFactoryMethod, method));
+      }
+      try
+      {
+        returnValue = factory.Invoke(null, parameters);
+      }
+      catch (Exception ex)
+      {
+        Exception inner = null;
+        if (ex.InnerException == null)
+          inner = ex;
+        else
+          inner = ex.InnerException;
+        throw new CallMethodException(factory.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return returnValue;
+    }
+
+    /// <summary>
+    /// Gets a MethodInfo object corresponding to a
+    /// non-public method.
+    /// </summary>
+    /// <param name="objectType">Object containing the method.</param>
+    /// <param name="method">Name of the method.</param>
+    public static MethodInfo GetNonPublicMethod(Type objectType, string method)
+    {
+
+      MethodInfo result = null;
+
+      result = FindMethod(objectType, method, privateMethodFlags);
+
+      return result;
+    }
+
+    /// <summary>
+    /// Returns information about the specified
+    /// method.
+    /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="flags">Flag values.</param>
+    public static MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
+    {
+      MethodInfo info = null;
+      do
+      {
+        // find for a strongly typed match
+        info = objType.GetMethod(method, flags);
+        if (info != null)
+          break; // match found
+        objType = objType.BaseType;
+      } while (objType != null);
+
+      return info;
+    }
   }
 }

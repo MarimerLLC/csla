@@ -7,15 +7,26 @@ using System.Windows;
 using System.Reflection;
 using Csla.Reflection;
 
+#if SILVERLIGHT
+using Csla.Core;
+
 namespace Csla.Silverlight
+#else
+namespace Csla.Wpf
+#endif
 {
   /// <summary>
   /// Base class used to create ViewModel objects that
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
+#if SILVERLIGHT
   public abstract class ViewModelBase<T> : FrameworkElement,
     INotifyPropertyChanged
+#else
+  public abstract class ViewModelBase<T> : DependencyObject,
+    INotifyPropertyChanged
+#endif
   {
     #region Properties
 
@@ -104,7 +115,7 @@ namespace Csla.Silverlight
     /// Gets a value indicating whether a new item can be
     /// added to the Model (if it is a collection).
     /// </summary>
-    public virtual bool CanAddNew { get { return Model != null && Model is Csla.Core.IBindingList; } }
+    public virtual bool CanAddNew { get { return Model != null && Model is IBindingList; } }
     /// <summary>
     /// Gets a value indicating whether an item can be
     /// removed from the Model (if it is a collection).
@@ -278,7 +289,7 @@ namespace Csla.Silverlight
     /// </summary>
     protected virtual void DoAddNew()
     {
-      ((Csla.Core.IBindingList)Model).AddNew();
+      ((IBindingList)Model).AddNew();
     }
 
     /// <summary>

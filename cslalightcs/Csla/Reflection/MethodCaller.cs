@@ -240,6 +240,12 @@ namespace Csla.Reflection
       return result;
     }
 
+    /// <summary>
+    /// Invokes an instance method on an object.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="info">Method info object.</param>
+    /// <returns>Any value returned from the method.</returns>
     public static object CallMethod(object obj, MethodInfo info)
     {
       object result = null;
@@ -259,6 +265,13 @@ namespace Csla.Reflection
       return result;
     }
 
+    /// <summary>
+    /// Invokes a static factory method.
+    /// </summary>
+    /// <param name="objectType">Business class where the factory is defined.</param>
+    /// <param name="method">Name of the factory method</param>
+    /// <param name="parameters">Parameters passed to factory method.</param>
+    /// <returns>Result of the factory method invocation.</returns>
     public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
     {
       object returnValue;
@@ -362,6 +375,12 @@ namespace Csla.Reflection
       return result;
     }
 
+    /// <summary>
+    /// Gets a MethodInfo object corresponding to a
+    /// non-public method.
+    /// </summary>
+    /// <param name="objectType">Object containing the method.</param>
+    /// <param name="method">Name of the method.</param>
     public static MethodInfo GetNonPublicMethod(Type objectType, string method)
     {
 
@@ -473,6 +492,9 @@ namespace Csla.Reflection
     /// generic and are located in an abstract
     /// generic base class.
     /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="types">Types of parameters to be passed to method.</param>
     public static MethodInfo FindMethod(Type objType, string method, Type[] types)
     {
       MethodInfo info = null;
@@ -488,6 +510,13 @@ namespace Csla.Reflection
       return info;
     }
 
+    /// <summary>
+    /// Returns information about the specified
+    /// method.
+    /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="flags">Flag values.</param>
     public static MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
     {
       MethodInfo info = null;
@@ -508,6 +537,9 @@ namespace Csla.Reflection
     /// method, finding the method based purely
     /// on the method name and number of parameters.
     /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="parameterCount">Number of parameters passed to method.</param>
     public static MethodInfo FindMethod(Type objType, string method, int parameterCount)
     {
       // walk up the inheritance hierarchy looking

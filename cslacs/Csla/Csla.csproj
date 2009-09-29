@@ -458,10 +458,13 @@
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataDecoratorBase.cs" />
     <Compile Include="Wpf\ErrorDialog.cs" />
+    <Compile Include="Wpf\ExecuteEventArgs.cs" />
     <Compile Include="Wpf\InvokeMethod.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\PropertyStatus.cs" />
+    <Compile Include="Wpf\ViewModel.cs" />
+    <Compile Include="Wpf\ViewModelBase.cs" />
     <Compile Include="Wpf\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>

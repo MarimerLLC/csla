@@ -205,10 +205,24 @@ namespace Csla
 
     #region  IParent Members
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the Replace
+    /// event should be raised when OnCollectionChanged() is
+    /// called.
+    /// </summary>
+    /// <remarks>
+    /// There's a bug in DataGridDataConnection that throws
+    /// an exception on the replace action. By default we
+    /// disable raising the replace event to avoid that bug, 
+    /// but some other datagrid controls require the event.
+    /// </remarks>
+    protected bool RaiseReplaceEvents { get; set; }
+
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      // SL Data Grid's DataGridDataConnection object does not support replace action.  It throws an excpetioon when this occurs.
-      if (this.RaiseListChangedEvents && e.Action != NotifyCollectionChangedAction.Replace)
+      // SL Data Grid's DataGridDataConnection object does not support replace action.  
+      // It throws an excpetioon when this occurs.
+      if (this.RaiseListChangedEvents && (e.Action != NotifyCollectionChangedAction.Replace || RaiseReplaceEvents))
         base.OnCollectionChanged(e);
     }
 

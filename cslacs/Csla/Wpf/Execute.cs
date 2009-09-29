@@ -2,7 +2,11 @@
 using System.Windows;
 using System.Windows.Interactivity;
 
+#if SILVERLIGHT
 namespace Csla.Silverlight
+#else
+namespace Csla.Wpf
+#endif
 {
   /// <summary>
   /// Executes a method on the current DataContext.

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Windows;
 
+#if SILVERLIGHT
+namespace Csla.Silverlight
+#else
 namespace Csla.Wpf
+#endif
 {
   /// <summary>
   /// Arguments passed to a method invoked

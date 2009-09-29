@@ -109,6 +109,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Workflow.Runtime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -458,6 +459,7 @@
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataDecoratorBase.cs" />
     <Compile Include="Wpf\ErrorDialog.cs" />
+    <Compile Include="Wpf\Execute.cs" />
     <Compile Include="Wpf\ExecuteEventArgs.cs" />
     <Compile Include="Wpf\InvokeMethod.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />

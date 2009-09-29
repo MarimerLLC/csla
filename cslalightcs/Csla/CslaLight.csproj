@@ -438,17 +438,23 @@
     <Compile Include="Silverlight\BoomarkInformation.cs" />
     <Compile Include="Silverlight\ControlNameFactory.cs" />
     <Compile Include="Silverlight\ErrorDialog.cs" />
-    <Compile Include="Silverlight\Execute.cs" />
-    <Compile Include="Silverlight\ExecuteEventArgs.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\Execute.cs">
+      <Link>Silverlight\Execute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ExecuteEventArgs.cs">
+      <Link>Silverlight\ExecuteEventArgs.cs</Link>
+    </Compile>
     <Compile Include="Silverlight\IControlNameFactory.cs" />
     <Compile Include="Silverlight\ISupportNavigation.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\InvokeMethod.cs">
+      <Link>Silverlight\InvokeMethod.cs</Link>
+    </Compile>
     <Compile Include="Silverlight\NavigationBookmarkProcessedEventArgs.cs" />
     <Compile Include="Silverlight\NavigationEventArgs.cs" />
     <Compile Include="Silverlight\Navigator.cs" />
     <Compile Include="Silverlight\NavigatorProvider.cs" />
     <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Silverlight\CslaDataProvider.cs" />
-    <Compile Include="Silverlight\InvokeMethod.cs" />
     <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

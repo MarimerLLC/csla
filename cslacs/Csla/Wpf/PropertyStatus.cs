@@ -30,7 +30,8 @@ namespace Csla.Wpf
   [TemplatePart(Name = "Error", Type = typeof(Storyboard))]
   [TemplatePart(Name = "Warning", Type = typeof(Storyboard))]
   [TemplatePart(Name = "Information", Type = typeof(Storyboard))]
-  public class PropertyStatus : ContentControl
+  public class PropertyStatus : ContentControl,
+    INotifyPropertyChanged
   {
     #region Constructors
 
@@ -93,15 +94,6 @@ namespace Csla.Wpf
       typeof(PropertyStatus));
 
     /// <summary>
-    /// Gets or sets a value indicating whether the PropertyStatus
-    /// control should be in busy mode.
-    /// </summary>
-    public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register(
-      "IsBusy",
-      typeof(bool),
-      typeof(PropertyStatus));
-
-    /// <summary>
     /// Reference to the template for the validation rule popup.
     /// </summary>
     public static readonly DependencyProperty PopupTemplateProperty = DependencyProperty.Register(
@@ -114,8 +106,6 @@ namespace Csla.Wpf
     #region Member fields and properties
 
     private bool _isReadOnly = false;
-    private bool _isValid = true;
-    private RuleSeverity _worst;
     private FrameworkElement _lastImage;
 
     ///// <summary>
@@ -165,16 +155,6 @@ namespace Csla.Wpf
     {
       get { return (DependencyObject)GetValue(TargetProperty); }
       set { SetValue(TargetProperty, value); }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the PropertyStatus
-    /// control should be in busy mode.
-    /// </summary>
-    public bool IsBusy
-    {
-      get { return (bool)GetValue(IsBusyProperty); }
-      set { SetValue(IsBusyProperty, value); }
     }
 
     /// <summary>
@@ -286,6 +266,119 @@ namespace Csla.Wpf
         BrokenRules.Clear();
         _isValid = true;
         GoToState(true);
+      }
+    }
+
+    #endregion
+
+    #region State properties
+
+    private bool _canRead = true;
+    /// <summary>
+    /// Gets a value indicating whether the user
+    /// is authorized to read the property.
+    /// </summary>
+    public bool CanRead
+    {
+      get { return _canRead; }
+      private set
+      {
+        if (value != _canRead)
+        {
+          _canRead = value;
+          OnPropertyChanged("CanRead");
+        }
+      }
+    }
+
+    private bool _canWrite = true;
+    /// <summary>
+    /// Gets a value indicating whether the user
+    /// is authorized to write the property.
+    /// </summary>
+    public bool CanWrite
+    {
+      get { return _canWrite; }
+      private set
+      {
+        if (value != _canWrite)
+        {
+          _canWrite = value;
+          OnPropertyChanged("CanWrite");
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the property
+    /// is busy with an asynchronous operation.
+    /// </summary>
+    public static readonly DependencyProperty IsBusyProperty =
+        DependencyProperty.Register("IsBusy", typeof(bool), typeof(PropertyStatus), null);
+
+    /// <summary>
+    /// Gets a value indicating whether the property
+    /// is busy with an asynchronous operation.
+    /// </summary>
+    public bool IsBusy
+    {
+      get { return (bool)GetValue(IsBusyProperty); }
+      set { SetValue(IsBusyProperty, value); }
+    }
+
+    private bool _isValid = true;
+    /// <summary>
+    /// Gets a value indicating whether the 
+    /// property is valid.
+    /// </summary>
+    public bool IsValid
+    {
+      get { return _isValid; }
+      private set
+      {
+        if (value != _isValid)
+        {
+          _isValid = value;
+          OnPropertyChanged("IsValid");
+        }
+      }
+    }
+
+    private RuleSeverity _worst;
+    /// <summary>
+    /// Gets a valud indicating the worst
+    /// severity of all broken rules
+    /// for this property (if IsValid is
+    /// false).
+    /// </summary>
+    public RuleSeverity RuleSeverity
+    {
+      get { return _worst; }
+      private set
+      {
+        if (value != _worst)
+        {
+          _worst = value;
+          OnPropertyChanged("RuleSeverity");
+        }
+      }
+    }
+
+    private string _ruleDescription = string.Empty;
+    /// <summary>
+    /// Gets the description of the most severe
+    /// broken rule for this property.
+    /// </summary>
+    public string RuleDescription
+    {
+      get { return _ruleDescription; }
+      private set
+      {
+        if (value != _ruleDescription)
+        {
+          _ruleDescription = value;
+          OnPropertyChanged("RuleDescription");
+        }
       }
     }
 
@@ -403,6 +496,25 @@ namespace Csla.Wpf
           }
         }
       }
+    }
+
+    #endregion
+
+    #region INotifyPropertyChanged Members
+
+    /// <summary>
+    /// Event raised when a property has changed.
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <summary>
+    /// Raises the PropertyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Name of the changed property.</param>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion

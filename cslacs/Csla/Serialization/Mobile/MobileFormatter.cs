@@ -194,6 +194,27 @@ namespace Csla.Serialization.Mobile
     private Dictionary<int, IMobileObject> _deserializationReferences =
       new Dictionary<int, IMobileObject>();
 
+    private Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+
+    private Type GetTypeFromCache(string typeName)
+    {
+      Type result;
+      if (!_typeCache.TryGetValue(typeName, out result))
+      {
+        result = Csla.Reflection.MethodCaller.GetType(typeName);
+
+        if (result == null)
+        {
+          throw new SerializationException(string.Format(
+            Resources.MobileFormatterUnableToDeserialize,
+            typeName));
+        }
+        _typeCache.Add(typeName, result);
+      }
+
+      return result;
+    }
+
     /// <summary>
     /// Deserialize an object from XML.
     /// </summary>
@@ -239,7 +260,8 @@ namespace Csla.Serialization.Mobile
       _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
       {
-        Type type = Csla.Reflection.MethodCaller.GetType(info.TypeName);
+        //Type type = Csla.Reflection.MethodCaller.GetType(info.TypeName);
+        Type type = GetTypeFromCache(info.TypeName);
 
         if (type == null)
         {

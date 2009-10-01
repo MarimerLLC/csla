@@ -1411,9 +1411,9 @@ namespace Csla.Validation
     public static bool DataAnnotation(object target, RuleArgs e)
     {
       var args = (DataAnnotationRuleArgs)e;
-#if SILVERLIGHT
       object pValue = Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
+#if SILVERLIGHT
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(pValue, null, null);
       var result = args.Attribute.GetValidationResult(pValue, ctx);
       if (result != null)
@@ -1422,9 +1422,9 @@ namespace Csla.Validation
         return false;
       }
 #else
-      if (!args.Attribute.IsValid(e.PropertyName))
+      if (!args.Attribute.IsValid(pValue))
       {
-        e.Description = args.Attribute.FormatErrorMessage(e.PropertyFriendlyName);
+        e.Description = args.Attribute.FormatErrorMessage(RuleArgs.GetPropertyName(e));
         return false;
       }
 #endif

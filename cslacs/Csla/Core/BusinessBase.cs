@@ -1254,7 +1254,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-
+      ValidationRules.AddDataAnnotations();
     }
 
     /// <summary>

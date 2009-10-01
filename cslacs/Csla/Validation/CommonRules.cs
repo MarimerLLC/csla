@@ -225,7 +225,7 @@ namespace Csla.Validation
     /// <summary>
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="StringMinLength" /> rule method.
-    /// </summary>
+    //br/ </summary>
     public class MinLengthRuleArgs : DecoratedRuleArgs
     {
       /// <summary>
@@ -1362,6 +1362,73 @@ namespace Csla.Validation
       }
 
       return isAuthorized;
+    }
+
+    #endregion
+
+    #region DataAnnotations
+
+    /// <summary>
+    /// Arguments provided to the DataAnnotation
+    /// rule method
+    /// </summary>
+    public class DataAnnotationRuleArgs : RuleArgs
+    {
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
+      /// <param name="name">
+      /// Name of the property to be validated.
+      /// </param>
+      /// <param name="attribute">
+      /// System.ComponentModel.DataAnnotations.ValidationAttribute object
+      /// containing the rule implementation.
+      /// </param>
+      public DataAnnotationRuleArgs(string name, System.ComponentModel.DataAnnotations.ValidationAttribute attribute)
+        : base(name)
+      {
+        Attribute = attribute;
+      }
+
+      /// <summary>
+      /// The attribute containing the rule implementation.
+      /// </summary>
+      public System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get; set; }
+    }
+
+    /// <summary>
+    /// Rule method that executes a rule contained in an 
+    /// System.ComponentModel.DataAnnotations.ValidationAttribute
+    /// object.
+    /// </summary>
+    /// <param name="target">
+    /// Business object containing the value to validate.
+    /// </param>
+    /// <param name="e">
+    /// DataAnnotationRuleArgs object.
+    /// </param>
+    /// <returns>True if the rule is satisfied, false if the rule fails.</returns>
+    public static bool DataAnnotation(object target, RuleArgs e)
+    {
+      var args = (DataAnnotationRuleArgs)e;
+#if SILVERLIGHT
+      object pValue = Utilities.CallByName(
+        target, e.PropertyName, CallType.Get);
+      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(pValue, null, null);
+      var result = args.Attribute.GetValidationResult(pValue, ctx);
+      if (result != null)
+      {
+        e.Description = result.ErrorMessage;
+        return false;
+      }
+#else
+      if (!args.Attribute.IsValid(e.PropertyName))
+      {
+        e.Description = args.Attribute.FormatErrorMessage(e.PropertyFriendlyName);
+        return false;
+      }
+#endif
+      return true;
     }
 
     #endregion

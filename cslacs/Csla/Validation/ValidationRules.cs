@@ -971,6 +971,64 @@ namespace Csla.Validation
 
     #endregion
 
+    #region DataAnnotations
+
+    /// <summary>
+    /// Adds validation rules corresponding to property
+    /// data annotation attributes.
+    /// </summary>
+    public void AddDataAnnotations()
+    {
+      AddDataAnnotations(null);
+    }
+
+    /// <summary>
+    /// Adds validation rules corresponding to property
+    /// data annotation attributes.
+    /// </summary>
+    /// <param name="ruleAdder">
+    /// Method invoked to add rules as data annotation
+    /// attributes are found on properties.
+    /// </param>
+    public void AddDataAnnotations(EventHandler<AddRuleArgs> ruleAdder)
+    {
+      Type metadataType;
+#if SILVERLIGHT
+      metadataType = _target.GetType();
+#else
+      var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
+      if (classAttList.Length > 0)
+        metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
+      else
+        metadataType = _target.GetType();
+#endif
+
+      var propList = metadataType.GetProperties();
+      foreach (var prop in propList)
+      {
+        var attList = prop.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
+        foreach (var att in attList)
+        {
+          bool added = false;
+          if (ruleAdder != null)
+          {
+            var args = new AddRuleArgs { BusinessObject = _target, PropertyInfo = prop, Attribute = att };
+            ruleAdder(this, args);
+            added = args.RuleAdded;
+          }
+          if (!added)
+          {
+            AddRule(CommonRules.DataAnnotation,
+              new CommonRules.DataAnnotationRuleArgs(
+                prop.Name, 
+                (System.ComponentModel.DataAnnotations.ValidationAttribute)att));
+          }
+        }
+      }
+    }
+
+    #endregion
+
     #region Checking Rules
 
     private bool _suppressRuleChecking;

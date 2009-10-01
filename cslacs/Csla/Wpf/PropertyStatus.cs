@@ -45,7 +45,8 @@ namespace Csla.Wpf
 
       DataContextChanged += (o, e) =>
         {
-          SetSource(e.OldValue, e.NewValue);
+          SetSource();
+          //SetSource(e.OldValue, e.NewValue);
         };
 
       Loaded += (o, e) => { UpdateState(); };
@@ -67,15 +68,6 @@ namespace Csla.Wpf
     #region Dependency properties
 
     /// <summary>
-    /// Defines the business object property to watch for
-    /// validation, authorization and busy status.
-    /// </summary>
-    public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
-      "Property",
-      typeof(string),
-      typeof(PropertyStatus));
-
-    /// <summary>
     /// Gets a reference to the business object's
     /// broken rules collection.
     /// </summary>
@@ -88,7 +80,7 @@ namespace Csla.Wpf
     /// Reference to the target UI control to be managed
     /// for authorization rules.
     /// </summary>
-    public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
+    public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
       "Target",
       typeof(DependencyObject),
       typeof(PropertyStatus));
@@ -108,33 +100,24 @@ namespace Csla.Wpf
     private bool _isReadOnly = false;
     private FrameworkElement _lastImage;
 
-    ///// <summary>
-    ///// Gets or sets a reference to the data source object.
-    ///// </summary>
-    //public object Source
-    //{
-    //  get { return GetValue(SourceProperty); }
-    //  set
-    //  {
-    //    object oldValue = Source;
-    //    object newValue = value;
-    //    SetValue(SourceProperty, value);
-    //    SetSource(oldValue, newValue);
-    //  }
-    //}
+    /// <summary>
+    /// Defines the business object property to watch for
+    /// validation, authorization and busy status.
+    /// </summary>
+    public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
+      "Property",
+      typeof(object),
+      typeof(PropertyStatus),
+      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource()));
 
     /// <summary>
     /// Gets or sets the name of the business object
     /// property to be monitored.
     /// </summary>
-    public string Property
+    public object Property
     {
-      get { return (string)GetValue(PropertyProperty); }
-      set 
-      { 
-        SetValue(PropertyProperty, value);
-        CheckProperty();
-      }
+      get { return GetValue(PropertyProperty); }
+      set { SetValue(PropertyProperty, value); }
     }
 
     /// <summary>
@@ -151,10 +134,10 @@ namespace Csla.Wpf
     /// Gets or sets a reference to the UI control to
     /// be managed based on authorization rules.
     /// </summary>
-    public DependencyObject Target
+    public DependencyObject TargetControl
     {
-      get { return (DependencyObject)GetValue(TargetProperty); }
-      set { SetValue(TargetProperty, value); }
+      get { return (DependencyObject)GetValue(TargetControlProperty); }
+      set { SetValue(TargetControlProperty, value); }
     }
 
     /// <summary>
@@ -171,24 +154,56 @@ namespace Csla.Wpf
 
     #region Source
 
-    private void SetSource(object oldSource, object newSource)
+    private object _source = null;
+    private string _bindingPath = string.Empty;
+
+    private void SetSource()
     {
-      DetachSource(oldSource);
-      AttachSource(newSource);
+      var old = _source;
+      var binding = GetBindingExpression(PropertyProperty);
+      if (binding != null)
+      {
+        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
+          _bindingPath = binding.ParentBinding.Path.Path;
+        else
+          _bindingPath = string.Empty;
+        _source = GetRealSource(binding.DataItem, _bindingPath);
+        if (_bindingPath.IndexOf('.') > 0)
+          _bindingPath = _bindingPath.Substring(_bindingPath.LastIndexOf('.') + 1);
+      }
+      else
+      {
+        _source = null;
+        _bindingPath = string.Empty;
+      }
 
-      BusinessBase bb = newSource as BusinessBase;
-      if (bb != null && !string.IsNullOrEmpty(Property))
-        IsBusy = bb.IsPropertyBusy(Property);
+      if (!ReferenceEquals(old, _source))
+      {
+        DetachSource(old);
+        AttachSource(_source);
+      }
 
-      CheckProperty();
+      FindIsReadOnly();
       UpdateState();
     }
 
-    private object Source { get; set; }
+    private object GetRealSource(object source, string bindingPath)
+    {
+      if (bindingPath.IndexOf('.') > 0)
+      {
+        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+        var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
+        return GetRealSource(
+          MethodCaller.GetPropertyValue(source, p),
+          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+      }
+      else
+        return source;
+    }
 
     private void AttachSource(object source)
     {
-      this.Source = source;
+      this._source = source;
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged += new BusyChangedEventHandler(source_BusyChanged);
@@ -211,7 +226,7 @@ namespace Csla.Wpf
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      if (e.PropertyName == Property)
+      if (e.PropertyName == _bindingPath)
         IsBusy = e.Busy;
 
       UpdateState();
@@ -219,7 +234,7 @@ namespace Csla.Wpf
 
     private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == Property || string.IsNullOrEmpty(e.PropertyName))
+      if (e.PropertyName == _bindingPath || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 
@@ -229,13 +244,13 @@ namespace Csla.Wpf
       if (popup != null)
         popup.IsOpen = false;
 
-      BusinessBase businessObject = Source as BusinessBase;
+      BusinessBase businessObject = _source as BusinessBase;
       if (businessObject != null)
       {
         // for some reason Linq does not work against BrokenRulesCollection...
         List<BrokenRule> allRules = new List<BrokenRule>();
         foreach (var r in businessObject.BrokenRulesCollection)
-          if (r.Property == Property)
+          if (r.Property == _bindingPath)
             allRules.Add(r);
 
         var removeRules = (from r in BrokenRules
@@ -452,47 +467,57 @@ namespace Csla.Wpf
 
     #region RelativeTarget
 
-    private void CheckProperty()
+    private void FindIsReadOnly()
     {
-      if (Source != null)
+      if (_source != null && !string.IsNullOrEmpty(_bindingPath))
       {
-        var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), Property);
-        if (desc != null)
-          _isReadOnly = desc.IsReadOnly;
-        else
-          _isReadOnly = false;
+        var info = _source.GetType().GetProperty(_bindingPath);
+        if (info != null)
+        {
+          _isReadOnly = !info.CanWrite;
+          if (!_isReadOnly)
+          {
+            var setter = _source.GetType().GetMethod("set_" + _bindingPath);
+            if (setter == null)
+              _isReadOnly = true;
+            else
+              _isReadOnly = !setter.IsPublic;
+          }
+        }
       }
       else
       {
-        _isReadOnly = true;
+        _isReadOnly = false;
       }
     }
 
     private void HandleTarget()
     {
-      if (Target != null && !string.IsNullOrEmpty(Property))
+      if (!string.IsNullOrEmpty(_bindingPath))
       {
-        var b = Source as Csla.Security.IAuthorizeReadWrite;
+        var b = _source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
-          bool canRead = b.CanReadProperty(Property);
-          bool canWrite = b.CanWriteProperty(Property);
-
-          if (canWrite && !_isReadOnly)
+          CanWrite = b.CanWriteProperty(_bindingPath);
+          if (TargetControl != null)
           {
-            MethodCaller.CallMethodIfImplemented(Target, "set_IsReadOnly", false);
-            MethodCaller.CallMethodIfImplemented(Target, "set_IsEnabled", true);
+            if (CanWrite && !_isReadOnly)
+            {
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsReadOnly", false);
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", true);
+            }
+            else
+            {
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsReadOnly", true);
+              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
+            }
           }
-          else
-          {
-            MethodCaller.CallMethodIfImplemented(Target, "set_IsReadOnly", true);
-            MethodCaller.CallMethodIfImplemented(Target, "set_IsEnabled", false);
-          }
 
-          if (!canRead)
+          CanRead = b.CanReadProperty(_bindingPath);
+          if (TargetControl != null && !CanRead)
           {
-            MethodCaller.CallMethodIfImplemented(Target, "set_Content", null);
-            MethodCaller.CallMethodIfImplemented(Target, "set_Text", "");
+            MethodCaller.CallMethodIfImplemented(TargetControl, "set_Content", null);
+            MethodCaller.CallMethodIfImplemented(TargetControl, "set_Text", "");
           }
         }
       }

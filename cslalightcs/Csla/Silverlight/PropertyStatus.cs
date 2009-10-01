@@ -492,29 +492,32 @@ namespace Csla.Silverlight
 
     private void HandleTarget()
     {
-      if (TargetControl != null && !string.IsNullOrEmpty(_bindingPath))
+      if (!string.IsNullOrEmpty(_bindingPath))
       {
         var b = _source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
           CanWrite = b.CanWriteProperty(_bindingPath);
-          if (CanWrite && !_isReadOnly)
+          if (TargetControl != null)
           {
-            if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
-              MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
+            if (CanWrite && !_isReadOnly)
+            {
+              if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
+                MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
+              else
+                MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", true);
+            }
             else
-              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", true);
-          }
-          else
-          {
-            if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", true))
-              MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", true);
-            else
-              MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
+            {
+              if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", true))
+                MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", true);
+              else
+                MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
+            }
           }
 
           CanRead = b.CanReadProperty(_bindingPath);
-          if (!CanRead)
+          if (TargetControl != null && !CanRead)
           {
             if (MethodCaller.IsMethodImplemented(TargetControl, "set_Content", null))
               MethodCaller.CallMethod(TargetControl, "set_Content", null);

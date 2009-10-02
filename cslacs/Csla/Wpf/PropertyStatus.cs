@@ -81,7 +81,7 @@ namespace Csla.Wpf
     /// for authorization rules.
     /// </summary>
     public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
-      "Target",
+      "TargetControl",
       typeof(DependencyObject),
       typeof(PropertyStatus));
 

@@ -263,11 +263,20 @@ namespace Csla.Wpf
           }
           Error = e.Error;
         }
+        OnSaved();
       };
       Error = null;
       IsBusy = true;
       savable.BeginSave();
     }
+
+    /// <summary>
+    /// Method called after a save operation 
+    /// has completed (whether successful or
+    /// not).
+    /// </summary>
+    protected virtual void OnSaved()
+    { }
 
     /// <summary>
     /// Cancels changes made to the model 

@@ -222,7 +222,16 @@ namespace Csla.Wpf
       {
         Error = eventArgs.Error;
       }
+      OnRefreshed();
     }
+
+    /// <summary>
+    /// Method called after a refresh operation 
+    /// has completed (whether successful or
+    /// not).
+    /// </summary>
+    protected virtual void OnRefreshed()
+    { }
 
     /// <summary>
     /// Saves the Model, first committing changes

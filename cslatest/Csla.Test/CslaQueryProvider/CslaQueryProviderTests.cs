@@ -26,23 +26,23 @@ namespace Csla.Test.CslaQueryProvider
 
     public Nullable<int> ANullableVal
     {
-      get { return new Nullable<int>(SomeVal); }
+      get { return SomeVal; }
     }
 
     [Indexable(IndexModeEnum.IndexModeAlways)]
     public Nullable<Guid> ANullableGuid
     {
-      get { return new Nullable<Guid>(Id); }
+      get { return Id; }
     }
 
     public DateTime SomeDateTime
     {
-      get { return new DateTime((long)SomeVal); }
+      get { return new DateTime(SomeVal); }
     }
 
     public DateTime? SomeDateTimeNullable
     {
-      get { return (DateTime?) SomeDateTime; }
+      get { return SomeDateTime; }
     }
 
     public RandomThing(int x)
@@ -187,6 +187,21 @@ namespace Csla.Test.CslaQueryProvider
   [TestClass]
   public class CslaQueryProviderTests
   {
+    [TestMethod]
+    public void query_returning_nothing_gives_back_empty_set_not_null()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      var rnd = new Random();
+      for (var i = 0; i < 42; i++)
+        random.Add(new RandomThing(rnd.Next(300)) { SomeOtherVal = 0 });
+      var emptySetOne = from r in random where r.SomeOtherVal == 10000 select r;
+      var emptySetTwo = from r in random where r.SomeVal == 10000 select r;
+      Assert.AreEqual(0, emptySetOne.Count());
+      Assert.AreEqual(0, emptySetTwo.Count());
+      Assert.AreEqual(null, emptySetOne.FirstOrDefault());
+      Assert.AreEqual(null, emptySetTwo.FirstOrDefault());
+    }
+
     [TestMethod]
     public void nested_collections_return_valid_results()
     {

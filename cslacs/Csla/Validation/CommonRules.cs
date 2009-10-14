@@ -1394,6 +1394,14 @@ namespace Csla.Validation
       /// The attribute containing the rule implementation.
       /// </summary>
       public System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get; set; }
+
+      /// <summary>
+      /// Gets a string representation of the object.
+      /// </summary>
+      public override string ToString()
+      {
+        return string.Format("{0}?Attribute={1}", base.ToString(), Attribute.GetType().FullName);
+      }
     }
 
     /// <summary>

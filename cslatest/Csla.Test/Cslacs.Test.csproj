@@ -83,6 +83,9 @@
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86" />
     <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -154,6 +157,7 @@
     <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
     <Compile Include="CslaQueryProvider\DynamicQueryTests.cs" />
     <Compile Include="CslaQueryProvider\MSDynamicQuery.cs" />
+    <Compile Include="DataAnnotations\DataAnnotationsTests.cs" />
     <Compile Include="DataMapper\DataMapperTests.cs" />
     <Compile Include="DataPortalChild\Child.cs" />
     <Compile Include="DataPortalChild\ChildList.cs" />

@@ -6,10 +6,11 @@ using System.Text;
 using System.Windows;
 using System.Reflection;
 using Csla.Reflection;
+using Csla.Security;
+using Csla.Core;
+using System.Collections;
 
 #if SILVERLIGHT
-using Csla.Core;
-
 namespace Csla.Silverlight
 #else
 namespace Csla.Wpf
@@ -28,6 +29,18 @@ namespace Csla.Wpf
     INotifyPropertyChanged
 #endif
   {
+    #region Constructor
+
+    /// <summary>
+    /// Create new instance of base class used to create ViewModel objects that
+    /// implement their own commands/verbs/actions.
+    /// </summary>
+    public ViewModelBase()
+    {
+      SetPropertiesAtObjectLevel();
+    }
+    #endregion
+
     #region Properties
 
     /// <summary>
@@ -100,70 +113,350 @@ namespace Csla.Wpf
 
     #region Can___ properties
 
-    private bool _canSave;
-    private bool _canCancel;
+    private bool _canSave = false;
 
     /// <summary>
-    /// Gets a value indicating whether the Model can be saved.
+    /// Gets a value indicating whether the Model
+    /// can currently be saved.
     /// </summary>
-    public virtual bool CanSave { get { return _canSave; } }
+    public bool CanSave
+    {
+      get
+      {
+        return _canSave;
+      }
+      private set
+      {
+        if (_canSave != value)
+        {
+          _canSave = value;
+          OnPropertyChanged("CanSave");
+        }
+      }
+    }
+
+    private bool _canCancel = false;
+
     /// <summary>
-    /// Gets a value indicating whether the Model can be canceled.
+    /// Gets a value indicating whether the Model
+    /// can currently be canceled.
     /// </summary>
-    public virtual bool CanCancel { get { return _canCancel; } }
+    public bool CanCancel
+    {
+      get
+      {
+        return _canCancel;
+      }
+      private set
+      {
+        if (_canCancel != value)
+        {
+          _canCancel = value;
+          OnPropertyChanged("CanCancel");
+        }
+      }
+    }
+
+    private bool _canCreate = false;
+
     /// <summary>
-    /// Gets a value indicating whether a new item can be
-    /// added to the Model (if it is a collection).
+    /// Gets a value indicating whether an instance
+    /// of the Model
+    /// can currently be created.
     /// </summary>
-    public virtual bool CanAddNew { get { return Model != null && Model is IBindingList; } }
+    public bool CanCreate
+    {
+      get
+      {
+        return _canCreate;
+      }
+      private set
+      {
+        if (_canCreate != value)
+        {
+          _canCreate = value;
+          OnPropertyChanged("CanCreate");
+        }
+      }
+    }
+
+    private bool _canDelete = false;
+
     /// <summary>
-    /// Gets a value indicating whether an item can be
-    /// removed from the Model (if it is a collection).
+    /// Gets a value indicating whether the Model
+    /// can currently be deleted.
     /// </summary>
-    public virtual bool CanRemove { get { return Model != null && Model is System.Collections.IList; } }
+    public bool CanDelete
+    {
+      get
+      {
+        return _canDelete;
+      }
+      private set
+      {
+        if (_canDelete != value)
+        {
+          _canDelete = value;
+          OnPropertyChanged("CanDelete");
+        }
+      }
+    }
+
+    private bool _canFetch = false;
+
     /// <summary>
-    /// Gets a value indicating whether the Model can be
-    /// marked for deletion (if it is an editable root object).
+    /// Gets a value indicating whether an instance
+    /// of the Model
+    /// can currently be retrieved.
     /// </summary>
-    public virtual bool CanDelete { get { return Model != null && Model is Csla.Core.IEditableBusinessObject; } }
+    public bool CanFetch
+    {
+      get
+      {
+        return _canFetch;
+      }
+      private set
+      {
+        if (_canFetch != value)
+        {
+          _canFetch = value;
+          OnPropertyChanged("CanFetch");
+        }
+      }
+    }
+
+    private bool _canRemove = false;
+
+    /// <summary>
+    /// Gets a value indicating whether the Model
+    /// can currently be removed.
+    /// </summary>
+    public bool CanRemove
+    {
+      get
+      {
+        return _canRemove;
+      }
+      private set
+      {
+        if (_canRemove != value)
+        {
+          _canRemove = value;
+          OnPropertyChanged("CanRemove");
+        }
+      }
+    }
+
+    private bool _canAddNew = false;
+
+    /// <summary>
+    /// Gets a value indicating whether the Model
+    /// can currently be added.
+    /// </summary>
+    public bool CanAddNew
+    {
+      get
+      {
+        return _canAddNew;
+      }
+      private set
+      {
+        if (_canAddNew != value)
+        {
+          _canAddNew = value;
+          OnPropertyChanged("CanAddNew");
+        }
+      }
+    }
 
     private void SetProperties()
     {
-      bool value;
-      value = GetCanSave();
-      if (_canSave != value)
+      ITrackStatus targetObject = Model as ITrackStatus;
+      ICollection list = Model as ICollection;
+      INotifyBusy busyObject = Model as INotifyBusy;
+      bool isObjectBusy = false;
+      if (busyObject != null && busyObject.IsBusy)
+        isObjectBusy = true;
+      if (Model != null && targetObject != null)
       {
-        _canSave = value;
-        OnPropertyChanged("CanSave");
+
+        if (CanEditObject && targetObject.IsSavable)
+          CanSave = true;
+        else
+          CanSave = false;
+
+        if (CanEditObject && targetObject.IsDirty && !isObjectBusy)
+          CanCancel = true;
+        else
+          CanCancel = false;
+
+        if (CanCreateObject && !targetObject.IsDirty && !isObjectBusy)
+          CanCreate = true;
+        else
+          CanCreate = false;
+
+        if (CanDeleteObject && !isObjectBusy)
+          CanDelete = true;
+        else
+          CanDelete = false;
+
+        if (CanGetObject && !targetObject.IsDirty && !isObjectBusy)
+          CanFetch = true;
+        else
+          CanFetch = false;
+
+        if (list != null)
+        {
+          Type itemType = Csla.Utilities.GetChildItemType(Model.GetType());
+          if (itemType != null)
+          {
+
+            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && list.Count > 0 && !isObjectBusy)
+              CanRemove = true;
+            else
+              CanRemove = false;
+
+            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+              CanAddNew = true;
+            else
+              CanAddNew = false;
+          }
+          else
+          {
+            CanAddNew = false;
+            CanRemove = false;
+          }
+        }
+        else
+        {
+          CanRemove = false;
+          CanAddNew = false;
+        }
       }
-      value = GetCanCancel();
-      if (_canCancel != value)
+      else if (list != null)
       {
-        _canCancel = value;
-        OnPropertyChanged("CanCancel");
+        Type itemType = Csla.Utilities.GetChildItemType(Model.GetType());
+        if (itemType != null)
+        {
+
+          if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && list.Count > 0 && !isObjectBusy)
+            CanRemove = true;
+          else
+            CanRemove = false;
+
+          if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+            CanAddNew = true;
+          else
+            CanAddNew = false;
+        }
+        else
+        {
+          CanAddNew = false;
+          CanRemove = false;
+        }
+      }
+      else
+      {
+        CanCancel = false;
+        CanCreate = false;
+        CanDelete = false;
+        CanFetch = !IsBusy;
+        CanSave = false;
+        CanRemove = false;
+        CanAddNew = false;
       }
     }
 
-    private bool GetCanSave()
+    #endregion
+
+    #region Can methods that only account for user rights
+
+    private bool _canCreateObject;
+
+    /// <summary>
+    /// Gets a value indicating whether the current
+    /// user is authorized to create a Model.
+    /// </summary>
+    public bool CanCreateObject
     {
-      if (Model == null) return false;
-      var track = Model as Csla.Core.ITrackStatus;
-      if (track != null)
-        return track.IsSavable;
-      return false;
+      get { return _canCreateObject; }
+      protected set
+      {
+        if (_canCreateObject != value)
+        {
+          _canCreateObject = value;
+          OnPropertyChanged("CanCreateObject");
+        }
+      }
     }
 
-    private bool GetCanCancel()
+    private bool _canGetObject;
+
+    /// <summary>
+    /// Gets a value indicating whether the current
+    /// user is authorized to retrieve a Model.
+    /// </summary>
+    public bool CanGetObject
     {
-      if (!this.ManageObjectLifetime) return false;
-      if (Model == null) return false;
-      var undo = Model as Csla.Core.ISupportUndo;
-      if (undo == null)
-        return false;
-      var track = Model as Csla.Core.ITrackStatus;
-      if (track != null)
-        return track.IsDirty;
-      return false;
+      get { return _canGetObject; }
+      protected set
+      {
+        if (_canGetObject != value)
+        {
+          _canGetObject = value;
+          OnPropertyChanged("CanGetObject");
+        }
+      }
+    }
+
+    private bool _canEditObject;
+
+    /// <summary>
+    /// Gets a value indicating whether the current
+    /// user is authorized to save (insert or update
+    /// a Model.
+    /// </summary>
+    public bool CanEditObject
+    {
+      get { return _canEditObject; }
+      protected set
+      {
+        if (_canEditObject != value)
+        {
+          _canEditObject = value;
+          OnPropertyChanged("CanEditObject");
+        }
+      }
+    }
+
+    private bool _canDeleteObject;
+
+    /// <summary>
+    /// Gets a value indicating whether the current
+    /// user is authorized to delete
+    /// a Model.
+    /// </summary>
+    public bool CanDeleteObject
+    {
+      get { return _canDeleteObject; }
+      protected set
+      {
+        if (_canDeleteObject != value)
+        {
+          _canDeleteObject = value;
+          OnPropertyChanged("CanDeleteObject");
+        }
+      }
+    }
+
+    private void SetPropertiesAtObjectLevel()
+    {
+      Type sourceType = typeof(T);
+
+      CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
+      CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
+      CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
+      CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
     }
 
     #endregion
@@ -182,7 +475,7 @@ namespace Csla.Wpf
         try
         {
           Error = null;
-          this.IsBusy = true;
+          IsBusy = true;
           var parameters = new List<object>(factoryParameters);
           parameters.Add(CreateHandler(typeof(T)));
 
@@ -190,14 +483,25 @@ namespace Csla.Wpf
         }
         catch (Exception ex)
         {
-          this.Error = ex;
+          Error = ex;
+          IsBusy = false;
         }
+    }
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
+    /// <param name="factoryMethod">Name of the static factory method.</param>
+    protected virtual void DoRefresh(string factoryMethod)
+    {
+      DoRefresh(factoryMethod, new object[] { });
     }
 
     private Delegate CreateHandler(Type objectType)
     {
       var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
+      MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
       Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
       return handler;
     }
@@ -205,12 +509,13 @@ namespace Csla.Wpf
 
     private void QueryCompleted(object sender, EventArgs e)
     {
-      this.IsBusy = false;
+      IsBusy = false;
       var eventArgs = (IDataPortalResult)e;
       if (eventArgs.Error == null)
       {
+        HookObjectEvents(Model, eventArgs.Object);
         Model = eventArgs.Object;
-        if (this.ManageObjectLifetime)
+        if (ManageObjectLifetime)
         {
           var undo = Model as Csla.Core.ISupportUndo;
           if (undo != null)
@@ -239,44 +544,55 @@ namespace Csla.Wpf
     /// </summary>
     protected virtual void DoSave()
     {
-      Csla.Core.ISupportUndo undo;
-      if (this.ManageObjectLifetime)
+      try
       {
-        undo = Model as Csla.Core.ISupportUndo;
-        if (undo != null)
-          undo.ApplyEdit();
-      }
+        Csla.Core.ISupportUndo undo;
+        var savable = Model as Csla.Core.ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          ICloneable clonable = Model as ICloneable;
+          if (clonable != null)
+            savable = (Csla.Core.ISavable)clonable.Clone();
 
-      var savable = (Csla.Core.ISavable)Model;
-      savable.Saved += (o, e) =>
+          //apply changes
+          var undoable = savable as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.ApplyEdit();
+        }
+
+        savable.Saved += (o, e) =>
+        {
+          IsBusy = false;
+          if (e.Error == null)
+          {
+            var result = e.NewObject;
+            if (ManageObjectLifetime)
+            {
+              undo = result as Csla.Core.ISupportUndo;
+              if (undo != null)
+                undo.BeginEdit();
+            }
+            HookObjectEvents(Model, result);
+            Model = (T)result;
+          }
+          else
+          {
+            Error = e.Error;
+          }
+          SetProperties();
+          OnSaved();
+        };
+        Error = null;
+        IsBusy = true;
+        savable.BeginSave();
+      }
+      catch (Exception ex)
       {
         IsBusy = false;
-        if (e.Error == null)
-        {
-          var result = e.NewObject;
-          if (this.ManageObjectLifetime)
-          {
-            undo = result as Csla.Core.ISupportUndo;
-            if (undo != null)
-              undo.BeginEdit();
-          }
-          Model = (T)result;
-        }
-        else
-        {
-          if (this.ManageObjectLifetime)
-          {
-            undo = Model as Csla.Core.ISupportUndo;
-            if (undo != null)
-              undo.BeginEdit();
-          }
-          Error = e.Error;
-        }
+        Error = ex;
         OnSaved();
-      };
-      Error = null;
-      IsBusy = true;
-      savable.BeginSave();
+      }
     }
 
     /// <summary>
@@ -293,11 +609,14 @@ namespace Csla.Wpf
     /// </summary>
     protected virtual void DoCancel()
     {
-      if (this.ManageObjectLifetime)
+      if (ManageObjectLifetime)
       {
         var undo = Model as Csla.Core.ISupportUndo;
         if (undo != null)
+        {
           undo.CancelEdit();
+          undo.BeginEdit();
+        }
       }
     }
 
@@ -308,15 +627,17 @@ namespace Csla.Wpf
     protected virtual void DoAddNew()
     {
       ((IBindingList)Model).AddNew();
+      SetProperties();
     }
 
     /// <summary>
     /// Removes an item from the Model (if it
     /// is a collection).
     /// </summary>
-    protected virtual void DoRemove(T item)
+    protected virtual void DoRemove(object item)
     {
       ((System.Collections.IList)Model).Remove(item);
+      SetProperties();
     }
 
     /// <summary>
@@ -345,6 +666,64 @@ namespace Csla.Wpf
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+    }
+
+    #endregion
+
+    #region Model Changes Handling
+
+
+    private void HookObjectEvents(object oldValue, object newValue)
+    {
+      // unhook events from old value
+      if (oldValue != null)
+      {
+        var npc = oldValue as INotifyPropertyChanged;
+        if (npc != null)
+          npc.PropertyChanged -= Model_PropertyChanged;
+        var ncc = oldValue as INotifyChildChanged;
+        if (ncc != null)
+          ncc.ChildChanged -= Model_ChildChanged;
+        var nb = oldValue as INotifyBusy;
+        if (nb != null)
+          nb.BusyChanged -= Model_BusyChanged;
+      }
+
+      // hook events on new value
+      if (newValue != null)
+      {
+        var npc = newValue as INotifyPropertyChanged;
+        if (npc != null)
+          npc.PropertyChanged += Model_PropertyChanged;
+        var ncc = newValue as INotifyChildChanged;
+        if (ncc != null)
+          ncc.ChildChanged += Model_ChildChanged;
+        var nb = newValue as INotifyBusy;
+        if (nb != null)
+          nb.BusyChanged += Model_BusyChanged;
+      }
+    }
+
+
+    void Model_BusyChanged(object sender, BusyChangedEventArgs e)
+    {
+      // only set busy state for entire object.  Ignore busy state based
+      // on asynch rules being active
+      if (e.PropertyName == string.Empty)
+        IsBusy = e.Busy;
+      else
+        SetProperties();
+    }
+
+
+    private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      SetProperties();
+    }
+
+    private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
+    {
+      SetProperties();
     }
 
     #endregion

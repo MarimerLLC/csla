@@ -1521,6 +1521,7 @@ namespace Csla.Core
     private void OnDeserializedHandler(StreamingContext context)
     {
       ValidationRules.SetTarget(this);
+      ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();

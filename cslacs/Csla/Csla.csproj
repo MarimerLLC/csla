@@ -1,8 +1,8 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9DA591ED-C570-47AC-8E5D-35B039E07973}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -11,37 +11,9 @@
     <AssemblyName>Csla</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <PublishUrl>http://localhost/Csla/</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkSubset>Full</TargetFrameworkSubset>
     <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <DocumentationFile>bin\Debug\Csla.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -61,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,6 +46,7 @@
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
@@ -106,8 +81,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
-    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
-    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
@@ -292,8 +267,6 @@
     <Compile Include="DataPortalClient\LocalProxy.cs" />
     <Compile Include="DataPortalClient\RemotingProxy.cs" />
     <Compile Include="DataPortalClient\WcfProxy.cs" />
-    <Compile Include="DataPortalClient\WebServicesProxy.cs">
-    </Compile>
     <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortalEventArgs.cs" />
     <Compile Include="DataPortalException.cs" />
@@ -308,9 +281,6 @@
     <Compile Include="Server\Hosts\WcfChannel\UseNetDataContractAttribute.cs" />
     <Compile Include="Server\Hosts\WcfChannel\WcfResponse.cs" />
     <Compile Include="Server\Hosts\WcfPortal.cs" />
-    <Compile Include="Server\Hosts\WebServicePortal.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="RunLocalAttribute.cs" />
     <Compile Include="Reflection\CallMethodException.cs" />
     <Compile Include="Server\DataPortal.cs" />
@@ -408,11 +378,6 @@
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
     <Compile Include="Validation\ValidationRulesManager.cs" />
-    <Compile Include="Web References\WebServiceHost\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
     <Compile Include="Web\CslaDataSource.cs" />
     <Compile Include="Web\CslaDataSourceView.cs" />
     <Compile Include="Web\DeleteObjectArgs.cs" />
@@ -586,7 +551,6 @@
     </None>
     <None Include="Web References\WebServiceHost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Web References\WebServiceHost\Service.disco" />
     <None Include="Web References\WebServiceHost\Service.wsdl" />
@@ -621,11 +585,18 @@
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

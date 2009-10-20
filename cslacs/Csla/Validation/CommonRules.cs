@@ -1421,21 +1421,13 @@ namespace Csla.Validation
       var args = (DataAnnotationRuleArgs)e;
       object pValue = Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
-#if SILVERLIGHT
-      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(pValue, null, null);
+      var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null);
       var result = args.Attribute.GetValidationResult(pValue, ctx);
       if (result != null)
       {
         e.Description = result.ErrorMessage;
         return false;
       }
-#else
-      if (!args.Attribute.IsValid(pValue))
-      {
-        e.Description = args.Attribute.FormatErrorMessage(RuleArgs.GetPropertyName(e));
-        return false;
-      }
-#endif
       return true;
     }
 

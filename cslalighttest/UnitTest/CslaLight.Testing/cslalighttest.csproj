@@ -88,6 +88,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
@@ -158,6 +159,9 @@
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\ChildChanged\SingleRoot.cs">
       <Link>ChildChanged\SingleRoot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\cslatest\Csla.Test\DataAnnotations\DataAnnotationsTests.cs">
+      <Link>DataAnnotations\DataAnnotationsTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\cslatest\Csla.Test\DataPortal\AsynchDataPortalTest.cs">
       <Link>DataPortal\AsynchDataPortalTest.cs</Link>

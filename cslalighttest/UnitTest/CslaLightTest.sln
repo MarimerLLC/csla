@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaLight.Testing.Server", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cslalighttest", "CslaLight.Testing\cslalighttest.csproj", "{5E30B543-3988-4241-98D9-B0D2E44FA02A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslacs.Test", "..\..\cslatest\Csla.Test\Cslacs.Test.csproj", "{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,12 @@ Global
 		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
 		{5E30B543-3988-4241-98D9-B0D2E44FA02A}.Testing|Any CPU.Build.0 = Testing|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
+		{D464BFBE-C26A-46E9-BC72-3978BCAD02D7}.Testing|Any CPU.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

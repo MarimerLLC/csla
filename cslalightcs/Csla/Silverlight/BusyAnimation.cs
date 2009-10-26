@@ -81,7 +81,6 @@ namespace Csla.Silverlight
       set
       {
         SetValue(StepIntervalProperty, value);
-        StartTimer();
       }
     }
 
@@ -124,7 +123,7 @@ namespace Csla.Silverlight
       Loaded += (o, e) =>
       {
         ArrangeParts();
-        StartTimer();
+        GoToState(true);
       };
       SizeChanged += new SizeChangedEventHandler(BusyAnimation_SizeChanged);
       LayoutUpdated += new EventHandler(BusyAnimation_LayoutUpdated);

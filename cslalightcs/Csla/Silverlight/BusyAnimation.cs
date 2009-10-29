@@ -39,7 +39,7 @@ namespace Csla.Silverlight
   {
     #region Constants
 
-    private const int NUM_STATES = 8; 
+    private const int NUM_STATES = 8;
 
     #endregion
 
@@ -62,7 +62,7 @@ namespace Csla.Silverlight
       "IsRunning",
       typeof(object),
       typeof(BusyAnimation),
-      new PropertyMetadata((o, e) => { })); //((BusyAnimation)o).IsRunning = e.NewValue));
+      new PropertyMetadata((o, e) => ((BusyAnimation)o).SetupRunningState(e.NewValue)));
 
     #endregion
 
@@ -90,24 +90,29 @@ namespace Csla.Silverlight
     /// </summary>
     public object IsRunning
     {
-      get 
-      { 
+      get
+      {
         object val = GetValue(IsRunningProperty);
         return (val != null ?
           (bool)Convert.ChangeType(val, typeof(bool), CultureInfo.InvariantCulture) :
           false);
       }
-      set 
+      set
       {
         bool val = (bool)Convert.ChangeType(value, typeof(bool), CultureInfo.InvariantCulture);
         SetValue(IsRunningProperty, val);
-        if (val)
-          StartTimer();
-        else
-          StopTimer();
-
-        GoToState(true);
       }
+    }
+
+    private void SetupRunningState(object isRunning)
+    {
+      bool val = (bool)Convert.ChangeType(isRunning, typeof(bool), CultureInfo.InvariantCulture);
+      if (val)
+        StartTimer();
+      else
+        StopTimer();
+
+      GoToState(true);
     }
 
     #endregion
@@ -159,7 +164,7 @@ namespace Csla.Silverlight
         _state = 0;
 
       GoToState(true);
-    } 
+    }
 
     #endregion
 

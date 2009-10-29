@@ -963,7 +963,7 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          DataPortal.UpdateChild(child, parameters);
+          if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
       }
       finally
       {

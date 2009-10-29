@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
+using Csla.Properties;
 
 #if SILVERLIGHT
 namespace Csla.Silverlight
@@ -54,7 +55,15 @@ namespace Csla.Wpf
     /// <param name="ctrl">Attached control</param>
     public static object GetTarget(UIElement ctrl)
     {
-      return ctrl.GetValue(TargetProperty);
+      object result = null;
+      result = ctrl.GetValue(TargetProperty);
+      if (result == null)
+      {
+        var fe = ctrl as FrameworkElement;
+        if (fe != null)
+          result = fe.DataContext;
+      }
+      return result;
     }
 
     /// <summary>
@@ -156,6 +165,7 @@ namespace Csla.Wpf
     /// <param name="ctrl">Attached control</param>
     public static object GetMethodParameter(UIElement ctrl)
     {
+#if SILVERLIGHT
       var fe = ctrl as FrameworkElement;
       if (fe != null)
       {
@@ -163,17 +173,10 @@ namespace Csla.Wpf
         if (be != null && be.ParentBinding != null)
         {
           var newBinding = CopyBinding(be.ParentBinding);
-          fe.SetBinding(MethodNameProperty, newBinding);
-
-          //var dataItem = be.DataItem;
-          //string path = be.ParentBinding.Path.Path;
-          //if (dataItem != null && !string.IsNullOrEmpty(path))
-          //{
-          //  var pi = Csla.Reflection.MethodCaller.GetProperty(dataItem.GetType(), path);
-          //  return Csla.Reflection.MethodCaller.GetPropertyValue(dataItem, pi);
-          //}
+          fe.SetBinding(MethodParameterProperty, newBinding);
         }
       }
+#endif
       return ctrl.GetValue(MethodParameterProperty);
     }
 
@@ -206,7 +209,7 @@ namespace Csla.Wpf
       DependencyProperty.RegisterAttached("ManualEnableControl",
       typeof(bool),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
+      new PropertyMetadata(true, (o, e) =>
       {
         var ctrl = o as UIElement;
         if (ctrl != null)
@@ -254,8 +257,6 @@ namespace Csla.Wpf
 
     private UIElement _element;
     private ContentControl _contentControl;
-    private System.Reflection.MethodInfo _targetMethod;
-    private object _target;
 
     /// <summary>
     /// Invokes the target method if all required attached
@@ -265,18 +266,8 @@ namespace Csla.Wpf
     public InvokeMethod(UIElement ctrl)
     {
       _element = ctrl;
-      _target = GetTarget(_element);
-      if (_target == null)
-      {
-        var fe = ctrl as FrameworkElement;
-        if (fe != null)
-        {
-          var binding = new System.Windows.Data.Binding();
-          fe.SetBinding(TargetProperty, binding);
-        }
-      }
-
-      if (_target != null)
+      object target = GetTarget(_element);
+      if (target != null)
       {
         _contentControl = _element as ContentControl;
         var methodName = GetMethodName(_element);
@@ -287,9 +278,6 @@ namespace Csla.Wpf
           {
             // at this point all required fields have been set,
             // so hook up the event
-
-            _targetMethod = _target.GetType().GetMethod(methodName);
-
             var eventRef = ctrl.GetType().GetEvent(triggerEvent);
             if (eventRef != null && AddControl(ctrl.GetHashCode()))
             {
@@ -306,7 +294,7 @@ namespace Csla.Wpf
                     this,
                     this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
                   eventRef.AddEventHandler(ctrl, del);
-                  var npc = _target as INotifyPropertyChanged;
+                  var npc = target as INotifyPropertyChanged;
                   if (npc != null)
                   {
                     npc.PropertyChanged -= MethodTarget_PropertyChanged;
@@ -315,11 +303,11 @@ namespace Csla.Wpf
                 }
                 else
                 {
-                  throw new NotSupportedException();
+                  throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
                 }
               }
               else
-                throw new NotSupportedException();
+                throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
             }
           }
         }
@@ -328,13 +316,14 @@ namespace Csla.Wpf
 
     private void Refresh()
     {
-      if (_target != null && _contentControl != null)
+      object target = GetTarget(_element);
+      if (target != null && _contentControl != null)
       {
         var targetMethodName = GetMethodName(_element);
         if (!string.IsNullOrEmpty(targetMethodName) && !GetManualEnableControl(_element))
         {
 #if SILVERLIGHT
-          CslaDataProvider targetProvider = _target as CslaDataProvider;
+          CslaDataProvider targetProvider = target as CslaDataProvider;
           if (targetProvider != null)
           {
             if (targetMethodName == "Save")
@@ -356,10 +345,10 @@ namespace Csla.Wpf
           {
 #endif
             string canPropertyName = "Can" + targetMethodName;
-            var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(_target.GetType(), canPropertyName);
+            var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(target.GetType(), canPropertyName);
             if (propertyInfo != null)
             {
-              object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(_target, propertyInfo);
+              object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(target, propertyInfo);
               if (returnValue != null && returnValue is bool)
                 _contentControl.IsEnabled = (bool)returnValue;
             }
@@ -372,16 +361,35 @@ namespace Csla.Wpf
 
     private void CallMethod(object sender, EventArgs e)
     {
+      object target = GetTarget(_element);
+      var methodName = GetMethodName(_element);
+      var targetMethod = target.GetType().GetMethod(methodName);
+      if (targetMethod == null)
+        throw new MissingMethodException(methodName);
+
       object p = GetMethodParameter(_element);
-      var pCount = _targetMethod.GetParameters().Length;
-      if (pCount == 0)
-        _targetMethod.Invoke(_target, null);
-      else if (pCount == 1)
-        _targetMethod.Invoke(_target, new object[] { p });
-      else if (pCount == 2)
-        _targetMethod.Invoke(_target, new object[] { _element, p });
-      else if (pCount == 3)
-        _targetMethod.Invoke(_target, new object[] { _element, e, p });
+      var pCount = targetMethod.GetParameters().Length;
+      try
+      {
+        if (pCount == 0)
+          targetMethod.Invoke(target, null);
+        else if (pCount == 2)
+          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
+        {
+          MethodParameter = p,
+          TriggerParameter = e,
+          TriggerSource = (FrameworkElement)_element
+        }});
+        else
+          throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
+      }
+      catch (System.Reflection.TargetInvocationException ex)
+      {
+        if (ex.InnerException != null)
+          throw ex.InnerException;
+        else
+          throw;
+      }
     }
   }
 }

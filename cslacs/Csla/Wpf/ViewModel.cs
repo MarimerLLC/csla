@@ -27,16 +27,7 @@ namespace Csla.Wpf
     /// </summary>
     public virtual void Save(object sender, ExecuteEventArgs e)
     {
-      Save();
-    }
-
-    /// <summary>
-    /// Saves the Model, first committing changes
-    /// if ManagedObjectLifetime is true.
-    /// </summary>
-    public virtual void Save()
-    {
-      DoSave();
+      BeginSave();
     }
 
     /// <summary>
@@ -44,15 +35,6 @@ namespace Csla.Wpf
     /// if ManagedObjectLifetime is true.
     /// </summary>
     public virtual void Cancel(object sender, ExecuteEventArgs e)
-    {
-      Cancel();
-    }
-
-    /// <summary>
-    /// Cancels changes made to the model 
-    /// if ManagedObjectLifetime is true.
-    /// </summary>
-    public virtual void Cancel()
     {
       DoCancel();
     }
@@ -63,25 +45,20 @@ namespace Csla.Wpf
     /// </summary>
     public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
-      AddNew();
-    }
-
-    /// <summary>
-    /// Adds a new item to the Model (if it
-    /// is a collection).
-    /// </summary>
-    public virtual void AddNew()
-    {
+#if SILVERLIGHT
+      BeginAddNew();
+#else
       DoAddNew();
+#endif
     }
 
     /// <summary>
     /// Removes an item from the Model (if it
     /// is a collection).
     /// </summary>
-    public virtual void Remove(T item)
+    public virtual void Remove(object sender, ExecuteEventArgs e)
     {
-      DoRemove(item);
+      DoRemove(e.MethodParameter);
     }
 
     /// <summary>
@@ -89,15 +66,6 @@ namespace Csla.Wpf
     /// editable root object).
     /// </summary>
     public virtual void Delete(object sender, ExecuteEventArgs e)
-    {
-      Delete();
-    }
-
-    /// <summary>
-    /// Marks the Model for deletion (if it is an
-    /// editable root object).
-    /// </summary>
-    public virtual void Delete()
     {
       DoDelete();
     }

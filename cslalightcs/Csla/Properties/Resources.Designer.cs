@@ -214,6 +214,24 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method to be executed must have 0 or 2 parameters.
+        /// </summary>
+        internal static string ExecuteBadParams {
+            get {
+                return ResourceManager.GetString("ExecuteBadParams", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trigger event has an unsupported signature.
+        /// </summary>
+        internal static string ExecuteBadTriggerEvent {
+            get {
+                return ResourceManager.GetString("ExecuteBadTriggerEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid operation - execute not allowed.
         /// </summary>
         internal static string ExecuteNotSupportedException {

@@ -47,13 +47,24 @@ namespace Csla.Wpf
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(object), typeof(ViewModelBase<T>), null);
+        DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+        new PropertyMetadata((o, e) => 
+        {
+          var viewmodel = (ViewModelBase<T>)o;
+          viewmodel.OnModelChanged(e.OldValue, e.NewValue);
+          if (viewmodel.ManageObjectLifetime)
+          {
+            var undo = e.NewValue as Csla.Core.ISupportUndo;
+            if (undo != null)
+              undo.BeginEdit();
+          }
+        }));
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public object Model
+    public T Model
     {
-      get { return GetValue(ModelProperty); }
+      get { return (T)GetValue(ModelProperty); }
       set { SetValue(ModelProperty, value); }
     }
 
@@ -87,9 +98,30 @@ namespace Csla.Wpf
       get { return _error; }
       protected set
       {
-        _error = value;
-        OnPropertyChanged("Error");
+        if (!ReferenceEquals(_error, value))
+        {
+          _error = value;
+          OnPropertyChanged("Error");
+          if (_error != null)
+            OnError(_error);
+        }
       }
+    }
+
+    /// <summary>
+    /// Event raised when an error occurs during processing.
+    /// </summary>
+    public event EventHandler<ErrorEventArgs> ErrorOccurred;
+
+    /// <summary>
+    /// Raises ErrorOccurred event when an error occurs
+    /// during processing.
+    /// </summary>
+    /// <param name="error"></param>
+    protected virtual void OnError(Exception error)
+    {
+      if (ErrorOccurred != null)
+        ErrorOccurred(this, new ErrorEventArgs { Error = error });
     }
 
     private bool _isBusy;
@@ -463,6 +495,7 @@ namespace Csla.Wpf
 
     #region Verbs
 
+#if !SILVERLIGHT
     /// <summary>
     /// Creates or retrieves a new instance of the 
     /// Model by invoking a static factory method.
@@ -470,6 +503,42 @@ namespace Csla.Wpf
     /// <param name="factoryMethod">Name of the static factory method.</param>
     /// <param name="factoryParameters">Factory method parameters.</param>
     protected virtual void DoRefresh(string factoryMethod, params object[] factoryParameters)
+    {
+      T result = default(T);
+      if (typeof(T) != null)
+      {
+        Error = null;
+        try
+        {
+          Model = (T)MethodCaller.CallFactoryMethod(typeof(T), factoryMethod, factoryParameters);
+        }
+        catch (Exception ex)
+        {
+          Error = ex;
+        }
+        SetProperties();
+        OnRefreshed();
+      }
+    }
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
+    /// <param name="factoryMethod">Name of the static factory method.</param>
+    protected virtual void DoRefresh(string factoryMethod)
+    {
+      DoRefresh(factoryMethod, new object[] { });
+    }
+#endif
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
+    /// <param name="factoryMethod">Name of the static factory method.</param>
+    /// <param name="factoryParameters">Factory method parameters.</param>
+    protected virtual void BeginRefresh(string factoryMethod, params object[] factoryParameters)
     {
       if (typeof(T) != null)
         try
@@ -493,9 +562,9 @@ namespace Csla.Wpf
     /// Model by invoking a static factory method.
     /// </summary>
     /// <param name="factoryMethod">Name of the static factory method.</param>
-    protected virtual void DoRefresh(string factoryMethod)
+    protected virtual void BeginRefresh(string factoryMethod)
     {
-      DoRefresh(factoryMethod, new object[] { });
+      BeginRefresh(factoryMethod, new object[] { });
     }
 
     private Delegate CreateHandler(Type objectType)
@@ -512,21 +581,10 @@ namespace Csla.Wpf
       IsBusy = false;
       var eventArgs = (IDataPortalResult)e;
       if (eventArgs.Error == null)
-      {
-        HookObjectEvents(Model, eventArgs.Object);
-        Model = eventArgs.Object;
-        if (ManageObjectLifetime)
-        {
-          var undo = Model as Csla.Core.ISupportUndo;
-          if (undo != null)
-            undo.BeginEdit();
-        }
-        SetProperties();
-      }
+        Model = (T)eventArgs.Object;
       else
-      {
         Error = eventArgs.Error;
-      }
+      SetProperties();
       OnRefreshed();
     }
 
@@ -538,11 +596,52 @@ namespace Csla.Wpf
     protected virtual void OnRefreshed()
     { }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    protected virtual void DoSave()
+    protected virtual T DoSave()
+    {
+      T result = (T)Model;
+      Error = null;
+      try
+      {
+        Csla.Core.ISupportUndo undo;
+        var savable = Model as Csla.Core.ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          ICloneable clonable = Model as ICloneable;
+          if (clonable != null)
+            savable = (Csla.Core.ISavable)clonable.Clone();
+
+          //apply changes
+          var undoable = savable as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.ApplyEdit();
+        }
+
+        result = (T)savable.Save();
+
+        Model = result;
+        SetProperties();
+        OnSaved();
+      }
+      catch (Exception ex)
+      {
+        Error = ex;
+        OnSaved();
+      }
+      return result;
+    }
+#endif
+
+    /// <summary>
+    /// Saves the Model, first committing changes
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    protected virtual void BeginSave()
     {
       try
       {
@@ -567,13 +666,6 @@ namespace Csla.Wpf
           if (e.Error == null)
           {
             var result = e.NewObject;
-            if (ManageObjectLifetime)
-            {
-              undo = result as Csla.Core.ISupportUndo;
-              if (undo != null)
-                undo.BeginEdit();
-            }
-            HookObjectEvents(Model, result);
             Model = (T)result;
           }
           else
@@ -620,15 +712,29 @@ namespace Csla.Wpf
       }
     }
 
+#if SILVERLIGHT
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
     /// </summary>
-    protected virtual void DoAddNew()
+    protected virtual void BeginAddNew()
     {
       ((IBindingList)Model).AddNew();
       SetProperties();
     }
+#else
+    /// <summary>
+    /// Adds a new item to the Model (if it
+    /// is a collection).
+    /// </summary>
+    protected virtual object DoAddNew()
+    {
+      var ibl = ((IBindingList)Model);
+      var result = ibl.AddNew();
+      SetProperties();
+      return result;
+    }
+#endif
 
     /// <summary>
     /// Removes an item from the Model (if it
@@ -672,9 +778,17 @@ namespace Csla.Wpf
 
     #region Model Changes Handling
 
-
-    private void HookObjectEvents(object oldValue, object newValue)
+    /// <summary>
+    /// Invoked when the Model changes, allowing
+    /// event handlers to be unhooked from the old
+    /// object and hooked on the new object.
+    /// </summary>
+    /// <param name="oldValue">Previous Model reference.</param>
+    /// <param name="newValue">New Model reference.</param>
+    protected virtual void OnModelChanged(object oldValue, object newValue)
     {
+      if (ReferenceEquals(oldValue, newValue)) return;
+
       // unhook events from old value
       if (oldValue != null)
       {
@@ -705,7 +819,7 @@ namespace Csla.Wpf
     }
 
 
-    void Model_BusyChanged(object sender, BusyChangedEventArgs e)
+    private void Model_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       // only set busy state for entire object.  Ignore busy state based
       // on asynch rules being active

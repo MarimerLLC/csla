@@ -373,6 +373,9 @@
     <Compile Include="..\..\cslacs\Csla\Validation\ValidationRulesManager.cs">
       <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ErrorEventArgs.cs">
+      <Link>Silverlight\ErrorEventArgs.cs</Link>
+    </Compile>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessListBase.cs" />

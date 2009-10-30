@@ -27,12 +27,7 @@ namespace Csla.Wpf
       DependencyProperty.RegisterAttached("Target",
       typeof(object),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
-      {
-        var ctrl = o as UIElement;
-        if (ctrl != null)
-          new InvokeMethod(ctrl);
-      }));
+      new PropertyMetadata(null));
 
     /// <summary>
     /// Sets the object containing the method to be invoked.
@@ -42,11 +37,6 @@ namespace Csla.Wpf
     public static void SetTarget(UIElement ctrl, object value)
     {
       ctrl.SetValue(TargetProperty, value);
-    }
-
-    private void MethodTarget_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      Refresh();
     }
 
     /// <summary>
@@ -73,12 +63,7 @@ namespace Csla.Wpf
       DependencyProperty.RegisterAttached("MethodName",
       typeof(string),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
-      {
-        var ctrl = o as UIElement;
-        if (ctrl != null)
-          new InvokeMethod(ctrl);
-      }));
+      new PropertyMetadata(null));
 
     /// <summary>
     /// Sets the name of method to be invoked.
@@ -142,12 +127,7 @@ namespace Csla.Wpf
       DependencyProperty.RegisterAttached("MethodParameter",
       typeof(object),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
-      {
-        var ctrl = o as UIElement;
-        if (ctrl != null)
-          new InvokeMethod(ctrl);
-      }));
+      new PropertyMetadata(null));
 
     /// <summary>
     /// Sets the parameter value to be passed to invoked method.
@@ -201,62 +181,9 @@ namespace Csla.Wpf
       return result;
     }
 
-    /// <summary>
-    /// Value indicating whether the UI control should be
-    /// manually enabled/disabled.
-    /// </summary>
-    public static readonly DependencyProperty ManualEnableControlProperty =
-      DependencyProperty.RegisterAttached("ManualEnableControl",
-      typeof(bool),
-      typeof(InvokeMethod),
-      new PropertyMetadata(true, (o, e) =>
-      {
-        var ctrl = o as UIElement;
-        if (ctrl != null)
-          new InvokeMethod(ctrl);
-      }));
-
-    /// <summary>
-    /// Sets the value indicating whether the UI control should be
-    /// manually enabled/disabled.
-    /// </summary>
-    /// <param name="ctrl">Attached control</param>
-    /// <param name="value">New value</param>
-    public static void SetManualEnableControl(UIElement ctrl, bool value)
-    {
-      ctrl.SetValue(ManualEnableControlProperty, value);
-    }
-
-    /// <summary>
-    /// Gets the value indicating whether the UI control should be
-    /// manually enabled/disabled.
-    /// </summary>
-    /// <param name="ctrl">Attached control</param>
-    public static bool GetManualEnableControl(UIElement ctrl)
-    {
-      return (bool)ctrl.GetValue(ManualEnableControlProperty);
-    }
-
-    private static List<int> processedControls = new List<int>();
-    private static object locker = new object();
-    private static bool AddControl(int controlId)
-    {
-      lock (locker)
-      {
-        if (processedControls.Contains(controlId))
-          return false;
-        else
-        {
-          processedControls.Add(controlId);
-          return true;
-        }
-      }
-    }
-
     #endregion
 
     private UIElement _element;
-    private ContentControl _contentControl;
 
     /// <summary>
     /// Invokes the target method if all required attached
@@ -266,97 +193,34 @@ namespace Csla.Wpf
     public InvokeMethod(UIElement ctrl)
     {
       _element = ctrl;
-      object target = GetTarget(_element);
-      if (target != null)
-      {
-        _contentControl = _element as ContentControl;
-        var methodName = GetMethodName(_element);
-        if (!string.IsNullOrEmpty(methodName))
-        {
-          var triggerEvent = GetTriggerEvent(_element);
-          if (!string.IsNullOrEmpty(triggerEvent))
-          {
-            // at this point all required fields have been set,
-            // so hook up the event
-            var eventRef = ctrl.GetType().GetEvent(triggerEvent);
-            if (eventRef != null && AddControl(ctrl.GetHashCode()))
-            {
-              Refresh();
-
-              var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
-              var p = invoke.GetParameters();
-              if (p.Length == 2)
-              {
-                var p1Type = p[1].ParameterType;
-                if (typeof(EventArgs).IsAssignableFrom(p1Type))
-                {
-                  var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
-                    this,
-                    this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
-                  eventRef.AddEventHandler(ctrl, del);
-                  var npc = target as INotifyPropertyChanged;
-                  if (npc != null)
-                  {
-                    npc.PropertyChanged -= MethodTarget_PropertyChanged;
-                    npc.PropertyChanged += MethodTarget_PropertyChanged;
-                  }
-                }
-                else
-                {
-                  throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
-                }
-              }
-              else
-                throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
-            }
-          }
-        }
-      }
-    }
-
-    private void Refresh()
-    {
-      object target = GetTarget(_element);
-      if (target != null && _contentControl != null)
-      {
-        var targetMethodName = GetMethodName(_element);
-        if (!string.IsNullOrEmpty(targetMethodName) && !GetManualEnableControl(_element))
-        {
-#if SILVERLIGHT
-          CslaDataProvider targetProvider = target as CslaDataProvider;
-          if (targetProvider != null)
-          {
-            if (targetMethodName == "Save")
-              _contentControl.IsEnabled = targetProvider.CanSave;
-            else if (targetMethodName == "Cancel")
-              _contentControl.IsEnabled = targetProvider.CanCancel;
-            else if (targetMethodName == "Create")
-              _contentControl.IsEnabled = targetProvider.CanCreate;
-            else if (targetMethodName == "Fetch")
-              _contentControl.IsEnabled = targetProvider.CanFetch;
-            else if (targetMethodName == "Delete")
-              _contentControl.IsEnabled = targetProvider.CanDelete;
-            else if (targetMethodName == "RemoveItem")
-              _contentControl.IsEnabled = targetProvider.CanRemoveItem;
-            else if (targetMethodName == "AddNewItem")
-              _contentControl.IsEnabled = targetProvider.CanAddNewItem;
-          }
-          else
-          {
-#endif
-            string canPropertyName = "Can" + targetMethodName;
-            var propertyInfo = Csla.Reflection.MethodCaller.GetProperty(target.GetType(), canPropertyName);
-            if (propertyInfo != null)
-            {
-              object returnValue = Csla.Reflection.MethodCaller.GetPropertyValue(target, propertyInfo);
-              if (returnValue != null && returnValue is bool)
-                _contentControl.IsEnabled = (bool)returnValue;
-            }
-#if SILVERLIGHT
-          }
-#endif
-          }
-      }
+			var triggerEvent = GetTriggerEvent(_element);
+			if (!string.IsNullOrEmpty(triggerEvent))
+			{
+        // hook up the trigger event
+				var eventRef = ctrl.GetType().GetEvent(triggerEvent);
+				if (eventRef != null)
+				{
+					var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
+					var p = invoke.GetParameters();
+					if (p.Length == 2)
+					{
+						var p1Type = p[1].ParameterType;
+						if (typeof(EventArgs).IsAssignableFrom(p1Type))
+						{
+							var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+								this,
+								this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+							eventRef.AddEventHandler(ctrl, del);
+						}
+						else
+						{
+							throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+						}
+					}
+					else
+						throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+				}
+			}
     }
 
     private void CallMethod(object sender, EventArgs e)

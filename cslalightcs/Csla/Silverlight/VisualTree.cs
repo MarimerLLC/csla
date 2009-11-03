@@ -9,8 +9,16 @@ using Csla.Properties;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Contains methods to help work with the visual tree.
+  /// </summary>
   public static class VisualTree
   {
+    /// <summary>
+    /// Finds the parent of an object.
+    /// </summary>
+    /// <param name="path">Path</param>
+    /// <param name="current">Current object</param>
     public static DependencyObject FindParent(string path, DependencyObject current)
     {
       return FindParent(new Queue<string>(path.Split('.')), current);
@@ -87,6 +95,11 @@ namespace Csla.Silverlight
       return child;
     }
 
+    /// <summary>
+    /// Finds an element by name.
+    /// </summary>
+    /// <param name="name">Name of the element</param>
+    /// <param name="parent">Parent object</param>
     public static DependencyObject FindByName(string name, DependencyObject parent)
     {
       return FindByName(parent, name);

@@ -12,7 +12,9 @@ namespace Csla.Testing.Business.EditableRootTests
     // For local data portal tests
     #region Data Access
 
-    public void DataPortal_Create(LocalProxy<MockEditableRoot>.CompletedHandler handler)
+#if SILVERLIGHT
+
+    public override void DataPortal_Create(LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
       //ValidationRules.CheckRules();
@@ -35,7 +37,7 @@ namespace Csla.Testing.Business.EditableRootTests
       handler(this, null);
     }
 
-    public void DataPortal_Insert(LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public override void DataPortal_Insert(LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -45,7 +47,7 @@ namespace Csla.Testing.Business.EditableRootTests
       handler(this, null);
     }
 
-    public void DataPortal_Update(LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public override void DataPortal_Update(LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -55,7 +57,7 @@ namespace Csla.Testing.Business.EditableRootTests
       handler(this, null);
     }
 
-    public void DataPortal_DeleteSelf(LocalProxy<MockEditableRoot>.CompletedHandler handler)
+    public override void DataPortal_DeleteSelf(LocalProxy<MockEditableRoot>.CompletedHandler handler)
     {
       DataPortal_Delete(new SingleCriteria<MockEditableRoot, Guid>(this.Id), handler);
       handler(this, null);
@@ -68,6 +70,8 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "delete");
       handler(this, null);
     }
+
+#endif
 
     #endregion
   }

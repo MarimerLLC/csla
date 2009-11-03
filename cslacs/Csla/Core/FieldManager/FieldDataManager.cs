@@ -677,7 +677,7 @@ namespace Csla.Core.FieldManager
     /// Forces initialization of the static fields declared
     /// by a type, and any of its base class types.
     /// </summary>
-    /// <param name="obj">Object to initialize.</param>
+    /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
       var attr = 

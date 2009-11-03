@@ -21,11 +21,9 @@ namespace Csla.Core
     /// <para>The serialization is performed using the formatter
     /// specified in the application's configuration file
     /// using the CslaSerializationFormatter key.</para>
-    /// <para>The default is to use the 
-    /// <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />
-    /// </para>. You may also choose to use the Microsoft .NET 3.0
-    /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
-    /// NetDataContractSerializer</see> provided as part of WCF.
+    /// <para>The default is to use the BinaryFormatter.
+    /// </para>. You may also choose to use the 
+    /// NetDataContractSerializer provided as part of WCF.
     /// </remarks>
     public static object Clone(object obj)
     {

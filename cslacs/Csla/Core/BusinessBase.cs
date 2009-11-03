@@ -1126,7 +1126,8 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
-    [NonSerialized()]
+    [NonSerialized]
+    [NotUndoable]
     private EventHandler _validationCompleteHandlers;
 
     /// <summary>
@@ -1150,7 +1151,7 @@ namespace Csla.Core
     /// Raises the ValidationComplete event
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void OnValidationComplete()
+    internal protected virtual void OnValidationComplete()
     {
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);

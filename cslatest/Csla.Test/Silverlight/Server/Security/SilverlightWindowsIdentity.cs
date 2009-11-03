@@ -16,11 +16,6 @@ namespace Csla.Testing.Business.Security
     protected SilverlightWindowsIdentity() { }
 #endif
 
-    internal bool IsInRole(string role)
-    {
-      return base.IsInRole(role);
-    }
-
     internal static void GetSilverlightWindowsIdentity(EventHandler<DataPortalResult<SilverlightWindowsIdentity>> completed)
     {
       DataPortal<SilverlightWindowsIdentity> dp = new DataPortal<SilverlightWindowsIdentity>();

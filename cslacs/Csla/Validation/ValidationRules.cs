@@ -1232,7 +1232,14 @@ namespace Csla.Validation
           throw new ValidationException(
             string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
         }
-      }      
+      }
+
+      if (asyncRules.Length == 0)
+      {
+        var target = _target as Csla.Core.BusinessBase;
+        if (target != null)
+          target.OnValidationComplete();
+      }
     }
 
     void asyncRule_Complete(object target, AsyncRuleResult e)

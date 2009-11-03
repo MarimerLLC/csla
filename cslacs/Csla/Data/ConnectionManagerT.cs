@@ -67,7 +67,6 @@ namespace Csla.Data
     /// False, the database parameter is directly 
     /// used as a connection string.
     /// </param>
-    /// <param name="label">Label for this connection.</param>
     /// <returns>ConnectionManager object for the name.</returns>
     public static ConnectionManager<C> GetManager(string database, bool isDatabaseName)
     {

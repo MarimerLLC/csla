@@ -157,6 +157,9 @@ namespace Csla
     [Serializable()]
     public class NameValuePair : MobileObject
     {
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
       public NameValuePair() { }
       private K _key;
       private V _value;
@@ -197,6 +200,16 @@ namespace Csla
         return _value.ToString();
       }
 
+      /// <summary>
+      /// Override this method to insert your field values
+      /// into the MobileFormatter serialzation stream.
+      /// </summary>
+      /// <param name="info">
+      /// Object containing the data to serialize.
+      /// </param>
+      /// <param name="mode">
+      /// The StateMode indicating why this method was invoked.
+      /// </param>
       protected override void OnGetState(SerializationInfo info, StateMode mode)
       {
         base.OnGetState(info, mode);
@@ -204,6 +217,16 @@ namespace Csla
         info.AddValue("NameValuePair._value", _value);
       }
 
+      /// <summary>
+      /// Override this method to retrieve your field values
+      /// from the MobileFormatter serialzation stream.
+      /// </summary>
+      /// <param name="info">
+      /// Object containing the data to serialize.
+      /// </param>
+      /// <param name="mode">
+      /// The StateMode indicating why this method was invoked.
+      /// </param>
       protected override void OnSetState(SerializationInfo info, StateMode mode)
       {
         base.OnSetState(info, mode);
@@ -266,6 +289,9 @@ namespace Csla
         : base(collectionType)
       { }
 
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
       public Criteria() { }
 
     }

@@ -43,8 +43,18 @@ namespace Csla
 
     #region  SaveItem Methods
 
+    /// <summary>
+    /// Event raised when an object in the list has been saved.
+    /// </summary>
     public event EventHandler<Csla.Core.SavedEventArgs> Saved;
 
+    /// <summary>
+    /// Raises the Saved event.
+    /// </summary>
+    /// <param name="newObject">Object returned as a result
+    /// of the save operation.</param>
+    /// <param name="error">Exception returned as a result
+    /// of the save operation.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnSaved(T newObject, Exception error)
     {
@@ -165,11 +175,11 @@ namespace Csla
       base.InsertItem(index, item);
     }
 
-    ///// <summary>
-    ///// Removes an item from the list.
-    ///// </summary>
-    ///// <param name="index">Index of the item
-    ///// to be removed.</param>
+    /// <summary>
+    /// Removes an item from the list.
+    /// </summary>
+    /// <param name="index">Index of the item
+    /// to be removed.</param>
     protected override void RemoveItem(int index)
     {
       T item = this[index];
@@ -218,6 +228,10 @@ namespace Csla
     /// </remarks>
     protected bool RaiseReplaceEvents { get; set; }
 
+    /// <summary>
+    /// Raises the CollectionChanged event.
+    /// </summary>
+    /// <param name="e">Event args object</param>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
       // SL Data Grid's DataGridDataConnection object does not support replace action.  
@@ -226,6 +240,10 @@ namespace Csla
         base.OnCollectionChanged(e);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this collection
+    /// supports change notification (always returns true).
+    /// </summary>
     protected override bool SupportsChangeNotificationCore
     {
       get
@@ -249,6 +267,12 @@ namespace Csla
     #endregion
 
     #region IsBusy
+
+    /// <summary>
+    /// Gets a value indicating whether this object
+    /// or any child object is currently executing
+    /// an async operation.
+    /// </summary>
     public override bool IsBusy
     {
       get

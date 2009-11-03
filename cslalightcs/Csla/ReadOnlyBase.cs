@@ -6,14 +6,22 @@ using Csla.Serialization;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using System.Collections.Generic;
-using Csla.DataPortalClient;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using System.Diagnostics;
 
 namespace Csla
 {
+  /// <summary>
+  /// This is a base class from which readonly business classes
+  /// can be derived.
+  /// </summary>
+  /// <remarks>
+  /// This base class only supports data retrieve, not updating or
+  /// deleting. Any business classes derived from this base class
+  /// should only implement readonly properties.
+  /// </remarks>
+  /// <typeparam name="T">Type of the business object.</typeparam>
 #if TESTING
   [DebuggerNonUserCode]
 #endif
@@ -537,7 +545,6 @@ namespace Csla
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
-    /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized()
     {
@@ -1155,6 +1162,11 @@ namespace Csla
 
     #region MobileFormatter
 
+    /// <summary>
+    /// Serializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization context</param>
+    /// <param name="formatter">Serializer instance</param>
     protected override void OnGetChildren(
       Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
@@ -1166,6 +1178,11 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Deserializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization context</param>
+    /// <param name="formatter">Serializer instance</param>
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_fieldManager"))

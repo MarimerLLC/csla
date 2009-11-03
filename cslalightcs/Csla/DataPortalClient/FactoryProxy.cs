@@ -1,26 +1,25 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
 using Csla.Server;
 
 namespace Csla.DataPortalClient
 {
+  /// <summary>
+  /// Data portal proxy class that uses the 
+  /// object factory model.
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
 #if TESTING
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
   public class FactoryProxy<T> : IDataPortalProxy<T> where T : IMobileObject
   {
-
     #region Constructor
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="factoryInfo">ObjectFactory attribute</param>
     public FactoryProxy(ObjectFactoryAttribute factoryInfo)
     {
       _attribute = factoryInfo;
@@ -28,6 +27,11 @@ namespace Csla.DataPortalClient
     #endregion
 
     #region Events and Fields
+    /// <summary>
+    /// Defines the method signature for the completed handler.
+    /// </summary>
+    /// <param name="result">Result of operation</param>
+    /// <param name="ex">Exception from operation</param>
     public delegate void CompletedHandler(T result, Exception ex);
     private object _userState;
     private Csla.Server.ObjectFactoryAttribute _attribute;
@@ -35,6 +39,10 @@ namespace Csla.DataPortalClient
 
     #region GlobalContext
 
+    /// <summary>
+    /// Gets the global context value returned from an
+    /// async operation.
+    /// </summary>
     public Csla.Core.ContextDictionary GlobalContext
     {
       get { return Csla.ApplicationContext.GlobalContext; }
@@ -44,8 +52,14 @@ namespace Csla.DataPortalClient
 
     #region Create
 
+    /// <summary>
+    /// Raised when create has completed.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> CreateCompleted;
 
+    /// <summary>
+    /// Starts a create operation.
+    /// </summary>
     public void BeginCreate()
     {
       _userState = null;
@@ -53,11 +67,22 @@ namespace Csla.DataPortalClient
       var handler = new CompletedHandler(OnCreateCompleted);
       MethodCaller.CallMethod(obj, _attribute.CreateMethodName, handler);
     }
+    
+    /// <summary>
+    /// Starts a create operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
     public void BeginCreate(object criteria)
     {
       _userState = null;
       BeginCreate(criteria, null);
     }
+
+    /// <summary>
+    /// Starts a create operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
+    /// <param name="userState">Userstate object</param>
     public void BeginCreate(object criteria, object userState)
     {
       _userState = userState;
@@ -76,8 +101,14 @@ namespace Csla.DataPortalClient
 
     #region Fetch
 
+    /// <summary>
+    /// Raised when fetch operation completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> FetchCompleted;
 
+    /// <summary>
+    /// Starts a fetch operation.
+    /// </summary>
     public void BeginFetch()
     {
       _userState = null;
@@ -86,11 +117,20 @@ namespace Csla.DataPortalClient
       MethodCaller.CallMethod(obj, _attribute.FetchMethodName, handler);
     }
 
+    /// <summary>
+    /// Starts a fetch operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
     public void BeginFetch(object criteria)
     {
       BeginFetch(criteria, null);
     }
 
+    /// <summary>
+    /// Starts a fetch operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
+    /// <param name="userState">Userstate object</param>
     public void BeginFetch(object criteria, object userState)
     {
       _userState = userState;
@@ -109,12 +149,25 @@ namespace Csla.DataPortalClient
 
     #region Update
 
+    /// <summary>
+    /// Raised when an update completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> UpdateCompleted;
 
+    /// <summary>
+    /// Starts an update operation.
+    /// </summary>
+    /// <param name="obj">Object to update</param>
     public void BeginUpdate(object obj)
     {
       BeginUpdate(obj, null);
     }
+
+    /// <summary>
+    /// Starts an update operation.
+    /// </summary>
+    /// <param name="obj">Object to update</param>
+    /// <param name="userState">Userstate object</param>
     public void BeginUpdate(object obj, object userState)
     {
       var factory = Activator.CreateInstance(Csla.Reflection.MethodCaller.GetType(_attribute.FactoryTypeName));
@@ -155,6 +208,9 @@ namespace Csla.DataPortalClient
 
     #region Delete
 
+    /// <summary>
+    /// Raised when a delete completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> DeleteCompleted;
 
     private void OnDeleteCompleted(T result, Exception ex)
@@ -163,11 +219,20 @@ namespace Csla.DataPortalClient
         DeleteCompleted(this, new DataPortalResult<T>(result, ex, _userState));
     }
 
+    /// <summary>
+    /// Starts a delete operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
     public void BeginDelete(object criteria)
     {
       BeginDelete(criteria, null);
     }
 
+    /// <summary>
+    /// Starts a delete operation.
+    /// </summary>
+    /// <param name="criteria">Criteria object</param>
+    /// <param name="userState">Userstate object</param>
     public void BeginDelete(object criteria, object userState)
     {
       _userState = userState;
@@ -180,18 +245,35 @@ namespace Csla.DataPortalClient
 
     #region Execute
 
+    /// <summary>
+    /// Raised when an execute completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
 
+    /// <summary>
+    /// Raises the ExecuteCompleted event
+    /// </summary>
+    /// <param name="e">Event args</param>
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
       if (ExecuteCompleted != null)
         ExecuteCompleted(this, e);
     }
 
+    /// <summary>
+    /// Starts an execute operation.
+    /// </summary>
+    /// <param name="command">Object to execute</param>
     public void BeginExecute(T command)
     {
       BeginExecute(command, null);
     }
+
+    /// <summary>
+    /// Starts an execute operation.
+    /// </summary>
+    /// <param name="command">Object to execute</param>
+    /// <param name="userState">Userstate object</param>
     public void BeginExecute(T command, object userState)
     {
       _userState = userState;

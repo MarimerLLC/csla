@@ -9,28 +9,21 @@ namespace Csla.Test.ValidationRules
     string _test = string.Empty;
     public string Test
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Test", true);
         return _test;
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Test", true);
         if (!_test.Equals(value))
         {
           _test = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Test");
         }
       }
     }
-
-    //static HasPerTypeRules()
-    //{
-    //  Csla.Validation.SharedValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, typeof(HasPerTypeRules), "Test");
-    //}
 
     protected override void AddBusinessRules()
     {
@@ -60,28 +53,21 @@ namespace Csla.Test.ValidationRules
     string _test = string.Empty;
     public string Test
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Test", true);
         return _test;
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Test", true);
         if (!_test.Equals(value))
         {
           _test = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Test");
         }
       }
     }
-
-    //static HasPerTypeRules2()
-    //{
-    //  Csla.Validation.SharedValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, typeof(HasPerTypeRules2), "Test");
-    //}
 
     protected override void AddBusinessRules()
     {
@@ -112,28 +98,21 @@ namespace Csla.Test.ValidationRules
     string _test = string.Empty;
     public string Test
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Test", true);
         return _test;
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Test", true);
         if (!_test.Equals(value))
         {
           _test = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Test");
         }
       }
     }
-
-    //static HasPerTypeRules()
-    //{
-    //  Csla.Validation.SharedValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, typeof(HasPerTypeRules), "Test");
-    //}
 
     protected override void AddBusinessRules()
     {

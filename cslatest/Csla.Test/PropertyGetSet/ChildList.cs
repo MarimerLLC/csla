@@ -17,7 +17,7 @@ namespace Csla.Test.PropertyGetSet
       MarkAsChild();
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }

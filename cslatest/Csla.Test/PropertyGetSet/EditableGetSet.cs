@@ -143,12 +143,12 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty(LazyChildProperty, value); }
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }
 
-    public void MarkClean()
+    public new void MarkClean()
     {
       base.MarkClean();
     }
@@ -288,12 +288,12 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty(DataProperty, value); }
     }
 
-    public int EditLevel
+    public new int EditLevel
     {
       get { return base.EditLevel; }
     }
 
-    public void MarkClean()
+    public new void MarkClean()
     {
       base.MarkClean();
     }

@@ -985,8 +985,8 @@ namespace Csla.Silverlight
     /// <summary>
     /// Raises the PropertyChanged event.
     /// </summary>
-    /// <param name="e">
-    /// Arguments for event.
+    /// <param name="propertyName">
+    /// Name of the changed property
     /// </param>
     protected virtual void OnPropertyChanged(string propertyName)
     {

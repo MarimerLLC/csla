@@ -13,20 +13,19 @@ namespace Csla.Test.Authorization
     string _test = string.Empty;
     public string Test
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Test", true);
         return _test;
       }
       [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Test", true);
         if (!_test.Equals(value))
         {
           _test = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Test");
         }
       }
     }
@@ -34,20 +33,18 @@ namespace Csla.Test.Authorization
     string _name = string.Empty;
     public string Name
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Name", true);
         return _name;
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Name", true);
         if (!_name.Equals(value))
         {
           _name = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Name");
         }
       }
     }

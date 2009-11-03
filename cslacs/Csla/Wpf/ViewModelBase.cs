@@ -504,7 +504,6 @@ namespace Csla.Wpf
     /// <param name="factoryParameters">Factory method parameters.</param>
     protected virtual void DoRefresh(string factoryMethod, params object[] factoryParameters)
     {
-      T result = default(T);
       if (typeof(T) != null)
       {
         Error = null;
@@ -607,7 +606,6 @@ namespace Csla.Wpf
       Error = null;
       try
       {
-        Csla.Core.ISupportUndo undo;
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {
@@ -645,7 +643,6 @@ namespace Csla.Wpf
     {
       try
       {
-        Csla.Core.ISupportUndo undo;
         var savable = Model as Csla.Core.ISavable;
         if (ManageObjectLifetime)
         {

@@ -109,12 +109,23 @@ namespace Csla.Core
 
     #region Bubbling event Hooks
 
+    /// <summary>
+    /// Invoked when an item is inserted into
+    /// the collection.
+    /// </summary>
+    /// <param name="index">Index of the item</param>
+    /// <param name="item">Item that was inserted</param>
     protected override void InsertItem(int index, T item)
     {
       base.InsertItem(index, item);
       OnAddEventHooks(item);
     }
 
+    /// <summary>
+    /// Invoked when events should be hooked for
+    /// an added item.
+    /// </summary>
+    /// <param name="item">Item that was added</param>
     protected virtual void OnAddEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
@@ -129,15 +140,16 @@ namespace Csla.Core
       if (c != null)
         c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
 
-      //INotifyCollectionChanged col = item as INotifyCollectionChanged;
-      //if(col!=null)
-      //  col.CollectionChanged += new NotifyCollectionChangedEventHandler(Child_ListChanged);
-
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
     }
 
+    /// <summary>
+    /// Invoked when events should be unhooked for
+    /// a removed item.
+    /// </summary>
+    /// <param name="item">Item that was removed</param>
     protected virtual void OnRemoveEventHooks(T item)
     {
       INotifyBusy busy = item as INotifyBusy;
@@ -189,29 +201,49 @@ namespace Csla.Core
     [NonSerialized]
     private BusyChangedEventHandler _busyChanged = null;
 
+    /// <summary>
+    /// Event raised when the busy status has changed.
+    /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
       add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
       remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
     }
 
+    /// <summary>
+    /// Raise the BusyChanged event.
+    /// </summary>
+    /// <param name="args">Event args</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
     }
 
+    /// <summary>
+    /// Raise the BusyChanged event.
+    /// </summary>
+    /// <param name="propertyName">Affected property</param>
+    /// <param name="busy">New busy status</param>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
       OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
-
+    /// <summary>
+    /// Gets a value indicating whether this object
+    /// or any of its child objects is running an 
+    /// async operation.
+    /// </summary>
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this object
+    /// is running an async operation.
+    /// </summary>
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -230,18 +262,32 @@ namespace Csla.Core
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event raised when an unhandled exception occurs during
+    /// async processing.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Exception that occurred</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Raises the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Object that threw the original
+    /// exception</param>
+    /// <param name="error">Exception that occurred</param>
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));

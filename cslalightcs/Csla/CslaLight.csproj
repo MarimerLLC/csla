@@ -160,6 +160,12 @@
     <Compile Include="..\..\cslacs\Csla\Core\INotifyChildChanged.cs">
       <Link>Core\INotifyChildChanged.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\DataServiceContextManager.cs">
+      <Link>Data\DataServiceContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\ServiceClientManager.cs">
+      <Link>Data\ServiceClientManager.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
       <Link>Core\INotifyUnhandledAsyncException.cs</Link>
     </Compile>
@@ -423,8 +429,6 @@
     <Compile Include="DataPortalEventArgs.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalT.cs" />
-    <Compile Include="Data\DataServiceContextManager.cs" />
-    <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="ICriteria.cs" />

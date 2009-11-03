@@ -43,6 +43,9 @@ namespace Csla.Security
       dp.BeginFetch(criteria);
     }
 
+    /// <summary>
+    /// Invoked when the object is deserialized.
+    /// </summary>
     protected override void OnDeserialized()
     {
       _forceInit = _forceInit && false;

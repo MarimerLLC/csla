@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace Csla.Reflection
 {
+  /// <summary>
+  /// Provides methods to dynamically find and call methods.
+  /// </summary>
 #if TESTING
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
@@ -575,6 +578,22 @@ namespace Csla.Reflection
       } while (currentType != null);
 
       return result;
+    }
+
+    /// <summary>
+    /// Invokes a property getter using dynamic
+    /// method invocation.
+    /// </summary>
+    /// <param name="obj">Target object.</param>
+    /// <param name="property">Property to invoke.</param>
+    /// <returns></returns>
+    public static object CallPropertyGetter(object obj, string property)
+    {
+      var prop = obj.GetType().GetProperty(property);
+      if (prop != null)
+        return prop.GetValue(obj, new object[] { });
+      else
+        throw new MissingMemberException(property);
     }
   }
 }

@@ -932,6 +932,9 @@ namespace Csla
 
     #region IDisposable Members
 
+    /// <summary>
+    /// Disposes the object.
+    /// </summary>
     public void Dispose()
     {
       //AE: Added removal of event handler in the disposal

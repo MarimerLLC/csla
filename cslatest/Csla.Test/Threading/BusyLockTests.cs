@@ -48,6 +48,11 @@ namespace Csla.Test.Threading
 
       public event EventHandler<ErrorEventArgs> UnhandledAsyncException;
 
+      protected virtual void OnUnhandledAsyncException()
+      {
+        if (UnhandledAsyncException != null)
+          UnhandledAsyncException(this, new ErrorEventArgs(null, null));
+      }
     }
 
     [TestMethod]

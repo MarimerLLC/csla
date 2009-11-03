@@ -9,8 +9,9 @@ namespace Csla.Testing.Business.ApplicationContext
     public ClientContextBOVerifier():this(true){}
     public ClientContextBOVerifier(bool isNew): base(isNew){}
 
+#if SILVERLIGHT
     //DataPortal_Insert is used to verify that the ClientContext["MSG"] is received on the server
-    protected void DataPortal_Insert(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Insert(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
     {
       SetReceivedContextValuePropertyFrom(Contexts.Client);
 
@@ -21,12 +22,13 @@ namespace Csla.Testing.Business.ApplicationContext
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    protected void DataPortal_Update(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Update(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
     {
       SetContextValueModified(Contexts.Client);
       
       handler(this, null);
     }
+#endif
   }
 
   [Serializable]
@@ -35,8 +37,9 @@ namespace Csla.Testing.Business.ApplicationContext
     public GlobalContextBOVerifier():this(true){}
     public GlobalContextBOVerifier(bool isNew) : base(isNew) { }
 
+#if SILVERLIGHT
     //DataPortal_Insert is used to verify that the GlobalContext["MSG"] is received on the server
-    protected void DataPortal_Insert(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Insert(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
     {
       SetReceivedContextValuePropertyFrom(Contexts.Global);
 
@@ -45,12 +48,13 @@ namespace Csla.Testing.Business.ApplicationContext
 
     //DataPortal_Update is used to verify that the GlobalContext["MSG"] 
     //changed on the server does not change the value on the client
-    protected void DataPortal_Update(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Update(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
     {
       SetContextValueModified(Contexts.Global);
 
       handler(this, null);
     }
+#endif
   }
 
 }

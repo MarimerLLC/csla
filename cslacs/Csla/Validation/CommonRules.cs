@@ -225,7 +225,7 @@ namespace Csla.Validation
     /// <summary>
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="StringMinLength" /> rule method.
-    //br/ </summary>
+    /// </summary>
     public class MinLengthRuleArgs : DecoratedRuleArgs
     {
       /// <summary>

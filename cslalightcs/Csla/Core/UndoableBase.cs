@@ -10,6 +10,10 @@ using System.Runtime.Serialization;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Implements n-level undo capabilities as
+  /// described in Chapters 2 and 3.
+  /// </summary>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
@@ -103,6 +107,7 @@ namespace Csla.Core
     /// Copies the state of the object and places the copy
     /// onto the state stack.
     /// </summary>
+    /// <param name="parentEditLevel">Parent edit level.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void CopyState(int parentEditLevel)
     {
@@ -118,6 +123,11 @@ namespace Csla.Core
       CopyStateComplete();
     }
 
+    /// <summary>
+    /// Invoked when a subclass should copy its state
+    /// onto the state stack.
+    /// </summary>
+    /// <param name="state">State stack.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnCopyState(SerializationInfo state)
     {
@@ -151,6 +161,7 @@ namespace Csla.Core
     /// the stack and restoring it into the fields
     /// of the object.
     /// </remarks>
+    /// <param name="parentEditLevel">Parent edit level</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void UndoChanges(int parentEditLevel)
     {
@@ -169,6 +180,11 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// This method is invoked when an undo operation
+    /// begins.
+    /// </summary>
+    /// <param name="state">Serialization state</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnUndoChanges(SerializationInfo state)
     { }
@@ -200,6 +216,7 @@ namespace Csla.Core
     /// stack and discarded, thus committing any changes made
     /// to the object's state.
     /// </remarks>
+    /// <param name="parentEditLevel">Parent edit level</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected internal void AcceptChanges(int parentEditLevel)
     {
@@ -212,11 +229,6 @@ namespace Csla.Core
         _stateStack.Pop();
       
       AcceptChangesComplete();
-    }
-
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void OnAcceptChanges()
-    {
     }
 
     #region Helper Functions
@@ -254,6 +266,11 @@ namespace Csla.Core
 
     #region MobileObject overrides
 
+    /// <summary>
+    /// Gets the state of the object for serialization.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="mode">Serialization mode</param>
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       if (mode == StateMode.Serialization)
@@ -268,6 +285,12 @@ namespace Csla.Core
       info.AddValue("_bindingEdit", _bindingEdit);
       base.OnGetState(info, mode);
     }
+
+    /// <summary>
+    /// Sets the state of the object from serialization.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="mode">Serialization mode</param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       if (mode == StateMode.Serialization)

@@ -98,13 +98,13 @@ namespace Csla.Test.ChildChanged
     public void SingleList()
     {
       int lc = 0;
-      System.ComponentModel.PropertyDescriptor lcp = null;
       int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = new SingleList();
       root.Add(new SingleRoot(true));
 #if !SILVERLIGHT
+      System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
       {
         lc++;
@@ -135,7 +135,6 @@ namespace Csla.Test.ChildChanged
     public void SingleList_Serialized()
     {
       int lc = 0;
-      System.ComponentModel.PropertyDescriptor lcp = null;
       int cc = 0;
       Csla.Core.ChildChangedEventArgs cca = null;
 
@@ -144,6 +143,7 @@ namespace Csla.Test.ChildChanged
       root = root.Clone();
 
 #if !SILVERLIGHT
+      System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
       {
         lc++;
@@ -176,7 +176,6 @@ namespace Csla.Test.ChildChanged
       int lc = 0;
       int rcc = 0;
       int cc = 0;
-      System.ComponentModel.PropertyDescriptor lcp = null;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = new ContainsList();
@@ -190,6 +189,7 @@ namespace Csla.Test.ChildChanged
         rcc++;
       };
 #if !SILVERLIGHT
+      System.ComponentModel.PropertyDescriptor lcp = null;
       root.List.ListChanged += (o, e) =>
       {
         lc++;
@@ -223,7 +223,6 @@ namespace Csla.Test.ChildChanged
       int lc = 0;
       int rcc = 0;
       int cc = 0;
-      System.ComponentModel.PropertyDescriptor lcp = null;
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = new ContainsList();
@@ -239,6 +238,7 @@ namespace Csla.Test.ChildChanged
         rcc++;
       };
 #if !SILVERLIGHT
+      System.ComponentModel.PropertyDescriptor lcp = null;
       root.List.ListChanged += (o, e) =>
       {
         lc++;
@@ -269,8 +269,6 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ListOfLists()
     {
-      bool lc = false;
-      System.ComponentModel.PropertyDescriptor lcp = null;
       bool rcc = false;
       bool ccc = false;
       bool cc = false;
@@ -284,7 +282,9 @@ namespace Csla.Test.ChildChanged
       {
         rcc = true;
       };
+      bool lc = false;
 #if !SILVERLIGHT
+      System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
         {
           Assert.Fail("root.ListChanged should not fire");
@@ -326,7 +326,7 @@ namespace Csla.Test.ChildChanged
       Assert.IsNotNull(lcp, "PropertyDescriptor should be provided");
       Assert.AreEqual("Name", lcp.Name, "PropertyDescriptor.Name should be Name");
 #endif
-      Assert.IsTrue(rcc, "root.ChildChanged should have fired");
+			Assert.IsTrue(rcc, "root.ChildChanged should have fired");
       Assert.IsTrue(ccc, "child.ChildChanged should have fired");
       Assert.IsTrue(cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(child.List[0], cca.ChildObject), "Ref should be equal");

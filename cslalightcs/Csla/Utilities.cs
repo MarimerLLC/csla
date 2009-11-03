@@ -234,6 +234,11 @@ namespace Csla
 
     #region Error Handling
 
+    /// <summary>
+    /// Converts an Exception into a
+    /// WcfErrorInfo object.
+    /// </summary>
+    /// <param name="ex">Exception object</param>
     public static WcfErrorInfo ToErrorInfo(this Exception ex)
     {
       WcfErrorInfo info = null;

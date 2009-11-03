@@ -2433,7 +2433,7 @@ namespace Csla.Core
     /// Raises the ValidationComplete event.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnValidationComplete()
+    internal protected virtual void OnValidationComplete()
     {
       if (ValidationComplete != null)
         ValidationComplete(this, EventArgs.Empty);

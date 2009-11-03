@@ -121,6 +121,9 @@ namespace Csla.Silverlight
       element.SetValue(ParametersProperty, value);
     }
 
+    /// <summary>
+    /// Trigger event name.
+    /// </summary>
     public static readonly DependencyProperty TriggerEventProperty =
       DependencyProperty.RegisterAttached("TriggerEvent",
       typeof(string),

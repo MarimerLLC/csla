@@ -10,75 +10,73 @@ namespace Csla.Test.Security
 #if TESTING
     [DebuggerNonUserCode]
 #endif
-    [Serializable()]
-    public class PermissionsRoot : BusinessBase<PermissionsRoot>
+  [Serializable()]
+  public class PermissionsRoot : BusinessBase<PermissionsRoot>
+  {
+    private int _ID = 0;
+    private string _firstName;
+
+    protected override object GetIdValue()
     {
-        private int _ID;
-        private string _firstName;
+      return _ID;
+    }
 
-        protected override object GetIdValue()
+    public string FirstName
+    {
+      get
+      {
+        if (CanReadProperty("FirstName"))
         {
-            return _ID;
+          return _firstName;
         }
-
-        public string FirstName
+        else
         {
-            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-            get
-            {
-                if (CanReadProperty())
-                {
-                    return _firstName;
-                }
-                else
-                {
-                    throw new System.Security.SecurityException("Property get not allowed");
-                }
-            }
-            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-            set
-            {
-                if (CanWriteProperty())
-                {
-                    _firstName = value;
-                }
-                else
-                {
-                    throw new System.Security.SecurityException("Property set not allowed");
-                }
-            }
-          }
+          throw new System.Security.SecurityException("Property get not allowed");
+        }
+      }
+      set
+      {
+        if (CanWriteProperty("FirstName"))
+        {
+          _firstName = value;
+        }
+        else
+        {
+          throw new System.Security.SecurityException("Property set not allowed");
+        }
+      }
+    }
 
-          public void DoWork()
-          {
-            CanExecuteMethod(true);
-          }
+    public void DoWork()
+    {
+      CanExecuteMethod("DoWork", true);
+    }
 
-          #region Authorization
+    #region Authorization
 
-          protected override void AddAuthorizationRules()
-          {
-            this.AuthorizationRules.AllowRead("FirstName", "Admin");
-            this.AuthorizationRules.AllowWrite("FirstName", "Admin");
+    protected override void AddAuthorizationRules()
+    {
+      this.AuthorizationRules.AllowRead("FirstName", "Admin");
+      this.AuthorizationRules.AllowWrite("FirstName", "Admin");
 
-            this.AuthorizationRules.AllowExecute("DoWork", "Admin");
-          }
+      this.AuthorizationRules.AllowExecute("DoWork", "Admin");
+    }
 
-          #endregion
+    #endregion
 
-          #region "Constructors"
+    #region "Constructors"
 #if SILVERLIGHT
       public PermissionsRoot() { }
 #else
 
-          private PermissionsRoot()
-          {
-              //require use of factory methods
-          }
+    private PermissionsRoot()
+    {
+      //require use of factory methods
+    }
 #endif
-        #endregion
+    #endregion
 
-        #region "factory methods"
+    #region "factory methods"
 
 #if SILVERLIGHT
         public static PermissionsRoot NewPermissionsRoot()
@@ -86,31 +84,31 @@ namespace Csla.Test.Security
             return new PermissionsRoot();
         }
 #else
-          public static PermissionsRoot NewPermissionsRoot()
-        {
-            return Csla.DataPortal.Create<PermissionsRoot>();
-        }
+    public static PermissionsRoot NewPermissionsRoot()
+    {
+      return Csla.DataPortal.Create<PermissionsRoot>();
+    }
 #endif
-        #endregion
+    #endregion
 
-        #region "Criteria"
+    #region "Criteria"
 
-        [Serializable()]
-        private class Criteria
-        {
-            //implement
-        }
+    [Serializable()]
+    private class Criteria
+    {
+      //implement
+    }
 
-        #endregion
+    #endregion
 
 #if !SILVERLIGHT
 
-        [RunLocal()]
-        protected override void DataPortal_Create()
-        {
-            _firstName = "default value"; //for now...
-        }
+    [RunLocal()]
+    protected override void DataPortal_Create()
+    {
+      _firstName = "default value"; //for now...
+    }
 
 #endif
-    }
+  }
 }

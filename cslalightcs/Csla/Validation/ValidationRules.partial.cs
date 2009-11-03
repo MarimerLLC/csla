@@ -16,6 +16,9 @@ namespace Csla.Validation
 {
   public partial class ValidationRules : IUndoableObject
   {
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public ValidationRules() { }
 
     #region IUndoableObject Members
@@ -83,6 +86,11 @@ namespace Csla.Validation
 
     #region MobileObject overrides
 
+    /// <summary>
+    /// Gets the object state.
+    /// </summary>
+    /// <param name="info">Serialization info</param>
+    /// <param name="mode">Serialization mode</param>
     protected virtual void OnGetStatePartial(SerializationInfo info, StateMode mode)
     {
       if (mode == StateMode.Serialization)
@@ -97,6 +105,11 @@ namespace Csla.Validation
       base.OnGetState(info, mode);
     }
 
+    /// <summary>
+    /// Sets the object state.
+    /// </summary>
+    /// <param name="info">Serialization info</param>
+    /// <param name="mode">Serialization mode</param>
     protected virtual void OnSetStatePartial(SerializationInfo info, StateMode mode)
     {
       if (mode == StateMode.Serialization)

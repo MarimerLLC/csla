@@ -28,7 +28,18 @@ namespace Csla.Wpf
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
 
+    /// <summary>
+    /// Event raised when the object has been saved.
+    /// </summary>
     public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+    /// <summary>
+    /// Raise the Saved event when the object has been saved.
+    /// </summary>
+    /// <param name="newObject">New object reference as a result
+    /// of the save operation.</param>
+    /// <param name="error">Reference to an exception object if
+    /// an error occurred.</param>
+    /// <param name="userState">Reference to a userstate object.</param>
     protected void OnSaved(object newObject, Exception error, object userState)
     {
       if (Saved != null)

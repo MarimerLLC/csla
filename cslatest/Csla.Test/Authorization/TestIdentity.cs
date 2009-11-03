@@ -9,10 +9,6 @@ namespace Csla.Test.Security
   [Serializable]
   public class TestIdentity : Csla.Security.CslaIdentity
   {
-    private bool _isAuthenticated;
-    private string _authType = "Test authentication";
-    private string _name = "";
-
     public TestIdentity() { }
 
     public bool IsInRole(string role)

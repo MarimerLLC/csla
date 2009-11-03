@@ -5,13 +5,13 @@ namespace Csla.Testing.Business.ApplicationContext
   [Serializable]
   public class ClientContextBOVerifier : ContextBOVerifier<ClientContextBOVerifier>
   {
-    private static int _dummy;
+    private static int _dummy = 0;
     //protected static PropertyInfo<string> InhReceivedContextValueProperty = 
     //  RegisterProperty<string>(ReceivedContextValueProperty);
 
     public ClientContextBOVerifier(bool isNew): base(isNew)
     {
-      _dummy = 0;
+      _dummy = _dummy + 0;
     }
 
     protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
@@ -20,14 +20,14 @@ namespace Csla.Testing.Business.ApplicationContext
       base.OnDeserialized(context);
     }
 
-    protected void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Client);
     }
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    protected void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Client);
     }

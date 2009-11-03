@@ -66,8 +66,8 @@ namespace Csla.Reflection
     /// <summary>
     /// Gets the property represented by the lambda expression.
     /// </summary>
-    /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a property access.</exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="property"/> is null.</exception>
+		/// <exception cref="ArgumentException">The <paramref name="property"/> is not a lambda expression or it does not represent a property access.</exception>
     public static PropertyInfo GetProperty(Expression<Func<TTarget, object>> property)
     {
       var info = GetMemberInfo(property) as PropertyInfo;
@@ -82,8 +82,8 @@ namespace Csla.Reflection
     /// <typeparam name="P">Type assigned to the property</typeparam>
     /// <param name="property">Property Expression</param>
     /// <returns></returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a property access.</exception>
+		/// <exception cref="ArgumentNullException">The <paramref name="property"/> is null.</exception>
+		/// <exception cref="ArgumentException">The <paramref name="property"/> is not a lambda expression or it does not represent a property access.</exception>
     public static PropertyInfo GetProperty<P>(Expression<Func<TTarget, P>> property)
     {
       var info = GetMemberInfo(property) as PropertyInfo;
@@ -95,8 +95,8 @@ namespace Csla.Reflection
     /// <summary>
     /// Gets the field represented by the lambda expression.
     /// </summary>
-    /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a field access.</exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="field"/> is null.</exception>
+		/// <exception cref="ArgumentException">The <paramref name="field"/> is not a lambda expression or it does not represent a field access.</exception>
     public static FieldInfo GetField(Expression<Func<TTarget, object>> field)
     {
       var info = GetMemberInfo(field) as FieldInfo;

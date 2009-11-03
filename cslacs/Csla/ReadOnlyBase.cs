@@ -185,7 +185,7 @@ namespace Csla
         System.Security.SecurityException ex = new System.Security.SecurityException(
           string.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
-        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -207,7 +207,7 @@ namespace Csla
         System.Security.SecurityException ex = new System.Security.SecurityException(
           string.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
-        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -313,7 +313,7 @@ namespace Csla
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -335,7 +335,7 @@ namespace Csla
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        ex.Action = System.Security.Permissions.SecurityAction.Deny;
+        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;

@@ -395,7 +395,7 @@ namespace Csla.Server
         {
           System.Security.SecurityException ex =
             new System.Security.SecurityException(Resources.NoPrincipalAllowedException);
-          ex.Action = System.Security.Permissions.SecurityAction.Deny;
+          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
         // Set .NET to use integrated security
@@ -409,7 +409,7 @@ namespace Csla.Server
           System.Security.SecurityException ex =
             new System.Security.SecurityException(
               Resources.BusinessPrincipalException + " Nothing");
-          ex.Action = System.Security.Permissions.SecurityAction.Deny;
+          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
         ApplicationContext.User = context.Principal;

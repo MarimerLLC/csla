@@ -438,6 +438,9 @@ namespace Csla.WcfPortal {
         }
     }
     
+		/// <summary>
+		/// 
+		/// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://ws.lhotka.net/WcfDataPortal", ConfigurationName="WcfPortal.IWcfPortal")]
     public interface IWcfPortal {
@@ -487,6 +490,9 @@ namespace Csla.WcfPortal {
         Csla.WcfPortal.WcfResponse EndDelete(System.IAsyncResult result);
     }
     
+		/// <summary>
+		/// 
+		/// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IWcfPortalChannel : Csla.WcfPortal.IWcfPortal, System.ServiceModel.IClientChannel {
     }

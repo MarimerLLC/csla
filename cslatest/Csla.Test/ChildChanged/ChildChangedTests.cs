@@ -282,7 +282,6 @@ namespace Csla.Test.ChildChanged
       {
         rcc = true;
       };
-      bool lc = false;
 #if !SILVERLIGHT
       System.ComponentModel.PropertyDescriptor lcp = null;
       root.ListChanged += (o, e) =>
@@ -304,15 +303,11 @@ namespace Csla.Test.ChildChanged
         Assert.IsTrue(false, "child.PropertyChanged should not fire");
       };
 #if !SILVERLIGHT
+      bool lc = false;
       child.List.ListChanged += (o, e) =>
       {
         lc = true;
         lcp = e.PropertyDescriptor;
-      };
-#else
-      child.List.CollectionChanged += (o, e) =>
-      {
-        lc = true;
       };
 #endif
       child.List.ChildChanged += (o, e) =>

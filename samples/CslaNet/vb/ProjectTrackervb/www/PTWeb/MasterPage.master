@@ -1,0 +1,42 @@
+<%@ Master Language="VB" CodeFile="MasterPage.master.vb" 
+  Inherits="MasterPage" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server">
+  <title>Untitled Page</title>
+  <meta http-equiv="Content-Type" content="text/html; 
+    charset=iso-8859-1" />
+</head>
+<body>
+  <form id="form1" runat="server">
+  <div id="mainTable">
+    <div id="header">
+      <asp:Label ID="PageTitle" runat="server">
+      </asp:Label>
+    </div>
+    <div id="navigation">
+      <div id="navigationContent">
+        <asp:TreeView ID="TreeView1" runat="server" 
+          DataSourceID="SiteMapDataSource1" 
+          ShowExpandCollapse="False" SkipLinkText="" >
+          <NodeStyle CssClass="nav" />
+        </asp:TreeView>
+      </div>
+    </div>
+    <div id="subnavigation">
+      <div id="logout">
+        <asp:LoginStatus ID="LoginStatus1"
+          runat="server"/>
+      </div>
+    </div>
+    <div id="content">
+      <asp:ContentPlaceHolder id="ContentPlaceHolder1" 
+        runat="server">
+      </asp:ContentPlaceHolder>
+    </div>
+  </div>
+  <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" 
+    ShowStartingNode="False" />
+  </form></body>
+</html>

@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DeepData.DAL.WebService.Properties" GeneratedClassName="Settings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="DeepData_DAL_WebService_DeepDataDAL_DeepDataDAL" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:2519/DeepDataService/DeepDataDAL.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

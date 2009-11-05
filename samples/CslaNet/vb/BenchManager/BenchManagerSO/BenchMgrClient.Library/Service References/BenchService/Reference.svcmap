@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="3967dd5d-1572-4b48-909c-646f2a78927e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1720/BenchMgrService/BenchSvc.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="BenchSvc.xsd" MetadataType="Schema" ID="e10ab1b3-7aac-4a50-95ee-b7f7fa323498" SourceId="1" SourceUrl="http://localhost:1720/BenchMgrService/BenchSvc.svc?xsd=xsd1" />
+    <MetadataFile FileName="BenchSvc1.xsd" MetadataType="Schema" ID="a87a3812-a50c-4331-9ecd-63d81479178f" SourceId="1" SourceUrl="http://localhost:1720/BenchMgrService/BenchSvc.svc?xsd=xsd2" />
+    <MetadataFile FileName="BenchSvc.wsdl" MetadataType="Wsdl" ID="a83aef80-d726-4103-ba82-ef58f1299de1" SourceId="1" SourceUrl="http://localhost:1720/BenchMgrService/BenchSvc.svc?wsdl" />
+    <MetadataFile FileName="BenchSvc2.xsd" MetadataType="Schema" ID="1793937f-30ee-4293-b3d3-7fe654c55815" SourceId="1" SourceUrl="http://localhost:1720/BenchMgrService/BenchSvc.svc?xsd=xsd0" />
+    <MetadataFile FileName="BenchSvc.disco" MetadataType="Disco" ID="f9e015b3-41c3-4e93-b3e2-b99bfae7cdd5" SourceId="1" SourceUrl="http://localhost:1720/BenchMgrService/BenchSvc.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

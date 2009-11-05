@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cf50b530-54d6-4c9e-9892-d66c9c244224" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1719/SalesService/SalesSvc.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SalesSvc.xsd" MetadataType="Schema" ID="86ddab29-7c13-4d7f-ac57-992e5d91ded4" SourceId="1" SourceUrl="http://localhost:1719/SalesService/SalesSvc.svc?xsd=xsd2" />
+    <MetadataFile FileName="SalesSvc1.xsd" MetadataType="Schema" ID="200948f2-bedd-40db-8050-03063f7ef471" SourceId="1" SourceUrl="http://localhost:1719/SalesService/SalesSvc.svc?xsd=xsd0" />
+    <MetadataFile FileName="SalesSvc.wsdl" MetadataType="Wsdl" ID="2fe6fded-52d0-4d19-b9e7-95474a1adc7d" SourceId="1" SourceUrl="http://localhost:1719/SalesService/SalesSvc.svc?wsdl" />
+    <MetadataFile FileName="SalesSvc.disco" MetadataType="Disco" ID="caf7282a-9801-4a46-9b8f-56f5c93bbe35" SourceId="1" SourceUrl="http://localhost:1719/SalesService/SalesSvc.svc?disco" />
+    <MetadataFile FileName="SalesSvc2.xsd" MetadataType="Schema" ID="eeedf1ea-39a8-4749-982a-08ceadb7322e" SourceId="1" SourceUrl="http://localhost:1719/SalesService/SalesSvc.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,73 @@
+﻿<Window x:Class="EditClientProjects"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:library="clr-namespace:BenchMgrClient.Library;assembly=BenchMgrClient.Library"  
+    Title="Edit Client Projects" Height="437" Width="613">
+  <Window.Resources>
+    <csla:IdentityConverter x:Key="IdentityConverter" />
+    <csla:CslaDataProvider x:Key="ClientList"
+                           ObjectType="{x:Type library:ClientNVList}"
+                           FactoryMethod="GetList"
+                           IsAsynchronous="False" />
+  </Window.Resources>
+  <Grid>
+    <Grid.Resources>
+      <DataTemplate x:Key="lbTemplate">
+        <Grid>
+          <csla:ValidationPanel Orientation="Vertical">
+            <Border BorderThickness="2" BorderBrush="Blue" />
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Id:</TextBlock>
+              <TextBlock Text="{Binding Path=Id, Mode=OneWay}" Width="100" />
+              <TextBlock>Client:</TextBlock>
+              <ComboBox IsEnabled="False"
+                ItemsSource="{Binding Source={StaticResource ClientList}}" 
+                DisplayMemberPath="Value"
+                SelectedValuePath="Key"
+                SelectedValue="{Binding Path=ClientId}" 
+                Width="150" />
+              <Button Click="RemoveItem" HorizontalAlignment="Left" Tag="{Binding Path=Id}">Remove</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock>Name:</TextBlock>
+              <TextBox Text="{Binding Path=Name, Converter={StaticResource IdentityConverter}}" Width="250" />
+            </StackPanel>
+            <TextBox Text="{Binding Path=Description, Converter={StaticResource IdentityConverter}}" MaxLines="5" Width="350" HorizontalAlignment="Left" />
+          </csla:ValidationPanel>
+        </Grid>
+      </DataTemplate>
+    </Grid.Resources>
+        
+    <csla:AuthorizationPanel Name="AuthPanel">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock>Projects for </TextBlock>
+            <ComboBox Name="ClientComboBox"
+              ItemsSource="{Binding Source={StaticResource ClientList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              Width="150" />
+      </StackPanel>
+      <ListBox Name="ProjectsListBox" ItemsSource="{Binding}" ItemTemplate="{StaticResource lbTemplate}" />
+      <csla:ObjectStatusPanel Orientation="Horizontal">
+        <Button Name="SaveButton" HorizontalAlignment="Left" IsDefault="True"
+          IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, 
+              AncestorType=csla:ObjectStatusPanel, 
+              AncestorLevel=1}, Path=IsSavable}"
+              >Save</Button>
+        <Button Name="CancelButton" HorizontalAlignment="Left" 
+          IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, 
+              AncestorType=csla:ObjectStatusPanel, 
+              AncestorLevel=1}, Path=IsDirty}"
+              >Cancel</Button>
+        <Button Name="AddItemButton" HorizontalAlignment="Left" IsEnabled="False">Add project</Button>
+        <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, 
+                  AncestorType=csla:ObjectStatusPanel, 
+                  AncestorLevel=1}, Path=IsSavable}">IsSavable</CheckBox>
+        <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsValid}">IsValid</CheckBox>
+        <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsDirty}">IsDirty</CheckBox>
+        <CheckBox IsEnabled="False" IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=csla:ObjectStatusPanel, AncestorLevel=1}, Path=IsNew}">IsNew</CheckBox>
+      </csla:ObjectStatusPanel>
+    </csla:AuthorizationPanel>
+  </Grid>
+</Window>

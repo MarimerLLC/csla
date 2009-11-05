@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DeepData.DAL.WebService</name>
+    </assembly>
+    <members>
+        <member name="T:DeepData.DAL.WebService.Properties.Resources">
+            <summary>
+             A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DeepData.DAL.WebService.Properties.Resources.ResourceManager">
+            <summary>
+             Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DeepData.DAL.WebService.Properties.Resources.Culture">
+            <summary>
+             override the current thread's CurrentUICulture property for all
+             resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:DeepData.DAL.WebService.OrderData">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.DAL.WebService.OrderData.GetOrders">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL">
+            <remarks/>
+        </member>
+        <member name="M:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.#ctor">
+            <remarks/>
+        </member>
+        <member name="M:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.GetOrders">
+            <remarks/>
+        </member>
+        <member name="M:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.GetOrdersAsync">
+            <remarks/>
+        </member>
+        <member name="M:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.GetOrdersAsync(System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.CancelAsync(System.Object)">
+            <remarks/>
+        </member>
+        <member name="E:DeepData.DAL.WebService.DeepDataDAL.DeepDataDAL.GetOrdersCompleted">
+            <remarks/>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.OrderDto">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.OrderDto.Id">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.OrderDto.Customer">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.OrderDto.OrderLines">
+            <remarks/>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.LineItemDto">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.LineItemDto.OrderId">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.LineItemDto.Id">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.LineItemDto.Product">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.LineItemDto.OrderLineDetails">
+            <remarks/>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.DetailItemDto">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.DetailItemDto.OrderId">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.DetailItemDto.LineId">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.DetailItemDto.Id">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.DetailItemDto.Detail">
+            <remarks/>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.GetOrdersCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:DeepData.DAL.WebService.DeepDataDAL.GetOrdersCompletedEventArgs">
+            <remarks/>
+        </member>
+        <member name="P:DeepData.DAL.WebService.DeepDataDAL.GetOrdersCompletedEventArgs.Result">
+            <remarks/>
+        </member>
+    </members>
+</doc>

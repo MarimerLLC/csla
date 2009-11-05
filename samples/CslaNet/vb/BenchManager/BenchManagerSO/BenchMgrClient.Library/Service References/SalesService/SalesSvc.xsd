@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfClientData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ClientData" nillable="true" type="tns:ClientData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfClientData" nillable="true" type="tns:ArrayOfClientData" />
+  <xs:complexType name="ClientData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientData" nillable="true" type="tns:ClientData" />
+  <xs:complexType name="ArrayOfClientDataUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ClientDataUpdate" nillable="true" type="tns:ClientDataUpdate" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfClientDataUpdate" nillable="true" type="tns:ArrayOfClientDataUpdate" />
+  <xs:complexType name="ClientDataUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Delete" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientDataUpdate" nillable="true" type="tns:ClientDataUpdate" />
+  <xs:complexType name="ArrayOfProjectData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectData" nillable="true" type="tns:ProjectData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProjectData" nillable="true" type="tns:ArrayOfProjectData" />
+  <xs:complexType name="ProjectData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectData" nillable="true" type="tns:ProjectData" />
+  <xs:complexType name="ArrayOfProjectSummaryData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectSummaryData" nillable="true" type="tns:ProjectSummaryData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProjectSummaryData" nillable="true" type="tns:ArrayOfProjectSummaryData" />
+  <xs:complexType name="ProjectSummaryData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectSummaryData" nillable="true" type="tns:ProjectSummaryData" />
+  <xs:complexType name="ArrayOfProjectDataUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectDataUpdate" nillable="true" type="tns:ProjectDataUpdate" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProjectDataUpdate" nillable="true" type="tns:ArrayOfProjectDataUpdate" />
+  <xs:complexType name="ProjectDataUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ClientId" type="xs:int" />
+      <xs:element minOccurs="0" name="Delete" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectDataUpdate" nillable="true" type="tns:ProjectDataUpdate" />
+</xs:schema>

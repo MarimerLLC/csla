@@ -1,0 +1,29 @@
+<asp:TreeView runat="server">
+  <NodeStyle CssClass="nav" />
+</asp:TreeView>
+
+<asp:GridView runat="server" BackColor="White" BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" ForeColor="Black" GridLines="Vertical">
+  <FooterStyle BackColor="#CCCCCC" />
+  <SelectedRowStyle BackColor="#000099" Font-Bold="True" ForeColor="White" />
+  <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
+  <HeaderStyle BackColor="Black" Font-Bold="True" ForeColor="White" />
+  <AlternatingRowStyle BackColor="#DEDEDE" Font-Names="Verdana" Font-Overline="False" Font-Size="9pt" />
+  <RowStyle Font-Names="Verdana" Font-Size="9pt" Font-Strikeout="False" />
+</asp:GridView>
+
+<asp:DetailsView runat="server" BackColor="White" BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" ForeColor="Black" GridLines="Vertical">
+  <FooterStyle BackColor="#CCCCCC" />
+  <EditRowStyle BackColor="#FFFFFF" Font-Bold="True" ForeColor="#000000" />
+  <RowStyle Font-Names="Verdana" Font-Size="8pt" />
+  <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
+  <HeaderStyle BackColor="Black" Font-Bold="True" ForeColor="White" />
+  <AlternatingRowStyle BackColor="#CCCCCC" />
+</asp:DetailsView>
+
+<asp:Login runat="server" BackColor="#DEDEDE" BorderColor="Black" 
+  BorderStyle="Solid" BorderWidth="1px" Font-Names="Verdana" 
+  Font-Size="10pt">
+  <TitleTextStyle BackColor="Black" Font-Bold="True" 
+    Font-Names="Verdana" Font-Size="10pt"
+    ForeColor="White" />
+</asp:Login>

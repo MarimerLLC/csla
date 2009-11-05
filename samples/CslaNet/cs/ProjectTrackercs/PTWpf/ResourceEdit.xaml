@@ -1,0 +1,119 @@
+﻿<local:EditForm x:Class="PTWpf.ResourceEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:PTWpf"  
+    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library">
+  <UserControl.Resources>
+    <local:VisibilityConverter x:Key="VisibilityConverter" />
+    <csla:IdentityConverter x:Key="IdentityConverter" />
+    <csla:CslaDataProvider x:Key="RoleList"
+                           ObjectType="{x:Type PTracker:RoleList}"
+                           FactoryMethod="GetList"
+                           IsAsynchronous="False" />
+    <csla:CslaDataProvider x:Key="Resource"
+                           ObjectType="{x:Type PTracker:Resource}"
+                           FactoryMethod="GetResource"
+                           IsAsynchronous="False"
+                           IsInitialLoadEnabled="False"
+                           DataChanged="DataChanged"
+                           ManageObjectLifetime="True">
+    </csla:CslaDataProvider>
+    <csla:ObjectStatus x:Key="ResourceStatus"
+                       DataContext="{StaticResource Resource}" />
+  </UserControl.Resources>
+  <UserControl.CommandBindings>
+    <CommandBinding Command="ApplicationCommands.Open"
+                    Executed="OpenCmdExecuted"
+                    CanExecute="OpenCmdCanExecute" />
+  </UserControl.CommandBindings>
+  <Grid Name="MainGrid" DataContext="{Binding Source={StaticResource Resource}}" >
+    <Grid.Resources>
+      <DataTemplate x:Key="lbTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource LinkButton}" 
+                    Margin="0" Width="200"
+                    Command="ApplicationCommands.Open"
+                    CommandParameter="{Binding Path=ProjectId}"
+                    Content="{Binding Path=ProjectName}" Foreground="Blue" />
+            <TextBlock Text="{Binding Path=Assigned}" Width="100" />
+            <ComboBox 
+              ItemsSource="{Binding Source={StaticResource RoleList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              SelectedValue="{Binding Path=Role}" 
+              Width="150" />
+            <Button HorizontalAlignment="Left" 
+                    Command="ApplicationCommands.Delete" 
+                    CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+                    CommandParameter="{Binding}" 
+                    Content="Unassign"/>
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+      <DataTemplate x:Key="lbroTemplate">
+        <Grid>
+          <StackPanel Orientation="Horizontal">
+            <Button Style="{StaticResource LinkButton}" 
+                    Margin="0" Width="200"
+                    Command="ApplicationCommands.Open"
+                    CommandParameter="{Binding Path=ProjectId}"
+                    Content="{Binding Path=ProjectName}" Foreground="Blue" />
+            <TextBlock Text="{Binding Path=Assigned}" Width="100" />
+            <ComboBox 
+              ItemsSource="{Binding Source={StaticResource RoleList}}" 
+              DisplayMemberPath="Value"
+              SelectedValuePath="Key"
+              SelectedValue="{Binding Path=Role}" 
+              Width="150"
+              IsEnabled="False" />
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+    </Grid.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+      <StackPanel FlowDirection="LeftToRight" Margin="0 0 20 0">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Style="{StaticResource HeaderTextBlock}">Resource</TextBlock>
+          <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5"
+              IsRunning="{Binding Source={StaticResource Resource}, Path=IsBusy, BindsDirectlyToSource=True}" />
+        </StackPanel>
+        <csla:Authorizer>
+          <StackPanel>
+            <TextBlock>Id:</TextBlock>
+            <TextBlock Text="{Binding Id, Mode=OneWay}"></TextBlock>
+            <TextBlock>First name:</TextBlock>
+            <TextBox Text="{Binding FirstName, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}"/>
+            <TextBlock>Last name:</TextBlock>
+            <TextBox Text="{Binding LastName, Converter={StaticResource IdentityConverter}, ValidatesOnDataErrors=True}"/>
+          </StackPanel>
+        </csla:Authorizer>
+        <TextBlock>Assigned to:</TextBlock>
+        <ListBox Name="ProjectListBox" 
+                 ItemsSource="{Binding Assignments}" 
+                 ItemTemplate="{StaticResource lbTemplate}" />
+        <StackPanel Orientation="Horizontal" Name="ButtonPanel"
+                    Visibility="{Binding Source={StaticResource ResourceStatus},Path=CanEditObject,Converter={StaticResource VisibilityConverter}}">
+          <Button 
+              Command="ApplicationCommands.Save" 
+              CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+              HorizontalAlignment="Left" IsDefault="True">Save</Button>
+          <Button 
+              Command="ApplicationCommands.Undo" 
+              CommandTarget="{Binding Source={StaticResource Resource}, Path=CommandManager, BindsDirectlyToSource=True}"
+              HorizontalAlignment="Left" IsCancel="True">Cancel</Button>
+          <Button IsEnabled="{Binding Source={StaticResource ResourceStatus}, Path=CanEditObject}" 
+                  Click="Assign"
+                  HorizontalAlignment="Left">Assign to project</Button>
+          <CheckBox IsEnabled="False" IsChecked="{Binding Source={StaticResource ResourceStatus}, Path=CanEditObject}">CanEditObject</CheckBox>
+          <CheckBox IsEnabled="False" IsChecked="{Binding Source={StaticResource ResourceStatus}, Path=IsSavable}">IsSavable</CheckBox>
+          <CheckBox IsEnabled="False" IsChecked="{Binding Source={StaticResource ResourceStatus}, Path=IsValid}">IsValid</CheckBox>
+          <CheckBox IsEnabled="False" IsChecked="{Binding Source={StaticResource ResourceStatus}, Path=IsDirty}">IsDirty</CheckBox>
+          <CheckBox IsEnabled="False" IsChecked="{Binding Source={StaticResource ResourceStatus}, Path=IsNew}">IsNew</CheckBox>
+        </StackPanel>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</local:EditForm>

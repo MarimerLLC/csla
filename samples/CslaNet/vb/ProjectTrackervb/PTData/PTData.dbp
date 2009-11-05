@@ -1,0 +1,25 @@
+# Microsoft Developer Studio Project File - Database Project
+Begin DataProject = "PTData"
+   MSDTVersion = "80"
+   DefDBRef = "PTracker.mdf"
+   Begin DBRefFolder = "Database References"
+      Begin DBRefNode = "PTracker.mdf"
+         ConnectStr = "Data Source=.\SQLEXPRESS;AttachDbFilename=""D:\Visual Studio Projects\csla20\ProjectTracker20vb\PTracker.mdf"";Integrated Security=True;Connect Timeout=30;User Instance=True"
+         Provider = "{91510608-8809-4020-8897-FBA057E22D54}"
+         Colorizer = 6
+      End
+      Begin DBRefNode = "Security.mdf"
+         ConnectStr = "Data Source=.\SQLEXPRESS;AttachDbFilename=""D:\Visual Studio Projects\csla20\ProjectTracker20vb\Security.mdf"";Integrated Security=True;Connect Timeout=30;User Instance=True"
+         Provider = "{91510608-8809-4020-8897-FBA057E22D54}"
+         Colorizer = 6
+      End
+   End
+   Begin Folder = "PTracker"
+      Script = "StoredProcedures.SQL"
+      Script = "Tables.SQL"
+   End
+   Begin Folder = "Security"
+      Script = "StoredProcedures.SQL"
+      Script = "Tables.SQL"
+   End
+End

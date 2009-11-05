@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/" xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1052/PTWcfService/PTService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ProjectListRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectListRequest" nillable="true" type="tns:ProjectListRequest" />
+  <xs:complexType name="ArrayOfProjectData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectData" nillable="true" type="tns:ProjectData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProjectData" nillable="true" type="tns:ArrayOfProjectData" />
+  <xs:complexType name="ProjectData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ended" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProjectResources" nillable="true" type="tns:ArrayOfProjectResourceData" />
+      <xs:element minOccurs="0" name="Started" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectData" nillable="true" type="tns:ProjectData" />
+  <xs:complexType name="ArrayOfProjectResourceData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProjectResourceData" nillable="true" type="tns:ProjectResourceData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProjectResourceData" nillable="true" type="tns:ArrayOfProjectResourceData" />
+  <xs:complexType name="ProjectResourceData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Assigned" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FirstName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LastName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ResourceId" type="xs:int" />
+      <xs:element minOccurs="0" name="Role" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectResourceData" nillable="true" type="tns:ProjectResourceData" />
+  <xs:complexType name="ProjectRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProjectRequest" nillable="true" type="tns:ProjectRequest" />
+  <xs:complexType name="AddProjectRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ProjectData" nillable="true" type="tns:ProjectData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AddProjectRequest" nillable="true" type="tns:AddProjectRequest" />
+  <xs:complexType name="UpdateProjectRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ProjectData" nillable="true" type="tns:ProjectData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="UpdateProjectRequest" nillable="true" type="tns:UpdateProjectRequest" />
+  <xs:complexType name="RoleRequest">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="RoleRequest" nillable="true" type="tns:RoleRequest" />
+  <xs:complexType name="ArrayOfRoleData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RoleData" nillable="true" type="tns:RoleData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRoleData" nillable="true" type="tns:ArrayOfRoleData" />
+  <xs:complexType name="RoleData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Key" type="xs:int" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RoleData" nillable="true" type="tns:RoleData" />
+</xs:schema>

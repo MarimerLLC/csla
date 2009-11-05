@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.lhotka.net/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ws.lhotka.net/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://ws.lhotka.net/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetProjectList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetProjectListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectListResult" type="tns:ArrayOfProjectData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfProjectData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectData" nillable="true" type="tns:ProjectData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Started" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Ended" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectResources" type="tns:ArrayOfProjectResourceData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfProjectResourceData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ProjectResourceData" nillable="true" type="tns:ProjectResourceData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ProjectResourceData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ResourceId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="FirstName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="LastName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assigned" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Role" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ProjectRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ProjectRequest">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s1:guid" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetProjectResult" type="tns:ProjectData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="started" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ended" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AddProjectResult" type="tns:ProjectData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CslaCredentials" type="tns:CslaCredentials" />
+      <s:complexType name="CslaCredentials">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Username" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Password" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="EditProject">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s1:guid" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="started" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ended" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="description" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="EditProjectResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="EditProjectResult" type="tns:ProjectData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResourceList">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetResourceListResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResourceListResult" type="tns:ArrayOfResourceData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfResourceData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceData" nillable="true" type="tns:ResourceData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResourceData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResourceAssignments" type="tns:ArrayOfResourceAssignmentData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfResourceAssignmentData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ResourceAssignmentData" nillable="true" type="tns:ResourceAssignmentData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ResourceAssignmentData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="ProjectId" type="s1:guid" />
+          <s:element minOccurs="0" maxOccurs="1" name="ProjectName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Assigned" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Role" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetResource">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="request" type="tns:ResourceRequest" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResourceRequest">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetResourceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResourceResult" type="tns:ResourceData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeResourceName">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="id" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="firstName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="lastName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ChangeResourceNameResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ChangeResourceNameResult" type="tns:ResourceData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AssignResource">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="resourceId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="projectId" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AssignResourceResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetRoles">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetRolesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRolesResult" type="tns:ArrayOfRoleData" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfRoleData">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="RoleData" nillable="true" type="tns:RoleData" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="RoleData">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetProjectListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProjectList" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:GetProject" />
+  </wsdl:message>
+  <wsdl:message name="GetProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:GetProjectResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:AddProject" />
+  </wsdl:message>
+  <wsdl:message name="AddProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:AddProjectResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddProjectCslaCredentials">
+    <wsdl:part name="CslaCredentials" element="tns:CslaCredentials" />
+  </wsdl:message>
+  <wsdl:message name="EditProjectSoapIn">
+    <wsdl:part name="parameters" element="tns:EditProject" />
+  </wsdl:message>
+  <wsdl:message name="EditProjectSoapOut">
+    <wsdl:part name="parameters" element="tns:EditProjectResponse" />
+  </wsdl:message>
+  <wsdl:message name="EditProjectCslaCredentials">
+    <wsdl:part name="CslaCredentials" element="tns:CslaCredentials" />
+  </wsdl:message>
+  <wsdl:message name="GetResourceListSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResourceList" />
+  </wsdl:message>
+  <wsdl:message name="GetResourceListSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResourceListResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResourceSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResource" />
+  </wsdl:message>
+  <wsdl:message name="GetResourceSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResourceResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChangeResourceNameSoapIn">
+    <wsdl:part name="parameters" element="tns:ChangeResourceName" />
+  </wsdl:message>
+  <wsdl:message name="ChangeResourceNameSoapOut">
+    <wsdl:part name="parameters" element="tns:ChangeResourceNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="ChangeResourceNameCslaCredentials">
+    <wsdl:part name="CslaCredentials" element="tns:CslaCredentials" />
+  </wsdl:message>
+  <wsdl:message name="AssignResourceSoapIn">
+    <wsdl:part name="parameters" element="tns:AssignResource" />
+  </wsdl:message>
+  <wsdl:message name="AssignResourceSoapOut">
+    <wsdl:part name="parameters" element="tns:AssignResourceResponse" />
+  </wsdl:message>
+  <wsdl:message name="AssignResourceCslaCredentials">
+    <wsdl:part name="CslaCredentials" element="tns:CslaCredentials" />
+  </wsdl:message>
+  <wsdl:message name="GetRolesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRoles" />
+  </wsdl:message>
+  <wsdl:message name="GetRolesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRolesResponse" />
+  </wsdl:message>
+  <wsdl:portType name="PTServiceSoap">
+    <wsdl:operation name="GetProjectList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of projects</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectListSoapIn" />
+      <wsdl:output message="tns:GetProjectListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProject">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a project</wsdl:documentation>
+      <wsdl:input message="tns:GetProjectSoapIn" />
+      <wsdl:output message="tns:GetProjectSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddProject">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Add a project</wsdl:documentation>
+      <wsdl:input message="tns:AddProjectSoapIn" />
+      <wsdl:output message="tns:AddProjectSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="EditProject">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Edit a project</wsdl:documentation>
+      <wsdl:input message="tns:EditProjectSoapIn" />
+      <wsdl:output message="tns:EditProjectSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResourceList">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of resources</wsdl:documentation>
+      <wsdl:input message="tns:GetResourceListSoapIn" />
+      <wsdl:output message="tns:GetResourceListSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResource">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a resource</wsdl:documentation>
+      <wsdl:input message="tns:GetResourceSoapIn" />
+      <wsdl:output message="tns:GetResourceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeResourceName">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Change a resource's name</wsdl:documentation>
+      <wsdl:input message="tns:ChangeResourceNameSoapIn" />
+      <wsdl:output message="tns:ChangeResourceNameSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AssignResource">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Assign resource to a project</wsdl:documentation>
+      <wsdl:input message="tns:AssignResourceSoapIn" />
+      <wsdl:output message="tns:AssignResourceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRoles">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a list of roles</wsdl:documentation>
+      <wsdl:input message="tns:GetRolesSoapIn" />
+      <wsdl:output message="tns:GetRolesSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="PTServiceSoap" type="tns:PTServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProjectList">
+      <soap:operation soapAction="http://ws.lhotka.net/GetProjectList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProject">
+      <soap:operation soapAction="http://ws.lhotka.net/GetProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddProject">
+      <soap:operation soapAction="http://ws.lhotka.net/AddProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:AddProjectCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EditProject">
+      <soap:operation soapAction="http://ws.lhotka.net/EditProject" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:EditProjectCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResourceList">
+      <soap:operation soapAction="http://ws.lhotka.net/GetResourceList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResource">
+      <soap:operation soapAction="http://ws.lhotka.net/GetResource" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeResourceName">
+      <soap:operation soapAction="http://ws.lhotka.net/ChangeResourceName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:ChangeResourceNameCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AssignResource">
+      <soap:operation soapAction="http://ws.lhotka.net/AssignResource" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:AssignResourceCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRoles">
+      <soap:operation soapAction="http://ws.lhotka.net/GetRoles" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="PTServiceSoap12" type="tns:PTServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetProjectList">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetProjectList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProject">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddProject">
+      <soap12:operation soapAction="http://ws.lhotka.net/AddProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:AddProjectCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="EditProject">
+      <soap12:operation soapAction="http://ws.lhotka.net/EditProject" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:EditProjectCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResourceList">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetResourceList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResource">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetResource" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeResourceName">
+      <soap12:operation soapAction="http://ws.lhotka.net/ChangeResourceName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:ChangeResourceNameCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AssignResource">
+      <soap12:operation soapAction="http://ws.lhotka.net/AssignResource" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:AssignResourceCslaCredentials" part="CslaCredentials" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRoles">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetRoles" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PTService">
+    <wsdl:port name="PTServiceSoap" binding="tns:PTServiceSoap">
+      <soap:address location="http://localhost/PTWebService/PTService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="PTServiceSoap12" binding="tns:PTServiceSoap12">
+      <soap12:address location="http://localhost/PTWebService/PTService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

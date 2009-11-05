@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDesignTimeSupportDemo", "WpfDesignTimeSupportDemo\WpfDesignTimeSupportDemo.csproj", "{BFBB137A-A012-414B-9EDB-41F3CF985DED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDesignTime.Business", "WpfDesignTime.Business\WpfDesignTime.Business.csproj", "{C16B2295-C0B6-4354-891C-C46A8A21C0AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFBB137A-A012-414B-9EDB-41F3CF985DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFBB137A-A012-414B-9EDB-41F3CF985DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFBB137A-A012-414B-9EDB-41F3CF985DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFBB137A-A012-414B-9EDB-41F3CF985DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C16B2295-C0B6-4354-891C-C46A8A21C0AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C16B2295-C0B6-4354-891C-C46A8A21C0AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C16B2295-C0B6-4354-891C-C46A8A21C0AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C16B2295-C0B6-4354-891C-C46A8A21C0AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

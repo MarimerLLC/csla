@@ -1,0 +1,139 @@
+﻿<Window x:Class="PTWpf.MainForm"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="PTWpf">
+  <Grid Margin="0.0769999995827675,5,-7.54699993133545,5" x:Name="BackgroundGrid">
+    <Rectangle HorizontalAlignment="Stretch" 
+               VerticalAlignment="Stretch"
+               Margin="4.9229998588562,0,12.5469999313354,0" 
+               x:Name="background" 
+               Stroke="#FFFFFFFF" RadiusX="10" RadiusY="10" StrokeThickness="3">
+      <Rectangle.Fill>
+        <LinearGradientBrush EndPoint="0.763999998569489,0.852999985218048" StartPoint="0.236000001430511,0.146999999880791">
+          <GradientStop Color="#D8289001" Offset="0"/>
+          <GradientStop Color="#DD47C750" Offset="0.283291"/>
+          <GradientStop Color="#E067FFA0" Offset="0.43379"/>
+          <GradientStop Color="#DD43CE5F" Offset="0.582387"/>
+          <GradientStop Color="#D9209E1E" Offset="0.739726"/>
+          <GradientStop Color="#D4227104" Offset="1"/>
+        </LinearGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+    <Path Height="112.04" Stretch="Fill" Data="F1 M 694.771,86.6915C 372.049,86.1408 120.32,38.1835 3.86534,11.1368L 3.86534,90.3688C 125.569,110.66 390.551,144.489 715.916,123.891C 1065.92,101.738 1225.55,70.6142 1282.8,56.6822L 1282.8,46.6835C 1228.53,58.1248 1054.61,87.3102 694.771,86.6915 Z " Opacity="0.4" x:Name="swish2" RenderTransformOrigin="0.5,0.5" Canvas.Left="591.981" Canvas.Top="37.657" Margin="9.92300033569336,0,7.54699993133545,20.9599990844727" VerticalAlignment="Bottom">
+      <Path.Fill>
+        <LinearGradientBrush EndPoint="-0.0939999967813492,0.554000020027161" StartPoint="1.02400004863739,0.554000020027161">
+          <GradientStop Color="#FFFFFFFF"/>
+          <GradientStop Color="#00FFFFFF" Offset="1"/>
+        </LinearGradientBrush>
+      </Path.Fill>
+      <Path.RenderTransform>
+        <TransformGroup>
+          <ScaleTransform ScaleX="1" ScaleY="1"/>
+          <SkewTransform AngleX="0" AngleY="0"/>
+          <RotateTransform Angle="0"/>
+          <TranslateTransform X="0" Y="0"/>
+        </TransformGroup>
+      </Path.RenderTransform>
+    </Path>
+    <Path Stretch="Fill" Data="F1 M 694.771,86.6915C 372.049,86.1408 120.32,38.1835 3.86534,11.1368L 3.86534,90.3688C 125.569,110.66 390.551,144.489 715.916,123.891C 1065.92,101.738 1225.55,70.6142 1282.8,56.6822L 1282.8,46.6835C 1228.53,58.1248 1054.61,87.3102 694.771,86.6915 Z " Opacity="0.4" x:Name="swish1" RenderTransformOrigin="0.5,0.5" Canvas.Left="591.981" Canvas.Top="37.657" Margin="0,0,0,42.4140014648438" VerticalAlignment="Bottom" Height="189.611">
+      <Path.RenderTransform>
+        <TransformGroup>
+          <ScaleTransform ScaleX="-1"/>
+          <SkewTransform/>
+          <RotateTransform Angle="-4.689"/>
+          <TranslateTransform/>
+        </TransformGroup>
+      </Path.RenderTransform>
+      <Path.Fill>
+        <LinearGradientBrush EndPoint="-0.0939999967813492,0.554000020027161" StartPoint="1.02400004863739,0.554000020027161">
+          <GradientStop Color="#FFFFFFFF"/>
+          <GradientStop Color="#00FFFFFF" Offset="1"/>
+        </LinearGradientBrush>
+      </Path.Fill>
+    </Path>
+    <Rectangle x:Name="Bevel1" Height="50" Stretch="Fill" Margin="0,55,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+      <Rectangle.Fill>
+        <RadialGradientBrush RadiusX="0.581323" RadiusY="0.765929" Center="0.476028,0.0756137" GradientOrigin="0.476028,0.0756137">
+          <RadialGradientBrush.RelativeTransform>
+            <TransformGroup/>
+          </RadialGradientBrush.RelativeTransform>
+          <GradientStop Color="#63253E0C" Offset="0"/>
+          <GradientStop Color="#00508E50" Offset="1"/>
+        </RadialGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+
+    <Grid x:Name="LayoutRoot">
+      <Grid.Resources>
+        <Style TargetType="{x:Type StackPanel}">
+          <Setter Property="Margin" Value="10"/>
+        </Style>
+      </Grid.Resources>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+
+      <StackPanel>
+        <Expander IsExpanded="True" Header="Projects"  >
+          <ListBox>
+            <ListBoxItem>
+              <Hyperlink Name="ShowProjectListButton" 
+                         Click="ShowProjectList">Show list</Hyperlink>
+            </ListBoxItem>
+            <ListBoxItem>
+              <Hyperlink Name="NewProjectButton" 
+                         Click="NewProject">Add new</Hyperlink>
+            </ListBoxItem>
+            <ListBoxItem>
+              <Hyperlink Name="CloseProjectButton"  
+                         Click="CloseProject">Close project</Hyperlink>
+            </ListBoxItem>
+          </ListBox>
+        </Expander>
+        <Expander IsExpanded="True" Header="Resources">
+          <ListBox>
+            <ListBoxItem>
+              <Hyperlink Name="ShowResourceListButton" Click="ShowResourceList">Show list</Hyperlink>
+            </ListBoxItem>
+            <ListBoxItem>
+              <Hyperlink Name="NewResourceButton" Click="NewResource">Add new</Hyperlink>
+            </ListBoxItem>
+          </ListBox>
+        </Expander>
+        <Expander IsExpanded="True" Header="Admin">
+          <ListBox>
+            <ListBoxItem>
+              <Hyperlink Name="ShowRolesEditButton" Click="ShowRolesEdit">Edit roles</Hyperlink>
+            </ListBoxItem>
+          </ListBox>
+        </Expander>
+        <StackPanel Margin="5">
+          <ListBox Opacity=".65">
+            <ListBoxItem>
+              <TextBlock Name="CurrentUser" 
+                         Text="Not logged in" 
+                         Foreground="Blue"
+                         FontSize="12"
+                         />
+            </ListBoxItem>
+            <ListBoxItem>
+              <Hyperlink Name="LoginButton" Click="LogInOut">
+                <TextBlock Name="LoginButtonText" Text="Log in" 
+                           Margin="0"
+                           Foreground="Blue"
+                           FontSize="12" />
+              </Hyperlink>
+            </ListBoxItem>
+          </ListBox>
+        </StackPanel>
+      </StackPanel>
+      <DockPanel Grid.Column="1" Name="contentArea" 
+                 Margin="5,15,20,15" />
+    </Grid>
+  </Grid>
+</Window>

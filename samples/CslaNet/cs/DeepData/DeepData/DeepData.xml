@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DeepData</name>
+    </assembly>
+    <members>
+        <member name="T:DeepData.Form1">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:DeepData.Form1.components">
+            <summary>
+            Required designer variable
+            </summary>
+        </member>
+        <member name="M:DeepData.Form1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DeepData.Form1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the content of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:DeepData.Form1.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:DeepData.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DeepData.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DeepData.Properties.Resources.Culture">
+            <summary>
+              override the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="M:DeepData.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+    </members>
+</doc>

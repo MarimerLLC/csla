@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DeepData.DAL.DTO</name>
+    </assembly>
+    <members>
+        <member name="T:DeepData.DAL.DTO.OrderData">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.DAL.DTO.OrderData.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.DAL.DTO.OrderData.GetOrders">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DeepData.DAL.DTO.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DeepData.DAL.DTO.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DeepData.DAL.DTO.Properties.Resources.Culture">
+            <summary>
+              override the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>

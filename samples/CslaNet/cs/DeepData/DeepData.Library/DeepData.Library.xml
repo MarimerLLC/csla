@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DeepData.Library</name>
+    </assembly>
+    <members>
+        <member name="T:DeepData.Library.LineItemList">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.Library.LineItemList.FindById(System.Int32)">
+            <summary>
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:DeepData.Library.LineItemInfo">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.Library.LineItemInfo.GetIdValue">
+            <summary>
+            
+                        Override this method to return a unique identifying
+                        value for this object.
+                        
+            </summary>
+            
+        </member>
+        <member name="P:DeepData.Library.LineItemInfo.OrderId">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemInfo.Id">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemInfo.Product">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemInfo.Details">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:DeepData.Library.OrderList">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.Library.OrderList.FindById(System.Int32)">
+            <summary>
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DeepData.Library.OrderList.GetList">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DeepData.Library.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.Properties.Resources.Culture">
+            <summary>
+              override the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:DeepData.Library.OrderInfo">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.Library.OrderInfo.GetIdValue">
+            <summary>
+            
+                        Override this method to return a unique identifying
+                        value for this object.
+                        
+            </summary>
+            
+        </member>
+        <member name="P:DeepData.Library.OrderInfo.Id">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.OrderInfo.Customer">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.OrderInfo.LineItems">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:DeepData.Library.LineItemDetailList">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:DeepData.Library.LineItemDetailInfo">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:DeepData.Library.LineItemDetailInfo.GetIdValue">
+            <summary>
+            
+                        Override this method to return a unique identifying
+                        value for this object.
+                        
+            </summary>
+            
+        </member>
+        <member name="P:DeepData.Library.LineItemDetailInfo.OrderId">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemDetailInfo.LineId">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemDetailInfo.Id">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:DeepData.Library.LineItemDetailInfo.Detail">
+            <summary>
+            </summary>
+        </member>
+    </members>
+</doc>

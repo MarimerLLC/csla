@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.lhotka.net/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://ws.lhotka.net/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://ws.lhotka.net/">
+      <s:element name="GetOrders">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetOrdersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetOrdersResult" type="tns:ArrayOfOrderDto" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfOrderDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="OrderDto" nillable="true" type="tns:OrderDto" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="OrderDto">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Customer" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderLines" type="tns:ArrayOfLineItemDto" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfLineItemDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="LineItemDto" nillable="true" type="tns:LineItemDto" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="LineItemDto">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="OrderId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Product" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="OrderLineDetails" type="tns:ArrayOfDetailItemDto" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfDetailItemDto">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="DetailItemDto" nillable="true" type="tns:DetailItemDto" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="DetailItemDto">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="OrderId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="LineId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Detail" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetOrdersSoapIn">
+    <wsdl:part name="parameters" element="tns:GetOrders" />
+  </wsdl:message>
+  <wsdl:message name="GetOrdersSoapOut">
+    <wsdl:part name="parameters" element="tns:GetOrdersResponse" />
+  </wsdl:message>
+  <wsdl:portType name="DeepDataDALSoap">
+    <wsdl:operation name="GetOrders">
+      <wsdl:input message="tns:GetOrdersSoapIn" />
+      <wsdl:output message="tns:GetOrdersSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DeepDataDALSoap" type="tns:DeepDataDALSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrders">
+      <soap:operation soapAction="http://ws.lhotka.net/GetOrders" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="DeepDataDALSoap12" type="tns:DeepDataDALSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetOrders">
+      <soap12:operation soapAction="http://ws.lhotka.net/GetOrders" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DeepDataDAL">
+    <wsdl:port name="DeepDataDALSoap" binding="tns:DeepDataDALSoap">
+      <soap:address location="http://localhost:1062/DeepDataService/DeepDataDAL.asmx" />
+    </wsdl:port>
+    <wsdl:port name="DeepDataDALSoap12" binding="tns:DeepDataDALSoap12">
+      <soap12:address location="http://localhost:1062/DeepDataService/DeepDataDAL.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -9,10 +9,13 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla</RootNamespace>
-    <AssemblyName>csla.client</AssemblyName>
+    <AssemblyName>Csla</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +64,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Xaml\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Error.png" />
+    <Content Include="Resources\favicon.ico" />
+    <Content Include="Resources\Information.png" />
+    <Content Include="Resources\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CslaKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

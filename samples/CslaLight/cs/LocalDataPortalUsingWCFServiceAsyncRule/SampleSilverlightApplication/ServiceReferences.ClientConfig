@@ -1,0 +1,19 @@
+﻿<configuration>
+	<system.serviceModel>
+		<bindings>
+			<basicHttpBinding>
+				<binding	name="BasicHttpBinding_ICompanyService"
+							maxBufferSize="10000000"
+							maxReceivedMessageSize="10000000">
+					<security mode="None" />
+				</binding>
+			</basicHttpBinding>
+		</bindings>
+		<client>
+			<endpoint	address="http://localhost:3033/CompanyService.svc"
+						binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ICompanyService"
+						contract="WcfService.Business.CompanyServiceReference.ICompanyService"
+						name="BasicHttpBinding_ICompanyService" />
+		</client>
+	</system.serviceModel>
+</configuration>

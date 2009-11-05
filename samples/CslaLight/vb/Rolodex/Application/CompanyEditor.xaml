@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="Rolodex.CompanyEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data" 
+    xmlns:windows="clr-namespace:System.Windows;assembly=System.Windows"
+    xmlns:wincontrols="clr-namespace:System.Windows.Controls;assembly=System.Windows"
+    xmlns:local="clr-namespace:Rolodex">
+  <UserControl.Resources>
+    <csla:CslaDataProvider x:Key="CompanyData"
+                           ManageObjectLifetime="True"
+                           IsInitialLoadEnabled="False"
+                           ObjectType="Rolodex.Business.BusinessClasses.Company, Rolodex.Business, Version=..., Culture=neutral, PublicKeyToken=null"
+                           FactoryMethod="GetCompany"
+                           DataChanged="CslaDataProvider_DataChanged"/>
+    <csla:CslaDataProvider x:Key="RanksData"
+                           ManageObjectLifetime="True"
+                           IsInitialLoadEnabled="True"
+                           ObjectType="Rolodex.Business.BusinessClasses.Ranks, Rolodex.Business, Version=..., Culture=neutral, PublicKeyToken=null"
+                           FactoryMethod="GetRanks"/>
+    <local:CurrencyConverter x:Key="Converter"/>
+    <!--<local:RankConverter x:Key="RankConvert" GotData="RankConverter_GotData"/>-->
+    <local:RanksConverter x:Key="RanksConverter"/>
+  </UserControl.Resources>
+
+  <Grid x:Name="LayoutRoot" DataContext="{StaticResource CompanyData}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="1*"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="1*"/>
+      <RowDefinition Height="35"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="150"/>
+      <ColumnDefinition Width="200"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock Text="Company Name:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0" Margin="6,6,6,6"/>
+    <TextBox x:Name="CompanyNameTextbox" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="6,6,6,6" Text="{Binding Path=Data.CompanyName, Mode=TwoWay}"/>
+    <csla:PropertyStatus RelativeTargetName="CompanyNameTextbox" Property="CompanyName" Source="{Binding Path=Data}" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left"/>
+    <TextBlock Text="Date Added:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1" Margin="6,6,6,6"/>
+    <TextBox x:Name="DateAddedTextbox" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Margin="6,6,6,6" Text="{Binding Path=Data.DateAdded, Mode=TwoWay}"/>
+    <csla:PropertyStatus RelativeTargetName="DateAddedTextbox" Property="DateAdded" Source="{Binding Path=Data}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left"/>
+    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3">
+      <Button x:Name="SaveButton" Content="Save" Width="50" Margin="6,6,6,6"
+          csla:InvokeMethod.MethodName="Save"
+          csla:InvokeMethod.Resource="{StaticResource CompanyData}"
+          csla:InvokeMethod.TriggerEvent="Click"
+          IsEnabled="{Binding Source={StaticResource CompanyData}, Path=CanSave, Mode=OneWay}"/>
+      <Button x:Name="CancelButton" Content="Cancel" Width="50"  Margin="6,6,6,6"
+          csla:InvokeMethod.MethodName="Cancel"
+          csla:InvokeMethod.Resource="{StaticResource CompanyData}"
+          csla:InvokeMethod.TriggerEvent="Click"
+          csla:InvokeMethod.ManualEnableControl="False"
+          
+          />
+      <!--<Button x:Name="NewButton" Content="New" Width="50" Margin="6,6,6,6"
+          Click="NewButton_Click"
+          IsEnabled="{Binding Source={StaticResource CompanyData}, Path=CanCreate, Mode=OneWay}"/>-->
+      <Button x:Name="DeleteButton" Content="Delete" Width="50" Margin="6,6,6,6"
+          csla:InvokeMethod.MethodName="Delete"
+          csla:InvokeMethod.Resource="{StaticResource CompanyData}"
+          csla:InvokeMethod.TriggerEvent="Click"
+          IsEnabled="{Binding Path=CanDelete, Mode=OneWay}"/>
+      <Button x:Name="CloseButton" Content="Close" Width="50" Margin="6,6,6,6" Click="CloseButton_Click" IsEnabled="{Binding Path=IsNotBusy, Mode=OneWay}"/>
+    </StackPanel>
+    <csla:BusyAnimation x:Name="objectBusy"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Width="64" 
+                                Height="64" 
+                                Grid.Column="0" Grid.Row="0" 
+                                Grid.ColumnSpan="3" Grid.RowSpan="4"
+                                IsRunning="{Binding Path=IsBusy}"/>
+    <TextBlock x:Name="Info" Text="Available Ranks: CEO, VP, Manager, Employee" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3"/>
+    <controls:DataGrid x:Name="Contacts" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="6,6,6,6" ItemsSource="{Binding Path=Data.Contacts, ValidatesOnExceptions=true, NotifyOnValidationError=true}" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible" SelectionChanged="Contacts_SelectionChanged" SelectionMode="Single">
+      <controls:DataGrid.Columns>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Path=FirstName}" Header="First Name" >
+        </csla:ValidatedDataGridTextColumn>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding LastName}" Header="Last Name" />
+        <csla:ValidatedDataGridTextColumn Binding="{Binding Birthday}" Header="Birthday" />
+
+
+        <controls:DataGridTemplateColumn Width="120">
+          <controls:DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <wincontrols:StackPanel Orientation="Horizontal">
+                <wincontrols:ComboBox x:Name="RanksCombo" ItemsSource="{Binding Source={StaticResource RanksData}, Path=Data}" SelectedItem="{Binding Path=RankId, Converter={StaticResource RanksConverter}, ConverterParameter={StaticResource RanksData}, Mode=TwoWay}" HorizontalAlignment="Stretch" Width="100"/>
+                <csla:PropertyStatus RelativeTargetName="RanksCombo" Property="RankId" Source="{Binding}" HorizontalAlignment="Right" Width="20"/>
+              </wincontrols:StackPanel>
+            </DataTemplate>
+          </controls:DataGridTemplateColumn.CellTemplate>
+        </controls:DataGridTemplateColumn>
+
+        <!--<csla:ValidatedDataGridTextColumn Binding="{Binding RankId, Converter={StaticResource RankConvert}}" Header="Rank" />-->
+        <csla:ValidatedDataGridTextColumn Binding="{Binding BaseSalary, Converter={StaticResource Converter}}" Header="Salary" />
+        <controls:DataGridTemplateColumn Width="80">
+          <controls:DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Button x:Name="DeleteContact" Content="Delete" Tag="{Binding}" Click="DeleteContact_Click"/>
+            </DataTemplate>
+          </controls:DataGridTemplateColumn.CellTemplate>
+        </controls:DataGridTemplateColumn>
+      </controls:DataGrid.Columns>
+    </controls:DataGrid>
+    <Button x:Name="AddContactButton" Content="Add" Width="50" Margin="6,6,6,6" Click="AddContactButton_Click"  Grid.Row="5" Grid.Column="0"/>
+
+
+    <controls:DataGrid x:Name="ContactsPhones" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="6,6,6,6" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Visible">
+      <controls:DataGrid.Columns>
+        <csla:ValidatedDataGridTextColumn Binding="{Binding PhoneNumber}" Header="Phone" />
+        <csla:ValidatedDataGridTextColumn Binding="{Binding FaxNumber}" Header="Fax" />
+        <controls:DataGridTemplateColumn Width="80">
+          <controls:DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Button x:Name="DeleteContactPhone" Content="Delete" Tag="{Binding}" Click="DeleteContactPhone_Click"/>
+            </DataTemplate>
+          </controls:DataGridTemplateColumn.CellTemplate>
+        </controls:DataGridTemplateColumn>
+      </controls:DataGrid.Columns>
+    </controls:DataGrid>
+    <Button x:Name="AddContactPhoneButton" Content="Add" Width="50" Margin="6,6,6,6" Click="AddContactPhoneButton_Click"  Grid.Row="7" Grid.Column="0"/>
+  </Grid>
+</UserControl>

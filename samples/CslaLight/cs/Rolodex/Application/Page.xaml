@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Rolodex.Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:local="clr-namespace:Rolodex"
+    Width="700" Height="500" Loaded="UserControl_Loaded">
+  <UserControl.RenderTransform>
+    <TransformGroup>
+      <ScaleTransform x:Name = "scaleTransform" ScaleX="1"  ScaleY="1" />
+    </TransformGroup>
+  </UserControl.RenderTransform>
+    <Grid x:Name="LayoutRoot" Background="{StaticResource BackGroundBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+      <local:LoginControl x:Name="Logger" LoginSuccessfull="Logger_LoginSuccessfull" Grid.Column="0" Grid.Row="0"/>
+  </Grid>
+</UserControl>

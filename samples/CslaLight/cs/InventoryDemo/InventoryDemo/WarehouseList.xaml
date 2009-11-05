@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="InventoryDemo.WarehouseList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+             xmlns:l="clr-namespace:InvLib;assembly=InvLib"
+             Loaded="UserControl_Loaded"
+             FontSize="16" Foreground="White">
+  <UserControl.Resources>
+    <csla:CslaDataProvider x:Key="WarehouseList"
+                           ObjectType="InvLib.WarehouseList,InvLib"
+                           FactoryMethod="GetWarehouseList"
+                           IsInitialLoadEnabled="True" />
+    <csla:ErrorDialog x:Key="WarehouseListError"
+                      Source="{StaticResource WarehouseList}" />
+    <DataTemplate x:Key="WarehouseItem">
+      <StackPanel>
+        <TextBlock Text="{Binding Path=Name}"
+                   Tag="{Binding Path=Id}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Lat/Long=" FontSize="12" Foreground="Gray"/>
+          <TextBlock Text="{Binding Path=Location}" FontSize="12" Foreground="Gray"/>
+        </StackPanel>
+      </StackPanel>
+    </DataTemplate>
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal" Grid.Row="0">
+      <csla:BusyAnimation Width="40" Height="40"
+                          Foreground="Wheat"
+                          IsRunning="{Binding Source={StaticResource WarehouseList},Path=IsBusy}" />
+    </StackPanel>
+    <Grid Grid.Row="1" DataContext="{Binding Source={StaticResource WarehouseList},Path=Data}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <TextBlock Text="Warehouse List" Margin="0 0 0 5" Grid.Row="0"/>
+      <ScrollViewer Grid.Row="1">
+        <ListBox ItemsSource="{Binding}"
+                 ItemTemplate="{StaticResource WarehouseItem}"
+                 Background="Azure" Margin="0 0 0 5" Width="200" />
+      </ScrollViewer>
+    </Grid>
+  </Grid>
+</UserControl>

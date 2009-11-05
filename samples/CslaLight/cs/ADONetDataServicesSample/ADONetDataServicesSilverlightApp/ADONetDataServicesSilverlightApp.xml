@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ADONetDataServicesSilverlightApp</name>
+    </assembly>
+    <members>
+        <member name="M:ADONetDataServicesSilverlightApp.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:ADONetDataServicesSilverlightApp.Page.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

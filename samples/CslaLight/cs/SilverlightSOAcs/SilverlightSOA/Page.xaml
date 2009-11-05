@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="SilverlightSOA.Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+    xmlns:l="clr-namespace:SilverlightSOA"
+    Width="400" Height="300"
+    FontFamily="Verdana"
+    FontSize="16"
+    Background="Blue">
+  <UserControl.Resources>
+    <l:VisibilityConverter x:Key="VisibilityConverter" />
+    <!--<csla:CslaDataProvider x:Key="MyData"
+                           ManageObjectLifetime="True"
+                           IsInitialLoadEnabled="True"
+                           ObjectType="SilverlightSOA.Person, SilverlightSOA, Version=..., Culture=neutral, PublicKeyToken=null"
+                           FactoryMethod="NewPerson" />-->
+    <csla:CslaDataProvider x:Key="MyData"
+                           DataChanged="CslaDataProvider_DataChanged"
+                           ManageObjectLifetime="True"
+                           IsInitialLoadEnabled="True"
+                           ObjectType="SilverlightSOA.Person, SilverlightSOA, Version=..., Culture=neutral, PublicKeyToken=null"
+                           FactoryMethod="GetPerson">
+      <csla:CslaDataProvider.FactoryParameters>
+        <system:Int32>567</system:Int32>
+      </csla:CslaDataProvider.FactoryParameters>
+    </csla:CslaDataProvider>
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource MyData}, Path=Data}" Background="Beige">
+    <StackPanel Margin="10">
+      <TextBox Text="{Binding Id, Mode=TwoWay}" Margin="5" FontSize="16" Width="250" HorizontalAlignment="Left" />
+      <StackPanel Orientation="Horizontal">
+        <TextBox Text="{Binding FirstName, Mode=TwoWay}"  Margin="5" FontSize="16" Width="250" />
+        <csla:PropertyStatus Source="{Binding}" Property="FirstName" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <TextBox Text="{Binding LastName, Mode=TwoWay}" Margin="5" FontSize="16" Width="250" />
+        <csla:PropertyStatus Source="{Binding}" Property="LastName" />
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Margin="5">
+        <Button HorizontalAlignment="Left" Margin="5,5,5,5"
+                csla:InvokeMethod.MethodName="Save"
+                csla:InvokeMethod.Resource="{StaticResource MyData}"
+                csla:InvokeMethod.TriggerEvent="Click"
+                Content="Save" />
+        <Button HorizontalAlignment="Left" Margin="5,5,5,5"
+                csla:InvokeMethod.MethodName="Cancel"
+                csla:InvokeMethod.Resource="{StaticResource MyData}"
+                csla:InvokeMethod.TriggerEvent="Click"
+                Content="Cancel" />
+        <Button HorizontalAlignment="Left" Margin="5,5,5,5"
+                csla:InvokeMethod.MethodName="Delete"
+                csla:InvokeMethod.Resource="{StaticResource MyData}"
+                csla:InvokeMethod.TriggerEvent="Click"
+                Content="Mark for Delete" />
+        <csla:BusyAnimation IsRunning="{Binding Source={StaticResource MyData}, Path=IsBusy}"
+                Margin="10,0,0,0" Height="20" Width="20" />
+      </StackPanel>
+    </StackPanel>
+    <Canvas Background="Black" 
+            Opacity="0" 
+            Visibility="{Binding Source={StaticResource MyData}, Path=IsBusy, Converter={StaticResource VisibilityConverter}}" />
+  </Grid>
+</UserControl>

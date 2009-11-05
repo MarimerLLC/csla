@@ -1,0 +1,238 @@
+<UserControl x:Class="ADONetDataServicesSilverlightApp.Page"
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+    xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
+    xmlns:local="clr-namespace:ADONetDataServicesSilverlightApp"
+    Width="500" Height="300">
+  <UserControl.Resources>
+    <ControlTemplate x:Key="details" TargetType="csla:ObjectStatus">
+      <Grid>
+
+        <vsm:VisualStateManager.VisualStateGroups>
+          <vsm:VisualStateGroup x:Name="CanGet">
+            <vsm:VisualState x:Name="AllowGet">
+              <Storyboard />
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="DenyGet" >
+              <Storyboard />
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+          <vsm:VisualStateGroup x:Name="CanEdit">
+            <vsm:VisualState x:Name="AllowEdit">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="SaveButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CancelButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="DenyEdit">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="SaveButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CancelButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+          <vsm:VisualStateGroup x:Name="CanDelete">
+            <vsm:VisualState x:Name="AllowDelete">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="DeleteButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="DenyDelete">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="DeleteButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+          <vsm:VisualStateGroup x:Name="CanCreate">
+            <vsm:VisualState x:Name="AllowCreate">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CreateButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="DenyCreate">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CreateButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+          <vsm:VisualStateGroup x:Name="CanSave">
+            <vsm:VisualState x:Name="AllowSave">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="SaveButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CancelButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="DenySave">
+              <Storyboard>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="SaveButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+                <ObjectAnimationUsingKeyFrames 
+                    Storyboard.TargetName="CancelButton"
+                    Storyboard.TargetProperty="Visibility"
+                    Duration="0">
+                  <DiscreteObjectKeyFrame KeyTime="0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+          <vsm:VisualStateGroup x:Name="IsBusy">
+            <vsm:VisualState x:Name="Busy">
+              <Storyboard>
+              </Storyboard>
+            </vsm:VisualState>
+            <vsm:VisualState x:Name="Idle">
+              <Storyboard />
+            </vsm:VisualState>
+          </vsm:VisualStateGroup>
+        </vsm:VisualStateManager.VisualStateGroups>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="150"/>
+          <ColumnDefinition Width="250"/>
+          <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="35"/>
+          <RowDefinition Height="35"/>
+          <RowDefinition Height="35"/>
+          <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Company Name:" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" Margin="6,6,6,6"/>
+        <TextBlock Text="Date Added:" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0" Margin="6,6,6,6"/>
+        <TextBox x:Name="CompanyNameTextbox" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Margin="6,6,6,6" Text="{Binding Path=CompanyName, Mode=TwoWay}"/>
+        <csla:PropertyStatus RelativeTargetName="CompanyNameTextbox" Property="CompanyName" Source="{Binding}" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left"/>
+
+        <TextBox x:Name="DateAddedTextbox" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Margin="6,6,6,6" Text="{Binding Path=DateAdded, Mode=TwoWay}"/>
+        <csla:PropertyStatus RelativeTargetName="DateAddedTextbox" Property="DateAdded" Source="{Binding}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left"/>
+
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+          <Button x:Name="SaveButton" Content="Save" Width="50" Margin="6,6,6,6" Click="SaveButton_Click"/>
+          <Button x:Name="CancelButton" Content="Cancel" Width="50"  Margin="6,6,6,6" Click="CancelButton_Click"/>
+          <Button x:Name="CreateButton" Content="Create" Width="50" Margin="6,6,6,6" Click="CreateButton_Click"/>
+          <Button x:Name="DeleteButton" Content="Delete" Width="50" Margin="6,6,6,6" Click="DeleteButton_Click"/>
+        </StackPanel>
+
+        <csla:BusyAnimation x:Name="objectBusy"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Width="64" 
+                                Height="64" 
+                                Grid.Column="0" Grid.Row="0"/>
+      </Grid>
+    </ControlTemplate>
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" Background="LightBlue">
+    <csla:BusyAnimation x:Name="screenBusy"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center" 
+                                Width="64" 
+                                Height="64" 
+                                Grid.Column="0" Grid.Row="0"/>
+    <csla:ObjectStatus x:Name="details" Source="{Binding}" Template="{StaticResource details}" />
+  </Grid>
+</UserControl>

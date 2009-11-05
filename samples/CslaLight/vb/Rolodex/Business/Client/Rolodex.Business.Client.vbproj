@@ -1,0 +1,122 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9738D1AA-9CCE-4630-8A69-6AEC0D9A9E3C}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>Rolodex.Business</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DefineConstants>SILVERLIGHT=True</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DefineConstants>SILVERLIGHT=True</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Csla, Version=3.6.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Source\cslalightcs\Csla\ClientBin\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Server\BusinessClasses\Company.vb">
+      <Link>BusinessClasses\Company.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\CompanyContact.vb">
+      <Link>BusinessClasses\CompanyContact.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\CompanyContactList.vb">
+      <Link>BusinessClasses\CompanyContactList.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\CompanyContactPhone.vb">
+      <Link>BusinessClasses\CompanyContactPhone.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\CompanyContactPhoneList.vb">
+      <Link>BusinessClasses\CompanyContactPhoneList.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\DuplicateCompanyCommand.vb">
+      <Link>BusinessClasses\DuplicateCompanyCommand.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\Rank.vb">
+      <Link>BusinessClasses\Rank.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\RankList.vb">
+      <Link>BusinessClasses\RankList.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\Ranks.vb">
+      <Link>BusinessClasses\Ranks.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\RanksFactory.vb">
+      <Link>BusinessClasses\RanksFactory.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\ReadOnlyCompany.vb">
+      <Link>BusinessClasses\ReadOnlyCompany.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\BusinessClasses\ReadOnlyCompanyList.vb">
+      <Link>BusinessClasses\ReadOnlyCompanyList.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\Security\CredentialsCriteria.vb">
+      <Link>Security\CredentialsCriteria.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\Security\RolodexIdentity.vb">
+      <Link>Security\RolodexIdentity.vb</Link>
+    </Compile>
+    <Compile Include="..\Server\Security\RolodexPrincipal.vb">
+      <Link>Security\RolodexPrincipal.vb</Link>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight\v2.0\Microsoft.Silverlight.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

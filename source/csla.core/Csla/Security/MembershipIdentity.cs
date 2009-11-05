@@ -13,9 +13,11 @@ namespace Csla.Security
   /// <summary>
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
-  /// </summary>
-  [Serializable()]
-  [MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")]
+	/// </summary>
+#if !CLIENTPROFILE
+	[MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")]
+#endif
+	[Serializable()]
   public partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
   {
     #region Constructor, Helper Setter

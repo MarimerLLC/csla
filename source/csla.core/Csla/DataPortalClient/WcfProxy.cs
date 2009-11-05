@@ -2,7 +2,7 @@ using System;
 using System.ServiceModel;
 using Csla.Server;
 using Csla.Server.Hosts;
-using Csla.Server.Hosts.WcfChannel;
+//using Csla.Server.Hosts.WcfChannel;
 
 namespace Csla.DataPortalClient
 {

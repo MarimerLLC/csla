@@ -1,4 +1,4 @@
-﻿#if !CLIENTONLY
+﻿#if !CLIENTPROFILE
 using System;
 using System.Web.Security;
 using Csla.Core;

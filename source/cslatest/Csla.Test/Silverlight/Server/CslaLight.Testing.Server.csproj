@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20826</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3374389D-59D8-44B1-B6D0-015819DB482C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Testing.Business</RootNamespace>
+    <AssemblyName>Csla.Testing.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Testing\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Csla, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\cslacs\Csla\bin\Debug\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Authorization\TestIdentity.cs">
+      <Link>Security\TestIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Authorization\TestPrincipal.cs">
+      <Link>Security\TestPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\LogicalExecutionLocation\LocationBusinessBase.cs">
+      <Link>LogicalExecutionLocation\LocationBusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="ApplicationContext\ContextBOVerifier.server.cs" />
+    <Compile Include="ApplicationContext\ContextBOVerifier.cs" />
+    <Compile Include="BusyStatus\ItemWithAsynchRule.cs" />
+    <Compile Include="BusyStatus\ItemWithAsynchRuleList.cs" />
+    <Compile Include="CommandBase\TestCommandBase.cs" />
+    <Compile Include="CslaDataProvider\CustomerWithErrorList.cs" />
+    <Compile Include="CslaDataProvider\CustomerWithError.cs" />
+    <Compile Include="CslaDataProvider\Customer.cs" />
+    <Compile Include="CslaDataProvider\CustomerContact.cs" />
+    <Compile Include="CslaDataProvider\CustomerContactList.cs" />
+    <Compile Include="CslaDataProvider\CustomerList.cs" />
+    <Compile Include="CslaDataProvider\IDCriteria.cs" />
+    <Compile Include="DataPortal\AuthorizeDataPortalStub.cs" />
+    <Compile Include="DataPortal\SetAppSettingValueCmd.cs" />
+    <Compile Include="DataPortal\Single.cs" />
+    <Compile Include="DataPortal\TestableDataPortal.cs" />
+    <Compile Include="DataPortal\TestBO.cs" />
+    <Compile Include="EditableChildTests\GrandChild.cs" />
+    <Compile Include="EditableChildTests\GrandChild.partial.cs" />
+    <Compile Include="EditableChildTests\GrandChildList.cs" />
+    <Compile Include="EditableChildTests\GrandChildList.partial.cs" />
+    <Compile Include="EditableChildTests\MockEditableChild.cs" />
+    <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />
+    <Compile Include="EditableChildTests\MockList.cs" />
+    <Compile Include="EditableChildTests\MockList.partial.cs" />
+    <Compile Include="EditableRootListTests\RootSingleItemsList.cs" />
+    <Compile Include="EditableRootListTests\SingleItem.cs" />
+    <Compile Include="EditableRootTests\MockEditableRoot.cs" />
+    <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
+    <Compile Include="NameValueList\BasicNameValueList.cs" />
+    <Compile Include="ObjectFactory\BusinessItem.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryBusinessItem.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryBusinessItemFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyTests\ReadOnlyPerson.cs" />
+    <Compile Include="ReadOnlyTests\ReadOnlyPerson.partial.cs" />
+    <Compile Include="ReadOnlyTests\ReadOnlyPersonList.cs" />
+    <Compile Include="Security\MockMembershipProvider.cs" />
+    <Compile Include="Security\MockRoleProvider.cs" />
+    <Compile Include="Security\SilverlightIdentity.cs" />
+    <Compile Include="Security\SilverlightMembershipIdentity.cs" />
+    <Compile Include="Security\SilverlightPrincipal.cs" />
+    <Compile Include="Security\SilverlightPrincipal.server.cs" />
+    <Compile Include="Security\SilverlightWindowsIdentity.cs" />
+    <Compile Include="TestProxies\AppDomainProxy.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

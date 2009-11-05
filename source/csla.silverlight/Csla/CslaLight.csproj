@@ -1,0 +1,595 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20826</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla</RootNamespace>
+    <AssemblyName>Csla</AssemblyName>
+    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <PublishUrl>http://localhost/Csla/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>ClientBin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>ClientBin\Csla.XML</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>ClientBin\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>ClientBin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT TESTING</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <NoConfig>true</NoConfig>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.Services.Client, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\..\Dependencies\Expression\Silverlight\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoFactory.cs">
+      <Link>Core\FieldManager\PropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoManager.cs">
+      <Link>Core\FieldManager\PropertyInfoManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\CommandBase.cs">
+      <Link>CommandBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
+      <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfoFactory.cs">
+      <Link>Core\IPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\DataPortalResult.cs">
+      <Link>DataPortalResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\AsyncFactoryDelegates.cs">
+      <Link>Core\AsyncFactoryDelegates.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfo.cs">
+      <Link>Core\IPropertyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\BusyChangedEventArgs.cs">
+      <Link>Core\BusyChangedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\ErrorEventArgs.cs">
+      <Link>Core\ErrorEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoList.cs">
+      <Link>Core\FieldManager\PropertyInfoList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IEditableCollection.cs">
+      <Link>Core\IEditableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IManageProperties.cs">
+      <Link>Core\IManageProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
+      <Link>Core\INotifyBusy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyChildChanged.cs">
+      <Link>Core\INotifyChildChanged.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\DataServiceContextManager.cs">
+      <Link>Data\DataServiceContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\ServiceClientManager.cs">
+      <Link>Data\ServiceClientManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
+      <Link>Core\INotifyUnhandledAsyncException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\IReadOnlyBindingList.cs">
+      <Link>Core\IReadOnlyBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
+      <Link>Core\ITrackStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoader.cs">
+      <Link>Core\LoadManager\AsyncLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoadManager.cs">
+      <Link>Core\LoadManager\AsyncLoadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\ManagedObjectBase.cs">
+      <Link>Core\ManagedObjectBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
+      <Link>Core\MobileBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileDictionary.cs">
+      <Link>Core\MobileDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileList.cs">
+      <Link>Core\MobileList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\MobileObject.cs">
+      <Link>Core\MobileObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
+      <Link>Core\StateMode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\CriteriaBase.cs">
+      <Link>CriteriaBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\DataPortalOperations.cs">
+      <Link>DataPortalOperations.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\IDataPortalResult.cs">
+      <Link>IDataPortalResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\IndexableAttribute.cs">
+      <Link>IndexableAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\IndexModeEnum.cs">
+      <Link>IndexModeEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\RelationshipTypes.cs">
+      <Link>RelationshipTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Reflection\Reflect.cs">
+      <Link>Reflection\Reflect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
+      <Link>Security\AuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRulesManager.cs">
+      <Link>Security\AuthorizationRulesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\BusinessPrincipalBase.cs">
+      <Link>Security\BusinessPrincipalBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\CslaIdentity.cs">
+      <Link>Security\CSLAIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\IAuthorizeReadWrite.cs">
+      <Link>Security\IAuthorizeReadWrite.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\ICheckRoles.cs">
+      <Link>Security\ICheckRoles.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\MembershipIdentity.cs">
+      <Link>Security\MembershipIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
+      <Link>Security\NoAccessBehavior.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\ObjectAuthorizationRules.cs">
+      <Link>Security\ObjectAuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\RolesForProperty.cs">
+      <Link>Security\RolesForProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\RolesForType.cs">
+      <Link>Security\RolesForType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\SharedAuthorizationRules.cs">
+      <Link>Security\SharedAuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedIdentity.cs">
+      <Link>Security\UnauthenticatedIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedPrincipal.cs">
+      <Link>Security\UnauthenticatedPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Security\UsernameCriteria.cs">
+      <Link>Security\UsernameCriteria.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
+      <Link>Serialization\ISerializationFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\IMobileObject.cs">
+      <Link>Serialization\Mobile\IMobileObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ISerializationNotification.cs">
+      <Link>Serialization\Mobile\ISerializationNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\MobileFormatter.cs">
+      <Link>Serialization\Mobile\MobileFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\NullPlaceholder.cs">
+      <Link>Serialization\Mobile\NullPlaceholder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ReferenceComparer.cs">
+      <Link>Serialization\Mobile\ReferenceComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\SerializationInfo.cs">
+      <Link>Serialization\Mobile\SerializationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
+      <Link>Serialization\SerializationFormatterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Server\IDataPortalTarget.cs">
+      <Link>Server\IDataPortalTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactory.cs">
+      <Link>Server\ObjectFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactoryAttribute.cs">
+      <Link>Server\ObjectFactoryAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Silverlight\Security\WindowsIdentity.cs">
+      <Link>Silverlight\Security\WindowsIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Threading\BusyLock.cs">
+      <Link>Threading\BusyLock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AddRuleArgs.cs">
+      <Link>Validation\AddRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleArgs.cs">
+      <Link>Validation\AsyncRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteHandler.cs">
+      <Link>Validation\AsyncRuleCompleteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleHandler.cs">
+      <Link>Validation\AsyncRuleHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleMethod.cs">
+      <Link>Validation\AsyncRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResult.cs">
+      <Link>Validation\AsyncRuleResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResultHandler.cs">
+      <Link>Validation\AsyncRuleResultHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\AsyncValidationRuleContext.cs">
+      <Link>Validation\AsyncValidationRuleContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRule.cs">
+      <Link>Validation\BrokenRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRulesCollection.cs">
+      <Link>Validation\BrokenRulesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\CommonRules.cs">
+      <Link>Validation\CommonRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\DecoratedRuleArgs.cs">
+      <Link>Validation\DecoratedRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\IAsyncRuleMethod.cs">
+      <Link>Validation\IAsyncRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\IRuleMethod.cs">
+      <Link>Validation\IRuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleArgs.cs">
+      <Link>Validation\RuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleDescription.cs">
+      <Link>Validation\RuleDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleHandler.cs">
+      <Link>Validation\RuleHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleMethod.cs">
+      <Link>Validation\RuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RuleSeverity.cs">
+      <Link>Validation\RuleSeverity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\RulesList.cs">
+      <Link>Validation\RulesList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\SharedValidationRules.cs">
+      <Link>Validation\SharedValidationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationException.cs">
+      <Link>Validation\ValidationException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRules.cs">
+      <Link>Validation\ValidationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRulesManager.cs">
+      <Link>Validation\ValidationRulesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ErrorEventArgs.cs">
+      <Link>Silverlight\ErrorEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="ApplicationContext.cs" />
+    <Compile Include="BusinessBase.cs" />
+    <Compile Include="BusinessListBase.cs" />
+    <Compile Include="Core\ChildChangedEventArgs.cs" />
+    <Compile Include="Core\IBindingList.cs" />
+    <Compile Include="Core\ContextDictionary.cs" />
+    <Compile Include="Core\ICommandObject.cs" />
+    <Compile Include="Core\INotifyPropertyChanging.cs" />
+    <Compile Include="Core\PropertyChangingEventArgs.cs" />
+    <Compile Include="Core\PropertyChangingEventHandler.cs" />
+    <Compile Include="DataPortalClient\ChildDataPortal.cs" />
+    <Compile Include="Core\BindableBase.cs" />
+    <Compile Include="Core\AddedNewEventArgs.cs" />
+    <Compile Include="Core\BindingList.cs" />
+    <Compile Include="Core\ExtendedBindingList.cs" />
+    <Compile Include="Core\FieldManager\FieldData.cs" />
+    <Compile Include="Core\FieldManager\FieldDataList.cs" />
+    <Compile Include="Core\FieldManager\FieldDataManager.cs" />
+    <Compile Include="Core\FieldManager\IFieldData.cs" />
+    <Compile Include="Core\FieldManager\IFieldDataT.cs" />
+    <Compile Include="Core\IBusinessObject.cs" />
+    <Compile Include="Core\IEditableBusinessObject.cs" />
+    <Compile Include="Core\IExtendedBindingList.cs" />
+    <Compile Include="Core\IParent.cs" />
+    <Compile Include="Core\IReadOnlyCollection.cs" />
+    <Compile Include="Core\ISavable.cs" />
+    <Compile Include="Core\ISmartField.cs" />
+    <Compile Include="Core\ISupportUndo.cs" />
+    <Compile Include="Core\IUndoableObject.cs" />
+    <Compile Include="Core\ObjectCloner.cs" />
+    <Compile Include="Core\ReadOnlyBindingList.cs" />
+    <Compile Include="Core\RemovingItemEventArgs.cs" />
+    <Compile Include="Core\SavedEventArgs.cs" />
+    <Compile Include="Core\UndoableBase.cs" />
+    <Compile Include="Core\UndoException.cs" />
+    <Compile Include="DataPortal.cs" />
+    <Compile Include="Core\BusinessBase.cs" />
+    <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
+    <Compile Include="DataPortalClient\FactoryProxy.cs" />
+    <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
+    <Compile Include="DataPortalClient\LocalProxy.cs" />
+    <Compile Include="DataPortalClient\ProxyFactory.cs" />
+    <Compile Include="DataPortalClient\SynchronizedWcfProxy.cs" />
+    <Compile Include="DataPortalClient\WcfProxy.cs" />
+    <Compile Include="DataPortalEventArgs.cs" />
+    <Compile Include="DataPortalException.cs" />
+    <Compile Include="DataPortalT.cs" />
+    <Compile Include="EditableRootListBase.cs" />
+    <Compile Include="ICloneable.cs" />
+    <Compile Include="ICriteria.cs" />
+    <Compile Include="NameValueListBase.cs" />
+    <Compile Include="NotUndoableAttribute.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyLoaderException.cs" />
+    <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="ReadOnlyBase.cs" />
+    <Compile Include="Reflection\CallMethodException.cs" />
+    <Compile Include="Reflection\LateBoundObject.cs" />
+    <Compile Include="Reflection\MethodCaller.cs" />
+    <Compile Include="Security\CslaIdentity.partial.cs" />
+    <Compile Include="Security\MembershipIdentity.partial.cs" />
+    <Compile Include="Security\PrincipalCache.cs" />
+    <Compile Include="Serialization\TypeExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Silverlight\BoomarkInformation.cs" />
+    <Compile Include="Silverlight\ControlNameFactory.cs" />
+    <Compile Include="Silverlight\ErrorDialog.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\Execute.cs">
+      <Link>Silverlight\Execute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ExecuteEventArgs.cs">
+      <Link>Silverlight\ExecuteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="Silverlight\IControlNameFactory.cs" />
+    <Compile Include="Silverlight\ISupportNavigation.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\InvokeMethod.cs">
+      <Link>Silverlight\InvokeMethod.cs</Link>
+    </Compile>
+    <Compile Include="Silverlight\NavigationBookmarkProcessedEventArgs.cs" />
+    <Compile Include="Silverlight\NavigationEventArgs.cs" />
+    <Compile Include="Silverlight\Navigator.cs" />
+    <Compile Include="Silverlight\NavigatorProvider.cs" />
+    <Compile Include="Silverlight\ValidatedDataGridCheckBoxColumn.cs" />
+    <Compile Include="Silverlight\CslaDataProvider.cs" />
+    <Compile Include="Silverlight\MobileFactoryAttribute.cs" />
+    <Compile Include="Serialization\NonSerializedAttribute.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SerializationAttribute.cs" />
+    <Compile Include="Silverlight\ValidatedDataGridColumn.cs" />
+    <Compile Include="Silverlight\ValidatedDataGridTextColumn.cs" />
+    <Compile Include="SingleCriteria.cs" />
+    <Compile Include="SmartDate.cs" />
+    <Compile Include="Threading\Semaphore.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="Validation\BrokenRule.partial.cs" />
+    <Compile Include="Validation\ValidationRules.partial.cs" />
+    <Compile Include="Silverlight\BusyAnimation.cs" />
+    <Compile Include="Silverlight\ObjectStatus.cs" />
+    <Compile Include="Silverlight\BrokenRuleSeverityConverter.cs" />
+    <Compile Include="Silverlight\PropertyStatus.cs" />
+    <Compile Include="Silverlight\VisualTree.cs" />
+    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModelBase.cs">
+      <Link>Silverlight\ViewModelBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModel.cs">
+      <Link>Silverlight\ViewModel.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Error.png" />
+    <Resource Include="Resources\Information.png" />
+    <Resource Include="Resources\Warning.png" />
+    <None Include="Service References\WcfPortal\WcfPortal.disco" />
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="ServiceReferences.ClientConfig" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CslaKey.snk" />
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal1.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

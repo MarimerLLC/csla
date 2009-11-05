@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataPortalTestDatabaseDataSet" targetNamespace="http://tempuri.org/DataPortalTestDatabaseDataSet.xsd" xmlns:mstns="http://tempuri.org/DataPortalTestDatabaseDataSet.xsd" xmlns="http://tempuri.org/DataPortalTestDatabaseDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="DataPortalTestDatabaseConnectionString" IsAppSettingsProperty="True" Modifier="Assembly" Name="DataPortalTestDatabaseConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Csla.Test.Properties.Settings.GlobalReference.Default.DataPortalTestDatabaseConnectionString" Provider="System.Data.SqlClient">
+          </Connection>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataPortalTestDatabaseDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="DataPortalTestDatabaseDataSet" msprop:Generator_DataSetName="DataPortalTestDatabaseDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

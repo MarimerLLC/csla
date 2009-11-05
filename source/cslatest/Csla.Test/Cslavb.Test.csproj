@@ -1,0 +1,366 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{002E4164-CFAF-4923-BEBB-B3A11281AB48}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Test</RootNamespace>
+    <AssemblyName>Csla.Test</AssemblyName>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>http://localhost/Csla.Test/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\vb\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;csla20vb;NUNIT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\vb\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="nunit.framework, Version=2.4.4.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files\NUnit 2.4.4\bin\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86" />
+    <Reference Include="PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnitDrivenNET, Version=0.0.1.32215, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\UnitDriven\UnitDrivenNET.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppContext\AppContextTests.cs" />
+    <Compile Include="AppContext\AppContextThread.cs" />
+    <Compile Include="AppContext\ExceptionRoot.cs" />
+    <Compile Include="AppContext\SimpleRoot.cs" />
+    <Compile Include="AppDomainTests\AppDomainTests.cs" />
+    <Compile Include="Authorization\AuthTests.cs" />
+    <Compile Include="Authorization\PermissionsRoot.cs" />
+    <Compile Include="Authorization\PerTypeAuthClasses.cs" />
+    <Compile Include="Authorization\PerTypeAuthorization.cs" />
+    <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />
+    <Compile Include="Authorization\ReadOnlyPerson.cs" />
+    <Compile Include="Basic\BasicTests.cs" />
+    <Compile Include="Basic\Child.cs" />
+    <Compile Include="Basic\Children.cs" />
+    <Compile Include="Basic\CommandObject.cs" />
+    <Compile Include="Basic\GenRoot.cs" />
+    <Compile Include="Basic\GenRootBase.cs" />
+    <Compile Include="Basic\GrandChild.cs" />
+    <Compile Include="Basic\GrandChildren.cs" />
+    <Compile Include="Basic\NameValueListObj.cs" />
+    <Compile Include="Basic\ReadOnlyList.cs" />
+    <Compile Include="Basic\Root.cs" />
+    <Compile Include="Basic\RootList.cs" />
+    <Compile Include="BusyStatus\BusyStatusTests.cs" />
+    <Compile Include="BypassPropertyChecks\BypassBusinessBase.cs" />
+    <Compile Include="BypassPropertyChecks\BypassPropertyChecksTests.cs" />
+    <Compile Include="BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs" />
+    <Compile Include="BypassPropertyChecks\TestObjectFactory.cs" />
+    <Compile Include="ChildChanged\ChildChangedTests.cs" />
+    <Compile Include="ChildChanged\ContainsList.cs" />
+    <Compile Include="ChildChanged\GrandChild.cs" />
+    <Compile Include="ChildChanged\ListContainerList.cs" />
+    <Compile Include="ChildChanged\SingleChild.cs" />
+    <Compile Include="ChildChanged\SingleList.cs" />
+    <Compile Include="ChildChanged\SingleRoot.cs" />
+    <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
+    <Compile Include="Basic\CollectionTests.cs" />
+    <Compile Include="CslaDataProvider\CslaDataProviderTests.cs" />
+    <Compile Include="CslaDataProvider\ProviderList.cs" />
+    <Compile Include="CslaQueryProvider\CslaQueryProviderTests.cs" />
+    <Compile Include="DataMapper\DataMapperTests.cs" />
+    <Compile Include="DataPortalChild\Child.cs" />
+    <Compile Include="DataPortalChild\ChildList.cs" />
+    <Compile Include="DataPortalChild\DataPortalChildTests.cs" />
+    <Compile Include="DataPortalChild\Root.cs" />
+    <Compile Include="DataPortal\AsynchDataPortalTest.cs" />
+    <Compile Include="DataPortal\ChildEntity.cs" />
+    <Compile Include="DataPortal\ChildEntityList.cs" />
+    <Compile Include="DataPortal\Legacy.cs" />
+    <Compile Include="DataPortal\LegacySplit.cs" />
+    <Compile Include="DataPortal\LegacySplitBase.cs" />
+    <Compile Include="DataPortal\LegacySplitTest.cs" />
+    <Compile Include="DataPortal\LegacyTest.cs" />
+    <Compile Include="DataPortal\ParentEntity.cs" />
+    <Compile Include="DataPortal\ESTransactionalRoot.cs" />
+    <Compile Include="DataPortal\SingleOverload.cs" />
+    <Compile Include="DataPortal\SingleOverloadTest.cs" />
+    <Compile Include="DataPortal\SingleTest.cs" />
+    <Compile Include="DataPortal\Split.cs" />
+    <Compile Include="DataPortal\SplitBase.cs" />
+    <Compile Include="DataPortal\SplitOverload.cs" />
+    <Compile Include="DataPortal\SplitOverloadBase.cs" />
+    <Compile Include="DataPortal\SplitOverloadTest.cs" />
+    <Compile Include="DataPortal\SplitTest.cs" />
+    <Compile Include="DataPortal\StronglyTypedDP.cs" />
+    <Compile Include="DataPortal\TransactionalRoot.cs" />
+    <Compile Include="DataPortalTestDatabaseDataSet.cs">
+      <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataPortalTestDatabaseDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataPortal\DataPortalTests.cs" />
+    <Compile Include="DataPortal\DpRoot.cs" />
+    <Compile Include="Data\ContextTests.cs" />
+    <Compile Include="Data\TestEFContext.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestEFContext.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Data\TestLinqToSqlContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestLinqToSqlContext.dbml</DependentUpon>
+    </Compile>
+    <Compile Include="Data\TransactionContextUser.cs" />
+    <Compile Include="Data\TransactionContextUserList.cs" />
+    <Compile Include="DPException\DataPortalExceptionTests.cs" />
+    <Compile Include="EditableRootList\EditableRootListTests.cs" />
+    <Compile Include="EditableRootList\ERitem.cs" />
+    <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
+    <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />
+    <Compile Include="MethodCaller\Caller1.cs" />
+    <Compile Include="MethodCaller\Caller2.cs" />
+    <Compile Include="MethodCaller\Caller3.cs" />
+    <Compile Include="ObjectFactory\MissingRoot.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryLoader.cs" />
+    <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />
+    <Compile Include="ObjectFactory\Root.cs" />
+    <Compile Include="ObjectFactory\RootFactory.cs" />
+    <Compile Include="IdentityConverter\IdentityConverterTests.cs" />
+    <Compile Include="IO\DPMethodOverloadTests.cs" />
+    <Compile Include="IO\IOTests.cs" />
+    <Compile Include="LazyLoad\AChild.cs" />
+    <Compile Include="LazyLoad\AChildList.cs" />
+    <Compile Include="LazyLoad\AParent.cs" />
+    <Compile Include="LazyLoad\LazyLoadTests.cs" />
+    <Compile Include="MethodCaller\MethodCallerTests.cs" />
+    <Compile Include="Nullable\NullableObject.cs" />
+    <Compile Include="Nullable\NullableTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyGetSet\BadGetSet.cs" />
+    <Compile Include="PropertyGetSet\ChildList.cs" />
+    <Compile Include="PropertyGetSet\EditableGetSet.cs" />
+    <Compile Include="PropertyGetSet\EditableGetSetBase.cs" />
+    <Compile Include="PropertyGetSet\EditableGetSetTopBase.cs" />
+    <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
+    <Compile Include="RollBack\RollbackRoot.cs" />
+    <Compile Include="RollBack\RollBackTests.cs" />
+    <Compile Include="Authorization\TestIdentity.cs" />
+    <Compile Include="Authorization\TestPrincipal.cs" />
+    <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
+    <Compile Include="Serialization\DCRoot.cs" />
+    <Compile Include="Serialization\nonSerializableEventHandler.cs" />
+    <Compile Include="Serialization\SerializationRoot.cs" />
+    <Compile Include="Serialization\SerializationTests.cs" />
+    <Compile Include="Serialization\TestEventSink.cs" />
+    <Compile Include="Silverlight\ApplicationContext\ClientContextTests.cs" />
+    <Compile Include="Silverlight\ApplicationContext\GlobalContextTests.cs" />
+    <Compile Include="Silverlight\ApplicationContext\ClientContextTests.server.cs" />
+    <Compile Include="Silverlight\ApplicationContext\GlobalCOntextTests.server.cs" />
+    <Compile Include="Silverlight\CommandBase\CommandBaseTests.cs" />
+    <Compile Include="DataPortal\AuthorizeDataPortalTests.cs" />
+    <Compile Include="Silverlight\DataPortal\AuthorizeDataPortalTests.cs" />
+    <Compile Include="Silverlight\NameValueList\NameValueListTests.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\AbstractGetSet.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\InheritedLoadPropertySet.cs" />
+    <Compile Include="Silverlight\PropertyGetSet\PropertGetSetTests.cs" />
+    <Compile Include="Silverlight\ReadOnly\MockReadOnly.cs" />
+    <Compile Include="Silverlight\ReadOnly\MockReadOnlyList.cs" />
+    <Compile Include="Silverlight\ReadOnly\ReadOnlyTests.cs" />
+    <Compile Include="Silverlight\Rollback\RollbackRoot.cs" />
+    <Compile Include="Silverlight\Rollback\RollbackTests.cs" />
+    <Compile Include="Silverlight\Security\SecurityTests.server.cs" />
+    <Compile Include="Silverlight\Security\SecurityTests.cs" />
+    <Compile Include="Silverlight\Serialization\Address.cs" />
+    <Compile Include="Silverlight\Serialization\AddressBase.cs" />
+    <Compile Include="Silverlight\Serialization\AddressList.cs" />
+    <Compile Include="Silverlight\Serialization\BindingListTests.cs" />
+    <Compile Include="Silverlight\Serialization\CustomMobileList.cs" />
+    <Compile Include="Silverlight\Serialization\MockNonBusinessObject.cs" />
+    <Compile Include="Silverlight\Serialization\MockReadOnly.cs" />
+    <Compile Include="Silverlight\Serialization\MockReadOnlyList.cs" />
+    <Compile Include="Silverlight\Serialization\Person.cs" />
+    <Compile Include="Silverlight\Serialization\PersonWIthSmartDateField.cs" />
+    <Compile Include="Silverlight\Serialization\ReadOnlyPerson.cs" />
+    <Compile Include="Silverlight\Serialization\ReadOnlyPersonList.cs" />
+    <Compile Include="Silverlight\Serialization\SerializationTests.cs" />
+    <Compile Include="Silverlight\Serialization\UndoTests.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableChildTestsLocal.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableChildTestsRemote.cs" />
+    <Compile Include="Silverlight\Stereotypes\EditableRootTests.cs" />
+    <Compile Include="Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs" />
+    <Compile Include="SmartDate\SmartDateTests.cs" />
+    <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="Threading\BusyLockTests.cs" />
+    <Compile Include="Utilities\CorerseValueTests.cs" />
+    <Compile Include="Utilities\UtilitiesTestHelper.cs" />
+    <Compile Include="ValidationRules\AsyncRuleTests.cs" />
+    <Compile Include="ValidationRules\BrokenRulesMergeRoot.cs" />
+    <Compile Include="ValidationRules\Child.cs" />
+    <Compile Include="ValidationRules\ChildList.cs" />
+    <Compile Include="ValidationRules\HasAsyncRule.cs" />
+    <Compile Include="ValidationRules\HasBadSharedRule.cs" />
+    <Compile Include="ValidationRules\HasChildren.cs" />
+    <Compile Include="ValidationRules\HasInvalidAsyncRule.cs" />
+    <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
+    <Compile Include="ValidationRules\HasPerTypeRules.cs" />
+    <Compile Include="ValidationRules\HasRegEx.cs" />
+    <Compile Include="ValidationRules\HasRulesManager.cs" />
+    <Compile Include="ValidationRules\HasRulesManager.partial.cs" />
+    <Compile Include="ValidationRules\HasRulesManager2.cs" />
+    <Compile Include="ValidationRules\HasRulesManager2.partial.cs" />
+    <Compile Include="ValidationRules\MaxLengthArgs.cs" />
+    <Compile Include="ValidationRules\RuleDescriptionTests.cs" />
+    <Compile Include="ValidationRules\SeverityClasses.cs" />
+    <Compile Include="ValidationRules\SeverityTests.cs" />
+    <Compile Include="ValidationRules\ShortCircuitClasses.cs" />
+    <Compile Include="ValidationRules\ShortCircuitTests.cs" />
+    <Compile Include="ValidationRules\ValidationTests.cs" />
+    <Compile Include="Windows\EditablePerson.cs" />
+    <Compile Include="Windows\PersonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\PersonForm.Designer.cs">
+      <DependentUpon>PersonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ReadWriteAuthorizationTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="cslaTestvb.config">
+    </None>
+    <None Include="DataPortalTestDatabaseDataSet.xsc">
+      <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="DataPortalTestDatabaseDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataPortalTestDatabaseDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataPortalTestDatabaseDataSet.xss">
+      <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DataPortalTestDatabase.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DataPortalTestDatabase_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>DataPortalTestDatabase.mdf</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Sql.Server.Express.1.0">
+      <Visible>False</Visible>
+      <ProductName>SQL Server 2005 Express Edition</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\cslavb\Csla\Csla.vbproj">
+      <Project>{AD7860FD-83E2-4E2C-A859-6FF077980884}</Project>
+      <Name>Csla</Name>
+    </ProjectReference>
+    <ProjectReference Include="Silverlight\Server\CslaLight.Testing.ServerVB.csproj">
+      <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
+      <Name>CslaLight.Testing.ServerVB</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

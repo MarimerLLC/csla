@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Csla.Core.FieldManager;
 using System.Runtime.Serialization;
 using Csla.DataPortalClient;
-using Csla.Silverlight;
+using Csla.Xaml;
 using Csla.Core;
 
 namespace Csla.Security

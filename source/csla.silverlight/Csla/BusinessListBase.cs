@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Csla.Serialization;
-using Csla.Silverlight;
+using Csla.Xaml;
 using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;

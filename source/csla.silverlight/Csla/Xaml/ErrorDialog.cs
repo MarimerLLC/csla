@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Displays an error dialog for any exceptions
@@ -139,7 +139,7 @@ namespace Csla.Silverlight
 
     private void source_DataChanged(object sender, EventArgs e)
     {
-      var dp = sender as Csla.Silverlight.CslaDataProvider;
+      var dp = sender as Csla.Xaml.CslaDataProvider;
       if (dp != null && dp.Error != null)
       {
         string error;

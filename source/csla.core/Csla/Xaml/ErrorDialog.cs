@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Displays an error dialog for any exceptions

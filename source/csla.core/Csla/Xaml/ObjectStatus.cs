@@ -3,7 +3,7 @@ using System.Windows;
 using System.ComponentModel;
 using Csla.Core;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Container for other UI controls that exposes

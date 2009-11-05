@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using Csla.Properties;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Contains methods to help work with the visual tree.

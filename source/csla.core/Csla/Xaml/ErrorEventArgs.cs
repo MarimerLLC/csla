@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-#if SILVERLIGHT
-namespace Csla.Silverlight
-#else
-namespace Csla.Wpf
-#endif
+namespace Csla.Xaml
 {
   /// <summary>
   /// Contains information about the error that

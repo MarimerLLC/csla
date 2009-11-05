@@ -5,11 +5,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Properties;
 
-#if SILVERLIGHT
-namespace Csla.Silverlight
-#else
-namespace Csla.Wpf
-#endif
+namespace Csla.Xaml
 {
   /// <summary>
   /// Invokes a method on a target object when a 

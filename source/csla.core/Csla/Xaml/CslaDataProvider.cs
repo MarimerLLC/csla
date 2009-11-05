@@ -8,7 +8,7 @@ using System.Reflection;
 using Csla.Reflection;
 using Csla.Properties;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Wraps and creates a CSLA .NET-style object 

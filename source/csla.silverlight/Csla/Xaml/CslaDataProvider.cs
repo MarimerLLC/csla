@@ -9,7 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Csla.Core;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Creates, retrieves and manages business objects

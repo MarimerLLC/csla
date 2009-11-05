@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// This class is used to keep track of bookmarks within Navigator.

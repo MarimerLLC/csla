@@ -1,6 +1,6 @@
 using System;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Options controlling how the Authorizer

@@ -4,7 +4,7 @@ using System.Windows.Data;
 using System.Reflection;
 using Csla.Security;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Container for other UI controls that adds

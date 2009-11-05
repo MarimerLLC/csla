@@ -5,11 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-#if SILVERLIGHT
-namespace Csla.Silverlight
-#else
-namespace Csla.Wpf
-#endif
+namespace Csla.Xaml
 {
   /// <summary>
   /// Base class used to create ViewModel objects,

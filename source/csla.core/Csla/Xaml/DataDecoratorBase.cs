@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Base class for creating WPF panel

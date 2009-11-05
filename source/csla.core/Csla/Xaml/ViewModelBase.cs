@@ -10,11 +10,7 @@ using Csla.Security;
 using Csla.Core;
 using System.Collections;
 
-#if SILVERLIGHT
-namespace Csla.Silverlight
-#else
-namespace Csla.Wpf
-#endif
+namespace Csla.Xaml
 {
   /// <summary>
   /// Base class used to create ViewModel objects that

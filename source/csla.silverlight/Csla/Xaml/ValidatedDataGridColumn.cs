@@ -9,8 +9,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Data;
+using Csla.Xaml;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Implements a column for the datagrid

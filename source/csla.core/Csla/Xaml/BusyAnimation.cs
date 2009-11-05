@@ -13,7 +13,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Control that displays a busy animation.

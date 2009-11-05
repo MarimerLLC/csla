@@ -2,7 +2,7 @@
 using System.Windows;
 using Csla.Properties;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Navigator provider object.

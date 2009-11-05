@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Converts validation severity values into corresponding

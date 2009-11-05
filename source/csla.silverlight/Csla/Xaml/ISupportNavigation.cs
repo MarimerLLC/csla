@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Interface that defines template that Navigatgor 

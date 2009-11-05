@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Event arguments class that is part of Navigator event

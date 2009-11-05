@@ -74,7 +74,7 @@ namespace Csla
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       base.OnGetState(info, mode);
-      info.AddValue("Csla.Silverlight.SingleCriteria._value", _value);
+      info.AddValue("Csla.Xaml.SingleCriteria._value", _value);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace Csla
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       base.OnSetState(info, mode);
-      _value = info.GetValue<C>("Csla.Silverlight.SingleCriteria._value");
+      _value = info.GetValue<C>("Csla.Xaml.SingleCriteria._value");
     }
 
     #endregion

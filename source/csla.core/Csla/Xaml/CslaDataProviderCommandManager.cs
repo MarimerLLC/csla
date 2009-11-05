@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using System.ComponentModel;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Implements support for RoutedCommands that can

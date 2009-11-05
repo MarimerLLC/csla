@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// This event arguments class is part of BeforeNavigation

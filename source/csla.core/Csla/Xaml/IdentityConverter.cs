@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Data;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 {
   /// <summary>
   /// Provides the functionality of a WPF

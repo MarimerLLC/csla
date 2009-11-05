@@ -9,13 +9,13 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
-  /// Implements a datagrid text column that
-  /// uses PropertyStatus to display validation messages.
+  /// Implements a checkbox column for the datagrid
+  /// that uses PropertyStatus for validation display.
   /// </summary>
-  public class ValidatedDataGridTextColumn : ValidatedDataGridColumn
+  public class ValidatedDataGridCheckBoxColumn : ValidatedDataGridColumn
   {
     /// <summary>
     /// Prepares a cell for edit.
@@ -26,57 +26,50 @@ namespace Csla.Silverlight
     protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
     {
       StackPanel panel = editingElement as StackPanel;
-      string text = null;
+      bool? isChecked = null;
       if (panel != null)
       {
-        TextBox box = panel.Children[0] as TextBox;
+        CheckBox box = panel.Children[0] as CheckBox;
         if (box != null)
         {
-          box.Focus();
-          text = box.Text;
-          int length = text.Length;
-          KeyEventArgs args = editingEventArgs as KeyEventArgs;
-          if ((args != null)) // && (args.Key == Key.F2))
-          {
-            args.Handled = true;
-            box.Select(0, length);
-          }
-          else box.Select(length, length);
+          isChecked = box.IsChecked;
         }
       }
-      return text;
+      return isChecked;
     }
 
     /// <summary>
     /// Creates an element.
     /// </summary>
+    /// <returns></returns>
     protected override FrameworkElement CreateElement()
     {
-      return new TextBlock();
+      return new CheckBox { IsEnabled = false };
     }
 
     /// <summary>
-    /// Gets the Text property value.
+    /// Gets the IsChecked property value.
     /// </summary>
     protected override DependencyProperty ElementProperty
     {
-      get { return TextBlock.TextProperty; }
+      get { return CheckBox.IsCheckedProperty; }
     }
 
     /// <summary>
     /// Creates the editing element.
     /// </summary>
+    /// <returns></returns>
     protected override FrameworkElement CreateEditingElement()
     {
-      return new TextBox();
+      return new CheckBox();
     }
 
     /// <summary>
-    /// Gets the Text property value.
+    /// Gets the IsChecked property value.
     /// </summary>
     protected override DependencyProperty EditingElementProperty
     {
-      get { return TextBox.TextProperty; }
+      get { return CheckBox.IsCheckedProperty; }
     }
   }
 }

@@ -9,7 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Input;
 using Csla.Core;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Object status control.

@@ -418,23 +418,23 @@
     </Compile>
     <Compile Include="Workflow\WorkflowManager.cs" />
     <Compile Include="Workflow\WorkflowStatus.cs" />
-    <Compile Include="Wpf\Authorizer.cs" />
-    <Compile Include="Wpf\BrokenRulesSeverityConverter.cs" />
-    <Compile Include="Wpf\BusyAnimation.cs" />
-    <Compile Include="Wpf\CslaDataProvider.cs" />
-    <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
-    <Compile Include="Wpf\DataDecoratorBase.cs" />
-    <Compile Include="Wpf\ErrorDialog.cs" />
-    <Compile Include="Wpf\ErrorEventArgs.cs" />
-    <Compile Include="Wpf\Execute.cs" />
-    <Compile Include="Wpf\ExecuteEventArgs.cs" />
-    <Compile Include="Wpf\InvokeMethod.cs" />
-    <Compile Include="Wpf\ObjectStatus.cs" />
-    <Compile Include="Wpf\IdentityConverter.cs" />
-    <Compile Include="Wpf\PropertyStatus.cs" />
-    <Compile Include="Wpf\ViewModel.cs" />
-    <Compile Include="Wpf\ViewModelBase.cs" />
-    <Compile Include="Wpf\VisibilityMode.cs" />
+    <Compile Include="Xaml\Authorizer.cs" />
+    <Compile Include="Xaml\BrokenRulesSeverityConverter.cs" />
+    <Compile Include="Xaml\BusyAnimation.cs" />
+    <Compile Include="Xaml\CslaDataProvider.cs" />
+    <Compile Include="Xaml\CslaDataProviderCommandManager.cs" />
+    <Compile Include="Xaml\DataDecoratorBase.cs" />
+    <Compile Include="Xaml\ErrorDialog.cs" />
+    <Compile Include="Xaml\ErrorEventArgs.cs" />
+    <Compile Include="Xaml\Execute.cs" />
+    <Compile Include="Xaml\ExecuteEventArgs.cs" />
+    <Compile Include="Xaml\IdentityConverter.cs" />
+    <Compile Include="Xaml\InvokeMethod.cs" />
+    <Compile Include="Xaml\ObjectStatus.cs" />
+    <Compile Include="Xaml\PropertyStatus.cs" />
+    <Compile Include="Xaml\ViewModel.cs" />
+    <Compile Include="Xaml\ViewModelBase.cs" />
+    <Compile Include="Xaml\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />

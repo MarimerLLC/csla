@@ -10,7 +10,7 @@ using Csla.Core;
 using Csla.Reflection;
 using Csla.Validation;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Displays validation information for a business

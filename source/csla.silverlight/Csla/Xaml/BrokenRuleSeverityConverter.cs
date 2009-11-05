@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Resources;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
   /// Converts broken rule severities into an

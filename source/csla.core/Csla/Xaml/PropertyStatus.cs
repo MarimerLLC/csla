@@ -14,7 +14,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-namespace Csla.Wpf
+namespace Csla.Xaml
 { 
   /// <summary>
   /// Control providing services around business object

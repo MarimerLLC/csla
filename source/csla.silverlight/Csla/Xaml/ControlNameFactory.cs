@@ -2,14 +2,15 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Csla.Silverlight
+namespace Csla.Xaml
 {
   /// <summary>
-  /// Defines a factory object that maps
-  /// controls to names and names to controls.
+  /// Maps controls to names and names to controls.
   /// </summary>
-  public interface IControlNameFactory
+  public class ControlNameFactory : IControlNameFactory
   {
+    #region IControlNameFactory Members
+
     /// <summary>
     /// Convert full name of the control to name that will be used for 
     /// creation of bookmakrs
@@ -19,7 +20,10 @@ namespace Csla.Silverlight
     /// by navigator as a target.
     /// </param>
     /// <returns>Short name of control used for bookmarks</returns>
-    string ControlToControlName(Control control);
+    public string ControlToControlName(Control control)
+    {
+      return control.GetType().AssemblyQualifiedName;
+    }
 
     /// <summary>
     /// Convert short name of control used for bookmarks to
@@ -27,6 +31,15 @@ namespace Csla.Silverlight
     /// </summary>
     /// <param name="controlName">Short name of control used for bookmarks</param>
     /// <returns>User Control or Control object</returns>
-    Control ControlNameToControl(string controlName);
+    public Control ControlNameToControl(string controlName)
+    {
+      Type controlType = Csla.Reflection.MethodCaller.GetType(controlName);
+      if (controlType != null)
+        return (Control)Activator.CreateInstance(controlType);
+      else
+        return null;
+    }
+
+    #endregion
   }
 }

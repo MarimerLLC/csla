@@ -86,11 +86,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\cslacs\Csla\Csla.csproj">
+    <ProjectReference Include="..\..\..\csla.core\Csla\csla.core.csproj">
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
       <Name>Csla</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\cslatest\Csla.Test\Silverlight\Server\CslaLight.Testing.Server.csproj">
+    <ProjectReference Include="..\..\..\csla.test\Csla.Test\Silverlight\Server\csla.silverlight.server.test.csproj">
       <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
       <Name>CslaLight.Testing.Server</Name>
     </ProjectReference>

@@ -72,22 +72,26 @@ namespace Csla.Linq
 
     #endregion
 
-    private void DoAdd(T item)
-    {
-      if (_theProp != null)
-      {
-        int hashCode = _theProp.GetValue(item, null).GetHashCode();
-        if (_index.ContainsKey(hashCode))
-          _index[hashCode].Add(item);
-        else
-        {
-          List<T> newList = new List<T>(1);
-          newList.Add(item);
-          _index.Add(hashCode, newList);
-        }
-        _countCache++;
-      }
-    }
+		private void DoAdd(T item)
+		{
+			if (_theProp != null)
+			{
+				object value = _theProp.GetValue(item, null);
+				if (value != null)
+				{
+					int hashCode = value.GetHashCode();
+					if (_index.ContainsKey(hashCode))
+						_index[hashCode].Add(item);
+					else
+					{
+						List<T> newList = new List<T>(1);
+						newList.Add(item);
+						_index.Add(hashCode, newList);
+					}
+					_countCache++;
+				}
+			}
+		}
 
     #region ICollection<T> Members
 

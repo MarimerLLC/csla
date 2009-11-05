@@ -115,271 +115,271 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoFactory.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\FieldManager\PropertyInfoFactory.cs">
       <Link>Core\FieldManager\PropertyInfoFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\FieldManager\PropertyInfoManager.cs">
       <Link>Core\FieldManager\PropertyInfoManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\CommandBase.cs">
+    <Compile Include="..\..\csla.core\Csla\CommandBase.cs">
       <Link>CommandBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfoFactory.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\IPropertyInfoFactory.cs">
       <Link>Core\IPropertyInfoFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\DataPortalResult.cs">
+    <Compile Include="..\..\csla.core\Csla\DataPortalResult.cs">
       <Link>DataPortalResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\AsyncFactoryDelegates.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\AsyncFactoryDelegates.cs">
       <Link>Core\AsyncFactoryDelegates.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\IPropertyInfo.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\IPropertyInfo.cs">
       <Link>Core\IPropertyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\BusyChangedEventArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\BusyChangedEventArgs.cs">
       <Link>Core\BusyChangedEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\ErrorEventArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\ErrorEventArgs.cs">
       <Link>Core\ErrorEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\FieldManager\PropertyInfoList.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\FieldManager\PropertyInfoList.cs">
       <Link>Core\FieldManager\PropertyInfoList.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\IEditableCollection.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\IEditableCollection.cs">
       <Link>Core\IEditableCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\IManageProperties.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\IManageProperties.cs">
       <Link>Core\IManageProperties.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\INotifyBusy.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\INotifyBusy.cs">
       <Link>Core\INotifyBusy.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\INotifyChildChanged.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\INotifyChildChanged.cs">
       <Link>Core\INotifyChildChanged.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Data\DataServiceContextManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Data\DataServiceContextManager.cs">
       <Link>Data\DataServiceContextManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Data\ServiceClientManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Data\ServiceClientManager.cs">
       <Link>Data\ServiceClientManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\INotifyUnhandledAsyncException.cs">
       <Link>Core\INotifyUnhandledAsyncException.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\IReadOnlyBindingList.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\IReadOnlyBindingList.cs">
       <Link>Core\IReadOnlyBindingList.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\ITrackStatus.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\ITrackStatus.cs">
       <Link>Core\ITrackStatus.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoader.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\LoadManager\AsyncLoader.cs">
       <Link>Core\LoadManager\AsyncLoader.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\LoadManager\AsyncLoadManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\LoadManager\AsyncLoadManager.cs">
       <Link>Core\LoadManager\AsyncLoadManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\ManagedObjectBase.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\ManagedObjectBase.cs">
       <Link>Core\ManagedObjectBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\MobileBindingList.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\MobileBindingList.cs">
       <Link>Core\MobileBindingList.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\MobileDictionary.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\MobileDictionary.cs">
       <Link>Core\MobileDictionary.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\MobileList.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\MobileList.cs">
       <Link>Core\MobileList.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\MobileObject.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\MobileObject.cs">
       <Link>Core\MobileObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Core\StateMode.cs">
+    <Compile Include="..\..\csla.core\Csla\Core\StateMode.cs">
       <Link>Core\StateMode.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\CriteriaBase.cs">
+    <Compile Include="..\..\csla.core\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\DataPortalOperations.cs">
+    <Compile Include="..\..\csla.core\Csla\DataPortalOperations.cs">
       <Link>DataPortalOperations.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\IDataPortalResult.cs">
+    <Compile Include="..\..\csla.core\Csla\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\IndexableAttribute.cs">
+    <Compile Include="..\..\csla.core\Csla\IndexableAttribute.cs">
       <Link>IndexableAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\IndexModeEnum.cs">
+    <Compile Include="..\..\csla.core\Csla\IndexModeEnum.cs">
       <Link>IndexModeEnum.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\RelationshipTypes.cs">
+    <Compile Include="..\..\csla.core\Csla\RelationshipTypes.cs">
       <Link>RelationshipTypes.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Reflection\Reflect.cs">
+    <Compile Include="..\..\csla.core\Csla\Reflection\Reflect.cs">
       <Link>Reflection\Reflect.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\AuthorizationRules.cs">
       <Link>Security\AuthorizationRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\AuthorizationRulesManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\AuthorizationRulesManager.cs">
       <Link>Security\AuthorizationRulesManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\BusinessPrincipalBase.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\BusinessPrincipalBase.cs">
       <Link>Security\BusinessPrincipalBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\CslaIdentity.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\CslaIdentity.cs">
       <Link>Security\CSLAIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\IAuthorizeReadWrite.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\IAuthorizeReadWrite.cs">
       <Link>Security\IAuthorizeReadWrite.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\ICheckRoles.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\ICheckRoles.cs">
       <Link>Security\ICheckRoles.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\MembershipIdentity.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\MembershipIdentity.cs">
       <Link>Security\MembershipIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\NoAccessBehavior.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\NoAccessBehavior.cs">
       <Link>Security\NoAccessBehavior.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\ObjectAuthorizationRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\ObjectAuthorizationRules.cs">
       <Link>Security\ObjectAuthorizationRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\RolesForProperty.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\RolesForProperty.cs">
       <Link>Security\RolesForProperty.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\RolesForType.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\RolesForType.cs">
       <Link>Security\RolesForType.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\SharedAuthorizationRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\SharedAuthorizationRules.cs">
       <Link>Security\SharedAuthorizationRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedIdentity.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\UnauthenticatedIdentity.cs">
       <Link>Security\UnauthenticatedIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\UnauthenticatedPrincipal.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\UnauthenticatedPrincipal.cs">
       <Link>Security\UnauthenticatedPrincipal.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Security\UsernameCriteria.cs">
+    <Compile Include="..\..\csla.core\Csla\Security\UsernameCriteria.cs">
       <Link>Security\UsernameCriteria.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\ISerializationFormatter.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\ISerializationFormatter.cs">
       <Link>Serialization\ISerializationFormatter.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\IMobileObject.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\IMobileObject.cs">
       <Link>Serialization\Mobile\IMobileObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ISerializationNotification.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\ISerializationNotification.cs">
       <Link>Serialization\Mobile\ISerializationNotification.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\MobileFormatter.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\MobileFormatter.cs">
       <Link>Serialization\Mobile\MobileFormatter.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\NullPlaceholder.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\NullPlaceholder.cs">
       <Link>Serialization\Mobile\NullPlaceholder.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\ReferenceComparer.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\ReferenceComparer.cs">
       <Link>Serialization\Mobile\ReferenceComparer.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\Mobile\SerializationInfo.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\Mobile\SerializationInfo.cs">
       <Link>Serialization\Mobile\SerializationInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Serialization\SerializationFormatterFactory.cs">
+    <Compile Include="..\..\csla.core\Csla\Serialization\SerializationFormatterFactory.cs">
       <Link>Serialization\SerializationFormatterFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Server\IDataPortalTarget.cs">
+    <Compile Include="..\..\csla.core\Csla\Server\IDataPortalTarget.cs">
       <Link>Server\IDataPortalTarget.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactory.cs">
+    <Compile Include="..\..\csla.core\Csla\Server\ObjectFactory.cs">
       <Link>Server\ObjectFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Server\ObjectFactoryAttribute.cs">
+    <Compile Include="..\..\csla.core\Csla\Server\ObjectFactoryAttribute.cs">
       <Link>Server\ObjectFactoryAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Silverlight\Security\WindowsIdentity.cs">
+    <Compile Include="..\..\csla.core\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Threading\BusyLock.cs">
+    <Compile Include="..\..\csla.core\Csla\Threading\BusyLock.cs">
       <Link>Threading\BusyLock.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AddRuleArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AddRuleArgs.cs">
       <Link>Validation\AddRuleArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleArgs.cs">
       <Link>Validation\AsyncRuleArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleCompleteHandler.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleCompleteHandler.cs">
       <Link>Validation\AsyncRuleCompleteHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleHandler.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleHandler.cs">
       <Link>Validation\AsyncRuleHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleMethod.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleMethod.cs">
       <Link>Validation\AsyncRuleMethod.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResult.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleResult.cs">
       <Link>Validation\AsyncRuleResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncRuleResultHandler.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncRuleResultHandler.cs">
       <Link>Validation\AsyncRuleResultHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\AsyncValidationRuleContext.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\AsyncValidationRuleContext.cs">
       <Link>Validation\AsyncValidationRuleContext.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRule.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\BrokenRule.cs">
       <Link>Validation\BrokenRule.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\BrokenRulesCollection.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\BrokenRulesCollection.cs">
       <Link>Validation\BrokenRulesCollection.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\CommonRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\CommonRules.cs">
       <Link>Validation\CommonRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\DecoratedRuleArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\DecoratedRuleArgs.cs">
       <Link>Validation\DecoratedRuleArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\IAsyncRuleMethod.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\IAsyncRuleMethod.cs">
       <Link>Validation\IAsyncRuleMethod.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\IRuleMethod.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\IRuleMethod.cs">
       <Link>Validation\IRuleMethod.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RuleArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RuleArgs.cs">
       <Link>Validation\RuleArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RuleDescription.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RuleDescription.cs">
       <Link>Validation\RuleDescription.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\PropertyInfo.cs">
+    <Compile Include="..\..\csla.core\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RuleHandler.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RuleHandler.cs">
       <Link>Validation\RuleHandler.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RuleMethod.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RuleMethod.cs">
       <Link>Validation\RuleMethod.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RuleSeverity.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RuleSeverity.cs">
       <Link>Validation\RuleSeverity.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\RulesList.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\RulesList.cs">
       <Link>Validation\RulesList.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\SharedValidationRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\SharedValidationRules.cs">
       <Link>Validation\SharedValidationRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\ValidationException.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\ValidationException.cs">
       <Link>Validation\ValidationException.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRules.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\ValidationRules.cs">
       <Link>Validation\ValidationRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Validation\ValidationRulesManager.cs">
+    <Compile Include="..\..\csla.core\Csla\Validation\ValidationRulesManager.cs">
       <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Wpf\ErrorEventArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\ErrorEventArgs.cs">
       <Link>Silverlight\ErrorEventArgs.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext.cs" />
@@ -459,15 +459,15 @@
     <Compile Include="Silverlight\BoomarkInformation.cs" />
     <Compile Include="Silverlight\ControlNameFactory.cs" />
     <Compile Include="Silverlight\ErrorDialog.cs" />
-    <Compile Include="..\..\cslacs\Csla\Wpf\Execute.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\Execute.cs">
       <Link>Silverlight\Execute.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Wpf\ExecuteEventArgs.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\ExecuteEventArgs.cs">
       <Link>Silverlight\ExecuteEventArgs.cs</Link>
     </Compile>
     <Compile Include="Silverlight\IControlNameFactory.cs" />
     <Compile Include="Silverlight\ISupportNavigation.cs" />
-    <Compile Include="..\..\cslacs\Csla\Wpf\InvokeMethod.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\InvokeMethod.cs">
       <Link>Silverlight\InvokeMethod.cs</Link>
     </Compile>
     <Compile Include="Silverlight\NavigationBookmarkProcessedEventArgs.cs" />
@@ -493,10 +493,10 @@
     <Compile Include="Silverlight\BrokenRuleSeverityConverter.cs" />
     <Compile Include="Silverlight\PropertyStatus.cs" />
     <Compile Include="Silverlight\VisualTree.cs" />
-    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModelBase.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\ViewModelBase.cs">
       <Link>Silverlight\ViewModelBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\cslacs\Csla\Wpf\ViewModel.cs">
+    <Compile Include="..\..\csla.core\Csla\Wpf\ViewModel.cs">
       <Link>Silverlight\ViewModel.cs</Link>
     </Compile>
   </ItemGroup>

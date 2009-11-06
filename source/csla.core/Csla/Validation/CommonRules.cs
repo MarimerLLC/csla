@@ -1366,6 +1366,7 @@ namespace Csla.Validation
 
     #endregion
 
+#if !CLIENTPROFILE
     #region DataAnnotations
 
     /// <summary>
@@ -1432,5 +1433,6 @@ namespace Csla.Validation
     }
 
     #endregion
-  }
+#endif
+		}
 }

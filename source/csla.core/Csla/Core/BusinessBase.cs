@@ -1255,7 +1255,9 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
+#if !CLIENTPROFILE
       ValidationRules.AddDataAnnotations();
+#endif
     }
 
     /// <summary>

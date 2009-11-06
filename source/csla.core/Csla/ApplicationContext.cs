@@ -33,7 +33,7 @@ namespace Csla
       get
       {
         IPrincipal current;
-#if !CLIENTONLY
+#if !CLIENTPROFILE
         if (HttpContext.Current != null)
           current = HttpContext.Current.User;
         else if (System.Windows.Application.Current != null)
@@ -68,7 +68,7 @@ namespace Csla
       }
       set
       {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
         if (HttpContext.Current != null)
           HttpContext.Current.User = value;
         else if (System.Windows.Application.Current != null)
@@ -117,13 +117,13 @@ namespace Csla
 
     private static ContextDictionary GetLocalContext()
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         return (ContextDictionary)Thread.GetData(slot);
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       }
       else
         return (ContextDictionary)HttpContext.Current.Items[_localContextName];
@@ -132,13 +132,13 @@ namespace Csla
 
     private static void SetLocalContext(ContextDictionary localContext)
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
         Thread.SetData(slot, localContext);
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       }
       else
         HttpContext.Current.Items[_localContextName] = localContext;
@@ -219,7 +219,7 @@ namespace Csla
 
     internal static ContextDictionary GetClientContext()
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
@@ -232,7 +232,7 @@ namespace Csla
             Thread.GetNamedDataSlot(_clientContextName);
           return (ContextDictionary)Thread.GetData(slot);
         }
-#if !CLIENTONLY
+#if !CLIENTPROFILE
     }
       else
         return (ContextDictionary)
@@ -242,13 +242,13 @@ namespace Csla
 
     internal static ContextDictionary GetGlobalContext()
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         return (ContextDictionary)Thread.GetData(slot);
-#if !CLIENTONLY
+#if !CLIENTPROFILE
 }
       else
         return (ContextDictionary)HttpContext.Current.Items[_globalContextName];
@@ -257,7 +257,7 @@ namespace Csla
 
     private static void SetClientContext(ContextDictionary clientContext)
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
@@ -269,7 +269,7 @@ namespace Csla
           LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
           Thread.SetData(slot, clientContext);
         }
-#if !CLIENTONLY
+#if !CLIENTPROFILE
     }
       else
         HttpContext.Current.Items[_clientContextName] = clientContext;
@@ -278,13 +278,13 @@ namespace Csla
 
     internal static void SetGlobalContext(ContextDictionary globalContext)
     {
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       if (HttpContext.Current == null)
       {
 #endif
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
         Thread.SetData(slot, globalContext);
-#if !CLIENTONLY
+#if !CLIENTPROFILE
       }
       else
         HttpContext.Current.Items[_globalContextName] = globalContext;

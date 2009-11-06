@@ -21,8 +21,7 @@ namespace Csla
   /// </para><para>
   /// If the Transactional attribute is applied with no explicit
   /// choice for transactionType then the
-  /// <see cref="TransactionalTypes.EnterpriseServices">EnterpriseServices</see> 
-  /// option is assumed.
+  /// TransactionScope option is assumed.
   /// </para><para>
   /// Both the EnterpriseServices and TransactionScope options provide
   /// 2-phase distributed transactional support.
@@ -39,7 +38,7 @@ namespace Csla
     /// </summary>
     public TransactionalAttribute()
     {
-      _type = TransactionalTypes.EnterpriseServices;
+      _type = TransactionalTypes.TransactionScope;
     }
 
     /// <summary>

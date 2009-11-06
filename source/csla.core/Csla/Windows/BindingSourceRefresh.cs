@@ -17,7 +17,7 @@ namespace Csla.Windows
   /// data refresh issue with data bound detail controls
   /// as discussed in Chapter 5.</remarks>
   [DesignerCategory("")]
-#if !CLIENTONLY
+#if !CLIENTPROFILE
   [Designer(typeof(HostComponentDesigner))]
 #endif
   [HostProperty("Host")]

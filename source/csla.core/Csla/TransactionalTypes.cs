@@ -8,13 +8,11 @@ namespace Csla
   /// </summary>
   public enum TransactionalTypes
   {
-#if !CLIENTPROFILE
     /// <summary>
     /// Causes the server-side DataPortal to
     /// use Enterprise Services (COM+) transactions.
     /// </summary>
     EnterpriseServices,
-#endif
     /// <summary>
     /// Causes the server-side DataPortal to
     /// use System.Transactions TransactionScope

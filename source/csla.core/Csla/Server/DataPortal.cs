@@ -101,7 +101,6 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalType)
         {
-#if !CLIENTPROFILE
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
             try
@@ -114,7 +113,6 @@ namespace Csla.Server
             }
 
             break;
-#endif
           case TransactionalTypes.TransactionScope:
 
             portal = new TransactionalDataPortal();
@@ -168,7 +166,6 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalType)
         {
-#if !CLIENTPROFILE
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
             try
@@ -180,7 +177,6 @@ namespace Csla.Server
               ((ServicedDataPortal)portal).Dispose();
             }
             break;
-#endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
             result = portal.Fetch(objectType, criteria, context);
@@ -262,7 +258,6 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalType)
         {
-#if !CLIENTPROFILE
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
             try
@@ -274,7 +269,6 @@ namespace Csla.Server
               ((ServicedDataPortal)portal).Dispose();
             }
             break;
-#endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
             result = portal.Update(obj, context);
@@ -326,7 +320,6 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalType)
         {
-#if !CLIENTPROFILE
           case TransactionalTypes.EnterpriseServices:
             portal = new ServicedDataPortal();
             try
@@ -338,7 +331,6 @@ namespace Csla.Server
               ((ServicedDataPortal)portal).Dispose();
             }
             break;
-#endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
             result = portal.Delete(objectType, criteria, context);

@@ -391,6 +391,9 @@
     <Compile Include="..\..\csla.core\Csla\Xaml\InvokeMethod.cs">
       <Link>Xaml\InvokeMethod.cs</Link>
     </Compile>
+    <Compile Include="..\..\csla.core\Csla\Xaml\MobileFactoryAttribute.cs">
+      <Link>Xaml\MobileFactoryAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\csla.core\Csla\Xaml\ViewModel.cs">
       <Link>Xaml\ViewModel.cs</Link>
     </Compile>
@@ -482,7 +485,6 @@
     <Compile Include="Xaml\NavigatorProvider.cs" />
     <Compile Include="Xaml\ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="Xaml\CslaDataProvider.cs" />
-    <Compile Include="Xaml\MobileFactoryAttribute.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\SerializationAttribute.cs" />

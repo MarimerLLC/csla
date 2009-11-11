@@ -704,9 +704,6 @@
     <Compile Include="..\..\csla.core\Csla\Server\TransactionalDataPortal.cs">
       <Link>Server\TransactionalDataPortal.cs</Link>
     </Compile>
-    <Compile Include="..\..\csla.core\Csla\Silverlight\MobileFactoryAttribute.cs">
-      <Link>Silverlight\MobileFactoryAttribute.cs</Link>
-    </Compile>
     <Compile Include="..\..\csla.core\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>

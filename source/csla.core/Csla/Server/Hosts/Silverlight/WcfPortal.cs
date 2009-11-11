@@ -6,6 +6,7 @@ using System.ServiceModel.Activation;
 using Csla.Core;
 using System.Security.Principal;
 using Csla.Properties;
+using Csla.Xaml;
 
 namespace Csla.Server.Hosts.Silverlight
 {
@@ -305,11 +306,11 @@ namespace Csla.Server.Hosts.Silverlight
     #endregion
 
     #region Mobile Factory
-    private static Csla.Silverlight.MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
+    private static MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
     {
-      var result = objectType.GetCustomAttributes(typeof(Csla.Silverlight.MobileFactoryAttribute), true);
+      var result = objectType.GetCustomAttributes(typeof(MobileFactoryAttribute), true);
       if (result != null && result.Length > 0)
-        return result[0] as Csla.Silverlight.MobileFactoryAttribute;
+        return result[0] as MobileFactoryAttribute;
       else
         return null;
     }

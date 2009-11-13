@@ -12,6 +12,22 @@ namespace Csla.Web.Mvc
   public class CslaModelBinder : DefaultModelBinder
   {
     /// <summary>
+    /// Creates an instance of the model if the controller implements
+    /// IModelCreator.
+    /// </summary>
+    /// <param name="controllerContext">Controller context</param>
+    /// <param name="bindingContext">Binding context</param>
+    /// <param name="modelType">Type of model object</param>
+    protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
+    {
+      var controller = controllerContext.Controller as IModelCreator;
+      if (controller != null)
+        return controller.CreateModel(modelType);
+      else
+        return base.CreateModel(controllerContext, bindingContext, modelType);
+    }
+
+    /// <summary>
     /// Checks the validation rules for properties
     /// after the Model has been updated.
     /// </summary>

@@ -1245,6 +1245,11 @@ namespace Csla
       return Save();
     }
 
+		object Csla.Core.ISavable.Save(bool forceUpdate)
+		{
+			return Save();
+		}
+
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);

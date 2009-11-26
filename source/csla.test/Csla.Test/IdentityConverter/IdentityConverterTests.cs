@@ -20,7 +20,7 @@ namespace Csla.Test.IdentityConverter
     [TestMethod]
     public void ConvertObjRef()
     {
-      Csla.Wpf.IdentityConverter conv = new Csla.Wpf.IdentityConverter();
+      Csla.Xaml.IdentityConverter conv = new Csla.Xaml.IdentityConverter();
       object test = new object();
       object result = conv.Convert(test, null, null, null);
 
@@ -30,7 +30,7 @@ namespace Csla.Test.IdentityConverter
     [TestMethod]
     public void ConvertValue()
     {
-      Csla.Wpf.IdentityConverter conv = new Csla.Wpf.IdentityConverter();
+      Csla.Xaml.IdentityConverter conv = new Csla.Xaml.IdentityConverter();
       object result = conv.Convert(123, null, null, null);
 
       Assert.AreEqual(123, (int)result, "Value should be 123");
@@ -39,7 +39,7 @@ namespace Csla.Test.IdentityConverter
     [TestMethod]
     public void ConvertBackObjRef()
     {
-      Csla.Wpf.IdentityConverter conv = new Csla.Wpf.IdentityConverter();
+      Csla.Xaml.IdentityConverter conv = new Csla.Xaml.IdentityConverter();
       object test = new object();
       object result = conv.ConvertBack(test, null, null, null);
 
@@ -49,7 +49,7 @@ namespace Csla.Test.IdentityConverter
     [TestMethod]
     public void ConvertBackValue()
     {
-      Csla.Wpf.IdentityConverter conv = new Csla.Wpf.IdentityConverter();
+      Csla.Xaml.IdentityConverter conv = new Csla.Xaml.IdentityConverter();
       object result = conv.ConvertBack(123, null, null, null);
 
       Assert.AreEqual(123, (int)result, "Value should be 123");

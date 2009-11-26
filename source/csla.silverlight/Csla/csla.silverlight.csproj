@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla</RootNamespace>
     <AssemblyName>Csla</AssemblyName>
-    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
@@ -48,6 +48,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -94,6 +95,7 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows" />
@@ -503,6 +505,12 @@
     <Compile Include="Xaml\VisualTree.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="Resources\Error.png" />
     <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\Warning.png" />
@@ -520,14 +528,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
-    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal1.xsd" />
-    <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
+    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -543,9 +551,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\WcfPortal\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -579,7 +584,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

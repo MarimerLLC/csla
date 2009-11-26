@@ -35,7 +35,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data")
@@ -59,7 +59,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data")
@@ -84,7 +84,7 @@ namespace cslalighttest.CslaDataProvider
       var context = GetContext();
 
       int custId = (new Random()).Next(1, 10);
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data")
@@ -108,7 +108,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         var cust = e1.Object;
@@ -130,7 +130,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -158,7 +158,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -184,7 +184,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -209,7 +209,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -235,7 +235,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.ManageObjectLifetime = true;
       CustomerList.GetCustomerList((o1, e1) =>
       {
@@ -259,7 +259,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Error")
@@ -283,7 +283,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.DataChanged += (o1, e1) =>
         {
           context.Assert.IsNotNull(provider.Error);
@@ -304,7 +304,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
       int dataLoadedNTimes = 0;
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.PropertyChanged += (o1, e1) =>
       {
         if (e1.PropertyName == "Data" && ++dataLoadedNTimes == 2)
@@ -329,7 +329,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.DataChanged += (o1, e1) =>
       {
         context.Assert.IsNotNull(provider.Error);
@@ -354,7 +354,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.DataChanged += (o1, e1) =>
       {
         context.Assert.IsNull(provider.Error);
@@ -375,7 +375,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -421,7 +421,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -458,7 +458,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       Customer.GetCustomer((o1, e1) =>
       {
         Csla.ApplicationContext.GlobalContext.Clear();
@@ -546,7 +546,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.ManageObjectLifetime = true;
       CustomerWithErrorList.GetCustomerWithErrorList((o1, e1) =>
       {
@@ -588,7 +588,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var context = GetContext();
 
-      var provider = new Csla.Silverlight.CslaDataProvider();
+      var provider = new Csla.Xaml.CslaDataProvider();
       provider.ManageObjectLifetime = true;
       CustomerList.GetCustomerList((o1, e1) =>
       {

@@ -10,7 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Csla;
 using Csla.Serialization;
-using Csla.Silverlight;
+using Csla.Xaml;
 
 namespace cslalighttest.Serialization
 {

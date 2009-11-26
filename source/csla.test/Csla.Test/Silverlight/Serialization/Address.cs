@@ -1,5 +1,5 @@
 ﻿using System;
-using Csla.Silverlight;
+using Csla.Xaml;
 using Csla.Serialization;
 using Csla;
 

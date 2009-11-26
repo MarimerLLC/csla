@@ -26,7 +26,7 @@ namespace Csla.Test.CslaDataProvider
     {
       
       Csla.Test.Basic.RootList list = new Csla.Test.Basic.RootList();
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = list;
       RootListChild child = dp.AddNew() as RootListChild;
       Assert.IsNotNull(child);
@@ -36,7 +36,7 @@ namespace Csla.Test.CslaDataProvider
     public void TestAddNewReturnsNull()
     {
       Csla.Test.Basic.Root item = Csla.Test.Basic.Root.NewRoot();
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = item;
       object child = dp.AddNew();
       Assert.IsNull(child);
@@ -46,7 +46,7 @@ namespace Csla.Test.CslaDataProvider
     public void TestCancelError()
     {
       ProviderList list = ProviderList.GetList(); 
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       list.BeginEdit();
       dp.ManageObjectLifetime = true;
       dp.ObjectInstance = list;
@@ -64,7 +64,7 @@ namespace Csla.Test.CslaDataProvider
     public void TestSavedWithChanges()
     {
       Customer item = Customer.GetCustomer(1);
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = item;
       item.Name = "New Name";
       bool saved = false;
@@ -83,7 +83,7 @@ namespace Csla.Test.CslaDataProvider
     public void TestSavedWithChangesInvalid()
     {
       Customer item = Customer.GetCustomer(1);
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = item;
       item.Name = "New Name";
       item.Id = 0;
@@ -101,7 +101,7 @@ namespace Csla.Test.CslaDataProvider
     public void TestSavedWithoutChanges()
     {
       Customer item = Customer.GetCustomer(1);
-      Csla.Wpf.CslaDataProvider dp = new Csla.Wpf.CslaDataProvider();
+      Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = item;
       bool saved = false;
       dp.Saved += (o, e) =>

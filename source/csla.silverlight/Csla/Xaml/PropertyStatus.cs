@@ -30,6 +30,11 @@ namespace Csla.Xaml
   {
     private bool _isReadOnly = false;
     private FrameworkElement _lastImage;
+    private Point _lastPosition;
+    private Point _popupLastPosition;
+    private Size _lastAppSize;
+    private Size _lastPopupSize;
+
 
     #region Constructors
 
@@ -277,7 +282,7 @@ namespace Csla.Xaml
     public bool IsBusy
     {
       get { return _isBusy; }
-      private set 
+      private set
       {
         if (value != _isBusy)
         {
@@ -368,8 +373,10 @@ namespace Csla.Xaml
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null && sender is UIElement)
+      if (popup != null && sender is UIElement && Application.Current.RootVisual != null)
       {
+        _lastPosition = e.GetPosition(Application.Current.RootVisual);
+        _lastAppSize = Application.Current.RootVisual.RenderSize;
         Point p = e.GetPosition((UIElement)sender);
         Size size = ((UIElement)sender).DesiredSize;
         // ensure events are attached only once.
@@ -379,7 +386,31 @@ namespace Csla.Xaml
 
         popup.VerticalOffset = p.Y + size.Height;
         popup.HorizontalOffset = p.X + size.Width;
+        _popupLastPosition = new Point();
+        _popupLastPosition.X = popup.HorizontalOffset;
+        _popupLastPosition.Y = popup.VerticalOffset;
+        popup.Loaded += popup_Loaded;
         popup.IsOpen = true;
+      }
+    }
+
+    void popup_Loaded(object sender, RoutedEventArgs e)
+    {
+      (sender as Popup).Loaded -= popup_Loaded;
+      if (((sender as Popup).Child as UIElement).DesiredSize.Height > 0)
+      {
+        _lastPopupSize = ((sender as Popup).Child as UIElement).DesiredSize;
+      }
+      if (_lastAppSize != null && _lastPosition != null && _popupLastPosition != null && _lastPopupSize != null)
+      {
+        if (_lastAppSize.Width < _lastPosition.X + _popupLastPosition.X + _lastPopupSize.Width)
+        {
+          (sender as Popup).HorizontalOffset = _lastAppSize.Width - _lastPosition.X - _popupLastPosition.X - _lastPopupSize.Width;
+        }
+        if (_lastAppSize.Height < _lastPosition.Y + _popupLastPosition.Y + _lastPopupSize.Height)
+        {
+          (sender as Popup).VerticalOffset = _lastAppSize.Height - _lastPosition.Y - _popupLastPosition.Y - _lastPopupSize.Height;
+        }
       }
     }
 

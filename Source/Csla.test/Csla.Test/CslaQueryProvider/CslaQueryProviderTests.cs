@@ -417,7 +417,7 @@ namespace Csla.Test.CslaQueryProvider
                               where r.SomeVal < 50
                               select r.SomeVal;
       foreach (var result in subFilteredResult)
-        Assert.Less(result, 50);
+        Assert.IsTrue(result < 50);
     }
 
     [TestMethod]
@@ -441,7 +441,7 @@ namespace Csla.Test.CslaQueryProvider
                               where r.SomeVal < 50
                               select r.SomeVal;
       foreach (var result in subFilteredResult)
-        Assert.Less(result, 50);
+        Assert.IsTrue(result < 50);
     }
 
     [TestMethod]

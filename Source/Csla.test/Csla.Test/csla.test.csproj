@@ -10,43 +10,15 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Test</RootNamespace>
     <AssemblyName>Csla.Test</AssemblyName>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
-    <PublishUrl>http://localhost/Csla.Test/</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\cs\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;csla20cs;NUNIT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;csla20cs;MSTEST</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -73,15 +45,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\csla.core\Csla\bin\Debug\Csla.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="nunit.framework, Version=2.4.4.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\NUnit 2.4.8\bin\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -107,6 +72,7 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="UnitDrivenNET, Version=0.0.1.20413, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
@@ -419,6 +385,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Csla.core\Csla.core.csproj">
+      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
+      <Name>Csla.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Csla.Web\Csla.Web.csproj">
+      <Project>{492B788E-888E-4041-B356-F5947B50D360}</Project>
+      <Name>Csla.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\csla.windows\Csla.Windows.csproj">
+      <Project>{C333CFED-D5A6-47A2-96A6-F13EE2B71ECF}</Project>
+      <Name>Csla.Windows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\csla.xaml\Csla.Xaml.csproj">
+      <Project>{563EFDFA-EB47-4039-955B-654582EA5362}</Project>
+      <Name>Csla.Xaml</Name>
+    </ProjectReference>
     <ProjectReference Include="Silverlight\Server\csla.silverlight.server.test.csproj">
       <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
       <Name>csla.silverlight.server.test</Name>

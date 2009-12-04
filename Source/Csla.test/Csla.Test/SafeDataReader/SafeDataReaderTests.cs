@@ -4,6 +4,7 @@ using System.Text;
 using Csla.Test.DataBinding;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;

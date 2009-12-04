@@ -141,7 +141,7 @@ namespace Csla.Test.ObjectFactory
       catch (Csla.DataPortalException ex)
       {
         if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
-          Assert.Ignore("COM+ not accessible");
+          Assert.Inconclusive("COM+ not accessible");
         else
           throw;
       }

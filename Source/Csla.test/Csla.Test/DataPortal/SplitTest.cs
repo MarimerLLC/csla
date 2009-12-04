@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.Text;
 using Csla;
 
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.DataPortalTest
 {
-    [TestFixture]
+    [TestClass]
     public class SplitTest
     {
-        [Test]
+        [TestMethod]
         public void TestDpCreate()
         {
             Split test = Split.NewObject();
             Assert.AreEqual("Created", ApplicationContext.GlobalContext["Split"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpFetch()
         {
             Split test = Split.GetObject(5);
             Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Split"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpInsert()
         {
             Split test = null;
@@ -30,11 +38,11 @@ namespace Csla.Test.DataPortalTest
             {
                 test = Split.NewObject();
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Split"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpUpdate()
         {
             Split test = null;
@@ -44,17 +52,17 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.id = 5;
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Split"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDelete()
         {
             Split.DeleteObject(5);
             Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Split"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDeleteSelf()
         {
             Split test = null;
@@ -64,7 +72,7 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.Delete();
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Split"]);
         }

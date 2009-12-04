@@ -3,32 +3,40 @@ using System.Collections.Generic;
 using System.Text;
 using Csla;
 
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.DataPortalTest
 {
-    [TestFixture]
+    [TestClass]
     public class SplitOverloadTest
     {
-        [Test]
+        [TestMethod]
         public void TestDpCreate()
         {
             SplitOverload test = SplitOverload.NewObject();
             Assert.AreEqual("Created", ApplicationContext.GlobalContext["SplitOverload"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpCreateWithCriteria()
         {
             SplitOverload test = SplitOverload.NewObjectWithCriteria();
             Assert.AreEqual("Created1", ApplicationContext.GlobalContext["SplitOverload"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpFetch()
         {
             SplitOverload test = SplitOverload.GetObject(5);
             Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["SplitOverload"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDelete()
         {
             SplitOverload.DeleteObject(5);

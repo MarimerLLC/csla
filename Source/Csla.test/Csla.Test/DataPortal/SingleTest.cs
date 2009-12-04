@@ -3,26 +3,34 @@ using System.Collections.Generic;
 using System.Text;
 using Csla;
 
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.DataPortalTest
 {
-    [TestFixture]
+    [TestClass]
     public class SingleTest
     {
-        [Test]
+        [TestMethod]
         public void TestDpCreate()
         {
             Single test = Single.NewObject();
             Assert.AreEqual("Created", ApplicationContext.GlobalContext["Single"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpFetch()
         {
             Single test = Single.GetObject(5);
             Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["Single"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpInsert()
         {
             Single test = null;
@@ -30,11 +38,11 @@ namespace Csla.Test.DataPortalTest
             {
                 test = Single.NewObject();
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["Single"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpUpdate()
         {
             Single test = null;
@@ -44,17 +52,17 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.Id = 5;
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("Updated", ApplicationContext.GlobalContext["Single"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDelete()
         {
             Single.DeleteObject(5);
             Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["Single"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDeleteSelf()
         {
             Single test = null;
@@ -64,7 +72,7 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.Delete();
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["Single"]);
         }

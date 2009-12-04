@@ -32,8 +32,8 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(typeof(Csla.Reflection.CallMethodException), ex, "Should be a CallMethodException");
-        Assert.IsInstanceOfType(typeof(NotSupportedException), ex.InnerException, "Inner should be a NotSupportedException");
+				Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
+				Assert.IsInstanceOfType(ex.InnerException, typeof(NotSupportedException), "Inner should be a NotSupportedException");
       }
     }
 
@@ -46,9 +46,9 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(typeof(Csla.Reflection.CallMethodException), ex, "Should be a CallMethodException");
-        Assert.IsInstanceOfType(typeof(MemberAccessException), ex.InnerException, "Inner should be a MemberAccessException");
-        Assert.IsInstanceOfType(typeof(NotSupportedException), ex.InnerException.InnerException, "Inner inner should be a NotSupportedException");
+				Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
+				Assert.IsInstanceOfType(ex.InnerException, typeof(MemberAccessException), "Inner should be a MemberAccessException");
+				Assert.IsInstanceOfType(ex.InnerException.InnerException, typeof(NotSupportedException), "Inner inner should be a NotSupportedException");
       }
     }
 

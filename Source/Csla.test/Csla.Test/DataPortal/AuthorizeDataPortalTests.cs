@@ -2,19 +2,28 @@
 using System.Configuration;
 using Csla.DataPortalClient;
 using Csla.Testing.Business.DataPortal;
-using NUnit.Framework;
 using Csla.Server;
+
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 
 namespace Csla.Test.DataPortal
 {
-  [TestFixture]
+  [TestClass]
   public class AuthorizeDataPortalTests
   {
 
     #region SetUp
 
-    [SetUp]
+		[TestInitialize]
     public void Setup()
     {
       TestableDataPortal.Setup();
@@ -28,7 +37,7 @@ namespace Csla.Test.DataPortal
 
     #region constructor(Type authProviderType) tests
 
-    [Test]
+    [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void IfAuthProviderTypeIsNull_ThenThrow_ArgumentNullException()
     {
@@ -36,7 +45,7 @@ namespace Csla.Test.DataPortal
       new TestableDataPortal(authProviderType);
     }
 
-    [Test]
+    [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void IfAuthProviderTypeDoesNotImplement_IAuthorizeDataPortal_ThenThrow_ArgumentException()
     {
@@ -44,7 +53,7 @@ namespace Csla.Test.DataPortal
       new TestableDataPortal(authProviderTypeNotImplementing_IAUthorizeDataPortal);
     }
 
-    [Test]
+    [TestMethod]
     public void IfAuthProviderTypeImplements_IAuthorizeDataPortal_Then_authorizerFieldShouldBeAnInstanceOfThatType()
     {
       Type validAuthProvider = typeof (AuthorizeDataPortalStub);
@@ -57,7 +66,7 @@ namespace Csla.Test.DataPortal
 
     #region constructur(string cslaAuthorizationProvider) tests
 
-    [Test]
+    [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
     public void IfCslaAuthorizationProviderAppSettingName_IsNull_ThenThrow_ArgumentNullException()
     {
@@ -65,14 +74,14 @@ namespace Csla.Test.DataPortal
       new TestableDataPortal(appSettingName);
     }
 
-    [Test]
+    [TestMethod]
     public void IfCslaAuthorizationProviderAppSetting_DoesNotExist_ThenUse_NullAuthorizationProvider()
     {
       var dp = new TestableDataPortal("NonExistentAppSetting");
       Assert.IsTrue(dp.NullAuthorizerUsed);
     }
 
-    [Test]
+    [TestMethod]
     [ExpectedException(typeof(TypeLoadException))]
     public void IfCslaAuthorizationProviderAppSetting_HoldsInvalidType_ThenThrow_TypeLoadException()
     {
@@ -80,7 +89,7 @@ namespace Csla.Test.DataPortal
       var dp = new TestableDataPortal("InvalidTypeName");
     }
 
-    [Test]
+    [TestMethod]
     public void IfCslaAuthorizationProviderAppSetting_HoldsEmptyString_ThenUse_NullAuthorizationProvider()
     {
       ConfigurationManager.AppSettings["EmptyTypeName"] = string.Empty;
@@ -89,7 +98,7 @@ namespace Csla.Test.DataPortal
       Assert.IsTrue(dp.NullAuthorizerUsed);
     }
 
-    [Test]
+    [TestMethod]
     public void IfCslaAuthorizationProviderAppSetting_HoldsValidType_Then_authorizerFieldShouldHoldThatType()
     {
       ConfigurationManager.AppSettings["ValidTypeNameSetting"] = "Csla.Testing.Business.DataPortal.AuthorizeDataPortalStub, Csla.Testing.Business";
@@ -102,7 +111,7 @@ namespace Csla.Test.DataPortal
 
     #region defaul constructor() tests
 
-    [Test]
+    [TestMethod]
     public void IfAuthorizationProvider_SetInConfigFile_DataPortal_Instantiates_AuthorizationProviderType()
     {
       //Following is set in App.Config
@@ -116,7 +125,7 @@ namespace Csla.Test.DataPortal
 
     #region Authorize() tests
 
-    [Test]
+    [TestMethod]
     public void DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
@@ -128,7 +137,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(DataPortalOperations.Create, result.ClientRequest.Operation);
     }
 
-    [Test]
+    [TestMethod]
     public void DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
@@ -141,7 +150,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(DataPortalOperations.Fetch, result.ClientRequest.Operation);
     }
 
-    [Test]
+    [TestMethod]
     public void DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
@@ -154,7 +163,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(DataPortalOperations.Update, result.ClientRequest.Operation);
     }
 
-    [Test]
+    [TestMethod]
     public void DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();

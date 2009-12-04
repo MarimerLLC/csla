@@ -2,19 +2,17 @@
 using System.Data;
 using System.Data.SqlClient;
 using Csla.Data;
+using System.Configuration;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 #else
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-using System.Configuration;
-using System.Linq;
-#endif
+#endif 
 
 namespace Csla.Test.Data
 {
@@ -96,7 +94,7 @@ namespace Csla.Test.Data
 
     #region Data
 
-    [Test]
+    [TestMethod]
     public void ExecuteReader_on_Table2_returns_reader_with_3_fields()
     {
       using (var objectContextManager = ConnectionManager<SqlConnection>.GetManager(TestDBConnection, true))
@@ -111,8 +109,8 @@ namespace Csla.Test.Data
       }
     }
 #if !CLIENTONLY
-    [Test]
-    public void Table1_retreived_through_LingToSqlDataContext_has_records()
+		[TestMethod]
+		public void Table1_retreived_through_LingToSqlDataContext_has_records()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(TestDBConnection, true))
       {
@@ -121,8 +119,8 @@ namespace Csla.Test.Data
       }
     }
 
-    [Test]
-    public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
+		[TestMethod]
+		public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
     {
       using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntities", true))
       {
@@ -139,7 +137,7 @@ namespace Csla.Test.Data
 
     #region Transaction Manager
 
-    [Test]
+    [TestMethod]
     public void Using_TransactionManager_Insert_of_2records_rolls_back_if_second_record_fails_insert()
     {
       ApplicationContext.LocalContext.Clear();
@@ -182,7 +180,7 @@ namespace Csla.Test.Data
       Assert.AreEqual(counter, list.Count,"Data should not have been saved.");
     }
 
-    [Test]
+    [TestMethod]
     public void Using_TransactionManager_Insert_2records_increases_count_by2_then_removing_them_decreases_count_by2()
     {
       ApplicationContext.LocalContext.Clear();
@@ -231,7 +229,7 @@ namespace Csla.Test.Data
       Assert.AreEqual(beforeInsertCount, list.Count, "Data should not have been saved.");
     }
 
-    [Test]
+    [TestMethod]
     public void TestTransactionsManaagerConnectionProperty()
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))

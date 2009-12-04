@@ -3,33 +3,41 @@ using System.Collections.Generic;
 using System.Text;
 using Csla;
 
+#if !NUNIT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#else
 using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif 
 
 namespace Csla.Test.DataPortalTest
 {
-    [TestFixture]
+    [TestClass]
     public class LegacySplitTest
     {
-        [Test]
+        [TestMethod]
         public void TestDpCreate()
         {
             LegacySplit test = LegacySplit.NewObject();
             Assert.AreEqual("Created", ApplicationContext.GlobalContext["LegacySplit"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpFetch()
         {
             LegacySplit test = LegacySplit.GetObject(5);
             Assert.AreEqual("Fetched", ApplicationContext.GlobalContext["LegacySplit"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpInsert()
         {
             LegacySplit test = LegacySplit.NewObject();
             test.Save();
             Assert.AreEqual("Inserted", ApplicationContext.GlobalContext["LegacySplit"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpUpdate()
         {
             LegacySplit test = null;
@@ -39,17 +47,17 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.id = 5;
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("Updated", ApplicationContext.GlobalContext["LegacySplit"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDelete()
         {
             LegacySplit.DeleteObject(5);
             Assert.AreEqual("Deleted", ApplicationContext.GlobalContext["LegacySplit"]);
         }
-        [Test]
+        [TestMethod]
         public void TestDpDeleteSelf()
         {
             LegacySplit test = null;
@@ -59,7 +67,7 @@ namespace Csla.Test.DataPortalTest
                 test = test.Save();
                 test.Delete();
             }
-            catch { Assert.Ignore(); }
+            catch { Assert.Inconclusive(); }
             test.Save();
             Assert.AreEqual("SelfDeleted", ApplicationContext.GlobalContext["LegacySplit"]);
         }

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 using Csla.Data;
+using Csla.Test.Basic;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -78,9 +78,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\csla.client\Csla\csla.client.csproj">
+    <ProjectReference Include="..\csla.client\Csla\Csla.client.csproj">
       <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
-      <Name>csla.client</Name>
+      <Name>Csla.client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

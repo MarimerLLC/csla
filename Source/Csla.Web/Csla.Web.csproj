@@ -70,9 +70,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\csla.core\Csla\csla.core.csproj">
+    <ProjectReference Include="..\csla.core\Csla\Csla.core.csproj">
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>csla.core</Name>
+      <Name>Csla.core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		csla.core\readme.txt = csla.core\readme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.core", "csla.core\Csla\csla.core.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.core", "csla.core\Csla\Csla.core.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight", "csla.silverlight\Csla\csla.silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Silverlight", "csla.silverlight\Csla\Csla.Silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.client", "csla.client\Csla\csla.client.csproj", "{0437FE4A-2677-454D-B634-209616CC13FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.client", "csla.client\Csla\Csla.client.csproj", "{0437FE4A-2677-454D-B634-209616CC13FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Windows", "csla.windows\Csla.Windows.csproj", "{C333CFED-D5A6-47A2-96A6-F13EE2B71ECF}"
 EndProject

@@ -1,5 +1,4 @@
-﻿#if !CLIENTPROFILE
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data.Linq;
 
@@ -190,4 +189,3 @@ namespace Csla.Data
 
   }
 }
-#endif

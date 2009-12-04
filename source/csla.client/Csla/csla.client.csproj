@@ -686,6 +686,9 @@
     <Compile Include="..\..\csla.core\Csla\Server\IObjectFactoryLoader.cs">
       <Link>Server\IObjectFactoryLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\csla.core\Csla\Server\MobileFactoryAttribute.cs">
+      <Link>Server\MobileFactoryAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\csla.core\Csla\Server\ObjectFactory.cs">
       <Link>Server\ObjectFactory.cs</Link>
     </Compile>
@@ -703,9 +706,6 @@
     </Compile>
     <Compile Include="..\..\csla.core\Csla\Server\TransactionalDataPortal.cs">
       <Link>Server\TransactionalDataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Silverlight\Security\WindowsIdentity.cs">
-      <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
     <Compile Include="..\..\csla.core\Csla\SingleCriteria.cs">
       <Link>SingleCriteria.cs</Link>
@@ -806,125 +806,12 @@
     <Compile Include="..\..\csla.core\Csla\Validation\ValidationRulesManager.cs">
       <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\BindingSourceHelper.cs">
-      <Link>Windows\BindingSourceHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\BindingSourceNode.cs">
-      <Link>Windows\BindingSourceNode.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\BindingSourceRefresh.cs">
-      <Link>Windows\BindingSourceRefresh.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\BusyAnimation.cs">
-      <Link>Windows\BusyAnimation.cs</Link>
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\BusyAnimation.designer.cs">
-      <Link>Windows\BusyAnimation.designer.cs</Link>
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\CslaActionCancelEventArgs.cs">
-      <Link>Windows\CslaActionCancelEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\CslaActionEventArgs.cs">
-      <Link>Windows\CslaActionEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\CslaActionExtender.cs">
-      <Link>Windows\CslaActionExtender.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\CslaActionExtenderProperties.cs">
-      <Link>Windows\CslaActionExtenderProperties.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\Enums.cs">
-      <Link>Windows\Enums.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\ErrorEncounteredEventArgs.cs">
-      <Link>Windows\ErrorEncounteredEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\HasBrokenRulesEventArgs.cs">
-      <Link>Windows\HasBrokenRulesEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\HostComponentDesigner.cs">
-      <Link>Windows\HostComponentDesigner.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\HostPropertyAttribute.cs">
-      <Link>Windows\HostPropertyAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\ObjectSaveException.cs">
-      <Link>Windows\ObjectSaveException.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Windows\ReadWriteAuthorization.cs">
-      <Link>Windows\ReadWriteAuthorization.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\Authorizer.cs">
-      <Link>Xaml\Authorizer.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\BrokenRulesSeverityConverter.cs">
-      <Link>Xaml\BrokenRulesSeverityConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\BusyAnimation.cs">
-      <Link>Xaml\BusyAnimation.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\CslaDataProvider.cs">
-      <Link>Xaml\CslaDataProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\CslaDataProviderCommandManager.cs">
-      <Link>Xaml\CslaDataProviderCommandManager.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\DataDecoratorBase.cs">
-      <Link>Xaml\DataDecoratorBase.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ErrorDialog.cs">
-      <Link>Xaml\ErrorDialog.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ErrorEventArgs.cs">
-      <Link>Xaml\ErrorEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\Execute.cs">
-      <Link>Xaml\Execute.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ExecuteEventArgs.cs">
-      <Link>Xaml\ExecuteEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\IdentityConverter.cs">
-      <Link>Xaml\IdentityConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\InvokeMethod.cs">
-      <Link>Xaml\InvokeMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ObjectStatus.cs">
-      <Link>Xaml\ObjectStatus.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\PropertyStatus.cs">
-      <Link>Xaml\PropertyStatus.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ViewModel.cs">
-      <Link>Xaml\ViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\ViewModelBase.cs">
-      <Link>Xaml\ViewModelBase.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\VisibilityMode.cs">
-      <Link>Xaml\VisibilityMode.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Properties\Settings.Designer.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="..\..\csla.core\Csla\Windows\BindingSourceRefresh.bmp">
-      <Link>Windows\BindingSourceRefresh.bmp</Link>
-    </Content>
-    <Content Include="..\..\csla.core\Csla\Windows\BusyAnimation.bmp">
-      <Link>Windows\BusyAnimation.bmp</Link>
-    </Content>
-    <Content Include="..\..\csla.core\Csla\Windows\ReadWriteAuthorization.bmp">
-      <Link>Windows\ReadWriteAuthorization.bmp</Link>
-    </Content>
     <Content Include="Resources\Error.png" />
     <Content Include="Resources\favicon.ico" />
     <Content Include="Resources\Information.png" />
@@ -938,18 +825,7 @@
     <None Include="Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\csla.core\Csla\Windows\BusyAnimation.resx">
-      <Link>Windows\BusyAnimation.resx</Link>
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="..\..\csla.core\Csla\Themes\Generic.xaml">
-      <Link>Themes\Generic.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

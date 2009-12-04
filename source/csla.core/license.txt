@@ -1,6 +1,6 @@
 LICENSE AND WARRANTY
 
-The CSLA .NET framework is Copyright 2009 by Marimer, LLC. 
+The CSLA .NET framework is Copyright 2009-2010 by Marimer, LLC. 
 
 You can use this Software for any noncommercial purpose, including 
 distributing derivative works. You can use this Software for any commercial 

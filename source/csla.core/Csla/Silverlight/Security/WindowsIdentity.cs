@@ -1,7 +1,6 @@
 ﻿using System;
 using Csla.Serialization;
 using System.Collections.Generic;
-using Csla.Xaml;
 using Csla.Core;
 
 namespace Csla.Silverlight.Security

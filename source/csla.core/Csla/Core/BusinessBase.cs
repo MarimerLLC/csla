@@ -805,7 +805,7 @@ namespace Csla.Core
     /// This value will be Nothing for root objects.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected internal Core.IParent Parent
+    public Core.IParent Parent
     {
       get { return _parent; }
     }
@@ -1255,6 +1255,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
+			//TODO: re-add this code after Beta 2 when DataAnnotations is in client profile
 #if !CLIENTPROFILE
       ValidationRules.AddDataAnnotations();
 #endif

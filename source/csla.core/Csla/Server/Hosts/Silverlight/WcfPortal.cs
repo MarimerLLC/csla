@@ -6,7 +6,6 @@ using System.ServiceModel.Activation;
 using Csla.Core;
 using System.Security.Principal;
 using Csla.Properties;
-using Csla.Xaml;
 
 namespace Csla.Server.Hosts.Silverlight
 {

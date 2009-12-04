@@ -200,6 +200,7 @@
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
     <Compile Include="Server\IAuthorizeDataPortal.cs" />
+    <Compile Include="Server\MobileFactoryAttribute.cs" />
     <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Silverlight\Security\WindowsIdentity.cs" />
     <Compile Include="Server\DataPortalMethodCache.cs" />
@@ -341,9 +342,6 @@
     <Compile Include="Core\StateMode.cs" />
     <Compile Include="Serialization\NetDataContractSerializerWrapper.cs" />
     <Compile Include="Serialization\SerializationFormatterFactory.cs" />
-    <Compile Include="Web\Mvc\Controller.cs" />
-    <Compile Include="Web\Mvc\IModelCreator.cs" />
-    <Compile Include="Xaml\MobileFactoryAttribute.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="SortedBindingList.cs" />
     <Compile Include="Utilities.cs" />
@@ -374,69 +372,8 @@
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
     <Compile Include="Validation\ValidationRulesManager.cs" />
-    <Compile Include="Web\CslaDataSource.cs" />
-    <Compile Include="Web\CslaDataSourceView.cs" />
-    <Compile Include="Web\DeleteObjectArgs.cs" />
-    <Compile Include="Web\Design\CslaDataSourceConfiguration.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Web\Design\CslaDataSourceConfiguration.Designer.cs">
-      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Web\Design\CslaDataSourceDesigner.cs" />
-    <Compile Include="Web\Design\CslaDesignerDataSourceView.cs" />
-    <Compile Include="Web\Design\ObjectFieldInfo.cs" />
-    <Compile Include="Web\Design\ObjectSchema.cs" />
-    <Compile Include="Web\Design\ObjectViewSchema.cs" />
-    <Compile Include="Web\InsertObjectArgs.cs" />
-    <Compile Include="Web\Mvc\CslaModelBinder.cs" />
-    <Compile Include="Web\SelectObjectArgs.cs" />
-    <Compile Include="Web\UpdateObjectArgs.cs" />
-    <Compile Include="Windows\BindingSourceRefresh.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Windows\BindingSourceHelper.cs" />
-    <Compile Include="Windows\BindingSourceNode.cs" />
-    <Compile Include="Windows\BusyAnimation.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Windows\BusyAnimation.Designer.cs">
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\CslaActionCancelEventArgs.cs" />
-    <Compile Include="Windows\CslaActionEventArgs.cs" />
-    <Compile Include="Windows\CslaActionExtender.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Windows\CslaActionExtenderProperties.cs" />
-    <Compile Include="Windows\Enums.cs" />
-    <Compile Include="Windows\ErrorEncounteredEventArgs.cs" />
-    <Compile Include="Windows\HasBrokenRulesEventArgs.cs" />
-    <Compile Include="Windows\ObjectSaveException.cs" />
-    <Compile Include="Windows\HostComponentDesigner.cs" />
-    <Compile Include="Windows\HostPropertyAttribute.cs" />
-    <Compile Include="Windows\ReadWriteAuthorization.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Workflow\WorkflowManager.cs" />
     <Compile Include="Workflow\WorkflowStatus.cs" />
-    <Compile Include="Xaml\Authorizer.cs" />
-    <Compile Include="Xaml\BrokenRulesSeverityConverter.cs" />
-    <Compile Include="Xaml\BusyAnimation.cs" />
-    <Compile Include="Xaml\CslaDataProvider.cs" />
-    <Compile Include="Xaml\CslaDataProviderCommandManager.cs" />
-    <Compile Include="Xaml\DataDecoratorBase.cs" />
-    <Compile Include="Xaml\ErrorDialog.cs" />
-    <Compile Include="Xaml\ErrorEventArgs.cs" />
-    <Compile Include="Xaml\Execute.cs" />
-    <Compile Include="Xaml\ExecuteEventArgs.cs" />
-    <Compile Include="Xaml\IdentityConverter.cs" />
-    <Compile Include="Xaml\InvokeMethod.cs" />
-    <Compile Include="Xaml\ObjectStatus.cs" />
-    <Compile Include="Xaml\PropertyStatus.cs" />
-    <Compile Include="Xaml\ViewModel.cs" />
-    <Compile Include="Xaml\ViewModelBase.cs" />
-    <Compile Include="Xaml\VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
@@ -517,10 +454,6 @@
     <EmbeddedResource Include="Properties\Resources.zh-CHS.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Web\Design\CslaDataSourceConfiguration.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
@@ -560,12 +493,6 @@
     <EmbeddedResource Include="Properties\Resources.zh-TW.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Web\CslaDataSource.bmp" />
-    <EmbeddedResource Include="Windows\BindingSourceRefresh.bmp" />
-    <EmbeddedResource Include="Windows\BusyAnimation.resx">
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ReadWriteAuthorization.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
@@ -590,14 +517,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Error.png" />
     <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\Warning.png" />
@@ -605,7 +524,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.ar.resx" />
     <EmbeddedResource Include="Properties\Resources.hu.resx" />
-    <EmbeddedResource Include="Windows\BusyAnimation.bmp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\favicon.ico" />

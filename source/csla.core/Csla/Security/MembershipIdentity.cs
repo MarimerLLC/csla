@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Csla.Core.FieldManager;
 using System.Runtime.Serialization;
 using Csla.DataPortalClient;
-using Csla.Xaml;
 using Csla.Core;
 
 namespace Csla.Security
@@ -14,17 +13,17 @@ namespace Csla.Security
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
 	/// </summary>
-#if !CLIENTPROFILE
-	[MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")]
-#endif
+	[Csla.Server.MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")]
 	[Serializable()]
   public partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
   {
+#if !CLIENTPROFILE
     #region Constructor, Helper Setter
 
     private static int _forceInit = 0;
 
     #endregion
+#endif
 
     #region  IsInRole
 

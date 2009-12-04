@@ -294,6 +294,9 @@
     <Compile Include="..\..\csla.core\Csla\Server\IDataPortalTarget.cs">
       <Link>Server\IDataPortalTarget.cs</Link>
     </Compile>
+    <Compile Include="..\..\csla.core\Csla\Server\MobileFactoryAttribute.cs">
+      <Link>Server\MobileFactoryAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\csla.core\Csla\Server\ObjectFactory.cs">
       <Link>Server\ObjectFactory.cs</Link>
     </Compile>
@@ -392,9 +395,6 @@
     </Compile>
     <Compile Include="..\..\csla.core\Csla\Xaml\InvokeMethod.cs">
       <Link>Xaml\InvokeMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\..\csla.core\Csla\Xaml\MobileFactoryAttribute.cs">
-      <Link>Xaml\MobileFactoryAttribute.cs</Link>
     </Compile>
     <Compile Include="..\..\csla.core\Csla\Xaml\ViewModel.cs">
       <Link>Xaml\ViewModel.cs</Link>

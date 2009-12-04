@@ -70,13 +70,13 @@
     <Compile Include="VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\csla.client\Csla\Csla.client.csproj">
+    <None Include="CslaKey.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.client\Csla.client.csproj">
       <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
       <Name>Csla.client</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CslaKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

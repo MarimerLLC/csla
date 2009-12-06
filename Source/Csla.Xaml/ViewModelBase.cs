@@ -47,7 +47,7 @@ namespace Csla.Xaml
         new PropertyMetadata((o, e) => 
         {
           var viewmodel = (ViewModelBase<T>)o;
-          viewmodel.OnModelChanged(e.OldValue, e.NewValue);
+          viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
           if (viewmodel.ManageObjectLifetime)
           {
             var undo = e.NewValue as Csla.Core.ISupportUndo;
@@ -511,7 +511,6 @@ namespace Csla.Xaml
         {
           Error = ex;
         }
-        SetProperties();
         OnRefreshed();
       }
     }
@@ -579,7 +578,6 @@ namespace Csla.Xaml
         Model = (T)eventArgs.Object;
       else
         Error = eventArgs.Error;
-      SetProperties();
       OnRefreshed();
     }
 
@@ -619,7 +617,6 @@ namespace Csla.Xaml
         result = (T)savable.Save();
 
         Model = result;
-        SetProperties();
         OnSaved();
       }
       catch (Exception ex)
@@ -665,7 +662,6 @@ namespace Csla.Xaml
           {
             Error = e.Error;
           }
-          SetProperties();
           OnSaved();
         };
         Error = null;
@@ -778,7 +774,7 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="oldValue">Previous Model reference.</param>
     /// <param name="newValue">New Model reference.</param>
-    protected virtual void OnModelChanged(object oldValue, object newValue)
+    protected virtual void OnModelChanged(T oldValue, T newValue)
     {
       if (ReferenceEquals(oldValue, newValue)) return;
 
@@ -809,6 +805,8 @@ namespace Csla.Xaml
         if (nb != null)
           nb.BusyChanged += Model_BusyChanged;
       }
+
+      SetProperties();
     }
 
 

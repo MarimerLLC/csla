@@ -369,9 +369,6 @@
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
     <Compile Include="Validation\ValidationRulesManager.cs" />
-    <Compile Include="Windows\BusinessListBase.cs" />
-    <Compile Include="Windows\Core\ExtendedBindingList.cs" />
-    <Compile Include="Windows\Core\IExtendedBindingList.cs" />
     <Compile Include="Workflow\WorkflowManager.cs" />
     <Compile Include="Workflow\WorkflowStatus.cs" />
   </ItemGroup>

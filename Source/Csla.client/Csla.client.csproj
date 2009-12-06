@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -51,9 +51,6 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity">
-      <HintPath>..\Dependencies\Expression\WPF\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -811,12 +808,8 @@
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="Properties\Settings.Designer.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\Error.png" />
-    <Content Include="Resources\favicon.ico" />
-    <Content Include="Resources\Information.png" />
-    <Content Include="Resources\Warning.png" />
+    <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Csla.core\Linq\IndexingModelDiagram.cd">

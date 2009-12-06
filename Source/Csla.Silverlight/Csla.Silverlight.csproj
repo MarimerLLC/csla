@@ -384,22 +384,22 @@
     <Compile Include="..\csla.core\Validation\ValidationRulesManager.cs">
       <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\ErrorEventArgs.cs">
+    <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
       <Link>Xaml\ErrorEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\Execute.cs">
+    <Compile Include="..\Csla.Xaml\Execute.cs">
       <Link>Xaml\Execute.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\ExecuteEventArgs.cs">
+    <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
       <Link>Xaml\ExecuteEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\InvokeMethod.cs">
+    <Compile Include="..\Csla.Xaml\InvokeMethod.cs">
       <Link>Xaml\InvokeMethod.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\ViewModel.cs">
+    <Compile Include="..\Csla.Xaml\ViewModel.cs">
       <Link>Xaml\ViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\Xaml\ViewModelBase.cs">
+    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
       <Link>Xaml\ViewModelBase.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext.cs" />
@@ -522,6 +522,10 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <Content Include="ServiceReferences.ClientConfig" />
+    <Page Include="themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -543,14 +547,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

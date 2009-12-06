@@ -82,9 +82,6 @@
     <Reference Include="System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity">
-      <HintPath>..\Dependencies\Expression\WPF\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Workflow.Runtime" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -372,6 +369,9 @@
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
     <Compile Include="Validation\ValidationRulesManager.cs" />
+    <Compile Include="Windows\BusinessListBase.cs" />
+    <Compile Include="Windows\Core\ExtendedBindingList.cs" />
+    <Compile Include="Windows\Core\IExtendedBindingList.cs" />
     <Compile Include="Workflow\WorkflowManager.cs" />
     <Compile Include="Workflow\WorkflowStatus.cs" />
   </ItemGroup>
@@ -480,6 +480,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Resources\favicon.ico" />
     <None Include="Web References\WebServiceHost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
     </None>
@@ -517,16 +518,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Error.png" />
-    <Resource Include="Resources\Information.png" />
-    <Resource Include="Resources\Warning.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.ar.resx" />
     <EmbeddedResource Include="Properties\Resources.hu.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\favicon.ico" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

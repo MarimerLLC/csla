@@ -4,6 +4,7 @@ using Csla.DataPortalClient;
 using Csla.Test.Basic;
 #endif
 using System;
+#if !SILVERLIGHT
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -13,7 +14,7 @@ using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #endif 
-
+#endif
 
 using Csla;
 using Csla.Core;

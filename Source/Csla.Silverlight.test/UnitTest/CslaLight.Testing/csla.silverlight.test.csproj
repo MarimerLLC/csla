@@ -107,259 +107,259 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\AuthTests.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\AuthTests.cs">
       <Link>Authorization\AuthTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\PermissionsRoot.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\PermissionsRoot.cs">
       <Link>Authorization\PermissionsRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\PerTypeAuthClasses.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\PerTypeAuthClasses.cs">
       <Link>Authorization\PerTypeAuthClasses.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\PerTypeAuthorization.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\PerTypeAuthorization.cs">
       <Link>Authorization\PerTypeAuthorization.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\ReadonlyAuthorizationTests.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\ReadonlyAuthorizationTests.cs">
       <Link>Authorization\ReadonlyAuthorizationTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Authorization\ReadOnlyPerson.cs">
+    <Compile Include="..\..\..\csla.test\Authorization\ReadOnlyPerson.cs">
       <Link>Authorization\ReadOnlyPerson.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\BusyStatus\BusyStatusTests.cs">
+    <Compile Include="..\..\..\csla.test\BusyStatus\BusyStatusTests.cs">
       <Link>BusyStatus\BusyStatusTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\BypassPropertyChecks\BypassBusinessBase.cs">
+    <Compile Include="..\..\..\csla.test\BypassPropertyChecks\BypassBusinessBase.cs">
       <Link>BypassPropertyChecks\BypassBusinessBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs">
+    <Compile Include="..\..\..\csla.test\BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs">
       <Link>BypassPropertyChecks\BypassBusinessBaseUsingFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\BypassPropertyChecks\BypassPropertyChecksTests.cs">
+    <Compile Include="..\..\..\csla.test\BypassPropertyChecks\BypassPropertyChecksTests.cs">
       <Link>BypassPropertyChecks\BypassPropertyChecksTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\BypassPropertyChecks\TestObjectFactory.cs">
+    <Compile Include="..\..\..\csla.test\BypassPropertyChecks\TestObjectFactory.cs">
       <Link>BypassPropertyChecks\TestObjectFactory.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\ChildChangedTests.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\ChildChangedTests.cs">
       <Link>ChildChanged\ChildChangedTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\ContainsList.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\ContainsList.cs">
       <Link>ChildChanged\ContainsList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\GrandChild.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\GrandChild.cs">
       <Link>ChildChanged\GrandChild.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\ListContainerList.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\ListContainerList.cs">
       <Link>ChildChanged\ListContainerList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\SingleChild.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\SingleChild.cs">
       <Link>ChildChanged\SingleChild.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\SingleList.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\SingleList.cs">
       <Link>ChildChanged\SingleList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ChildChanged\SingleRoot.cs">
+    <Compile Include="..\..\..\csla.test\ChildChanged\SingleRoot.cs">
       <Link>ChildChanged\SingleRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\DataAnnotations\DataAnnotationsTests.cs">
+    <Compile Include="..\..\..\csla.test\DataAnnotations\DataAnnotationsTests.cs">
       <Link>DataAnnotations\DataAnnotationsTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\DataPortal\AsynchDataPortalTest.cs">
+    <Compile Include="..\..\..\csla.test\DataPortal\AsynchDataPortalTest.cs">
       <Link>DataPortal\AsynchDataPortalTest.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\DataPortal\DpRoot.cs">
+    <Compile Include="..\..\..\csla.test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\MethodCaller\Caller1.cs">
+    <Compile Include="..\..\..\csla.test\MethodCaller\Caller1.cs">
       <Link>MethodCaller\Caller1.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\MethodCaller\Caller2.cs">
+    <Compile Include="..\..\..\csla.test\MethodCaller\Caller2.cs">
       <Link>MethodCaller\Caller2.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\MethodCaller\Caller3.cs">
+    <Compile Include="..\..\..\csla.test\MethodCaller\Caller3.cs">
       <Link>MethodCaller\Caller3.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\BadGetSet.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\BadGetSet.cs">
       <Link>PropertyGetSet\BadGetSet.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\ChildList.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\ChildList.cs">
       <Link>PropertyGetSet\ChildList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\EditableGetSet.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\EditableGetSet.cs">
       <Link>PropertyGetSet\EditableGetSet.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\EditableGetSetBase.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\EditableGetSetBase.cs">
       <Link>PropertyGetSet\EditableGetSetBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\EditableGetSetTopBase.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\EditableGetSetTopBase.cs">
       <Link>PropertyGetSet\EditableGetSetTopBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\PropertyGetSet\PropertyGetSetTests.cs">
+    <Compile Include="..\..\..\csla.test\PropertyGetSet\PropertyGetSetTests.cs">
       <Link>PropertyGetSet\PropertyGetSetTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\ApplicationContext\ClientContextTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\ApplicationContext\ClientContextTests.cs">
       <Link>ApplicationContext\ClientContextTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\ApplicationContext\GlobalContextTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\ApplicationContext\GlobalContextTests.cs">
       <Link>ApplicationContext\GlobalContextTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\CommandBase\CommandBaseTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\CommandBase\CommandBaseTests.cs">
       <Link>CommandBase\CommandBaseTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\DataPortal\AuthorizeDataPortalTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\DataPortal\AuthorizeDataPortalTests.cs">
       <Link>DataPortal\AuthorizeDataPortalTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\NameValueList\NameValueListTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\NameValueList\NameValueListTests.cs">
       <Link>NameValueList\NameValueListTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\ReadOnly\MockReadOnly.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\ReadOnly\MockReadOnly.cs">
       <Link>ReadOnly\MockReadOnly.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\ReadOnly\MockReadOnlyList.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\ReadOnly\MockReadOnlyList.cs">
       <Link>ReadOnly\MockReadOnlyList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\ReadOnly\ReadOnlyTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\ReadOnly\ReadOnlyTests.cs">
       <Link>ReadOnly\ReadOnlyTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Rollback\RollbackRoot.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Rollback\RollbackRoot.cs">
       <Link>Rollback\RollbackRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Rollback\RollbackTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Rollback\RollbackTests.cs">
       <Link>Rollback\RollbackTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Security\SecurityTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Security\SecurityTests.cs">
       <Link>Security\SecurityTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\Address.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\Address.cs">
       <Link>Serialization\Address.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\AddressBase.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\AddressBase.cs">
       <Link>Serialization\AddressBase.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\AddressList.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\AddressList.cs">
       <Link>Serialization\AddressList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\BindingListTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\BindingListTests.cs">
       <Link>Serialization\BindingListTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\Customer.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\Customer.cs">
       <Link>Serialization\Customer.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\CustomerContact.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\CustomerContact.cs">
       <Link>Serialization\CustomerContact.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\CustomerWithEnum.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\CustomerWithEnum.cs">
       <Link>Serialization\CustomerWithEnum.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\CustomMobileList.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\CustomMobileList.cs">
       <Link>Serialization\CustomMobileList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\MockNonBusinessObject.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\MockNonBusinessObject.cs">
       <Link>Serialization\MockNonBusinessObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\MockReadOnly.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\MockReadOnly.cs">
       <Link>Serialization\MockReadOnly.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\MockReadOnlyList.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\MockReadOnlyList.cs">
       <Link>Serialization\MockReadOnlyList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\Person.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\Person.cs">
       <Link>Serialization\Person.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\PersonWIthSmartDateField.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\PersonWIthSmartDateField.cs">
       <Link>Serialization\PersonWIthSmartDateField.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\ReadOnlyPerson.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\ReadOnlyPerson.cs">
       <Link>Serialization\ReadOnlyPerson.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\ReadOnlyPersonList.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\ReadOnlyPersonList.cs">
       <Link>Serialization\ReadOnlyPersonList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\SerializationTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\SerializationTests.cs">
       <Link>Serialization\SerializationTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Serialization\UndoTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Serialization\UndoTests.cs">
       <Link>Serialization\UndoTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Stereotypes\EditableChildTestsLocal.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Stereotypes\EditableChildTestsLocal.cs">
       <Link>Stereotypes\EditableChildTestsLocal.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Stereotypes\EditableChildTestsRemote.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Stereotypes\EditableChildTestsRemote.cs">
       <Link>Stereotypes\EditableChildTestsRemote.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Stereotypes\EditableRootTests.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Stereotypes\EditableRootTests.cs">
       <Link>Stereotypes\EditableRootTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
+    <Compile Include="..\..\..\csla.test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
       <Link>Stereotypes\ReadOnlyListTestsLocalAndRemote.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\SmartDate\SmartDateTests.cs">
+    <Compile Include="..\..\..\csla.test\SmartDate\SmartDateTests.cs">
       <Link>SmartDate\SmartDateTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Threading\BusyLockTests.cs">
+    <Compile Include="..\..\..\csla.test\Threading\BusyLockTests.cs">
       <Link>Threading\BusyLockTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Utilities\CorerseValueTests.cs">
+    <Compile Include="..\..\..\csla.test\Utilities\CorerseValueTests.cs">
       <Link>Utilities\CorerseValueTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\Utilities\UtilitiesTestHelper.cs">
+    <Compile Include="..\..\..\csla.test\Utilities\UtilitiesTestHelper.cs">
       <Link>Utilities\UtilitiesTestHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\AsyncRuleTests.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\AsyncRuleTests.cs">
       <Link>Validation\AsyncRuleTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\BrokenRulesMergeRoot.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\BrokenRulesMergeRoot.cs">
       <Link>Validation\BrokenRulesMergeRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\Child.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\Child.cs">
       <Link>Validation\Child.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\ChildList.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\ChildList.cs">
       <Link>Validation\ChildList.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasAsyncRule.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasAsyncRule.cs">
       <Link>Validation\HasAsyncRule.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasBadSharedRule.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasBadSharedRule.cs">
       <Link>Validation\HasBadSharedRule.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasChildren.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasChildren.cs">
       <Link>Validation\HasChildren.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasInvalidAsyncRule.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasInvalidAsyncRule.cs">
       <Link>Validation\HasInvalidAsyncRule.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasPerTypeClasses.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasPerTypeClasses.cs">
       <Link>Validation\HasPerTypeClasses.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasPerTypeRules.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasPerTypeRules.cs">
       <Link>Validation\HasPerTypeRules.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasRegEx.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasRegEx.cs">
       <Link>Validation\HasRegEx.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasRulesManager.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasRulesManager.cs">
       <Link>Validation\HasRulesManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\HasRulesManager2.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\HasRulesManager2.cs">
       <Link>Validation\HasRulesManager2.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\MaxLengthArgs.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\MaxLengthArgs.cs">
       <Link>Validation\MaxLengthArgs.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\SeverityClasses.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\SeverityClasses.cs">
       <Link>Validation\SeverityClasses.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\SeverityTests.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\SeverityTests.cs">
       <Link>Validation\SeverityTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\ShortCircuitClasses.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\ShortCircuitClasses.cs">
       <Link>Validation\ShortCircuitClasses.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\ShortCircuitTests.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\ShortCircuitTests.cs">
       <Link>Validation\ShortCircuitTests.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\Csla.Test\ValidationRules\ValidationTests.cs">
+    <Compile Include="..\..\..\csla.test\ValidationRules\ValidationTests.cs">
       <Link>Validation\ValidationTests.cs</Link>
     </Compile>
     <Compile Include="CslaDataProvider\CslaDataProviderTest.cs" />
@@ -398,7 +398,7 @@
     <Content Include="ServiceReferences.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\csla.silverlight\Csla\csla.silverlight.csproj">
+    <ProjectReference Include="..\..\..\csla.silverlight\csla.silverlight.csproj">
       <Project>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</Project>
       <Name>csla.silverlight</Name>
     </ProjectReference>

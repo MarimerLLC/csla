@@ -15,6 +15,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +87,9 @@
       <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
       <Name>Csla.client</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

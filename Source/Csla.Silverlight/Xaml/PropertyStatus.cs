@@ -72,7 +72,7 @@ namespace Csla.Xaml
       "Property",
       typeof(object),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource()));
+      new PropertyMetadata(new object(), (o, e) => ((PropertyStatus)o).SetSource()));
 
     /// <summary>
     /// Gets or sets the source business

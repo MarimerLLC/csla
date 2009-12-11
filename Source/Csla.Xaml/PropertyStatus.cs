@@ -189,7 +189,7 @@ namespace Csla.Xaml
 
     private object GetRealSource(object source, string bindingPath)
     {
-      if (bindingPath.IndexOf('.') > 0)
+      if (source != null && bindingPath.IndexOf('.') > 0)
       {
         var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);

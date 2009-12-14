@@ -83,7 +83,8 @@ namespace Csla.Xaml
     public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
       "TargetControl",
       typeof(DependencyObject),
-      typeof(PropertyStatus));
+      typeof(PropertyStatus),
+      new PropertyMetadata(null, (o, e) => { ((PropertyStatus)o).HandleTarget(); }));
 
     /// <summary>
     /// Reference to the template for the validation rule popup.

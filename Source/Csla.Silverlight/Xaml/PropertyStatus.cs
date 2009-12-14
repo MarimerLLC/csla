@@ -199,7 +199,7 @@ namespace Csla.Xaml
       "TargetControl",
       typeof(object),
       typeof(PropertyStatus),
-      null);
+      new PropertyMetadata(null, (o, e) => { ((PropertyStatus)o).HandleTarget(); }));
 
     /// <summary>
     /// Gets or sets the target control to which this control is bound.

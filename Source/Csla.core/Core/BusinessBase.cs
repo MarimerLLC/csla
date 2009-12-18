@@ -540,7 +540,7 @@ namespace Csla.Core
             result = false;
         }
         // store value in cache
-        _readResultCache.Add(propertyName, result);
+        _readResultCache[propertyName] = result;
       }
       
       return result;

@@ -151,11 +151,20 @@ namespace Csla.Data
 
     #region  Reference counting
 
-    private int mRefCount;
+    private int _refCount;
+
+    /// <summary>
+    /// Gets the current reference count for this
+    /// object.
+    /// </summary>
+    public int RefCount
+    {
+      get { return _refCount; }
+    }
 
     private void AddRef()
     {
-      mRefCount += 1;
+      _refCount += 1;
     }
 
     private void DeRef()
@@ -163,8 +172,8 @@ namespace Csla.Data
 
       lock (_lock)
       {
-        mRefCount -= 1;
-        if (mRefCount == 0)
+        _refCount -= 1;
+        if (_refCount == 0)
         {
           _connection.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));

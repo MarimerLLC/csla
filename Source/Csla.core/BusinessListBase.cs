@@ -1,12 +1,15 @@
-using System;
+﻿using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Csla.Properties;
-using System.Linq;
-using System.Linq.Expressions;
+using Csla.Serialization;
 using Csla.Core;
-
+using Csla.Properties;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
+using Csla.DataPortalClient;
+using Csla.Serialization.Mobile;
+using Csla.Server;
+using System.Linq;
 
 namespace Csla
 {
@@ -18,119 +21,108 @@ namespace Csla
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
+  [Serializable]
   public abstract class BusinessListBase<T, C> :
-      Core.ExtendedBindingList<C>,
-      Core.IEditableCollection, Core.IUndoableObject, ICloneable,
-      Core.ISavable, Core.IParent, Server.IDataPortalTarget,
-      IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>,
+      ExtendedObservableCollection<C>,
+      IEditableCollection, Core.IUndoableObject, ICloneable,
+      ISavable, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
-    #region Constructors
+    #region ICloneable
+
+    object ICloneable.Clone()
+    {
+      return GetClone();
+    }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates a clone of the object.
     /// </summary>
-    protected BusinessListBase()
+    /// <returns>A new object containing the exact data of the original object.</returns>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual object GetClone()
     {
-      _expression = Expression.Constant(this);
-      Initialize();
+      return Core.ObjectCloner.Clone(this);
+    }
+
+    /// <summary>
+    /// Creates a clone of the object.
+    /// </summary>
+    /// <returns>A new object containing the exact data of the original object.</returns>
+    public T Clone()
+    {
+      return (T)GetClone();
     }
 
     #endregion
 
-    #region Initialize
+    #region Delete and Undelete child
+
+    private MobileList<C> _deletedList;
 
     /// <summary>
-    /// Override this method to set up event handlers so user
-    /// code in a partial class can respond to events raised by
-    /// generated code.
+    /// A collection containing all child objects marked
+    /// for deletion.
     /// </summary>
-    protected virtual void Initialize()
-    { /* allows subclass to initialize events before any other activity occurs */ }
-
-    #endregion
-
-    #region IsDirty, IsValid, IsSavable
-
-        /// <summary>
-    /// Gets a value indicating whether this object's data has been changed.
-    /// </summary>
-    bool Core.ITrackStatus.IsSelfDirty
-    {
-      get { return IsDirty; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether this object's data has been changed.
-    /// </summary>
-    [Browsable(false)]
-    public bool IsDirty
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected MobileList<C> DeletedList
     {
       get
       {
-        // any non-new deletions make us dirty
-        foreach (C item in DeletedList)
-          if (!item.IsNew)
-            return true;
-
-        // run through all the child objects
-        // and if any are dirty then then
-        // collection is dirty
-        foreach (C child in this)
-          if (child.IsDirty)
-            return true;
-        return false;
+        if (_deletedList == null)
+          _deletedList = new MobileList<C>();
+        return _deletedList;
       }
     }
 
-    bool Core.ITrackStatus.IsSelfValid
+    private void DeleteChild(C child)
     {
-      get { return IsSelfValid; }
+      // set child edit level
+      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
+
+      // TODO: Implement i4o
+      // remove from the index
+      //RemoveIndexItem(child);
+      // remove from the position map
+      //RemoveFromMap(child);
+
+      // mark the object as deleted
+      child.DeleteChild();
+      // and add it to the deleted collection for storage
+      DeletedList.Add(child);
+    }
+
+    private void UnDeleteChild(C child)
+    {
+      // since the object is no longer deleted, remove it from
+      // the deleted collection
+      DeletedList.Remove(child);
+
+      // we are inserting an _existing_ object so
+      // we need to preserve the object's editleveladded value
+      // because it will be changed by the normal add process
+      int saveLevel = child.EditLevelAdded;
+
+      // TODO: implement i4o
+      //InsertIndexItem(child);
+
+      Add(child);
+      child.EditLevelAdded = saveLevel;
     }
 
     /// <summary>
-    /// Gets a value indicating whether this object is currently in
-    /// a valid state (has no broken validation rules).
+    /// Returns <see langword="true"/> if the internal deleted list
+    /// contains the specified child object.
     /// </summary>
-    protected virtual bool IsSelfValid
+    /// <param name="item">Child object to check.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public bool ContainsDeleted(C item)
     {
-      get { return IsValid; }
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether this object is currently in
-    /// a valid state (has no broken validation rules).
-    /// </summary>
-    [Browsable(false)]
-    public virtual bool IsValid
-    {
-      get
-      {
-        // run through all the child objects
-        // and if any are invalid then the
-        // collection is invalid
-        foreach (C child in this)
-          if (!child.IsValid)
-            return false;
-        return true;
-      }
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
-    /// </summary>
-    /// <returns>A value indicating if this object is both dirty and valid.</returns>
-    [Browsable(false)]
-    public virtual bool IsSavable
-    {
-      get 
-      {
-        bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
-        return (IsDirty && IsValid && auth && !IsBusy);
-      }
+      return DeletedList.Contains(item);
     }
 
     #endregion
@@ -227,6 +219,171 @@ namespace Csla
 
     #endregion
 
+    #region Insert, Remove, Clear
+
+    //[EditorBrowsable(EditorBrowsableState.Advanced)]
+    //protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //{ }
+
+    //private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    //{
+    //  OnChildPropertyChanged(sender, e);
+    //}
+
+    /// <summary>
+    /// This method is called by a child object when it
+    /// wants to be removed from the collection.
+    /// </summary>
+    /// <param name="child">The child object to remove.</param>
+    void IEditableCollection.RemoveChild(IEditableBusinessObject child)
+    {
+      Remove((C)child);
+    }
+
+    object IEditableCollection.GetDeletedList()
+    {
+      return DeletedList;
+    }
+
+    /// <summary>
+    /// This method is called by a child object when it
+    /// wants to be removed from the collection.
+    /// </summary>
+    /// <param name="child">The child object to remove.</param>
+    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
+    {
+      Remove((C)child);
+    }
+
+    /// <summary>
+    /// Sets the edit level of the child object as it is added.
+    /// </summary>
+    /// <param name="index">Index of the item to insert.</param>
+    /// <param name="item">Item to insert.</param>
+    protected override void InsertItem(int index, C item)
+    {
+      // set parent reference
+      item.SetParent(this);
+      // set child edit level
+      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+      // when an object is inserted we assume it is
+      // a new object and so the edit level when it was
+      // added must be set
+      item.EditLevelAdded = _editLevel;
+      base.InsertItem(index, item);
+    }
+
+    /// <summary>
+    /// Marks the child object for deletion and moves it to
+    /// the collection of deleted objects.
+    /// </summary>
+    /// <param name="index">Index of the item to remove.</param>
+    protected override void RemoveItem(int index)
+    {
+      // when an object is 'removed' it is really
+      // being deleted, so do the deletion work
+      C child = this[index];
+      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
+      try
+      {
+        this.RaiseListChangedEvents = false;
+        base.RemoveItem(index);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
+      }
+      if (!_completelyRemoveChild)
+      {
+        // the child shouldn't be completely removed,
+        // so copy it to the deleted list
+        DeleteChild(child);
+      }
+      if (RaiseListChangedEvents)
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
+    }
+
+    /// <summary>
+    /// Replaces the item at the specified index with
+    /// the specified item, first moving the original
+    /// item to the deleted list.
+    /// </summary>
+    /// <param name="index">The zero-based index of the item to replace.</param>
+    /// <param name="item">
+    /// The new value for the item at the specified index. 
+    /// The value can be null for reference types.
+    /// </param>
+    /// <remarks></remarks>
+    protected override void SetItem(int index, C item)
+    {
+      C child = default(C);
+      if (!(ReferenceEquals((C)(this[index]), item)))
+        child = this[index];
+      // replace the original object with this new
+      // object
+      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
+      try
+      {
+        this.RaiseListChangedEvents = false;
+        // set parent reference
+        item.SetParent(this);
+        // set child edit level
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        // reset EditLevelAdded 
+        item.EditLevelAdded = this.EditLevel;
+        // add to list
+        base.SetItem(index, item);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
+      }
+      if (child != null)
+        DeleteChild(child);
+      if (RaiseListChangedEvents)
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
+    }
+
+    /// <summary>
+    /// Clears the collection, moving all active
+    /// items to the deleted list.
+    /// </summary>
+    protected override void ClearItems()
+    {
+      while (base.Count > 0) RemoveItem(0);
+      //DeferredLoadIndexIfNotLoaded();
+      //_indexSet.ClearIndexes();
+      //DeferredLoadPositionMapIfNotLoaded();
+      //_positionMap.ClearMap();
+      base.ClearItems();
+    }
+
+    #endregion
+
+    #region Edit level tracking
+
+    // keep track of how many edit levels we have
+    private int _editLevel;
+
+    /// <summary>
+    /// Returns the current edit level of the object.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected int EditLevel
+    {
+      get { return _editLevel; }
+    }
+
+    int Core.IUndoableObject.EditLevel
+    {
+      get
+      {
+        return this.EditLevel;
+      }
+    }
+
+    #endregion
+
     #region N-level undo
 
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
@@ -255,9 +412,20 @@ namespace Csla
       // we are going a level deeper in editing
       _editLevel += 1;
 
+      // JMC 6/24/08
+      // This used to be a foreach loop but there appears to be a bug
+      // in the silverlight runtime (SL2 B2) since calling foreach here will result
+      // in SEHException with the error code -2147467259, or Error Unkown.
+      // Iterating on this collection outside of this call will result in
+      // behavior as expected but for some reason doing it here results in
+      // an unknown exception.
+
       // cascade the call to all child objects
-      foreach (C child in this)
+      for (int x = 0; x < this.Count; x++)
+      {
+        C child = this[x];
         child.CopyState(_editLevel, false);
+      }
 
       // cascade the call to all deleted child objects
       foreach (C child in DeletedList)
@@ -289,14 +457,14 @@ namespace Csla
           //ACE: Important, make sure to remove the item prior to
           //     it going through undo, otherwise, it will
           //     incur a more expensive RemoveByReference operation
-          DeferredLoadIndexIfNotLoaded();
-          _indexSet.RemoveItem(child);
+          //DeferredLoadIndexIfNotLoaded();
+          //_indexSet.RemoveItem(child);
 
           child.UndoChanges(_editLevel, false);
 
           //ACE: Now that we have undone the changes, we can add the item
           //     back in the index.
-          _indexSet.InsertItem(child);
+          //_indexSet.InsertItem(child);
 
           // if item is below its point of addition, remove
           if (child.EditLevelAdded > _editLevel)
@@ -306,7 +474,7 @@ namespace Csla
             {
               this.AllowRemove = true;
               _completelyRemoveChild = true;
-              RemoveIndexItem(child);
+              //RemoveIndexItem(child);
               RemoveAt(index);
             }
             finally
@@ -337,7 +505,7 @@ namespace Csla
       finally
       {
         this.RaiseListChangedEvents = oldRLCE;
-        OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
+        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
       }
     }
 
@@ -371,470 +539,78 @@ namespace Csla
 
     #endregion
 
-    #region Delete and Undelete child
-
-    private MobileList<C> _deletedList;
+    #region Mobile Object overrides
 
     /// <summary>
-    /// A collection containing all child objects marked
-    /// for deletion.
+    /// Method called by MobileFormatter when an object
+    /// should serialize its data. The data should be
+    /// serialized into the SerializationInfo parameter.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected MobileList<C> DeletedList
-    {
-      get 
-      { 
-        if (_deletedList == null)
-          _deletedList = new MobileList<C>();
-        return _deletedList; 
-      }
-    }
-
-    private void DeleteChild(C child)
-    {
-      // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
-      // remove from the index
-      RemoveIndexItem(child);
-      // remove from the position map
-      RemoveFromMap(child);
-      // mark the object as deleted
-      child.DeleteChild();
-      // and add it to the deleted collection for storage
-      DeletedList.Add(child);
-    }
-
-    private void UnDeleteChild(C child)
-    {
-      // since the object is no longer deleted, remove it from
-      // the deleted collection
-      DeletedList.Remove(child);
-
-      // we are inserting an _existing_ object so
-      // we need to preserve the object's editleveladded value
-      // because it will be changed by the normal add process
-      int saveLevel = child.EditLevelAdded;
-      InsertIndexItem(child);
-      Add(child);
-      child.EditLevelAdded = saveLevel;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true"/> if the internal deleted list
-    /// contains the specified child object.
-    /// </summary>
-    /// <param name="item">Child object to check.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool ContainsDeleted(C item)
-    {
-      return DeletedList.Contains(item);
-    }
-
-    #endregion
-
-    #region Insert, Remove, Clear
-
-    /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
-    void Core.IEditableCollection.RemoveChild(Csla.Core.IEditableBusinessObject child)
-    {
-      RemoveFromMap((C)child);
-      Remove((C)child);
-      RemoveIndexItem((C)child);
-    }
-
-    object IEditableCollection.GetDeletedList()
-    {
-      return DeletedList;
-    }
-
-    /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
-    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
-    {
-      RemoveFromMap((C)child);
-      Remove((C)child);
-      RemoveIndexItem((C)child);
-    }
-
-    /// <summary>
-    /// Sets the edit level of the child object as it is added.
-    /// </summary>
-    /// <param name="index">Index of the item to insert.</param>
-    /// <param name="item">Item to insert.</param>
-    protected override void InsertItem(int index, C item)
-    {
-      // set parent reference
-      item.SetParent(this);
-      // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-      // when an object is inserted we assume it is
-      // a new object and so the edit level when it was
-      // added must be set
-      item.EditLevelAdded = _editLevel;
-      InsertIndexItem(item);
-      base.InsertItem(index, item);
-      InsertIntoMap(item, index);
-    }
-
-    /// <summary>
-    /// Marks the child object for deletion and moves it to
-    /// the collection of deleted objects.
-    /// </summary>
-    /// <param name="index">Index of the item to remove.</param>
-    protected override void RemoveItem(int index)
-    {
-      // when an object is 'removed' it is really
-      // being deleted, so do the deletion work
-      C child = this[index];
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
-      {
-        this.RaiseListChangedEvents = false;
-        RemoveIndexItem(child);
-        RemoveFromMap(child);
-        base.RemoveItem(index);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
-      }
-      if (!_completelyRemoveChild)
-      {
-        // the child shouldn't be completely removed,
-        // so copy it to the deleted list
-        DeleteChild(child);
-      }
-      if (RaiseListChangedEvents)
-        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
-    }
-
-    /// <summary>
-    /// Clears the collection, moving all active
-    /// items to the deleted list.
-    /// </summary>
-    protected override void ClearItems()
-    {
-      while (base.Count > 0) RemoveItem(0);
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndexes();
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.ClearMap();
-      base.ClearItems();
-    }
-
-    /// <summary>
-    /// Replaces the item at the specified index with
-    /// the specified item, first moving the original
-    /// item to the deleted list.
-    /// </summary>
-    /// <param name="index">The zero-based index of the item to replace.</param>
-    /// <param name="item">
-    /// The new value for the item at the specified index. 
-    /// The value can be null for reference types.
+    /// <param name="info">
+    /// Object to contain the serialized data.
     /// </param>
-    /// <remarks></remarks>
-    protected override void SetItem(int index, C item)
+    protected override void OnGetState(SerializationInfo info)
     {
-      C child = default(C);
-      if (!(ReferenceEquals((C)(this[index]), item)))
-        child = this[index];
-      // replace the original object with this new
-      // object
-      bool oldRaiseListChangedEvents = this.RaiseListChangedEvents;
-      try
-      {
-        this.RaiseListChangedEvents = false;
-        // set parent reference
-        item.SetParent(this);
-        // set child edit level
-        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-        // reset EditLevelAdded 
-        item.EditLevelAdded = this.EditLevel;
-        // update the indexes
-        ReIndexItem(item);
-
-        //handle mapping
-        //for mapping purposes, you are removing the thing at the index
-        //var itemWeAreReplacing = this[index];
-        //RemoveFromMap(itemWeAreReplacing);
-        //RemoveFromMap(item);
-        // add to list
-        base.SetItem(index, item);
-        InsertIntoMap(item, index);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRaiseListChangedEvents;
-      }
-      if (child != null)
-        DeleteChild(child);
-      if (RaiseListChangedEvents)
-        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
-    }
-
-    #endregion
-
-    #region Cascade child events
-
-    /// <summary>
-    /// Handles any PropertyChanged event from 
-    /// a child object and echoes it up as
-    /// a ListChanged event.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-      if (_deserialized && RaiseListChangedEvents && e != null)
-      {
-        DeferredLoadIndexIfNotLoaded();
-        if (_indexSet.HasIndexFor(e.PropertyName))
-          ReIndexItem((C)sender, e.PropertyName);
-
-        for (int index = 0; index < Count; index++)
-        {
-          if (ReferenceEquals(this[index], sender))
-          {
-            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
-            if (descriptor != null)
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index, descriptor));
-            else
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index));
-          }
-        }
-      }
-      base.Child_PropertyChanged(sender, e);
-    }
-
-    private static PropertyDescriptorCollection _propertyDescriptors;
-
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
-    {
-      if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
-      PropertyDescriptor result = null;
-      foreach (PropertyDescriptor desc in _propertyDescriptors)
-        if (desc.Name == propertyName)
-        {
-          result = desc;
-          break;
-        }
-      return result;
-    }
-
-    #endregion
-
-    #region Indexing
-
-    [NonSerialized]
-    private Linq.IIndexSet<C> _indexSet;
-
-    private void DeferredLoadIndexIfNotLoaded()
-    {
-      if (_indexSet == null) _indexSet = new Csla.Linq.IndexSet<C>();
+      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
+      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      base.OnGetState(info);
     }
 
     /// <summary>
-    /// Allows users of CSLA to override the indexing behavior of BLB
+    /// Method called by MobileFormatter when an object
+    /// should be deserialized. The data should be
+    /// deserialized from the SerializationInfo parameter.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Type IndexingProvider
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
     {
-      get {
-        DeferredLoadIndexIfNotLoaded();
-        return _indexSet.GetType(); 
-      }
-      set {
-        if (value.IsClass && !value.IsAbstract && value.IsAssignableFrom(typeof(Linq.IIndexSet<C>)))
-        {
-          _indexSet = Activator.CreateInstance(value) as Linq.IIndexSet<C>;
-          ReIndexAll();
-        }
-      }
-    }
-
-
-    private IndexModeEnum IndexModeFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].IndexMode;
-      else
-        return IndexModeEnum.IndexModeNever;
-    }
-
-    private bool IndexLoadedFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].Loaded;
-      else
-        return false;
-    }
-
-    private void LoadIndexIfNotLoaded(string property)
-    {
-      if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
-        if (!IndexLoadedFor(property))
-        {
-          _indexSet.LoadIndex(property);
-          ReIndex(property);
-        }
-    }
-
-    private void InsertIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item);
-    }
-
-    private void InsertIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item, property);
-    }
-
-    private void RemoveIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item);
-    }
-
-    private void RemoveIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item, property);
-    }
-
-    private void ReIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item, property);
-    }
-
-    private void ReIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item);
-    }
-
-    private void ReIndexAll()
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndexes();
-      foreach (C item in this)
-        InsertIndexItem(item);
-    }
-
-    private void ReIndex(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndex(property);
-      foreach (C item in this)
-        InsertIndexItem(item, property);
-      _indexSet[property].LoadComplete();
-    }
-    
-    #endregion
-
-    #region PositionMapping
-    [NonSerialized]
-    private Core.PositionMap<C> _positionMap;
-
-    private void DeferredLoadPositionMapIfNotLoaded()
-    {
-      if (_positionMap == null) _positionMap = new Csla.Core.PositionMap<C>(this);
-    }
-
-    private void RemoveFromMap(C child)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.RemoveFromMap(child);
-    }
-
-    private void InsertIntoMap(C child, int position)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.InsertIntoMap(child, position);
-    }
-
-    private void AddToMap(C child)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.AddToMap(child);
-      
+      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
+      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      base.OnSetState(info);
     }
 
     /// <summary>
-    /// Determines the position of a specific item from the list
+    /// Method called by MobileFormatter when an object
+    /// should serialize its child references. The data should be
+    /// serialized into the SerializationInfo parameter.
     /// </summary>
-    public int PositionOf(C item)
+    /// <param name="info">
+    /// Object to contain the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the serialization.
+    /// </param>
+    protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      DeferredLoadPositionMapIfNotLoaded();
-      return _positionMap.PositionOf(item);
-    }
-
-    #endregion
-
-    #region Where Implementation
-    /// <summary>
-    /// Iterates through a set of items according to the expression passed to it.
-    /// </summary>
-    public IEnumerable<C> SearchByExpression(Expression<Func<C, bool>> expr)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      string property = _indexSet.HasIndexFor(expr);
-      if (
-        property != null &&
-        IndexModeFor(property) != IndexModeEnum.IndexModeNever
-          )
+      base.OnGetChildren(info, formatter);
+      if (_deletedList != null)
       {
-        LoadIndexIfNotLoaded(property);
-        foreach (C item in _indexSet.Search(expr, property))
-          yield return item;
-      }
-      else
-      {
-        
-        IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
-        var result = sourceEnum.Where<C>(expr.Compile());
-        foreach (C item in result)
-          yield return item;
+        var fieldManagerInfo = formatter.SerializeObject(_deletedList);
+        info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
       }
     }
-
-    #endregion
-
-    #region Edit level tracking
-
-    // keep track of how many edit levels we have
-    private int _editLevel;
 
     /// <summary>
-    /// Returns the current edit level of the object.
+    /// Method called by MobileFormatter when an object
+    /// should deserialize its child references. The data should be
+    /// deserialized from the SerializationInfo parameter.
     /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected int EditLevel
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the deserialization.
+    /// </param>
+    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      get { return _editLevel; }
-    }
-
-    int Core.IUndoableObject.EditLevel
-    {
-      get
+      if (info.Children.ContainsKey("_deletedList"))
       {
-        return this.EditLevel;
+        var childData = info.Children["_deletedList"];
+        _deletedList = (MobileList<C>)formatter.GetObject(childData.ReferenceId);
       }
+      base.OnSetChildren(info, formatter);
     }
 
     #endregion
@@ -877,55 +653,140 @@ namespace Csla
 
     #endregion
 
-    #region ICloneable
+    #region IsDirty, IsValid, IsSavable
 
-    object ICloneable.Clone()
+    /// <summary>
+    /// Gets a value indicating whether this object's data has been changed.
+    /// </summary>
+    bool Core.ITrackStatus.IsSelfDirty
     {
-      return GetClone();
+      get { return IsDirty; }
     }
 
     /// <summary>
-    /// Creates a clone of the object.
+    /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
-    /// <returns>A new object containing the exact data of the original object.</returns>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object GetClone()
+    public bool IsDirty
     {
-      return Core.ObjectCloner.Clone(this);
+      get
+      {
+        // any non-new deletions make us dirty
+        foreach (C item in DeletedList)
+          if (!item.IsNew)
+            return true;
+
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+          if (child.IsDirty)
+            return true;
+        return false;
+      }
+    }
+
+    bool Core.ITrackStatus.IsSelfValid
+    {
+      get { return IsSelfValid; }
     }
 
     /// <summary>
-    /// Creates a clone of the object.
+    /// Gets a value indicating whether this object is currently in
+    /// a valid state (has no broken validation rules).
     /// </summary>
-    /// <returns>A new object containing the exact data of the original object.</returns>
-    public T Clone()
+    protected virtual bool IsSelfValid
     {
-      return (T)GetClone();
+      get { return IsValid; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this object is currently in
+    /// a valid state (has no broken validation rules).
+    /// </summary>
+    public virtual bool IsValid
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are invalid then the
+        // collection is invalid
+        foreach (C child in this)
+          if (!child.IsValid)
+            return false;
+        return true;
+      }
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// </summary>
+    /// <returns>A value indicating if this object is both dirty and valid.</returns>
+    public virtual bool IsSavable
+    {
+      get
+      {
+        bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+        return (IsDirty && IsValid && auth && !IsBusy);
+      }
+    }
+
+    /// <summary>
+    /// Gets the busy status for this object and its child objects.
+    /// </summary>
+    public override bool IsBusy
+    {
+      get
+      {
+        // any non-new deletions make us dirty
+        foreach (C item in DeletedList)
+          if (item.IsBusy)
+            return true;
+
+        // run through all the child objects
+        // and if any are dirty then then
+        // collection is dirty
+        foreach (C child in this)
+          if (child.IsBusy)
+            return true;
+
+        return false;
+      }
+    }
+
+    #endregion
+
+    #region  ITrackStatus
+
+    bool Core.ITrackStatus.IsNew
+    {
+      get
+      {
+        return false;
+      }
+    }
+
+    bool Core.ITrackStatus.IsDeleted
+    {
+      get
+      {
+        return false;
+      }
     }
 
     #endregion
 
     #region Serialization Notification
 
-    [NonSerialized]
-    [NotUndoable]
-    private bool _deserialized = false;
-
     /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
+    /// Reset parent references on deserialization.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnDeserialized()
     {
-      _deserialized = true;
       base.OnDeserialized();
-
       foreach (Core.IEditableBusinessObject child in this)
-      {
         child.SetParent(this);
-      }
-      
+
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
     }
@@ -1245,10 +1106,10 @@ namespace Csla
       return Save();
     }
 
-		object Csla.Core.ISavable.Save(bool forceUpdate)
-		{
-			return Save();
-		}
+    object Csla.Core.ISavable.Save(bool forceUpdate)
+    {
+      return Save();
+    }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
@@ -1325,7 +1186,7 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Core.IParent Parent
+    protected Core.IParent Parent
     {
       get
       {
@@ -1346,246 +1207,53 @@ namespace Csla
 
     #endregion
 
-    #region ToArray
-
-    /// <summary>
-    /// Get an array containing all items in the list.
-    /// </summary>
-    public C[] ToArray()
-    {
-      List<C> result = new List<C>();
-      foreach (C item in this)
-        result.Add(item);
-      return result.ToArray();
-    }
-    #endregion
-
-    #region  ITrackStatus
-
-    bool Core.ITrackStatus.IsNew
-    {
-      get
-      {
-        return false;
-      }
-    }
-
-    bool Core.ITrackStatus.IsDeleted
-    {
-      get
-      {
-        return false;
-      }
-    }
-
-    /// <summary>
-    /// Gets the busy status for this object and its child objects.
-    /// </summary>
-    [Browsable(false)]
-    public override bool IsBusy
-    {
-      get
-      {
-        // any non-new deletions make us dirty
-        foreach (C item in DeletedList)
-          if (item.IsBusy)
-            return true;
-
-        // run through all the child objects
-        // and if any are dirty then then
-        // collection is dirty
-        foreach (C child in this)
-          if (child.IsBusy)
-            return true;
-
-        return false;
-      }
-    }
-
-    #endregion
-
-    #region LinqIntegration
-
-    [NonSerialized]
-    IQueryProvider _queryProvider;
-
-    [NonSerialized]
-    Expression _expression;
-
-    //internal void SetCurrentExpression(Expression ex)
-    //{
-    //  _expression = ex;
-    //}
-
-    private void LoadProviderIfNotLoaded()
-    {
-      _queryProvider = new Csla.Linq.CslaQueryProvider<T, C>(this);
-    }
-
-    #region IQueryable Members
-
-    /// <summary>
-    /// Required for IQueryable - returns the ElementType (maps to C)
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public Type ElementType
-    {
-      get { return typeof(C); }
-    }
-
-    /// <summary>
-    /// Last expression used in a linq query
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public Expression Expression
-    {
-      get { 
-          if (_expression == null)
-              _expression = Expression.Constant(this);
-          return _expression; 
-      }
-    }
-
-    /// <summary>
-    /// Query provider currently being used
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public IQueryProvider Provider
-    {
-      get {
-        return new Linq.CslaQueryProvider<T, C>(this);
-      }
-    }
-
-    #endregion
-
-    #endregion
-
     #region IDataPortalTarget Members
 
-    void Csla.Server.IDataPortalTarget.CheckRules()
+    void IDataPortalTarget.CheckRules()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    void IDataPortalTarget.MarkAsChild()
     {
       this.MarkAsChild();
     }
 
-    void Csla.Server.IDataPortalTarget.MarkNew()
-    {    }
+    void IDataPortalTarget.MarkNew()
+    { }
 
-    void Csla.Server.IDataPortalTarget.MarkOld()
-    {    }
+    void IDataPortalTarget.MarkOld()
+    { }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       this.DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       this.Child_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       this.Child_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       this.Child_OnDataPortalException(e, ex);
     }
 
     #endregion
 
-    #region Mobile object overrides
-
-    /// <summary>
-    /// Override this method to retrieve your field values
-    /// from the MobileFormatter serialzation stream.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the data to serialize.
-    /// </param>
-    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
-    {
-      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
-      _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
-      base.OnSetState(info);
-    }
-
-    /// <summary>
-    /// Override this method to insert your field values
-    /// into the MobileFormatter serialzation stream.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the data to serialize.
-    /// </param>
-    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
-    {
-      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
-      info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
-      base.OnGetState(info);
-    }
-
-    /// <summary>
-    /// Override this method to insert child objects
-    /// into the MobileFormatter serialization stream.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the data to serialize.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the current MobileFormatter.
-    /// </param>
-    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
-    {
-      base.OnGetChildren(info, formatter);
-      if (_deletedList != null)
-      {
-        var fieldManagerInfo = formatter.SerializeObject(_deletedList);
-        info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
-      }
-    }
-
-    /// <summary>
-    /// Override this method to get child objects
-    /// from the MobileFormatter serialization stream.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the serialized data.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the current MobileFormatter.
-    /// </param>
-    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
-    {
-      if (info.Children.ContainsKey("_deletedList"))
-      {
-        var childData = info.Children["_deletedList"];
-        _deletedList = (MobileList<C>)formatter.GetObject(childData.ReferenceId);
-      }
-      base.OnSetChildren(info, formatter);
-    }
-
-    #endregion
   }
 }

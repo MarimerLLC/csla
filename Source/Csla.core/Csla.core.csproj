@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
+    <Compile Include="BusinessBindingListBase.cs" />
     <Compile Include="BusinessListBase.cs" />
     <Compile Include="C5\Arrays\ArrayList.cs" />
     <Compile Include="C5\Arrays\CircularQueue.cs" />
@@ -127,11 +128,14 @@
     <Compile Include="C5\WrappedArray.cs" />
     <Compile Include="C5\Wrappers.cs" />
     <Compile Include="CommandBase.cs" />
+    <Compile Include="Core\AddedNewEventArgs.cs" />
     <Compile Include="Core\AsyncFactoryDelegates.cs" />
     <Compile Include="Core\BusyChangedEventArgs.cs" />
     <Compile Include="Core\ErrorEventArgs.cs" />
+    <Compile Include="Core\ExtendedObservableCollection.cs" />
     <Compile Include="Core\FieldManager\DefaultPropertyInfoFactory.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoFactory.cs" />
+    <Compile Include="Core\IObservableBindingList.cs" />
     <Compile Include="Core\IPropertyInfoFactory.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="Core\INotifyChildChanged.cs" />
@@ -163,6 +167,8 @@
     <Compile Include="Core\MobileDictionary.cs" />
     <Compile Include="Core\MobileList.cs" />
     <Compile Include="Core\MobileObject.cs" />
+    <Compile Include="Core\MobileObservableCollection.cs" />
+    <Compile Include="Core\ObservableBindingList.cs" />
     <Compile Include="Core\UndoableHandler.cs" />
     <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
     <Compile Include="DataPortalResult.cs" />

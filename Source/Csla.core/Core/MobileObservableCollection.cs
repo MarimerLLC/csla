@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -18,7 +17,7 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<T> : BindingList<T>, IMobileObject
+  public class MobileObservableCollection<T> : ObservableBindingList<T>, IMobileObject
   {
     #region IMobileObject Members
 

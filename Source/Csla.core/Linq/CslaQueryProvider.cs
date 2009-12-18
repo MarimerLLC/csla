@@ -8,17 +8,17 @@ using Csla.Core;
 namespace Csla.Linq
 {
   internal class CslaQueryProvider<T, C> : IQueryProvider
-    where T : BusinessListBase<T, C>
+    where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
     private CslaQueryProvider() { }
 
-    public CslaQueryProvider(BusinessListBase<T, C> parent)
+    public CslaQueryProvider(BusinessBindingListBase<T, C> parent)
     {
       _parent = parent;
     }
 
-    private BusinessListBase<T, C> _parent;
+    private BusinessBindingListBase<T, C> _parent;
     private LinqBindingList<C> _filter;
 
     private object Eval(Expression ex)

@@ -113,7 +113,18 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("ActionExtenderWarnOnCancelMessagePropertyDefault", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to AddNewCore must be overridden
+        /// </summary>
+        public static string AddNewCoreMustBeOverriden
+        {
+          get
+          {
+            return ResourceManager.GetString("AddNewCoreMustBeOverriden", resourceCulture);
+          }
+        }
+  
         /// <summary>
         ///   Looks up a localized string similar to Array is multi-dimensional.
         /// </summary>

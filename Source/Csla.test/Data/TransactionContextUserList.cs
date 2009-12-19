@@ -5,7 +5,7 @@ using Csla.Data;
 namespace Csla.Test.Data
 {
   [Serializable]
-  public class TransactionContextUserList : BusinessListBase<TransactionContextUserList, TransactionContextUser>
+  public class TransactionContextUserList : BusinessBindingListBase<TransactionContextUserList, TransactionContextUser>
   {
     public const string TestDBConnection = "Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString";
 

@@ -23,7 +23,7 @@ namespace Csla
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-      ExtendedObservableCollection<C>,
+      MobileObservableCollection<C>,
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy

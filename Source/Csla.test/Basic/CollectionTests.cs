@@ -46,7 +46,7 @@ namespace Csla.Test.Basic
     public void DoubleAdd()
     {
       var someObj = new TestIndexableItem();
-      var someCol = new TestBusinessListBaseCollection(1);
+      var someCol = new TestBusinessBindingListBaseCollection(1);
       someCol.Add(someObj);
       someCol.Add(someObj);
       Assert.IsTrue(true);
@@ -105,7 +105,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestRangedWhereGreaterThan()
     {
-      var blbCollection = new TestBusinessListBaseCollection(50,1,true);
+      var blbCollection = new TestBusinessBindingListBaseCollection(50,1,true);
       blbCollection.Add(new TestIndexableItem() { IndexedInt = 499, IndexedString = "499", NonIndexedString = "499" });
       blbCollection.Add(new TestIndexableItem() { IndexedInt = 500, IndexedString = "500", NonIndexedString = "500" });
       blbCollection.Add(new TestIndexableItem() { IndexedInt = 600, IndexedString = "600", NonIndexedString = "600" });
@@ -117,7 +117,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestRangedWhereGreaterThanOrEqualTo()
     {
-      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      var blbCollection = new TestBusinessBindingListBaseCollection(50, 1, true);
       blbCollection.Add(new TestIndexableItem() { IndexedInt = 500, IndexedString = "500", NonIndexedString = "500" });
       blbCollection.Add(new TestIndexableItem() { IndexedInt = 600, IndexedString = "600", NonIndexedString = "600" });
       var partsOver500 = from i in blbCollection where i.IndexedInt >= 500  select i;
@@ -128,7 +128,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestRangedWhereLessThan()
     {
-      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      var blbCollection = new TestBusinessBindingListBaseCollection(50, 1, true);
       blbCollection.Add(new TestIndexableItem() { IndexedInt = -1, IndexedString = "-1", NonIndexedString = "-1" });
       blbCollection.Add(new TestIndexableItem() { IndexedInt = -2, IndexedString = "-2", NonIndexedString = "-2" });
       var partsUnderZero = from i in blbCollection where i.IndexedInt < 0 select i;
@@ -139,7 +139,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestRangedWhereLessThanOrEqualTo()
     {
-      var blbCollection = new TestBusinessListBaseCollection(50, 1, true);
+      var blbCollection = new TestBusinessBindingListBaseCollection(50, 1, true);
       blbCollection.Add(new TestIndexableItem() { IndexedInt = -1, IndexedString = "-1", NonIndexedString = "-1" });
       blbCollection.Add(new TestIndexableItem() { IndexedInt = -2, IndexedString = "-2", NonIndexedString = "-2" });
       var partsUnderZero = from i in blbCollection where i.IndexedInt <= -1 select i;
@@ -148,12 +148,12 @@ namespace Csla.Test.Basic
     }
 
     [TestMethod]
-    public void IndexOnBusinessListBaseWorks()
+    public void IndexOnBusinessBindingListBaseWorks()
     {
       var sampleSize = 100000;
       //var sampleSize = 375;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
-      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      var blbCollection = new TestBusinessBindingListBaseCollection(sampleSize);
       Console.WriteLine("Collection established.");
 
       //first query establishes the index
@@ -203,7 +203,7 @@ namespace Csla.Test.Basic
     {
       var sampleSize = 1000;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
-      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      var blbCollection = new TestBusinessBindingListBaseCollection(sampleSize);
       Console.WriteLine("Collection established.");
       var someQuery = from i in blbCollection where i.IndexedInt <= 1000 select i;
       //it should bring back everything 
@@ -215,7 +215,7 @@ namespace Csla.Test.Basic
     {
       var sampleSize = 1000;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
-      var blbCollection = new TestBusinessListBaseCollection(sampleSize,1,false);
+      var blbCollection = new TestBusinessBindingListBaseCollection(sampleSize,1,false);
       Console.WriteLine("Collection established.");
       var someQuery = from i in blbCollection where i.IndexedInt >= 0 && i.IndexedInt <= 1000 select i;
       //it should bring back everything 
@@ -281,11 +281,11 @@ namespace Csla.Test.Basic
   }
 
   [Serializable]
-  public class TestBusinessListBaseCollection : BusinessListBase<TestBusinessListBaseCollection, TestIndexableItem>
+  public class TestBusinessBindingListBaseCollection : BusinessBindingListBase<TestBusinessBindingListBaseCollection, TestIndexableItem>
   {
-    public TestBusinessListBaseCollection(int sampleSize)
+    public TestBusinessBindingListBaseCollection(int sampleSize)
       : this(sampleSize, 100, true) { }
-    public TestBusinessListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
+    public TestBusinessBindingListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
     {
       Random rnd = new Random();
       for(int i = 0; i < sampleSize; i++)
@@ -308,7 +308,7 @@ namespace Csla.Test.Basic
   }
 
   [Serializable]
-  public class TestCollection : BusinessListBase<TestCollection, TestItem>
+  public class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
   {
     public TestCollection()
     {

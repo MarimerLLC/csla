@@ -5,7 +5,7 @@ using Csla;
 namespace Csla.Test.CslaDataProvider
 {
   [Serializable]
-  public class ProviderList : BusinessListBase<ProviderList, ProviderChild>
+  public class ProviderList : BusinessBindingListBase<ProviderList, ProviderChild>
   {
     public ProviderList()
     {

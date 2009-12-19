@@ -6,7 +6,7 @@ using Csla;
 namespace Csla.Test.DataPortalChild
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, Child>
+  public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
     public static ChildList GetList()
     {

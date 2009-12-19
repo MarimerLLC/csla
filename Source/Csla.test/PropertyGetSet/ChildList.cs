@@ -7,7 +7,7 @@ using Csla.Serialization;
 namespace Csla.Test.PropertyGetSet
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, EditableGetSet>
+  public class ChildList : BusinessBindingListBase<ChildList, EditableGetSet>
   {
     public ChildList()
     { }

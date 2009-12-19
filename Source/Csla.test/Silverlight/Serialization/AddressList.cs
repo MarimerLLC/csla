@@ -5,7 +5,7 @@ using Csla.Serialization;
 namespace cslalighttest.Serialization
 {
   [Serializable]
-  public class AddressList : BusinessListBase<AddressList, Address>
+  public class AddressList : BusinessBindingListBase<AddressList, Address>
   {
     public override bool Equals(object theOtherAddressList)
     {

@@ -15,6 +15,11 @@ using Csla.Properties;
 
 namespace Csla.Core
 {
+  /// <summary>
+  /// Extends ObservableCollection with behaviors required
+  /// by CSLA .NET collections.
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
   [Serializable]
   public class ObservableBindingList<T> : System.Collections.ObjectModel.ObservableCollection<T>, 
     IObservableBindingList,
@@ -56,12 +61,18 @@ namespace Csla.Core
     public bool RaiseListChangedEvents { get { return _raiseListChangedEvents; } set { _raiseListChangedEvents = value; } }
 
     /// <summary>
-    /// Begins an asyncronous operation to
-    /// add a new item to this collection.
+    /// Adds a new item to this collection.
     /// </summary>
-    public void AddNew()
+    public T AddNew()
     {
-      AddNewCore();
+      var result = AddNewCore();
+      OnAddedNew(result);
+      return result;
+    }
+
+    object IObservableBindingList.AddNew()
+    {
+      return AddNew();
     }
 
     #endregion
@@ -441,32 +452,12 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Override this method to start an asynchronous
-    /// operation to create a new object that is added
-    /// to the collection. You MUST call OnCoreAdded()
-    /// when the asynchronous operation is complete.
+    /// Override this method to create a new object that is added
+    /// to the collection. 
     /// </summary>
-    protected virtual void AddNewCore()
+    protected virtual T AddNewCore()
     {
       throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
-    }
-
-    /// <summary>
-    /// Handler called when the async AddNewCore
-    /// operation is complete. This method adds the
-    /// new item to the collection and raises
-    /// the AddedNew event.
-    /// </summary>
-    /// <param name="sender">
-    /// Calling object.
-    /// </param>
-    /// <param name="e">
-    /// Object containing the results of the asynchronous operation.
-    /// </param>
-    protected virtual void OnCoreAdded(object sender, DataPortalResult<T> e)
-    {
-      Add(e.Object);
-      OnAddedNew(e.Object);
     }
 
     /// <summary>

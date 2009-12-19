@@ -6,7 +6,7 @@ using Csla;
 namespace Csla.Test.Basic
 {
   [Serializable]
-  public class RootList : BusinessListBase<RootList, RootListChild>
+  public class RootList : BusinessBindingListBase<RootList, RootListChild>
   {
     public RootList()
     {

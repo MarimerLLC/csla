@@ -23,11 +23,11 @@ namespace Csla.Test.Serialization
   public class SerializationTests : TestBase
   {
     [Serializable]
-    private class TestBusinessListBaseCollection : BusinessListBase<TestBusinessListBaseCollection, TestIndexableItem>
+    private class TestBusinessBindingListBaseCollection : BusinessBindingListBase<TestBusinessBindingListBaseCollection, TestIndexableItem>
     {
-      public TestBusinessListBaseCollection(int sampleSize)
+      public TestBusinessBindingListBaseCollection(int sampleSize)
         : this(sampleSize, 100, true) { }
-      public TestBusinessListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
+      public TestBusinessBindingListBaseCollection(int sampleSize, int sparsenessFactor, bool randomize)
       {
         Random rnd = new Random();
         for (int i = 0; i < sampleSize; i++)
@@ -50,7 +50,7 @@ namespace Csla.Test.Serialization
     }
 
     [Serializable]
-    private class TestCollection : BusinessListBase<TestCollection, TestItem>
+    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
     {
     }
 
@@ -94,7 +94,7 @@ namespace Csla.Test.Serialization
       UnitTestContext context = GetContext();
       var sampleSize = 100000;
       Console.WriteLine("Creating " + sampleSize + " element collection...");
-      var blbCollection = new TestBusinessListBaseCollection(sampleSize);
+      var blbCollection = new TestBusinessBindingListBaseCollection(sampleSize);
       Console.WriteLine("Collection established.");
 
       //first query establishes the index

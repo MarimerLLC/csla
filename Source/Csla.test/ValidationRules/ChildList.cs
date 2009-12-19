@@ -9,7 +9,7 @@ using Csla.Core;
 namespace Csla.Test.ValidationRules
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, Child>
+  public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
     public static ChildList NewList()
     {

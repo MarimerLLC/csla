@@ -8,7 +8,7 @@ using Csla.Serialization;
 namespace Csla.Test.ChildChanged
 {
   [Serializable]
-  public class SingleList : BusinessListBase<SingleList, SingleRoot>
+  public class SingleList : BusinessBindingListBase<SingleList, SingleRoot>
   {
     public SingleList()
     {

@@ -62,7 +62,7 @@ namespace Csla.Test.ChildrenByInterface
   }
 
   [Serializable]
-  public class ItemList : Csla.BusinessListBase<ItemList, IItem>
+  public class ItemList : Csla.BusinessBindingListBase<ItemList, IItem>
   {
   }
 }

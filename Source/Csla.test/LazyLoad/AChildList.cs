@@ -5,7 +5,7 @@ using System.Text;
 namespace Csla.Test.LazyLoad
 {
   [Serializable]
-  public class AChildList : Csla.BusinessListBase<AChildList, AChild>
+  public class AChildList : Csla.BusinessBindingListBase<AChildList, AChild>
   {
     public AChildList()
     {

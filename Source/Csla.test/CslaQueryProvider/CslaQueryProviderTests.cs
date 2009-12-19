@@ -146,7 +146,7 @@ namespace Csla.Test.CslaQueryProvider
   }
 
   [Serializable]
-  class CollectionExtendingIQueryable<T> : BusinessListBase<CollectionExtendingIQueryable<T>, T> where T : Csla.Core.IEditableBusinessObject { }
+  class CollectionExtendingIQueryable<T> : BusinessBindingListBase<CollectionExtendingIQueryable<T>, T> where T : Csla.Core.IEditableBusinessObject { }
 
   class CustomRandomThingComparer : IEqualityComparer<RandomThing>
   {
@@ -171,7 +171,7 @@ namespace Csla.Test.CslaQueryProvider
     public string TestProp { get; set; }
   }
 
-  class InnerCollection : BusinessListBase<InnerCollection, InnerCollectionItem>
+  class InnerCollection : BusinessBindingListBase<InnerCollection, InnerCollectionItem>
   {
   }
 
@@ -180,7 +180,7 @@ namespace Csla.Test.CslaQueryProvider
     public InnerCollection TestInnerCollection { get; set; }
   }
 
-  class OuterCollection : BusinessListBase<OuterCollection, OuterCollectionItem>
+  class OuterCollection : BusinessBindingListBase<OuterCollection, OuterCollectionItem>
   {
   }
   

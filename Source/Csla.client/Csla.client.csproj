@@ -204,9 +204,6 @@
     <Compile Include="..\Csla.core\Core\ExtendedBindingList.cs">
       <Link>Core\ExtendedBindingList.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\Core\ExtendedObservableCollection.cs">
-      <Link>Core\ExtendedObservableCollection.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>

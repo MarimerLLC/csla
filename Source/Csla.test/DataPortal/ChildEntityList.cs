@@ -6,7 +6,7 @@ using System.Data;
 namespace Csla.Test.DataBinding
 {
     [Serializable()]
-    public class ChildEntityList : BusinessListBase<ChildEntityList, ChildEntity>
+    public class ChildEntityList : BusinessBindingListBase<ChildEntityList, ChildEntity>
     {
         private ChildEntityList()
         {

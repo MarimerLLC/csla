@@ -6,7 +6,7 @@ using System.Data;
 namespace Csla.Test.Basic
 {
     [Serializable()]
-    public class Children : BusinessListBase<Children, Child>
+    public class Children : BusinessBindingListBase<Children, Child>
     {
         public void Add(string data)
         {

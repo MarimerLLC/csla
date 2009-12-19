@@ -136,7 +136,7 @@ namespace Csla.Test.DynamicQuery
   }
 
   [Serializable]
-  class CollectionExtendingIQueryable<T> : BusinessListBase<CollectionExtendingIQueryable<T>, T> where T : Csla.Core.IEditableBusinessObject { }
+  class CollectionExtendingIQueryable<T> : BusinessBindingListBase<CollectionExtendingIQueryable<T>, T> where T : Csla.Core.IEditableBusinessObject { }
 
   class CustomRandomThingComparer : IEqualityComparer<RandomThing>
   {

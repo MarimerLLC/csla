@@ -132,7 +132,6 @@
     <Compile Include="Core\AsyncFactoryDelegates.cs" />
     <Compile Include="Core\BusyChangedEventArgs.cs" />
     <Compile Include="Core\ErrorEventArgs.cs" />
-    <Compile Include="Core\ExtendedObservableCollection.cs" />
     <Compile Include="Core\FieldManager\DefaultPropertyInfoFactory.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoFactory.cs" />
     <Compile Include="Core\IObservableBindingList.cs" />

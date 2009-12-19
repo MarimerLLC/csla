@@ -174,6 +174,13 @@ namespace Csla.Data
 
 		private bool _commit = false;
 
+    /// <summary>
+    /// Indicates that the current transactional
+    /// scope has completed successfully. If all
+    /// transactional scopes complete successfully
+    /// the transaction will commit when the
+    /// TransactionManager object is disposed.
+    /// </summary>
 		public void Commit()
 		{
 			if (RefCount == 1)

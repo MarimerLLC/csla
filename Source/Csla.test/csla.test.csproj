@@ -104,6 +104,11 @@
     <Compile Include="Basic\ReadOnlyList.cs" />
     <Compile Include="Basic\Root.cs" />
     <Compile Include="Basic\RootList.cs" />
+    <Compile Include="BusinessListBase\BusinessListBaseTests.cs" />
+    <Compile Include="BusinessListBase\Child.cs" />
+    <Compile Include="BusinessListBase\ChildList.cs" />
+    <Compile Include="BusinessListBase\Root.cs" />
+    <Compile Include="BusinessListBase\RootList.cs" />
     <Compile Include="BusyStatus\BusyStatusTests.cs" />
     <Compile Include="BypassPropertyChecks\BypassBusinessBase.cs" />
     <Compile Include="BypassPropertyChecks\BypassPropertyChecksTests.cs" />

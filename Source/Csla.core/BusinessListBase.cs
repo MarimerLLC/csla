@@ -30,6 +30,14 @@ namespace Csla
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    protected BusinessListBase()
+    {
+      AllowNew = true;
+    }
+
     #region ICloneable
 
     object ICloneable.Clone()
@@ -221,14 +229,16 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
-    //[EditorBrowsable(EditorBrowsableState.Advanced)]
-    //protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    //{ }
-
-    //private void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    //{
-    //  OnChildPropertyChanged(sender, e);
-    //}
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override C AddNewCore()
+    {
+      var item = DataPortal.CreateChild<C>();
+      Add(item);
+      return item;
+    }
 
     /// <summary>
     /// This method is called by a child object when it

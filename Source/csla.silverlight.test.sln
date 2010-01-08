@@ -18,6 +18,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.test", "csla.test\csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight.server.test", "csla.test\Silverlight\Server\csla.silverlight.server.test.csproj", "{3374389D-59D8-44B1-B6D0-015819DB482C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{78C69D70-06CC-4968-A9CB-F71179C85B04}"
+	ProjectSection(SolutionItems) = preProject
+		..\license.txt = ..\license.txt
+		..\readme.txt = ..\readme.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -210,12 +210,6 @@
     <Compile Include="..\csla.core\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
     </Compile>
-    <Compile Include="..\csla.core\IndexableAttribute.cs">
-      <Link>IndexableAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\csla.core\IndexModeEnum.cs">
-      <Link>IndexModeEnum.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\LinqObservableCollection.cs">
       <Link>LinqObservableCollection.cs</Link>
     </Compile>

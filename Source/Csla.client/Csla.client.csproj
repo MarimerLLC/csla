@@ -71,102 +71,6 @@
     <Compile Include="..\Csla.core\BusinessListBase.cs">
       <Link>BusinessListBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\C5\Arrays\ArrayList.cs">
-      <Link>C5\Arrays\ArrayList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Arrays\CircularQueue.cs">
-      <Link>C5\Arrays\CircularQueue.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Arrays\HashedArrayList.cs">
-      <Link>C5\Arrays\HashedArrayList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Arrays\SortedArray.cs">
-      <Link>C5\Arrays\SortedArray.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Attributes.cs">
-      <Link>C5\Attributes.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Builtin.cs">
-      <Link>C5\Builtin.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Collections.cs">
-      <Link>C5\Collections.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Comparer.cs">
-      <Link>C5\Comparer.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Delegates.cs">
-      <Link>C5\Delegates.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Dictionaries.cs">
-      <Link>C5\Dictionaries.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Enums.cs">
-      <Link>C5\Enums.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Events.cs">
-      <Link>C5\Events.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Exceptions.cs">
-      <Link>C5\Exceptions.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Formatting.cs">
-      <Link>C5\Formatting.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Hashers.cs">
-      <Link>C5\Hashers.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Hashing\HashBag.cs">
-      <Link>C5\Hashing\HashBag.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Hashing\HashDictionary.cs">
-      <Link>C5\Hashing\HashDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Hashing\HashTable.cs">
-      <Link>C5\Hashing\HashTable.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\heaps\IntervalHeap.cs">
-      <Link>C5\heaps\IntervalHeap.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Interfaces.cs">
-      <Link>C5\Interfaces.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\linkedlists\HashedLinkedList.cs">
-      <Link>C5\linkedlists\HashedLinkedList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\linkedlists\LinkedList.cs">
-      <Link>C5\linkedlists\LinkedList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\MappedEnumerators.cs">
-      <Link>C5\MappedEnumerators.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Random.cs">
-      <Link>C5\Random.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Records.cs">
-      <Link>C5\Records.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Sorting.cs">
-      <Link>C5\Sorting.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Trees\RedBlackTreeBag.cs">
-      <Link>C5\Trees\RedBlackTreeBag.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Trees\RedBlackTreeDictionary.cs">
-      <Link>C5\Trees\RedBlackTreeDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Trees\RedBlackTreeSet.cs">
-      <Link>C5\Trees\RedBlackTreeSet.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\ViewSupport.cs">
-      <Link>C5\ViewSupport.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\WrappedArray.cs">
-      <Link>C5\WrappedArray.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\C5\Wrappers.cs">
-      <Link>C5\Wrappers.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\CommandBase.cs">
       <Link>CommandBase.cs</Link>
     </Compile>
@@ -193,12 +97,6 @@
     </Compile>
     <Compile Include="..\Csla.core\Core\ErrorEventArgs.cs">
       <Link>Core\ErrorEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Core\ExpressionTreeHelpers.cs">
-      <Link>Core\ExpressionTreeHelpers.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Core\ExpressionVisitor.cs">
-      <Link>Core\ExpressionVisitor.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\Core\ExtendedBindingList.cs">
       <Link>Core\ExtendedBindingList.cs</Link>
@@ -248,9 +146,6 @@
     <Compile Include="..\Csla.core\Core\IManageProperties.cs">
       <Link>Core\IManageProperties.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\Core\InnermostWhereFinder.cs">
-      <Link>Core\InnermostWhereFinder.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\Core\INotifyBusy.cs">
       <Link>Core\INotifyBusy.cs</Link>
     </Compile>
@@ -268,9 +163,6 @@
     </Compile>
     <Compile Include="..\Csla.core\Core\IParent.cs">
       <Link>Core\IParent.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Core\IPositionMappable.cs">
-      <Link>Core\IPositionMappable.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\Core\IPropertyInfo.cs">
       <Link>Core\IPropertyInfo.cs</Link>
@@ -334,9 +226,6 @@
     </Compile>
     <Compile Include="..\Csla.core\Core\ObservableBindingList.cs">
       <Link>Core\ObservableBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Core\PositionMap.cs">
-      <Link>Core\PositionMap.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\Core\ReadOnlyBindingList.cs">
       <Link>Core\ReadOnlyBindingList.cs</Link>
@@ -455,47 +344,11 @@
     <Compile Include="..\Csla.core\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\IndexableAttribute.cs">
-      <Link>IndexableAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\IndexModeEnum.cs">
-      <Link>IndexModeEnum.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\LinqBindingList.cs">
       <Link>LinqBindingList.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\LinqObservableCollection.cs">
       <Link>LinqObservableCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\BalancedTreeIndex.cs">
-      <Link>Linq\BalancedTreeIndex.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\CslaQueryProvider.cs">
-      <Link>Linq\CslaQueryProvider.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IBalancedSearch.cs">
-      <Link>Linq\IBalancedSearch.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IIndex.cs">
-      <Link>Linq\IIndex.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IIndexSearchable.cs">
-      <Link>Linq\IIndexSearchable.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IIndexSet.cs">
-      <Link>Linq\IIndexSet.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\Index.cs">
-      <Link>Linq\Index.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IndexSet.cs">
-      <Link>Linq\IndexSet.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\IRangeTestableIndex.cs">
-      <Link>Linq\IRangeTestableIndex.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.core\Linq\RedBlackTreeWrapper.cs">
-      <Link>Linq\RedBlackTreeWrapper.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\NameValueListBase.cs">
       <Link>NameValueListBase.cs</Link>
@@ -829,9 +682,6 @@
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Csla.core\Linq\IndexingModelDiagram.cd">
-      <Link>Linq\IndexingModelDiagram.cd</Link>
-    </None>
     <None Include="CslaKey.snk" />
     <None Include="Properties\Settings.settings" />
   </ItemGroup>

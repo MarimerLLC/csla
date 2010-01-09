@@ -237,21 +237,4 @@ namespace Csla
 
     #endregion
   }
-
-  /// <summary>
-  /// Extension method for implementation of LINQ methods on ReadOnlyListBase
-  /// </summary>
-  public static class ReadOnlyListBaseExtension
-  {
-    /// <summary>
-    /// Custom implementation of Where for ReadOnlyListBase - used in LINQ
-    /// </summary>
-    public static IEnumerable<C> Where<T, C>(this ReadOnlyListBase<T, C> source, Expression<Func<C, bool>> expr)
-      where T : ReadOnlyListBase<T, C>
-      where C : Core.IReadOnlyObject
-    {
-      foreach (C item in source.SearchByExpression(expr))
-        yield return item;
-    }
-  }
 }

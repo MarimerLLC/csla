@@ -22,7 +22,6 @@ namespace Csla
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
       Core.ISavable, Core.IParent, Server.IDataPortalTarget,
-      IQueryable<C>, Linq.IIndexSearchable<C>, Core.IPositionMappable<C>,
       INotifyBusy
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
@@ -34,7 +33,6 @@ namespace Csla
     /// </summary>
     protected BusinessBindingListBase()
     {
-      _expression = Expression.Constant(this);
       Initialize();
     }
 
@@ -285,17 +283,7 @@ namespace Csla
         {
           child = this[index];
 
-          //ACE: Important, make sure to remove the item prior to
-          //     it going through undo, otherwise, it will
-          //     incur a more expensive RemoveByReference operation
-          DeferredLoadIndexIfNotLoaded();
-          _indexSet.RemoveItem(child);
-
           child.UndoChanges(_editLevel, false);
-
-          //ACE: Now that we have undone the changes, we can add the item
-          //     back in the index.
-          _indexSet.InsertItem(child);
 
           // if item is below its point of addition, remove
           if (child.EditLevelAdded > _editLevel)
@@ -305,7 +293,6 @@ namespace Csla
             {
               this.AllowRemove = true;
               _completelyRemoveChild = true;
-              RemoveIndexItem(child);
               RemoveAt(index);
             }
             finally
@@ -395,10 +382,6 @@ namespace Csla
     {
       // set child edit level
       Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
-      // remove from the index
-      RemoveIndexItem(child);
-      // remove from the position map
-      RemoveFromMap(child);
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -415,7 +398,6 @@ namespace Csla
       // we need to preserve the object's editleveladded value
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
-      InsertIndexItem(child);
       Add(child);
       child.EditLevelAdded = saveLevel;
     }
@@ -442,9 +424,7 @@ namespace Csla
     /// <param name="child">The child object to remove.</param>
     void Core.IEditableCollection.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
-      RemoveFromMap((C)child);
       Remove((C)child);
-      RemoveIndexItem((C)child);
     }
 
     object IEditableCollection.GetDeletedList()
@@ -459,9 +439,7 @@ namespace Csla
     /// <param name="child">The child object to remove.</param>
     void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
     {
-      RemoveFromMap((C)child);
       Remove((C)child);
-      RemoveIndexItem((C)child);
     }
 
     /// <summary>
@@ -479,9 +457,7 @@ namespace Csla
       // a new object and so the edit level when it was
       // added must be set
       item.EditLevelAdded = _editLevel;
-      InsertIndexItem(item);
       base.InsertItem(index, item);
-      InsertIntoMap(item, index);
     }
 
     /// <summary>
@@ -498,8 +474,6 @@ namespace Csla
       try
       {
         this.RaiseListChangedEvents = false;
-        RemoveIndexItem(child);
-        RemoveFromMap(child);
         base.RemoveItem(index);
       }
       finally
@@ -522,11 +496,8 @@ namespace Csla
     /// </summary>
     protected override void ClearItems()
     {
-      while (base.Count > 0) RemoveItem(0);
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndexes();
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.ClearMap();
+      while (base.Count > 0) 
+        RemoveItem(0);
       base.ClearItems();
     }
 
@@ -558,17 +529,9 @@ namespace Csla
         Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
         // reset EditLevelAdded 
         item.EditLevelAdded = this.EditLevel;
-        // update the indexes
-        ReIndexItem(item);
 
-        //handle mapping
-        //for mapping purposes, you are removing the thing at the index
-        //var itemWeAreReplacing = this[index];
-        //RemoveFromMap(itemWeAreReplacing);
-        //RemoveFromMap(item);
         // add to list
         base.SetItem(index, item);
-        InsertIntoMap(item, index);
       }
       finally
       {
@@ -594,10 +557,6 @@ namespace Csla
     {
       if (_deserialized && RaiseListChangedEvents && e != null)
       {
-        DeferredLoadIndexIfNotLoaded();
-        if (_indexSet.HasIndexFor(e.PropertyName))
-          ReIndexItem((C)sender, e.PropertyName);
-
         for (int index = 0; index < Count; index++)
         {
           if (ReferenceEquals(this[index], sender))
@@ -629,187 +588,6 @@ namespace Csla
           break;
         }
       return result;
-    }
-
-    #endregion
-
-    #region Indexing
-
-    [NonSerialized]
-    private Linq.IIndexSet<C> _indexSet;
-
-    private void DeferredLoadIndexIfNotLoaded()
-    {
-      if (_indexSet == null) _indexSet = new Csla.Linq.IndexSet<C>();
-    }
-
-    /// <summary>
-    /// Allows users of CSLA to override the indexing behavior of BLB
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Type IndexingProvider
-    {
-      get {
-        DeferredLoadIndexIfNotLoaded();
-        return _indexSet.GetType(); 
-      }
-      set {
-        if (value.IsClass && !value.IsAbstract && value.IsAssignableFrom(typeof(Linq.IIndexSet<C>)))
-        {
-          _indexSet = Activator.CreateInstance(value) as Linq.IIndexSet<C>;
-          ReIndexAll();
-        }
-      }
-    }
-
-
-    private IndexModeEnum IndexModeFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].IndexMode;
-      else
-        return IndexModeEnum.IndexModeNever;
-    }
-
-    private bool IndexLoadedFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].Loaded;
-      else
-        return false;
-    }
-
-    private void LoadIndexIfNotLoaded(string property)
-    {
-      if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
-        if (!IndexLoadedFor(property))
-        {
-          _indexSet.LoadIndex(property);
-          ReIndex(property);
-        }
-    }
-
-    private void InsertIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item);
-    }
-
-    private void InsertIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item, property);
-    }
-
-    private void RemoveIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item);
-    }
-
-    private void RemoveIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item, property);
-    }
-
-    private void ReIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item, property);
-    }
-
-    private void ReIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item);
-    }
-
-    private void ReIndexAll()
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndexes();
-      foreach (C item in this)
-        InsertIndexItem(item);
-    }
-
-    private void ReIndex(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndex(property);
-      foreach (C item in this)
-        InsertIndexItem(item, property);
-      _indexSet[property].LoadComplete();
-    }
-    
-    #endregion
-
-    #region PositionMapping
-    [NonSerialized]
-    private Core.PositionMap<C> _positionMap;
-
-    private void DeferredLoadPositionMapIfNotLoaded()
-    {
-      if (_positionMap == null) _positionMap = new Csla.Core.PositionMap<C>(this);
-    }
-
-    private void RemoveFromMap(C child)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.RemoveFromMap(child);
-    }
-
-    private void InsertIntoMap(C child, int position)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.InsertIntoMap(child, position);
-    }
-
-    private void AddToMap(C child)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      _positionMap.AddToMap(child);
-      
-    }
-
-    /// <summary>
-    /// Determines the position of a specific item from the list
-    /// </summary>
-    public int PositionOf(C item)
-    {
-      DeferredLoadPositionMapIfNotLoaded();
-      return _positionMap.PositionOf(item);
-    }
-
-    #endregion
-
-    #region Where Implementation
-    /// <summary>
-    /// Iterates through a set of items according to the expression passed to it.
-    /// </summary>
-    public IEnumerable<C> SearchByExpression(Expression<Func<C, bool>> expr)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      string property = _indexSet.HasIndexFor(expr);
-      if (
-        property != null &&
-        IndexModeFor(property) != IndexModeEnum.IndexModeNever
-          )
-      {
-        LoadIndexIfNotLoaded(property);
-        foreach (C item in _indexSet.Search(expr, property))
-          yield return item;
-      }
-      else
-      {
-        
-        IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
-        var result = sourceEnum.Where<C>(expr.Compile());
-        foreach (C item in result)
-          yield return item;
-      }
     }
 
     #endregion
@@ -1400,66 +1178,6 @@ namespace Csla
         return false;
       }
     }
-
-    #endregion
-
-    #region LinqIntegration
-
-    [NonSerialized]
-    IQueryProvider _queryProvider;
-
-    [NonSerialized]
-    Expression _expression;
-
-    //internal void SetCurrentExpression(Expression ex)
-    //{
-    //  _expression = ex;
-    //}
-
-    private void LoadProviderIfNotLoaded()
-    {
-      _queryProvider = new Csla.Linq.CslaQueryProvider<T, C>(this);
-    }
-
-    #region IQueryable Members
-
-    /// <summary>
-    /// Required for IQueryable - returns the ElementType (maps to C)
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public Type ElementType
-    {
-      get { return typeof(C); }
-    }
-
-    /// <summary>
-    /// Last expression used in a linq query
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public Expression Expression
-    {
-      get { 
-          if (_expression == null)
-              _expression = Expression.Constant(this);
-          return _expression; 
-      }
-    }
-
-    /// <summary>
-    /// Query provider currently being used
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Browsable(false)]
-    public IQueryProvider Provider
-    {
-      get {
-        return new Linq.CslaQueryProvider<T, C>(this);
-      }
-    }
-
-    #endregion
 
     #endregion
 

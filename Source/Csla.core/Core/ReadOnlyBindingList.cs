@@ -67,8 +67,6 @@ namespace Csla.Core
         bool oldValue = AllowRemove;
         AllowRemove = true;
         base.ClearItems();
-        DeferredLoadIndexIfNotLoaded();
-        _indexSet.ClearIndexes();
         AllowRemove = oldValue;
       }
       else
@@ -95,7 +93,6 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
-        InsertIndexItem(item);
         base.InsertItem(index, item);
       }
       else
@@ -113,7 +110,6 @@ namespace Csla.Core
       {
         bool oldValue = AllowRemove;
         AllowRemove = true;
-        RemoveIndexItem(this[index]);
         base.RemoveItem(index);
         AllowRemove = oldValue;
       }
@@ -132,9 +128,7 @@ namespace Csla.Core
     {
       if (!IsReadOnly)
       {
-        RemoveIndexItem(this[index]);
         base.SetItem(index, item);
-        InsertIndexItem(item);
       }
       else
         throw new NotSupportedException(Resources.ChangeInvalidException);
@@ -161,148 +155,6 @@ namespace Csla.Core
         }
 
         return false;
-      }
-    }
-
-    #endregion
-
-    #region Indexing
-    [NonSerialized]
-    private Linq.IIndexSet<C> _indexSet;
-
-    private void DeferredLoadIndexIfNotLoaded()
-    {
-      if (_indexSet == null) _indexSet = new Csla.Linq.IndexSet<C>();
-    }
-
-    /// <summary>
-    /// Allows users of CSLA to override the indexing behavior of BLB
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Type IndexingProvider
-    {
-      get
-      {
-        DeferredLoadIndexIfNotLoaded();
-        return _indexSet.GetType();
-      }
-      set
-      {
-        if (value.IsClass && !value.IsAbstract && value.IsAssignableFrom(typeof(Linq.IIndexSet<C>)))
-        {
-          _indexSet = Activator.CreateInstance(value) as Linq.IIndexSet<C>;
-          ReIndexAll();
-        }
-      }
-    }
-
-
-    private IndexModeEnum IndexModeFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].IndexMode;
-      else
-        return IndexModeEnum.IndexModeNever;
-    }
-
-    private bool IndexLoadedFor(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      if (_indexSet.HasIndexFor(property))
-        return _indexSet[property].Loaded;
-      else
-        return false;
-    }
-
-    private void LoadIndexIfNotLoaded(string property)
-    {
-      if (IndexModeFor(property) != IndexModeEnum.IndexModeNever)
-        if (!IndexLoadedFor(property))
-        {
-          _indexSet.LoadIndex(property);
-          ReIndex(property);
-        }
-    }
-
-    private void InsertIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item);
-    }
-
-    private void InsertIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.InsertItem(item, property);
-    }
-
-    private void RemoveIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item);
-    }
-
-    private void RemoveIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.RemoveItem(item, property);
-    }
-
-    private void ReIndexItem(C item, string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item, property);
-    }
-
-    private void ReIndexItem(C item)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ReIndexItem(item);
-    }
-
-    private void ReIndexAll()
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndexes();
-      foreach (C item in this)
-        InsertIndexItem(item);
-    }
-
-    private void ReIndex(string property)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      _indexSet.ClearIndex(property);
-      foreach (C item in this)
-        InsertIndexItem(item, property);
-      _indexSet[property].LoadComplete();
-    }
-
-    #endregion
-
-    #region Where Implementation
-    /// <summary>
-    /// Iterates through a set of items according to the expression passed to it.
-    /// </summary>
-    public IEnumerable<C> SearchByExpression(Expression<Func<C, bool>> expr)
-    {
-      DeferredLoadIndexIfNotLoaded();
-      string property = _indexSet.HasIndexFor(expr);
-      if (
-        property != null &&
-        IndexModeFor(property) != IndexModeEnum.IndexModeNever
-          )
-      {
-        LoadIndexIfNotLoaded(property);
-        foreach (C item in _indexSet.Search(expr, property))
-          yield return item;
-      }
-      else
-      {
-        IEnumerable<C> sourceEnum = this.AsEnumerable<C>();
-        var result = sourceEnum.Where<C>(expr.Compile());
-        foreach (C item in result)
-          yield return item;
       }
     }
 
@@ -356,21 +208,5 @@ namespace Csla.Core
     }
 
     #endregion
-  }
-
-  /// <summary>
-  /// Extension method for implementation of LINQ methods on BusinessListBase
-  /// </summary>
-  public static class ReadOnlyBindingListExtension
-  {
-    /// <summary>
-    /// Custom implementation of Where for BusinessListBase - used in LINQ
-    /// </summary>
-    public static IEnumerable<C> Where<C>(this ReadOnlyBindingList<C> source, Expression<Func<C, bool>> expr)
-      where C : Core.IEditableBusinessObject
-    {
-      foreach (C item in source.SearchByExpression(expr))
-        yield return item;
-    }
   }
 }

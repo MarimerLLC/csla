@@ -67,6 +67,8 @@ namespace cslalighttest.Stereotypes
       root.Name = "justin";
       root.Saved += (o, e) =>
       {
+        if (e.Error != null)
+          Assert.Fail(e.Error.Message);
         var actual = (MockEditableRoot)e.NewObject;
         context.Assert.IsNotNull(actual);
         context.Assert.AreEqual(MockEditableRoot.MockEditableRootId, actual.Id);

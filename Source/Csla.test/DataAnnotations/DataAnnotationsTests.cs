@@ -125,7 +125,7 @@ namespace Csla.Test.DataAnnotations
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     [Required(ErrorMessage = "Name value required")]
     [RegularExpression("[0-9]")]
-    [Range(typeof(string), "0", "9")]
+    [System.ComponentModel.DataAnnotations.Range(typeof(string), "0", "9")]
     public string Name
     {
       get { return GetProperty(NameProperty); }

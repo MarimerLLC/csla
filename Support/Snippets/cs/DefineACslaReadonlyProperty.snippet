@@ -34,10 +34,11 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp" Kind="method decl">
-        <![CDATA[private static PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
+        <![CDATA[public static PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
 public $PropertyType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property); }
+  private set { LoadProperty($PropertyName$Property, value); }
 }]]>
       </Code>
     </Snippet>

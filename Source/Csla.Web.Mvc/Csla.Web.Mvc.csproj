@@ -27,7 +27,7 @@
     <DocumentationFile>..\..\Bin\Debug\Server\Csla.Web.Mvc.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Server\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>

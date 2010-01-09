@@ -28,7 +28,7 @@
     <DocumentationFile>..\..\Bin\Debug\Client\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Client\</OutputPath>
     <DefineConstants>TRACE;CLIENTPROFILE</DefineConstants>
@@ -50,7 +50,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -464,6 +463,9 @@
     </Compile>
     <Compile Include="..\Csla.core\LinqBindingList.cs">
       <Link>LinqBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\LinqObservableCollection.cs">
+      <Link>LinqObservableCollection.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\Linq\BalancedTreeIndex.cs">
       <Link>Linq\BalancedTreeIndex.cs</Link>

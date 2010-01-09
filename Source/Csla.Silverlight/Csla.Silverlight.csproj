@@ -64,7 +64,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Silverlight\</OutputPath>
     <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
@@ -215,6 +215,9 @@
     </Compile>
     <Compile Include="..\csla.core\IndexModeEnum.cs">
       <Link>IndexModeEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\LinqObservableCollection.cs">
+      <Link>LinqObservableCollection.cs</Link>
     </Compile>
     <Compile Include="..\csla.core\RelationshipTypes.cs">
       <Link>RelationshipTypes.cs</Link>

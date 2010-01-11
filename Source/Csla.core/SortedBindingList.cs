@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -316,24 +317,9 @@ namespace Csla
     /// <param name="direction">The direction to sort the data.</param>
     public void ApplySort(string propertyName, ListSortDirection direction)
     {
-      _sortBy = null;
+      _sortBy = GetPropertyDescriptor(propertyName);
 
-      if (!String.IsNullOrEmpty(propertyName))
-      {
-        Type itemType = typeof(T);
-        foreach (PropertyDescriptor prop in 
-          TypeDescriptor.GetProperties(itemType))
-        {
-          if (prop.Name == propertyName)
-          {
-            _sortBy = prop;
-            break;
-          }
-        }
-      }
-      
       ApplySort(_sortBy, direction);
-
     }
 
     /// <summary>
@@ -356,7 +342,15 @@ namespace Csla
     /// <param name="key">Value to find</param>
     public int Find(string propertyName, object key)
     {
-      PropertyDescriptor findProperty = null;
+      PropertyDescriptor findProperty = GetPropertyDescriptor(propertyName);
+
+      return Find(findProperty, key);
+
+    }
+
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    {
+      PropertyDescriptor property = null;
 
       if (!String.IsNullOrEmpty(propertyName))
       {
@@ -365,14 +359,17 @@ namespace Csla
         {
           if (prop.Name == propertyName)
           {
-            findProperty = prop;
+            property = prop;
             break;
           }
         }
+
+        // throw exception if propertyDescriptor could not be found
+        if (property == null)
+          throw new ArgumentException(string.Format(Resources.SortedBindingListPropertyNameNotFound, propertyName), propertyName);
       }
 
-      return Find(findProperty, key);
-
+      return property;
     }
 
     /// <summary>

@@ -43,6 +43,11 @@ namespace Csla.Test.SortedBindingList
             sortedList.RemoveSort();
             Assert.AreEqual(false, sortedList.IsSorted);
             Assert.AreEqual(56, sortedList[3]);
+            
+            // This list dowes not support searching 
+            Assert.IsFalse(sortedList.SupportsSearching);
+            // and Find must always return -1
+            Assert.AreEqual(-1, sortedList.Find("", 56));
         }
 
         public void sortedList_ListChanged(object sender, ListChangedEventArgs e)
@@ -72,6 +77,7 @@ namespace Csla.Test.SortedBindingList
             }
 
             Assert.AreEqual("Corey", sortedList[5]);
+            Assert.AreEqual(5, sortedList.Find("", "Corey"));
 
             Console.WriteLine();
             Console.WriteLine(sortedList.Count);
@@ -165,6 +171,24 @@ namespace Csla.Test.SortedBindingList
         SortedBindingList<string> sortedList = new SortedBindingList<string>(list);
 
         Assert.IsTrue(ReferenceEquals(list, sortedList.SourceList), "List references should match");
+      }
+
+      [TestMethod]
+      [ExpectedException(typeof(ArgumentException))]
+      public void ApplySort_ThrowException_WhenPropertyNameNotFound()
+      {
+        int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+        SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+        sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending);
+      }
+
+      [TestMethod]
+      [ExpectedException(typeof(ArgumentException))]
+      public void Find_ThrowException_WhenPropertyNameNotFound()
+      {
+        int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+        SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
+        sortedList.Find("NotAProperty", 7);
       }
     }
 }

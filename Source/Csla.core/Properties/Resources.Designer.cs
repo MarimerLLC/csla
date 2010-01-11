@@ -429,9 +429,6 @@ namespace Csla.Properties {
             }
         }
         
-        /// <summary>
-        /// Looks up the favicon
-        /// </summary>
         public static System.Drawing.Icon favicon {
             get {
                 object obj = ResourceManager.GetObject("favicon", resourceCulture);
@@ -868,6 +865,15 @@ namespace Csla.Properties {
         public static string SmartDateYesterday {
             get {
                 return ResourceManager.GetString("SmartDateYesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PropertyName &apos;{0}&apos; not found in list.
+        /// </summary>
+        public static string SortedBindingListPropertyNameNotFound {
+            get {
+                return ResourceManager.GetString("SortedBindingListPropertyNameNotFound", resourceCulture);
             }
         }
         

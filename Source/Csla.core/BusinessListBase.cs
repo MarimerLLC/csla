@@ -5,7 +5,6 @@ using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -20,11 +19,16 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
+#if SILVERLIGHT
+      ExtendedBindingList<C>,
+#else
       MobileObservableCollection<C>,
+#endif
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy
@@ -230,6 +234,18 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override void  AddNewCore()
+    {
+      var item = DataPortal.CreateChild<C>();
+      Add(item);
+      OnAddedNew(item);
+    }
+#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -240,6 +256,7 @@ namespace Csla
       Add(item);
       return item;
     }
+#endif
 
     /// <summary>
     /// This method is called by a child object when it
@@ -811,7 +828,11 @@ namespace Csla
     /// with default values.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void Child_Create()
+#else
     protected virtual void Child_Create()
+#endif
     { /* do nothing - list self-initializes */ }
 
     /// <summary>
@@ -824,6 +845,28 @@ namespace Csla
     /// methods.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void Child_Update(params object[] parameters)
+    {
+      var oldRLCE = this.RaiseListChangedEvents;
+      this.RaiseListChangedEvents = false;
+      try
+      {
+        ChildDataPortal<C> dp = new ChildDataPortal<C>();
+        foreach (var child in DeletedList)
+          dp.Update(child, parameters);
+
+        DeletedList.Clear();
+
+        foreach (var child in this)
+          if (child.IsDirty) dp.Update(child, parameters);
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = oldRLCE;
+      }
+    }
+#else
     protected virtual void Child_Update(params object[] parameters)
     {
       var oldRLCE = this.RaiseListChangedEvents;
@@ -842,11 +885,13 @@ namespace Csla
         this.RaiseListChangedEvents = oldRLCE;
       }
     }
+#endif
 
     #endregion
 
     #region Data Access
 
+#if !SILVERLIGHT
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -897,6 +942,7 @@ namespace Csla
       OnSaved(result, null, null);
       return result;
     }
+#endif
 
     /// <summary>
     /// Starts an async operation to save the object to the database.
@@ -1003,9 +1049,15 @@ namespace Csla
     /// values from the database.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+#if SILVERLIGHT
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+#else
     protected virtual void DataPortal_Create()
+#endif
     { }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Override this method to allow retrieval of an existing business
     /// object based on data in the database.
@@ -1036,6 +1088,7 @@ namespace Csla
     {
       throw new NotSupportedException(Resources.DeleteNotSupportedException);
     }
+#endif
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -1044,10 +1097,12 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+#else
     protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-
-    }
+#endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
@@ -1056,10 +1111,12 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+#else
     protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-
-    }
+#endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal if an exception
@@ -1069,10 +1126,12 @@ namespace Csla
     /// <param name="ex">The Exception thrown during data access.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+#else
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-
-    }
+#endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -1081,9 +1140,12 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
+#else
     protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-    }
+#endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
@@ -1092,9 +1154,12 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+#else
     protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-    }
+#endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal if an exception
@@ -1104,14 +1169,48 @@ namespace Csla
     /// <param name="ex">The Exception thrown during data access.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+#if SILVERLIGHT
+    public virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+#else
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-    }
+#endif
+    { }
 
     #endregion
 
     #region ISavable Members
+#if SILVERLIGHT
 
+    void ISavable.BeginSave()
+    {
+      BeginSave();
+    }
+
+    void ISavable.SaveComplete(object newObject, Exception error, object userState)
+    {
+      OnSaved((T)newObject, error, userState);
+    }
+
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+
+    /// <summary>
+    /// Raises the <see cref="Saved"/> event, indicating that the
+    /// object has been saved, and providing a reference
+    /// to the new object instance.
+    /// </summary>
+    /// <param name="newObject">The new object instance.</param>
+    /// <param name="error">Exception object.</param>
+    /// <param name="userState">User state object.</param>
+    protected void OnSaved(T newObject, Exception error, object userState)
+    {
+      if (Saved != null)
+        Saved(this, new SavedEventArgs(newObject, error, userState));
+    }
+
+#else
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1129,9 +1228,7 @@ namespace Csla
 
     [NonSerialized()]
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
-    [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<Csla.Core.SavedEventArgs> _savedEvent;
 
     /// <summary>
     /// Event raised when an object has been saved.
@@ -1142,25 +1239,13 @@ namespace Csla
     {
       add
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_serializableSavedHandlers, value);
-        else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+        _savedEvent = (EventHandler<Csla.Core.SavedEventArgs>)
+          System.Delegate.Combine(_savedEvent, value);
       }
       remove
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_serializableSavedHandlers, value);
-        else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+        _savedEvent = (EventHandler<Csla.Core.SavedEventArgs>)
+          System.Delegate.Remove(_savedEvent, value);
       }
     }
 
@@ -1176,12 +1261,10 @@ namespace Csla
     protected void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-      if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this, args);
-      if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this, args);
+      if (_savedEvent != null)
+        _savedEvent.Invoke(this, args);
     }
-
+#endif
     #endregion
 
     #region  Parent/Child link
@@ -1268,6 +1351,7 @@ namespace Csla
 
   }
 
+#if !SILVERLIGHT
   /// <summary>
   /// Extension method for implementation of LINQ methods on BusinessListBase
   /// </summary>
@@ -1286,4 +1370,5 @@ namespace Csla
       return new LinqObservableCollection<C>(source, output.ToList());
     }
   }
+#endif
 }

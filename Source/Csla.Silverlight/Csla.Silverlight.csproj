@@ -402,7 +402,9 @@
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessBindingListBase.cs" />
-    <Compile Include="BusinessListBase.cs" />
+    <Compile Include="..\Csla.Core\BusinessListBase.cs">
+      <Link>BusinessListBase.cs</Link>
+    </Compile>
     <Compile Include="Core\ChildChangedEventArgs.cs" />
     <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\ContextDictionary.cs" />

@@ -114,6 +114,7 @@
     <Compile Include="CslaDataProvider\CustomerContactList.cs" />
     <Compile Include="CslaDataProvider\CustomerList.cs" />
     <Compile Include="CslaDataProvider\IDCriteria.cs" />
+    <Compile Include="DataPortal\AsyncPortalWithCulture.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalStub.cs" />
     <Compile Include="DataPortal\SetAppSettingValueCmd.cs" />
     <Compile Include="DataPortal\Single.cs" />

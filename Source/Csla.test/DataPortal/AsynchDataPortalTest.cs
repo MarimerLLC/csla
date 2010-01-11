@@ -18,8 +18,11 @@ using TestMethod = NUnit.Framework.TestAttribute;
 
 using Csla;
 using Csla.Core;
+using System.Threading;
+using System.Globalization;
 using cslalighttest.CslaDataProvider;
 using UnitDriven;
+using Csla.Testing.Business.DataPortal;
 
 using Single=Csla.Test.DataPortalTest.Single;
 
@@ -521,6 +524,44 @@ namespace Csla.Test.DataPortal
         context.Assert.Success();
       });
       context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_sends_cultureinfo_to_dataportal()
+    {
+      string expectedCulture = "IS";
+      string expectedUICulture = "IS";
+      // make sure we are expecting another culture than on the CurrentThread
+      if (Thread.CurrentThread.CurrentCulture.Name == expectedCulture)
+      {
+        expectedCulture = "FR";
+      }
+      if (Thread.CurrentThread.CurrentUICulture.Name == expectedUICulture)
+      {
+        expectedCulture = "FR";
+      }
+      string receivedCulture = string.Empty;
+      string receivedUICulture = string.Empty;
+
+      Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(expectedCulture);
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(expectedUICulture);
+
+      var wait = new System.Threading.AutoResetEvent(false);
+      AsyncPortalWithCulture.BeginExecuteCommand(
+        (o, e) =>
+        {
+          receivedCulture = e.Object.CurrentCulture.ToUpper();
+          receivedUICulture = e.Object.CurrentUICulture.ToUpper();
+          wait.Set();
+        });
+
+      // wait for async function to complete 
+      wait.WaitOne();
+
+      Assert.AreEqual(expectedCulture, receivedCulture);
+      Assert.AreEqual(expectedUICulture, receivedUICulture);
+
+
     }
 
   }

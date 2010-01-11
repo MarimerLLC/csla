@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Csla
 {
@@ -25,6 +27,9 @@ namespace Csla
       public Csla.Core.ContextDictionary ClientContext { get; set; }
       public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
+      // passes CurrentCulture and CurrentUICulture to the async thread
+      public CultureInfo CurrentCulture;
+      public CultureInfo CurrentUICulture;
 
       public DataPortalAsyncRequest(object argument, object userState)
       {
@@ -33,6 +38,8 @@ namespace Csla
         this.ClientContext = Csla.ApplicationContext.ClientContext;
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
         this.UserState = userState;
+        this.CurrentCulture = Thread.CurrentThread.CurrentCulture;
+        this.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
       }
     }
 
@@ -60,6 +67,9 @@ namespace Csla
     {
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
+      // set culture info for background thread 
+      Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
+      Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
     }
 
     #endregion

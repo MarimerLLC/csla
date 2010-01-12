@@ -365,6 +365,9 @@
     <Compile Include="..\Csla.core\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\ReadOnlyBindingListBase.cs">
+      <Link>ReadOnlyBindingListBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.core\ReadOnlyListBase.cs">
       <Link>ReadOnlyListBase.cs</Link>
     </Compile>

@@ -526,6 +526,7 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
+#if !SILVERLIGHT
     [TestMethod]
     public void BeginFetch_sends_cultureinfo_to_dataportal()
     {
@@ -563,6 +564,6 @@ namespace Csla.Test.DataPortal
 
 
     }
-
+#endif
   }
 }

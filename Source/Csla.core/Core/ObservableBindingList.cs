@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Linq;
 using System.Text;
 using System.Reflection;
@@ -21,19 +20,22 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T"></typeparam>
   [Serializable]
-  public class ObservableBindingList<T> : System.Collections.ObjectModel.ObservableCollection<T>, 
+  public class ObservableBindingList<T> : MobileObservableCollection<T>,
     IObservableBindingList,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
   {
+    #region SupportsChangeNotification
+
     private bool _supportsChangeNotificationCore = true;
     /// <summary>
     /// Gets a value indicating whether this object
     /// supports change notification.
     /// </summary>
     protected virtual bool SupportsChangeNotificationCore { get { return _supportsChangeNotificationCore; } }
-    //protected bool IsReadOnlyCore { get; set; }
+
+    #endregion
 
     #region AddNew
 
@@ -189,7 +191,9 @@ namespace Csla.Core
     /// <summary>
     /// Gets the busy status for this object and its child objects.
     /// </summary>
+#if !SILVERLIGHT
     [Browsable(false)]
+#endif
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
@@ -198,7 +202,9 @@ namespace Csla.Core
     /// <summary>
     /// Gets the busy status for this object.
     /// </summary>
+#if !SILVERLIGHT
     [Browsable(false)]
+#endif
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }
@@ -341,8 +347,8 @@ namespace Csla.Core
       // could override if needed
     }
 
-    [OnDeserialized]
-    private void OnDeserializedHandler(StreamingContext context)
+    [System.Runtime.Serialization.OnDeserialized]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       foreach (T item in this)
         OnAddEventHooks(item);
@@ -401,7 +407,7 @@ namespace Csla.Core
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
     private void RaiseChildChanged(
-      object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -427,11 +433,12 @@ namespace Csla.Core
     /// </summary>
     private void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.CollectionChangedArgs);
     }
 
     #endregion
 
+    #region AddNewCore
 
     /// <summary>
     /// Event raised when a new object has been 
@@ -460,6 +467,10 @@ namespace Csla.Core
       throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
     }
 
+    #endregion
+
+    #region OnCollectionChanged
+
     /// <summary>
     /// Raises the CollectionChanged event.
     /// </summary>
@@ -470,5 +481,43 @@ namespace Csla.Core
       if (SupportsChangeNotificationCore && RaiseListChangedEvents)
         base.OnCollectionChanged(e);
     }
+
+    #endregion
+
+    #region MobileObject
+
+    /// <summary>
+    /// Override this method to get custom field values
+    /// from the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnGetState(SerializationInfo info)
+    {
+      base.OnGetState(info);
+      info.AddValue("Csla.Core.MobileList.AllowEdit", AllowEdit);
+      info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
+      info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
+      info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
+      info.AddValue("Csla.Core.MobileList._supportsChangeNotificationCore", _supportsChangeNotificationCore);
+    }
+
+    /// <summary>
+    /// Override this method to set custom field values
+    /// into the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected override void OnSetState(SerializationInfo info)
+    {
+      base.OnSetState(info);
+      AllowEdit = info.GetValue<bool>("Csla.Core.MobileList.AllowEdit");
+      AllowNew = info.GetValue<bool>("Csla.Core.MobileList.AllowNew");
+      AllowRemove = info.GetValue<bool>("Csla.Core.MobileList.AllowRemove");
+      RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
+      _supportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.MobileList._supportsChangeNotificationCore");
+    }
+
+    #endregion
   }
 }

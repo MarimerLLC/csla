@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -17,7 +18,8 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileObservableCollection<T> : ObservableBindingList<T>, IMobileObject
+  public class MobileObservableCollection<T> : System.Collections.ObjectModel.ObservableCollection<T>,
+    IMobileObject
   {
     #region IMobileObject Members
 
@@ -38,12 +40,7 @@ namespace Csla.Core
     /// <param name="info">Serialization info.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnGetState(SerializationInfo info)
-    {
-      info.AddValue("Csla.Core.MobileList.AllowEdit", AllowEdit);
-      info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
-      info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
-      info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
-    }
+    { }
 
     /// <summary>
     /// Override this method to get custom child object
@@ -88,12 +85,7 @@ namespace Csla.Core
     /// <param name="info">Serialization info.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetState(SerializationInfo info)
-    {
-      AllowEdit = info.GetValue<bool>("Csla.Core.MobileList.AllowEdit");
-      AllowNew = info.GetValue<bool>("Csla.Core.MobileList.AllowNew");
-      AllowRemove = info.GetValue<bool>("Csla.Core.MobileList.AllowRemove");
-      RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
-    }
+    { }
 
     /// <summary>
     /// Override this method to set custom child object

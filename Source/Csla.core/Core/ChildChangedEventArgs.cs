@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Csla.Core
 {
@@ -21,6 +22,14 @@ namespace Csla.Core
     /// not a collection or list.
     /// </summary>
     public PropertyChangedEventArgs PropertyChangedArgs { get; private set; }
+    /// <summary>
+    /// Gets the NotifyCollectionChangedEventArgs object from the
+    /// child's CollectionChanged event, if the child is an
+    /// ObservableCollection.
+    /// </summary>
+    public NotifyCollectionChangedEventArgs CollectionChangedArgs { get; private set; }
+
+#if !SILVERLIGHT
     /// <summary>
     /// Gets the ListChangedEventArgs object from the
     /// child's ListChanged event, if the child is a
@@ -45,6 +54,26 @@ namespace Csla.Core
       this.ChildObject = childObject;
       this.PropertyChangedArgs = propertyArgs;
       this.ListChangedArgs = listArgs;
+    }
+#endif
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="childObject">
+    /// Reference to the child object that was changed.
+    /// </param>
+    /// <param name="listArgs">
+    /// ListChangedEventArgs object or null.
+    /// </param>
+    /// <param name="propertyArgs">
+    /// PropertyChangedEventArgs object or null.
+    /// </param>
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    {
+      this.ChildObject = childObject;
+      this.PropertyChangedArgs = propertyArgs;
+      this.CollectionChangedArgs = listArgs;
     }
   }
 }

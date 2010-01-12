@@ -104,6 +104,7 @@
     <Compile Include="Core\MobileObject.cs" />
     <Compile Include="Core\MobileObservableCollection.cs" />
     <Compile Include="Core\ObservableBindingList.cs" />
+    <Compile Include="Core\ReadOnlyObservableBindingList.cs" />
     <Compile Include="Core\UndoableHandler.cs" />
     <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
     <Compile Include="DataPortalResult.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="IDataPortalResult.cs" />
     <Compile Include="LinqBindingList.cs" />
     <Compile Include="LinqObservableCollection.cs" />
+    <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
     <Compile Include="RelationshipTypes.cs" />
     <Compile Include="Reflection\Reflect.cs" />
@@ -240,7 +242,7 @@
     <Compile Include="PropertyInfo.cs" />
     <Compile Include="PropertyLoadException.cs" />
     <Compile Include="ReadOnlyBase.cs" />
-    <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="ReadOnlyBindingListBase.cs" />
     <Compile Include="Reflection\DynamicMethodHandle.cs" />
     <Compile Include="Reflection\DynamicMethodHandlerFactory.cs" />
     <Compile Include="Reflection\LateBoundObject.cs" />

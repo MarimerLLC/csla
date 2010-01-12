@@ -15,7 +15,7 @@ using Csla.Xaml;
 namespace cslalighttest.Serialization
 {
   [Serializable]
-  public class MockReadOnlyList : ReadOnlyListBase<MockReadOnlyList, MockReadOnly>
+  public class MockReadOnlyList : ReadOnlyBindingListBase<MockReadOnlyList, MockReadOnly>
   {
     public MockReadOnlyList() { }
 

@@ -27,7 +27,7 @@ namespace Csla
 #if SILVERLIGHT
       ExtendedBindingList<C>,
 #else
-      MobileObservableCollection<C>,
+      ObservableBindingList<C>,
 #endif
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.IParent, Server.IDataPortalTarget,

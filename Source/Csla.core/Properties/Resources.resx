@@ -433,7 +433,7 @@
   <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
     <value>AddNewCore must be overridden</value>
   </data>
-  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
-    <value>PropertyName '{0}' not found in list</value>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <value>Can not change a read-only list or collection</value>
   </data>
 </root>

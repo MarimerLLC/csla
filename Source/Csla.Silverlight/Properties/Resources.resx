@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrokenRulesMergeException" xml:space="preserve">
     <value>Merge only allowed on custom collection objects</value>
@@ -359,5 +359,8 @@
   </data>
   <data name="ExecuteBadTriggerEvent" xml:space="preserve">
     <value>Trigger event has an unsupported signature</value>
+  </data>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <value>Can not change a read-only list or collection</value>
   </data>
 </root>

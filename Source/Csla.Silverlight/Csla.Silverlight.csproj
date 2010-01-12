@@ -129,8 +129,20 @@
     <Compile Include="..\csla.core\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\Core\IObservableBindingList.cs">
+      <Link>Core\IObservableBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\csla.core\Core\IPropertyInfoFactory.cs">
       <Link>Core\IPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Core\MobileObservableCollection.cs">
+      <Link>Core\MobileObservableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Core\ObservableBindingList.cs">
+      <Link>Core\ObservableBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Core\ReadOnlyObservableBindingList.cs">
+      <Link>Core\ReadOnlyObservableBindingList.cs</Link>
     </Compile>
     <Compile Include="..\csla.core\DataPortalResult.cs">
       <Link>DataPortalResult.cs</Link>
@@ -143,6 +155,9 @@
     </Compile>
     <Compile Include="..\csla.core\Core\BusyChangedEventArgs.cs">
       <Link>Core\BusyChangedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\csla.core\Core\ChildChangedEventArgs.cs">
+      <Link>Core\ChildChangedEventArgs.cs</Link>
     </Compile>
     <Compile Include="..\csla.core\Core\ErrorEventArgs.cs">
       <Link>Core\ErrorEventArgs.cs</Link>
@@ -405,7 +420,6 @@
     <Compile Include="..\Csla.Core\BusinessListBase.cs">
       <Link>BusinessListBase.cs</Link>
     </Compile>
-    <Compile Include="Core\ChildChangedEventArgs.cs" />
     <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
@@ -432,6 +446,9 @@
     <Compile Include="Core\ISupportUndo.cs" />
     <Compile Include="Core\IUndoableObject.cs" />
     <Compile Include="Core\ObjectCloner.cs" />
+    <Compile Include="..\Csla.Core\ReadOnlyListBase.cs">
+      <Link>ReadOnlyListBase.cs</Link>
+    </Compile>
     <Compile Include="Core\ReadOnlyBindingList.cs" />
     <Compile Include="Core\RemovingItemEventArgs.cs" />
     <Compile Include="Core\SavedEventArgs.cs" />
@@ -460,7 +477,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="PropertyLoaderException.cs" />
-    <Compile Include="ReadOnlyListBase.cs" />
+    <Compile Include="ReadOnlyBindingListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />
     <Compile Include="Reflection\CallMethodException.cs" />
     <Compile Include="Reflection\LateBoundObject.cs" />

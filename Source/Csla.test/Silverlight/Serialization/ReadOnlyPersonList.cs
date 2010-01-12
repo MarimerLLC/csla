@@ -6,7 +6,7 @@ using Csla;
 namespace cslalighttest.Serialization
 {
   [Serializable]
-  public class ReadOnlyPersonList : ReadOnlyListBase<ReadOnlyPersonList, ReadOnlyPerson>
+  public class ReadOnlyPersonList : ReadOnlyBindingListBase<ReadOnlyPersonList, ReadOnlyPerson>
   {
     public static ReadOnlyPersonList GetReadOnlyPersonList()
     {

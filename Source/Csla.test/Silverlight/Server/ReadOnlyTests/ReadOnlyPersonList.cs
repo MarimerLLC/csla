@@ -11,7 +11,7 @@ using Csla.DataPortalClient;
 namespace Csla.Testing.Business.ReadOnlyTest
 {
   [Serializable]
-  public class ReadOnlyPersonList : ReadOnlyListBase<ReadOnlyPersonList, ReadOnlyPerson>
+  public class ReadOnlyPersonList : ReadOnlyBindingListBase<ReadOnlyPersonList, ReadOnlyPerson>
   {
 
 

@@ -2087,7 +2087,7 @@ namespace Csla.Core
     /// </summary>
     private void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.CollectionChangedArgs);
     }
 
     #endregion

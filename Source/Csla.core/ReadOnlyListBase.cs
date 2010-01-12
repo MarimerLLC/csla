@@ -1,8 +1,9 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq.Expressions;
+using System.Diagnostics.CodeAnalysis;
+using Csla.Serialization;
 using Csla.Properties;
+using System;
 
 namespace Csla
 {
@@ -12,15 +13,18 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">Type of the list class.</typeparam>
   /// <typeparam name="C">Type of child objects contained in the list.</typeparam>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
-  public abstract class ReadOnlyListBase<T, C> : 
-    Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection, 
+  [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+  [Serializable]
+  public abstract class ReadOnlyListBase<T, C> :
+#if SILVERLIGHT
+    Core.ReadOnlyBindingList<C>,
+#else
+    Core.ObservableBindingList<C>, 
+#endif
+    Csla.Core.IReadOnlyCollection,
     ICloneable, Server.IDataPortalTarget
     where T : ReadOnlyListBase<T, C>
   {
-
     #region Constructors
 
     /// <summary>
@@ -72,6 +76,17 @@ namespace Csla
       return (T)GetClone();
     }
 
+    #endregion
+
+    #region ToArray
+
+    /// <summary>
+    /// Get an array containing all items in the list.
+    /// </summary>
+    public C[] ToArray()
+    {
+      return new List<C>(this).ToArray();
+    }
     #endregion
 
     #region Data Access
@@ -175,20 +190,6 @@ namespace Csla
     {
     }
 
-    #endregion
-
-    #region ToArray
-
-    /// <summary>
-    /// Get an array containing all items in the list.
-    /// </summary>
-    public C[] ToArray()
-    {
-      List<C> result = new List<C>();
-      foreach (C item in this)
-        result.Add(item);
-      return result.ToArray();
-    }
     #endregion
 
     #region IDataPortalTarget Members

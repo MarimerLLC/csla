@@ -23,13 +23,34 @@ namespace Csla.Test.SmartDate
   [TestClass()]
   public class SmartDateTests
   {
+    System.Globalization.CultureInfo CurrentCulture { get; set; }
+    System.Globalization.CultureInfo CurrentUICulture { get; set; }
+
+    [TestInitialize]
+    public void Setup()
+    {
+      // store current cultures
+      CurrentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+      CurrentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+
+      // set to "en-US" for all tests
+      System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+      System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      // restore original cultures
+      System.Threading.Thread.CurrentThread.CurrentCulture = CurrentCulture;
+      System.Threading.Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
+    }
+
+
     #region Test Constructors
     [TestMethod()]
     public void TestSmartDateConstructors()
     {
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo("en-US");
-
       DateTime now = DateTime.Now;
       Csla.SmartDate d = new Csla.SmartDate(now);
       Assert.AreEqual(now, d.Date);
@@ -88,9 +109,6 @@ namespace Csla.Test.SmartDate
     [TestMethod]
     public void TestConverters()
     {
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo("en-US");
-
       DateTime d = Csla.SmartDate.StringToDate("1/1/2005");
       Assert.AreEqual("1/1/2005", d.ToShortDateString());
       d = Csla.SmartDate.StringToDate("january-1-2005");
@@ -198,9 +216,6 @@ namespace Csla.Test.SmartDate
     [TestMethod()]
     public void Comparison()
     {
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo("en-US");
-
       Csla.SmartDate d2 = new Csla.SmartDate(true);
       Csla.SmartDate d3 = new Csla.SmartDate(false);
       Csla.SmartDate d4 = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MinDate);
@@ -342,9 +357,6 @@ namespace Csla.Test.SmartDate
     [TestMethod]
     public void TryParseTest()
     {
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo("en-US");
-
       Csla.SmartDate sd = new Csla.SmartDate();
       if (Csla.SmartDate.TryParse("blah", ref sd))
         Assert.AreEqual(true, false, "TryParse should have failed");

@@ -4,6 +4,7 @@ using System;
 using UnitDriven;
 using Microsoft.VisualBasic;
 using Csla.Serialization.Mobile;
+using System.Threading;
 
 #if NUNIT
 using NUnit.Framework;
@@ -33,16 +34,16 @@ namespace Csla.Test.SmartDate
       CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
       CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
 
-      //System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-      //System.Globalization.CultureInfo.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+      Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+      Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
     }
 
    [TestCleanup]
     public void Cleanup()
     {
       // restore original cultures
-      //System.Globalization.CultureInfo.CurrentCulture = CurrentCulture;
-      //System.Globalization.CultureInfo.CurrentUICulture =  CurrentUICulture;
+      Thread.CurrentThread.CurrentCulture = CurrentCulture;
+      Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
     }
 #else
     [TestInitialize]

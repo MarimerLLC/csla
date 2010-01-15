@@ -152,6 +152,8 @@ namespace Csla.DataPortalClient
       request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
       request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
       request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
       return request;
     }
 
@@ -162,6 +164,8 @@ namespace Csla.DataPortalClient
       request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
       request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
       request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
       return request;
     }
 

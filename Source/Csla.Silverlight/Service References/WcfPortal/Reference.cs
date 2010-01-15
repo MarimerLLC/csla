@@ -22,6 +22,10 @@ namespace Csla.WcfPortal {
         
         private byte[] ClientContextField;
         
+        private string ClientCultureField;
+        
+        private string ClientUICultureField;
+        
         private byte[] CriteriaDataField;
         
         private byte[] GlobalContextField;
@@ -39,6 +43,32 @@ namespace Csla.WcfPortal {
                 if ((object.ReferenceEquals(this.ClientContextField, value) != true)) {
                     this.ClientContextField = value;
                     this.RaisePropertyChanged("ClientContext");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ClientCulture {
+            get {
+                return this.ClientCultureField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ClientCultureField, value) != true)) {
+                    this.ClientCultureField = value;
+                    this.RaisePropertyChanged("ClientCulture");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ClientUICulture {
+            get {
+                return this.ClientUICultureField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ClientUICultureField, value) != true)) {
+                    this.ClientUICultureField = value;
+                    this.RaisePropertyChanged("ClientUICulture");
                 }
             }
         }
@@ -277,6 +307,10 @@ namespace Csla.WcfPortal {
         
         private byte[] ClientContextField;
         
+        private string ClientCultureField;
+        
+        private string ClientUICultureField;
+        
         private byte[] GlobalContextField;
         
         private byte[] ObjectDataField;
@@ -292,6 +326,32 @@ namespace Csla.WcfPortal {
                 if ((object.ReferenceEquals(this.ClientContextField, value) != true)) {
                     this.ClientContextField = value;
                     this.RaisePropertyChanged("ClientContext");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ClientCulture {
+            get {
+                return this.ClientCultureField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ClientCultureField, value) != true)) {
+                    this.ClientCultureField = value;
+                    this.RaisePropertyChanged("ClientCulture");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ClientUICulture {
+            get {
+                return this.ClientUICultureField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ClientUICultureField, value) != true)) {
+                    this.ClientUICultureField = value;
+                    this.RaisePropertyChanged("ClientUICulture");
                 }
             }
         }

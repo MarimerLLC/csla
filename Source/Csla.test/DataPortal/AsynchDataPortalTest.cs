@@ -23,7 +23,8 @@ using System.Globalization;
 using cslalighttest.CslaDataProvider;
 using UnitDriven;
 using Csla.Testing.Business.DataPortal;
-
+using System.Threading;
+using System.Globalization;
 using Single=Csla.Test.DataPortalTest.Single;
 
 namespace Csla.Test.DataPortal
@@ -31,12 +32,44 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class AsynchDataPortalTest : TestBase
   {
+    private CultureInfo CurrentCulture;
+    private CultureInfo CurrentUICulture;
+
 #if SILVERLIGHT
     [TestInitialize]
     public void Setup()
     {
       Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
       Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+
+      CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
+      CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
+
+      Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+      Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      // restore original cultures
+      Thread.CurrentThread.CurrentCulture = CurrentCulture;
+      Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
+    }
+#else 
+
+    [TestInitialize]
+    public void Setup()
+    {
+      CurrentCulture = Thread.CurrentThread.CurrentCulture;
+      CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      Thread.CurrentThread.CurrentCulture = CurrentCulture;
+      Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
     }
 #endif
 
@@ -526,43 +559,45 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
-#if !SILVERLIGHT
+#if SILVERLIGHT
     [TestMethod]
     public void BeginFetch_sends_cultureinfo_to_dataportal()
     {
-      string expectedCulture = "IS";
-      string expectedUICulture = "IS";
-      // make sure we are expecting another culture than on the CurrentThread
-      if (Thread.CurrentThread.CurrentCulture.Name == expectedCulture)
-      {
-        expectedCulture = "FR";
-      }
-      if (Thread.CurrentThread.CurrentUICulture.Name == expectedUICulture)
-      {
-        expectedCulture = "FR";
-      }
-      string receivedCulture = string.Empty;
-      string receivedUICulture = string.Empty;
+      string expectedCulture = CultureInfo.CurrentCulture.Name;
+      string expectedUICulture = CultureInfo.CurrentUICulture.Name;
 
-      Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(expectedCulture);
-      Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(expectedUICulture);
-
-      var wait = new System.Threading.AutoResetEvent(false);
+      var context = GetContext();
       AsyncPortalWithCulture.BeginExecuteCommand(
         (o, e) =>
         {
-          receivedCulture = e.Object.CurrentCulture.ToUpper();
-          receivedUICulture = e.Object.CurrentUICulture.ToUpper();
-          wait.Set();
+          //if (e.Error != null)
+          //  System.Diagnostics.Debug.WriteLine("BeginFetch_sends_cultureinfo_to_dataportal: Error {0}", e.Error.ToString());
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
+          context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
+          Context.Assert.Success();
         });
 
-      // wait for async function to complete 
-      wait.WaitOne();
+      context.Complete();
+    }
+#else
+    [TestMethod]
+    public void BeginFetch_sends_cultureinfo_to_dataportal()
+    {
+      string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;
+      string expectedUICulture = Thread.CurrentThread.CurrentUICulture.Name;
 
-      Assert.AreEqual(expectedCulture, receivedCulture);
-      Assert.AreEqual(expectedUICulture, receivedUICulture);
+      var context = GetContext();
+      AsyncPortalWithCulture.BeginExecuteCommand(
+        (o, e) =>
+        {
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
+          context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
+          context.Assert.Success();
+        });
 
-
+      context.Complete();
     }
 #endif
   }

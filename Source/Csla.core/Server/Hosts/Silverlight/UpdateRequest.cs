@@ -34,5 +34,19 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     [DataMember]
     public byte[] ClientContext { get; set; }
+
+    /// <summary>
+    /// Serialized client culture.
+    /// </summary>
+    /// <value>The client culture.</value>
+    [DataMember]
+    public string ClientCulture { get; set; }
+
+    /// <summary>
+    /// Serialized client UI culture.
+    /// </summary>
+    /// <value>The client UI culture.</value>
+    [DataMember]
+    public string ClientUICulture { get; set; }
   }
 }

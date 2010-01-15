@@ -132,6 +132,9 @@
     <Compile Include="..\..\..\..\csla.test\Silverlight\Server\CslaDataProvider\IDCriteria.cs">
       <Link>CslaDataProvider\IDCriteria.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Csla.test\Silverlight\Server\DataPortal\AsyncPortalWithCulture.cs">
+      <Link>DataPortal\AsyncPortalWithCulture.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\csla.test\Silverlight\Server\DataPortal\SetAppSettingValueCmd.cs">
       <Link>DataPortal\SetAppSettingValueCmd.cs</Link>
     </Compile>

@@ -3,6 +3,8 @@
   <xs:complexType name="CriteriaRequest">
     <xs:sequence>
       <xs:element minOccurs="0" name="ClientContext" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="ClientCulture" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ClientUICulture" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CriteriaData" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="GlobalContext" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="Principal" nillable="true" type="xs:base64Binary" />
@@ -32,6 +34,8 @@
   <xs:complexType name="UpdateRequest">
     <xs:sequence>
       <xs:element minOccurs="0" name="ClientContext" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="ClientCulture" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ClientUICulture" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="GlobalContext" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="ObjectData" nillable="true" type="xs:base64Binary" />
       <xs:element minOccurs="0" name="Principal" nillable="true" type="xs:base64Binary" />

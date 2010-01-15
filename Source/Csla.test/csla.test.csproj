@@ -241,6 +241,7 @@
     <Compile Include="Silverlight\CommandBase\CommandBaseTests.cs" />
     <Compile Include="DataPortal\AuthorizeDataPortalTests.cs" />
     <Compile Include="Silverlight\DataPortal\AuthorizeDataPortalTests.cs" />
+    <Compile Include="Silverlight\DataPortal\ClientCultureDataPortalTests.cs" />
     <Compile Include="Silverlight\NameValueList\NameValueListTests.cs" />
     <Compile Include="Silverlight\PropertyGetSet\AbstractGetSet.cs" />
     <Compile Include="Silverlight\PropertyGetSet\InheritedLoadPropertySet.cs" />
@@ -328,6 +329,7 @@
       <LastGenOutput>TestLinqToSqlContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\DataSources\Csla.Test.Data.DataPortalTestDatabaseEntities.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

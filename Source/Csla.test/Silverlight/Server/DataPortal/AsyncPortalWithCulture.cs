@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Csla.DataPortalClient;
 
 namespace Csla.Testing.Business.DataPortal
 {
@@ -20,17 +21,20 @@ namespace Csla.Testing.Business.DataPortal
     public static void BeginExecuteCommand(EventHandler<DataPortalResult<AsyncPortalWithCulture>> handler)
     {
       var command = new AsyncPortalWithCulture();
-      Csla.DataPortal.BeginExecute<AsyncPortalWithCulture>(command, handler);
+      var dp = new DataPortal<AsyncPortalWithCulture>();
+      dp.ExecuteCompleted += handler;
+      dp.BeginExecute(command);
     }
 
 #if !SILVERLIGHT
     protected override void DataPortal_Execute()
-    {
+    {    
       CurrentCulture = Thread.CurrentThread.CurrentCulture.Name;
       CurrentUICulture = Thread.CurrentThread.CurrentUICulture.Name;
     }
+
 #else
-    public void DataPortal_Execute(LocalProxy<SetAppSettingValueCmd>.CompletedHandler handler)
+    public void DataPortal_Execute(LocalProxy<AsyncPortalWithCulture>.CompletedHandler handler)
     {
       handler(this, null);
     }

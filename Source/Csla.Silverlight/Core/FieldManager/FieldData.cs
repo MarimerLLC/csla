@@ -88,7 +88,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public bool IsSelfDirty
+    public virtual bool IsSelfDirty
     {
       get { return IsDirty; }
     }

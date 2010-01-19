@@ -71,6 +71,18 @@ namespace Csla.Core
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">The property info for the property that has changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
+    }
+
     /// <summary>
     /// Raises the PropertyChanging event.
     /// </summary>
@@ -86,6 +98,20 @@ namespace Csla.Core
     {
       if (PropertyChanging != null)
         PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
+    }
+    /// <summary>
+    /// Raises the PropertyChanging event.
+    /// </summary>
+    /// <param name="propertyInfo">The property info for the property that has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change that is about to occur 
+    /// in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanging(propertyInfo.Name);
     }
   }
 }

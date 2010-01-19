@@ -323,6 +323,15 @@ namespace Csla.Core
         _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    /// <summary>
+    /// Raises the PropertyChanged event.
+    /// </summary>
+    /// <param name="propertyInfo">The property info object for the changed property.</param>
+    protected void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
+    }
+
     #endregion
 
     #region MobileObject

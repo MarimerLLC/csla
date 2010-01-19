@@ -108,6 +108,22 @@ namespace Csla.Core
           new PropertyChangedEventArgs(propertyName));
     }
 
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
+    }
+
     #endregion
 
     #region INotifyPropertyChanging
@@ -195,6 +211,22 @@ namespace Csla.Core
       if (_serializableChangingHandlers != null)
         _serializableChangingHandlers.Invoke(this,
           new PropertyChangingEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanging event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has Changing.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanging(propertyInfo.Name);
     }
 
     #endregion

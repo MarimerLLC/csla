@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 // code from Bill McCarthy
@@ -17,65 +18,19 @@ namespace Csla.Windows
   /// data refresh issue with data bound detail controls
   /// as discussed in Chapter 5.</remarks>
   [DesignerCategory("")]
-  [HostProperty("Host")]
   [ProvideProperty("ReadValuesOnChange", typeof(BindingSource))]
   public class BindingSourceRefresh : Component, IExtenderProvider, ISupportInitialize
   {
-
     #region Fields
-
-    private Dictionary<BindingSource, bool> _sources = new Dictionary<BindingSource, bool>();
-
+    private readonly Dictionary<BindingSource, bool> _sources = new Dictionary<BindingSource, bool>();
     #endregion
-
-    #region Property Fields
-
-    private ContainerControl _host = null;
-
-    #endregion
-
     #region Events
-
     /// <summary>
     /// BindingError event is raised when a data binding error occurs due to a exception.
     /// </summary>
     public event BindingErrorEventHandler BindingError = null;
-
     #endregion
-
-    #region Properties
-
-    /// <summary>
-    /// Host gets/sets the component's containing host control (form).
-    /// </summary>
-    [Browsable(false)]
-    [DefaultValue(null)]
-    public ContainerControl Host
-    {
-      get { return (_host); }
-      set
-      {
-        if (_host != value)
-        {
-          // If we are not initialising then unregister any existing host events.
-          if (!_isInitialising && (_host != null))
-          {
-            RegisterControlEvents(_host, false);
-          }
-          _host = value;
-          // If we are not initialisin then register the host events.
-          if (!_isInitialising && (_host != null))
-          {
-            RegisterControlEvents(_host, true);
-          }
-        }
-      }
-    }
-
-    #endregion
-
     #region Constructors
-
     /// <summary>
     /// Constructor creates a new BindingSourceRefresh component then initialises all the different sub components.
     /// </summary>
@@ -83,7 +38,6 @@ namespace Csla.Windows
     {
       InitializeComponent();
     }
-
     /// <summary>
     /// Constructor creates a new BindingSourceRefresh component, adds the component to the container supplied before initialising all the different sub components.
     /// </summary>
@@ -91,20 +45,16 @@ namespace Csla.Windows
     public BindingSourceRefresh(IContainer container)
     {
       container.Add(this);
-
       InitializeComponent();
     }
-
     #endregion
-    
-    #region Designer Functionality
 
+    #region Designer Functionality
     /// <summary>
     /// Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
-
-    /// <summary> 
+    /// <summary>
     /// Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -116,9 +66,7 @@ namespace Csla.Windows
       }
       base.Dispose(disposing);
     }
-
     #region Component Designer generated code
-
     /// <summary>
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
@@ -127,13 +75,9 @@ namespace Csla.Windows
     {
       components = new System.ComponentModel.Container();
     }
-
     #endregion
-
     #endregion
-
     #region Public Methods
-
 
     /// <summary>
     /// CanExtend() returns true if extendee is a binding source.
@@ -144,7 +88,6 @@ namespace Csla.Windows
     {
       return (extendee is BindingSource);
     }
-
     /// <summary>
     /// GetReadValuesOnChange() gets the value of the custom ReadValuesOnChange extender property added to extended controls.
     /// property added to extended controls.
@@ -159,7 +102,6 @@ namespace Csla.Windows
       else
         return false;
     }
-
     /// <summary>
     /// SetReadValuesOnChange() sets the value of the custom ReadValuesOnChange extender
     /// property added to extended controls.
@@ -172,113 +114,122 @@ namespace Csla.Windows
       BindingSource source, bool value)
     {
       _sources[source] = value;
+      if (!_isInitialising)
+      {
+        RegisterControlEvents(source, value);
+      }
     }
-
     #endregion
 
     #region Private Methods
-
     /// <summary>
     /// RegisterControlEvents() registers all the relevant events for the container control supplied and also to all child controls
     /// in the oontainer control.
     /// </summary>
     /// <param name="container">The control (including child controls) to have the refresh events registered.</param>
     /// <param name="register">True to register the events, false to unregister them.</param>
-    private void RegisterControlEvents(Control container, bool register)
+    private void RegisterControlEvents(ICurrencyManagerProvider container, bool register)
     {
+      var currencyManager = container.CurrencyManager;
       // If we are to register the events the do so.
       if (register)
       {
-        container.DataBindings.CollectionChanged += new CollectionChangeEventHandler(DataBindings_CollectionChanged);
-        container.ControlAdded += new ControlEventHandler(Container_ControlAdded);
-        container.ControlRemoved += new ControlEventHandler(Container_ControlRemoved);
+        currencyManager.Bindings.CollectionChanged += Bindings_CollectionChanged;
+        currencyManager.Bindings.CollectionChanging += Bindings_CollectionChanging;
       }
       // Else unregister them.
       else
       {
-        container.DataBindings.CollectionChanged -= new CollectionChangeEventHandler(DataBindings_CollectionChanged);
-        container.ControlAdded -= new ControlEventHandler(Container_ControlAdded);
-        container.ControlRemoved -= new ControlEventHandler(Container_ControlRemoved);
+        currencyManager.Bindings.CollectionChanged -= Bindings_CollectionChanged;
+        currencyManager.Bindings.CollectionChanging += Bindings_CollectionChanging;
       }
-
-      // Reigster the binding complete events for the control.
-      RegisterBindingEvents(container, register);
-
-      // Register/unregister the events on all child controls.
-      foreach (Control control in container.Controls)
-      {
-        RegisterControlEvents(control, register);
-      }
+      // Reigster the binding complete events for the currencymanagers bindings.
+      RegisterBindingEvents(currencyManager.Bindings, register);
     }
+
 
     /// <summary>
-    /// RegisterBindingEvents() registers the binding complete event to all data bindings in control.
+    /// Registers the control events.
     /// </summary>
-    /// <param name="control">The control whose binding complete events are to be registered.</param>
-    /// <param name="register">True to register the events, false to unregister them.</param>
-    private void RegisterBindingEvents(Control control, bool register)
+    /// <param name="source">The source.</param>
+    /// <param name="register">if set to <c>true</c> [register].</param>
+    private void RegisterBindingEvents(BindingsCollection source, bool register)
     {
-      foreach (Binding binding in control.DataBindings)
+      foreach (Binding binding in source)
       {
-        if (register)
-        {
-          binding.BindingComplete += new BindingCompleteEventHandler(Control_BindingComplete);
-        }
-        else
-        {
-          binding.BindingComplete -= new BindingCompleteEventHandler(Control_BindingComplete);
-        }
+        RegisterBindingEvent(binding, register);
       }
     }
-
+    /// <summary>
+    /// Registers the binding event.
+    /// </summary>
+    /// <param name="register">if set to <c>true</c> [register].</param>
+    /// <param name="binding">The binding.</param>
+    private void RegisterBindingEvent(Binding binding, bool register)
+    {
+      if (register)
+      {
+        binding.BindingComplete += Control_BindingComplete;
+      }
+      else
+      {
+        binding.BindingComplete -= Control_BindingComplete;
+      }
+    }
     #endregion
-
     #region Event Methods
 
     /// <summary>
-    /// DataBindings_CollectionChanged() is the data bindings collection change event for a control.
-    /// DataBindings_CollectionChanged() simply updates our binding events hookins correctly based on the collections
-    /// current state.
+    /// Handles the CollectionChanging event of the Bindings control.
+    ///
+    /// Remove event hooks for element or entire list depending on CollectionChangeAction.
     /// </summary>
-    /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">The event arguments.</param>
-    private void DataBindings_CollectionChanged(object sender, CollectionChangeEventArgs e)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
+    private void Bindings_CollectionChanging(object sender, CollectionChangeEventArgs e)
     {
+      //Debug.Print("Bindings_CollectionChanging: {0}, {1}", e.Action, ((Binding)e.Element).BindingMemberInfo.BindingField);
       switch (e.Action)
       {
+        case CollectionChangeAction.Refresh:
+          // remove events for entire list
+          RegisterBindingEvents((BindingsCollection)sender, false);
+          break;
         case CollectionChangeAction.Add:
-          // To prevent duplicate binding complete events unregister the existing bindings first then re-register
-          // them all for the control.
-          RegisterBindingEvents(((ControlBindingsCollection)sender).Control, false);
-          RegisterBindingEvents(((ControlBindingsCollection)sender).Control, true);
+          // adding new element -  remove events for element
+          RegisterBindingEvent((Binding)e.Element, false);
           break;
         case CollectionChangeAction.Remove:
-          RegisterBindingEvents(((ControlBindingsCollection)sender).Control, false);
+          // removing element - remove events for element
+          RegisterBindingEvent((Binding)e.Element, false);
           break;
       }
     }
 
     /// <summary>
-    /// Container_ControlAdded() is the control add event for a control's control collection.
-    /// Container_ControlAdded() simply registers the relevant controller events for the new control as well as registering
-    /// any required bindings - including those for child controls (based on the controls binding source).
+    /// Handles the CollectionChanged event of the Bindings control.
+    ///    
+    /// Add event hooks for element or entire list depending on CollectionChangeAction.
     /// </summary>
-    /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">The event arguments.</param>
-    private void Container_ControlAdded(Object sender, ControlEventArgs e)
+    /// <param name="sender">The source of the event.</param>
+    /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
+    private void Bindings_CollectionChanged(object sender, CollectionChangeEventArgs e)
     {
-      RegisterControlEvents(e.Control, true);
-    }
-
-    /// <summary>
-    /// Container_ControlRemoved() is the control remove event for a control's control collection.
-    /// Container_ControlRemoved() unregisters all events associated with the control - including those for child controls.
-    /// </summary>
-    /// <param name="sender">The object that triggered the event.</param>
-    /// <param name="e">The event arguments.</param>
-    private void Container_ControlRemoved(object sender, ControlEventArgs e)
-    {
-      RegisterControlEvents(e.Control, false);
+      //Debug.Print("Bindings_CollectionChanged: {0}, {1}", e.Action, ((Binding)e.Element).BindingMemberInfo.BindingField);
+      switch (e.Action)
+      {
+        case CollectionChangeAction.Refresh:
+          // refresh entire list  - add event to all items
+          RegisterBindingEvents((BindingsCollection)sender, true);
+          break;
+        case CollectionChangeAction.Add:
+          // new element added - add event to element
+          RegisterBindingEvent((Binding)e.Element, true);
+          break;
+        case CollectionChangeAction.Remove:
+          // element has been removed - do nothing
+          break;
+      }
     }
 
     /// <summary>
@@ -291,6 +242,7 @@ namespace Csla.Windows
     /// <param name="e">The event arguments.</param>
     private void Control_BindingComplete(object sender, BindingCompleteEventArgs e)
     {
+      Debug.Print("Control_BindingComplete: {0}, {1}, {2}", e.BindingCompleteState, e.BindingCompleteContext, e.Binding.BindingMemberInfo.BindingField);
       switch (e.BindingCompleteState)
       {
         case BindingCompleteState.Exception:
@@ -300,6 +252,12 @@ namespace Csla.Windows
           }
           break;
         default:
+          //if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
+          //        && e.Binding.DataSource is BindingSource
+          //        && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
+          //{
+          //    e.Binding.ReadValue();
+          //}
           if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
                   && e.Binding.DataSource is BindingSource
                   && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
@@ -311,11 +269,8 @@ namespace Csla.Windows
     }
 
     #endregion
-
     #region ISupportInitialize Interface
-
     private bool _isInitialising = false;
-
     /// <summary>
     /// BeginInit() is called when the component is starting to be initialised. BeginInit() simply sets the initialisation flag to true.
     /// </summary>
@@ -323,7 +278,6 @@ namespace Csla.Windows
     {
       _isInitialising = true;
     }
-
     /// <summary>
     /// EndInit() is called when the component has finished being initialised.  EndInt() sets the initialise flag to false then runs
     /// through registering all the different events that the component needs to hook into in Host.
@@ -331,14 +285,13 @@ namespace Csla.Windows
     void ISupportInitialize.EndInit()
     {
       _isInitialising = false;
-      if (Host != null)
+      foreach (var source in _sources)
       {
-        RegisterControlEvents(Host, true);
+        if (source.Value)
+          RegisterControlEvents(source.Key, true);
       }
     }
-
     #endregion
-
   }
 
   #region Delegates

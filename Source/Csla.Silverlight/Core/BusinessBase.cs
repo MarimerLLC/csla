@@ -171,7 +171,8 @@ namespace Csla.Core
     /// </remarks>
     protected override void UndoChangesComplete()
     {
-      BindingEdit = false;
+      //Should only be set in methods called by IEditableObject
+      //BindingEdit = false;
       ValidationRules.SetTarget(this);
       InitializeBusinessRules();
       OnUnknownPropertyChanged();
@@ -190,7 +191,8 @@ namespace Csla.Core
     {
       _neverCommitted = false;
       AcceptChanges(this.EditLevel - 1);
-      BindingEdit = false;
+      //Moved to IEditableObject.EndEdit
+      //BindingEdit = false;
     }
 
     /// <summary>
@@ -3078,6 +3080,7 @@ namespace Csla.Core
       if (!_disableIEditableObject && BindingEdit)
       {
         CancelEdit();
+        BindingEdit = false;
         if (IsNew && _neverCommitted && EditLevel <= EditLevelAdded)
         {
           // we're new and no EndEdit or ApplyEdit has ever been
@@ -3095,6 +3098,7 @@ namespace Csla.Core
       if (!_disableIEditableObject && BindingEdit)
       {
         ApplyEdit();
+        BindingEdit = false;
       }
     }
 

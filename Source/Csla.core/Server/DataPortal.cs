@@ -226,12 +226,21 @@ namespace Csla.Server
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
         if (factoryInfo != null)
         {
+          string methodName;
           var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
           var bbase = obj as Core.BusinessBase;
-          if (bbase != null && bbase.IsDeleted)
-            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, new object[] { obj });
+          if (bbase != null)
+          {
+            if (bbase.IsDeleted)
+              methodName = factoryInfo.DeleteMethodName;
+            else
+              methodName = factoryInfo.UpdateMethodName;
+          }
+          else if (obj is CommandBase)
+            methodName = factoryInfo.ExecuteMethodName;
           else
-            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
+            methodName = factoryInfo.UpdateMethodName;
+          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, new object[] { obj });
         }
         else
         {

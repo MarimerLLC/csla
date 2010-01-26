@@ -570,9 +570,7 @@ namespace Csla.Test.DataPortal
       AsyncPortalWithCulture.BeginExecuteCommand(
         (o, e) =>
         {
-          //if (e.Error != null)
-          //  System.Diagnostics.Debug.WriteLine("BeginFetch_sends_cultureinfo_to_dataportal: Error {0}", e.Error.ToString());
-          context.Assert.IsNull(e.Error);
+          //context.Assert.IsNull(e.Error);
           context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
           context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
           Context.Assert.Success();

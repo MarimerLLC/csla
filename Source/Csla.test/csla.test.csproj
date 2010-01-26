@@ -196,6 +196,9 @@
     <Compile Include="MethodCaller\Caller1.cs" />
     <Compile Include="MethodCaller\Caller2.cs" />
     <Compile Include="MethodCaller\Caller3.cs" />
+    <Compile Include="ObjectFactory\CommandObject.cs" />
+    <Compile Include="ObjectFactory\CommandObjectFactory.cs" />
+    <Compile Include="ObjectFactory\CommandObjectMissingFactoryMethod.cs" />
     <Compile Include="ObjectFactory\MissingRoot.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryLoader.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />

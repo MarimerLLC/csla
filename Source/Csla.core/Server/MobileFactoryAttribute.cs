@@ -54,6 +54,14 @@ namespace Csla.Server
     /// invoked based on the parameters passed from the client.
     /// </remarks>
     public string DeleteMethodName { get; private set; }
+    /// <summary>
+    /// Name of the method to call for a execute operation.
+    /// </summary>
+    /// <remarks>
+    /// The appropriate overload of this method will be
+    /// invoked based on the parameters passed from the client.
+    /// </remarks>
+    public string ExecuteMethodName { get; private set; }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -72,6 +80,7 @@ namespace Csla.Server
       this.FetchMethodName = "Fetch";
       this.UpdateMethodName = "Update";
       this.DeleteMethodName = "Delete";
+      this.ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -92,6 +101,7 @@ namespace Csla.Server
       this.FetchMethodName = fetchMethod;
       this.UpdateMethodName = "Update";
       this.DeleteMethodName = "Delete";
+      this.ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -110,6 +120,7 @@ namespace Csla.Server
       this.CreateMethodName = "Create";
       this.UpdateMethodName = "Update";
       this.DeleteMethodName = "Delete";
+      this.ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -135,6 +146,36 @@ namespace Csla.Server
       this.FetchMethodName = fetchMethod;
       this.UpdateMethodName = updateMethod;
       this.DeleteMethodName = deleteMethod;
+      this.ExecuteMethodName = "Execute";
     }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// Assembly qualified type name of the factory object.
+    /// </param>
+    /// <param name="createMethod">
+    /// Name of the method to call for a create operation.</param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    /// <param name="updateMethod">
+    /// Name of the method to call for a update operation.</param>
+    /// <param name="deleteMethod">
+    /// Name of the method to call for a delete operation.</param>
+    /// <param name="executeMethod">
+    /// Name of the method to call for a execute operation.</param>
+    public MobileFactoryAttribute(
+      string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+    {
+      this.FactoryTypeName = factoryType;
+      this.CreateMethodName = createMethod;
+      this.FetchMethodName = fetchMethod;
+      this.UpdateMethodName = updateMethod;
+      this.DeleteMethodName = deleteMethod;
+      this.ExecuteMethodName = executeMethod;
+    }
+
   }
 }

@@ -194,12 +194,19 @@ namespace Csla.Server.Hosts.Silverlight
         }
         else
         {
-          if (string.IsNullOrEmpty(factoryInfo.UpdateMethodName))
+          string methodName;
+          if (obj is CommandBase)
+            methodName = factoryInfo.ExecuteMethodName;
+          else
+          {
+            methodName = factoryInfo.UpdateMethodName;
+          }
+          if (string.IsNullOrEmpty(methodName))
             throw new InvalidOperationException(Resources.UpdateMethodNameNotSpecified);
 
           SetContext(request);
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.UpdateMethodName, obj);
+            o = Csla.Reflection.MethodCaller.CallMethod(f, methodName, obj);
         }
         result.ObjectData = MobileFormatter.Serialize(o);
         result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);

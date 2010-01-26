@@ -19,48 +19,47 @@ namespace Csla.Test.ObjectFactory
   [TestClass]
   public class ObjectFactoryTests
   {
+    /// <summary>
+    /// Always make sure to cleanup after each test 
+    /// </summary>
+    [TestCleanup]
+    public void Cleanup()
+    {
+      Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
+          new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
+      Csla.ApplicationContext.DataPortalProxy = "Local";
+      Csla.DataPortal.ResetProxyType();
+      Csla.Server.FactoryDataPortal.FactoryLoader = null;
+      Csla.ApplicationContext.GlobalContext.Clear();
+    }
+
     [TestMethod]
     public void Create()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      try
-      {
-        Csla.Server.FactoryDataPortal.FactoryLoader =
+
+      Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader();
-        var root = Csla.DataPortal.Create<Root>();
-        Assert.AreEqual("Create", root.Data, "Data should match");
-        Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
-        Assert.IsTrue(root.IsNew, "Should be new");
-        Assert.IsTrue(root.IsDirty, "Should be dirty");
-      }
-      finally
-      {
-        Csla.ApplicationContext.DataPortalProxy = "Local";
-        Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
-          new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
-      }
+
+      var root = Csla.DataPortal.Create<Root>();
+      Assert.AreEqual("Create", root.Data, "Data should match");
+      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
+      Assert.IsTrue(root.IsNew, "Should be new");
+      Assert.IsTrue(root.IsDirty, "Should be dirty");
     }
 
     [TestMethod]
     public void CreateLocal()
     {
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      try
-      {
-        Csla.Server.FactoryDataPortal.FactoryLoader =
-          new ObjectFactoryLoader();
-        var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
-        Assert.AreEqual("Create abc", root.Data, "Data should match");
-        Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
-        Assert.IsTrue(root.IsNew, "Should be new");
-        Assert.IsTrue(root.IsDirty, "Should be dirty");
-      }
-      finally
-      {
-        Csla.ApplicationContext.DataPortalProxy = "Local";
-        Csla.DataPortal.ResetProxyType();
-      }
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader();
+      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+      Assert.AreEqual("Create abc", root.Data, "Data should match");
+      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Client, root.Location, "Location should match");
+      Assert.IsTrue(root.IsNew, "Should be new");
+      Assert.IsTrue(root.IsDirty, "Should be dirty");
     }
 
     [TestMethod]
@@ -68,29 +67,19 @@ namespace Csla.Test.ObjectFactory
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
       Csla.ApplicationContext.DataPortalProxy = "Csla.Testing.Business.TestProxies.AppDomainProxy, Csla.Testing.Business";
-      try
-      {
-        Csla.Server.FactoryDataPortal.FactoryLoader =
+      Csla.Server.FactoryDataPortal.FactoryLoader =
           new ObjectFactoryLoader(1);
-        var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
-        Assert.AreEqual("Create abc", root.Data, "Data should match");
-        Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
-        Assert.IsTrue(root.IsNew, "Should be new");
-        Assert.IsTrue(root.IsDirty, "Should be dirty");
-      }
-      finally
-      {
-        Csla.ApplicationContext.DataPortalProxy = "Local";
-        Csla.DataPortal.ResetProxyType();
-        Csla.ApplicationContext.User = new System.Security.Principal.GenericPrincipal(
-          new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
-      }
+      var root = Csla.DataPortal.Create<Root>(new SingleCriteria<Root, string>("abc"));
+      Assert.AreEqual("Create abc", root.Data, "Data should match");
+      Assert.AreEqual(Csla.ApplicationContext.ExecutionLocations.Server, root.Location, "Location should match");
+      Assert.IsTrue(root.IsNew, "Should be new");
+      Assert.IsTrue(root.IsDirty, "Should be dirty");
     }
 
     [TestMethod]
     public void FetchNoCriteria()
     {
-      Csla.Server.FactoryDataPortal.FactoryLoader =
+      Csla.Server.FactoryDataPortal.FactoryLoader = 
         new ObjectFactoryLoader();
       var root = Csla.DataPortal.Fetch<Root>();
       Assert.AreEqual("Fetch", root.Data, "Data should match");
@@ -183,6 +172,37 @@ namespace Csla.Test.ObjectFactory
       Assert.AreEqual("Fetch", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
+
+    [TestMethod]
+    public void DataPortalExecute_OnCommandObjectWithLocalProxy_CallsFactoryExecute()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
+      Csla.Server.FactoryDataPortal.FactoryLoader = null;
+      var test = CommandObject.Execute();
+      // return value is set in Execute method in CommandObjectFactory
+      Assert.IsTrue(test);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(DataPortalException))]
+    public void DataPortalExecute_OnCommandObjectWithFalseExecuteMethod_ThrowsExeptionMehodNotFound()
+    {
+      try 
+      {
+        Csla.ApplicationContext.GlobalContext.Clear();
+        Csla.Server.FactoryDataPortal.FactoryLoader = null;
+        var test = CommandObjectMissingFactoryMethod.Execute();
+      }
+      catch (DataPortalException ex) 
+      {
+        // inner exception should be System.NotImplementedException and mesaage should contain methodname 
+        Assert.AreEqual(typeof(System.NotImplementedException), ex.InnerException.GetType());
+        Assert.IsTrue(ex.InnerException.Message.Contains("ExecuteMissingMethod"));
+        // rethrow exception 
+        throw;
+      }
+      Assert.Fail("Should throw exception");
     }
   }
 }

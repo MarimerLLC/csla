@@ -278,7 +278,8 @@ namespace Csla
     /// to use this new object.
     /// </para><para>
     /// On the server, the Command object's DataPortal_Execute() method will
-    /// be invoked. Write any server-side code in that method.
+    /// be invoked and on an ObjectFactory the Execute method will be invoked. 
+    /// Write any server-side code in that method. 
     /// </para>
     /// </remarks>
     /// <typeparam name="T">Specific type of the Command object.</typeparam>
@@ -304,7 +305,8 @@ namespace Csla
     /// to use this new object.
     /// </para><para>
     /// On the server, the Command object's DataPortal_Execute() method will
-    /// be invoked. Write any server-side code in that method.
+    /// be invokedand on an ObjectFactory the Execute method will be invoked. 
+    /// Write any server-side code in that method.
     /// </para>
     /// </remarks>
     /// <param name="obj">A reference to the Command object to be executed.</param>
@@ -379,7 +381,10 @@ namespace Csla
                 "save",
                 objectType.Name));
             if (factoryType != null)
-              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
+              if (obj is CommandBase)
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
+              else
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
           }
           if (method == null)
             method = new DataPortalMethodInfo();

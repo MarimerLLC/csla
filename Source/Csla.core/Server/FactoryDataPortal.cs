@@ -152,16 +152,22 @@ namespace Csla.Server
     /// </param>
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
+      string methodName=string.Empty;
       try
       {
         DataPortalResult result = null;
-        result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.UpdateMethodName, obj, context);
+        if (obj is CommandBase)
+          methodName = context.FactoryInfo.ExecuteMethodName;
+        else 
+          methodName = context.FactoryInfo.UpdateMethodName;
+
+        result = InvokeMethod(context.FactoryInfo.FactoryTypeName, methodName, obj, context);
         return result;
       }
       catch (Exception ex)
       {
         throw new DataPortalException(
-          context.FactoryInfo.UpdateMethodName + " " + Resources.FailedOnServer,
+          methodName + " " + Resources.FailedOnServer,
           ex, new DataPortalResult());
       }
     }
@@ -194,6 +200,5 @@ namespace Csla.Server
     }
 
     #endregion
-
   }
 }

@@ -121,6 +121,17 @@ namespace Csla.Windows
     }
     #endregion
 
+    #region Properties
+
+    /// <summary>
+    /// Not in use - kept for backward  compatibility
+    /// </summary>
+    [Browsable(false)]
+    [DefaultValue(null)]
+    public ContainerControl Host {get; set;}
+
+    #endregion 
+
     #region Private Methods
     /// <summary>
     /// RegisterControlEvents() registers all the relevant events for the container control supplied and also to all child controls
@@ -188,7 +199,6 @@ namespace Csla.Windows
     /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
     private void Bindings_CollectionChanging(object sender, CollectionChangeEventArgs e)
     {
-      //Debug.Print("Bindings_CollectionChanging: {0}, {1}", e.Action, ((Binding)e.Element).BindingMemberInfo.BindingField);
       switch (e.Action)
       {
         case CollectionChangeAction.Refresh:
@@ -215,7 +225,6 @@ namespace Csla.Windows
     /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
     private void Bindings_CollectionChanged(object sender, CollectionChangeEventArgs e)
     {
-      //Debug.Print("Bindings_CollectionChanged: {0}, {1}", e.Action, ((Binding)e.Element).BindingMemberInfo.BindingField);
       switch (e.Action)
       {
         case CollectionChangeAction.Refresh:
@@ -242,7 +251,6 @@ namespace Csla.Windows
     /// <param name="e">The event arguments.</param>
     private void Control_BindingComplete(object sender, BindingCompleteEventArgs e)
     {
-      Debug.Print("Control_BindingComplete: {0}, {1}, {2}", e.BindingCompleteState, e.BindingCompleteContext, e.Binding.BindingMemberInfo.BindingField);
       switch (e.BindingCompleteState)
       {
         case BindingCompleteState.Exception:
@@ -252,12 +260,6 @@ namespace Csla.Windows
           }
           break;
         default:
-          //if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
-          //        && e.Binding.DataSource is BindingSource
-          //        && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
-          //{
-          //    e.Binding.ReadValue();
-          //}
           if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
                   && e.Binding.DataSource is BindingSource
                   && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))

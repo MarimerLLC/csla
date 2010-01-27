@@ -1,6 +1,10 @@
 using System;
 using System.Security.Permissions;
 
+#if SILVERLIGHT
+using Csla.Serialization;
+#endif
+
 namespace Csla.Reflection
 {
   /// <summary>
@@ -44,6 +48,7 @@ namespace Csla.Reflection
       _innerStackTrace = ex.StackTrace;
     }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Creates an instance of the object for deserialization.
     /// </summary>
@@ -69,5 +74,6 @@ namespace Csla.Reflection
       base.GetObjectData(info, context);
       info.AddValue("_innerStackTrace", _innerStackTrace);
     }
+#endif
   }
 }

@@ -438,6 +438,9 @@ namespace Csla.Properties {
             }
         }
         
+      /// <summary>
+      /// Looks up a favicon.
+      /// </summary>
         public static System.Drawing.Icon favicon {
             get {
                 object obj = ResourceManager.GetObject("favicon", resourceCulture);

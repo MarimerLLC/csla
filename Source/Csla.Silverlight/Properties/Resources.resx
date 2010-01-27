@@ -363,4 +363,13 @@
   <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
     <value>Can not change a read-only list or collection</value>
   </data>
+  <data name="ConstructorsWithParametersNotSupported" xml:space="preserve">
+    <value>Constructor with parameters are not supported</value>
+  </data>
+  <data name="MemberNotFoundException" xml:space="preserve">
+    <value>Member not found on object ({0})</value>
+  </data>
+  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
+    <value>PropertyName '{0}' not found in list</value>
+  </data>
 </root>

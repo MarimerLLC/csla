@@ -48,9 +48,13 @@ namespace cslalighttest.DataPortalTests
         cust.BeginSave((o, e) =>
           {
             Customer savedCust = (Customer)e.NewObject;
-            context.Assert.AreEqual(savedCust.Method, "Updating Customer new test name");
-            context.Assert.AreEqual(savedCust.Contacts[0].ParentName, "new test name");
-            context.Assert.Success();
+            context.Assert.IsNotNull(savedCust);
+            if (savedCust != null)
+            {
+              context.Assert.AreEqual(savedCust.Method, "Updating Customer new test name");
+              context.Assert.AreEqual(savedCust.Contacts[0].ParentName, "new test name");
+              context.Assert.Success();
+            }
           });
         
       });

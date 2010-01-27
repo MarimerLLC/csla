@@ -6,6 +6,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight.client.test", "Csla.Silverlight.test\UnitTest\CslaLight.Testing\Client\csla.silverlight.client.test.csproj", "{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight.test", "Csla.Silverlight.test\UnitTest\CslaLight.Testing\csla.silverlight.test.csproj", "{5E30B543-3988-4241-98D9-B0D2E44FA02A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BA105340-59DD-4708-B9B4-555B03269B80} = {BA105340-59DD-4708-B9B4-555B03269B80}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.core", "csla.core\csla.core.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject

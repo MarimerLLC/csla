@@ -12,6 +12,9 @@ using Csla.Core;
 
 namespace Csla.Test.DataPortalTest
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [Serializable]
   public class Single : BusinessBase<Single>
   {
@@ -76,6 +79,9 @@ namespace Csla.Test.DataPortalTest
 
     #region Data Access
 
+#if TESTING
+    [System.Diagnostics.DebuggerNonUserCode]
+#endif
     [Serializable]
     public class Criteria : CriteriaBase
     {

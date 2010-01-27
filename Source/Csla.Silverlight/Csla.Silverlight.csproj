@@ -18,19 +18,7 @@
     <SilverlightApplication>false</SilverlightApplication>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
-    <SccProjectName>
-    </SccProjectName>
-    <SccLocalPath>
-    </SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>
-    </SccProvider>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -77,7 +65,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\Bin\Debug\Silverlight\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT TESTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;TESTING</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -227,6 +215,27 @@
     </Compile>
     <Compile Include="..\Csla.core\LinqObservableCollection.cs">
       <Link>LinqObservableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\CallMethodException.cs">
+      <Link>Reflection\CallMethodException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\DynamicMemberHandle.cs">
+      <Link>Reflection\DynamicMemberHandle.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\DynamicMethodHandle.cs">
+      <Link>Reflection\DynamicMethodHandle.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\DynamicMethodHandlerFactory.cs">
+      <Link>Reflection\DynamicMethodHandlerFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\LateBoundObject.cs">
+      <Link>Reflection\LateBoundObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\MethodCacheKey.cs">
+      <Link>Reflection\MethodCacheKey.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Reflection\MethodCaller.cs">
+      <Link>Reflection\MethodCaller.cs</Link>
     </Compile>
     <Compile Include="..\csla.core\RelationshipTypes.cs">
       <Link>RelationshipTypes.cs</Link>
@@ -479,9 +488,6 @@
     <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyBindingListBase.cs" />
     <Compile Include="ReadOnlyBase.cs" />
-    <Compile Include="Reflection\CallMethodException.cs" />
-    <Compile Include="Reflection\LateBoundObject.cs" />
-    <Compile Include="Reflection\MethodCaller.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\MembershipIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />

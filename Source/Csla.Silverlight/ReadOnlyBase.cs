@@ -23,7 +23,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
 #if TESTING
-  [DebuggerNonUserCode]
+  [System.Diagnostics.DebuggerNonUserCode]
 #endif
   [Serializable]
   public class ReadOnlyBase<T> : 

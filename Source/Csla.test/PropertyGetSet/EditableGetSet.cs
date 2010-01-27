@@ -8,6 +8,9 @@ using Csla.Serialization.Mobile;
 
 namespace Csla.Test.PropertyGetSet
 {
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
   [Serializable]
   public class EditableGetSet : EditableGetSetBase<EditableGetSet>
   {

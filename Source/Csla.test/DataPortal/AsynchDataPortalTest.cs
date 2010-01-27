@@ -3,7 +3,7 @@ using Csla.DataPortalClient;
 #else
 using Csla.Test.Basic;
 #endif
-using System;
+
 #if !SILVERLIGHT
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,19 +13,15 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+#endif
 #endif
 
-using Csla;
-using Csla.Core;
 using System.Threading;
 using System.Globalization;
 using cslalighttest.CslaDataProvider;
 using UnitDriven;
 using Csla.Testing.Business.DataPortal;
-using System.Threading;
-using System.Globalization;
-using Single=Csla.Test.DataPortalTest.Single;
+using Single = Csla.Test.DataPortalTest.Single;
 
 namespace Csla.Test.DataPortal
 {
@@ -573,7 +569,7 @@ namespace Csla.Test.DataPortal
           //context.Assert.IsNull(e.Error);
           context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
           context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
-          Context.Assert.Success();
+          context.Assert.Success();
         });
 
       context.Complete();

@@ -165,16 +165,19 @@ namespace Csla.Server
     /// Assembly qualified type name of the factory object.
     /// </param>
     /// <param name="createMethod">
-    /// Name of the method to call for a create operation.</param>
+    /// Name of the method to call for a create operation.
+    /// </param>
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <param name="updateMethod">
-    /// Name of the method to call for a update operation.</param>
+    /// Name of the method to call for a update operation.
+    /// </param>
     /// <param name="deleteMethod">
-    /// Name of the method to call for a delete operation.</param>
+    /// Name of the method to call for a delete operation.
+    /// </param>
     /// <param name="executeMethod">
-    /// Name of the method to call for a Execute operation.</param>
+    /// Name of the method to call for a Execute operation.
     /// </param>
     public ObjectFactoryAttribute(
       string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)

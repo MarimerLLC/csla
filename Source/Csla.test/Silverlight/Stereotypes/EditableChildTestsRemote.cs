@@ -302,10 +302,12 @@ namespace cslalighttest.Stereotypes
         {
           context.Assert.IsNotNull(e2.NewObject);
           var savedList = (MockList)e2.NewObject;
-
-          context.Assert.AreEqual(fetchedList.Count, savedList.Count);
-
-          context.Assert.Success();
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            context.Assert.AreEqual(fetchedList.Count, savedList.Count);
+            context.Assert.Success();
+          }
         };
         fetchedList.BeginSave();
       });
@@ -332,16 +334,19 @@ namespace cslalighttest.Stereotypes
         {
           context.Assert.IsNotNull(e2.NewObject);
           var savedList = (MockList)e2.NewObject;
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            context.Assert.AreEqual(fetchedList[0].Id, savedList[0].Id);
+            context.Assert.AreEqual(fetchedList[0].Name, savedList[0].Name);
 
-          context.Assert.AreEqual(fetchedList[0].Id, savedList[0].Id);
-          context.Assert.AreEqual(fetchedList[0].Name, savedList[0].Name);
+            context.Assert.AreEqual("Child_Update", savedList[0].DataPortalMethod);
+            context.Assert.IsFalse(savedList[0].IsDirty);
 
-          context.Assert.AreEqual("Child_Update", savedList[0].DataPortalMethod);
-          context.Assert.IsFalse(savedList[0].IsDirty);
+            context.Assert.AreEqual(fetchedList[0].GrandChildren.Count, savedList[0].GrandChildren.Count);
 
-          context.Assert.AreEqual(fetchedList[0].GrandChildren.Count, savedList[0].GrandChildren.Count);
-
-          context.Assert.Success();
+            context.Assert.Success();
+          }
         };
         fetchedList.BeginSave();
       });
@@ -375,13 +380,16 @@ namespace cslalighttest.Stereotypes
           context.Assert.IsNotNull(e3.NewObject);
 
           var savedList = (MockList)e3.NewObject;
-          var savedGrandChild = savedList[0].GrandChildren[0];
-
-          context.Assert.AreEqual("Child_Update", savedGrandChild.DataPortalMethod);
-          context.Assert.IsFalse(savedGrandChild.IsDirty);
-          context.Assert.AreEqual(fetchedGrandChild.Name,savedGrandChild.Name);
-          context.Assert.AreEqual(fetchedGrandChild.Id, savedGrandChild.Id);//Guids used - otherwisewe would not test for this
-          context.Assert.Success();
+          context.Assert.IsNotNull(savedList);
+          if (savedList != null)
+          {
+            var savedGrandChild = savedList[0].GrandChildren[0];
+            context.Assert.AreEqual("Child_Update", savedGrandChild.DataPortalMethod);
+            context.Assert.IsFalse(savedGrandChild.IsDirty);
+            context.Assert.AreEqual(fetchedGrandChild.Name, savedGrandChild.Name);
+            context.Assert.AreEqual(fetchedGrandChild.Id, savedGrandChild.Id);//Guids used - otherwisewe would not test for this
+            context.Assert.Success();
+          }
         };
 
         fetchedList.BeginSave();

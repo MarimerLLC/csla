@@ -223,12 +223,17 @@ namespace cslalighttest.UserStateForPortal
         {
           context.Assert.IsNull(e.Error);
           context.Assert.IsNotNull(actual);
-          context.Assert.AreEqual(2, ((Customer)e1.NewObject).Id);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsNew);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsDirty);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsDeleted);
-          context.Assert.AreEqual("user state", e.UserState.ToString());
-          context.Assert.Success();
+          Customer actual2 = (Customer)e1.NewObject;
+          context.Assert.IsNotNull(actual2);
+          if (actual2 != null)
+          {
+            context.Assert.AreEqual(2, actual2.Id);
+            context.Assert.IsFalse(actual2.IsNew);
+            context.Assert.IsFalse(actual2.IsDirty);
+            context.Assert.IsFalse(actual2.IsDeleted);
+            context.Assert.AreEqual("user state", e.UserState.ToString());
+            context.Assert.Success();
+          }
         }, userState);
 
       }, userState);
@@ -250,12 +255,17 @@ namespace cslalighttest.UserStateForPortal
         {
           context.Assert.IsNull(e.Error);
           context.Assert.IsNotNull(actual);
-          context.Assert.AreEqual(2, ((Customer)e1.NewObject).Id);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsNew);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsDirty);
-          context.Assert.IsFalse(((Customer)e1.NewObject).IsDeleted);
-          context.Assert.IsNull(e.UserState);
-          context.Assert.Success();
+          Customer actual2 = (Customer)e1.NewObject;
+          context.Assert.IsNotNull(actual2);
+          if (actual2 != null)
+          {
+            context.Assert.AreEqual(2, actual2.Id);
+            context.Assert.IsFalse(actual2.IsNew);
+            context.Assert.IsFalse(actual2.IsDirty);
+            context.Assert.IsFalse(actual2.IsDeleted);
+            context.Assert.IsNull(e.UserState);
+            context.Assert.Success();
+          }
         });
 
       });

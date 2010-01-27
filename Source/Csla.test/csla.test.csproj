@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\cs\Release\</OutputPath>
-    <DefineConstants>TRACE;NUNIT</DefineConstants>
+    <DefineConstants>TRACE;MSTEST</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -35,7 +35,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Testing\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;csla20cs;NUNIT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;csla20cs;MSTEST</DefineConstants>
     <WarningLevel>1</WarningLevel>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -196,6 +196,8 @@
     <Compile Include="MethodCaller\Caller1.cs" />
     <Compile Include="MethodCaller\Caller2.cs" />
     <Compile Include="MethodCaller\Caller3.cs" />
+    <Compile Include="MethodCaller\PropertyTests.cs" />
+    <Compile Include="MethodCaller\CreateConstructorTests.cs" />
     <Compile Include="ObjectFactory\CommandObject.cs" />
     <Compile Include="ObjectFactory\CommandObjectFactory.cs" />
     <Compile Include="ObjectFactory\CommandObjectMissingFactoryMethod.cs" />

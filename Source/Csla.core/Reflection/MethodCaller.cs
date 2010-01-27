@@ -5,6 +5,7 @@ using System.Reflection;
 using Csla.Properties;
 using Csla.Server;
 using Csla;
+using System.Globalization;
 
 namespace Csla.Reflection
 {
@@ -13,11 +14,31 @@ namespace Csla.Reflection
   /// </summary>
   public static class MethodCaller
   {
-    private const BindingFlags allLevelFlags = BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private const BindingFlags allLevelFlags 
+      = BindingFlags.FlattenHierarchy 
+      | BindingFlags.Instance 
+      | BindingFlags.Public 
+#if !SILVERLIGHT
+      | BindingFlags.NonPublic
+#endif
+      ;
 
-    private const BindingFlags oneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private const BindingFlags oneLevelFlags 
+      = BindingFlags.DeclaredOnly 
+      | BindingFlags.Instance 
+      | BindingFlags.Public 
+#if !SILVERLIGHT
+      | BindingFlags.NonPublic
+#endif
+      ;
 
-    private const BindingFlags ctorFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+    private const BindingFlags ctorFlags 
+      = BindingFlags.Instance 
+      | BindingFlags.Public 
+#if !SILVERLIGHT
+      | BindingFlags.NonPublic
+#endif
+      ;
 
     private const BindingFlags factoryFlags =
       BindingFlags.Static |
@@ -26,7 +47,9 @@ namespace Csla.Reflection
 
     private const BindingFlags privateMethodFlags =
       BindingFlags.Public |
+#if !SILVERLIGHT
       BindingFlags.NonPublic |
+#endif
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
@@ -86,8 +109,13 @@ namespace Csla.Reflection
         {
           if (!_ctorCache.TryGetValue(objectType, out result))
           {
-            ConstructorInfo info =
-              objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+            ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+            if (info == null)
+              throw new NotSupportedException(string.Format(
+                CultureInfo.CurrentCulture,
+                "Cannot create instance of Type '{0}'. No public parameterless constructor found.",
+                objectType));
+
             result = DynamicMethodHandlerFactory.CreateConstructor(info);
             _ctorCache.Add(objectType, result);
           }
@@ -207,7 +235,21 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
+      if (obj == null)
+        throw new ArgumentNullException("obj");
+      if (string.IsNullOrEmpty(property))
+        throw new ArgumentException("Argument is null or empty.", "property");
+
       var mh = GetCachedProperty(obj.GetType(), property);
+      if (mh.DynamicMemberGet == null)
+      {
+        throw new NotSupportedException(string.Format(
+          CultureInfo.CurrentCulture,
+          "The property '{0}' on Type '{1}' does not have a public getter.",
+          property,
+          obj.GetType()));
+      }
+
       return mh.DynamicMemberGet(obj);
     }
 
@@ -220,7 +262,21 @@ namespace Csla.Reflection
     /// <param name="value">New value for property.</param>
     public static void CallPropertySetter(object obj, string property, object value)
     {
+      if (obj == null)
+        throw new ArgumentNullException("obj");
+      if (string.IsNullOrEmpty(property))
+        throw new ArgumentException("Argument is null or empty.", "property");
+
       var mh = GetCachedProperty(obj.GetType(), property);
+      if (mh.DynamicMemberSet == null)
+      {
+        throw new NotSupportedException(string.Format(
+          CultureInfo.CurrentCulture,
+          "The property '{0}' on Type '{1}' does not have a public setter.",
+          property,
+          obj.GetType()));
+      }
+
       mh.DynamicMemberSet(obj, value);
     }
 
@@ -246,6 +302,19 @@ namespace Csla.Reflection
       if (mh == null || mh.DynamicMethod == null)
         return null;
       return CallMethod(obj, mh, parameters);
+    }
+
+    /// <summary>
+    /// Detects if a method matching the name and parameters is implemented on the provided object.
+    /// </summary>
+    /// <param name="obj">The object implementing the method.</param>
+    /// <param name="method">The name of the method to find.</param>
+    /// <param name="parameters">The parameters matching the parameters types of the method to match.</param>
+    /// <returns>True obj implements a matching method.</returns>
+    public static bool IsMethodImplemented(object obj, string method, params object[] parameters)
+    {
+      var mh = GetCachedMethod(obj, method, parameters);
+      return mh != null && mh.DynamicMethod != null;
     }
 
     /// <summary>
@@ -631,6 +700,7 @@ namespace Csla.Reflection
       }
     }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Gets a property type descriptor by name.
     /// </summary>
@@ -648,6 +718,7 @@ namespace Csla.Reflection
         }
       return result;
     }
+#endif
 
     /// <summary>
     /// Gets information about a property.

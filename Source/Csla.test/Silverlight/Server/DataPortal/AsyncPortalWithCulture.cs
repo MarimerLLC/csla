@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Csla.DataPortalClient;
+using Csla.Serialization;
 
 namespace Csla.Testing.Business.DataPortal
 {
-  public class AsyncPortalWithCulture : Csla.CommandBase 
+  [Serializable]
+  public class AsyncPortalWithCulture : Csla.CommandBase
   {
     public string CurrentCulture { get; set; }
     public string CurrentUICulture { get; set; }
 
 #if SILVERLIGHT
-    public AsyncPortalWithCulture(){}
+    public AsyncPortalWithCulture() { }
 #else
     protected AsyncPortalWithCulture() { }
 #endif

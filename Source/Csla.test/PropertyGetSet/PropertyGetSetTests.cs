@@ -21,7 +21,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.PropertyGetSet
 {
 #if TESTING
-  [System.Diagnostics.DebuggerNonUserCode]
+  //[System.Diagnostics.DebuggerNonUserCode]
 #endif
   [TestClass]
   public class PropertyGetSetTests

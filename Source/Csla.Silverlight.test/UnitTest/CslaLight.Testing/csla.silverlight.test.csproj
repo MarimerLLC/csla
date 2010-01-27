@@ -50,13 +50,14 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <LinkedServerProject>..\Web\Web.csproj</LinkedServerProject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT; TESTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -67,7 +68,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT;TESTING</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -77,7 +78,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Testing\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT TESTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;TESTING</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -91,6 +92,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
@@ -99,6 +101,7 @@
     <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Windows.Ria, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="UnitDrivenLight, Version=0.0.1.32215, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">
@@ -170,14 +173,23 @@
     <Compile Include="..\..\..\csla.test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\MethodCaller\Caller1.cs">
+    <Compile Include="..\..\..\Csla.test\MethodCaller\Caller1.cs">
       <Link>MethodCaller\Caller1.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\MethodCaller\Caller2.cs">
+    <Compile Include="..\..\..\Csla.test\MethodCaller\Caller2.cs">
       <Link>MethodCaller\Caller2.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csla.test\MethodCaller\Caller3.cs">
+    <Compile Include="..\..\..\Csla.test\MethodCaller\Caller3.cs">
       <Link>MethodCaller\Caller3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\MethodCaller\CreateConstructorTests.cs">
+      <Link>MethodCaller\CreateConstructorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\MethodCaller\MethodCallerTests.cs">
+      <Link>MethodCaller\MethodCallerTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\MethodCaller\PropertyTests.cs">
+      <Link>MethodCaller\PropertyTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csla.test\PropertyGetSet\BadGetSet.cs">
       <Link>PropertyGetSet\BadGetSet.cs</Link>
@@ -369,7 +381,7 @@
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="LocalDataPortal\UserStateForPortalTests.cs" />
     <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />
-    <Compile Include="MethodCaller\MethodCallerTests.cs" />
+    <Compile Include="MethodCaller\MethodCallerTests_old.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

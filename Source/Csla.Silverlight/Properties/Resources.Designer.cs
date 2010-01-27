@@ -169,6 +169,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Constructor with parameters are not supported.
+        /// </summary>
+        internal static string ConstructorsWithParametersNotSupported {
+            get {
+                return ResourceManager.GetString("ConstructorsWithParametersNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid operation - create not allowed.
         /// </summary>
         internal static string CreateNotSupportedException {
@@ -354,6 +363,15 @@ namespace Csla.Properties {
         internal static string MaxValueRule {
             get {
                 return ResourceManager.GetString("MaxValueRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Member not found on object ({0}).
+        /// </summary>
+        internal static string MemberNotFoundException {
+            get {
+                return ResourceManager.GetString("MemberNotFoundException", resourceCulture);
             }
         }
         
@@ -705,6 +723,15 @@ namespace Csla.Properties {
         internal static string SmartDateYesterday {
             get {
                 return ResourceManager.GetString("SmartDateYesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PropertyName &apos;{0}&apos; not found in list.
+        /// </summary>
+        internal static string SortedBindingListPropertyNameNotFound {
+            get {
+                return ResourceManager.GetString("SortedBindingListPropertyNameNotFound", resourceCulture);
             }
         }
         

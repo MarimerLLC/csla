@@ -76,7 +76,7 @@ namespace Csla.Core
     /// This value will be Nothing for root objects.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected IParent Parent
+    public IParent Parent
     {
       get { return _parent; }
     }

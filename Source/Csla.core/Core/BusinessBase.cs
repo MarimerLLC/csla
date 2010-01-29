@@ -804,6 +804,7 @@ namespace Csla.Core
     /// <remarks>
     /// This value will be Nothing for root objects.
     /// </remarks>
+    [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {

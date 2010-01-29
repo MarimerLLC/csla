@@ -1279,8 +1279,11 @@ namespace Csla
     /// <remarks>
     /// This value will be Nothing for root objects.
     /// </remarks>
+#if !SILVERLIGHT
+    [Browsable(false)]
+#endif
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected Core.IParent Parent
+    public Core.IParent Parent
     {
       get
       {

@@ -19,7 +19,7 @@ namespace Csla
 #if SILVERLIGHT
     Core.ReadOnlyBindingList<C>,
 #else
-    Core.ObservableBindingList<C>, 
+    Core.ReadOnlyObservableBindingList<C>, 
 #endif
     Csla.Core.IReadOnlyCollection,
     ICloneable, Server.IDataPortalTarget

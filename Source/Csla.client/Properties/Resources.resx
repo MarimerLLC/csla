@@ -436,4 +436,8 @@
   <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
     <value>PropertyName '{0}' not found in list</value>
   </data>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <value>Can not change a read-only list or collection</value>
+    <comment> </comment>
+  </data>
 </root>

@@ -230,6 +230,9 @@
     <Compile Include="..\Csla.core\Core\ReadOnlyBindingList.cs">
       <Link>Core\ReadOnlyBindingList.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\Core\ReadOnlyObservableBindingList.cs">
+      <Link>Core\ReadOnlyObservableBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.core\Core\RemovingItemEventArgs.cs">
       <Link>Core\RemovingItemEventArgs.cs</Link>
     </Compile>

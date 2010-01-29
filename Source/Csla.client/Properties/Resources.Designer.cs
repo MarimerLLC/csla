@@ -290,6 +290,17 @@ namespace Csla.Properties
     }
 
     /// <summary>
+    ///   Looks up a localized string similar to Can not change a read-only list or collection.
+    /// </summary>
+    public static string ChangeReadOnlyListInvalid
+    {
+      get
+      {
+        return ResourceManager.GetString("ChangeReadOnlyListInvalid", resourceCulture);
+      }
+    }
+
+    /// <summary>
     ///   Looks up a localized string similar to Can not directly mark a child object for deletion - use its parent collection.
     /// </summary>
     public static string ChildDeleteException

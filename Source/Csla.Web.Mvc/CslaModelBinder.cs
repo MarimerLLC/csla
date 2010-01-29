@@ -44,7 +44,8 @@ namespace Csla.Web.Mvc
         foreach (var item in errors)
         {
           bindingContext.ModelState.AddModelError(item.Property, item.Description);
-          bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider[item.Property]);
+          bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider.GetValue(controllerContext, item.Property));
+          //bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider[item.Property]);
         }
       }
       else

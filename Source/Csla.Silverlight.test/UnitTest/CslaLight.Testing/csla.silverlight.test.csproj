@@ -381,7 +381,6 @@
     <Compile Include="LocalDataPortal\LocalDataPortalTests.cs" />
     <Compile Include="LocalDataPortal\UserStateForPortalTests.cs" />
     <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />
-    <Compile Include="MethodCaller\MethodCallerTests_old.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

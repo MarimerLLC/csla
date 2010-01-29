@@ -30,7 +30,7 @@ namespace WpfDesignTime.Business
     private void DataPortal_Fetch()
     {
       RaiseListChangedEvents = false;
-      IsReadOnly = false;
+      base.IsReadOnly = false;
       // Simulated Database access
       for (int i = 1; i < 10; i++)
       {

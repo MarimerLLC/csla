@@ -59,6 +59,11 @@ namespace Csla.Xaml
         Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
     }
 
+    private void dataObject_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      RefreshCanOperationsValues();
+    }
+
     private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       RefreshCanOperationsValues();
@@ -165,6 +170,9 @@ namespace Csla.Xaml
         var npc = oldValue as INotifyPropertyChanged;
         if (npc != null)
           npc.PropertyChanged -= dataObject_PropertyChanged;
+        var nclc = oldValue as System.Collections.Specialized.INotifyCollectionChanged;
+        if (nclc != null)
+          nclc.CollectionChanged -= dataObject_CollectionChanged;
         var ncc = oldValue as INotifyChildChanged;
         if (ncc != null)
           ncc.ChildChanged -= dataObject_ChildChanged;
@@ -186,6 +194,9 @@ namespace Csla.Xaml
         var npc = newValue as INotifyPropertyChanged;
         if (npc != null)
           npc.PropertyChanged += dataObject_PropertyChanged;
+        var nclc = newValue as System.Collections.Specialized.INotifyCollectionChanged;
+        if (nclc != null)
+          nclc.CollectionChanged += dataObject_CollectionChanged;
         var ncc = newValue as INotifyChildChanged;
         if (ncc != null)
           ncc.ChildChanged += dataObject_ChildChanged;

@@ -77,7 +77,9 @@ namespace Csla.Xaml
     /// ViewManageObjectLifetime should automatically managed the
     /// lifetime of the ManageObjectLifetime.
     /// </summary>
+#if !SILVERLIGHT
     [Browsable(false)]
+#endif
     public bool ManageObjectLifetime
     {
       get { return (bool)GetValue(ManageObjectLifetimeProperty); }
@@ -90,7 +92,9 @@ namespace Csla.Xaml
     /// Gets the Error object corresponding to the
     /// last asyncronous operation.
     /// </summary>
+#if !SILVERLIGHT
     [Browsable(false)]
+#endif
     public Exception Error
     {
       get { return _error; }

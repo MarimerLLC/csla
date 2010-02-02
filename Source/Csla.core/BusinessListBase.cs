@@ -1297,9 +1297,20 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    void Core.IEditableCollection.SetParent(Core.IParent parent)
+    protected virtual void SetParent(Core.IParent parent)
     {
       _parent = parent;
+    }
+
+    /// <summary>
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
+    /// parent.
+    /// </summary>
+    /// <param name="parent">A reference to the parent collection object.</param>
+    void Core.IEditableCollection.SetParent(Core.IParent parent)
+    {
+      this.SetParent(parent);
     }
 
     #endregion

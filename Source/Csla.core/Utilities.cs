@@ -5,6 +5,7 @@ using System.Xml;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
+using Csla.Reflection;
 
 namespace Csla
 {
@@ -44,20 +45,17 @@ namespace Csla
       {
         case CallType.Get:
           {
-            PropertyInfo p = target.GetType().GetProperty(methodName);
-            return p.GetValue(target, args);
+            return MethodCaller.CallPropertyGetter(target, methodName);
           }
         case CallType.Let:
         case CallType.Set:
           {
-            PropertyInfo p = target.GetType().GetProperty(methodName);
-            p.SetValue(target, args[0], null);
+            MethodCaller.CallPropertySetter(target, methodName, args[0]);
             return null;
           }
         case CallType.Method:
           {
-            MethodInfo m = target.GetType().GetMethod(methodName);
-            return m.Invoke(target, args);
+            return MethodCaller.CallMethod(target, methodName, args);
           }
       }
       return null;

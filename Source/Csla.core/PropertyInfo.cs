@@ -204,7 +204,7 @@ namespace Csla
     /// field storage behind the property. FOR
     /// INTERNAL CSLA .NET USE ONLY.
     /// </summary>
-    public int Index
+    int Core.IPropertyInfo.Index
     {
       get
       {

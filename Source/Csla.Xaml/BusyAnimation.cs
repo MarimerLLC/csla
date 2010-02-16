@@ -194,6 +194,9 @@ namespace Csla.Xaml
 
     private void ArrangeParts()
     {
+      if (Template == null)
+        return;
+
       double width = ActualWidth;
       double height = ActualHeight;
       double scale = Math.Min(ActualWidth, ActualHeight);
@@ -225,6 +228,9 @@ namespace Csla.Xaml
 
     private void BuildStoryboard()
     {
+      if (Template == null)
+        return;
+
       _root = (Canvas)Template.FindName("root", this);
       _isRunningStoryboard = new Storyboard[8];
       _isRunningStoryboard[0] = (Storyboard)Template.Resources["state1"];

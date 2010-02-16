@@ -422,12 +422,16 @@ namespace Csla.Xaml
 
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
+      if (Template == null)
+        return;
       Popup popup = (Popup)Template.FindName("popup", this);
       popup.IsOpen = true;
     }
 
     void image_MouseLeave(object sender, MouseEventArgs e)
     {
+      if (Template == null)
+        return;
       Popup popup = (Popup)Template.FindName("popup", this);
       popup.IsOpen = false;
     }
@@ -438,6 +442,8 @@ namespace Csla.Xaml
 
     private void GoToState(bool useTransitions)
     {
+      if (Template == null)
+        return;
       if (IsLoaded && !DataPortal.IsInDesignMode)
       {
         DisablePopup(_lastImage);

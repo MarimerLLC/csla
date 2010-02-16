@@ -22,7 +22,7 @@ namespace Csla.Xaml
     INotifyPropertyChanged
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
-    INotifyPropertyChanged
+    INotifyPropertyChanged, IViewModel
 #endif
   {
     #region Constructor
@@ -835,6 +835,16 @@ namespace Csla.Xaml
     private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       SetProperties();
+    }
+
+    #endregion
+
+    #region IViewModel Members
+
+    object IViewModel.Model
+    {
+      get { return Model; }
+      set { Model = (T)value; }
     }
 
     #endregion

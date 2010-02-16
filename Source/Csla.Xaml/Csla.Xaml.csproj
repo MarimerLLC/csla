@@ -66,6 +66,7 @@
     <Compile Include="ExecuteEventArgs.cs" />
     <Compile Include="IdentityConverter.cs" />
     <Compile Include="InvokeMethod.cs" />
+    <Compile Include="IViewModel.cs" />
     <Compile Include="ObjectStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyStatus.cs" />

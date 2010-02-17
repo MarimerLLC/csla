@@ -517,7 +517,7 @@ namespace Csla
         {
           string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
           if (string.IsNullOrEmpty(tmp))
-            tmp = "Windows";
+            tmp = "Xaml";
           _propertyChangedMode = (PropertyChangedModes)
             Enum.Parse(typeof(PropertyChangedModes), tmp);
           _propertyChangedModeSet = true;

@@ -417,6 +417,9 @@
     <Compile Include="..\Csla.Xaml\InvokeMethod.cs">
       <Link>Xaml\InvokeMethod.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\IViewModel.cs">
+      <Link>Xaml\IViewModel.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\ViewModel.cs">
       <Link>Xaml\ViewModel.cs</Link>
     </Compile>

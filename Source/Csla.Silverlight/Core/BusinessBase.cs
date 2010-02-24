@@ -87,7 +87,7 @@ namespace Csla.Core
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    internal void SetParent(IParent parent)
+    protected virtual void SetParent(IParent parent)
     {
       _parent = parent;
     }

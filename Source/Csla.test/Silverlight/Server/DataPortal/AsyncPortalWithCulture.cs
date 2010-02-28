@@ -11,8 +11,34 @@ namespace Csla.Testing.Business.DataPortal
   [Serializable]
   public class AsyncPortalWithCulture : Csla.CommandBase<AsyncPortalWithCulture>
   {
-    public string CurrentCulture { get; set; }
-    public string CurrentUICulture { get; set; }
+    public string CurrentUICulture
+    {
+      get
+      {
+        return ReadProperty(CurrentUICultureProperty);
+      }
+      set
+      {
+        LoadProperty(CurrentUICultureProperty, value);
+      }
+    }
+    public static PropertyInfo<string> CurrentUICultureProperty = 
+      RegisterProperty<string>(new PropertyInfo<string>("CurrentUICulture"));
+
+    public string CurrentCulture
+    {
+      get
+      {
+        return ReadProperty(CurrentCultureProperty);
+      }
+      set
+      {
+        LoadProperty(CurrentCultureProperty, value);
+      }
+    }
+    public static PropertyInfo<string> CurrentCultureProperty =
+      RegisterProperty<string>(new PropertyInfo<string>("CurrentCulture"));
+
 
 #if SILVERLIGHT
     public AsyncPortalWithCulture() { }

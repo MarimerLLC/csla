@@ -322,12 +322,12 @@ namespace Csla
       using (var buffer = new MemoryStream())
       {
         XmlWriter writer = Csla.Serialization.Mobile.MobileFormatter.GetXmlWriter(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(graph.GetType());
+        DataContractSerializer dcs = new DataContractSerializer(graph.GetType(), new Type[] { typeof(DateTimeOffset) });
         dcs.WriteObject(writer, graph);
         writer.Flush();
         return buffer.ToArray();
       }
-    
+
     }
 
     internal static T XmlDeserialize<T>(byte[] data)
@@ -335,7 +335,7 @@ namespace Csla
       using (var buffer = new MemoryStream(data))
       {
         XmlReader reader = Csla.Serialization.Mobile.MobileFormatter.GetXmlReader(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(typeof(T));
+        DataContractSerializer dcs = new DataContractSerializer(typeof(T), new Type[] { typeof(DateTimeOffset) });
         return (T)dcs.ReadObject(reader);
       }
     }

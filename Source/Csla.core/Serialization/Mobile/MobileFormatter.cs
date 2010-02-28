@@ -74,6 +74,22 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(XmlWriter writer, object graph)
     {
+      List<SerializationInfo> serialized = SerializeAsDTO(graph);
+
+      DataContractSerializer dc = GetDataContractSerializer();
+
+      dc.WriteObject(writer, serialized);
+    }
+
+    /// <summary>
+    /// Serialize an object graph into DTO.
+    /// </summary>
+    /// <param name="graph">
+    /// Root object of the object graph
+    /// to serialize.
+    /// </param>
+    public List<SerializationInfo> SerializeAsDTO(object graph)
+    {
       _serializationReferences.Clear();
 
       SerializeObject(graph);
@@ -81,9 +97,7 @@ namespace Csla.Serialization.Mobile
       ConvertEnumsToIntegers();
       List<SerializationInfo> serialized = _serializationReferences.Values.ToList();
 
-      DataContractSerializer dc = GetDataContractSerializer();
-
-      dc.WriteObject(writer, serialized);
+      return serialized;
     }
 
     /// <summary>
@@ -256,6 +270,17 @@ namespace Csla.Serialization.Mobile
       DataContractSerializer dc = GetDataContractSerializer();
 
       List<SerializationInfo> deserialized = dc.ReadObject(reader) as List<SerializationInfo>;
+      return Deserialize(deserialized);
+
+    }
+
+    /// <summary>
+    /// Deserialize an object from DTO graph.
+    /// </summary>
+    ///<param name="deserialized">DTO grap to deserialize</param>
+    /// <returns></returns>
+    public object DeserializeAsDTO(List<SerializationInfo> deserialized)
+    {
 
       _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
@@ -359,6 +384,31 @@ namespace Csla.Serialization.Mobile
     }
 
     /// <summary>
+    /// Serializes the object into a DTO.
+    /// </summary>
+    /// <param name="obj">
+    /// The object to be serialized, which must implement
+    /// IMobileObject.
+    /// </param>
+    /// <returns></returns>
+    public static List<SerializationInfo> SerializeToDTO(object obj)
+    {
+      var formatter = new MobileFormatter();
+      return formatter.SerializeAsDTO(obj);
+    }
+
+    /// <summary>
+    /// Serilizes an object from a DTO graph
+    /// </summary>
+    /// <param name="serialized">DTO Graph to deserialize</param>
+    /// <returns>Deserialized object</returns>
+    public static object DeserializeFromDTO(List<SerializationInfo> serialized)
+    {
+      var formatter = new MobileFormatter();
+      return formatter.DeserializeAsDTO(serialized);
+    }
+
+    /// <summary>
     /// Deserializes a byte stream into an object.
     /// </summary>
     /// <param name="data">
@@ -379,6 +429,23 @@ namespace Csla.Serialization.Mobile
       }
     }
 
+    /// <summary>
+    /// Deserializes a byte stream into an object.
+    /// </summary>
+    /// <param name="data">
+    /// DTO containing the object's serialized
+    /// data.
+    /// </param>
+    /// <returns>
+    /// An object containing the data from the
+    /// byte stream. The object must implement
+    /// IMobileObject to be deserialized.
+    /// </returns>
+    public static object Deserialize(List<SerializationInfo> data)
+    {
+      var formatter = new MobileFormatter();
+      return formatter.DeserializeAsDTO(data);
+    }
     #endregion
 
     #region XmlReader/XmlWriter

@@ -130,6 +130,7 @@ namespace cslalighttest.CslaDataProvider
     {
       using (var context = GetContext())
       {
+        context.SetTimeout(TimeSpan.FromSeconds(30));
         var provider = new Csla.Xaml.CslaDataProvider();
         Customer.GetCustomer((o1, e1) =>
         {
@@ -522,6 +523,7 @@ namespace cslalighttest.CslaDataProvider
     {
       using (var context = GetContext())
       {
+        context.SetTimeout(TimeSpan.FromSeconds(30));
         var provider = new InheritedProvider();
         Customer.GetCustomer((o1, e1) =>
         {

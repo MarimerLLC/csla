@@ -34,7 +34,7 @@ namespace Csla.Test.MethodCaller
     [System.ComponentModel.Description("This test does not pass, which tells me the Activator is actually faster than the MethodCaller.")]
     public void CreateInstanceWithExpressionsFasterThanActivatorSuccess()
     {
-      int times = 100000;
+      int times = 1000000;
       var start = DateTime.Now;
       for(int x=0;x<times;x++)
         Csla.Reflection.MethodCaller.CreateInstance(typeof(TestClass));
@@ -58,9 +58,9 @@ namespace Csla.Test.MethodCaller
     }
 
     [TestMethod]
-#if SILVERLIGHT
-    [ExpectedException(typeof(NotSupportedException))]
-#endif
+//#if SILVERLIGHT
+//    [ExpectedException(typeof(NotSupportedException))]
+//#endif
     public void CreateInstanceNonPublicConstructor()
     {
       Csla.Reflection.MethodCaller.CreateInstance(typeof(NonPublic1));

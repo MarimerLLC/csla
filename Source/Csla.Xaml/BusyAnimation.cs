@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Threading;
 using System.Windows.Threading;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Csla.Xaml
 {
@@ -44,23 +36,12 @@ namespace Csla.Xaml
 
     #endregion
 
-    #region Dependency properties
+    #region Member fields and properties
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the busy
-    /// animation is running.
-    /// </summary>
-    public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
-      "IsRunning",
-      typeof(bool),
-      typeof(BusyAnimation),
-      new FrameworkPropertyMetadata(
-        false,
-        FrameworkPropertyMetadataOptions.AffectsRender,
-        (o, e) => 
-          (
-            (BusyAnimation)o).SetState((bool)e.NewValue))
-          );
+    private DispatcherTimer _timer;
+    private Canvas _root;
+    private Storyboard _normalStoryboard;
+    private Storyboard[] _isRunningStoryboard;
 
     /// <summary>
     /// Gets or sets the state duration for the animation.
@@ -73,18 +54,10 @@ namespace Csla.Xaml
         TimeSpan.FromMilliseconds(150),
         FrameworkPropertyMetadataOptions.AffectsRender));
 
-    #endregion
-
-    #region Member fields and properties
-
-    private DispatcherTimer _timer;
-    private Canvas _root;
-    private Storyboard _normalStoryboard;
-    private Storyboard[] _isRunningStoryboard;
-
     /// <summary>
     /// Gets or sets the state duration for the animation.
     /// </summary>
+    [Category("Common")]
     public TimeSpan StateDuration
     {
       get { return (TimeSpan)GetValue(StateDurationProperty); }
@@ -98,6 +71,23 @@ namespace Csla.Xaml
     /// Gets or sets a value indicating whether the busy
     /// animation is running.
     /// </summary>
+    public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
+      "IsRunning",
+      typeof(bool),
+      typeof(BusyAnimation),
+      new FrameworkPropertyMetadata(
+        false,
+        FrameworkPropertyMetadataOptions.AffectsRender,
+        (o, e) =>
+          (
+            (BusyAnimation)o).SetState((bool)e.NewValue))
+          );
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the busy
+    /// animation is running.
+    /// </summary>
+    [Category("Common")]
     public bool IsRunning
     {
       get { return (bool)GetValue(IsRunningProperty); }

@@ -8,7 +8,7 @@ using Csla.Core;
 
 namespace Csla.Security
 {
-  public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity
+  public abstract partial class CslaIdentity : CslaIdentityBase<CslaIdentity>, IIdentity
   {
     #region Constructor
 

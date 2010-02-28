@@ -35,14 +35,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>..\..\Bin\Testing\Server\</OutputPath>
-        <DefineConstants>TRACE;TESTING</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Debug\Server\</OutputPath>
+    <DefineConstants>TRACE;TESTING</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RegisterForComInterop>true</RegisterForComInterop>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -114,7 +116,8 @@
     <Compile Include="Core\ObservableBindingList.cs" />
     <Compile Include="Core\ReadOnlyObservableBindingList.cs" />
     <Compile Include="Core\UndoableHandler.cs" />
-    <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
+    <Compile Include="DataPortalClient\DefaultPortalProxyFactory.cs" />
+    <Compile Include="DataPortalClient\IDataPortalProxyFactory.cs" />
     <Compile Include="DataPortalResult.cs" />
     <Compile Include="DataPortalT.cs" />
     <Compile Include="Data\ConnectionManagerT.cs" />

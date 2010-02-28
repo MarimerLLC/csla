@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.ComponentModel;
+using System.Collections;
 
 namespace Csla.Web.Mvc
 {
@@ -11,6 +13,58 @@ namespace Csla.Web.Mvc
   /// </summary>
   public class CslaModelBinder : DefaultModelBinder
   {
+    /// <summary>
+    /// Binds the model by using the specified controller context and binding context.
+    /// </summary>
+    /// <param name="controllerContext">Controller Context</param>
+    /// <param name="bindingContext">Binding Context</param>
+    /// <returns>Bound object</returns>
+    public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+    {
+      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType))) 
+        return BindCslaCollection(controllerContext, bindingContext); 
+      
+      return base.BindModel(controllerContext, bindingContext);
+    }
+
+    /// <summary>
+    /// Bind CSLA Collection object using specified controller context and binding context
+    /// </summary>
+    /// <param name="controllerContext">Controller Context</param>
+    /// <param name="bindingContext">Binding Context</param>
+    /// <returns>Bound CSLA collection object</returns>
+    private object BindCslaCollection(ControllerContext controllerContext, ModelBindingContext bindingContext)
+    {
+      var collection = (IList)bindingContext.Model;
+      for (int currIdx = 0; currIdx < collection.Count; currIdx++)
+      {
+        string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);
+        if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
+          continue;      //no value to update skip
+        var elementModel = collection[currIdx];
+        var elementContext = new ModelBindingContext()
+        {                    
+          ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
+          ModelName = subIndexKey,
+          ModelState = bindingContext.ModelState,
+          PropertyFilter = bindingContext.PropertyFilter,
+          ValueProvider = bindingContext.ValueProvider
+        };
+
+        if (OnModelUpdating(controllerContext, elementContext))
+        {
+          //update element's properties
+          foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))
+          {
+            BindProperty(controllerContext, elementContext, property);
+          }
+          OnModelUpdated(controllerContext, elementContext);
+        }
+      }
+      
+      return bindingContext.Model;
+    }
+
     /// <summary>
     /// Creates an instance of the model if the controller implements
     /// IModelCreator.
@@ -43,9 +97,8 @@ namespace Csla.Web.Mvc
                      select r;
         foreach (var item in errors)
         {
-          bindingContext.ModelState.AddModelError(item.Property, item.Description);
-          //bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider.GetValue(controllerContext, item.Property));
-          bindingContext.ModelState.SetModelValue(item.Property, bindingContext.ValueProvider[item.Property]);
+          string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property);
+          bindingContext.ModelState.AddModelError(mskey, item.Description);
         }
       }
       else

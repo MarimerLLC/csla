@@ -8,7 +8,7 @@ namespace Csla.Xaml
   /// Displays an error dialog for any exceptions
   /// that occur in a CslaDataProvider.
   /// </summary>
-  public class ErrorDialog : Control
+  public class ErrorDialog : Control, IErrorDialog
   {
     /// <summary>
     /// Creates a new instance of the control.
@@ -153,5 +153,14 @@ namespace Csla.Xaml
           this.DialogIcon);
       }
     }
+
+    #region IErrorDialog Members
+
+    void IErrorDialog.Register(object source)
+    {
+      AttachSource(source);
+    }
+
+    #endregion
   }
 }

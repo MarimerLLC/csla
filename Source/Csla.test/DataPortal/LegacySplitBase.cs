@@ -63,7 +63,7 @@ namespace Csla.Test.DataPortalTest
         #region Data Access
 
         [Serializable()]
-        private class Criteria : CriteriaBase
+        private class Criteria : CriteriaBase<Criteria>
         {
             private int _id;
             public int Id

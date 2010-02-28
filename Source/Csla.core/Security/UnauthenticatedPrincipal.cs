@@ -24,10 +24,7 @@ namespace Csla.Security
     /// <returns></returns>
     public override bool IsInRole(string role)
     {
-      if (Csla.DataPortal.IsInDesignMode)
-        return true;
-      else
-        return base.IsInRole(role);
+      return base.IsInRole(role);
     }
   }
 }

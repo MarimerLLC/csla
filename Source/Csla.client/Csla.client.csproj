@@ -39,6 +39,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
@@ -263,11 +264,14 @@
     <Compile Include="..\Csla.core\DataPortal.cs">
       <Link>DataPortal.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\DataPortalClient\DesignTimeProxy.cs">
-      <Link>DataPortalClient\DesignTimeProxy.cs</Link>
+    <Compile Include="..\Csla.core\DataPortalClient\DefaultPortalProxyFactory.cs">
+      <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\DataPortalClient\IDataPortalProxy.cs">
       <Link>DataPortalClient\IDataPortalProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\DataPortalClient\IDataPortalProxyFactory.cs">
+      <Link>DataPortalClient\IDataPortalProxyFactory.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\DataPortalClient\LocalProxy.cs">
       <Link>DataPortalClient\LocalProxy.cs</Link>

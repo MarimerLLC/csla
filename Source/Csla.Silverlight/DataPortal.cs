@@ -74,24 +74,6 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the code is currently
-    /// executing in a design time mode (such as in Visual Studio
-    /// or Expression Blend).
-    /// </summary>
-    public static bool IsInDesignMode
-    {
-      get
-      {
-        if (Application.Current != null && Application.Current.RootVisual != null)
-        {
-          return DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
-        }
-        else
-          return false;
-      }
-    }
-
     #endregion
 
     #region Static Helpers
@@ -361,7 +343,7 @@ namespace Csla
     /// when the async operation is complete.
     /// </param>
     public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback)
-      where T : CommandBase
+      where T : Core.ICommandObject
     {
       BeginExecute<T>(command, callback, null);
     }
@@ -379,7 +361,7 @@ namespace Csla
     /// </param>
     /// <param name="userState">User state object.</param>
     public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback, object userState)
-      where T : CommandBase
+      where T : Core.ICommandObject
     {
       var dp = new DataPortal<T>();
       dp.ExecuteCompleted += callback;

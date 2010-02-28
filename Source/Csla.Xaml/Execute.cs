@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Interactivity;
+using System.ComponentModel;
 
 namespace Csla.Xaml
 {
@@ -71,6 +72,9 @@ namespace Csla.Xaml
         var target = element.DataContext;
         if (target != null)
         {
+          var icv = target as ICollectionView;
+          if (icv != null)
+            target = icv.CurrentItem;
           var methodInfo = target.GetType().GetMethod(methodName);
           if (methodInfo == null)
             throw new MissingMethodException(methodName);

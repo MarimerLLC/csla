@@ -93,6 +93,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.DomainServices.Client, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceModel.DomainServices.Client.Web, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />
     <Reference Include="system" />
@@ -101,7 +103,6 @@
     <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="System.Windows.Ria, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="UnitDrivenLight, Version=0.0.1.32215, Culture=neutral, PublicKeyToken=63bff5533f9bedec, processorArchitecture=MSIL">

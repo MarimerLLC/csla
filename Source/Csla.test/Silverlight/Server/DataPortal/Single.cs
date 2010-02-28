@@ -83,7 +83,7 @@ namespace Csla.Test.DataPortalTest
     [System.Diagnostics.DebuggerNonUserCode]
 #endif
     [Serializable]
-    public class Criteria : CriteriaBase
+    public class Criteria : CriteriaBase<Criteria>
     {
       private int _id;
       public int Id

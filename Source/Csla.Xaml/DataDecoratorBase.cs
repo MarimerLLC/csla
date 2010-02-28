@@ -63,11 +63,19 @@ namespace Csla.Xaml
 
     private object GetDataObject(object dataContext)
     {
+      object result = dataContext;
       DataSourceProvider provider = dataContext as DataSourceProvider;
       if (provider != null)
-        return provider.Data;
+      {
+        result = provider.Data;
+      }
       else
-        return dataContext;
+      {
+        var icv = dataContext as ICollectionView;
+        if (icv != null)
+          result = icv.CurrentItem;
+      }
+      return result;
     }
 
     /// <summary>

@@ -236,7 +236,7 @@ namespace Csla.Server
             else
               methodName = factoryInfo.UpdateMethodName;
           }
-          else if (obj is CommandBase)
+          else if (obj is Core.ICommandObject)
             methodName = factoryInfo.ExecuteMethodName;
           else
             methodName = factoryInfo.UpdateMethodName;
@@ -256,7 +256,7 @@ namespace Csla.Server
               else
                 methodName = "DataPortal_Update";
           }
-          else if (obj is CommandBase)
+          else if (obj is Core.ICommandObject)
             methodName = "DataPortal_Execute";
           else
             methodName = "DataPortal_Update";

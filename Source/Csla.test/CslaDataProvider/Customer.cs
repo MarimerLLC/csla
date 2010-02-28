@@ -101,7 +101,7 @@ namespace Csla.Test.CslaDataProvider
 
 
     [Serializable()]
-    public class FetchCriteria : CriteriaBase
+    public class FetchCriteria : CriteriaBase<FetchCriteria>
     {
       public FetchCriteria() { }
 

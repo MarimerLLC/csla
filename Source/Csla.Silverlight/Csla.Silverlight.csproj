@@ -414,11 +414,20 @@
     <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
       <Link>Xaml\ExecuteEventArgs.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\IErrorDialog.cs">
+      <Link>Xaml\IErrorDialog.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\InvokeMethod.cs">
       <Link>Xaml\InvokeMethod.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\IsNotConverter.cs">
+      <Link>Xaml\IsNotConverter.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\IViewModel.cs">
       <Link>Xaml\IViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\TriggerAction.cs">
+      <Link>Xaml\TriggerAction.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Xaml\ViewModel.cs">
       <Link>Xaml\ViewModel.cs</Link>
@@ -468,7 +477,6 @@
     <Compile Include="Core\UndoException.cs" />
     <Compile Include="DataPortal.cs" />
     <Compile Include="Core\BusinessBase.cs" />
-    <Compile Include="DataPortalClient\DesignTimeProxy.cs" />
     <Compile Include="DataPortalClient\FactoryProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="DataPortalClient\LocalProxy.cs" />

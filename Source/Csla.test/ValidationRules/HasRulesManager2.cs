@@ -60,7 +60,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Serializable()]
-    private class Criteria : CriteriaBase
+    private class Criteria : CriteriaBase<Criteria>
     {
       public string _name;
 

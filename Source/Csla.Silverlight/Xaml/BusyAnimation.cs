@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Threading;
 using System.Windows.Threading;
 using System.ComponentModel;
 using System.Globalization;
@@ -43,7 +36,10 @@ namespace Csla.Xaml
 
     #endregion
 
-    #region Dependency properties
+    #region Member fields and properties
+
+    private DispatcherTimer _timer;
+    private int _state = -1;
 
     /// <summary>
     /// StepInterval property to control speed of animation.
@@ -53,6 +49,20 @@ namespace Csla.Xaml
       typeof(int),
       typeof(BusyAnimation),
       new PropertyMetadata((o, e) => ((BusyAnimation)o).StepInterval = (int)e.NewValue));
+    
+    /// <summary>
+    /// Gets or sets a property controlling
+    /// the speed of the animation.
+    /// </summary>
+    [Category("Common")]
+    public int StepInterval
+    {
+      get { return (int)GetValue(StepIntervalProperty); }
+      set
+      {
+        SetValue(StepIntervalProperty, value);
+      }
+    }
 
     /// <summary>
     /// IsRunning property to control whether the 
@@ -64,30 +74,11 @@ namespace Csla.Xaml
       typeof(BusyAnimation),
       new PropertyMetadata((o, e) => ((BusyAnimation)o).SetupRunningState(e.NewValue)));
 
-    #endregion
-
-    #region Member fields and properties
-
-    private DispatcherTimer _timer;
-    private int _state = -1;
-
-    /// <summary>
-    /// Gets or sets a property controlling
-    /// the speed of the animation.
-    /// </summary>
-    public int StepInterval
-    {
-      get { return (int)GetValue(StepIntervalProperty); }
-      set
-      {
-        SetValue(StepIntervalProperty, value);
-      }
-    }
-
     /// <summary>
     /// Gets or sets a property controlling
     /// whether the animation is running.
     /// </summary>
+    [Category("Common")]
     public object IsRunning
     {
       get
@@ -106,7 +97,9 @@ namespace Csla.Xaml
 
     private void SetupRunningState(object isRunning)
     {
-      bool val = (bool)Convert.ChangeType(isRunning, typeof(bool), CultureInfo.InvariantCulture);
+      bool val = false;
+      if (isRunning != null)
+        val = (bool)Convert.ChangeType(isRunning, typeof(bool), CultureInfo.InvariantCulture);
       if (val)
         StartTimer();
       else

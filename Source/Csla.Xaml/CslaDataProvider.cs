@@ -120,7 +120,7 @@ namespace Csla.Xaml
     /// </summary>
     /// <remarks>
     /// This property is designed to 
-    /// reference an ErrorDialog control.
+    /// reference an IErrorDialog control.
     /// </remarks>
     public object DataChangedHandler
     {
@@ -131,7 +131,7 @@ namespace Csla.Xaml
       set
       {
         _dataChangedHandler = value;
-        var dialog = value as ErrorDialog;
+        var dialog = value as IErrorDialog;
         if (dialog != null)
           dialog.Register(this);
         OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));

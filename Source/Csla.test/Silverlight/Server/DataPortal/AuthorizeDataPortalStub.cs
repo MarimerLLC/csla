@@ -27,7 +27,7 @@ namespace  Csla.Testing.Business.DataPortal
     {
       ClientRequest = clientRequest;
 
-      if(!typeof(Csla.CommandBase).IsAssignableFrom(clientRequest.ObjectType))
+      if(!typeof(Csla.Core.ICommandObject).IsAssignableFrom(clientRequest.ObjectType))
         throw new SecurityException("Authorization Failed");
     }
 

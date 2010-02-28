@@ -1260,10 +1260,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-			//TODO: re-add this code after Beta 2 when DataAnnotations is in client profile
-#if !CLIENTPROFILE
       ValidationRules.AddDataAnnotations();
-#endif
     }
 
     /// <summary>

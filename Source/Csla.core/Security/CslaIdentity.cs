@@ -15,62 +15,41 @@ namespace Csla.Security
   /// Provides a base class to simplify creation of
   /// a .NET identity object for use with BusinessPrincipalBase.
   /// </summary>
-  [Serializable()]
-  public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity, ICheckRoles
+  [Serializable]
+  public abstract partial class CslaIdentity : CslaIdentityBase<CslaIdentity>
   {
     private static bool _forceInit;
+  }
 
-    #region RegisterProperty
+  /// <summary>
+  /// Provides a base class to simplify creation of
+  /// a .NET identity object for use with BusinessPrincipalBase.
+  /// </summary>
+  [Serializable]
+  public abstract class CslaIdentityBase<T> : 
+    ReadOnlyBase<T>, IIdentity, ICheckRoles
+    where T : CslaIdentityBase<T>
+  {
+#if SILVERLIGHT
+    private static bool _forceInit;
 
     /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
+    /// Create an instance of the object.
     /// </summary>
-    /// <typeparam name="T">Type of object to which the property belongs.</typeparam>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression)
+    public CslaIdentityBase()
     {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+      _forceInit = !_forceInit;
     }
 
     /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
+    /// Invoked when the object is deserialized.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    protected override void OnDeserialized()
     {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
+      _forceInit = _forceInit && false;
+      base.OnDeserialized();
     }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="T">Type of Target</typeparam>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
-    {
-      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
-
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
-    }
-
-    #endregion
+#endif
 
     #region UnauthenticatedIdentity
 
@@ -86,19 +65,22 @@ namespace Csla.Security
 
     #region  IsInRole
 
-    private static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty(new PropertyInfo<MobileList<string>>("Roles"));
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
-    protected MobileList<string> Roles
+    private static PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
+    /// <summary>
+    /// Gets or sets the list of roles for this user.
+    /// </summary>
+    public MobileList<string> Roles
     {
       get { return GetProperty(RolesProperty); }
-      set { LoadProperty(RolesProperty, value); }
+      protected set { LoadProperty(RolesProperty, value); }
     }
 
     bool ICheckRoles.IsInRole(string role)
     {
-      var roles = GetProperty<MobileList<string>>(RolesProperty);
+      var roles = ReadProperty<MobileList<string>>(RolesProperty);
       if (roles != null)
         return roles.Contains(role);
       else
@@ -109,8 +91,7 @@ namespace Csla.Security
 
     #region  IIdentity
 
-    private static readonly PropertyInfo<string> AuthenticationTypeProperty = 
-      RegisterProperty<string>(new PropertyInfo<string>("AuthenticationType", "Authentication type", "Csla"));
+    private static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType, "AuthenticationType", "Csla");
     /// <summary>
     /// Gets the authentication type for this identity.
     /// </summary>
@@ -120,7 +101,7 @@ namespace Csla.Security
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
     }
 
-    private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
+    private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
     /// <summary>
     /// Gets a value indicating whether this identity represents
     /// an authenticated user.
@@ -131,7 +112,7 @@ namespace Csla.Security
       protected set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
+    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     /// <summary>
     /// Gets the username value.
     /// </summary>
@@ -143,5 +124,4 @@ namespace Csla.Security
 
     #endregion
   }
-
 }

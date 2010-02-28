@@ -1366,8 +1366,6 @@ namespace Csla.Validation
 
     #endregion
 
-		//TODO: re-add this code after beta 2
-#if !CLIENTPROFILE
     #region DataAnnotations
 
     /// <summary>
@@ -1434,6 +1432,5 @@ namespace Csla.Validation
     }
 
     #endregion
-#endif
 		}
 }

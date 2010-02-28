@@ -17,7 +17,7 @@ namespace Csla
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
-  public class SingleCriteria<B, C> : CriteriaBase
+  public class SingleCriteria<B, C> : CriteriaBase<SingleCriteria<B, C>>
   {
     private C _value;
 

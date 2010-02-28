@@ -5,7 +5,7 @@ using Csla.DataPortalClient;
 namespace Csla.Testing.Business.CommandBase
 {
   [Serializable]
-  public class TestCommandBase : Csla.CommandBase
+  public class TestCommandBase : Csla.CommandBase<TestCommandBase>
   {
     public const string ExecutionSignal = "Executed command with parameter: ";
 

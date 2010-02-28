@@ -12,7 +12,7 @@ namespace Csla.Security
   /// Provides a base class to simplify creation of
   /// a .NET identity object for use with BusinessPrincipalBase.
   /// </summary>
-  public abstract partial class CslaIdentity : ReadOnlyBase<CslaIdentity>, IIdentity
+  public abstract partial class CslaIdentity : CslaIdentityBase<CslaIdentity>, IIdentity
   {
     #region Constructor
 

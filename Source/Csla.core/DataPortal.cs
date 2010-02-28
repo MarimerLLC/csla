@@ -124,7 +124,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(method.RunLocal);
+        proxy = GetDataPortalProxy(objectType, method.RunLocal);
 
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -219,7 +219,7 @@ namespace Csla
         var method = Server.DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(method.RunLocal);
+        proxy = GetDataPortalProxy(objectType, method.RunLocal);
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(),
@@ -313,9 +313,9 @@ namespace Csla
     /// <returns>A reference to the updated Command object.</returns>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
-    public static CommandBase Execute(CommandBase obj)
+    public static Core.ICommandObject Execute(Core.ICommandObject obj)
     {
-      return (CommandBase)Update(obj);
+      return (Core.ICommandObject)Update(obj);
     }
 
     /// <summary>
@@ -381,7 +381,7 @@ namespace Csla
                 "save",
                 objectType.Name));
             if (factoryType != null)
-              if (obj is CommandBase)
+              if (obj is Core.ICommandObject)
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
               else
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
@@ -392,7 +392,7 @@ namespace Csla
         else
         {
           string methodName;
-          if (obj is CommandBase)
+          if (obj is Core.ICommandObject)
           {
             methodName = "DataPortal_Execute";
             operation = DataPortalOperations.Execute;
@@ -445,7 +445,7 @@ namespace Csla
         }
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(method.RunLocal);
+        proxy = GetDataPortalProxy(objectType, method.RunLocal);
 
         dpContext =
           new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
@@ -534,7 +534,7 @@ namespace Csla
           objectType, "DataPortal_Delete", criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
-        proxy = GetDataPortalProxy(method.RunLocal);
+        proxy = GetDataPortalProxy(objectType, method.RunLocal);
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
@@ -949,31 +949,39 @@ namespace Csla
 
     #region DataPortal Proxy
 
-    private static Type _proxyType;
+    private static DataPortalClient.IDataPortalProxyFactory _dataProxyFactory;
 
-    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(bool forceLocal)
+    private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
-      if (DataPortal.IsInDesignMode)
+      if (forceLocal)
       {
-        return new DataPortalClient.DesignTimeProxy();
+        return new DataPortalClient.LocalProxy();
       }
       else
       {
-        if (forceLocal)
+        // load dataportal factory if loaded 
+        if (_dataProxyFactory == null) 
+          LoadDataPortalProxyFactory();
+
+        return _dataProxyFactory.Create(objectType);
+      }
+    }
+
+    /// <summary>
+    /// Loads the data portal factory.
+    /// </summary>
+    private static void LoadDataPortalProxyFactory()
+    {
+      if (_dataProxyFactory == null)
+      {
+        if (String.IsNullOrEmpty(ApplicationContext.DataPortalProxyFactory) || ApplicationContext.DataPortalProxyFactory == "Default")
         {
-          return new DataPortalClient.LocalProxy();
+          _dataProxyFactory = new DataPortalClient.DefaultPortalProxyFactory();
         }
         else
         {
-          if (_proxyType == null)
-          {
-            string proxyTypeName = ApplicationContext.DataPortalProxy;
-            if (proxyTypeName == "Local")
-              _proxyType = typeof(DataPortalClient.LocalProxy);
-            else
-              _proxyType = Type.GetType(proxyTypeName, true, true);
-          }
-          return (DataPortalClient.IDataPortalProxy)Activator.CreateInstance(_proxyType);
+          var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory, true, true);
+          _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory) MethodCaller.CreateInstance(proxyFactoryType);
         }
       }
     }
@@ -983,9 +991,22 @@ namespace Csla
     /// next data portal call will reload the proxy
     /// type based on current configuration values.
     /// </summary>
+    public static void ResetProxyFactory()
+    {
+      _dataProxyFactory = null;
+    }
+
+    /// <summary>
+    /// Resets the data portal proxy type, so the
+    /// next data portal call will reload the proxy
+    /// type based on current configuration values.
+    /// </summary>
     public static void ResetProxyType()
     {
-      _proxyType = null;
+      if (_dataProxyFactory != null)
+      {
+        _dataProxyFactory.ResetProxyType();
+      }
     }
 
     /// <summary>
@@ -1018,18 +1039,5 @@ namespace Csla
 
     #endregion
 
-    #region Design Time Support
-
-    /// <summary>
-    /// Gets a value indicating whether the code is running
-    /// in WPF design mode.
-    /// </summary>
-    public static bool IsInDesignMode
-    {
-      get { return DesignerProperties.GetIsInDesignMode(new DependencyObject()); }
-    }
-
-
-    #endregion
   }
 }

@@ -265,7 +265,7 @@ namespace Csla
     /// type of collection object during data retrieval.
     /// </remarks>
     [Serializable()]
-    protected class Criteria : CriteriaBase
+    protected class Criteria : CriteriaBase<Criteria>
     {
       /// <summary>
       /// Creates an instance of the object.

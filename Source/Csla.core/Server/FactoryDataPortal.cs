@@ -156,7 +156,7 @@ namespace Csla.Server
       try
       {
         DataPortalResult result = null;
-        if (obj is CommandBase)
+        if (obj is Core.ICommandObject)
           methodName = context.FactoryInfo.ExecuteMethodName;
         else 
           methodName = context.FactoryInfo.UpdateMethodName;

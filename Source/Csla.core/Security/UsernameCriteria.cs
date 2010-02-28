@@ -10,14 +10,14 @@ namespace Csla.Security
   /// custom identity class.
   /// </summary>
   [Serializable]
-  public class UsernameCriteria : CriteriaBase
+  public class UsernameCriteria : CriteriaBase<UsernameCriteria>
   {
     /// <summary>
     /// Username property definition.
     /// </summary>
-    public static PropertyInfo<string> UsernameProperty = RegisterProperty(typeof(UsernameCriteria), new PropertyInfo<string>("Username", "Username"));
+    public static PropertyInfo<string> UsernameProperty = RegisterProperty<string>(c => c.Username);
     /// <summary>
-    /// Gets the username.
+    /// Username property definition.
     /// </summary>
     public string Username
     {
@@ -28,7 +28,7 @@ namespace Csla.Security
     /// <summary>
     /// Password property definition.
     /// </summary>
-    public static PropertyInfo<string> PasswordProperty = RegisterProperty(typeof(UsernameCriteria), new PropertyInfo<string>("Password", "Password"));
+    public static PropertyInfo<string> PasswordProperty = RegisterProperty<string>(c => c.Password);
     /// <summary>
     /// Gets the password.
     /// </summary>

@@ -49,6 +49,9 @@ namespace Csla.Xaml
         if (fe != null)
           result = fe.DataContext;
       }
+      var icv = result as ICollectionView;
+      if (icv != null)
+        result = icv.CurrentItem;
       return result;
     }
 

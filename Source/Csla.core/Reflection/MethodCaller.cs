@@ -18,26 +18,20 @@ namespace Csla.Reflection
       = BindingFlags.FlattenHierarchy 
       | BindingFlags.Instance 
       | BindingFlags.Public 
-#if !SILVERLIGHT
       | BindingFlags.NonPublic
-#endif
       ;
 
     private const BindingFlags oneLevelFlags 
       = BindingFlags.DeclaredOnly 
       | BindingFlags.Instance 
       | BindingFlags.Public 
-#if !SILVERLIGHT
       | BindingFlags.NonPublic
-#endif
       ;
 
     private const BindingFlags ctorFlags 
       = BindingFlags.Instance 
       | BindingFlags.Public 
-#if !SILVERLIGHT
       | BindingFlags.NonPublic
-#endif
       ;
 
     private const BindingFlags factoryFlags =
@@ -47,9 +41,7 @@ namespace Csla.Reflection
 
     private const BindingFlags privateMethodFlags =
       BindingFlags.Public |
-#if !SILVERLIGHT
       BindingFlags.NonPublic |
-#endif
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
@@ -136,7 +128,16 @@ namespace Csla.Reflection
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
-      return Type.GetType(typeName, throwOnError, ignoreCase);
+      string fullTypeName;
+#if SILVERLIGHT
+      if (typeName.Contains("Version="))
+        fullTypeName = typeName;
+      else
+        fullTypeName = typeName + ", Version=..., Culture=neutral, PublicKeyToken=null";
+#else
+        fullTypeName = typeName;
+#endif
+      return Type.GetType(fullTypeName, throwOnError, ignoreCase);
     }
 
     /// <summary>
@@ -146,7 +147,7 @@ namespace Csla.Reflection
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     public static Type GetType(string typeName, bool throwOnError)
     {
-      return Type.GetType(typeName, throwOnError);
+      return GetType(typeName, throwOnError, false);
     }
 
     /// <summary>
@@ -155,7 +156,7 @@ namespace Csla.Reflection
     /// <param name="typeName">Type name including assembly name.</param>
     public static Type GetType(string typeName)
     {
-      return Type.GetType(typeName);
+      return GetType(typeName, true, false);
     }
 
     #endregion

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Csla.Test.Basic
 {
-  public class CommandObject : Csla.CommandBase
+  public class CommandObject : Csla.CommandBase<CommandObject>
   {
 
     private static object locker = new object();

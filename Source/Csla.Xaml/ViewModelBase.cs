@@ -17,13 +17,8 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if SILVERLIGHT
-  public abstract class ViewModelBase<T> : FrameworkElement,
-    INotifyPropertyChanged, IViewModel
-#else
   public abstract class ViewModelBase<T> : DependencyObject,
     INotifyPropertyChanged, IViewModel
-#endif
   {
     #region Constructor
 

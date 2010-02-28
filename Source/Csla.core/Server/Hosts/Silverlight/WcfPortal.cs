@@ -195,7 +195,7 @@ namespace Csla.Server.Hosts.Silverlight
         else
         {
           string methodName;
-          if (obj is CommandBase)
+          if (obj is Core.ICommandObject)
             methodName = factoryInfo.ExecuteMethodName;
           else
           {
@@ -288,10 +288,12 @@ namespace Csla.Server.Hosts.Silverlight
       ApplicationContext.SetContext((ContextDictionary)MobileFormatter.Deserialize(request.ClientContext), (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
       ApplicationContext.User = (IPrincipal)MobileFormatter.Deserialize(request.Principal);
       // set the thread's culture to match the client
-      System.Threading.Thread.CurrentThread.CurrentCulture =
-        new System.Globalization.CultureInfo(request.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo(request.ClientUICulture);
+      if (!string.IsNullOrEmpty(request.ClientCulture))
+        System.Threading.Thread.CurrentThread.CurrentCulture =
+          new System.Globalization.CultureInfo(request.ClientCulture);
+      if (!string.IsNullOrEmpty(request.ClientUICulture))
+        System.Threading.Thread.CurrentThread.CurrentUICulture =
+          new System.Globalization.CultureInfo(request.ClientUICulture);
     }
 
     private void SetContext(UpdateRequest request)
@@ -299,10 +301,12 @@ namespace Csla.Server.Hosts.Silverlight
       ApplicationContext.SetContext((ContextDictionary)MobileFormatter.Deserialize(request.ClientContext), (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
       ApplicationContext.User = (IPrincipal)MobileFormatter.Deserialize(request.Principal);
       // set the thread's culture to match the client
-      System.Threading.Thread.CurrentThread.CurrentCulture =
-        new System.Globalization.CultureInfo(request.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
-        new System.Globalization.CultureInfo(request.ClientUICulture);
+      if (!string.IsNullOrEmpty(request.ClientCulture))
+        System.Threading.Thread.CurrentThread.CurrentCulture =
+          new System.Globalization.CultureInfo(request.ClientCulture);
+      if (!string.IsNullOrEmpty(request.ClientUICulture))
+        System.Threading.Thread.CurrentThread.CurrentUICulture =
+          new System.Globalization.CultureInfo(request.ClientUICulture);
     }
 
     private static void ClearContext()

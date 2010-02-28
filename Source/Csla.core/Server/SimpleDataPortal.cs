@@ -216,7 +216,7 @@ namespace Csla.Server
               lb.CallMethodIfImplemented("MarkOld");
           }
         }
-        else if (obj is CommandBase)
+        else if (obj is Core.ICommandObject)
         {
           operation = DataPortalOperations.Execute;
           // tell the object to update itself

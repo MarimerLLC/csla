@@ -367,7 +367,7 @@ namespace Csla.Test.Serialization
   }
 
   [Serializable]
-  public class TestCommand : CommandBase
+  public class TestCommand : CommandBase<TestCommand>
   {
     private static PropertyInfo<string> NameProperty = RegisterProperty(typeof(TestCommand), new PropertyInfo<string>("Name"));
     public string Name

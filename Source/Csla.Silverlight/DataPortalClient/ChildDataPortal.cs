@@ -213,7 +213,7 @@ namespace Csla.DataPortalClient
           }
 
         }
-        else if (obj is CommandBase)
+        else if (obj is Core.ICommandObject)
         {
           // tell the object to update itself
           lb.CallMethod("Child_Execute", parameters);

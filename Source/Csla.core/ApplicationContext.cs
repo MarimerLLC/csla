@@ -400,6 +400,47 @@ namespace Csla
       }
     }
 
+    private static string _dataPortalProxyFactory;
+    ///<summary>
+    /// Gets or sets the full type name (or 'Default') of
+    /// the data portal proxy factory object to be used to get 
+    /// the DataPortalProxy instance to use when
+    /// communicating with the data portal server.
+    /// </summary>
+    /// <value>Fully qualified assembly/type name of the proxy factory class
+    /// or 'Default'.</value>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// If this value is empty or null, a new value is read from the 
+    /// application configuration file with the key value 
+    /// "CslaDataPortalProxyFactory".
+    /// </para><para>
+    /// The proxy class must implement Csla.DataPortalClient.IDataPortalProxyFactory.
+    /// </para><para>
+    /// The value "Defaukt" is a shortcut for using the default 
+    /// Csla.DataPortalClient.DefaultPortalProxyFactory  implementation.
+    /// </para><para>
+    /// <value>The data portal proxy factory fully qualified name.</value>
+    public static string DataPortalProxyFactory
+    {
+      get
+      {
+        if (string.IsNullOrEmpty(_dataPortalProxyFactory))
+        {
+          _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
+          if (string.IsNullOrEmpty(_dataPortalProxyFactory))
+            _dataPortalProxyFactory = "Default";
+        }
+        return _dataPortalProxyFactory;
+      }
+      set
+      {
+        _dataPortalProxyFactory = value;
+        DataPortal.ResetProxyFactory();
+      }
+    }
+
     /// <summary>
     /// Returns the URL for the DataPortal server.
     /// </summary>

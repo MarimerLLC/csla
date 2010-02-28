@@ -7,7 +7,7 @@ namespace Csla.Test.ObjectFactory
 {
   [Csla.Server.ObjectFactory("Csla.Test.ObjectFactory.CommandObjectFactory, Csla.Test")]
   [Serializable]
-  public class CommandObject : CommandBase
+  public class CommandObject : CommandBase<CommandObject>
   {
     #region Authorization Methods
 

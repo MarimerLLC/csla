@@ -27,7 +27,7 @@ namespace Csla.Test.Basic
         }
 
         [Serializable()]
-        private class Criteria : CriteriaBase
+        private class Criteria : CriteriaBase<Criteria>
         {
             public string _data;
 

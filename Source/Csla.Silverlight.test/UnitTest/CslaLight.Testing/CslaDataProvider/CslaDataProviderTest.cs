@@ -128,29 +128,34 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void TestCslaDataProviderSave()
     {
-      var context = GetContext();
-
-      var provider = new Csla.Xaml.CslaDataProvider();
-      Customer.GetCustomer((o1, e1) =>
+      using (var context = GetContext())
       {
-        Csla.ApplicationContext.GlobalContext.Clear();
-        var cust = e1.Object;
-        int custID = cust.Id;
-        string custName = cust.Name;
-        provider.ObjectInstance = cust;
-        cust.Name = "new test name";
-        provider.PropertyChanged += (o2, e2) =>
+        var provider = new Csla.Xaml.CslaDataProvider();
+        Customer.GetCustomer((o1, e1) =>
         {
-          if (e2.PropertyName == "Data")
+          Csla.ApplicationContext.GlobalContext.Clear();
+          var cust = e1.Object;
+          int custID = cust.Id;
+          string custName = cust.Name;
+          provider.ObjectInstance = cust;
+          cust.Name = "new test name";
+          provider.PropertyChanged += (o2, e2) =>
           {
-            context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
-            context.Assert.Success();
-          }
-        };
-        provider.Save();
-      });
-      var tmp = provider.Data;
-      context.Complete();
+            if (e2.PropertyName == "Data")
+            {
+              context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
+              context.Assert.Success();
+            }
+            else if (e2.PropertyName == "Error")
+            {
+              context.Assert.Fail(provider.Error);
+            }
+          };
+          provider.Save();
+        });
+        var tmp = provider.Data;
+        context.Complete();
+      }
     }
 
     [TestMethod]
@@ -515,29 +520,33 @@ namespace cslalighttest.CslaDataProvider
     [TestMethod]
     public void InheritedProviderSave()
     {
-      var context = GetContext();
-
-      var provider = new InheritedProvider();
-      Customer.GetCustomer((o1, e1) =>
+      using (var context = GetContext())
       {
-        Csla.ApplicationContext.GlobalContext.Clear();
-        var cust = e1.Object;
-        int custID = cust.Id;
-        string custName = cust.Name;
-        provider.ObjectInstance = cust;
-        cust.Name = "new test name";
-        provider.PropertyChanged += (o2, e2) =>
+        var provider = new InheritedProvider();
+        Customer.GetCustomer((o1, e1) =>
         {
-          if (e2.PropertyName == "Data")
+          Csla.ApplicationContext.GlobalContext.Clear();
+          var cust = e1.Object;
+          int custID = cust.Id;
+          string custName = cust.Name;
+          provider.ObjectInstance = cust;
+          cust.Name = "new test name";
+          provider.PropertyChanged += (o2, e2) =>
           {
-            context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
-            context.Assert.Success();
-          }
-        };
-        provider.Save();
-      });
-      var tmp = provider.Data;
-      context.Complete();
+            if (e2.PropertyName == "Data")
+            {
+              context.Assert.AreEqual("Updating Customer new test name", ((Customer)provider.Data).Method);
+              context.Assert.Success();
+            }
+            else if (e2.PropertyName == "Error")
+            {
+              context.Assert.Fail(provider.Error);
+            }
+          };
+          provider.Save();
+        });
+        var tmp = provider.Data;
+      }
     }
 
 

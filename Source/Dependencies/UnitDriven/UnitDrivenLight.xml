@@ -6,7 +6,7 @@
     <members>
         <member name="F:UnitDriven.Commanding.CommandBase.DefaultTimeout">
             <summary>
-            Default timeout is 5 seconds.
+            Default timeout is 30 seconds.
             </summary>
         </member>
         <member name="T:UnitDriven.Properties.Resources">

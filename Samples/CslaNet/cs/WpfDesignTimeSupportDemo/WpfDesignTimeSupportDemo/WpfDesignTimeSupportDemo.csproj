@@ -56,12 +56,6 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
-    </Reference>
-    <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.Xaml.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -119,7 +113,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -127,6 +120,14 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Source\Csla.client\Csla.client.csproj">
+      <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
+      <Name>Csla.client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Source\Csla.Xaml\Csla.Xaml.csproj">
+      <Project>{563EFDFA-EB47-4039-955B-654582EA5362}</Project>
+      <Name>Csla.Xaml</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WpfDesignTime.Business\WpfDesignTime.Business.csproj">
       <Project>{C16B2295-C0B6-4354-891C-C46A8A21C0AB}</Project>
       <Name>WpfDesignTime.Business</Name>

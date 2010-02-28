@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -40,8 +41,6 @@ namespace Csla.Xaml
 
     private DispatcherTimer _timer;
     private Canvas _root;
-    private Storyboard _normalStoryboard;
-    private Storyboard[] _isRunningStoryboard;
 
     /// <summary>
     /// Gets or sets the state duration for the animation.
@@ -61,10 +60,7 @@ namespace Csla.Xaml
     public TimeSpan StateDuration
     {
       get { return (TimeSpan)GetValue(StateDurationProperty); }
-      set
-      {
-        SetValue(StateDurationProperty, value);
-      }
+      set { SetValue(StateDurationProperty, value); }
     }
 
     /// <summary>
@@ -78,10 +74,7 @@ namespace Csla.Xaml
       new FrameworkPropertyMetadata(
         false,
         FrameworkPropertyMetadataOptions.AffectsRender,
-        (o, e) =>
-          (
-            (BusyAnimation)o).SetState((bool)e.NewValue))
-          );
+        (o, e) => ((BusyAnimation)o).SetState((bool)e.NewValue)));
 
     /// <summary>
     /// Gets or sets a value indicating whether the busy
@@ -98,24 +91,29 @@ namespace Csla.Xaml
       }
     }
 
+    private FrameworkElement Root
+    {
+      get
+      {
+        if (_root == null)
+          _root = (Canvas)Template.FindName("root", this);
+
+        return _root;
+      }
+    }
+
     private void SetState(bool isRunning)
-    {      
-        if(_isRunningStoryboard!=null)
-        {
-          if (isRunning)
-          {
-            StopTimer();
-            StartTimer();
-          }
-          else
-          {
-            StopTimer();
-            if (_root == null)
-              _root = (Canvas)Template.FindName("root", this);
-            if (_root != null)
-              _normalStoryboard.Begin(_root);
-          }
-        }
+    {
+      if (isRunning)
+      {
+        StartTimer();
+      }
+      else
+      {
+        StopTimer();
+        if (Root != null)
+          VisualStateManager.GoToState(_root, "normal", true);
+      }
     }
 
     private void StartTimer()
@@ -140,9 +138,9 @@ namespace Csla.Xaml
     private int _frame = 0;
     void timer_Tick(object sender, EventArgs e)
     {
-      if (_root != null)
+      if (Root != null)
       {
-        _isRunningStoryboard[_frame].Begin(_root);
+        VisualStateManager.GoToState(Root, "state" + _frame, true);
         _frame = (_frame + 1) % NUM_STATES;
       }
     }
@@ -161,7 +159,6 @@ namespace Csla.Xaml
       Loaded += (o, e) =>
       {
         ArrangeParts();
-        BuildStoryboard();
         SetState(IsRunning);
       };
       SizeChanged += new SizeChangedEventHandler(BusyAnimation_SizeChanged);
@@ -192,9 +189,6 @@ namespace Csla.Xaml
       double scale = Math.Min(ActualWidth, ActualHeight);
       double theta = (2.0 * Math.PI) / NUM_STATES;
 
-      if (_root == null)
-        _root = (Canvas)Template.FindName("root", this);
-
       for (int n = 0; n < NUM_STATES; n++)
       {
         FrameworkElement item = (FrameworkElement)Template.FindName("part" + (n + 1).ToString(), this);
@@ -214,51 +208,6 @@ namespace Csla.Xaml
           item.SetValue(Canvas.TopProperty, y);
         }
       }
-    }
-
-    private void BuildStoryboard()
-    {
-      if (Template == null)
-        return;
-
-      _root = (Canvas)Template.FindName("root", this);
-      _isRunningStoryboard = new Storyboard[8];
-      _isRunningStoryboard[0] = (Storyboard)Template.Resources["state1"];
-      _isRunningStoryboard[1] = (Storyboard)Template.Resources["state2"];
-      _isRunningStoryboard[2] = (Storyboard)Template.Resources["state3"];
-      _isRunningStoryboard[3] = (Storyboard)Template.Resources["state4"];
-      _isRunningStoryboard[4] = (Storyboard)Template.Resources["state5"];
-      _isRunningStoryboard[5] = (Storyboard)Template.Resources["state6"];
-      _isRunningStoryboard[6] = (Storyboard)Template.Resources["state7"];
-      _isRunningStoryboard[7] = (Storyboard)Template.Resources["state8"];
-      _normalStoryboard = (Storyboard)Template.Resources["normal"];
-
-      //_isRunningStoryboard = new Storyboard();
-      //for (int n = 0; n < NUM_STATES; n++)
-      //{
-      //  string name = "part" + (n + 1).ToString();
-      //  DoubleAnimationUsingKeyFrames anim = new DoubleAnimationUsingKeyFrames();
-      //  anim.Duration = new Duration(TimeSpan.FromMilliseconds(NUM_STATES * FRAME_DURATION));
-      //  anim.RepeatBehavior = RepeatBehavior.Forever;
-
-      //  Storyboard.SetTargetName(anim, name);
-      //  Storyboard.SetTargetProperty(anim, new PropertyPath(Control.OpacityProperty));
-
-      //  double tailSize = (NUM_STATES / 2);
-      //  for (double i = 1; i <= NUM_STATES; i++)
-      //  {
-      //    double index = (n + i) % (NUM_STATES);
-      //    double val = Math.Max(tailSize - i, 0.0) / tailSize;
-      //    TimeSpan time = TimeSpan.FromMilliseconds(index * FRAME_DURATION);
-
-      //    KeyTime keyTime = KeyTime.FromTimeSpan(time);
-      //    LinearDoubleKeyFrame key = new LinearDoubleKeyFrame(val, keyTime);
-      //    anim.KeyFrames.Add(key);
-      //  }
-
-      //  _isRunningStoryboard.Children.Add(anim);
-      //}
-
     }
 
     #endregion

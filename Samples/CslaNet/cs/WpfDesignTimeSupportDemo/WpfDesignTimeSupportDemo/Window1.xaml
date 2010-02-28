@@ -22,8 +22,8 @@
     <StackPanel FlowDirection="LeftToRight" Margin="0">
       <StackPanel Orientation="Horizontal">
         <TextBlock>Resources:</TextBlock>
-        <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5"
-          IsRunning="{Binding Source={StaticResource ResourceList}, Path=IsBusy, BindsDirectlyToSource=True}" />
+        <csla:BusyAnimation Name="Busy" Height="20" Width="20" Margin="5" 
+            IsRunning="{Binding IsBusy, Source={StaticResource ResourceList}, BindsDirectlyToSource=True}" />
       </StackPanel>
       <ListBox Name="listBox1" 
                  ItemsSource="{Binding}"/>

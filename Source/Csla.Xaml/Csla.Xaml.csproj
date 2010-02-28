@@ -86,7 +86,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\Csla.Silverlight\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Silverlight\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Silverlight\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
     <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

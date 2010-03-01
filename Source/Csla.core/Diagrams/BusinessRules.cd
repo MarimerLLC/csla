@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Csla.Rules.BusinessRule" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAECAAEABAAEAAAAAAAAAAAAABAAAAEAAAAA=</HashCode>
+      <FileName>Rules\BusinessRule.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Csla.Rules.CommonRules.MaxLength" Collapsed="true">
+    <Position X="9" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rules\CommonRules.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Rules.RuleContext">
+    <Position X="2" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIIAAAAABCQoIAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Rules\RuleContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Rules.RuleMethod">
+    <Position X="4.25" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAYAAAEAAAABABAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rules\RuleMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.Rules.RuleResult">
+    <Position X="6.5" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAkAAAAAAAAAAAAAgAAAAAAAAAAAAQCAAA=</HashCode>
+      <FileName>Rules\RuleResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Csla.Rules.IBusinessRule" Collapsed="true">
+    <Position X="9" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rules\IBusinessRule.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Csla.Rules.RuleSeverity" Collapsed="true">
+    <Position X="9" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAQAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rules\RuleSeverity.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

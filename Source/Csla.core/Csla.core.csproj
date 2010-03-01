@@ -134,6 +134,13 @@
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
     <Compile Include="RelationshipTypes.cs" />
     <Compile Include="Reflection\Reflect.cs" />
+    <Compile Include="Rules\BusinessRule.cs" />
+    <Compile Include="Rules\BusinessRuleManager.cs" />
+    <Compile Include="Rules\CommonRules.cs" />
+    <Compile Include="Rules\IBusinessRule.cs" />
+    <Compile Include="Rules\RuleContext.cs" />
+    <Compile Include="Rules\RuleMethod.cs" />
+    <Compile Include="Rules\RuleResult.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
@@ -307,6 +314,7 @@
     <Compile Include="Validation\RuleDescription.cs" />
     <Compile Include="Validation\RuleHandler.cs" />
     <Compile Include="Validation\RuleMethod.cs" />
+    <Compile Include="Rules\RuleSeverity.cs" />
     <Compile Include="Validation\RuleSeverity.cs" />
     <Compile Include="Validation\RulesList.cs" />
     <Compile Include="Validation\SharedValidationRules.cs" />
@@ -320,6 +328,7 @@
   <ItemGroup>
     <None Include="CslaKey.snk" />
     <None Include="Diagrams\BindableBaseClasses.cd" />
+    <None Include="Diagrams\BusinessRules.cd" />
     <None Include="Diagrams\Csla.cd" />
     <None Include="Diagrams\CslaBaseClasses.cd" />
     <None Include="Diagrams\DataPortal.cd" />

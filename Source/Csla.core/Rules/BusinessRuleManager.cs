@@ -11,7 +11,7 @@ namespace Csla.Rules
   public class BusinessRuleManager
   {
     #region Per Type Rules
-
+#if !SILVERLIGHT
     private static System.Collections.Concurrent.ConcurrentDictionary<Type, BusinessRuleManager> _perTypeRules = 
       new System.Collections.Concurrent.ConcurrentDictionary<Type, BusinessRuleManager>();
 
@@ -19,7 +19,27 @@ namespace Csla.Rules
     {
       return _perTypeRules.GetOrAdd(type, (t) => { return new BusinessRuleManager(); });
     }
+#else
+    private static Dictionary<Type, BusinessRuleManager> _perTypeRules = new Dictionary<Type, BusinessRuleManager>();
 
+    internal static BusinessRuleManager GetRulesForType(Type type)
+    {
+      BusinessRuleManager result = null;
+      if (!_perTypeRules.TryGetValue(type, out result))
+      {
+        lock (_perTypeRules)
+        {
+          if (!_perTypeRules.TryGetValue(type, out result))
+          {
+            result = new BusinessRuleManager();
+            _perTypeRules.Add(type, result);
+          }
+        }
+      }
+      return result;
+    }
+
+#endif
     #endregion
 
     private BusinessRuleManager()

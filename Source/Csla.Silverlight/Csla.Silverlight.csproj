@@ -243,6 +243,30 @@
     <Compile Include="..\csla.core\Reflection\Reflect.cs">
       <Link>Reflection\Reflect.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\Rules\BusinessRule.cs">
+      <Link>Rules\BusinessRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\BusinessRuleManager.cs">
+      <Link>Rules\BusinessRuleManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\CommonRules.cs">
+      <Link>Rules\CommonRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\IBusinessRule.cs">
+      <Link>Rules\IBusinessRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\RuleContext.cs">
+      <Link>Rules\RuleContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\RuleMethod.cs">
+      <Link>Rules\RuleMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\RuleResult.cs">
+      <Link>Rules\RuleResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Rules\RuleSeverity.cs">
+      <Link>Rules\RuleSeverity.cs</Link>
+    </Compile>
     <Compile Include="..\csla.core\Security\AuthorizationRules.cs">
       <Link>Security\AuthorizationRules.cs</Link>
     </Compile>

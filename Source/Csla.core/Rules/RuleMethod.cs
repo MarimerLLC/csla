@@ -57,7 +57,11 @@ namespace Csla.Rules
     /// object against which this rule will run.</param>
     public void Invoke(object target)
     {
+#if SILVERLIGHT
+      var lck = new System.Threading.ManualResetEvent(false);
+#else
       var lck = new System.Threading.ManualResetEventSlim(false);
+#endif
       var context = new RuleContext((r) =>
         {
           // process results
@@ -68,7 +72,11 @@ namespace Csla.Rules
         RuleDefinition = this,
       };
       Rule.Rule(context);
+#if SILVERLIGHT
+      lck.WaitOne();
+#else
       lck.Wait();
+#endif
     }
 
     /// <summary>

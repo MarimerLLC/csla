@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Csla.Rules
 {
+  /// <summary>
+  /// Context information provided to a business rule
+  /// when it is invoked.
+  /// </summary>
   public class RuleContext
   {
     /// <summary>
@@ -47,7 +51,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddErrorResult(string description)
     {
-      Results.Add(new RuleResult(PrimaryProperty, description));
+      Results.Add(new RuleResult(RuleDefinition.Rule.ToString(), PrimaryProperty, description));
     }
 
     /// <summary>
@@ -57,7 +61,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddWarningResult(string description)
     {
-      Results.Add(new RuleResult(PrimaryProperty, description) { Severity = RuleSeverity.Warning });
+      Results.Add(new RuleResult(RuleDefinition.Rule.ToString(), PrimaryProperty, description) { Severity = RuleSeverity.Warning });
     }
 
     /// <summary>
@@ -67,7 +71,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddInformationResult(string description)
     {
-      Results.Add(new RuleResult(PrimaryProperty, description) { Severity = RuleSeverity.Information });
+      Results.Add(new RuleResult(RuleDefinition.Rule.ToString(), PrimaryProperty, description) { Severity = RuleSeverity.Information });
     }
 
     /// <summary>

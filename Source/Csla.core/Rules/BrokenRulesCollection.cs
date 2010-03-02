@@ -19,6 +19,22 @@ namespace Csla.Rules
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyObservableBindingList<BrokenRule>
   {
+    internal void SetBrokenRule(RuleResult result)
+    {
+      this.IsReadOnly = false;
+      if (result.Success)
+      {
+        var item = this.Where(c => c.RuleName == result.RuleName && c.Property == result.PrimaryProperty.Name).FirstOrDefault();
+        if (item != null)
+          Remove(item);
+      }
+      else
+      {
+        Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
+      }
+      this.IsReadOnly = true;
+    }
+
     /// <summary>
     /// Gets the number of broken rules in
     /// the collection that have a severity

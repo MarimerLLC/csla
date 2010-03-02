@@ -36,6 +36,10 @@ namespace Csla.Rules
     /// </summary>
     public bool StopProcessing { get; set; }
     /// <summary>
+    /// Gets the primary property for this result.
+    /// </summary>
+    public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
+    /// <summary>
     /// Gets or sets a list of properties that were affected
     /// by the rule, so appropriate PropertyChanged events
     /// can be raised for UI notification.
@@ -51,24 +55,28 @@ namespace Csla.Rules
     /// <summary>
     /// Creates a successful result.
     /// </summary>
+    /// <param name="ruleName">Unique name of the rule creating
+    /// this result.</param>
     /// <param name="property">Property to which this result should
     /// be attached.</param>
-    public RuleResult(Core.IPropertyInfo property)
+    public RuleResult(string ruleName, Core.IPropertyInfo property)
     {
-      Properties = new List<Core.IPropertyInfo>() { property };
+      PrimaryProperty = property;
       Success = true;
     }
 
     /// <summary>
     /// Creates a failure result.
     /// </summary>
+    /// <param name="ruleName">Unique name of the rule creating
+    /// this result.</param>
     /// <param name="property">Property to which this result should
     /// be attached.</param>
     /// <param name="description">Human-readable description of
     /// why the rule failed.</param>
-    public RuleResult(Core.IPropertyInfo property, string description)
+    public RuleResult(string ruleName, Core.IPropertyInfo property, string description)
     {
-      Properties = new List<Core.IPropertyInfo>() { property };
+      PrimaryProperty = property;
       Description = description;
       Success = string.IsNullOrEmpty(description);
       if (!Success)

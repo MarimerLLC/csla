@@ -29,23 +29,11 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Instance of rule.</param>
     /// <param name="property">Property to which the rule is attached.</param>
-    /// <param name="priority"></param>
-    public RuleMethod(IBusinessRule rule, Core.IPropertyInfo property)
+    /// <param name="priority">Rule priority.</param>
+    internal RuleMethod(IBusinessRule rule, Core.IPropertyInfo property, int priority)
     {
       Rule = rule;
       PrimaryProperty = property;
-      Priority = 0;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="rule">Instance of rule.</param>
-    /// <param name="property">Property to which the rule is attached.</param>
-    /// <param name="priority">Rule priority.</param>
-    public RuleMethod(IBusinessRule rule, Core.IPropertyInfo property, int priority)
-      : this(rule, property)
-    {
       Priority = priority;
     }
 
@@ -55,7 +43,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="target">Reference to the business
     /// object against which this rule will run.</param>
-    public void Invoke(object target)
+    internal void Invoke(object target)
     {
 #if SILVERLIGHT
       var lck = new System.Threading.ManualResetEvent(false);
@@ -88,7 +76,7 @@ namespace Csla.Rules
     /// object against which this rule will run.</param>
     /// <param name="callback">Callback to be invoked when
     /// the rule completes.</param>
-    public void BeginInvoke(object target, Action<List<RuleResult>> callback)
+    internal void BeginInvoke(object target, Action<List<RuleResult>> callback)
     {
       var context = new RuleContext((r) =>
       {

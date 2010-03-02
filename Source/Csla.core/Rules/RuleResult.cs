@@ -11,15 +11,20 @@ namespace Csla.Rules
   public class RuleResult
   {
     /// <summary>
-    /// Gets or sets a value indicating whether the 
+    /// Gets the unique name of the rule that created
+    /// this result.
+    /// </summary>
+    public string RuleName { get; private set; }
+    /// <summary>
+    /// Gets a value indicating whether the 
     /// rule was successful.
     /// </summary>
-    public bool Success { get; set; }
+    public bool Success { get; private set; }
     /// <summary>
-    /// Gets or sets a human-readable description of 
+    /// Gets a human-readable description of 
     /// why the rule failed.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; private set; }
     /// <summary>
     /// Gets or sets the severity of a failed rule.
     /// </summary>

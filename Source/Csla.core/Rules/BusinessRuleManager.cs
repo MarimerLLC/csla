@@ -42,58 +42,14 @@ namespace Csla.Rules
 #endif
     #endregion
 
-    private BusinessRuleManager()
-    {
-      RuleMethods = new List<RuleMethod>();
-    }
-
     /// <summary>
     /// Gets the list of RuleMethod objects for the business type.
     /// </summary>
     public List<RuleMethod> RuleMethods { get; private set; }
 
-    /// <summary>
-    /// Invokes all rules for the business type.
-    /// </summary>
-    /// <returns>
-    /// Returns a list of property names affected by the invoked rules.
-    /// The PropertyChanged event should be raised for each affected
-    /// property.
-    /// </returns>
-    public List<string> CheckRules()
+    private BusinessRuleManager()
     {
-      var result = new List<string>();
-      return result;
-    }
-
-    /// <summary>
-    /// Invokes all rules attached at the class level
-    /// of the business type.
-    /// </summary>
-    /// <returns>
-    /// Returns a list of property names affected by the invoked rules.
-    /// The PropertyChanged event should be raised for each affected
-    /// property.
-    /// </returns>
-    public List<string> CheckObjectRules()
-    {
-      var result = new List<string>();
-      return result;
-    }
-
-    /// <summary>
-    /// Invokes all rules for a specific property of the business type.
-    /// </summary>
-    /// <param name="property">Property to check.</param>
-    /// <returns>
-    /// Returns a list of property names affected by the invoked rules.
-    /// The PropertyChanged event should be raised for each affected
-    /// property.
-    /// </returns>
-    public List<string> CheckRules(Csla.Core.IPropertyInfo property)
-    {
-      var result = new List<string>();
-      return result;
+      RuleMethods = new List<RuleMethod>();
     }
   }
 }

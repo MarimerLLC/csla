@@ -136,6 +136,7 @@
     <Compile Include="Reflection\Reflect.cs" />
     <Compile Include="Rules\BusinessRule.cs" />
     <Compile Include="Rules\BusinessRuleManager.cs" />
+    <Compile Include="Rules\BusinessRules.cs" />
     <Compile Include="Rules\CommonRules.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
     <Compile Include="Rules\RuleContext.cs" />
@@ -302,8 +303,10 @@
     <Compile Include="Validation\AsyncRuleResult.cs" />
     <Compile Include="Validation\AsyncRuleResultHandler.cs" />
     <Compile Include="Validation\AsyncValidationRuleContext.cs" />
+    <Compile Include="Rules\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRule.cs" />
     <Compile Include="Validation\BrokenRule.partial.cs" />
+    <Compile Include="Rules\BrokenRulesCollection.cs" />
     <Compile Include="Validation\BrokenRulesCollection.cs" />
     <Compile Include="Validation\BrokenRulesCollection.partial.cs" />
     <Compile Include="Validation\CommonRules.cs" />

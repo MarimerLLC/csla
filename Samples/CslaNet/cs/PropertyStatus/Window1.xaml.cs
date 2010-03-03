@@ -30,5 +30,9 @@ namespace Example
       ex.Data = "example...";
       DataContext = ex;
     }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+    }
   }
 }

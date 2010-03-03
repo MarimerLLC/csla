@@ -46,23 +46,17 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty StepIntervalProperty = DependencyProperty.Register(
       "StepInterval",
-      typeof(int),
+      typeof(TimeSpan),
       typeof(BusyAnimation),
-      new PropertyMetadata((o, e) => ((BusyAnimation)o).StepInterval = (int)e.NewValue));
-    
-    /// <summary>
-    /// Gets or sets a property controlling
-    /// the speed of the animation.
-    /// </summary>
-    [Category("Common")]
-    public int StepInterval
-    {
-      get { return (int)GetValue(StepIntervalProperty); }
-      set
-      {
-        SetValue(StepIntervalProperty, value);
-      }
-    }
+      new PropertyMetadata(
+        TimeSpan.FromMilliseconds(100),
+        (o, e) => 
+        {
+          var busyAnimation = (BusyAnimation)o;
+          busyAnimation.StepInterval = (TimeSpan)e.NewValue;
+          if (busyAnimation._timer != null)
+            busyAnimation._timer.Interval = busyAnimation.StepInterval;
+        }));
 
     /// <summary>
     /// IsRunning property to control whether the 
@@ -70,37 +64,44 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
       "IsRunning",
-      typeof(object),
+      typeof(bool),
       typeof(BusyAnimation),
-      new PropertyMetadata((o, e) => ((BusyAnimation)o).SetupRunningState(e.NewValue)));
+      new PropertyMetadata((o, e) => ((BusyAnimation)o).SetupRunningState((bool)e.NewValue)));
+
+    /// <summary>
+    /// Gets or sets a property controlling
+    /// the speed of the animation.
+    /// </summary>
+    [Category("Common")]
+    public TimeSpan StepInterval
+    {
+      get { return (TimeSpan)GetValue(StepIntervalProperty); }
+      set
+      {
+        SetValue(StepIntervalProperty, value);
+      }
+    }
 
     /// <summary>
     /// Gets or sets a property controlling
     /// whether the animation is running.
     /// </summary>
     [Category("Common")]
-    public object IsRunning
+    public bool IsRunning
     {
       get
       {
-        object val = GetValue(IsRunningProperty);
-        return (val != null ?
-          (bool)Convert.ChangeType(val, typeof(bool), CultureInfo.InvariantCulture) :
-          false);
+        return (bool)GetValue(IsRunningProperty);
       }
       set
       {
-        bool val = (bool)Convert.ChangeType(value, typeof(bool), CultureInfo.InvariantCulture);
-        SetValue(IsRunningProperty, val);
+        SetValue(IsRunningProperty, value);
       }
     }
 
-    private void SetupRunningState(object isRunning)
+    private void SetupRunningState(bool isRunning)
     {
-      bool val = false;
-      if (isRunning != null)
-        val = (bool)Convert.ChangeType(isRunning, typeof(bool), CultureInfo.InvariantCulture);
-      if (val)
+      if (isRunning)
         StartTimer();
       else
         StopTimer();
@@ -123,8 +124,8 @@ namespace Csla.Xaml
         ArrangeParts();
         GoToState(true);
       };
-      SizeChanged += new SizeChangedEventHandler(BusyAnimation_SizeChanged);
-      LayoutUpdated += new EventHandler(BusyAnimation_LayoutUpdated);
+      SizeChanged += BusyAnimation_SizeChanged;
+      LayoutUpdated += BusyAnimation_LayoutUpdated;
     }
 
     #endregion
@@ -133,11 +134,13 @@ namespace Csla.Xaml
 
     private void StartTimer()
     {
-      StopTimer();
-      _timer = new DispatcherTimer();
-      _timer.Interval = TimeSpan.FromMilliseconds(StepInterval);
-      _timer.Tick += new EventHandler(timer_Tick);
-      _timer.Start();
+      if (_timer == null)
+      {
+        _timer = new DispatcherTimer();
+        _timer.Interval = StepInterval;
+        _timer.Tick += timer_Tick;
+        _timer.Start();
+      }
     }
 
     private void StopTimer()
@@ -145,7 +148,7 @@ namespace Csla.Xaml
       if (_timer != null)
       {
         _timer.Stop();
-        _timer.Tick -= new EventHandler(timer_Tick);
+        _timer.Tick -= timer_Tick;
         _timer = null;
       }
     }
@@ -167,10 +170,12 @@ namespace Csla.Xaml
     {
       if ((bool)IsRunning)
       {
-        bool result = VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+        VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
       }
       else
+      {
         VisualStateManager.GoToState(this, "normal", useTransitions);
+      }
     }
 
     #endregion
@@ -196,7 +201,7 @@ namespace Csla.Xaml
 
       for (int n = 0; n < NUM_STATES; n++)
       {
-        FrameworkElement item = (FrameworkElement)FindChild(this, "part" + (n + 1).ToString());
+        FrameworkElement item = (FrameworkElement)FindChild(this, "part" + (n + 1));
         if (item != null)
         {
           double itemTheta = theta * (double)n;

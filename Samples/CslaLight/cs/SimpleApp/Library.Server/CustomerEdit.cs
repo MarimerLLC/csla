@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
+using Csla.Validation;
 
 namespace Library
 {
@@ -41,12 +42,26 @@ namespace Library
     {
       ValidationRules.AddRule(
         Csla.Validation.CommonRules.StringRequired, NameProperty);
+      ValidationRules.AddRule(
+        CustomerEdit.StringOnlyLetters, NameProperty);
+    }
+
+    private static bool StringOnlyLetters(object target, RuleArgs e)
+    {
+      e.Description = "Name must consist of only letters.";
+      e.Severity = RuleSeverity.Error;
+
+      var ce = (CustomerEdit)target;
+      return string.IsNullOrEmpty(ce.Name) ||
+        !(from c in ce.Name.ToCharArray()
+          where !char.IsLetter(c)
+          select c)
+          .Any();
     }
 
     protected override void AddAuthorizationRules()
     {
       AuthorizationRules.AllowWrite(IdProperty, "None");
-      //AuthorizationRules.AllowWrite(NameProperty, "None");
     }
 
     #endregion
@@ -136,6 +151,8 @@ namespace Library
 
     protected override void DataPortal_Insert()
     {
+      System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+
       using (BypassPropertyChecks)
       {
         Id = 987;

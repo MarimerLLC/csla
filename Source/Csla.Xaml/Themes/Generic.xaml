@@ -37,7 +37,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="csla:PropertyStatus">
-                    <Grid Background="{TemplateBinding Background}">
+                    <Grid x:Name="root" Background="{TemplateBinding Background}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
                                 <VisualState x:Name="Valid" >
@@ -45,14 +45,23 @@
                                 </VisualState>
                                 <VisualState x:Name="Error" >
                                     <Storyboard >
+                                        <BooleanAnimationUsingKeyFrames
+                                            Storyboard.TargetName="busy"
+                                            Storyboard.TargetProperty="IsRunning"
+                                            BeginTime="00:00:00">
+                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="False" />
+                                        </BooleanAnimationUsingKeyFrames>
                                         <DoubleAnimation
-	                                            Storyboard.TargetName="errorImage"
-	                                            Storyboard.TargetProperty="Opacity"
-	                                            BeginTime="00:00:00" Duration="0:0:1"
-	                                            To="1"/>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="errorImage" 
-                                                                       Storyboard.TargetProperty="Visibility"
-                                                                       Duration="0">
+                                            Storyboard.TargetName="errorImage"
+                                            Storyboard.TargetProperty="Opacity"
+                                            BeginTime="00:00:00"
+                                            Duration="0.00:00:01"
+                                            From="0"
+                                            To="1" />
+                                        <ObjectAnimationUsingKeyFrames 
+                                            Storyboard.TargetName="errorImage" 
+                                            Storyboard.TargetProperty="Visibility"
+                                            Duration="0">
                                             <DiscreteObjectKeyFrame KeyTime="0">
                                                 <DiscreteObjectKeyFrame.Value>
                                                     <Visibility>Visible</Visibility>
@@ -63,6 +72,12 @@
                                 </VisualState>
                                 <VisualState x:Name="Warning" >
                                     <Storyboard >
+                                        <BooleanAnimationUsingKeyFrames
+                                            Storyboard.TargetName="busy"
+                                            Storyboard.TargetProperty="IsRunning"
+                                            BeginTime="00:00:00">
+                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="False" />
+                                        </BooleanAnimationUsingKeyFrames>
                                         <DoubleAnimation
 	                                            Storyboard.TargetName="warningImage"
 	                                            Storyboard.TargetProperty="Opacity"
@@ -81,6 +96,12 @@
                                 </VisualState>
                                 <VisualState x:Name="Information" >
                                     <Storyboard >
+                                        <BooleanAnimationUsingKeyFrames
+                                            Storyboard.TargetName="busy"
+                                            Storyboard.TargetProperty="IsRunning"
+                                            BeginTime="00:00:00">
+                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="False" />
+                                        </BooleanAnimationUsingKeyFrames>
                                         <DoubleAnimation
 	                                            Storyboard.TargetName="informationImage"
 	                                            Storyboard.TargetProperty="Opacity"
@@ -98,14 +119,25 @@
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Busy">
-                                    <Storyboard />
+                                    <Storyboard>
+                                        <BooleanAnimationUsingKeyFrames
+                                                Storyboard.TargetName="busy"
+                                                Storyboard.TargetProperty="IsRunning"
+                                                BeginTime="00:00:00">
+                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                        </BooleanAnimationUsingKeyFrames>
+                                    </Storyboard>
                                 </VisualState>
                                 <VisualStateGroup.Transitions>
                                     <VisualTransition GeneratedDuration="0:0:0"/>
                                 </VisualStateGroup.Transitions>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <csla:BusyAnimation x:Name="busy" Foreground="{TemplateBinding Foreground}" IsTabStop="False"/>
+                        <csla:BusyAnimation 
+                            x:Name="busy"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            IsTabStop="False"/>
                         <Image x:Name="errorImage" 
                                Opacity="0"
                                Visibility="Collapsed"
@@ -123,13 +155,17 @@
                                Visibility="Collapsed"
                                Source="/Csla.Xaml;component/Resources/Information.png"
                                Width="{TemplateBinding Width}" 
-                               Height="{TemplateBinding Height}" />
+                               Height="{TemplateBinding Height}" />                        
                         <Popup x:Name="popup">
                             <!-- The child of popup must be of Type ItemsControl -->
                             <!-- {TemplateBinding BrokenRules} does not work (SL bug?) so we have to set
                                  the DataContext in the codebehind, which will trigger the Binding
                             -->
-                            <ListBox ItemsSource="{Binding}" ItemTemplate="{StaticResource BrokenRuleTemplate}" BorderThickness="0" IsTabStop="False" />
+                            <ListBox 
+                                ItemsSource="{Binding}" 
+                                ItemTemplate="{StaticResource BrokenRuleTemplate}" 
+                                BorderThickness="1" 
+                                IsTabStop="False" />
                         </Popup>
                     </Grid>
                 </ControlTemplate>

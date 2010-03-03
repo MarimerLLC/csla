@@ -379,6 +379,7 @@ namespace Csla.Xaml
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
+#if SILVERLIGHT
       if (popup != null && sender is UIElement && Application.Current.RootVisual != null)
       {
         _lastPosition = e.GetPosition(Application.Current.RootVisual);
@@ -398,8 +399,17 @@ namespace Csla.Xaml
         popup.Loaded += popup_Loaded;
         popup.IsOpen = true;
       }
+#else
+      if(popup != null && sender is UIElement)
+      {
+        popup.Placement = PlacementMode.Mouse;
+        popup.PlacementTarget = (UIElement)sender;
+        ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
+        popup.IsOpen = true;
+      }
+#endif
     }
-
+    
     void popup_Loaded(object sender, RoutedEventArgs e)
     {
       (sender as Popup).Loaded -= popup_Loaded;

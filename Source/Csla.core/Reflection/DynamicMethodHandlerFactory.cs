@@ -153,57 +153,43 @@ namespace Csla.Reflection
       if (field == null)
         throw new ArgumentNullException("field");
 
-      DynamicMethod dm = new DynamicMethod("fldg", typeof(object),
-          new Type[] { typeof(object) },
-          field.DeclaringType, true);
-
-      ILGenerator il = dm.GetILGenerator();
-
-      if (!field.IsStatic)
-      {
-        il.Emit(OpCodes.Ldarg_0);
-
-        EmitCastToReference(il, field.DeclaringType);  //to handle struct object
-
-        il.Emit(OpCodes.Ldfld, field);
-      }
-      else
-        il.Emit(OpCodes.Ldsfld, field);
+      var target = Expression.Parameter(typeof(object));
+      Expression body = Expression.Field(
+        Expression.Convert(target, field.DeclaringType),
+        field);
 
       if (field.FieldType.IsValueType)
-        il.Emit(OpCodes.Box, field.FieldType);
+      {
+        body = Expression.Convert(body, typeof(object));
+      }
 
-      il.Emit(OpCodes.Ret);
+      var lambda = Expression.Lambda<DynamicMemberGetDelegate>(
+        body,
+        target);
 
-      return (DynamicMemberGetDelegate)dm.CreateDelegate(typeof(DynamicMemberGetDelegate));
+      return lambda.Compile();
     }
 
     public static DynamicMemberSetDelegate CreateFieldSetter(FieldInfo field)
     {
       if (field == null)
-        throw new ArgumentNullException("field");
+        throw new ArgumentNullException("property");
 
-      DynamicMethod dm = new DynamicMethod("flds", null,
-          new Type[] { typeof(object), typeof(object) },
-          field.DeclaringType, true);
+      var target = Expression.Parameter(typeof(object));
+      var val = Expression.Parameter(typeof(object));
 
-      ILGenerator il = dm.GetILGenerator();
+      Expression body = Expression.Assign(
+        Expression.Field(
+          Expression.Convert(target, field.DeclaringType),
+          field),
+        Expression.Convert(val, field.FieldType));
 
-      if (!field.IsStatic)
-      {
-        il.Emit(OpCodes.Ldarg_0);
-      }
-      il.Emit(OpCodes.Ldarg_1);
+      var lambda = Expression.Lambda<DynamicMemberSetDelegate>(
+        body,
+        target,
+        val);
 
-      EmitCastToReference(il, field.FieldType);
-
-      if (!field.IsStatic)
-        il.Emit(OpCodes.Stfld, field);
-      else
-        il.Emit(OpCodes.Stsfld, field);
-      il.Emit(OpCodes.Ret);
-
-      return (DynamicMemberSetDelegate)dm.CreateDelegate(typeof(DynamicMemberSetDelegate));
+      return lambda.Compile();
     }
 
     private static void EmitCastToReference(ILGenerator il, Type type)
@@ -213,6 +199,5 @@ namespace Csla.Reflection
       else
         il.Emit(OpCodes.Castclass, type);
     }
-
   }
 }

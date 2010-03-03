@@ -196,6 +196,7 @@
     <Compile Include="MethodCaller\Caller1.cs" />
     <Compile Include="MethodCaller\Caller2.cs" />
     <Compile Include="MethodCaller\Caller3.cs" />
+    <Compile Include="MethodCaller\FieldTests.cs" />
     <Compile Include="MethodCaller\PropertyTests.cs" />
     <Compile Include="MethodCaller\CreateConstructorTests.cs" />
     <Compile Include="ObjectFactory\CommandObject.cs" />

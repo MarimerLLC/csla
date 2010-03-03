@@ -402,6 +402,18 @@ namespace Csla.Data
         SetValueWithCoercion(target, handle, value);
     }
 
+    /// <summary>
+    /// Gets an object's field value.
+    /// </summary>
+    /// <param name="target">Object whose field value to get.</param>
+    /// <param name="fieldName">The name of the field.</param>
+    /// <returns>The value of the field.</returns>
+    public static object GetFieldValue(
+      object target, string fieldName)
+    {
+      DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
+      return handle.DynamicMemberGet.Invoke(target);
+    }
 
     #endregion
   }

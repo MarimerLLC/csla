@@ -33,5 +33,10 @@ namespace WinSortFilter
       this.filteredBindingSource.DataSource = filtered;
       //filtered.ApplyFilter("Name", "abc");
     }
+
+    private void dataListBindingNavigator_RefreshItems(object sender, EventArgs e)
+    {
+
+    }
   }
 }

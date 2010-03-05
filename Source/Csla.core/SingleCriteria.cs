@@ -9,15 +9,12 @@ namespace Csla
   /// A single-value criteria used to retrieve business
   /// objects that only require one criteria value.
   /// </summary>
-  /// <typeparam name="B">
-  /// Type of business object to retrieve.
-  /// </typeparam>
   /// <typeparam name="C">
   /// Type of the criteria value.
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
-  public class SingleCriteria<B, C> : CriteriaBase<SingleCriteria<B, C>>
+  public class SingleCriteria<C> : CriteriaBase<SingleCriteria<C>>
   {
     private C _value;
 
@@ -26,10 +23,7 @@ namespace Csla
     /// </summary>
     public C Value
     {
-      get
-      {
-        return _value;
-      }
+      get { return _value; }
     }
 
     /// <summary>
@@ -41,7 +35,6 @@ namespace Csla
     /// The criteria value.
     /// </param>
     public SingleCriteria(C value)
-      : base(typeof(B))
     {
       _value = value;
     }
@@ -59,6 +52,20 @@ namespace Csla
     protected SingleCriteria()
     { }
 #endif
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// This is for use by the MobileFormatter,
+    /// you must provide a criteria value
+    /// parameter.
+    /// </summary>
+    /// <param name="type">Business object type.</param>
+    /// <param name="value">Criteria value.</param>
+    protected SingleCriteria(Type type, C value)
+      : base(type)
+    {
+      _value = value;
+    }
 
     #region MobileFormatter
 
@@ -95,5 +102,47 @@ namespace Csla
     }
 
     #endregion
+  }
+
+  
+  /// <summary>
+  /// A single-value criteria used to retrieve business
+  /// objects that only require one criteria value.
+  /// </summary>
+  /// <typeparam name="B">
+  /// Type of business object to retrieve.
+  /// </typeparam>
+  /// <typeparam name="C">
+  /// Type of the criteria value.
+  /// </typeparam>
+  /// <remarks></remarks>
+  [Serializable()]
+  public class SingleCriteria<B, C> : SingleCriteria<C>
+  {
+    /// <summary>
+    /// Creates an instance of the type,
+    /// initializing it with the criteria
+    /// value.
+    /// </summary>
+    /// <param name="value">
+    /// The criteria value.
+    /// </param>
+    public SingleCriteria(C value)
+      : base(typeof(B), value)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// This is for use by the MobileFormatter,
+    /// you must provide a criteria value
+    /// parameter.
+    /// </summary>
+#if SILVERLIGHT
+    public SingleCriteria()
+    { }
+#else
+    protected SingleCriteria()
+    { }
+#endif
   }
 }

@@ -207,6 +207,9 @@
     <Compile Include="..\csla.core\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\csla.core\SingleCriteria.cs">
+      <Link>SingleCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\csla.core\DataPortalOperations.cs">
       <Link>DataPortalOperations.cs</Link>
     </Compile>
@@ -550,7 +553,6 @@
     <Compile Include="Serialization\SerializationAttribute.cs" />
     <Compile Include="Xaml\ValidatedDataGridColumn.cs" />
     <Compile Include="Xaml\ValidatedDataGridTextColumn.cs" />
-    <Compile Include="SingleCriteria.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Threading\Semaphore.cs" />
     <Compile Include="Utilities.cs" />

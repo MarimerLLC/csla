@@ -933,21 +933,6 @@ namespace Csla.Validation
     }
 
     /// <summary>
-    /// List of built-in regex patterns.
-    /// </summary>
-    public enum RegExPatterns
-    {
-      /// <summary>
-      /// US Social Security number pattern.
-      /// </summary>
-      SSN,
-      /// <summary>
-      /// Email address pattern.
-      /// </summary>
-      Email
-    }
-
-    /// <summary>
     /// Custom <see cref="RuleArgs" /> object required by the
     /// <see cref="RegExMatch" /> rule method.
     /// </summary>
@@ -1004,46 +989,6 @@ namespace Csla.Validation
         {
           return (NullResultOptions)this["NullOption"];
         }
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyName">Name of the property to validate.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      public RegExRuleArgs(string propertyName, RegExPatterns pattern)
-        : base(propertyName)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = NullResultOptions.ReturnFalse;
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyInfo">Property to validate.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, RegExPatterns pattern)
-        : base(propertyInfo)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = NullResultOptions.ReturnFalse;
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyName">Name of the property to validate.</param>
-      /// <param name="friendlyName">A friendly name for the property, which
-      /// will be used in place of the property name when
-      /// creating the broken rule description string.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      public RegExRuleArgs(
-        string propertyName, string friendlyName, RegExPatterns pattern)
-        : base(propertyName, friendlyName)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = NullResultOptions.ReturnFalse;
       }
 
       /// <summary>
@@ -1124,58 +1069,6 @@ namespace Csla.Validation
       {
         this["RegEx"] = regEx;
         this["NullOption"] = NullResultOptions.ReturnFalse;
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyName">Name of the property to validate.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      /// <param name="nullResult">
-      /// Value indicating how a null value should be
-      /// handled by the rule method.
-      /// </param>
-      public RegExRuleArgs(string propertyName, RegExPatterns pattern, NullResultOptions nullResult)
-        : base(propertyName)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = nullResult;
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyInfo">Property to validate.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      /// <param name="nullResult">
-      /// Value indicating how a null value should be
-      /// handled by the rule method.
-      /// </param>
-      public RegExRuleArgs(Core.IPropertyInfo propertyInfo, RegExPatterns pattern, NullResultOptions nullResult)
-        : base(propertyInfo)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = nullResult;
-      }
-
-      /// <summary>
-      /// Creates a new object.
-      /// </summary>
-      /// <param name="propertyName">Name of the property to validate.</param>
-      /// <param name="friendlyName">A friendly name for the property, which
-      /// will be used in place of the property name when
-      /// creating the broken rule description string.</param>
-      /// <param name="pattern">Built-in regex pattern to use.</param>
-      /// <param name="nullResult">
-      /// Value indicating how a null value should be
-      /// handled by the rule method.
-      /// </param>
-      public RegExRuleArgs(
-        string propertyName, string friendlyName, RegExPatterns pattern, NullResultOptions nullResult)
-        : base(propertyName, friendlyName)
-      {
-        this["RegEx"] = new Regex(GetPattern(pattern));
-        this["NullOption"] = nullResult;
       }
 
       /// <summary>
@@ -1280,23 +1173,6 @@ namespace Csla.Validation
       {
         this["RegEx"] = regEx;
         this["NullOption"] = nullResult;
-      }
-
-      /// <summary>
-      /// Returns the specified built-in regex pattern.
-      /// </summary>
-      /// <param name="pattern">Pattern to return.</param>
-      public static string GetPattern(RegExPatterns pattern)
-      {
-        switch (pattern)
-        {
-          case RegExPatterns.SSN:
-            return @"^\d{3}-\d{2}-\d{4}$";
-          case RegExPatterns.Email:
-            return @"^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$";
-          default:
-            return string.Empty;
-        }
       }
     }
 

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 
 namespace Csla.Core
 {
@@ -6,7 +7,7 @@ namespace Csla.Core
   /// Defines a bindable collection
   /// object.
   /// </summary>
-  public interface IBindingList
+  public interface IBindingList : IList
   {
     /// <summary>
     /// Adds a new item to the collection.

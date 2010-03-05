@@ -128,7 +128,6 @@
     <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="Data\TransactionManager.cs" />
     <Compile Include="IDataPortalResult.cs" />
-    <Compile Include="LinqBindingList.cs" />
     <Compile Include="LinqObservableCollection.cs" />
     <Compile Include="ReadOnlyListBase.cs" />
     <Compile Include="Reflection\DynamicMemberHandle.cs" />

@@ -351,9 +351,6 @@
     <Compile Include="..\Csla.core\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\LinqBindingList.cs">
-      <Link>LinqBindingList.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\LinqObservableCollection.cs">
       <Link>LinqObservableCollection.cs</Link>
     </Compile>

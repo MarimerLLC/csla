@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Csla
 {
   /// <summary>
-  /// Synchronized view over a source list, filtered based
+  /// Synchronized view over a source list, 
+  /// filtered, sorted and ordered based
   /// on a query result.
   /// </summary>
   /// <typeparam name="T">Type of objects contained in the list/collection.</typeparam>
@@ -359,6 +361,41 @@ namespace Csla
     public object SyncRoot
     {
       get { return ((IList)_baseCollection).SyncRoot; }
+    }
+  }
+
+  /// <summary>
+  /// Extension method for implementation of LINQ methods on BusinessListBase
+  /// </summary>
+  public static class LinqObservableCollectionExtension
+  {
+    /// <summary>
+    /// Gets a LinqObservableCollection that is a live view
+    /// of the original list based on the query result.
+    /// </summary>
+    public static LinqObservableCollection<C> ToSyncList<C>(this IEnumerable<C> queryResult, System.Collections.ObjectModel.ObservableCollection<C> source)
+    {
+      return new LinqObservableCollection<C>(source, queryResult);
+    }
+
+    /// <summary>
+    /// Gets a LinqObservableCollection that is a live view
+    /// of the original list based on the query result.
+    /// </summary>
+    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, IEnumerable<C> queryResult)
+    {
+      return new LinqObservableCollection<C>(source, queryResult);
+    }
+
+    /// <summary>
+    /// Gets a LinqObservableCollection that is a live view
+    /// of the original list based on the query result.
+    /// </summary>
+    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, Expression<Func<C, bool>> expr)
+    {
+      IEnumerable<C> sourceEnum = source.AsEnumerable<C>();
+      var output = sourceEnum.Where<C>(expr.Compile());
+      return new LinqObservableCollection<C>(source, output.ToList());
     }
   }
 }

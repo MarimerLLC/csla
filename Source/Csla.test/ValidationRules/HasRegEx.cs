@@ -41,8 +41,6 @@ namespace Csla.Test.ValidationRules
     protected override void AddBusinessRules()
     {
       ValidationRules.AddRule(Csla.Validation.CommonRules.RegExMatch,
-        new Csla.Validation.CommonRules.RegExRuleArgs("Ssn", Csla.Validation.CommonRules.RegExPatterns.SSN));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.RegExMatch,
         new Csla.Validation.CommonRules.RegExRuleArgs("Ssn2", @"^\d{3}-\d{2}-\d{4}$"));
     }
 

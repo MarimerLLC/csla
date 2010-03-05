@@ -9,7 +9,6 @@ using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Csla
 {
@@ -1364,25 +1363,4 @@ namespace Csla
     #endregion
 
   }
-
-#if !SILVERLIGHT
-  /// <summary>
-  /// Extension method for implementation of LINQ methods on BusinessListBase
-  /// </summary>
-  public static class BusinessListBaseExtension
-  {
-    /// <summary>
-    /// Gets a LinqObservableCollection that is a live view
-    /// of the original list based on the query result.
-    /// </summary>
-    public static LinqObservableCollection<C> ToSyncList<T, C>(this BusinessListBase<T, C> source, Expression<Func<C, bool>> expr)
-      where T : BusinessListBase<T, C>
-      where C : Core.IEditableBusinessObject
-    {
-      IEnumerable<C> sourceEnum = source.AsEnumerable<C>();
-      var output = sourceEnum.Where<C>(expr.Compile());
-      return new LinqObservableCollection<C>(source, output.ToList());
-    }
-  }
-#endif
 }

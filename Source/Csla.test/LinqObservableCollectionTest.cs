@@ -4,26 +4,104 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using Csla.Serialization;
+using UnitDriven;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+using TestSetup = NUnit.Framework.SetUpAttribute;
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif
 
-namespace Csla.Test
+namespace Csla.Test.Linq
 {
   /// <summary>
   ///This is a test class for LinqObservableCollectionTest and is intended
   ///to contain all LinqObservableCollectionTest Unit Tests
   ///</summary>
-  [TestClass()]
+  [TestClass]
   public class LinqObservableCollectionTest
   {
+    [TestMethod]
+    public void Blb2Loc_WhereOnly()
+    {
+      var source = new TestList();
+      var synced = source.ToSyncList(c => c.Id > 100);
+      Assert.AreEqual(3, synced.Count);
+    }
+
+    [TestMethod]
+    public void Blb2Loc()
+    {
+      var source = new TestList();
+      var synced = source.ToSyncList(from r in source
+                  where r.Id > 100
+                  select r);
+      Assert.AreEqual(3, synced.Count);
+    }
+
+    [TestMethod]
+    public void Blb2Loc_Ordered()
+    {
+      var source = new TestList();
+      var synced = source.ToSyncList(from r in source
+                                     orderby r.Name
+                                     select r);
+      Assert.AreEqual(453, synced[0].Id);
+      Assert.AreEqual(123, synced[3].Id);
+    }
+
+    [TestMethod]
+    public void Blb2Loc_ResultToSync()
+    {
+      var source = new TestList();
+      var synced = (from r in source
+                     where r.Id > 100
+                     select r).ToSyncList(source);
+      Assert.AreEqual(3, synced.Count);
+    }
+
+    [TestMethod]
+    public void Blb2Loc_Add()
+    {
+      var source = new TestList();
+      var query = from r in source
+                  where r.Id > 100
+                  select r;
+      var synced = source.ToSyncList(query);
+
+      var newItem = Csla.DataPortal.FetchChild<TestItem>(432, "New item");
+      synced.Add(newItem);
+
+      Assert.AreEqual(4, synced.Count, "synced should have item");
+      Assert.AreEqual(5, source.Count, "source should have item");
+      Assert.IsTrue(synced.Contains(newItem), "synced should contain new item");
+      Assert.IsTrue(source.Contains(newItem), "source should contain new item");
+    }
+
+    [TestMethod]
+    public void Blb2Loc_Remove()
+    {
+      var source = new TestList();
+      var query = from r in source
+                  where r.Id > 100
+                  select r;
+      var synced = source.ToSyncList(query);
+
+      var oldItem = synced[0];
+      synced.RemoveAt(0);
+
+      Assert.AreEqual(2, synced.Count, "synced count wrong");
+      Assert.AreEqual(3, source.Count, "source count wrong");
+      Assert.IsFalse(synced.Contains(oldItem), "synced should not contain item");
+      Assert.IsFalse(source.Contains(oldItem), "source should not contain item");
+    }
+
     [TestMethod]
     public void Create()
     {
@@ -232,6 +310,7 @@ namespace Csla.Test
       Assert.AreEqual("r", obj[0]);
     }
 
+#if !SILVERLIGHT
     [TestMethod]
     public void MoveItem()
     {
@@ -260,6 +339,7 @@ namespace Csla.Test
       Assert.AreEqual("b", source[2]);
       Assert.AreEqual("c", source[1]);
     }
+#endif
 
     [TestMethod]
     public void ClearSource()
@@ -313,6 +393,45 @@ namespace Csla.Test
       Assert.AreEqual(0, obj.Count);
       Assert.AreEqual("a", source[0]);
       Assert.AreEqual("c", source[1]);
+    }
+  }
+
+  [Serializable]
+  public class TestList : BusinessListBase<TestList, TestItem>
+  {
+    public TestList()
+    {
+      Add(Csla.DataPortal.FetchChild<TestItem>(123, "Zebra has stripes"));
+      Add(Csla.DataPortal.FetchChild<TestItem>(2233, "Software is neat"));
+      Add(Csla.DataPortal.FetchChild<TestItem>(453, "Run, the sky is falling"));
+      Add(Csla.DataPortal.FetchChild<TestItem>(12, "What is new?"));
+    }
+  }
+
+  [Serializable]
+  public class TestItem : BusinessBase<TestItem>
+  {
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    public void Child_Fetch(int id, string name)
+    {
+      using (BypassPropertyChecks)
+      {
+        Id = id;
+        Name = name;
+      }
     }
   }
 }

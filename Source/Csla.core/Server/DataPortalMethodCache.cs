@@ -48,7 +48,7 @@ namespace Csla.Server
       var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
       if (factoryInfo == null)
       {
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           method = GetMethodInfo(objectType, "DataPortal_Create");
         else
           method = GetMethodInfo(objectType, "DataPortal_Create", criteria);
@@ -58,7 +58,7 @@ namespace Csla.Server
         var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         if (factoryType != null)
         {
-          if (criteria is int)
+          if (criteria is EmptyCriteria)
             method = GetMethodInfo(
               factoryType,
               factoryInfo.CreateMethodName);
@@ -93,7 +93,7 @@ namespace Csla.Server
       var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
       if (factoryInfo == null)
       {
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           method = GetMethodInfo(objectType, "DataPortal_Fetch");
         else
           method = GetMethodInfo(objectType, "DataPortal_Fetch", criteria);
@@ -103,7 +103,7 @@ namespace Csla.Server
         var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
         if (factoryType != null)
         {
-          if (criteria is int)
+          if (criteria is EmptyCriteria)
             method = GetMethodInfo(
               factoryType,
               factoryInfo.FetchMethodName);

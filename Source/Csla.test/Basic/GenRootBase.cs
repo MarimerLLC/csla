@@ -44,17 +44,17 @@ namespace Csla.Test.Basic
 
         public static GenRoot NewRoot()
         {
-            return (GenRoot)(Csla.DataPortal.Create(new Criteria()));
+            return (GenRoot)(Csla.DataPortal.Create<GenRoot>(new Criteria()));
         }
 
         public static GenRoot GetRoot(string data)
         {
-            return (GenRoot)(Csla.DataPortal.Fetch(new Criteria(data)));
+          return (GenRoot)(Csla.DataPortal.Fetch<GenRoot>(new Criteria(data)));
         }
 
         public static void DeleteRoot(string data)
         {
-            Csla.DataPortal.Delete(new Criteria(data));
+          Csla.DataPortal.Delete<GenRoot>(new Criteria(data));
         }
 
         protected GenRootBase()

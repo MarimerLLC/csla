@@ -546,6 +546,9 @@
     <Compile Include="..\Csla.core\Server\DataPortalSelector.cs">
       <Link>Server\DataPortalSelector.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\Server\EmptyCriteria.cs">
+      <Link>Server\EmptyCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.core\Server\FactoryDataPortal.cs">
       <Link>Server\FactoryDataPortal.cs</Link>
     </Compile>

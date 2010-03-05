@@ -58,7 +58,7 @@ namespace Csla.Test.DataPortalTest
         }
         public static void DeleteObject(int id)
         {
-          Csla.DataPortal.Delete(new Criteria(id));
+          Csla.DataPortal.Delete<T>(new Criteria(id));
         }
 
         #endregion

@@ -4,7 +4,6 @@ using Csla.Reflection;
 using Csla.Properties;
 using Csla.Server;
 using Csla.Serialization.Mobile;
-using System.Windows;
 
 namespace Csla
 {
@@ -61,7 +60,7 @@ namespace Csla
 
     #region Data Access methods
 
-    private const int EmptyCriteria = 1;
+    private static readonly EmptyCriteria EmptyCriteria = new EmptyCriteria();
 
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -98,16 +97,10 @@ namespace Csla
     /// a new object, which is loaded with default
     /// values from the database.
     /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-    public static object Create(object criteria)
-    {
-      return Create(MethodCaller.GetObjectType(criteria), criteria);
-    }
-
-    internal static object Create(Type objectType, object criteria)
+    public static object Create(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -165,9 +158,6 @@ namespace Csla
     /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Fetch<T>(object criteria)
     {
       return (T)Fetch(typeof(T), criteria);
@@ -179,23 +169,9 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <returns>An object populated with values from the database.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2223:MembersShouldDifferByMoreThanReturnType")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1004:GenericMethodsShouldProvideTypeParameter")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Fetch<T>()
     {
       return (T)Fetch(typeof(T), EmptyCriteria);
-    }
-
-    /// <summary>
-    /// Called by a factory method in a business class to retrieve
-    /// an object, which is loaded with values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <returns>An object populated with values from the database.</returns>
-    public static object Fetch(object criteria)
-    {
-      return Fetch(MethodCaller.GetObjectType(criteria), criteria);
     }
 
     internal static object Fetch(Type objectType)
@@ -285,37 +261,9 @@ namespace Csla
     /// <typeparam name="T">Specific type of the Command object.</typeparam>
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters",
-    MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Execute<T>(T obj)
-    // Remove Constraint to simplify asynch data portal  where T : CommandBase
     {
-      return (T)Update(obj);
-    }
-
-    /// <summary>
-    /// Called to execute a Command object on the server.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Note that this method returns a reference to the updated business object.
-    /// If the server-side DataPortal is running remotely, this will be a new and
-    /// different object from the original, and all object references MUST be updated
-    /// to use this new object.
-    /// </para><para>
-    /// On the server, the Command object's DataPortal_Execute() method will
-    /// be invokedand on an ObjectFactory the Execute method will be invoked. 
-    /// Write any server-side code in that method.
-    /// </para>
-    /// </remarks>
-    /// <param name="obj">A reference to the Command object to be executed.</param>
-    /// <returns>A reference to the updated Command object.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
-    public static Core.ICommandObject Execute(Core.ICommandObject obj)
-    {
-      return (Core.ICommandObject)Update(obj);
+      return Update(obj);
     }
 
     /// <summary>
@@ -331,26 +279,7 @@ namespace Csla
     /// <typeparam name="T">Specific type of the business object.</typeparam>
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static T Update<T>(T obj)
-    {
-      return (T)Update((object)obj);
-    }
-
-    /// <summary>
-    /// Called by the business object's Save() method to
-    /// insert, update or delete an object in the database.
-    /// </summary>
-    /// <remarks>
-    /// Note that this method returns a reference to the updated business object.
-    /// If the server-side DataPortal is running remotely, this will be a new and
-    /// different object from the original, and all object references MUST be updated
-    /// to use this new object.
-    /// </remarks>
-    /// <param name="obj">A reference to the business object to be updated.</param>
-    /// <returns>A reference to the updated business object.</returns>
-    public static object Update(object obj)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -460,7 +389,7 @@ namespace Csla
             // clone original object before saving
             ICloneable cloneable = obj as ICloneable;
             if (cloneable != null)
-              obj = cloneable.Clone();
+              obj = (T)cloneable.Clone();
           }
           result = proxy.Update(obj, dpContext);
         }
@@ -484,7 +413,7 @@ namespace Csla
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, operation, ex));
         throw;
       }
-      return result.ReturnObject;
+      return (T)result.ReturnObject;
     }
 
     /// <summary>
@@ -492,32 +421,12 @@ namespace Csla
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
     public static void Delete<T>(object criteria)
     {
       Delete(typeof(T), criteria);
     }
 
-    /// <summary>
-    /// Called by a Shared (static in C#) method in the business class to cause
-    /// immediate deletion of a specific object from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
-    public static void Delete(object criteria)
-    {
-      Type objectType = MethodCaller.GetObjectType(criteria);
-      Delete(objectType, criteria);
-    }
-
-    /// <summary>
-    /// Called by a Shared (static in C#) method in the business class to cause
-    /// immediate deletion of a specific object from the database.
-    /// </summary>
-    /// <param name="objectType">Type of business object to delete.</param>
-    /// <param name="criteria">Object-specific criteria.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.DataPortalException.#ctor(System.String,System.Exception,System.Object)")]
-    private static void Delete(Type objectType, object criteria)
+    internal static void Delete(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;

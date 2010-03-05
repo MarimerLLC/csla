@@ -103,7 +103,7 @@ namespace Csla.Test.Basic
 
         public static void DeleteRoot(string data)
         {
-            Csla.DataPortal.Delete(new Criteria(data));
+            Csla.DataPortal.Delete<Root>(new Criteria(data));
         }
 
         private Root()

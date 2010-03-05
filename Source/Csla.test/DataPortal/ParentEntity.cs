@@ -121,7 +121,7 @@ namespace Csla.Test.DataBinding
 
         public static void DeleteParentEntity(int ID)
         {
-            Csla.DataPortal.Delete(new Criteria(ID));
+          Csla.DataPortal.Delete<ParentEntity>(new Criteria(ID));
         }
 
         #endregion

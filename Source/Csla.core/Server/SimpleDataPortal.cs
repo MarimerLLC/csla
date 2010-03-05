@@ -47,7 +47,7 @@ namespace Csla.Server
         }
 
         // tell the business object to create its data
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           obj.CallMethod("DataPortal_Create");
         else
           obj.CallMethod("DataPortal_Create", criteria);
@@ -119,7 +119,7 @@ namespace Csla.Server
         }
 
         // tell the business object to fetch its data
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           obj.CallMethod("DataPortal_Fetch");
         else
           obj.CallMethod("DataPortal_Fetch", criteria);

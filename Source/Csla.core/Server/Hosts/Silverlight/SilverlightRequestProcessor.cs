@@ -235,7 +235,7 @@ namespace Csla.Server.Hosts.Silverlight
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)
         {
-          Csla.DataPortal.Delete(criteria);
+          Csla.DataPortal.Delete(t, criteria);
         }
         else
         {

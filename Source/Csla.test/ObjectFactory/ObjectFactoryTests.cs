@@ -112,29 +112,30 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-    [TestMethod]
-    public void UpdateEnterpriseServices()
-    {
-      try
-      {
-        Csla.Server.FactoryDataPortal.FactoryLoader =
-          new ObjectFactoryLoader(2);
-        var root = new Root();
-        root.Data = "abc";
-        root = Csla.DataPortal.Update<Root>(root);
-        Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
-        Assert.AreEqual("Update", root.Data, "Data should match");
-        Assert.IsFalse(root.IsNew, "Should not be new");
-        Assert.IsFalse(root.IsDirty, "Should not be dirty");
-      }
-      catch (Csla.DataPortalException ex)
-      {
-        if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
-          Assert.Inconclusive("COM+ not accessible");
-        else
-          throw;
-      }
-    }
+    // commented out because almost nobody has COM+ enabled anymore
+    //[TestMethod]
+    //public void UpdateEnterpriseServices()
+    //{
+    //  try
+    //  {
+    //    Csla.Server.FactoryDataPortal.FactoryLoader =
+    //      new ObjectFactoryLoader(2);
+    //    var root = new Root();
+    //    root.Data = "abc";
+    //    root = Csla.DataPortal.Update<Root>(root);
+    //    Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
+    //    Assert.AreEqual("Update", root.Data, "Data should match");
+    //    Assert.IsFalse(root.IsNew, "Should not be new");
+    //    Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    //  }
+    //  catch (Csla.DataPortalException ex)
+    //  {
+    //    if (ex.InnerException.GetType().FullName == "System.EnterpriseServices.RegistrationException")
+    //      Assert.Inconclusive("COM+ not accessible");
+    //    else
+    //      throw;
+    //  }
+    //}
 
     [TestMethod]
     public void UpdateTransactionScope()

@@ -98,7 +98,7 @@ namespace Csla.Test.DataPortal
 
         public static void DeleteTransactionalRoot(int ID)
         {
-            Csla.DataPortal.Delete(new Criteria(ID));
+          Csla.DataPortal.Delete<TransactionalRoot>(new Criteria(ID));
         }
 
         #endregion

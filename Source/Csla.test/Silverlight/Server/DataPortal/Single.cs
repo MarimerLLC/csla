@@ -57,7 +57,7 @@ namespace Csla.Test.DataPortalTest
 
     public static void DeleteObject(int id)
     {
-      Csla.DataPortal.Delete(new Criteria(id));
+      Csla.DataPortal.Delete<Single>(new Criteria(id));
     }
 #endif
 

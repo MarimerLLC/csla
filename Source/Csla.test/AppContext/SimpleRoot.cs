@@ -61,7 +61,7 @@ namespace Csla.Test.AppContext
         public static SimpleRoot NewSimpleRoot()
         {
             Criteria crit = new Criteria();
-            object result = Csla.DataPortal.Create(crit);
+            object result = Csla.DataPortal.Create<SimpleRoot>(crit);
             return result as SimpleRoot;
         }
         /// <summary>
@@ -71,7 +71,7 @@ namespace Csla.Test.AppContext
         /// <returns></returns>
         public static SimpleRoot GetSimpleRoot(string Data)
         {
-            return Csla.DataPortal.Fetch(new Criteria(Data)) as SimpleRoot;
+          return Csla.DataPortal.Fetch<SimpleRoot>(new Criteria(Data)) as SimpleRoot;
         }
         /// <summary>
         /// Deletes a SimpleRoot object
@@ -79,7 +79,7 @@ namespace Csla.Test.AppContext
         /// <param name="Data"></param>
         public static void DeleteSimpleRoot(string Data)
         {
-            Csla.DataPortal.Delete(new Criteria(Data));
+          Csla.DataPortal.Delete<SimpleRoot>(new Criteria(Data));
         }
         /// <summary>
         /// Prevent direct creation

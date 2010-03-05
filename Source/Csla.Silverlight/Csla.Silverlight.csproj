@@ -207,6 +207,9 @@
     <Compile Include="..\csla.core\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.core\Server\EmptyCriteria.cs">
+      <Link>Server\EmptyCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\csla.core\SingleCriteria.cs">
       <Link>SingleCriteria.cs</Link>
     </Compile>

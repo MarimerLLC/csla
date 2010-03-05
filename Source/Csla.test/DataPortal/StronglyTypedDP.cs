@@ -68,7 +68,7 @@ namespace Csla.Test.DataPortal
 
         public static void DeleteStronglyTypedDP(int id)
         {
-            Csla.DataPortal.Delete(new Criteria(id));
+          Csla.DataPortal.Delete<StronglyTypedDP>(new Criteria(id));
         }
 
         private StronglyTypedDP()

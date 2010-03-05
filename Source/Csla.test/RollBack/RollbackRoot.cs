@@ -59,17 +59,17 @@ namespace Csla.Test.RollBack
 
         public static RollbackRoot NewRoot()
         {
-            return ((RollbackRoot)(Csla.DataPortal.Create(new Criteria())));
+          return ((RollbackRoot)(Csla.DataPortal.Create<RollbackRoot>(new Criteria())));
         }
 
         public static RollbackRoot GetRoot(string data)
         {
-            return ((RollbackRoot)(Csla.DataPortal.Fetch(new Criteria(data))));
+          return ((RollbackRoot)(Csla.DataPortal.Fetch<RollbackRoot>(new Criteria(data))));
         }
 
         public static void DeleteRoot(string data)
         {
-            Csla.DataPortal.Delete(new Criteria(data));
+          Csla.DataPortal.Delete<RollbackRoot>(new Criteria(data));
         }
 
         private RollbackRoot()

@@ -44,18 +44,18 @@ namespace Csla.Test.AppContext
     public static ExceptionRoot NewExceptionRoot()
     {
       Criteria c = new Criteria();
-      object result = Csla.DataPortal.Create(c);
+      object result = Csla.DataPortal.Create<ExceptionRoot>(c);
       return result as ExceptionRoot;
     }
 
     public static ExceptionRoot GetExceptionRoot(string Data)
     {
-      return Csla.DataPortal.Fetch(new Criteria(Data)) as ExceptionRoot;
+      return Csla.DataPortal.Fetch<ExceptionRoot>(new Criteria(Data)) as ExceptionRoot;
     }
 
     public static void DeleteExceptionRoot(string Data)
     {
-      Csla.DataPortal.Delete(new Criteria(Data));
+      Csla.DataPortal.Delete<ExceptionRoot>(new Criteria(Data));
     }
 
     /// <summary>

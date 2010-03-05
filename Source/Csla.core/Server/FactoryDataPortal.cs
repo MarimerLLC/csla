@@ -102,7 +102,7 @@ namespace Csla.Server
       try
       {
         DataPortalResult result = null;
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.CreateMethodName, context);
         else
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.CreateMethodName, criteria, context);
@@ -129,7 +129,7 @@ namespace Csla.Server
       try
       {
         DataPortalResult result = null;
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.FetchMethodName, context);
         else
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.FetchMethodName, criteria, context);
@@ -185,7 +185,7 @@ namespace Csla.Server
       try
       {
         DataPortalResult result = null;
-        if (criteria is int)
+        if (criteria is EmptyCriteria)
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.DeleteMethodName, context);
         else
           result = InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.DeleteMethodName, criteria, context);

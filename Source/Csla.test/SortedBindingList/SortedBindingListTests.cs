@@ -46,7 +46,7 @@ namespace Csla.Test.SortedBindingList
             
             // This list dowes not support searching 
             Assert.IsFalse(sortedList.SupportsSearching);
-            // and Find must always return -1
+            // and Find should return -1 because underlying list dows not implement IBindingList
             Assert.AreEqual(-1, sortedList.Find("", 56));
         }
 
@@ -77,7 +77,6 @@ namespace Csla.Test.SortedBindingList
             }
 
             Assert.AreEqual("Corey", sortedList[5]);
-            Assert.AreEqual(5, sortedList.Find("", "Corey"));
 
             Console.WriteLine();
             Console.WriteLine(sortedList.Count);

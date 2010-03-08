@@ -157,7 +157,15 @@ namespace Csla
       private K _key;
       private V _value;
 
+#if SILVERLIGHT
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
+      public NameValuePair()
+      { }
+#else
       private NameValuePair() { }
+#endif
 
       /// <summary>
       /// The Key or Name value.

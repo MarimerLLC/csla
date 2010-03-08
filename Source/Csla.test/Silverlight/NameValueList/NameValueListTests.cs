@@ -30,8 +30,13 @@ namespace cslalighttest.NameValueList
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       BasicNameValueList.GetBasicNameValueList((o, e) =>
         {
-          context.Assert.AreEqual(10, e.Object.Count, "Items are not caught via fetch");
-          context.Assert.AreEqual("element_2", e.Object.GetItemByKey(2).Value, "NameValue collection fetch failed.");
+          if (e.Error != null)
+            context.Assert.Fail(e.Error);
+          else
+          {
+            context.Assert.AreEqual(10, e.Object.Count, "Items are not caught via fetch");
+            context.Assert.AreEqual("element_2", e.Object.GetItemByKey(2).Value, "NameValue collection fetch failed.");
+          }
           context.Assert.Success();
         });
       context.Complete();

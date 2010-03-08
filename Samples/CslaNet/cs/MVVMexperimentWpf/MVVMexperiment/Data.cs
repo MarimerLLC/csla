@@ -26,13 +26,6 @@ namespace MVVMexperiment
       set { SetProperty(NameProperty, value); }
     }
 
-    //protected override void AddBusinessRules()
-    //{
-    //  ValidationRules.AddRule(
-    //    Csla.Validation.CommonRules.MaxValue<int>,
-    //    new Csla.Validation.CommonRules.MaxValueRuleArgs<int>(IdProperty, 10));
-    //}
-
     private static int _lastId;
 
     private void Child_Fetch()

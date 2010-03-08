@@ -35,7 +35,7 @@ namespace MVVMexperiment
       AllowNew = true;
     }
 
-    protected override object AddNewCore()
+    protected override Data AddNewCore()
     {
       var item = DataPortal.CreateChild<Data>();
       Add(item);

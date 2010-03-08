@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace MVVMexperiment
 {
-  public class DetailModel : Csla.Wpf.ViewModel<Data>
+  public class DetailModel : Csla.Xaml.ViewModel<Data>
   {
     public static readonly DependencyProperty SelectedItemsProperty =
         DependencyProperty.Register("SelectedItems", typeof(List<Data>), typeof(DetailModel), null);
@@ -23,7 +23,7 @@ namespace MVVMexperiment
       set { SetValue(SelectedItemsProperty, value); }
     }
 
-    public void Home(object sender, Csla.Wpf.ExecuteEventArgs e)
+    public void Home(object sender, Csla.Xaml.ExecuteEventArgs e)
     {
       MainPageModel.ShowForm(new ListPage());
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Csla.Wpf;
+using Csla.Xaml;
 
 namespace MVVMexperiment
 {
@@ -31,28 +31,34 @@ namespace MVVMexperiment
       DoRefresh("GetList", id);
     }
 
-    public void ShowItem(Data methodParameter)
+    public void ShowItem(object sender, Csla.Xaml.ExecuteEventArgs e)
     {
-      SelectedData = methodParameter;
+      SelectedData = (Data)e.MethodParameter;
     }
 
-    public void ShowItem2(object sender, Csla.Wpf.ExecuteEventArgs e)
+    public void ProcessItemsTrigger(object sender, Csla.Xaml.ExecuteEventArgs e)
     {
-      var x = SelectedData;
+      // copy selected items into known list type
+      var selection = new List<Data>();
+      foreach (Data item in (System.Collections.IEnumerable)e.MethodParameter)
+        selection.Add(item);
+
+      // display detail form
+      var form = new DetailPage();
+      var vm = form.Resources["ViewModel"] as DetailModel;
+      if (vm != null)
+        vm.SelectedItems = selection;
+      MainPageModel.ShowForm(form);
     }
 
-    public void ProcessItems(System.Collections.ObjectModel.ObservableCollection<object> methodParameter)
+    public void ProcessItemsExecute(object sender, Csla.Xaml.ExecuteEventArgs e)
     {
-      var x = methodParameter;
-    }
-
-    public void ProcessItems2(object sender, Csla.Wpf.ExecuteEventArgs e)
-    {
+      // copy selected items into known list type
       var listBox = ((System.Windows.Controls.Control)e.TriggerSource).Tag as System.Windows.Controls.ListBox;
-      //var selection = listBox.SelectedItems;
       var selection = new List<Data>();
       foreach (var item in listBox.SelectedItems)
         selection.Add((Data)item);
+
       // process selection
       var form = new DetailPage();
       var vm = form.Resources["ViewModel"] as DetailModel;

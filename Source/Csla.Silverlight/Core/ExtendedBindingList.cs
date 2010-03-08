@@ -237,7 +237,7 @@ namespace Csla.Core
     /// </summary>
     public virtual bool IsBusy
     {
-      get { throw new NotImplementedException(); }
+      get { return false; }
     }
 
     /// <summary>

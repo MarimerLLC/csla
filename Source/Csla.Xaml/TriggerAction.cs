@@ -24,6 +24,55 @@ namespace Csla.Xaml
       Width = 20;
     }
 
+    /// <summary>
+    /// Invokes target method.
+    /// </summary>
+    private void CallMethod(object sender, EventArgs e)
+    {
+      object target = this.DataContext;
+      var icv = target as ICollectionView;
+      if (icv != null)
+        target = icv.CurrentItem;
+      if (target == null) return; // can be null at design time - so just exit
+
+      var targetMethod = target.GetType().GetMethod(MethodName);
+      if (targetMethod == null)
+        throw new MissingMethodException(MethodName);
+
+      var pCount = targetMethod.GetParameters().Length;
+      try
+      {
+        if (pCount == 0)
+        {
+          targetMethod.Invoke(target, null);
+        }
+        else if (pCount == 2)
+        {
+          object parameterValue = null;
+          if (RebindParameterDynamically)
+            parameterValue = GetMethodParameter();
+          else
+            parameterValue = MethodParameter;
+
+          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
+            {
+              MethodParameter = parameterValue,
+              TriggerParameter = e,
+              TriggerSource = TargetControl
+            }});
+        }
+        else
+          throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
+      }
+      catch (System.Reflection.TargetInvocationException ex)
+      {
+        if (ex.InnerException != null)
+          throw ex.InnerException;
+        else
+          throw;
+      }
+    }
+
     private void HookEvent(FrameworkElement oldTarget, FrameworkElement newTarget)
     {
       if (!string.IsNullOrEmpty(TriggerEvent) && !ReferenceEquals(oldTarget, newTarget))
@@ -84,41 +133,6 @@ namespace Csla.Xaml
       }
     }
 
-    private void CallMethod(object sender, EventArgs e)
-    {
-      object target = this.DataContext;
-      var icv = target as ICollectionView;
-      if (icv != null)
-        target = icv.CurrentItem;
-      var targetMethod = target.GetType().GetMethod(MethodName);
-      if (targetMethod == null)
-        throw new MissingMethodException(MethodName);
-
-      object p = MethodParameter;
-      var pCount = targetMethod.GetParameters().Length;
-      try
-      {
-        if (pCount == 0)
-          targetMethod.Invoke(target, null);
-        else if (pCount == 2)
-          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
-        {
-          MethodParameter = p,
-          TriggerParameter = e,
-          TriggerSource = TargetControl
-        }});
-        else
-          throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
-      }
-      catch (System.Reflection.TargetInvocationException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
-    }
-
     #region Properties
 
     /// <summary>
@@ -134,7 +148,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Gets or sets the target UI control.
     /// </summary>
-    [Category("Trigger Action")]
+    [Category("Common")]
     public FrameworkElement TargetControl
     {
       get { return (FrameworkElement)GetValue(TargetControlProperty); }
@@ -147,12 +161,12 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty TriggerEventProperty =
       DependencyProperty.Register("TriggerEvent", typeof(string),
-      typeof(TriggerAction), new PropertyMetadata(null));
+      typeof(TriggerAction), new PropertyMetadata("Click"));
     /// <summary>
     /// Gets or sets the name of the event
     /// that will trigger the action.
     /// </summary>
-    [Category("Trigger Action")]
+    [Category("Common")]
     public string TriggerEvent
     {
       get { return (string)GetValue(TriggerEventProperty); }
@@ -170,7 +184,7 @@ namespace Csla.Xaml
     /// Gets or sets the name of the method
     /// to be invoked.
     /// </summary>
-    [Category("Trigger Action")]
+    [Category("Common")]
     public string MethodName
     {
       get { return (string)GetValue(MethodNameProperty); }
@@ -188,11 +202,31 @@ namespace Csla.Xaml
     /// Gets or sets the value of a parameter to
     /// be passed to the invoked method.
     /// </summary>
-    [Category("Trigger Action")]
+    [Category("Common")]
     public object MethodParameter
     {
-      get { return (object)GetValue(MethodParameterProperty); }
+      get { return GetValue(MethodParameterProperty); }
       set { SetValue(MethodParameterProperty, value); }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// MethodParameter value should be dynamically rebound
+    /// before invoking the target method.
+    /// </summary>
+    public static readonly DependencyProperty RebindParameterDynamicallyProperty =
+      DependencyProperty.Register("RebindParameterDynamically", typeof(bool),
+      typeof(TriggerAction), new PropertyMetadata(null));
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// MethodParameter value should be dynamically rebound
+    /// before invoking the target method.
+    /// </summary>
+    [Category("Common")]
+    public bool RebindParameterDynamically
+    {
+      get { return (bool)GetValue(RebindParameterDynamicallyProperty); }
+      set { SetValue(RebindParameterDynamicallyProperty, value); }
     }
 
     #endregion
@@ -203,21 +237,15 @@ namespace Csla.Xaml
     /// Gets the parameter value to be passed to invoked method.
     /// </summary>
     /// <param name="ctrl">Attached control</param>
-    public static object GetMethodParameter(UIElement ctrl)
+    private object GetMethodParameter()
     {
-#if SILVERLIGHT
-      var fe = ctrl as FrameworkElement;
-      if (fe != null)
+      var be = this.GetBindingExpression(MethodParameterProperty);
+      if (be != null && be.ParentBinding != null)
       {
-        var be = fe.GetBindingExpression(MethodParameterProperty);
-        if (be != null && be.ParentBinding != null)
-        {
-          var newBinding = CopyBinding(be.ParentBinding);
-          fe.SetBinding(MethodParameterProperty, newBinding);
-        }
+        var newBinding = CopyBinding(be.ParentBinding);
+        SetBinding(MethodParameterProperty, newBinding);
       }
-#endif
-      return ctrl.GetValue(MethodParameterProperty);
+      return MethodParameter;
     }
 
     private static System.Windows.Data.Binding CopyBinding(System.Windows.Data.Binding oldBinding)
@@ -242,43 +270,5 @@ namespace Csla.Xaml
     }
 
     #endregion
-
-    private void Invoke(object parameter)
-    {
-      var methodName = this.MethodName;
-      if (!string.IsNullOrEmpty(methodName))
-      {
-        var target = this.DataContext;
-        if (target != null)
-        {
-          var methodInfo = target.GetType().GetMethod(methodName);
-          if (methodInfo == null)
-            throw new MissingMethodException(methodName);
-
-          var pCount = methodInfo.GetParameters().Length;
-          try
-          {
-            if (pCount == 0)
-              methodInfo.Invoke(target, null);
-            else if (pCount == 2)
-              methodInfo.Invoke(target, new object[] { this, new ExecuteEventArgs
-              {
-                  TriggerSource = TargetControl,
-                  MethodParameter = this.MethodParameter,
-                  TriggerParameter = parameter
-              }});
-            else
-              throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
-          }
-          catch (System.Reflection.TargetInvocationException ex)
-          {
-            if (ex.InnerException != null)
-              throw ex.InnerException;
-            else
-              throw;
-          }
-        }
-      }
-    }
   }
 }

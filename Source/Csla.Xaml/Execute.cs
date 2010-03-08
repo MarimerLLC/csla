@@ -21,6 +21,7 @@ namespace Csla.Xaml
     /// Gets or sets the name of the method
     /// to be invoked.
     /// </summary>
+    [Category("Common")]
     public string MethodName
     {
       get
@@ -44,6 +45,7 @@ namespace Csla.Xaml
     /// Gets or sets the value of a parameter to
     /// be passed to the invoked method.
     /// </summary>
+    [Category("Common")]
     public object MethodParameter
     {
       get

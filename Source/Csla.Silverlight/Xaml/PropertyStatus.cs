@@ -234,6 +234,7 @@ namespace Csla.Xaml
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
+    [Category("Property Status")]
     public ObservableCollection<BrokenRule> BrokenRules
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
@@ -249,6 +250,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the user
     /// is authorized to read the property.
     /// </summary>
+    [Category("Property Status")]
     public bool CanRead
     {
       get { return _canRead; }
@@ -267,6 +269,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the user
     /// is authorized to write the property.
     /// </summary>
+    [Category("Property Status")]
     public bool CanWrite
     {
       get { return _canWrite; }
@@ -285,6 +288,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the property
     /// is busy with an asynchronous operation.
     /// </summary>
+    [Category("Property Status")]
     public bool IsBusy
     {
       get { return _isBusy; }
@@ -303,6 +307,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the 
     /// property is valid.
     /// </summary>
+    [Category("Property Status")]
     public bool IsValid
     {
       get { return _isValid; }
@@ -323,6 +328,7 @@ namespace Csla.Xaml
     /// for this property (if IsValid is
     /// false).
     /// </summary>
+    [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
       get { return _worst; }
@@ -341,6 +347,7 @@ namespace Csla.Xaml
     /// Gets the description of the most severe
     /// broken rule for this property.
     /// </summary>
+    [Category("Property Status")]
     public string RuleDescription
     {
       get { return _ruleDescription; }

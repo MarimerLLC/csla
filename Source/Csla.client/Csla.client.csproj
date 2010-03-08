@@ -345,9 +345,6 @@
     <Compile Include="..\Csla.core\GlobalSuppressions.cs">
       <Link>GlobalSuppressions.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.core\ICriteria.cs">
-      <Link>ICriteria.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.core\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
     </Compile>

@@ -176,7 +176,6 @@
     <Compile Include="Server\Hosts\Silverlight\WcfErrorInfo.cs" />
     <Compile Include="Server\Hosts\Silverlight\WcfPortal.cs" />
     <Compile Include="Server\Hosts\Silverlight\WcfResponse.cs" />
-    <Compile Include="ICriteria.cs" />
     <Compile Include="Server\ChildDataPortal.cs" />
     <Compile Include="Server\IDataPortalTarget.cs" />
     <Compile Include="Server\IObjectFactoryLoader.cs" />

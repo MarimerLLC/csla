@@ -14,49 +14,9 @@ namespace Csla
   /// derived in a business class. 
   /// </summary>
   [Serializable]
-  public class CriteriaBase<T> : ManagedObjectBase,
-    ICriteria
+  public abstract class CriteriaBase<T> : ManagedObjectBase
     where T : CriteriaBase<T>
   {
-    /// <summary>
-    /// Defines the TypeName property.
-    /// </summary>
-    public static PropertyInfo<string> TypeNameProperty = RegisterProperty<string>(c => c.TypeName);
-    /// <summary>
-    /// Assembly qualified type name of the business 
-    /// object to be instantiated by
-    /// the server-side DataPortal. 
-    /// </summary>
-    public string TypeName
-    {
-      get { return ReadProperty(TypeNameProperty); }
-      set { LoadProperty(TypeNameProperty, value); }
-    }
-
-    [NonSerialized]
-    [NotUndoable]
-    private Type _objectType;
-
-    /// <summary>
-    /// Type of the business object to be instantiated by
-    /// the server-side DataPortal. 
-    /// </summary>
-    public Type ObjectType
-    {
-      get
-      {
-        if (_objectType == null && FieldManager.FieldExists(TypeNameProperty))
-        {
-          string typeName = ReadProperty(TypeNameProperty);
-          if (!string.IsNullOrEmpty(typeName))
-          {
-            _objectType = Csla.Reflection.MethodCaller.GetType(typeName, false);
-          }
-        }
-        return _objectType;
-      }
-    }
-
 #if SILVERLIGHT
     private static bool _forceInit = false;
 
@@ -93,18 +53,6 @@ namespace Csla
     protected CriteriaBase()
     { }
 #endif
-
-    /// <summary>
-    /// Initializes CriteriaBase with the type of
-    /// business object to be created by the DataPortal.
-    /// </summary>
-    /// <param name="type">The type of the
-    /// business object the data portal should create.</param>
-    protected CriteriaBase(Type type)
-    {
-      _objectType = type;
-      TypeName = type.AssemblyQualifiedName;
-    }
 
     #region  Register Properties
 

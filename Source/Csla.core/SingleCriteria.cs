@@ -62,7 +62,6 @@ namespace Csla
     /// <param name="type">Business object type.</param>
     /// <param name="value">Criteria value.</param>
     protected SingleCriteria(Type type, C value)
-      : base(type)
     {
       _value = value;
     }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -471,6 +471,9 @@
     <Compile Include="..\Csla.Core\BusinessListBase.cs">
       <Link>BusinessListBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Core\NameValueListBase.cs">
+      <Link>NameValueListBase.cs</Link>
+    </Compile>
     <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\ContextDictionary.cs" />
     <Compile Include="Core\ICommandObject.cs" />
@@ -518,8 +521,6 @@
     <Compile Include="DataPortalT.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
-    <Compile Include="ICriteria.cs" />
-    <Compile Include="NameValueListBase.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

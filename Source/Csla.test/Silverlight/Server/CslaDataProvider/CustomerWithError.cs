@@ -92,7 +92,6 @@ namespace cslalighttest.CslaDataProvider
       public FetchCriteria() { }
 
       public FetchCriteria(int CustomerWithErrorID)
-        : base(typeof(CustomerWithError))
       {
         _CustomerWithErrorId = CustomerWithErrorID;
       }

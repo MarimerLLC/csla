@@ -93,7 +93,7 @@ namespace Csla.Test.DataPortalTest
       }
 
       public Criteria(){}
-      public Criteria(int id):base(typeof(Single))
+      public Criteria(int id)
       { Id = id; }
 
       protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)

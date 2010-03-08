@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
+using Csla.Serialization;
 
 namespace Csla
 {
@@ -13,9 +14,8 @@ namespace Csla
   /// </summary>
   /// <typeparam name="K">Type of the key values.</typeparam>
   /// <typeparam name="V">Type of the values.</typeparam>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
+  [Serializable]
   public abstract class NameValueListBase<K, V> : 
     Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, 
     ICloneable, Core.IBusinessObject, Server.IDataPortalTarget
@@ -248,40 +248,6 @@ namespace Csla
     public NameValueListBase<K, V> Clone()
     {
       return (NameValueListBase<K, V>)GetClone();
-    }
-
-    #endregion
-
-    #region Criteria
-
-    /// <summary>
-    /// Default Criteria for retrieving simple
-    /// name/value lists.
-    /// </summary>
-    /// <remarks>
-    /// This criteria merely specifies the type of
-    /// collection to be retrieved. That type information
-    /// is used by the DataPortal to create the correct
-    /// type of collection object during data retrieval.
-    /// </remarks>
-    [Serializable()]
-    protected class Criteria : CriteriaBase<Criteria>
-    {
-      /// <summary>
-      /// Creates an instance of the object.
-      /// </summary>
-      /// <param name="collectionType">
-      /// The <see cref="Type"/> of the business
-      /// collection class.
-      /// </param>
-      public Criteria(Type collectionType)
-        : base(collectionType)
-      { }
-
-      /// <summary>
-      /// Creates an instance of the type.
-      /// </summary>
-      public Criteria() { }
     }
 
     #endregion

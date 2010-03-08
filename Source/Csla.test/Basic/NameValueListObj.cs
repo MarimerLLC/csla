@@ -16,14 +16,14 @@ namespace Csla.Test.Basic
 
         public static NameValueListObj GetNameValueListObj()
         {
-            return Csla.DataPortal.Fetch<NameValueListObj>(new Criteria(typeof(NameValueListObj)));
+            return Csla.DataPortal.Fetch<NameValueListObj>();
         }
 
         #endregion
 
         #region "Data Access"
 
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch()
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("NameValueListObj", "Fetched");

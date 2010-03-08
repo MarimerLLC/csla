@@ -59,7 +59,6 @@ namespace cslalighttest.Serialization
 
       var actual = (SingleCriteria<SerializationTests, string>)MobileFormatter.Deserialize(buffer);
 
-      context.Assert.AreEqual(expected.TypeName, actual.TypeName);
       context.Assert.AreEqual(expected.Value, actual.Value);
       context.Assert.Success();
       context.Complete();
@@ -87,7 +86,6 @@ namespace cslalighttest.Serialization
       using(TextReader tr = new StringReader(buffer))
         actual = (SingleCriteria<SerializationTests, string>)formatter.Deserialize(tr);
 
-      context.Assert.AreEqual(expected.TypeName, actual.TypeName);
       context.Assert.AreEqual(expected.Value, actual.Value);
       context.Assert.Success();
       context.Complete();

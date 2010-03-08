@@ -106,7 +106,6 @@ namespace Csla.Test.CslaDataProvider
       public FetchCriteria() { }
 
       public FetchCriteria(int customerID)
-        : base(typeof(Customer))
       {
         _customerId = customerID;
       }

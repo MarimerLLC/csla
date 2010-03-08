@@ -677,30 +677,6 @@ namespace Csla.Reflection
       return result.ToArray();
     }
 
-    /// <summary>
-    /// Returns a business object type based on
-    /// the supplied criteria object.
-    /// </summary>
-    /// <param name="criteria">
-    /// Criteria object.
-    /// </param>
-    public static Type GetObjectType(object criteria)
-    {
-      var strong = criteria as ICriteria;
-      if (strong != null)
-      {
-        // get the type of the actual business object
-        // from the ICriteria
-        return strong.ObjectType;
-      }
-      else
-      {
-        // get the type of the actual business object
-        // based on the nested class scheme in the book
-        return criteria.GetType().DeclaringType;
-      }
-    }
-
 #if !SILVERLIGHT
     /// <summary>
     /// Gets a property type descriptor by name.

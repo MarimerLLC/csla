@@ -74,7 +74,6 @@ namespace Csla.Test.DataPortalTest
                 get { return _id; }
             }
             public Criteria(int id)
-                : base(typeof(T))
             { _id = id; }
         }
         [Serializable()]
@@ -86,7 +85,6 @@ namespace Csla.Test.DataPortalTest
                 get { return _id; }
             }
             public Criteria1(int id)
-                : base(typeof(T))
             { _id = id; }
         }
 

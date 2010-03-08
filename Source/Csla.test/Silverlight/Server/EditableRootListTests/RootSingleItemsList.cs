@@ -25,40 +25,23 @@ namespace Csla.Testing.Business.EditableRootListTests
       public FetchCriteria() { }
 
       public FetchCriteria(int startId, int endId)
-        : base(typeof(RootSingleItemsList))
       {
-        _startId = startId;
-        _endId = endId;
+        StartID = startId;
+        EndID = endId;
       }
 
-      private int _startId;
-      private int _endId;
-
+      public static PropertyInfo<int> StartIDProperty = RegisterProperty<int>(c => c.StartID);
       public int StartID
       {
-        get
-        {
-          return _startId;
-        }
+        get { return ReadProperty(StartIDProperty); }
+        private set { LoadProperty(StartIDProperty, value); }
       }
+
+      public static PropertyInfo<int> EndIDProperty = RegisterProperty<int>(c => c.EndID);
       public int EndID
       {
-        get
-        {
-          return _endId;
-        }
-      }
-      protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
-      {
-        base.OnGetState(info, mode);
-        info.AddValue("_startId", _startId);
-        info.AddValue("_endId", _endId);
-      }
-      protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
-      {
-        base.OnSetState(info, mode);
-        _endId = info.GetValue<int>("_endId");
-        _startId = info.GetValue<int>("_startId");
+        get { return ReadProperty(EndIDProperty); }
+        private set { LoadProperty(EndIDProperty, value); }
       }
     }
 

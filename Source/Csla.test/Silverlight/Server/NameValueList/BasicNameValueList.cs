@@ -12,7 +12,7 @@ namespace cslalighttest.NameValueList
     {
       DataPortal<BasicNameValueList> dp = new DataPortal<BasicNameValueList>();
       dp.FetchCompleted += completed;
-      dp.BeginFetch(new BasicNameValueList.Criteria(typeof(BasicNameValueList)));
+      dp.BeginFetch();
     }
 
 
@@ -21,10 +21,10 @@ namespace cslalighttest.NameValueList
 
     public static BasicNameValueList GetBasicNameValueList()
     {
-      return DataPortal.Fetch<BasicNameValueList>(new BasicNameValueList.Criteria(typeof(BasicNameValueList)));
+      return DataPortal.Fetch<BasicNameValueList>();
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch()
     {
       this.IsReadOnly = false;
       for (int i = 0; i < 10; i++)

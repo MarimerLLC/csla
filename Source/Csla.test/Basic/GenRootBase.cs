@@ -31,12 +31,12 @@ namespace Csla.Test.Basic
         {
             public string _data;
 
-            public Criteria() : base(typeof(GenRoot))
+            public Criteria() 
             {
                 _data = "<new>";
             }
 
-            public Criteria(string data) : base(typeof(GenRoot))
+            public Criteria(string data)
             {
                 this._data = data;
             }

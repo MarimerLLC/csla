@@ -895,11 +895,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_19082CE2EF1F0762D14395B7467683E3"
-                    {
-                    "Name" = "8:System.Windows.Controls.Data.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Controls.Data.dll"
             "TargetName" = "8:"
@@ -1186,11 +1181,6 @@
             "AssemblyAsmDisplayName" = "8:System.Data.Services.Client, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_4A615084717C20D17E6FA7F0E5A6E123"
-                    {
-                    "Name" = "8:System.Data.Services.Client.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Data.Services.Client.dll"
             "TargetName" = "8:"
@@ -1237,11 +1227,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_502DC528046502714A19ECF6E1B6F7B6"
-                    {
-                    "Name" = "8:System.Windows.Data.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Data.dll"
             "TargetName" = "8:"
@@ -1328,11 +1313,6 @@
             "AssemblyAsmDisplayName" = "8:System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_578E9F238B0173219BADDF44837166AA"
-                    {
-                    "Name" = "8:System.ComponentModel.DataAnnotations.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.ComponentModel.DataAnnotations.dll"
             "TargetName" = "8:"
@@ -1359,11 +1339,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Interactivity, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_5F4C264C53B8B469D1E1C2E3A005A547"
-                    {
-                    "Name" = "8:System.Windows.Interactivity.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Interactivity.dll"
             "TargetName" = "8:"
@@ -1430,11 +1405,6 @@
             "AssemblyAsmDisplayName" = "8:Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_609E2E29102EF234B51A3AAA187F33A6"
-                    {
-                    "Name" = "8:Csla.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:Csla.dll"
             "TargetName" = "8:"
@@ -1661,11 +1631,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Controls.Data.Input, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_8BFEBE957AEEE9B61DC93E5AB44B2E30"
-                    {
-                    "Name" = "8:System.Windows.Controls.Data.Input.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Controls.Data.Input.dll"
             "TargetName" = "8:"
@@ -1952,11 +1917,6 @@
             "AssemblyAsmDisplayName" = "8:System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_B49CD48B4EF9BA5417E117A3526141A9"
-                    {
-                    "Name" = "8:System.Xml.Linq.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Xml.Linq.dll"
             "TargetName" = "8:"
@@ -1983,11 +1943,6 @@
             "AssemblyAsmDisplayName" = "8:System.Web.Mvc, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_BF6481675322EF824E649E3BDA386A75"
-                    {
-                    "Name" = "8:System.Web.Mvc.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Web.Mvc.dll"
             "TargetName" = "8:"
@@ -2354,11 +2309,6 @@
             "AssemblyAsmDisplayName" = "8:System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_E6AA14A2B9DAB0CEFB9E73875ED6CA06"
-                    {
-                    "Name" = "8:System.Windows.Interactivity.dll"
-                    "Attributes" = "3:512"
-                    }
                 }
             "SourcePath" = "8:System.Windows.Interactivity.dll"
             "TargetName" = "8:"
@@ -3033,7 +2983,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -3144,7 +3093,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -3167,7 +3115,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -3225,7 +3172,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -3261,7 +3207,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -3310,7 +3255,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -3333,7 +3277,6 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "EulaText"

@@ -23,7 +23,7 @@ namespace MVVMexperiment
       set { SetValue(SelectedItemsProperty, value); }
     }
 
-    public void Home(object sender, Csla.Silverlight.ExecuteEventArgs e)
+    public void Home()
     {
       MainPageModel.ShowForm(new ListPage());
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using Csla.Silverlight;
+using Csla.Xaml;
 
 namespace MVVMexperiment
 {
@@ -11,6 +11,8 @@ namespace MVVMexperiment
   {
     public DataListViewModel()
     {
+      if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this)) return;
+
       this.PropertyChanged += (o, e) =>
         {
           if (e.PropertyName == "Error" && Error != null)
@@ -19,7 +21,7 @@ namespace MVVMexperiment
           }
         };
 
-      DoRefresh("GetList", 0);
+      BeginRefresh("GetList", 0);
     }
 
     public void Load(object sender, ExecuteEventArgs e)
@@ -28,31 +30,37 @@ namespace MVVMexperiment
       int id = 0;
       if (!string.IsNullOrEmpty(tag))
         id = int.Parse(tag);
-      DoRefresh("GetList", id);
+      BeginRefresh("GetList", id);
     }
 
-    public void ShowItem(Data methodParameter)
+    public void ShowItem(object sender, ExecuteEventArgs e)
     {
-      SelectedData = methodParameter;
+      SelectedData = (Data)e.MethodParameter;
     }
 
-    public void ShowItem2(object sender, Csla.Silverlight.ExecuteEventArgs e)
+    public void ProcessItemsTrigger(object sender, Csla.Xaml.ExecuteEventArgs e)
     {
-      var x = SelectedData;
+      // copy selected items into known list type
+      var selection = new List<Data>();
+      foreach (Data item in (System.Collections.IEnumerable)e.MethodParameter)
+        selection.Add(item);
+
+      // display detail form
+      var form = new DetailPage();
+      var vm = form.Resources["ViewModel"] as DetailModel;
+      if (vm != null)
+        vm.SelectedItems = selection;
+      MainPageModel.ShowForm(form);
     }
 
-    public void ProcessItems(System.Collections.ObjectModel.ObservableCollection<object> methodParameter)
+    public void ProcessItemsExecute(object sender, ExecuteEventArgs e)
     {
-      var x = methodParameter;
-    }
-
-    public void ProcessItems2(object sender, Csla.Silverlight.ExecuteEventArgs e)
-    {
+      // copy selected items to known list type
       var listBox = ((System.Windows.Controls.Control)e.TriggerSource).Tag as System.Windows.Controls.ListBox;
-      //var selection = listBox.SelectedItems;
       var selection = new List<Data>();
       foreach (var item in listBox.SelectedItems)
         selection.Add((Data)item);
+
       // process selection
       var form = new DetailPage();
       var vm = form.Resources["ViewModel"] as DetailModel;

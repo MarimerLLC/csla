@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:this="clr-namespace:MVVMexperiment"
-             xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla"
              mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480">
   <UserControl.Resources>
     <this:DataListViewModel x:Key="ListModel" />
@@ -34,16 +34,20 @@
                csla:InvokeMethod.Target="{Binding Source={StaticResource ListModel}}"
                csla:InvokeMethod.TriggerEvent="SelectionChanged"
                csla:InvokeMethod.MethodName="ShowItem"
-               csla:InvokeMethod.MethodParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}"
-               csla:InvokeMethod.ManualEnableControl="True" />
-      <Button Content="Process items"
+               csla:InvokeMethod.MethodParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}" />
+      <Button Content="Process items" Name="ProcessButton"
               Tag="{Binding ElementName=DataListBox}">
-        <i:Interaction.Triggers>
+        <!--<i:Interaction.Triggers>
           <i:EventTrigger EventName="Click">
-            <csla:Execute MethodName="ProcessItems2" />
+            <csla:Execute MethodName="ProcessItemsExecute" />
           </i:EventTrigger>
-        </i:Interaction.Triggers>
+        </i:Interaction.Triggers>-->
       </Button>
+      <csla:TriggerAction Name="ProcessTrigger" 
+                          TargetControl="{Binding ElementName=ProcessButton}" 
+                          TriggerEvent="Click" 
+                          MethodName="ProcessItemsTrigger"
+                          MethodParameter="{Binding ElementName=DataListBox, Path=SelectedItems}" RebindParameterDynamically="True" />
     </StackPanel>
     <StackPanel Grid.Column="1" Margin="10" DataContext="{Binding Source={StaticResource DetailModel}}">
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Csla.Silverlight;
+using Csla.Xaml;
 using System.Windows;
 
 namespace MVVMexperiment
@@ -16,7 +16,7 @@ namespace MVVMexperiment
         DependencyProperty.Register("Test", typeof(object), typeof(DataViewModel), 
         new PropertyMetadata((o,e)=> 
         {
-          ((DataViewModel)o).Model = e.NewValue;
+          ((DataViewModel)o).Model = (Data)e.NewValue;
         }));
     /// <summary>
     /// Gets or sets the Test object.

@@ -10,11 +10,11 @@ namespace Test.Library
   [Serializable]
   public class LineItemEdit : DiffBase<LineItemEdit>
   {
-    private static PropertyInfo<int> LineProperty = RegisterProperty<int>(c => c.Line);
-    public int Line
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
     {
-      get { return GetProperty(LineProperty); }
-      set { SetProperty(LineProperty, value); }
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
     }
 
     private static PropertyInfo<string> ProductNameProperty = RegisterProperty<string>(c => c.ProductName);
@@ -28,14 +28,14 @@ namespace Test.Library
     {
       using (BypassPropertyChecks)
       {
-        Line = line;
-        ProductName = "Product " + id;
+        Id = line;
+        ProductName = "Product " + id + line;
       }
     }
 
     protected override void ExportTo(Csla.DiffGram.DataItem dto)
     {
-      dto.DataFields.Add(new Csla.DiffGram.DataField { Name="Line", Value=Line });
+      dto.DataFields.Add(new Csla.DiffGram.DataField { Name="Id", Value=Id });
       dto.DataFields.Add(new Csla.DiffGram.DataField { Name = "ProductName", Value = ProductName });
     }
 

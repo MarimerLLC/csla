@@ -41,7 +41,6 @@ namespace Csla.DiffGram
       get { return IsDirty; }
     }
 
-    [NonSerialized]
     int Csla.DiffGram.IExportData.Key { get; set; }
 
     void Csla.DiffGram.IExportData.ExportTo(Csla.DiffGram.DataItem dto)

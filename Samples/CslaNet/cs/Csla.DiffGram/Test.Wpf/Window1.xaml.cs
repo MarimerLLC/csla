@@ -26,7 +26,7 @@ namespace Test.Wpf
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-      var dp = Resources["Order"] as Csla.Wpf.CslaDataProvider;
+      var dp = Resources["Order"] as Csla.Xaml.CslaDataProvider;
       using (dp.DeferRefresh())
       {
         dp.ObjectType = typeof(Test.Library.OrderEdit);

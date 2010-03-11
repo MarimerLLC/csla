@@ -76,7 +76,7 @@ namespace Test.Library
     }
 
     [Serializable]
-    private class SaveOrder : CommandBase
+    private class SaveOrder : CommandBase<SaveOrder>
     {
       public Csla.DiffGram.DataItem DiffGram { get; set; }
 

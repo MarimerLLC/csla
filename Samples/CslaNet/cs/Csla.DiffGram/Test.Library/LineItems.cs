@@ -12,13 +12,8 @@ namespace Test.Library
   {
     private void Child_Fetch(int id)
     {
-      int line = 0;
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
-      Add(DataPortal.FetchChild<LineItemEdit>(id, line++));
+      for (int line = 0; line < 10; line++)
+        Add(DataPortal.FetchChild<LineItemEdit>(id, line));
     }
   }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -122,6 +122,9 @@
     </Compile>
     <Compile Include="..\csla.core\Core\IPropertyInfoFactory.cs">
       <Link>Core\IPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.core\Core\IReadOnlyObject.cs">
+      <Link>Core\IReadOnlyObject.cs</Link>
     </Compile>
     <Compile Include="..\Csla.core\Core\MobileObservableCollection.cs">
       <Link>Core\MobileObservableCollection.cs</Link>
@@ -529,7 +532,9 @@
     </Compile>
     <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyBindingListBase.cs" />
-    <Compile Include="ReadOnlyBase.cs" />
+    <Compile Include="..\Csla.Core\ReadOnlyBase.cs">
+      <Link>ReadOnlyBase.cs</Link>
+    </Compile>
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\MembershipIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />

@@ -11,6 +11,10 @@ using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
+#if SILVERLIGHT
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+#endif
 
 namespace Csla
 {
@@ -29,6 +33,9 @@ namespace Csla
   public abstract class ReadOnlyBase<T> : BindableBase, 
     ICloneable, 
     IReadOnlyObject, 
+#if SILVERLIGHT
+    ISerializationNotification,
+#endif
     IAuthorizeReadWrite, 
     IDataPortalTarget,
     IManageProperties,
@@ -554,6 +561,26 @@ namespace Csla
 
     #region Serialization Notification
 
+#if SILVERLIGHT
+    void ISerializationNotification.Deserialized()
+    {
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
+      InitializeAuthorizationRules();
+      OnDeserialized();
+    }
+
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized()
+    {
+      // do nothing - this is here so a subclass
+      // could override if needed
+    }
+#else
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
@@ -573,6 +600,7 @@ namespace Csla
       // do nothing - this is here so a subclass
       // could override if needed
     }
+#endif
 
     #endregion
 

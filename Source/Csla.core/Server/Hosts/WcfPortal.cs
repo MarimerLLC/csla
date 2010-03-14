@@ -19,6 +19,7 @@ namespace Csla.Server.Hosts
     /// Create a new business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Create(CreateRequest request)
     {
       Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
@@ -38,6 +39,7 @@ namespace Csla.Server.Hosts
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Fetch(FetchRequest request)
     {
       Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
@@ -57,6 +59,7 @@ namespace Csla.Server.Hosts
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Update(UpdateRequest request)
     {
       Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
@@ -76,6 +79,7 @@ namespace Csla.Server.Hosts
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Delete(DeleteRequest request)
     {
       Csla.Server.DataPortal portal = new Csla.Server.DataPortal();

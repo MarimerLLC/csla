@@ -51,5 +51,18 @@ namespace Csla.Server
       _returnObject = returnObject;
       _globalContext = ApplicationContext.GetGlobalContext();
     }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="returnObject">Object to return as part
+    /// of the result.</param>
+    /// <param name="globalContext">  Global context delivered via current reuest from the server
+    /// </param>
+    public DataPortalResult(object returnObject, ContextDictionary globalContext)
+    {
+      _returnObject = returnObject;
+      _globalContext = globalContext;
+    }
   }
 }

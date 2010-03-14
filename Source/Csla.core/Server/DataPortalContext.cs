@@ -111,5 +111,14 @@ namespace Csla.Server
         _globalContext = Csla.ApplicationContext.GetGlobalContext();
       }
     }
+    public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext, ContextDictionary globalContext)
+    {
+      _principal = principal;
+      _clientContext = clientContext;
+      _clientCulture = clientCulture;
+      _clientUICulture = clientUICulture;
+      _globalContext = globalContext;
+      _remotePortal = isRemotePortal;
+    }
   }
 }

@@ -23,6 +23,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// Create a new business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Create(CriteriaRequest request)
     {
       var result = new WcfResponse();
@@ -65,6 +66,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Fetch(CriteriaRequest request)
     {
       var result = new WcfResponse();
@@ -104,6 +106,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Update(UpdateRequest request)
     {
       var result = new WcfResponse();
@@ -143,6 +146,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Delete(CriteriaRequest request)
     {
       var result = new WcfResponse();

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
 namespace Csla.Core.FieldManager
 {
@@ -22,7 +22,8 @@ namespace Csla.Core.FieldManager
     /// <param name="name">Name of the property.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name)
     {
-      return new Csla.PropertyInfo<T>(name);
+      var friendlyName = GetFriendlyNameFromAttributes(containingType, name);
+      return new Csla.PropertyInfo<T>(name, friendlyName);
     }
 
     /// <summary>
@@ -38,6 +39,9 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
     {
+      if(string.IsNullOrWhiteSpace(friendlyName))
+        friendlyName = GetFriendlyNameFromAttributes(containingType, name);
+      
       return new Csla.PropertyInfo<T>(name, friendlyName);
     }
 
@@ -56,6 +60,9 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
+      if (string.IsNullOrWhiteSpace(friendlyName))
+        friendlyName = GetFriendlyNameFromAttributes(containingType, name);
+
       return new Csla.PropertyInfo<T>(name, friendlyName, relationship);
     }
 
@@ -75,6 +82,9 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
+      if (string.IsNullOrWhiteSpace(friendlyName))
+        friendlyName = GetFriendlyNameFromAttributes(containingType, name);
+
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue);
     }
 
@@ -96,7 +106,37 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
     {
+      if (string.IsNullOrWhiteSpace(friendlyName))
+        friendlyName = GetFriendlyNameFromAttributes(containingType, name);
+
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue, relationship);
+    }
+
+    #endregion
+
+    #region Helpers
+
+    /// <summary>
+    /// Looks at the passed in type and trys to resolve the friendly name via DataAnnotations or the ComponentModel attribute.
+    /// 
+    /// Note: This code should not throw any exceptions because the property must exist!
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <param name="name">The name of the property.</param>
+    /// <returns>Returns the display name or the property name.</returns>
+    private static string GetFriendlyNameFromAttributes(Type type, string name)
+    {
+      // If name is blank then check the DataAnnotations attribute and then the ComponentModel attribute.
+      var propertyInfo = type.GetProperty(name);
+
+      // DataAnnotations attribute.
+      var display = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
+      if (display != null)
+        return display.Name;
+
+      // ComponentModel attribute.
+      var displayName = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
+      return displayName != null ? displayName.DisplayName : name;
     }
 
     #endregion

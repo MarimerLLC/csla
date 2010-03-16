@@ -1,5 +1,4 @@
 ﻿using System;
-using Csla.Properties;
 
 namespace Csla
 {
@@ -12,12 +11,30 @@ namespace Csla
   public class PropertyInfo<T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
+    /// Private default constructor.
+    /// </summary>
+    private PropertyInfo()
+    {
+    }
+
+    /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
-    public PropertyInfo(string name)
-      : this(name, "")
-    { }
+    public PropertyInfo(string name) : this(name, string.Empty)
+    {
+    }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    public PropertyInfo(string name, T defaultValue) : this(name, string.Empty, defaultValue)
+    {
+    }
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -30,30 +47,12 @@ namespace Csla
     {
       _name = name;
       _friendlyName = friendlyName;
-      if (typeof(T).Equals(typeof(string)))
-        _defaultValue = (T)((object)string.Empty);
-      else
-        _defaultValue = default(T);
-    }
 
-    /// <summary>
-    /// Creates a new instance of this class.
-    /// </summary>
-    /// <param name="name">Name of the property.</param>
-    /// <param name="friendlyName">
-    /// Friendly display name for the property.
-    /// </param>
-    /// <param name="relationship">Relationship with
-    /// referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, RelationshipTypes relationship)
-    {
-      _name = name;
-      _friendlyName = friendlyName;
+      // We treat the default behavior of a string as string.empty for databinding purposes.
       if (typeof(T).Equals(typeof(string)))
         _defaultValue = (T)((object)string.Empty);
       else
         _defaultValue = default(T);
-      _relationshipType = relationship;
     }
 
     /// <summary>
@@ -80,16 +79,27 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    public PropertyInfo(string name, string friendlyName, RelationshipTypes relationship) : this(name, friendlyName)
+    {
+      _relationshipType = relationship;
+    }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
+    public PropertyInfo(string name, string friendlyName, T defaultValue, RelationshipTypes relationship) : this(name, friendlyName, defaultValue)
     {
-      _name = name;
-      _defaultValue = defaultValue;
-      _friendlyName = friendlyName;
       _relationshipType = relationship;
     }
 
@@ -130,15 +140,7 @@ namespace Csla
     {
       get
       {
-        if (!(string.IsNullOrEmpty(_friendlyName)))
-        {
-          return _friendlyName;
-
-        }
-        else
-        {
-          return _name;
-        }
+        return !string.IsNullOrWhiteSpace(_friendlyName) ? _friendlyName : _name;
       }
     }
 
@@ -193,8 +195,8 @@ namespace Csla
     /// and the object reference in the property.
     /// </summary>
     public RelationshipTypes RelationshipType
-    { 
-      get { return _relationshipType; } 
+    {
+      get { return _relationshipType; }
     }
 
     private int _index = -1;

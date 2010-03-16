@@ -229,6 +229,8 @@
     <Compile Include="PropertyGetSet\EditableGetSetBase.cs" />
     <Compile Include="PropertyGetSet\EditableGetSetTopBase.cs" />
     <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
+    <Compile Include="PropertyInfo\PropertyInfoRoot.cs" />
+    <Compile Include="PropertyInfo\PropertyInfoTests.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="Authorization\PermissionsRoot.cs" />

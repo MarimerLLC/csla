@@ -282,6 +282,7 @@
     <Compile Include="Silverlight\Stereotypes\EditableChildTestsRemote.cs" />
     <Compile Include="Silverlight\Stereotypes\EditableRootTests.cs" />
     <Compile Include="Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs" />
+    <Compile Include="Silverlight\Stereotypes\TestCriteria.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
     <Compile Include="Threading\BusyLockTests.cs" />

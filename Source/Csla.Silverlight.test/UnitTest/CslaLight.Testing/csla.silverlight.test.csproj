@@ -309,6 +309,9 @@
     <Compile Include="..\..\..\csla.test\Silverlight\Stereotypes\ReadOnlyListTestsLocalAndRemote.cs">
       <Link>Stereotypes\ReadOnlyListTestsLocalAndRemote.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Silverlight\Stereotypes\TestCriteria.cs">
+      <Link>Stereotypes\TestCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\SmartDate\SmartDateTests.cs">
       <Link>SmartDate\SmartDateTests.cs</Link>
     </Compile>

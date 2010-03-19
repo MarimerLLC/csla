@@ -134,9 +134,13 @@ namespace Csla.Core.FieldManager
       if (display != null)
         return display.Name;
 
+#if SILVERLIGHT
+      return name;
+#else
       // ComponentModel attribute.
       var displayName = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
       return displayName != null ? displayName.DisplayName : name;
+#endif
     }
 
     #endregion

@@ -444,6 +444,11 @@ namespace Csla
 
     private static string _dataPortalUrl = null;
 
+    /// <summary>
+    /// Gets or sets the data portal URL string.
+    /// If not set on Get will read CslaDataPortalUrl from config file. 
+    /// </summary>
+    /// <value>The data portal URL string.</value>
     public static string DataPortalUrlString
     {
       get { 

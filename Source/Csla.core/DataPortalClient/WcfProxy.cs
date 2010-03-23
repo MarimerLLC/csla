@@ -55,6 +55,25 @@ namespace Csla.DataPortalClient
     /// </summary>
     protected virtual ChannelFactory<IWcfPortal> GetChannelFactory()
     {
+      // if dataportal url is specified use this with default wsHttBinding
+      if (!string.IsNullOrEmpty(ApplicationContext.DataPortalUrlString))
+      {
+        // set up WSHttpBinding with 
+        var binding = new WSHttpBinding()
+        { 
+          //MaxBufferPoolSize = int.MaxValue,       // default is 524288 and kept to default value
+          MaxReceivedMessageSize = int.MaxValue,    // default is 65536
+          ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas() 
+          {
+            MaxArrayLength = int.MaxValue,          // default is 16384
+            //MaxBytesPerRead = 4096,               // default is 4096 (and recommended to keep at default value)
+            MaxStringContentLength = int.MaxValue,  // default is 8192
+          }
+        };
+        return new ChannelFactory<IWcfPortal>(binding, new EndpointAddress(ApplicationContext.DataPortalUrl));
+      }
+
+      // else return a channelfactory that uses the endpoint configuration in app.config/web.config
       return new ChannelFactory<IWcfPortal>(_endPoint);
     }
 

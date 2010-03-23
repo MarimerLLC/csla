@@ -441,6 +441,24 @@ namespace Csla
       }
     }
 
+
+    private static string _dataPortalUrl = null;
+
+    public static string DataPortalUrlString
+    {
+      get { 
+        if (_dataPortalUrl == null) 
+        {
+          _dataPortalUrl =  ConfigurationManager.AppSettings["CslaDataPortalUrl"];
+        }
+        return _dataPortalUrl;
+      }
+      set
+      {
+        _dataPortalUrl = value;
+      }
+    }
+
     /// <summary>
     /// Returns the URL for the DataPortal server.
     /// </summary>
@@ -452,7 +470,7 @@ namespace Csla
     /// </remarks>
     public static Uri DataPortalUrl
     {
-      get { return new Uri(ConfigurationManager.AppSettings["CslaDataPortalUrl"]); }
+      get { return new Uri(DataPortalUrlString); }
     }
 
     /// <summary>

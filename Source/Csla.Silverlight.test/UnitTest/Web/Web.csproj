@@ -86,6 +86,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Csla.Web\Csla.Web.csproj">
+      <Project>{492B788E-888E-4041-B356-F5947B50D360}</Project>
+      <Name>Csla.Web</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\csla\csla.csproj">
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
       <Name>Csla</Name>

@@ -26,13 +26,6 @@ namespace Csla.Testing.Business.Security
         OnGetIdentityComplete(e, completed));
     }
 
-    public static void LoginUsingMembershipProviderDatPortal(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
-    {
-      MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>(VALID_TEST_UID, VALID_TEST_PWD, 
-        (o, e) =>
-        OnGetIdentityComplete(e, completed));
-    }
-
     public static void LoginUsingInvalidMembershipProvider(EventHandler<DataPortalResult<SilverlightPrincipal>> completed)
     {
       MembershipIdentity.GetMembershipIdentity<SilverlightMembershipIdentity>("invalidusername", VALID_TEST_PWD,

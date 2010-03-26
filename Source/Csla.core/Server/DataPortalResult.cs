@@ -38,7 +38,7 @@ namespace Csla.Server
     /// </summary>
     public DataPortalResult()
     {
-      _globalContext = ApplicationContext.GetGlobalContext();
+      _globalContext = ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ namespace Csla.Server
     public DataPortalResult(object returnObject)
     {
       _returnObject = returnObject;
-      _globalContext = ApplicationContext.GetGlobalContext();
+      _globalContext = ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>

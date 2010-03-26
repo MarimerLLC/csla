@@ -180,9 +180,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Csla.core\Csla.core.csproj">
+    <ProjectReference Include="..\..\..\Csla.core\Csla.csproj">
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla.core</Name>
+      <Name>Csla</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

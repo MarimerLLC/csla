@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for Windows (client)")]
-[assembly: AssemblyDescription("CSLA .NET Framework Client Profile")]
+[assembly: AssemblyTitle("CSLA .NET for Windows (Workflow)")]
+[assembly: AssemblyDescription("CSLA .NET Workflow")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright ©  2009 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2009 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("464688d7-df52-438a-b44b-7e1ff3560ff4")]
+[assembly: Guid("120adfa3-01b2-4474-bf83-e91a42784697")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -128,19 +128,23 @@ namespace Csla.Core.FieldManager
     {
       // If name is blank then check the DataAnnotations attribute and then the ComponentModel attribute.
       var propertyInfo = type.GetProperty(name);
-
-      // DataAnnotations attribute.
-      var display = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
-      if (display != null)
-        return display.Name;
-
-#if SILVERLIGHT
-      return name;
-#else
-      // ComponentModel attribute.
-      var displayName = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
-      return displayName != null ? displayName.DisplayName : name;
+      if (propertyInfo != null)
+      {
+        // DataAnnotations attribute.
+        var display = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
+        if (display != null)
+          name = display.Name;
+#if !SILVERLIGHT
+        else
+        {
+          // ComponentModel attribute.
+          var displayName = propertyInfo.GetCustomAttributes(typeof(DisplayNameAttribute), true).OfType<DisplayNameAttribute>().FirstOrDefault();
+          if (displayName != null)
+            name = displayName.DisplayName;
+        }
 #endif
+      }
+      return name;
     }
 
     #endregion

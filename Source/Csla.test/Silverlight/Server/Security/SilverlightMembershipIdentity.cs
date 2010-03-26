@@ -15,7 +15,7 @@ namespace Csla.Testing.Business.Security
 
     public SilverlightMembershipIdentity() { }
 
-    protected override void LoadCustomData()
+    public override void LoadCustomData()
     {
       //This now comes from IdentityFactory - built in
       //Roles = new MobileList<string>(new string[2] { "Admin", "User" });

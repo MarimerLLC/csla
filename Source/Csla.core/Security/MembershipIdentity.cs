@@ -13,22 +13,112 @@ namespace Csla.Security
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
 	/// </summary>
-	[Csla.Server.MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchMembershipIdentity")]
-	[Serializable()]
-  public partial class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
+#if !SILVERLIGHT
+	[Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
+  [Csla.Server.ObjectFactory("Csla.Web.Security.IdentityAppFactory,Csla.Web")]
+#endif
+	[Serializable]
+  public class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
   {
-#if !CLIENTPROFILE
-    #region Constructor, Helper Setter
+    #region Constructor
 
     private static int _forceInit = 0;
 
-    #endregion
+    /// <summary>
+    /// Creates an instance of the class.
+    /// </summary>
+#if SILVERLIGHT
+    public MembershipIdentity()
+#else
+    protected MembershipIdentity()
 #endif
+    {
+      _forceInit = _forceInit + 0;
+    }
+
+    #endregion
+
+    #region OnDeserialized
+
+#if SILVERLIGHT
+    protected override void OnDeserialized()
+    {
+      _forceInit = _forceInit + 0;
+      base.OnDeserialized();
+    }
+#else
+    /// <summary>
+    /// Method invoked when the object is deserialized.
+    /// </summary>
+    /// <param name="context">Serialization context.</param>
+    protected override void OnDeserialized(StreamingContext context)
+    {
+      _forceInit = _forceInit + 0;
+      base.OnDeserialized(context);
+    }
+#endif
+
+    #endregion
+
+    #region Factory Methods
+
+#if SILVERLIGHT
+    /// <summary>
+    /// Gets a MembershipIdentity object by loading the
+    /// object with membership data from the server.
+    /// </summary>
+    /// <param name="completed">Callback handler for async operation</param>
+    /// <param name="userName">Username to validate on server.</param>
+    /// <param name="password">Password to validate on server.</param>
+    /// <param name="isRunOnWebServer">True if membership database is on web server (2- or 3-tier), false to use app server (4-tier)</param>
+    public static void GetMembershipIdentity(string userName, string password, EventHandler<DataPortalResult<MembershipIdentity>> completed)
+    {
+      GetMembershipIdentity<MembershipIdentity>(userName, password, completed);
+    }
+
+    /// <summary>
+    /// Gets a MembershipIdentity object by loading the
+    /// object with membership data from the server.
+    /// </summary>
+    /// <typeparam name="T">Type of object (subclass) to retrieve</typeparam>
+    /// <param name="completed">Callback handler for async operation</param>
+    /// <param name="userName">Username to validate on server.</param>
+    /// <param name="password">Password to validate on server.</param>
+    /// <param name="isRunOnWebServer">True if membership database is on web server (2- or 3-tier), false to use app server (4-tier)</param>
+    public static void GetMembershipIdentity<T>(string userName, string password, EventHandler<DataPortalResult<T>> completed) where T : MembershipIdentity
+    {
+      DataPortal.BeginFetch<T>(new Criteria(userName, password, typeof(T)), completed);
+    }
+#else
+    /// <summary>
+    /// Authenticates the user's credentials against the ASP.NET
+    /// membership provider.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of object (subclass of MembershipIdentity) to retrieve.
+    /// </typeparam>
+    /// <param name="userName">Username to authenticate.</param>
+    /// <param name="password">Password to authenticate.</param>
+    /// <param name="isRunOnWebServer">
+    /// Specifies whether to access the membership provider locally (true),
+    /// or through the data portal (false) presumably to reach an application
+    /// server.
+    /// </param>
+    /// <returns></returns>
+    public static T GetMembershipIdentity<T>(string userName, string password) where T : MembershipIdentity
+    {
+      return DataPortal.Fetch<T>(new Criteria(userName, password, typeof(T)));
+    }
+#endif
+
+    #endregion
 
     #region  IsInRole
 
-    private static readonly PropertyInfo<MobileList<string>> RolesProperty =
-      RegisterProperty(new PropertyInfo<MobileList<string>>("Roles"));
+    /// <summary>
+    /// Gets or sets a list of roles for this user.
+    /// </summary>
+    public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
     /// <summary>
     /// Gets or sets a list of roles for this user.
     /// </summary>
@@ -51,63 +141,45 @@ namespace Csla.Security
 
     #region  IIdentity
 
-    private static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(new PropertyInfo<string>("AuthenticationType"));
+    /// <summary>
+    /// Gets the authentication type for this identity.
+    /// </summary>
+    public static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType);
     /// <summary>
     /// Gets the authentication type for this identity.
     /// </summary>
     public string AuthenticationType
     {
-      get
-      {
-        string authenticationType = GetProperty<string>(AuthenticationTypeProperty);
-        if (authenticationType == null)
-        {
-          authenticationType = "Csla";
-          LoadProperty<string>(AuthenticationTypeProperty, authenticationType);
-          return authenticationType;
-        }
-        else
-        {
-          return authenticationType;
-        }
-      }
-      protected internal set
-      {
-        LoadProperty<string>(AuthenticationTypeProperty, value);
-      }
+      get { return GetProperty(AuthenticationTypeProperty); }
+      protected set { LoadProperty(AuthenticationTypeProperty, value); }
     }
 
-    private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
+    /// <summary>
+    /// Gets a value indicating whether this identity represents
+    /// an authenticated user.
+    /// </summary>
+    public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
     /// <summary>
     /// Gets a value indicating whether this identity represents
     /// an authenticated user.
     /// </summary>
     public bool IsAuthenticated
     {
-      get
-      {
-        return GetProperty<bool>(IsAuthenticatedProperty);
-      }
-      protected internal set
-      {
-        LoadProperty<bool>(IsAuthenticatedProperty, value);
-      }
+      get { return GetProperty(IsAuthenticatedProperty); }
+      protected set { LoadProperty(IsAuthenticatedProperty, value); }
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
+    /// <summary>
+    /// Gets the username value.
+    /// </summary>
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     /// <summary>
     /// Gets the username value.
     /// </summary>
     public string Name
     {
-      get
-      {
-        return GetProperty<string>(NameProperty);
-      }
-      protected internal set
-      {
-        LoadProperty<string>(NameProperty, value);
-      }
+      get { return GetProperty(NameProperty); }
+      protected set { LoadProperty(NameProperty, value); }
     }
 
     #endregion
@@ -119,7 +191,8 @@ namespace Csla.Security
     /// data beyond the automatically loaded values from
     /// the membership and role providers.
     /// </summary>
-    protected internal virtual void LoadCustomData() { }
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
+    public virtual void LoadCustomData() { }
 
     #endregion
 
@@ -145,12 +218,6 @@ namespace Csla.Security
       /// Gets or sets the membership identity type.
       /// </summary>
       public string MembershipIdentityType { get; set; }
-      /// <summary>
-      /// Gets or sets whether the membership provider
-      /// should be access on the client (true) or application
-      /// server (false).
-      /// </summary>
-      public bool IsRunOnWebServer { get; set; }
 
       /// <summary>
       /// Creates an instance of the class.
@@ -162,12 +229,11 @@ namespace Csla.Security
       /// Access membership provider locally (true) or via the data portal
       /// on an application server (false).
       /// </param>
-      public Criteria(string name, string password, Type membershipIdentityType, bool isRunOnWebServer)
+      public Criteria(string name, string password, Type membershipIdentityType)
       {
         Name = name;
         Password = password;
         MembershipIdentityType = membershipIdentityType.AssemblyQualifiedName;
-        IsRunOnWebServer = isRunOnWebServer;
       }
 
       /// <summary>
@@ -181,7 +247,6 @@ namespace Csla.Security
         info.AddValue("MembershipIdentity.Criteria.Name", Name);
         info.AddValue("MembershipIdentity.Criteria.Password", Password);
         info.AddValue("MembershipIdentity.Criteria.MembershipIdentityType", MembershipIdentityType);
-        info.AddValue("MembershipIdentity.Criteria.IsRunOnWebServer", IsRunOnWebServer);
         base.OnGetState(info, mode);
       }
 
@@ -197,10 +262,8 @@ namespace Csla.Security
         Name = info.GetValue<string>("MembershipIdentity.Criteria.Name");
         Password = info.GetValue<string>("MembershipIdentity.Criteria.Password");
         MembershipIdentityType = info.GetValue<string>("MembershipIdentity.Criteria.MembershipIdentityType");
-        IsRunOnWebServer = info.GetValue<bool>("MembershipIdentity.Criteria.IsRunOnWebServer");
       }
     }
     #endregion
-
   }
 }

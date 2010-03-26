@@ -14,6 +14,37 @@ namespace Csla
   /// </summary>
   public static class ApplicationContext
   {
+    #region Context Manager
+
+    private static IContextManager _contextManager;
+
+    /// <summary>
+    /// Gets or sets the context manager responsible
+    /// for storing user and context information for
+    /// the application.
+    /// </summary>
+    public static IContextManager ContextManager
+    {
+      get 
+      {
+        if (_contextManager == null)
+        {
+          var webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
+          if (webManagerType != null)
+          {
+            _contextManager = (IContextManager)Activator.CreateInstance(webManagerType);
+            if (!_contextManager.IsValid) _contextManager = null;
+          }
+          if (_contextManager == null)
+            _contextManager = new ApplicationContextManager();
+        }
+        return _contextManager; 
+      }
+      set { _contextManager = value; }
+    }
+
+    #endregion
+
     #region User
 
     private static IPrincipal _principal;
@@ -30,63 +61,13 @@ namespace Csla
     /// </remarks>
     public static IPrincipal User
     {
-      get
-      {
-        IPrincipal current;
-#if !CLIENTPROFILE
-        if (HttpContext.Current != null)
-          current = HttpContext.Current.User;
-        else if (System.Windows.Application.Current != null)
-        {
-          if (_principal == null)
-          {
-            if (ApplicationContext.AuthenticationType != "Windows")
-              _principal = new Csla.Security.UnauthenticatedPrincipal();
-            else
-              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-          }
-          current = _principal;
-        }
-        else
-          current = Thread.CurrentPrincipal;
-#else
-        if (System.Windows.Application.Current != null)
-        {
-          if (_principal == null)
-          {
-            if (ApplicationContext.AuthenticationType != "Windows")
-              _principal = new Csla.Security.UnauthenticatedPrincipal();
-            else
-              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-          }
-          current = _principal;
-        }
-        else
-          current = Thread.CurrentPrincipal;
-#endif
-        return current;
-      }
-      set
-      {
-#if !CLIENTPROFILE
-        if (HttpContext.Current != null)
-          HttpContext.Current.User = value;
-        else if (System.Windows.Application.Current != null)
-          _principal = value;
-        Thread.CurrentPrincipal = value;
-#else
-        if (System.Windows.Application.Current != null)
-          _principal = value;
-        Thread.CurrentPrincipal = value;
-#endif
-      }
+      get { return ContextManager.GetUser(); }
+      set { ContextManager.SetUser(value); }
     }
 
     #endregion
 
     #region LocalContext
-
-    private const string _localContextName = "Csla.LocalContext";
 
     /// <summary>
     /// Returns the application-specific context data that
@@ -105,53 +86,21 @@ namespace Csla
     {
       get
       {
-        ContextDictionary ctx = GetLocalContext();
+        ContextDictionary ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
           ctx = new ContextDictionary();
-          SetLocalContext(ctx);
+          ContextManager.SetLocalContext(ctx);
         }
         return ctx;
       }
-    }
-
-    private static ContextDictionary GetLocalContext()
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        return (ContextDictionary)Thread.GetData(slot);
-#if !CLIENTPROFILE
-      }
-      else
-        return (ContextDictionary)HttpContext.Current.Items[_localContextName];
-#endif
-    }
-
-    private static void SetLocalContext(ContextDictionary localContext)
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-        Thread.SetData(slot, localContext);
-#if !CLIENTPROFILE
-      }
-      else
-        HttpContext.Current.Items[_localContextName] = localContext;
-#endif
     }
 
     #endregion
 
     #region Client/Global Context
 
-    private static object _syncClientContext = new object();
-    private const string _clientContextName = "Csla.ClientContext";
-    private const string _globalContextName = "Csla.GlobalContext";
+    private static object _syncContext = new object();
 
     /// <summary>
     /// Returns the application-specific context data provided
@@ -176,13 +125,13 @@ namespace Csla
     {
       get
       {
-        lock (_syncClientContext)
+        lock (_syncContext)
         {
-          ContextDictionary ctx = GetClientContext();
+          ContextDictionary ctx = ContextManager.GetClientContext();
           if (ctx == null)
           {
             ctx = new ContextDictionary();
-            SetClientContext(ctx);
+            ContextManager.SetClientContext(ctx);
           }
           return ctx;
         }
@@ -207,96 +156,23 @@ namespace Csla
     {
       get
       {
-        ContextDictionary ctx = GetGlobalContext();
+        ContextDictionary ctx = ContextManager.GetGlobalContext();
         if (ctx == null)
         {
           ctx = new ContextDictionary();
-          SetGlobalContext(ctx);
+          ContextManager.SetGlobalContext(ctx);
         }
         return ctx;
       }
-    }
-
-    internal static ContextDictionary GetClientContext()
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
-          lock (_syncClientContext)
-            return (ContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
-        else
-        {
-          LocalDataStoreSlot slot =
-            Thread.GetNamedDataSlot(_clientContextName);
-          return (ContextDictionary)Thread.GetData(slot);
-        }
-#if !CLIENTPROFILE
-    }
-      else
-        return (ContextDictionary)
-          HttpContext.Current.Items[_clientContextName];
-#endif
-    }
-
-    internal static ContextDictionary GetGlobalContext()
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
-        return (ContextDictionary)Thread.GetData(slot);
-#if !CLIENTPROFILE
-}
-      else
-        return (ContextDictionary)HttpContext.Current.Items[_globalContextName];
-#endif
-    }
-
-    private static void SetClientContext(ContextDictionary clientContext)
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
-          lock (_syncClientContext)
-            AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
-        else
-        {
-          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
-          Thread.SetData(slot, clientContext);
-        }
-#if !CLIENTPROFILE
-    }
-      else
-        HttpContext.Current.Items[_clientContextName] = clientContext;
-#endif
-    }
-
-    internal static void SetGlobalContext(ContextDictionary globalContext)
-    {
-#if !CLIENTPROFILE
-      if (HttpContext.Current == null)
-      {
-#endif
-        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
-        Thread.SetData(slot, globalContext);
-#if !CLIENTPROFILE
-      }
-      else
-        HttpContext.Current.Items[_globalContextName] = globalContext;
-#endif
     }
 
     internal static void SetContext(
       ContextDictionary clientContext,
       ContextDictionary globalContext)
     {
-      SetClientContext(clientContext);
-      SetGlobalContext(globalContext);
+      lock (_syncContext)
+        ContextManager.SetClientContext(clientContext);
+      ContextManager.SetGlobalContext(globalContext);
     }
 
     /// <summary>
@@ -305,7 +181,7 @@ namespace Csla
     public static void Clear()
     {
       SetContext(null, null);
-      SetLocalContext(null);
+      ContextManager.SetLocalContext(null);
     }
 
     #endregion
@@ -716,5 +592,96 @@ namespace Csla
 
     #endregion
 
+    #region Default context manager
+
+    private class ApplicationContextManager : IContextManager
+    {
+      private const string _localContextName = "Csla.LocalContext";
+      private const string _clientContextName = "Csla.ClientContext";
+      private const string _globalContextName = "Csla.GlobalContext";
+
+      public bool IsValid
+      {
+        get { return true; }
+      }
+
+      public IPrincipal GetUser()
+      {
+        IPrincipal current;
+        if (System.Windows.Application.Current != null)
+        {
+          if (_principal == null)
+          {
+            if (ApplicationContext.AuthenticationType != "Windows")
+              _principal = new Csla.Security.UnauthenticatedPrincipal();
+            else
+              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+          }
+          current = _principal;
+        }
+        else
+          current = Thread.CurrentPrincipal;
+        return current;
+      }
+
+      public void SetUser(IPrincipal principal)
+      {
+        if (System.Windows.Application.Current != null)
+          _principal = principal;
+        Thread.CurrentPrincipal = principal;
+      }
+
+      public ContextDictionary GetLocalContext()
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
+        return (ContextDictionary)Thread.GetData(slot);
+      }
+
+      public void SetLocalContext(ContextDictionary localContext)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
+        Thread.SetData(slot, localContext);
+      }
+
+      public ContextDictionary GetClientContext()
+      {
+        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+        {
+          return (ContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
+        }
+        else
+        {
+          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
+          return (ContextDictionary)Thread.GetData(slot);
+        }
+      }
+
+      public void SetClientContext(ContextDictionary clientContext)
+      {
+        if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)
+        {
+          AppDomain.CurrentDomain.SetData(_clientContextName, clientContext);
+        }
+        else
+        {
+          LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
+          Thread.SetData(slot, clientContext);
+        }
+      }
+
+      public ContextDictionary GetGlobalContext()
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
+        return (ContextDictionary)Thread.GetData(slot);
+      }
+
+      public void SetGlobalContext(ContextDictionary globalContext)
+      {
+        LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_globalContextName);
+        Thread.SetData(slot, globalContext);
+      }
+    }
+
+    #endregion
   }
 }

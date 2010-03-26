@@ -107,8 +107,8 @@ namespace Csla.Server
           System.Threading.Thread.CurrentThread.CurrentCulture.Name;
         _clientUICulture = 
           System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
-        _clientContext = Csla.ApplicationContext.GetClientContext();
-        _globalContext = Csla.ApplicationContext.GetGlobalContext();
+        _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
+        _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
       }
     }
     public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext, ContextDictionary globalContext)

@@ -84,12 +84,6 @@
     <None Include="CslaKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.client\Csla.client.csproj">
-      <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
-      <Name>Csla.client</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="..\Csla.Silverlight\Resources\Error.png">
       <Link>Resources\Error.png</Link>
     </Resource>
@@ -106,6 +100,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.core\Csla.csproj">
+      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
+      <Name>Csla</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

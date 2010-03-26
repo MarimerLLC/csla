@@ -536,7 +536,6 @@
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
     <Compile Include="Security\CslaIdentity.partial.cs" />
-    <Compile Include="Security\MembershipIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>

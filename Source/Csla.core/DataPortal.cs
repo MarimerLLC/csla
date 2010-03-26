@@ -132,14 +132,14 @@ namespace Csla
         {
           result = ex.Result;
           if (proxy.IsServerRemote)
-            ApplicationContext.SetGlobalContext(result.GlobalContext);
+            ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
           throw new DataPortalException(
             string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
             ex.InnerException, result.ReturnObject);
         }
 
         if (proxy.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result.GlobalContext);
+          ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
 
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create));
       }
@@ -211,7 +211,7 @@ namespace Csla
         {
           result = ex.Result;
           if (proxy.IsServerRemote)
-            ApplicationContext.SetGlobalContext(result.GlobalContext);
+            ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
           string innerMessage = string.Empty;
           if (ex.InnerException is Csla.Reflection.CallMethodException)
           {
@@ -228,7 +228,7 @@ namespace Csla
         }
 
         if (proxy.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result.GlobalContext);
+          ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
 
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch));
       }
@@ -397,14 +397,14 @@ namespace Csla
         {
           result = ex.Result;
           if (proxy.IsServerRemote)
-            ApplicationContext.SetGlobalContext(result.GlobalContext);
+            ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
           throw new DataPortalException(
             String.Format("DataPortal.Update {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
             ex.InnerException, result.ReturnObject);
         }
 
         if (proxy.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result.GlobalContext);
+          ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
 
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, operation));
       }
@@ -457,14 +457,14 @@ namespace Csla
         {
           result = ex.Result;
           if (proxy.IsServerRemote)
-            ApplicationContext.SetGlobalContext(result.GlobalContext);
+            ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
           throw new DataPortalException(
             String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
             ex.InnerException, result.ReturnObject);
         }
 
         if (proxy.IsServerRemote)
-          ApplicationContext.SetGlobalContext(result.GlobalContext);
+          ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
 
         OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete));
       }

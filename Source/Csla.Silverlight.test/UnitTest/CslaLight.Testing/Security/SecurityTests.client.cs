@@ -66,25 +66,25 @@ namespace Csla.Test.Silverlight.Security
       context.Complete();
     }
 
-    [TestMethod]
-    public void SetMembershipPrincipalDataPortal()
-    {
+    //[TestMethod]
+    //public void SetMembershipPrincipalDataPortal()
+    //{
 
-      var context = GetContext();
-      Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
-      WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
+    //  var context = GetContext();
+    //  Csla.DataPortal.ProxyTypeName = WcfProxyTypeName;
+    //  WcfProxy.DefaultUrl = Resources.RemotePortalUrl;
 
-      SilverlightPrincipal.LoginUsingMembershipProviderDatPortal(
-        (o, e) =>
-        {
-          context.Assert.IsNotNull(Csla.ApplicationContext.User);
-          context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
-          context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
-          context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("User Role"));
-          context.Assert.Success();
-        });
-      context.Complete();
-    }
+    //  SilverlightPrincipal.LoginUsingMembershipProviderDatPortal(
+    //    (o, e) =>
+    //    {
+    //      context.Assert.IsNotNull(Csla.ApplicationContext.User);
+    //      context.Assert.IsTrue(Csla.ApplicationContext.User.Identity.IsAuthenticated);
+    //      context.Assert.AreEqual(SilverlightPrincipal.VALID_TEST_UID, Csla.ApplicationContext.User.Identity.Name);
+    //      context.Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("User Role"));
+    //      context.Assert.Success();
+    //    });
+    //  context.Complete();
+    //}
 
     [TestMethod]
     public void SetInvalidMembershipPrincipal()

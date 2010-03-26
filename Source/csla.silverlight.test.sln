@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Csla.Silverlight.test\UnitTest\Web\Web.csproj", "{BA105340-59DD-4708-B9B4-555B03269B80}"
@@ -10,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight.test", "Cs
 		{BA105340-59DD-4708-B9B4-555B03269B80} = {BA105340-59DD-4708-B9B4-555B03269B80}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.core", "csla.core\csla.core.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla", "csla\csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight", "csla.silverlight\csla.silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -32,8 +31,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Windows", "Csla.Windows\Csla.Windows.csproj", "{C333CFED-D5A6-47A2-96A6-F13EE2B71ECF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml", "Csla.Xaml\Csla.Xaml.csproj", "{563EFDFA-EB47-4039-955B-654582EA5362}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.client", "Csla.client\Csla.client.csproj", "{0437FE4A-2677-454D-B634-209616CC13FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,12 +99,6 @@ Global
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Release|Any CPU.Build.0 = Release|Any CPU
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Testing|Any CPU.Build.0 = Debug|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
-		{0437FE4A-2677-454D-B634-209616CC13FC}.Testing|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

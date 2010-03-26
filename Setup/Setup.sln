@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{89B80062-56CE-4AE8-B55B-5B02BE60F149}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\Source\Csla.core\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\Source\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Silverlight", "..\Source\Csla.Silverlight\Csla.Silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
 EndProject

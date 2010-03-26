@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}"
@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml", "csla.xaml\Csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Web.Mvc", "Csla.Web.Mvc\Csla.Web.Mvc.csproj", "{E9198340-CC6F-4D4F-8A0E-BAFA9A29C8F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "Csla.core\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Silverlight", "Csla.Silverlight\Csla.Silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
 EndProject

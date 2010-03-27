@@ -97,7 +97,8 @@ namespace Csla.Validation
       {
         if (_stateStack.Count > 0)
         {
-          byte[] xml = Utilities.XmlSerialize(_stateStack.ToArray());
+          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+          byte[] xml = MobileFormatter.Serialize(list);
           info.AddValue("_stateStack", xml);
         }
       }
@@ -120,7 +121,8 @@ namespace Csla.Validation
         {
           //string xml = info.GetValue<string>("_stateStack");
           byte[] xml = info.GetValue<byte[]>("_stateStack");
-          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
           Array.Reverse(layers);
           foreach (SerializationInfo layer in layers)
             _stateStack.Push(layer);

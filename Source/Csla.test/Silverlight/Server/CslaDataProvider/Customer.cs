@@ -9,6 +9,12 @@ using Csla.Serialization;
 
 namespace cslalighttest.CslaDataProvider
 {
+  public enum CustomeType
+  {
+    Active,
+    Inactive
+  }
+
   [Serializable]
   public class Customer : BusinessBase<Customer>
   {
@@ -137,6 +143,20 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
+    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(new PropertyInfo<CustomeType>("Type", "Customer Type", CustomeType.Active));
+    public CustomeType Type
+    {
+      get
+      {
+        return GetProperty(TypeProperty);
+      }
+      set
+      {
+        SetProperty(TypeProperty, value);
+      }
+    }
+
+
     private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
     public CustomerContactList Contacts
     {
@@ -233,6 +253,7 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria.Value, 1, 1)));
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria.Value));
       LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
+      LoadProperty(TypeProperty, CustomeType.Inactive);
 
       if (criteria.Value == customerIDThrowsException)
         throw new ApplicationException("Test for Silverlight DataSource Error!");

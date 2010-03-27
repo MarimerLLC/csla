@@ -7,6 +7,7 @@ using System.Text;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
+using Csla.Serialization.Mobile;
 
 namespace Csla
 {
@@ -315,31 +316,6 @@ namespace Csla
     }
     #endregion
 
-    #region Serialization
-
-    internal static byte[] XmlSerialize(object graph)
-    {
-      using (var buffer = new MemoryStream())
-      {
-        XmlWriter writer = Csla.Serialization.Mobile.MobileFormatter.GetXmlWriter(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(graph.GetType(), new Type[] { typeof(DateTimeOffset) });
-        dcs.WriteObject(writer, graph);
-        writer.Flush();
-        return buffer.ToArray();
-      }
-
-    }
-
-    internal static T XmlDeserialize<T>(byte[] data)
-    {
-      using (var buffer = new MemoryStream(data))
-      {
-        XmlReader reader = Csla.Serialization.Mobile.MobileFormatter.GetXmlReader(buffer);
-        DataContractSerializer dcs = new DataContractSerializer(typeof(T), new Type[] { typeof(DateTimeOffset) });
-        return (T)dcs.ReadObject(reader);
-      }
-    }
-    #endregion
   }
 
   /// <summary>

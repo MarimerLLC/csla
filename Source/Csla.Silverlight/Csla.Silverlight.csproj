@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -211,6 +211,9 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\RuleUri.cs">
+      <Link>Rules\RuleUri.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -267,9 +270,6 @@
     </Compile>
     <Compile Include="..\Csla\Rules\RuleContext.cs">
       <Link>Rules\RuleContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Rules\RuleMethod.cs">
-      <Link>Rules\RuleMethod.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\RuleResult.cs">
       <Link>Rules\RuleResult.cs</Link>

@@ -16,6 +16,12 @@ namespace Csla.Rules
     /// </summary>
     public IBusinessRule Rule { get; private set; }
     /// <summary>
+    /// Gets a unique identifier for the specific instance
+    /// of the rule within the context of the business object
+    /// where the rule is used.
+    /// </summary>
+    public string RuleName { get; private set; }
+    /// <summary>
     /// Gets the primary property to which this rule is attached.
     /// </summary>
     public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
@@ -35,59 +41,7 @@ namespace Csla.Rules
       Rule = rule;
       PrimaryProperty = property;
       Priority = priority;
-    }
-
-    /// <summary>
-    /// Invokes the business rule, waiting for the rule
-    /// to complete before proceeding.
-    /// </summary>
-    /// <param name="target">Reference to the business
-    /// object against which this rule will run.</param>
-    internal void Invoke(object target)
-    {
-#if SILVERLIGHT
-      var lck = new System.Threading.ManualResetEvent(false);
-#else
-      var lck = new System.Threading.ManualResetEventSlim(false);
-#endif
-      var context = new RuleContext((r) =>
-        {
-          // process results
-          lck.Set();
-        })
-      {
-        PrimaryProperty = this.PrimaryProperty,
-        RuleDefinition = this,
-      };
-      Rule.Rule(context);
-#if SILVERLIGHT
-      lck.WaitOne();
-#else
-      lck.Wait();
-#endif
-    }
-
-    /// <summary>
-    /// Invokes the business rule, not waiting for
-    /// the rule to complete before proceeding (if the
-    /// rule is async).
-    /// </summary>
-    /// <param name="target">Reference to the business
-    /// object against which this rule will run.</param>
-    /// <param name="callback">Callback to be invoked when
-    /// the rule completes.</param>
-    internal void BeginInvoke(object target, Action<List<RuleResult>> callback)
-    {
-      var context = new RuleContext((r) =>
-      {
-        // process results
-        callback(r.Results);
-      })
-      {
-        PrimaryProperty = this.PrimaryProperty,
-        RuleDefinition = this,
-      };
-      Rule.Rule(context);
+      RuleName = new Rules.RuleUri(Rule, PrimaryProperty).ToString();
     }
   }
 }

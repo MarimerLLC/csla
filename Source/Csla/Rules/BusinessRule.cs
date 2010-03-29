@@ -30,6 +30,15 @@ namespace Csla.Rules
     /// </summary>
     public object UserState { get; protected set; }
     /// <summary>
+    /// Gets the primary property affected by this rule.
+    /// </summary>
+    public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
+    /// <summary>
+    /// Gets a list of secondary property values to be supplied to the
+    /// rule when it is executed.
+    /// </summary>
+    public List<Csla.Core.IPropertyInfo> AffectedProperties { get; private set; }
+    /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.
     /// </summary>
@@ -39,25 +48,54 @@ namespace Csla.Rules
     /// on a background thread.
     /// </summary>
     public bool IsAsync { get; protected set; }
+    /// <summary>
+    /// Gets a unique rule:// URI for the specific instance
+    /// of the rule within the context of the business object
+    /// where the rule is used.
+    /// </summary>
+    public string RuleName { get { return this.RuleUri.ToString(); } }
+    /// <summary>
+    /// Sets or gets the rule:// URI object for this rule.
+    /// </summary>
+    protected RuleUri RuleUri { get; set; }
+    /// <summary>
+    /// Gets the rule priority.
+    /// </summary>
+    public int Priority { get; protected set; }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Creates an instance of the rule that applies
+    /// to a business object as a whole.
     /// </summary>
     protected BusinessRule()
+      : this(null)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the rule that applies
+    /// to a specfic property.
+    /// </summary>
+    /// <param name="primaryProperty">Primary property for this rule.</param>
+    protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
     {
       DefaultSeverity = RuleSeverity.Error;
+      PrimaryProperty = primaryProperty;
+      AffectedProperties = new List<Core.IPropertyInfo>();
+      this.RuleUri = new RuleUri(this, primaryProperty);
+      if (primaryProperty != null)
+        AffectedProperties.Add(primaryProperty);
     }
 
     /// <summary>
     /// Business or validation rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected virtual void Rule(RuleContext context)
+    protected virtual void Execute(RuleContext context)
     { }
 
-    void IBusinessRule.Rule(RuleContext context)
+    void IBusinessRule.Execute(RuleContext context)
     {
-      Rule(context);
+      Execute(context);
     }
 
     #region Load/Read Property

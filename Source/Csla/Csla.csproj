@@ -144,8 +144,8 @@
     <Compile Include="Rules\CommonRules.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
     <Compile Include="Rules\RuleContext.cs" />
-    <Compile Include="Rules\RuleMethod.cs" />
     <Compile Include="Rules\RuleResult.cs" />
+    <Compile Include="Rules\RuleUri.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\ICheckRoles.cs" />

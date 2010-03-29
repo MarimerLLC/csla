@@ -286,6 +286,29 @@ namespace Csla.Core
     /// Performs processing required when a property
     /// has changed.
     /// </summary>
+    /// <param name="property">Property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method calls CheckRules(propertyName), MarkDirty and
+    /// OnPropertyChanged(propertyName). MarkDirty is called such
+    /// that no event is raised for IsDirty, so only the specific
+    /// property changed event for the current property is raised.
+    /// </remarks>
+    protected virtual void PropertyHasChanged(Csla.Core.IPropertyInfo property)
+    {
+      MarkDirty(true);
+      var propertyNames = BusinessRules.CheckRules(property);
+      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
+        OnPropertyChanged(property);
+      else
+        foreach (var name in propertyNames)
+          OnPropertyChanged(name);
+    }
+
+    /// <summary>
+    /// Performs processing required when a property
+    /// has changed.
+    /// </summary>
     /// <param name="propertyName">Name of the property that
     /// has changed.</param>
     /// <remarks>
@@ -371,7 +394,6 @@ namespace Csla.Core
 
     private void InitializeAuthorizationRules()
     {
-      AddInstanceAuthorizationRules();
       if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
       {
         lock (this.GetType())
@@ -383,20 +405,6 @@ namespace Csla.Core
           }
         }
       }
-    }
-
-    /// <summary>
-    /// Override this method to add authorization
-    /// rules for your object's properties.
-    /// </summary>
-    /// <remarks>
-    /// AddInstanceAuthorizationRules is automatically called by CSLA .NET
-    /// when your object should associate per-instance authorization roles
-    /// with its properties.
-    /// </remarks>
-    protected virtual void AddInstanceAuthorizationRules()
-    {
-
     }
 
     /// <summary>
@@ -977,6 +985,7 @@ namespace Csla.Core
       //Next line removed - should only be set/reset in IEditableObject methods
       //BindingEdit = false;
       ValidationRules.SetTarget(this);
+      BusinessRules.SetTarget(this);
       InitializeBusinessRules();
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
@@ -1164,7 +1173,6 @@ namespace Csla.Core
 
     private void InitializeBusinessRules()
     {
-      AddInstanceBusinessRules();
       if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
       {
         lock (this.GetType())
@@ -1175,6 +1183,63 @@ namespace Csla.Core
             AddBusinessRules();
           }
         }
+      }
+    }
+
+    private Csla.Rules.BusinessRules _businessRules;
+
+    /// <summary>
+    /// Provides access to the broken rules functionality.
+    /// </summary>
+    /// <remarks>
+    /// This property is used within your business logic so you can
+    /// easily call the AddRule() method to associate business
+    /// rules with your object's properties.
+    /// </remarks>
+    protected Rules.BusinessRules BusinessRules
+    {
+      get
+      {
+        if (_businessRules == null)
+        {
+          _businessRules = new Csla.Rules.BusinessRules(this);
+          _businessRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_Changed);
+        }
+        else if (_businessRules.Target == null)
+          _businessRules.SetTarget(this);
+        return _businessRules;
+      }
+    }
+
+    void ValidatingRules_Changed(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      if (e.Action == NotifyCollectionChangedAction.Remove)
+      {
+        lock (_validationRules.ValidatingRules)
+        {
+          foreach (Rules.RuleContext ruleContext in e.OldItems)
+          {
+            // This rule could be validating multiple times simultaneously, we only want to call
+            // OnPropertyIdle if the rule is completely removed from the list.
+            if (!_businessRules.ValidatingRules.Contains(ruleContext))
+            {
+              foreach (var property in ruleContext.Rule.AffectedProperties)
+              {
+                OnPropertyChanged(property.Name);
+                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+              }
+            }
+          }
+        }
+
+        if (!ValidationRules.IsValidating)
+          OnValidationComplete();
+      }
+      else if (e.Action == NotifyCollectionChangedAction.Add)
+      {
+        foreach (Rules.RuleContext ruleContext in e.NewItems)
+          foreach (IPropertyInfo property in ruleContext.Rule.AffectedProperties)
+            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
       }
     }
 
@@ -1235,21 +1300,6 @@ namespace Csla.Core
 
     /// <summary>
     /// Override this method in your business class to
-    /// be notified when you need to set up business
-    /// rules.
-    /// </summary>
-    /// <remarks>
-    /// This method is automatically called by CSLA .NET
-    /// when your object should associate per-instance
-    /// validation rules with its properties.
-    /// </remarks>
-    protected virtual void AddInstanceBusinessRules()
-    {
-
-    }
-
-    /// <summary>
-    /// Override this method in your business class to
     /// be notified when you need to set up shared 
     /// business rules.
     /// </summary>
@@ -1261,6 +1311,7 @@ namespace Csla.Core
     protected virtual void AddBusinessRules()
     {
       ValidationRules.AddDataAnnotations();
+      BusinessRules.AddDataAnnotations();
     }
 
     /// <summary>
@@ -1339,6 +1390,7 @@ namespace Csla.Core
     protected virtual void DataPortal_Create()
     {
       ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
     /// <summary>
@@ -1446,6 +1498,7 @@ namespace Csla.Core
     protected virtual void Child_Create()
     {
       ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
     /// <summary>
@@ -3062,6 +3115,7 @@ namespace Csla.Core
     void Csla.Server.IDataPortalTarget.CheckRules()
     {
       ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()

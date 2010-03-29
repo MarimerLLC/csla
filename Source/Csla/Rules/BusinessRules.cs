@@ -4,6 +4,7 @@ using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
+using System.Collections.ObjectModel;
 
 namespace Csla.Rules
 {
@@ -15,38 +16,65 @@ namespace Csla.Rules
   {
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
-    // reference to current business object
-    [NonSerialized()]
-    private object _target;
     // threshold for short-circuiting to kick in
     private int _processThroughPriority;
+
+    // reference to current business object
+    [NonSerialized]
+    private object _target;
     // reference to per-type rules manager for this object
     [NonSerialized]
     private BusinessRuleManager _typeRules;
+    // async rules currently executing
+    [NonSerialized]
+    private ObservableCollection<RuleContext> _validatingRules;
+
+    private BusinessRuleManager TypeRules
+    {
+      get
+      {
+        if (_typeRules == null && _target != null)
+          _typeRules = BusinessRuleManager.GetRulesForType(_target.GetType());
+        return _typeRules;
+      }
+    }
+
+    internal ObservableCollection<RuleContext> ValidatingRules
+    {
+      get
+      {
+        if (_validatingRules == null)
+          _validatingRules = new ObservableCollection<RuleContext>();
+
+        return _validatingRules;
+      }
+    }
 
     internal void SetTarget(object target)
     {
       _target = target;
     }
 
-    public void AddObjectRule(IBusinessRule rule)
+    internal object Target
     {
-      _typeRules.RuleMethods.Add(new RuleMethod(rule, null, 0));
+      get { return _target; }
     }
 
-    public void AddObjectRule(IBusinessRule rule, int priority)
+    public BusinessRules()
+    { }
+
+    public BusinessRules(object target)
     {
-      _typeRules.RuleMethods.Add(new RuleMethod(rule, null, priority));
+      SetTarget(target);
     }
 
-    public void AddRule(IBusinessRule rule, Csla.Core.IPropertyInfo property)
+    /// <summary>
+    /// Associates a business rule with the business object.
+    /// </summary>
+    /// <param name="rule">Rule object.</param>
+    public void AddRule(IBusinessRule rule)
     {
-      _typeRules.RuleMethods.Add(new RuleMethod(rule, property, 0));
-    }
-
-    public void AddRule(IBusinessRule rule, Csla.Core.IPropertyInfo property, int priority)
-    {
-      _typeRules.RuleMethods.Add(new RuleMethod(rule, property, priority));
+      TypeRules.RuleMethods.Add(rule);
     }
 
     /// <summary>
@@ -59,9 +87,11 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules()
     {
-      var result = new List<string>();
+      //var affectedProperties = new List<string>();
+      //affectedProperties.AddRange(CheckObjectRules());
 
-      return result;
+      //return affectedProperties;
+      return RunRules(TypeRules.RuleMethods);
     }
 
     /// <summary>
@@ -75,9 +105,8 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
-      var result = new List<string>();
-      var rules = _typeRules.RuleMethods.Where(c => c.PrimaryProperty == null).ToList();
-      return result;
+      var rules = TypeRules.RuleMethods.Where(c => c.PrimaryProperty == null);
+      return RunRules(rules);
     }
 
     /// <summary>
@@ -91,10 +120,92 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules(Csla.Core.IPropertyInfo property)
     {
-      var result = new List<string>();
-      var rules = _typeRules.RuleMethods.Where(c => ReferenceEquals(c.PrimaryProperty, property)).ToList();
-      return result;
+      var affectedProperties = new List<string>();
+      var rules = from r in TypeRules.RuleMethods
+                  where r.AffectedProperties.Count > 0 &&  ReferenceEquals(r.AffectedProperties[0], property)
+                  orderby r.Priority
+                  select r;
+      return affectedProperties;
     }
+
+    private List<string> RunRules(IEnumerable<IBusinessRule> rules)
+    {
+      var affectedProperties = new List<string>();
+      foreach (var rule in rules)
+      {
+        // setup callback handler
+        var context = new RuleContext((r) =>
+        {
+          foreach (var result in r.Results)
+            _brokenRules.SetBrokenRule(result);
+          foreach (var item in rule.AffectedProperties)
+            affectedProperties.Add(item.Name);
+        });
+
+        // set up rest of context
+        context.Rule = rule;
+        if (!rule.IsAsync)
+          context.Target = _target;
+
+        // get input properties
+        if (rule.InputProperties != null)
+        {
+          var target = _target as Core.IManageProperties;
+          context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
+          foreach (var item in rule.InputProperties)
+            context.InputPropertyValues.Add(item, target.ReadProperty(item));
+        }
+
+        // execute (or start executing) rule
+        rule.Execute(context);
+
+        // process any synchronous results
+        if (!rule.IsAsync && context.Results != null)
+        {
+          var stop = (from r in context.Results
+                     where r.StopProcessing == true
+                     select r).Count() > 0;
+          if (stop)
+            break;
+        }
+      }
+      // return any synchronous results
+      return affectedProperties;
+    }
+
+    #region DataAnnotations
+
+    /// <summary>
+    /// Adds validation rules corresponding to property
+    /// data annotation attributes.
+    /// </summary>
+    public void AddDataAnnotations()
+    {
+      Type metadataType;
+#if SILVERLIGHT
+      metadataType = _target.GetType();
+#else
+      var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
+      if (classAttList.Length > 0)
+        metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
+      else
+        metadataType = _target.GetType();
+#endif
+
+      var propList = metadataType.GetProperties();
+      foreach (var prop in propList)
+      {
+        var attList = prop.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
+        foreach (var att in attList)
+        {
+          var target = (IManageProperties)_target;
+          var pi = target.GetManagedProperties().Where(c => c.Name == prop.Name).First();
+          AddRule(new CommonRules.DataAnnotation(pi, (System.ComponentModel.DataAnnotations.ValidationAttribute)att));
+        }
+      }
+    }
+
+    #endregion
 
     #region MobileObject overrides
 

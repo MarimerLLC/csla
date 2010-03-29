@@ -43,13 +43,13 @@ namespace Csla.Rules
     #endregion
 
     /// <summary>
-    /// Gets the list of RuleMethod objects for the business type.
+    /// Gets the list of rule objects for the business type.
     /// </summary>
-    public List<RuleMethod> RuleMethods { get; private set; }
+    public List<IBusinessRule> RuleMethods { get; private set; }
 
     private BusinessRuleManager()
     {
-      RuleMethods = new List<RuleMethod>();
+      RuleMethods = new List<IBusinessRule>();
     }
   }
 }

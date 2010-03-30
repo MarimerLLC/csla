@@ -8,7 +8,6 @@ using System.Xml;
 using System.Xml.Linq;
 using Csla.Properties;
 using Csla.Reflection;
-using Csla.Validation;
 
 namespace Csla.Serialization.Mobile
 {

@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Data;
-using Csla.Validation;
+using Csla.Rules;
 using System.Windows.Media.Imaging;
 using System.IO;
 using System.Windows.Resources;

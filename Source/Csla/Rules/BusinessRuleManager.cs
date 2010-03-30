@@ -47,6 +47,12 @@ namespace Csla.Rules
     /// </summary>
     public List<IBusinessRule> RuleMethods { get; private set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the rules have been
+    /// initialized.
+    /// </summary>
+    public bool Initialized { get; set; }
+
     private BusinessRuleManager()
     {
       RuleMethods = new List<IBusinessRule>();

@@ -7,6 +7,7 @@ using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization;
 using System.Diagnostics;
+using Csla.Rules;
 
 namespace Csla
 {
@@ -56,7 +57,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
     {
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
       handler((T)this, null);
     }
 
@@ -220,21 +221,21 @@ namespace Csla
       }
       else if (EditLevel > 0)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        ValidationException error = new ValidationException(Resources.NoSaveEditingException);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);
       }
       else if (!IsValid && !IsDeleted)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveInvalidException);
+        ValidationException error = new ValidationException(Resources.NoSaveInvalidException);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);
       }
       else if (IsBusy)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        ValidationException error = new ValidationException(Resources.BusyObjectsMayNotBeSaved);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);

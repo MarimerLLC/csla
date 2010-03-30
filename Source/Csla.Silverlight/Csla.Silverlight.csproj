@@ -211,8 +211,23 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\BrokenRule.cs">
+      <Link>Rules\BrokenRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\BrokenRulesCollection.cs">
+      <Link>Rules\BrokenRulesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\BusinessRules.cs">
+      <Link>Rules\BusinessRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\IHostRules.cs">
+      <Link>Rules\IHostRules.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\RuleUri.cs">
       <Link>Rules\RuleUri.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\ValidationException.cs">
+      <Link>Rules\ValidationException.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
@@ -364,80 +379,8 @@
     <Compile Include="..\Csla\Threading\BusyLock.cs">
       <Link>Threading\BusyLock.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Validation\AddRuleArgs.cs">
-      <Link>Validation\AddRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleArgs.cs">
-      <Link>Validation\AsyncRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleCompleteHandler.cs">
-      <Link>Validation\AsyncRuleCompleteHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleHandler.cs">
-      <Link>Validation\AsyncRuleHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleMethod.cs">
-      <Link>Validation\AsyncRuleMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleResult.cs">
-      <Link>Validation\AsyncRuleResult.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncRuleResultHandler.cs">
-      <Link>Validation\AsyncRuleResultHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\AsyncValidationRuleContext.cs">
-      <Link>Validation\AsyncValidationRuleContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\BrokenRule.cs">
-      <Link>Validation\BrokenRule.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\BrokenRulesCollection.cs">
-      <Link>Validation\BrokenRulesCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\CommonRules.cs">
-      <Link>Validation\CommonRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\DecoratedRuleArgs.cs">
-      <Link>Validation\DecoratedRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\IAsyncRuleMethod.cs">
-      <Link>Validation\IAsyncRuleMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\IRuleMethod.cs">
-      <Link>Validation\IRuleMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RuleArgs.cs">
-      <Link>Validation\RuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RuleDescription.cs">
-      <Link>Validation\RuleDescription.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RuleHandler.cs">
-      <Link>Validation\RuleHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RuleMethod.cs">
-      <Link>Validation\RuleMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RuleSeverity.cs">
-      <Link>Validation\RuleSeverity.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\RulesList.cs">
-      <Link>Validation\RulesList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\SharedValidationRules.cs">
-      <Link>Validation\SharedValidationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\ValidationException.cs">
-      <Link>Validation\ValidationException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\ValidationRules.cs">
-      <Link>Validation\ValidationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Validation\ValidationRulesManager.cs">
-      <Link>Validation\ValidationRulesManager.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
       <Link>Xaml\ErrorEventArgs.cs</Link>
@@ -565,8 +508,6 @@
     <Compile Include="SmartDate.cs" />
     <Compile Include="Threading\Semaphore.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="Validation\BrokenRule.partial.cs" />
-    <Compile Include="Validation\ValidationRules.partial.cs" />
     <Compile Include="Xaml\BusyAnimation.cs" />
     <Compile Include="Xaml\ObjectStatus.cs" />
     <Compile Include="Xaml\BrokenRuleSeverityConverter.cs" />

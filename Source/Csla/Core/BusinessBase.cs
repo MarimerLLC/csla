@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Csla.Properties;
 using System.Collections.Specialized;
-using Csla.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Server;
@@ -276,27 +276,9 @@ namespace Csla.Core
           OnPropertyChanged(name);
     }
 
-    /// <summary>
-    /// Performs processing required when a property
-    /// has changed.
-    /// </summary>
-    /// <param name="propertyName">Name of the property that
-    /// has changed.</param>
-    /// <remarks>
-    /// This method calls CheckRules(propertyName), MarkDirty and
-    /// OnPropertyChanged(propertyName). MarkDirty is called such
-    /// that no event is raised for IsDirty, so only the specific
-    /// property changed event for the current property is raised.
-    /// </remarks>
     private void PropertyHasChanged(string propertyName)
     {
-      MarkDirty(true);
-      var propertyNames = ValidationRules.CheckRules(propertyName);
-      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
-        OnPropertyChanged(propertyName);
-      else
-        foreach (var name in propertyNames)
-          OnPropertyChanged(name);
+      PropertyHasChanged(FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First());
     }
 
     /// <summary>
@@ -831,9 +813,6 @@ namespace Csla.Core
     /// </remarks>
     protected override void UndoChangesComplete()
     {
-      //Next line removed - should only be set/reset in IEditableObject methods
-      //BindingEdit = false;
-      ValidationRules.SetTarget(this);
       BusinessRules.SetTarget(this);
       InitializeBusinessRules();
       OnUnknownPropertyChanged();
@@ -985,9 +964,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region ValidationRules, IsValid
-
-    private Validation.ValidationRules _validationRules;
+    #region BusinessRules, IsValid
 
     [NonSerialized]
     [NotUndoable]
@@ -1014,7 +991,7 @@ namespace Csla.Core
     /// Raises the ValidationComplete event
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    internal protected virtual void OnValidationComplete()
+    protected virtual void OnValidationComplete()
     {
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);
@@ -1022,17 +999,14 @@ namespace Csla.Core
 
     private void InitializeBusinessRules()
     {
-      if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
-      {
-        lock (this.GetType())
-        {
-          if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+      var rules = Rules.BusinessRuleManager.GetRulesForType(this.GetType());
+      if (!rules.Initialized)
+        lock (rules)
+          if (!rules.Initialized)
           {
-            Validation.SharedValidationRules.GetManager(this.GetType(), true);
+            rules.Initialized = true;
             AddBusinessRules();
           }
-        }
-      }
     }
 
     private Csla.Rules.BusinessRules _businessRules;
@@ -1074,61 +1048,6 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Provides access to the broken rules functionality.
-    /// </summary>
-    /// <remarks>
-    /// This property is used within your business logic so you can
-    /// easily call the AddRule() method to associate validation
-    /// rules with your object's properties.
-    /// </remarks>
-    protected Validation.ValidationRules ValidationRules
-    {
-      get
-      {
-        if (_validationRules == null)
-        {
-          _validationRules = new Csla.Validation.ValidationRules(this);
-          _validationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
-        }
-        else if (_validationRules.Target == null)
-          _validationRules.SetTarget(this);
-        return _validationRules;
-      }
-    }
-
-    void ValidatingRules_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-      if (e.Action == NotifyCollectionChangedAction.Remove)
-      {
-        foreach (IAsyncRuleMethod rule in e.OldItems)
-        {
-          lock (_validationRules.ValidatingRules)
-          {
-            // This rule could be validating multiple times simultaneously, we only want to call
-            // OnPropertyIdle if the rule is completely removed from the list.
-            if (!_validationRules.ValidatingRules.Contains(rule))
-            {
-              foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-              {
-                OnPropertyChanged(property);
-                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
-              }
-            }
-          }
-        }
-
-        if (!ValidationRules.IsValidating)
-          OnValidationComplete();
-      }
-      else if (e.Action == NotifyCollectionChangedAction.Add)
-      {
-        foreach (IAsyncRuleMethod rule in e.NewItems)
-          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
-      }
-    }
-
-    /// <summary>
     /// Override this method in your business class to
     /// be notified when you need to set up shared 
     /// business rules.
@@ -1140,7 +1059,6 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      ValidationRules.AddDataAnnotations();
       BusinessRules.AddDataAnnotations();
     }
 
@@ -1153,7 +1071,7 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling ValidationRules
+    /// By default this property relies on the underling BusinessRules
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -1176,7 +1094,7 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling ValidationRules
+    /// By default this property relies on the underling BusinessRules
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -1185,21 +1103,22 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsSelfValid
     {
-      get { return ValidationRules.IsValid; }
+      get { return BusinessRules.IsValid; }
     }
 
     /// <summary>
     /// Provides access to the readonly collection of broken business rules
     /// for this object.
     /// </summary>
-    /// <returns>A Csla.Validation.RulesCollection object.</returns>
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual Validation.BrokenRulesCollection BrokenRulesCollection
+    [Display(AutoGenerateField=false)]
+    public virtual Rules.BrokenRulesCollection BrokenRulesCollection
     {
-      get { return ValidationRules.GetBrokenRules(); }
+      get { return BusinessRules.GetBrokenRules(); }
     }
 
     #endregion
@@ -1215,92 +1134,49 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [RunLocal]
     protected virtual void DataPortal_Create()
     {
-      ValidationRules.CheckRules();
       BusinessRules.CheckRules();
-    }
-
-    /// <summary>
-    /// Override this method to allow retrieval of an existing business
-    /// object based on data in the database.
-    /// </summary>
-    /// <remarks>
-    /// Normally you will overload this method to accept a strongly-typed
-    /// criteria parameter, rather than overriding the method with a
-    /// loosely-typed criteria parameter.
-    /// </remarks>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Fetch(object criteria)
-    {
-      throw new NotSupportedException(Resources.FetchNotSupportedException);
     }
 
     /// <summary>
     /// Override this method to allow insertion of a business
     /// object.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Insert()
-    {
-      throw new NotSupportedException(Resources.InsertNotSupportedException);
-    }
+    { }
 
     /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
+    { }
 
     /// <summary>
     /// Override this method to allow deferred deletion of a business object.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void DataPortal_DeleteSelf()
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
-    /// <summary>
-    /// Override this method to allow immediate deletion of a business object.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-
-    }
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-
-    }
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal if an exception
@@ -1308,12 +1184,9 @@ namespace Csla.Core
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-
-    }
+    { }
 
     /// <summary>
     /// Override this method to load a new business object with default
@@ -1324,10 +1197,8 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     protected virtual void Child_Create()
     {
-      ValidationRules.CheckRules();
       BusinessRules.CheckRules();
     }
 
@@ -1336,22 +1207,18 @@ namespace Csla.Core
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-    }
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-    }
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal if an exception
@@ -1359,11 +1226,9 @@ namespace Csla.Core
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-    }
+    { }
 
     #endregion
 
@@ -1374,8 +1239,8 @@ namespace Csla.Core
       get
       {
         if (!IsSelfValid)
-          return ValidationRules.GetBrokenRules().ToString(
-            Csla.Validation.RuleSeverity.Error);
+          return BusinessRules.GetBrokenRules().ToString(
+            Csla.Rules.RuleSeverity.Error);
         else
           return String.Empty;
       }
@@ -1388,8 +1253,8 @@ namespace Csla.Core
         string result = string.Empty;
         if (!IsSelfValid)
         {
-          Validation.BrokenRule rule = 
-            ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);
+          Rules.BrokenRule rule =
+            BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
           if (rule != null)
             result = rule.Description;
         }
@@ -1409,8 +1274,7 @@ namespace Csla.Core
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      ValidationRules.SetTarget(this);
-      ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
+      BusinessRules.SetTarget(this);
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();
@@ -2693,7 +2557,7 @@ namespace Csla.Core
     [Browsable(false)]
     public bool IsSelfBusy
     {
-      get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
+      get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
 
     [NotUndoable]
@@ -2724,23 +2588,25 @@ namespace Csla.Core
     /// specific property is busy (has a
     /// currently executing async rule).
     /// </summary>
+    /// <param name="property">
+    /// Property to check.
+    /// </param>
+    public bool IsPropertyBusy(Csla.Core.IPropertyInfo property)
+    {
+      return BusinessRules.GetPropertyBusy(property);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether a
+    /// specific property is busy (has a
+    /// currently executing async rule).
+    /// </summary>
     /// <param name="propertyName">
     /// Name of the property.
     /// </param>
     public bool IsPropertyBusy(string propertyName)
     {
-      bool isbusy = false;
-      if (_validationRules != null)
-      {
-        lock (_validationRules.ValidatingRules)
-        {
-          isbusy = (from rules in _validationRules.ValidatingRules
-                    from property in rules.AsyncRuleArgs.Properties
-                    where property.Name == propertyName
-                    select rules).Count() > 0;
-        }
-      }
-      return isbusy;
+      return IsPropertyBusy(FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First());
     }
 
     #endregion
@@ -2944,7 +2810,6 @@ namespace Csla.Core
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     {
-      ValidationRules.CheckRules();
       BusinessRules.CheckRules();
     }
 
@@ -3102,10 +2967,10 @@ namespace Csla.Core
         info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
       }
 
-      if (_validationRules != null)
+      if (_businessRules != null)
       {
-        var vrInfo = formatter.SerializeObject(_validationRules);
-        info.AddChild("_validationRules", vrInfo.ReferenceId);
+        var vrInfo = formatter.SerializeObject(_businessRules);
+        info.AddChild("_businessRules", vrInfo.ReferenceId);
       }
     }
 
@@ -3128,10 +2993,10 @@ namespace Csla.Core
         _fieldManager = (Csla.Core.FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId);
       }
 
-      if (info.Children.ContainsKey("_validationRules"))
+      if (info.Children.ContainsKey("_businessRules"))
       {
-        int refId = info.Children["_validationRules"].ReferenceId;
-        _validationRules = (ValidationRules)formatter.GetObject(refId);
+        int refId = info.Children["_businessRules"].ReferenceId;
+        _businessRules = (Rules.BusinessRules)formatter.GetObject(refId);
       }
 
       base.OnSetChildren(info, formatter);

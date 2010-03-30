@@ -116,11 +116,11 @@ namespace Csla
       if (this.IsChild)
         throw new NotSupportedException(Resources.NoSaveChildException);
       if (EditLevel > 0)
-        throw new Validation.ValidationException(Resources.NoSaveEditingException);
+        throw new Rules.ValidationException(Resources.NoSaveEditingException);
       if (!IsValid && !IsDeleted)
-        throw new Validation.ValidationException(Resources.NoSaveInvalidException);
+        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
       if (IsBusy)
-        throw new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        throw new Rules.ValidationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
         result = (T)DataPortal.Update(this);
       else
@@ -215,22 +215,21 @@ namespace Csla
       }
       else if (EditLevel > 0)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveEditingException);
+        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveEditingException);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (!IsValid && !IsDeleted)
       {
-        Validation.ValidationException error = new Validation.ValidationException(Resources.NoSaveInvalidException);
+        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveInvalidException);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (IsBusy)
       {
-        // TODO: Review this resource text
-        Validation.ValidationException error = new Validation.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        Rules.ValidationException error = new Rules.ValidationException(Resources.BusyObjectsMayNotBeSaved);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));

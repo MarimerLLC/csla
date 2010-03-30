@@ -10,7 +10,7 @@ using Csla.DataPortalClient;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Csla.Validation;
+using Csla.Rules;
 using System.Security;
 using System.Windows.Controls;
 using Csla.Core.LoadManager;
@@ -34,6 +34,7 @@ namespace Csla.Core
     IEditableObject,
     INotifyChildChanged,
     IManageProperties,
+    Rules.IHostRules,
     ITrackStatus
   {
     #region Constructors
@@ -173,7 +174,7 @@ namespace Csla.Core
     {
       //Should only be set in methods called by IEditableObject
       //BindingEdit = false;
-      ValidationRules.SetTarget(this);
+      BusinessRules.SetTarget(this);
       InitializeBusinessRules();
       OnUnknownPropertyChanged();
       base.UndoChangesComplete();
@@ -420,37 +421,10 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Performs processing required when the current
-    /// property has changed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This method calls CheckRules(propertyName), MarkDirty and
-    /// OnPropertyChanged(propertyName). MarkDirty is called such
-    /// that no event is raised for IsDirty, so only the specific
-    /// property changed event for the current property is raised.
-    /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
-    /// </para>
-    /// </remarks>
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    protected void PropertyHasChanged()
-    {
-      string propertyName =
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      PropertyHasChanged(propertyName);
-    }
-
-    /// <summary>
     /// Performs processing required when a property
     /// has changed.
     /// </summary>
-    /// <param name="propertyName">Name of the property that
+    /// <param name="property">Property that
     /// has changed.</param>
     /// <remarks>
     /// This method calls CheckRules(propertyName), MarkDirty and
@@ -458,16 +432,20 @@ namespace Csla.Core
     /// that no event is raised for IsDirty, so only the specific
     /// property changed event for the current property is raised.
     /// </remarks>
-    protected virtual void PropertyHasChanged(string propertyName)
+    protected virtual void PropertyHasChanged(Csla.Core.IPropertyInfo property)
     {
       MarkDirty(true);
-
-      var propertyNames = ValidationRules.CheckRules(propertyName);
+      var propertyNames = BusinessRules.CheckRules(property);
       if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
-        OnPropertyChanged(propertyName);
+        OnPropertyChanged(property);
       else
         foreach (var name in propertyNames)
           OnPropertyChanged(name);
+    }
+
+    private void PropertyHasChanged(string propertyName)
+    {
+      PropertyHasChanged(FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First());
     }
 
     /// <summary>
@@ -601,33 +579,6 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool CanReadProperty(bool throwOnFalse)
-    {
-      string propertyName =
-        new System.Diagnostics.StackTrace().
-        GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanReadProperty(propertyName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
-          String.Format("{0} ({1})",
-          Resources.PropertyGetNotAllowed, propertyName));
-        throw ex;
-      }
-      return result;
-
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <param name="propertyName">Name of the property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -642,21 +593,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool CanReadProperty()
-    {
-      string propertyName =
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanReadProperty(propertyName);
     }
 
     /// <summary>
@@ -712,29 +648,6 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if write is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool CanWriteProperty(bool throwOnFalse)
-    {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanWriteProperty(propertyName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
-        throw ex;
-      }
-      return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
     /// <param name="propertyName">Name of the property to write.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -748,20 +661,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool CanWriteProperty()
-    {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanWriteProperty(propertyName);
     }
 
     /// <summary>
@@ -831,28 +730,6 @@ namespace Csla.Core
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
-    /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanExecuteMethod(bool throwOnFalse)
-    {
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      bool result = CanExecuteMethod(methodName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
-      }
-      return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
@@ -868,20 +745,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
-    /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanExecuteMethod()
-    {
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      return CanExecuteMethod(methodName);
     }
 
     /// <summary>
@@ -2261,7 +2124,7 @@ namespace Csla.Core
     {
       OnGetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
-      ((IUndoableObject)ValidationRules).CopyState(this.EditLevel + 1, false);
+      ((IUndoableObject)BusinessRules).CopyState(this.EditLevel + 1, false);
 
       base.OnCopyState(state);
     }
@@ -2275,7 +2138,7 @@ namespace Csla.Core
     {
       OnSetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)ValidationRules).UndoChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)BusinessRules).UndoChanges(this.EditLevel - 1, false);
 
       base.OnUndoChanges(state);
     }
@@ -2287,7 +2150,7 @@ namespace Csla.Core
     protected override void AcceptingChanges()
     {
       ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
-      ((IUndoableObject)ValidationRules).AcceptChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);
 
       base.AcceptingChanges();
     }
@@ -2365,10 +2228,10 @@ namespace Csla.Core
         info.AddChild("_fieldManager", fieldManagerInfo.ReferenceId);
       }
 
-      if (_validationRules != null)
+      if (_businessRules != null)
       {
-        var vrInfo = formatter.SerializeObject(_validationRules);
-        info.AddChild("_validationRules", vrInfo.ReferenceId);
+        var vrInfo = formatter.SerializeObject(_businessRules);
+        info.AddChild("_businessRules", vrInfo.ReferenceId);
       }
     }
 
@@ -2392,10 +2255,10 @@ namespace Csla.Core
         _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
       }
 
-      if (info.Children.ContainsKey("_validationRules"))
+      if (info.Children.ContainsKey("_businessRules"))
       {
-        int refId = info.Children["_validationRules"].ReferenceId;
-        _validationRules = (ValidationRules)formatter.GetObject(refId);
+        int refId = info.Children["_businessRules"].ReferenceId;
+        _businessRules = (BusinessRules)formatter.GetObject(refId);
       }
 
       base.OnSetChildren(info, formatter);
@@ -2422,9 +2285,7 @@ namespace Csla.Core
 
     #endregion
 
-    #region ValidationRules, IsValid
-
-    private Validation.ValidationRules _validationRules;
+    #region BusinessRules, IsValid
 
     /// <summary>
     /// Event indicating validation is complete.
@@ -2443,83 +2304,52 @@ namespace Csla.Core
 
     private void InitializeBusinessRules()
     {
-      AddInstanceBusinessRules();
-      if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
-      {
-        lock (this.GetType())
-        {
-          if (!(Validation.SharedValidationRules.RulesExistFor(this.GetType())))
+      var rules = Rules.BusinessRuleManager.GetRulesForType(this.GetType());
+      if (!rules.Initialized)
+        lock (rules)
+          if (!rules.Initialized)
           {
-            Validation.SharedValidationRules.GetManager(this.GetType(), true);
-            try { AddBusinessRules(); }
-            catch
-            {
-              // Prevent incomplete rule managers from being created. This will cause
-              // rules to be recreated for every instance until successful. This fixes
-              // a bug where it's possible to create an instance with an invalid rule
-              // if you catch the InvalidOperationException the first time.
-              Validation.SharedValidationRules.RemoveManager(this.GetType());
-              throw;
-            }
+            rules.Initialized = true;
+            AddBusinessRules();
           }
-        }
-      }
     }
+
+    private Csla.Rules.BusinessRules _businessRules;
 
     /// <summary>
     /// Provides access to the broken rules functionality.
     /// </summary>
     /// <remarks>
     /// This property is used within your business logic so you can
-    /// easily call the AddRule() method to associate validation
+    /// easily call the AddRule() method to associate business
     /// rules with your object's properties.
     /// </remarks>
-    protected Validation.ValidationRules ValidationRules
+    protected Rules.BusinessRules BusinessRules
     {
       get
       {
-        if (_validationRules == null)
-        {
-          _validationRules = new Csla.Validation.ValidationRules(this);
-          _validationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
-        }
-        else
-          if (_validationRules.Target == null)
-            _validationRules.SetTarget(this);
-        return _validationRules;
+        if (_businessRules == null)
+          _businessRules = new Csla.Rules.BusinessRules(this);
+        else if (_businessRules.Target == null)
+          _businessRules.SetTarget(this);
+        return _businessRules;
       }
     }
 
-    void ValidatingRules_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    void Rules.IHostRules.RuleStart(IPropertyInfo property)
     {
-      if (e.Action == NotifyCollectionChangedAction.Remove)
-      {
-        foreach (IAsyncRuleMethod rule in e.OldItems)
-        {
-          lock (_validationRules.ValidatingRules)
-          {
-            // This rule could be validating multiple times simultaneously, we only want to call
-            // OnPropertyIdle if the rule is completely removed from the list.
-            if (!_validationRules.ValidatingRules.Contains(rule))
-            {
-              foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-              {
-                OnPropertyChanged(property.Name);
-                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
-              }
-            }
-          }
-        }
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
+    }
 
-        if (!ValidationRules.IsValidating)
-          OnValidationComplete();
-      }
-      else if (e.Action == NotifyCollectionChangedAction.Add)
-      {
-        foreach (IAsyncRuleMethod rule in e.NewItems)
-          foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
-            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
-      }
+    void Rules.IHostRules.RuleComplete(IPropertyInfo property)
+    {
+      OnPropertyChanged(property);
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+    }
+
+    void Rules.IHostRules.AllRulesComplete()
+    {
+      OnValidationComplete();
     }
 
     /// <summary>
@@ -2549,7 +2379,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      ValidationRules.AddDataAnnotations();
+      BusinessRules.AddDataAnnotations();
     }
 
     /// <summary>
@@ -2561,7 +2391,7 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling ValidationRules
+    /// By default this property relies on the underling BusinessRules
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -2583,7 +2413,7 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By default this property relies on the underling ValidationRules
+    /// By default this property relies on the underling BusinessRules
     /// object to track whether any business rules are currently broken for this object.
     /// </para><para>
     /// You can override this property to provide more sophisticated
@@ -2593,7 +2423,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     public virtual bool IsSelfValid
     {
-      get { return ValidationRules.IsValid; }
+      get { return BusinessRules.IsValid; }
     }
 
     /// <summary>
@@ -2602,9 +2432,9 @@ namespace Csla.Core
     /// </summary>
     /// <returns>A Csla.Validation.RulesCollection object.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual Validation.BrokenRulesCollection BrokenRulesCollection
+    public virtual BrokenRulesCollection BrokenRulesCollection
     {
-      get { return ValidationRules.GetBrokenRules(); }
+      get { return BusinessRules.GetBrokenRules(); }
     }
 
     #endregion
@@ -2622,7 +2452,6 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      // TODO: Review resource string
       if (_isBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
 
@@ -2657,7 +2486,7 @@ namespace Csla.Core
     /// </summary>
     public bool IsSelfBusy
     {
-      get { return _isBusy || ValidationRules.IsValidating || LoadManager.IsLoading; }
+      get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
 
     [NotUndoable]
@@ -2698,23 +2527,25 @@ namespace Csla.Core
     /// specific property is busy (has a
     /// currently executing async rule).
     /// </summary>
+    /// <param name="property">
+    /// Property to check.
+    /// </param>
+    public bool IsPropertyBusy(Csla.Core.IPropertyInfo property)
+    {
+      return BusinessRules.GetPropertyBusy(property);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether a
+    /// specific property is busy (has a
+    /// currently executing async rule).
+    /// </summary>
     /// <param name="propertyName">
     /// Name of the property.
     /// </param>
     public bool IsPropertyBusy(string propertyName)
     {
-      bool isbusy = false;
-      if (_validationRules != null)
-      {
-        lock (_validationRules.ValidatingRules)
-        {
-          isbusy = (from rules in _validationRules.ValidatingRules
-                    from property in rules.AsyncRuleArgs.Properties
-                    where property.Name == propertyName
-                    select rules).Count() > 0;
-        }
-      }
-      return isbusy;
+      return IsPropertyBusy(FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First());
     }
 
     #endregion
@@ -2864,7 +2695,7 @@ namespace Csla.Core
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     {
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
@@ -2966,7 +2797,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual void Child_Create()
     {
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
     /// <summary>
@@ -3009,8 +2840,7 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      ValidationRules.SetTarget(this);
-      ValidationRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_CollectionChanged);
+      BusinessRules.SetTarget(this);
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();

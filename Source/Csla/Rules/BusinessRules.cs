@@ -13,6 +13,9 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject
+#if SILVERLIGHT
+    , IUndoableObject
+#endif
   {
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -87,6 +90,24 @@ namespace Csla.Rules
       TypeRules.RuleMethods.Add(rule);
     }
 
+    /// <summary>
+    /// Gets a value indicating whether there are
+    /// any currently broken rules, which would
+    /// mean the object is not valid.
+    /// </summary>
+    public bool IsValid
+    {
+      get { return _brokenRules.Count == 0; }
+    }
+
+    /// <summary>
+    /// Gets the broken rules list.
+    /// </summary>
+    public BrokenRulesCollection GetBrokenRules()
+    {
+      return _brokenRules;
+    }
+
     [NonSerialized]
     private bool _runningRules;
     /// <summary>
@@ -97,6 +118,25 @@ namespace Csla.Rules
     {
       get { return _runningRules; }
       private set { _runningRules = value; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any async
+    /// rules are currently executing.
+    /// </summary>
+    public bool RunningAsyncRules
+    {
+      get { return BusyProperties.Count > 0; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether a specific
+    /// property has any async rules running.
+    /// </summary>
+    /// <param name="property">Property to check.</param>
+    public bool GetPropertyBusy(Csla.Core.IPropertyInfo property)
+    {
+      return BusyProperties.Contains(property);
     }
 
     /// <summary>
@@ -276,6 +316,72 @@ namespace Csla.Rules
 
     #endregion
 
+#if SILVERLIGHT
+    #region IUndoableObject Members
+
+    private object SyncRoot = new object();
+    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
+
+    int IUndoableObject.EditLevel
+    {
+      get { return _stateStack.Count; }
+    }
+
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel + 1 > parentEditLevel)
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
+
+      SerializationInfo state = new SerializationInfo(0);
+      OnGetState(state, StateMode.Undo);
+
+      if (_brokenRules != null && _brokenRules.Count > 0)
+      {
+        byte[] rules = MobileFormatter.Serialize(_brokenRules);
+        state.AddValue("_rules", Convert.ToBase64String(rules));
+      }
+
+      _stateStack.Push(state);
+    }
+
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel > 0)
+      {
+        if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
+          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
+
+        SerializationInfo state = _stateStack.Pop();
+        OnSetState(state, StateMode.Undo);
+
+        lock (SyncRoot)
+          _brokenRules = null;
+
+        if (state.Values.ContainsKey("_rules"))
+        {
+          byte[] rules = Convert.FromBase64String(state.GetValue<string>("_rules"));
+
+          lock (SyncRoot)
+            _brokenRules = (BrokenRulesCollection)MobileFormatter.Deserialize(rules);
+        }
+      }
+    }
+
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
+    {
+      if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
+
+      if (((IUndoableObject)this).EditLevel > 0)
+      {
+        // discard latest recorded state
+        _stateStack.Pop();
+      }
+    }
+
+    #endregion
+#endif
+
     #region MobileObject overrides
 
     /// <summary>
@@ -372,7 +478,8 @@ namespace Csla.Rules
       {
         if (_stateStack.Count > 0)
         {
-          byte[] xml = Utilities.XmlSerialize(_stateStack.ToArray());
+          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+          byte[] xml = MobileFormatter.Serialize(list);
           info.AddValue("_stateStack", xml);
         }
       }
@@ -395,7 +502,8 @@ namespace Csla.Rules
         {
           //string xml = info.GetValue<string>("_stateStack");
           byte[] xml = info.GetValue<byte[]>("_stateStack");
-          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
           Array.Reverse(layers);
           foreach (SerializationInfo layer in layers)
             _stateStack.Push(layer);

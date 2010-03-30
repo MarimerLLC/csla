@@ -147,6 +147,7 @@
     <Compile Include="Rules\RuleContext.cs" />
     <Compile Include="Rules\RuleResult.cs" />
     <Compile Include="Rules\RuleUri.cs" />
+    <Compile Include="Rules\ValidationException.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
@@ -298,36 +299,9 @@
     <Compile Include="SmartDate.cs" />
     <Compile Include="SortedBindingList.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="Validation\AddRuleArgs.cs" />
-    <Compile Include="Validation\AsyncRuleArgs.cs" />
-    <Compile Include="Validation\AsyncRuleCompleteHandler.cs" />
-    <Compile Include="Validation\AsyncRuleHandler.cs" />
-    <Compile Include="Validation\AsyncRuleMethod.cs" />
-    <Compile Include="Validation\AsyncRuleResult.cs" />
-    <Compile Include="Validation\AsyncRuleResultHandler.cs" />
-    <Compile Include="Validation\AsyncValidationRuleContext.cs" />
     <Compile Include="Rules\BrokenRule.cs" />
-    <Compile Include="Validation\BrokenRule.cs" />
-    <Compile Include="Validation\BrokenRule.partial.cs" />
     <Compile Include="Rules\BrokenRulesCollection.cs" />
-    <Compile Include="Validation\BrokenRulesCollection.cs" />
-    <Compile Include="Validation\BrokenRulesCollection.partial.cs" />
-    <Compile Include="Validation\CommonRules.cs" />
-    <Compile Include="Validation\DecoratedRuleArgs.cs" />
-    <Compile Include="Validation\IAsyncRuleMethod.cs" />
-    <Compile Include="Validation\IRuleMethod.cs" />
-    <Compile Include="Validation\RuleArgs.cs" />
-    <Compile Include="Validation\RuleDescription.cs" />
-    <Compile Include="Validation\RuleHandler.cs" />
-    <Compile Include="Validation\RuleMethod.cs" />
     <Compile Include="Rules\RuleSeverity.cs" />
-    <Compile Include="Validation\RuleSeverity.cs" />
-    <Compile Include="Validation\RulesList.cs" />
-    <Compile Include="Validation\SharedValidationRules.cs" />
-    <Compile Include="Validation\ValidationException.cs" />
-    <Compile Include="Validation\ValidationRules.cs" />
-    <Compile Include="Validation\ValidationRules.partial.cs" />
-    <Compile Include="Validation\ValidationRulesManager.cs" />
     <Compile Include="Web References\WebServiceHost\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

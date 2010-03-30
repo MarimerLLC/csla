@@ -12,6 +12,10 @@ namespace Csla.Rules
   public partial class BrokenRule : MobileObject
   {
 #if SILVERLIGHT
+    /// <summary>
+    /// Creates an instance of this object.
+    /// </summary>
+    [Obsolete("For use by MobileFormatter only")]
     public BrokenRule()
     { }
 #else

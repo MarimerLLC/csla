@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Csla.Validation;
+using Csla.Rules;
 using System.Windows.Resources;
 using System.Windows.Media.Imaging;
 using System.Windows;

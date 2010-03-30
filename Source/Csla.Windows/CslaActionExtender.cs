@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Csla;
 using Csla.Core;
-using Csla.Validation;
+using Csla.Rules;
 using Csla.Properties;
 
 namespace Csla.Windows

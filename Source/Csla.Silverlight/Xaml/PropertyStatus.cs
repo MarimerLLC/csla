@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Csla.Core;
 using Csla.Reflection;
-using Csla.Validation;
+using Csla.Rules;
 
 namespace Csla.Xaml
 {

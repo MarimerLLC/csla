@@ -93,7 +93,7 @@ namespace Csla.Web.Mvc
       if (obj != null)
       {
         var errors = from r in obj.BrokenRulesCollection
-                     where r.Severity == Csla.Validation.RuleSeverity.Error
+                     where r.Severity == Csla.Rules.RuleSeverity.Error
                      select r;
         foreach (var item in errors)
         {

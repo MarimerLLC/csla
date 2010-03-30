@@ -61,7 +61,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the rule priority.
     /// </summary>
-    public int Priority { get; protected set; }
+    public int Priority { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule that applies

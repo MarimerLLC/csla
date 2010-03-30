@@ -143,6 +143,7 @@
     <Compile Include="Rules\BusinessRules.cs" />
     <Compile Include="Rules\CommonRules.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
+    <Compile Include="Rules\IHostRules.cs" />
     <Compile Include="Rules\RuleContext.cs" />
     <Compile Include="Rules\RuleResult.cs" />
     <Compile Include="Rules\RuleUri.cs" />

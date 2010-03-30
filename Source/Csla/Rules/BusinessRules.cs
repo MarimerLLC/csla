@@ -21,7 +21,7 @@ namespace Csla.Rules
 
     // reference to current business object
     [NonSerialized]
-    private object _target;
+    private IHostRules _target;
     // reference to per-type rules manager for this object
     [NonSerialized]
     private BusinessRuleManager _typeRules;
@@ -50,7 +50,7 @@ namespace Csla.Rules
       }
     }
 
-    internal void SetTarget(object target)
+    internal void SetTarget(IHostRules target)
     {
       _target = target;
     }
@@ -60,10 +60,20 @@ namespace Csla.Rules
       get { return _target; }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public BusinessRules()
-    { }
+    {
+      _brokenRules = new BrokenRulesCollection();
+    }
 
-    public BusinessRules(object target)
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="target">Target business object.</param>
+    public BusinessRules(IHostRules target)
+      : this()
     {
       SetTarget(target);
     }
@@ -77,6 +87,18 @@ namespace Csla.Rules
       TypeRules.RuleMethods.Add(rule);
     }
 
+    [NonSerialized]
+    private bool _runningRules;
+    /// <summary>
+    /// Gets a value indicating whether a CheckRules
+    /// operation is in progress.
+    /// </summary>
+    public bool RunningRules
+    {
+      get { return _runningRules; }
+      private set { _runningRules = value; }
+    }
+
     /// <summary>
     /// Invokes all rules for the business type.
     /// </summary>
@@ -87,11 +109,12 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules()
     {
-      //var affectedProperties = new List<string>();
-      //affectedProperties.AddRange(CheckObjectRules());
-
-      //return affectedProperties;
-      return RunRules(TypeRules.RuleMethods);
+      RunningRules = true;
+      var affectedProperties = RunRules(TypeRules.RuleMethods);
+      RunningRules = false;
+      if (BusyProperties.Count == 0)
+        _target.AllRulesComplete();
+      return affectedProperties;
     }
 
     /// <summary>
@@ -105,8 +128,13 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
+      RunningRules = true;
       var rules = TypeRules.RuleMethods.Where(c => c.PrimaryProperty == null);
-      return RunRules(rules);
+      var affectedProperties = RunRules(rules);
+      RunningRules = false;
+      if (BusyProperties.Count == 0)
+        _target.AllRulesComplete();
+      return affectedProperties;
     }
 
     /// <summary>
@@ -120,12 +148,28 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules(Csla.Core.IPropertyInfo property)
     {
-      var affectedProperties = new List<string>();
+      RunningRules = true;
       var rules = from r in TypeRules.RuleMethods
                   where r.AffectedProperties.Count > 0 &&  ReferenceEquals(r.AffectedProperties[0], property)
                   orderby r.Priority
                   select r;
+      var affectedProperties = RunRules(rules);
+      RunningRules = false;
+      if (BusyProperties.Count == 0)
+        _target.AllRulesComplete();
       return affectedProperties;
+    }
+
+    [NonSerialized]
+    private List<Csla.Core.IPropertyInfo> _busyProperties;
+    private List<Csla.Core.IPropertyInfo> BusyProperties
+    {
+      get
+      {
+        if (_busyProperties == null)
+          _busyProperties = new List<Csla.Core.IPropertyInfo>();
+        return _busyProperties;
+      }
     }
 
     private List<string> RunRules(IEnumerable<IBusinessRule> rules)
@@ -133,16 +177,20 @@ namespace Csla.Rules
       var affectedProperties = new List<string>();
       foreach (var rule in rules)
       {
-        // setup callback handler
+        // set up context
         var context = new RuleContext((r) =>
-        {
-          foreach (var result in r.Results)
-            _brokenRules.SetBrokenRule(result);
-          foreach (var item in rule.AffectedProperties)
-            affectedProperties.Add(item.Name);
-        });
-
-        // set up rest of context
+          {
+            ProcessResult(r);
+            foreach (var item in r.Rule.AffectedProperties)
+            {
+              // mark each property as not busy
+              BusyProperties.Remove(item);
+              if (!BusyProperties.Contains(item))
+                _target.RuleComplete(item);
+            }
+            if (!RunningRules && BusyProperties.Count == 0)
+              _target.AllRulesComplete();
+          });
         context.Rule = rule;
         if (!rule.IsAsync)
           context.Target = _target;
@@ -159,18 +207,39 @@ namespace Csla.Rules
         // execute (or start executing) rule
         rule.Execute(context);
 
-        // process any synchronous results
-        if (!rule.IsAsync && context.Results != null)
+        if (rule.IsAsync)
         {
-          var stop = (from r in context.Results
-                     where r.StopProcessing == true
-                     select r).Count() > 0;
-          if (stop)
-            break;
+          // mark each property as busy
+          foreach (var item in rule.AffectedProperties)
+          {
+            if (!BusyProperties.Contains(item))
+              _target.RuleStart(item);
+            BusyProperties.Add(rule.PrimaryProperty);
+          }
+        }
+        else
+        {
+          ProcessResult(context);
+          if (context.Results != null)
+          {
+            // short-circuiting (sync only)
+            var stop = (from r in context.Results
+                        where r.StopProcessing == true
+                        select r).Count() > 0;
+            if (stop)
+              break;
+          }
         }
       }
       // return any synchronous results
       return affectedProperties;
+    }
+
+    private void ProcessResult(RuleContext r)
+    {
+      if (r.Results != null)
+        foreach (var result in r.Results)
+          _brokenRules.SetBrokenRule(result);
     }
 
     #region DataAnnotations

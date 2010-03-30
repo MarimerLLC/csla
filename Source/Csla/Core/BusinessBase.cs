@@ -19,9 +19,6 @@ namespace Csla.Core
   /// This is the non-generic base class from which most
   /// business objects will be derived.
   /// </summary>
-  /// <remarks>
-  /// See Chapter 3 for details.
-  /// </remarks>
   [Serializable]
   public abstract class BusinessBase :  UndoableBase,
     IEditableBusinessObject,
@@ -32,6 +29,7 @@ namespace Csla.Core
     IParent, 
     IDataPortalTarget,
     IManageProperties,
+    Rules.IHostRules,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
@@ -256,33 +254,6 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Performs processing required when the current
-    /// property has changed.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This method calls CheckRules(propertyName), MarkDirty and
-    /// OnPropertyChanged(propertyName). MarkDirty is called such
-    /// that no event is raised for IsDirty, so only the specific
-    /// property changed event for the current property is raised.
-    /// </para><para>
-    /// This implementation uses System.Diagnostics.StackTrace to
-    /// determine the name of the current property, and so must be called
-    /// directly from the property to be checked.
-    /// </para>
-    /// </remarks>
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    protected void PropertyHasChanged()
-    {
-      string propertyName = 
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      PropertyHasChanged(propertyName);
-    }
-
-    /// <summary>
     /// Performs processing required when a property
     /// has changed.
     /// </summary>
@@ -317,7 +288,7 @@ namespace Csla.Core
     /// that no event is raised for IsDirty, so only the specific
     /// property changed event for the current property is raised.
     /// </remarks>
-    protected virtual void PropertyHasChanged(string propertyName)
+    private void PropertyHasChanged(string propertyName)
     {
       MarkDirty(true);
       var propertyNames = ValidationRules.CheckRules(propertyName);
@@ -445,34 +416,6 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanReadProperty(bool throwOnFalse)
-    {
-      string propertyName = 
-        new System.Diagnostics.StackTrace().
-        GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanReadProperty(propertyName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
-          String.Format("{0} ({1})",
-          Resources.PropertyGetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-        throw ex;
-      }
-      return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
     /// <param name="propertyName">Name of the property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -488,21 +431,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanReadProperty()
-    {
-      string propertyName = 
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanReadProperty(propertyName);
     }
 
     /// <summary>
@@ -559,30 +487,6 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if write is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanWriteProperty(bool throwOnFalse)
-    {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanWriteProperty(propertyName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-        throw ex;
-      }
-      return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
     /// <param name="propertyName">Name of the property to write.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -597,20 +501,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanWriteProperty()
-    {
-      string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanWriteProperty(propertyName);
     }
 
     /// <summary>
@@ -680,31 +570,6 @@ namespace Csla.Core
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
-    /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanExecuteMethod(bool throwOnFalse)
-    {
-
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      bool result = CanExecuteMethod(methodName);
-      if (throwOnFalse && result == false)
-      {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-        throw ex;
-      }
-      return result;
-
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
@@ -722,22 +587,6 @@ namespace Csla.Core
         throw ex;
       }
       return result;
-
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
-    /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public bool CanExecuteMethod()
-    {
-
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      return CanExecuteMethod(methodName);
 
     }
 
@@ -1201,46 +1050,27 @@ namespace Csla.Core
       get
       {
         if (_businessRules == null)
-        {
           _businessRules = new Csla.Rules.BusinessRules(this);
-          _businessRules.ValidatingRules.CollectionChanged += new NotifyCollectionChangedEventHandler(ValidatingRules_Changed);
-        }
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;
       }
     }
 
-    void ValidatingRules_Changed(object sender, NotifyCollectionChangedEventArgs e)
+    void Rules.IHostRules.RuleStart(IPropertyInfo property)
     {
-      if (e.Action == NotifyCollectionChangedAction.Remove)
-      {
-        lock (_validationRules.ValidatingRules)
-        {
-          foreach (Rules.RuleContext ruleContext in e.OldItems)
-          {
-            // This rule could be validating multiple times simultaneously, we only want to call
-            // OnPropertyIdle if the rule is completely removed from the list.
-            if (!_businessRules.ValidatingRules.Contains(ruleContext))
-            {
-              foreach (var property in ruleContext.Rule.AffectedProperties)
-              {
-                OnPropertyChanged(property.Name);
-                OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
-              }
-            }
-          }
-        }
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
+    }
 
-        if (!ValidationRules.IsValidating)
-          OnValidationComplete();
-      }
-      else if (e.Action == NotifyCollectionChangedAction.Add)
-      {
-        foreach (Rules.RuleContext ruleContext in e.NewItems)
-          foreach (IPropertyInfo property in ruleContext.Rule.AffectedProperties)
-            OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
-      }
+    void Rules.IHostRules.RuleComplete(IPropertyInfo property)
+    {
+      OnPropertyChanged(property);
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+    }
+
+    void Rules.IHostRules.AllRulesComplete()
+    {
+      OnValidationComplete();
     }
 
     /// <summary>
@@ -1280,7 +1110,7 @@ namespace Csla.Core
             {
               foreach (IPropertyInfo property in rule.AsyncRuleArgs.Properties)
               {
-                OnPropertyChanged(property.Name);
+                OnPropertyChanged(property);
                 OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
               }
             }
@@ -2445,9 +2275,9 @@ namespace Csla.Core
       {
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, true))
         {
-          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo.Name);
+          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
           FieldManager.SetFieldData(propertyInfo, newValue);
-          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo.Name);
+          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
         }
       }
       catch (System.Security.SecurityException)
@@ -2591,9 +2421,9 @@ namespace Csla.Core
           //}
           if (markDirty)
           {
-            OnPropertyChanging(propertyInfo.Name);
+            OnPropertyChanging(propertyInfo);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
-            PropertyHasChanged(propertyInfo.Name);
+            PropertyHasChanged(propertyInfo);
           }
           else
           {
@@ -2611,9 +2441,9 @@ namespace Csla.Core
           //}
           if (markDirty)
           {
-            OnPropertyChanging(propertyInfo.Name);
+            OnPropertyChanging(propertyInfo);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
-            PropertyHasChanged(propertyInfo.Name);
+            PropertyHasChanged(propertyInfo);
           }
           else
           {
@@ -2625,9 +2455,9 @@ namespace Csla.Core
         {
           if (markDirty)
           {
-            OnPropertyChanging(propertyInfo.Name);
+            OnPropertyChanging(propertyInfo);
             FieldManager.SetFieldData<P>(propertyInfo, newValue);
-            PropertyHasChanged(propertyInfo.Name);
+            PropertyHasChanged(propertyInfo);
           }
           else
           {

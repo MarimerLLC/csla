@@ -50,9 +50,8 @@ namespace Csla.Core
     /// PropertyChangedEventArgs object or null.
     /// </param>
     public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+      : this(childObject, propertyArgs)
     {
-      this.ChildObject = childObject;
-      this.PropertyChangedArgs = propertyArgs;
       this.ListChangedArgs = listArgs;
     }
 #endif
@@ -69,10 +68,27 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs)
     {
       this.ChildObject = childObject;
       this.PropertyChangedArgs = propertyArgs;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="childObject">
+    /// Reference to the child object that was changed.
+    /// </param>
+    /// <param name="listArgs">
+    /// ListChangedEventArgs object or null.
+    /// </param>
+    /// <param name="propertyArgs">
+    /// PropertyChangedEventArgs object or null.
+    /// </param>
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+      : this(childObject, propertyArgs)
+    {
       this.CollectionChangedArgs = listArgs;
     }
   }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Csla.Validation;
+using Csla.Rules;
 using System.ComponentModel;
 using System.Threading;
 using Csla.Core;
@@ -81,33 +81,33 @@ namespace Csla.Testing.Business.BusyStatus
 
     protected override void AddBusinessRules()
     {
-      AsyncRuleArgs args = new AsyncRuleArgs(RuleFieldProperty);
-      ValidationRules.AddRule(FiveSecondsLongRule, args);
+      BusinessRules.AddRule(new FiveSecondsLongRule { PrimaryProperty = RuleFieldProperty });
     }
 
-    private static void FiveSecondsLongRule(AsyncValidationRuleContext context)
+    public class FiveSecondsLongRule : Rules.BusinessRule
     {
-      BackgroundWorker worker = new BackgroundWorker();
-
-      worker.DoWork += (s, e) =>
+      public FiveSecondsLongRule()
       {
-        AsyncValidationRuleContext avrc = (AsyncValidationRuleContext)e.Argument;
-        System.Threading.Thread.Sleep(2000);
-        avrc.OutArgs.Result = ((string)avrc.PropertyValues["RuleField"]).ToUpper() != "ERROR";
-        if (avrc.OutArgs.Result == false)
-          avrc.OutArgs.Description = "error detected";
+        IsAsync = true;
+      }
 
-        e.Result = avrc;
-      };
-
-      worker.RunWorkerCompleted += (s, e) =>
+      protected override void Execute(RuleContext context)
       {
-        AsyncValidationRuleContext avrc = (AsyncValidationRuleContext)e.Result;
-        avrc.Complete();
-      };
+        BackgroundWorker worker = new BackgroundWorker();
 
-      // simulating an asynchronous process.
-      worker.RunWorkerAsync(context);
+        worker.DoWork += (s, e) =>
+        {
+          System.Threading.Thread.Sleep(2000);
+          var value = context.InputPropertyValues[PrimaryProperty];
+          if (value == null || value.ToString().ToUpper() == "ERROR")
+            context.AddErrorResult("error detected");
+        };
+
+        worker.RunWorkerCompleted += (s, e) => context.Complete();
+
+        // simulating an asynchronous process.
+        worker.RunWorkerAsync();
+      }
     }
 
 #if SILVERLIGHT

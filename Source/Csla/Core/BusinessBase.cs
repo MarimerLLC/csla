@@ -1,3 +1,4 @@
+// C:\Visual Studio Projects\csla\40\Source\Csla\Core\BusinessBase.cs
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -10,7 +11,11 @@ using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Server;
 using Csla.Security;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
+using Csla.Rules;
+using System.Security;
+using Csla.Core.FieldManager;
 
 namespace Csla.Core
 {
@@ -19,6 +24,9 @@ namespace Csla.Core
   /// This is the non-generic base class from which most
   /// business objects will be derived.
   /// </summary>
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
   [Serializable]
   public abstract class BusinessBase :  UndoableBase,
     IEditableBusinessObject,
@@ -61,6 +69,40 @@ namespace Csla.Core
 
     #endregion
 
+    #region Parent/Child link
+
+    [NotUndoable]
+    [NonSerialized]
+    private IParent _parent;
+
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    /// <remarks>
+    /// This value will be Nothing for root objects.
+    /// </remarks>
+    [Browsable(false)]
+    [Display(AutoGenerateField = false)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public Core.IParent Parent
+    {
+      get { return _parent; }
+    }
+
+    /// <summary>
+    /// Used by BusinessListBase as a child object is 
+    /// created to tell the child object about its
+    /// parent.
+    /// </summary>
+    /// <param name="parent">A reference to the parent collection object.</param>
+    protected virtual void SetParent(Core.IParent parent)
+    {
+      _parent = parent;
+    }
+
+    #endregion
+
     #region IsNew, IsDeleted, IsDirty, IsSavable
 
     // keep track of whether we are new, deleted or dirty
@@ -82,6 +124,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object is new.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public bool IsNew
     {
       get { return _isNew; }
@@ -102,6 +145,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object is marked for deletion.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public bool IsDeleted
     {
       get { return _isDeleted; }
@@ -127,6 +171,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsDirty
     {
       get { return IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty()); }
@@ -150,6 +195,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object's data has been changed.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsSelfDirty
     {
       get { return _isDirty; }
@@ -309,6 +355,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsSavable
     {
       get 
@@ -328,21 +375,21 @@ namespace Csla.Core
 
     #region Authorization
 
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private Dictionary<string, bool> _readResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private Dictionary<string, bool> _writeResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private Dictionary<string, bool> _executeResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private Security.AuthorizationRules _authorizationRules;
 
     private void InitializeAuthorizationRules()
@@ -409,7 +456,6 @@ namespace Csla.Core
         System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -479,7 +525,6 @@ namespace Csla.Core
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -565,7 +610,6 @@ namespace Csla.Core
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
@@ -626,39 +670,6 @@ namespace Csla.Core
       }
       return result;
 
-    }
-
-    #endregion
-
-    #region Parent/Child link
-
-    [NotUndoable()]
-    [NonSerialized()]
-    private Core.IParent _parent;
-
-    /// <summary>
-    /// Provide access to the parent reference for use
-    /// in child object code.
-    /// </summary>
-    /// <remarks>
-    /// This value will be Nothing for root objects.
-    /// </remarks>
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Core.IParent Parent
-    {
-      get { return _parent; }
-    }
-
-    /// <summary>
-    /// Used by BusinessListBase as a child object is 
-    /// created to tell the child object about its
-    /// parent.
-    /// </summary>
-    /// <param name="parent">A reference to the parent collection object.</param>
-    protected virtual void SetParent(Core.IParent parent)
-    {
-      _parent = parent;
     }
 
     #endregion
@@ -850,7 +861,7 @@ namespace Csla.Core
 
     #region IsChild
 
-    [NotUndoable()]
+    [NotUndoable]
     private bool _isChild;
 
     /// <summary>
@@ -966,6 +977,19 @@ namespace Csla.Core
 
     #region BusinessRules, IsValid
 
+#if SILVERLIGHT
+    public event EventHandler ValidationComplete;
+
+    /// <summary>
+    /// Raises the ValidationComplete event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnValidationComplete()
+    {
+      if (ValidationComplete != null)
+        ValidationComplete(this, EventArgs.Empty);
+    }
+#else
     [NonSerialized]
     [NotUndoable]
     private EventHandler _validationCompleteHandlers;
@@ -996,10 +1020,11 @@ namespace Csla.Core
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);
     }
+#endif
 
     private void InitializeBusinessRules()
     {
-      var rules = Rules.BusinessRuleManager.GetRulesForType(this.GetType());
+      var rules = BusinessRuleManager.GetRulesForType(this.GetType());
       if (!rules.Initialized)
         lock (rules)
           if (!rules.Initialized)
@@ -1019,19 +1044,19 @@ namespace Csla.Core
     /// easily call the AddRule() method to associate business
     /// rules with your object's properties.
     /// </remarks>
-    protected Rules.BusinessRules BusinessRules
+    protected BusinessRules BusinessRules
     {
       get
       {
         if (_businessRules == null)
-          _businessRules = new Csla.Rules.BusinessRules(this);
+          _businessRules = new BusinessRules(this);
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;
       }
     }
 
-    void Rules.IHostRules.RuleStart(IPropertyInfo property)
+    void IHostRules.RuleStart(IPropertyInfo property)
     {
       OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
     }
@@ -1082,6 +1107,7 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if the object is currently valid.</returns>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsValid
     {
       get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
@@ -1114,8 +1140,8 @@ namespace Csla.Core
     /// for this object.
     /// </summary>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [Display(AutoGenerateField=false)]
     public virtual Rules.BrokenRulesCollection BrokenRulesCollection
     {
       get { return BusinessRules.GetBrokenRules(); }
@@ -1125,6 +1151,22 @@ namespace Csla.Core
 
     #region Data Access
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    /// <remarks>
+    /// Normally you will overload this method to accept a strongly-typed
+    /// criteria parameter, rather than overriding the method with a
+    /// loosely-typed criteria parameter.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+#else
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.
@@ -1159,6 +1201,7 @@ namespace Csla.Core
     /// </summary>
     protected virtual void DataPortal_DeleteSelf()
     { }
+#endif
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -1197,7 +1240,12 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
+#if SILVERLIGHT
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void Child_Create()
+#else
     protected virtual void Child_Create()
+#endif
     {
       BusinessRules.CheckRules();
     }
@@ -1268,11 +1316,19 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
+#if SILVERLIGHT
+      OnDeserializedHandler();
+#else
       OnDeserializedHandler(new StreamingContext());
+#endif
     }
 
-    [OnDeserialized()]
+#if SILVERLIGHT
+    private void OnDeserializedHandler()
+#else
+    [OnDeserialized]
     private void OnDeserializedHandler(StreamingContext context)
+#endif
     {
       BusinessRules.SetTarget(this);
       if (_fieldManager != null)
@@ -1281,18 +1337,26 @@ namespace Csla.Core
       InitializeAuthorizationRules();
       FieldDataDeserialized();
 
+#if SILVERLIGHT
+      OnDeserialized();
+#else
       OnDeserialized(context);
+#endif
     }
 
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
+#if SILVERLIGHT
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnDeserialized()
+#else
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
-    {
-    }
+#endif
+    { }
 
     #endregion
 
@@ -1317,23 +1381,29 @@ namespace Csla.Core
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged += new BusyChangedEventHandler(Child_BusyChanged);
+        busy.BusyChanged += Child_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
       INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
-        pc.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        pc.PropertyChanged += Child_PropertyChanged;
 
+#if !SILVERLIGHT
       IBindingList bl = child as IBindingList;
       if (bl != null)
-        bl.ListChanged += new ListChangedEventHandler(Child_ListChanged);
+        bl.ListChanged += Child_ListChanged;
+#endif
+
+      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
+      if (ncc != null)
+        ncc.CollectionChanged += Child_CollectionChanged;
 
       INotifyChildChanged cc = child as INotifyChildChanged;
       if (cc != null)
-        cc.ChildChanged += new EventHandler<ChildChangedEventArgs>(Child_Changed);
+        cc.ChildChanged += Child_Changed;
     }
 
     /// <summary>
@@ -1355,23 +1425,29 @@ namespace Csla.Core
     {
       INotifyBusy busy = child as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged -= new BusyChangedEventHandler(Child_BusyChanged);
+        busy.BusyChanged -= Child_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(Child_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
       INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
-        pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+        pc.PropertyChanged -= Child_PropertyChanged;
 
+#if !SILVERLIGHT
       IBindingList bl = child as IBindingList;
       if (bl != null)
-        bl.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
+        bl.ListChanged -= Child_ListChanged;
+#endif
+
+      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
+      if (ncc != null)
+        ncc.CollectionChanged -= Child_CollectionChanged;
 
       INotifyChildChanged cc = child as INotifyChildChanged;
       if (cc != null)
-        cc.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
+        cc.ChildChanged -= Child_Changed;
     }
 
     #endregion
@@ -1484,7 +1560,7 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks ||CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
       else
         return defaultValue;
@@ -1703,6 +1779,25 @@ namespace Csla.Core
       return result;
     }
 
+    /// <summary>
+    /// Gets a property's managed field value, 
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P GetProperty<P>(IPropertyInfo propertyInfo)
+    {
+      return (P)GetProperty(propertyInfo);
+    }
+
     #endregion
 
     #region  Read Properties
@@ -1913,7 +2008,7 @@ namespace Csla.Core
           }
         }
       }
-      catch (System.Security.SecurityException)
+      catch (SecurityException)
       {
         throw;
       }
@@ -1975,7 +2070,7 @@ namespace Csla.Core
           }
         }
       }
-      catch (System.Security.SecurityException)
+      catch (SecurityException)
       {
         throw;
       }
@@ -2061,7 +2156,7 @@ namespace Csla.Core
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
       }
-      catch (System.Security.SecurityException)
+      catch (SecurityException)
       {
         throw;
       }
@@ -2144,7 +2239,7 @@ namespace Csla.Core
           if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
         }
       }
-      catch (System.Security.SecurityException)
+      catch (SecurityException)
       {
         throw;
       }
@@ -2153,6 +2248,27 @@ namespace Csla.Core
         throw new PropertyLoadException(
           string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
+    }
+
+    /// <summary>
+    /// Sets a property's managed field with the 
+    /// supplied value, and then
+    /// calls PropertyHasChanged if the value does change.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// If the user is not authorized to change the 
+    /// property a SecurityException is thrown.
+    /// </remarks>
+    protected void SetProperty<P>(IPropertyInfo propertyInfo, P newValue)
+    {
+      SetProperty(propertyInfo, (object)newValue);
     }
 
     #endregion
@@ -2277,12 +2393,6 @@ namespace Csla.Core
 
         if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
-          // remove old event hook
-          //if (oldValue != null)
-          //{
-          //  INotifyPropertyChanged pc = (INotifyPropertyChanged)oldValue;
-          //  pc.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
-          //}
           if (markDirty)
           {
             OnPropertyChanging(propertyInfo);
@@ -2297,12 +2407,6 @@ namespace Csla.Core
         }
         else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
         {
-          // remove old event hooks
-          //if (oldValue != null)
-          //{
-          //  IBindingList pc = (IBindingList)oldValue;
-          //  pc.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
-          //}
           if (markDirty)
           {
             OnPropertyChanging(propertyInfo);
@@ -2545,6 +2649,7 @@ namespace Csla.Core
     /// busy.
     /// </summary>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -2577,7 +2682,7 @@ namespace Csla.Core
     /// Raise the BusyChanged event.
     /// </summary>
     /// <param name="args">Event args.</param>
-    protected void OnBusyChanged(BusyChangedEventArgs args)
+    protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
@@ -2694,8 +2799,38 @@ namespace Csla.Core
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
+    private void RaiseChildChanged(ChildChangedEventArgs e)
+    {
+      OnChildChanged(e);
+    }
+
+    /// <summary>
+    /// Creates a ChildChangedEventArgs and raises the event.
+    /// </summary>
+    private void RaiseChildChanged(
+      object childObject, PropertyChangedEventArgs propertyArgs)
+    {
+      ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs);
+      OnChildChanged(args);
+    }
+
+#if !SILVERLIGHT
+    /// <summary>
+    /// Creates a ChildChangedEventArgs and raises the event.
+    /// </summary>
     private void RaiseChildChanged(
       object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    {
+      ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
+      OnChildChanged(args);
+    }
+#endif
+
+    /// <summary>
+    /// Creates a ChildChangedEventArgs and raises the event.
+    /// </summary>
+    private void RaiseChildChanged(
+      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -2708,9 +2843,10 @@ namespace Csla.Core
     /// </summary>
     private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      RaiseChildChanged(sender, e, null);
+      RaiseChildChanged(sender, e);
     }
 
+#if !SILVERLIGHT
     /// <summary>
     /// Handles any ListChanged event from 
     /// a child list and echoes it up as
@@ -2721,6 +2857,17 @@ namespace Csla.Core
       if(e.ListChangedType != ListChangedType.ItemChanged)
         RaiseChildChanged(sender, null, e);
     }
+#endif
+
+    /// <summary>
+    /// Handles any CollectionChanged event
+    /// from a child list and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    private void Child_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+      RaiseChildChanged(sender, null, e);
+    }
 
     /// <summary>
     /// Handles any ChildChanged event from
@@ -2729,7 +2876,7 @@ namespace Csla.Core
     /// </summary>
     private void Child_Changed(object sender, ChildChangedEventArgs e)
     {
-      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
+      RaiseChildChanged(e);
     }
 
     #endregion
@@ -2742,13 +2889,13 @@ namespace Csla.Core
     /// Gets the PropertyManager object for this
     /// business object.
     /// </summary>
-    protected FieldManager.FieldDataManager FieldManager
+    protected FieldDataManager FieldManager
     {
       get
       {
         if (_fieldManager == null)
         {
-          _fieldManager = new FieldManager.FieldDataManager(this.GetType());
+          _fieldManager = new FieldDataManager(this.GetType());
           UndoableBase.ResetChildEditLevel(_fieldManager, this.EditLevel, this.BindingEdit);
         }
         return _fieldManager;
@@ -2911,6 +3058,7 @@ namespace Csla.Core
     /// <param name="mode">
     /// The StateMode indicating why this method was invoked.
     /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
     {
       base.OnGetState(info, mode);
@@ -2933,6 +3081,7 @@ namespace Csla.Core
     /// <param name="mode">
     /// The StateMode indicating why this method was invoked.
     /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
     {
       base.OnSetState(info, mode);
@@ -2956,6 +3105,7 @@ namespace Csla.Core
     /// Reference to MobileFormatter instance. Use this to
     /// convert child references to/from reference id values.
     /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetChildren(
       Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
@@ -2985,18 +3135,19 @@ namespace Csla.Core
     /// Reference to MobileFormatter instance. Use this to
     /// convert child references to/from reference id values.
     /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
       if (info.Children.ContainsKey("_fieldManager"))
       {
         var childData = info.Children["_fieldManager"];
-        _fieldManager = (Csla.Core.FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId);
+        _fieldManager = (FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId);
       }
 
       if (info.Children.ContainsKey("_businessRules"))
       {
         int refId = info.Children["_businessRules"].ReferenceId;
-        _businessRules = (Rules.BusinessRules)formatter.GetObject(refId);
+        _businessRules = (BusinessRules)formatter.GetObject(refId);
       }
 
       base.OnSetChildren(info, formatter);
@@ -3063,5 +3214,51 @@ namespace Csla.Core
     }
 
     #endregion
+
+#if SILVERLIGHT
+    #region UndoableBase overrides
+
+    /// <summary>
+    /// Copy object state.
+    /// </summary>
+    /// <param name="state">Serialization state.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override void OnCopyState(SerializationInfo state)
+    {
+      OnGetState(state, StateMode.Undo);
+      ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
+      ((IUndoableObject)BusinessRules).CopyState(this.EditLevel + 1, false);
+
+      base.OnCopyState(state);
+    }
+
+    /// <summary>
+    /// Undo object state.
+    /// </summary>
+    /// <param name="state">Serialization state.</param>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override void OnUndoChanges(SerializationInfo state)
+    {
+      OnSetState(state, StateMode.Undo);
+      ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)BusinessRules).UndoChanges(this.EditLevel - 1, false);
+
+      base.OnUndoChanges(state);
+    }
+
+    /// <summary>
+    /// Accept object state.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected override void AcceptingChanges()
+    {
+      ((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);
+      ((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);
+
+      base.AcceptingChanges();
+    }
+
+    #endregion
+#endif
   }
 }

@@ -30,9 +30,9 @@ namespace Csla.Rules
     /// </summary>
     public object UserState { get; protected set; }
     /// <summary>
-    /// Gets the primary property affected by this rule.
+    /// Gets or sets the primary property affected by this rule.
     /// </summary>
-    public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
+    public Csla.Core.IPropertyInfo PrimaryProperty { get; set; }
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.

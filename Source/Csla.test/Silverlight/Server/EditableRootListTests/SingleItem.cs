@@ -105,7 +105,7 @@ namespace Csla.Testing.Business.EditableRootListTests
     {
       MethodCalled = "DataPortal_Update";
     }
-    protected override void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       if (!IsNew)
         MethodCalled = "DataPortal_Delete";

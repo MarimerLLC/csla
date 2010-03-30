@@ -24,7 +24,7 @@ namespace Csla.Testing.Business.DataPortal
 
     }
 
-    protected override void DataPortal_Fetch(object citeria)
+    protected void DataPortal_Fetch(object citeria)
     {
 
     }
@@ -38,7 +38,7 @@ namespace Csla.Testing.Business.DataPortal
     {
 
     }
-    protected override void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
 
     }

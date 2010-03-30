@@ -44,13 +44,15 @@ namespace Csla.Test.LogicalExecutionLocation
 #endif
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<LocationBusinessBase>(CheckRule, DataProperty);
+      BusinessRules.AddRule(new CheckRule { PrimaryProperty = DataProperty });
     }
 
-    private static bool CheckRule(LocationBusinessBase item, Csla.Validation.RuleArgs e)
+    public class CheckRule : Rules.BusinessRule
     {
-      item.Rule = Csla.ApplicationContext.LogicalExecutionLocation.ToString();
-      return true;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        ((LocationBusinessBase)context.Target).Rule = Csla.ApplicationContext.LogicalExecutionLocation.ToString();
+      }
     }
 
 #if !SILVERLIGHT
@@ -67,7 +69,7 @@ namespace Csla.Test.LogicalExecutionLocation
       NestedData = nested.Data;
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       SetProperty(DataProperty, Csla.ApplicationContext.LogicalExecutionLocation.ToString());
     }

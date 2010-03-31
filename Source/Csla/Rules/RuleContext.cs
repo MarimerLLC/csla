@@ -38,6 +38,29 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Gets a new RuleContext object for a chained rule.
+    /// </summary>
+    /// <param name="rule">Chained rule that will use
+    /// this new context.</param>
+    /// <remarks>
+    /// The properties from the existing RuleContext will be
+    /// used to create the new context, with the exception
+    /// of the Rule property which is set using the supplied
+    /// IBusinessRule value.
+    /// </remarks>
+    public RuleContext GetChainedContext(IBusinessRule rule)
+    {
+      var result = new RuleContext(_completeHandler);
+      result.Rule = rule;
+      result.Target = Target;
+      result.InputPropertyValues = InputPropertyValues;
+      if (Results == null)
+        Results = new List<RuleResult>();
+      result.Results = Results;
+      return result;
+    }
+
+    /// <summary>
     /// Add a Error severity result to the Results list.
     /// </summary>
     /// <param name="description">Human-readable description of
@@ -119,6 +142,11 @@ namespace Csla.Rules
     /// </summary>
     public void Complete()
     {
+      if (Results == null)
+      {
+        Results = new List<RuleResult>();
+        Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty));
+      }
       _completeHandler(this);
     }
   }

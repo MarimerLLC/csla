@@ -215,7 +215,8 @@ namespace Csla.Rules
                   where r.AffectedProperties.Count > 0 &&  ReferenceEquals(r.AffectedProperties[0], property)
                   orderby r.Priority
                   select r;
-      var affectedProperties = RunRules(rules);
+      var affectedProperties = new List<string> { property.Name };
+      affectedProperties.AddRange(RunRules(rules));
       RunningRules = false;
       if (BusyProperties.Count == 0)
         _target.AllRulesComplete();
@@ -239,19 +240,30 @@ namespace Csla.Rules
       var affectedProperties = new List<string>();
       foreach (var rule in rules)
       {
+        bool complete = false;
         // set up context
         var context = new RuleContext((r) =>
           {
-            ProcessResult(r);
-            foreach (var item in r.Rule.AffectedProperties)
+            // update broken rules list
+            if (r.Results != null)
+              foreach (var result in r.Results)
+                _brokenRules.SetBrokenRule(result);
+            if (rule.IsAsync)
             {
               // mark each property as not busy
-              BusyProperties.Remove(item);
-              if (!BusyProperties.Contains(item))
-                _target.RuleComplete(item);
+              foreach (var item in r.Rule.AffectedProperties)
+              {
+                BusyProperties.Remove(item);
+                if (!BusyProperties.Contains(item))
+                  _target.RuleComplete(item);
+              }
+              if (!RunningRules && BusyProperties.Count == 0)
+                _target.AllRulesComplete();
             }
-            if (!RunningRules && BusyProperties.Count == 0)
-              _target.AllRulesComplete();
+            else
+            {
+              complete = true;
+            }
           });
         context.Rule = rule;
         if (!rule.IsAsync)
@@ -281,10 +293,11 @@ namespace Csla.Rules
         }
         else
         {
-          ProcessResult(context);
+          if (!complete)
+            context.Complete();
           if (context.Results != null)
           {
-            // short-circuiting (sync only)
+            // explicit short-circuiting (sync only)
             var stop = (from r in context.Results
                         where r.StopProcessing == true
                         select r).Count() > 0;
@@ -295,13 +308,6 @@ namespace Csla.Rules
       }
       // return any synchronous results
       return affectedProperties;
-    }
-
-    private void ProcessResult(RuleContext r)
-    {
-      if (r.Results != null)
-        foreach (var result in r.Results)
-          _brokenRules.SetBrokenRule(result);
     }
 
     #region DataAnnotations

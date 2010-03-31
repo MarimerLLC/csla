@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Properties;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -16,6 +17,7 @@ namespace Csla.Core
   /// from the list. Use the IsReadOnly property
   /// to unlock the list for loading/unloading data.
   /// </remarks>
+  [Serializable]
   public class ReadOnlyObservableBindingList<C> : ObservableBindingList<C>,
     Core.IReadOnlyBindingList
   {

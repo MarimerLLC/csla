@@ -217,7 +217,7 @@ namespace Csla.Test.ValidationRules
 
         context.Assert.AreEqual(false, root.IsValid, "should not be valid");
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+        context.Assert.AreEqual("Name value required", root.BrokenRulesCollection[0].Description);
 
         context.Assert.Success();
       });

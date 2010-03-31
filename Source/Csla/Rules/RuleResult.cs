@@ -61,6 +61,7 @@ namespace Csla.Rules
     /// be attached.</param>
     public RuleResult(string ruleName, Core.IPropertyInfo property)
     {
+      RuleName = ruleName;
       PrimaryProperty = property;
       Success = true;
     }
@@ -76,6 +77,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public RuleResult(string ruleName, Core.IPropertyInfo property, string description)
     {
+      RuleName = ruleName;
       PrimaryProperty = property;
       Description = description;
       Success = string.IsNullOrEmpty(description);

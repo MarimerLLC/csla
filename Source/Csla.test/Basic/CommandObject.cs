@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Serialization;
 
 namespace Csla.Test.Basic
 {
+  [Serializable]
   public class CommandObject : Csla.CommandBase<CommandObject>
   {
 

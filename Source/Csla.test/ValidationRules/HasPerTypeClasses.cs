@@ -6,130 +6,74 @@ namespace Csla.Test.ValidationRules
 {
   public class HasPerTypeRules : Csla.BusinessBase<HasPerTypeRules>
   {
-    string _test = string.Empty;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, "Test");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+
       int value = (int)ApplicationContext.GlobalContext["Shared"];
       ApplicationContext.GlobalContext["Shared"] = ++value;
     }
 
-    protected override void AddInstanceBusinessRules()
+    public void Validate()
     {
-      ValidationRules.AddInstanceRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs("Test", 5));
-    }
-
-    public HasPerTypeRules()
-    {
-      ValidationRules.CheckRules();
-    }
-
-    protected override object GetIdValue()
-    {
-      return 0;
+      BusinessRules.CheckRules();
     }
   }
 
   public class HasPerTypeRules2 : Csla.BusinessBase<HasPerTypeRules2>
   {
-    string _test = string.Empty;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, "Test");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+
       int value = (int)ApplicationContext.GlobalContext["Shared"];
       ApplicationContext.GlobalContext["Shared"] = ++value;
     }
 
-    protected override void AddInstanceBusinessRules()
+    public void Validate()
     {
-      ValidationRules.AddInstanceRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs("Test", 5));
-    }
-
-    public HasPerTypeRules2()
-    {
-      ValidationRules.CheckRules();
-    }
-
-    protected override object GetIdValue()
-    {
-      return 0;
+      BusinessRules.CheckRules();
     }
   }
 
 
   public class HasOnlyPerTypeRules : Csla.BusinessBase<HasOnlyPerTypeRules>
   {
-    string _test = string.Empty;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, "Test");
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs("Test", 5));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+
       int value = (int)ApplicationContext.GlobalContext["Shared"];
       ApplicationContext.GlobalContext["Shared"] = ++value;
     }
 
-    public HasOnlyPerTypeRules()
+    public void Validate()
     {
-      ValidationRules.CheckRules();
-    }
-
-    protected override object GetIdValue()
-    {
-      return 0;
+      BusinessRules.CheckRules();
     }
   }
 }

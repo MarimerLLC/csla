@@ -304,7 +304,7 @@ namespace Csla.Test.ValidationRules
       UnitTestContext context = GetContext();
       BrokenRulesMergeRoot root = new BrokenRulesMergeRoot();
       root.Validate();
-      Csla.Validation.BrokenRulesCollection list = root.BrokenRulesCollection;
+      Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
       context.Assert.AreEqual(2, list.Count, "Should have 2 broken rules");
       context.Assert.IsTrue(list[0].RuleName.Contains(@"rule://root."), "Rule should contain rule://root.");
 

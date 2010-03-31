@@ -84,7 +84,7 @@ namespace Csla.Test.RollBack
             Csla.ApplicationContext.GlobalContext["Root"] = "Created";
         }
 
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
@@ -111,7 +111,7 @@ namespace Csla.Test.RollBack
             Csla.ApplicationContext.GlobalContext["Root"] = "Deleted self";
         }
 
-        protected override void DataPortal_Delete(object criteria)
+        protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";

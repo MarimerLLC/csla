@@ -19,8 +19,6 @@ namespace Csla.Rules
   {
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
-    // threshold for short-circuiting to kick in
-    private int _processThroughPriority;
 
     // reference to current business object
     [NonSerialized]
@@ -32,6 +30,17 @@ namespace Csla.Rules
     [NonSerialized]
     private ObservableCollection<RuleContext> _validatingRules;
 
+    private int _processThroughPriority;
+    /// <summary>
+    /// Gets or sets the priority through which
+    /// all rules will be processed.
+    /// </summary>
+    public int ProcessThroughPriority
+    {
+      get { return _processThroughPriority; }
+      set { _processThroughPriority = value; }
+    }
+
     private BusinessRuleManager TypeRules
     {
       get
@@ -40,6 +49,19 @@ namespace Csla.Rules
           _typeRules = BusinessRuleManager.GetRulesForType(_target.GetType());
         return _typeRules;
       }
+    }
+
+    /// <summary>
+    /// Gets a list of rule:// URI values for
+    /// the rules defined in the object.
+    /// </summary>
+    /// <returns></returns>
+    public string[] GetRuleDescriptions()
+    {
+      var result = new List<string>();
+      foreach (var item in TypeRules.RuleMethods)
+        result.Add(item.RuleName);
+      return result.ToArray();
     }
 
     internal ObservableCollection<RuleContext> ValidatingRules

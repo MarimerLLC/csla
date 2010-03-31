@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Csla.Validation;
+using Csla.Rules;
 
 namespace Csla.Test.ValidationRules
 {
@@ -10,29 +10,50 @@ namespace Csla.Test.ValidationRules
     public BrokenRulesMergeRoot()
     { }
 
+    public static PropertyInfo<string> Test1Property = RegisterProperty<string>(c => c.Test1);
+    public string Test1
+    {
+      get { return GetProperty(Test1Property); }
+      set { SetProperty(Test1Property, value); }
+    }
+
+    public static PropertyInfo<string> Test2Property = RegisterProperty<string>(c => c.Test2);
+    public string Test2
+    {
+      get { return GetProperty(Test2Property); }
+      set { SetProperty(Test2Property, value); }
+    }
+
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(RuleBroken, "Test1");
-      ValidationRules.AddRule(RuleBroken, "Test2");
+      BusinessRules.AddRule(new RuleBroken(Test1Property));
+      BusinessRules.AddRule(new RuleBroken(Test2Property));
     }
 
     public void Validate()
     {
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
-    private static bool RuleBroken(object target, RuleArgs e)
+    public class RuleBroken : BusinessRule
     {
-      e.Description = "Broken: " + RuleArgs.GetPropertyName(e);
-      return false;
+      public RuleBroken(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      { }
+
+      protected override void Execute(RuleContext context)
+      {
+        context.AddErrorResult("Broken: " + PrimaryProperty.FriendlyName);
+      }
     }
 
-    public override Csla.Validation.BrokenRulesCollection BrokenRulesCollection
+    public override BrokenRulesCollection BrokenRulesCollection
     {
       get
       {
-        BrokenRulesCollection result = BrokenRulesCollection.CreateCollection();
-        result.Merge("root", base.BrokenRulesCollection);
+        var result = new BrokenRulesCollection();
+        foreach (var item in base.BrokenRulesCollection)
+          result.Add(item);
         return result;
       }
     }

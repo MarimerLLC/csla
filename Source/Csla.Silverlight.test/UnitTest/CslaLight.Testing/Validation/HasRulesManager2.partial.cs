@@ -23,7 +23,7 @@ namespace Csla.Test.ValidationRules
       Criteria crit = (Criteria)criteria;
       Name = crit._name;
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
-      this.ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
 
       completed(this, null);
     }

@@ -23,10 +23,10 @@ namespace Csla.Test.ValidationRules
     public void DataPortal_Create(object criteria, LocalProxy<HasRulesManager>.CompletedHandler completed)
     {
       Criteria crit = (Criteria)(criteria);
-      _name = crit._name;
-      //Name = crit._name;
+      using (BypassPropertyChecks)
+        Name = crit._name;
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Created");
-      this.ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
 
       completed(this, null);
     }
@@ -71,18 +71,6 @@ namespace Csla.Test.ValidationRules
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Deleted");
     }
 
-#endif
-
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
-    {
-      info.AddValue("Name", Name);
-      base.OnGetState(info, mode);
-    }
-
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
-    {
-      Name = info.GetValue<string>("Name");
-      base.OnSetState(info, mode);
-    }
+    #endif
   }
 }

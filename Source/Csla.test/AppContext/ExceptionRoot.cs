@@ -64,7 +64,7 @@ namespace Csla.Test.AppContext
     private ExceptionRoot()
     {
     }
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = criteria as Criteria;
       this._Data = crit.Data;
@@ -96,7 +96,7 @@ namespace Csla.Test.AppContext
       Csla.ApplicationContext.GlobalContext["create"] = "create";
       throw new ApplicationException("Fail update");
     }
-    protected override void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       Csla.ApplicationContext.GlobalContext["Root"] = "Deleted";
       Csla.ApplicationContext.GlobalContext["create"] = "create";

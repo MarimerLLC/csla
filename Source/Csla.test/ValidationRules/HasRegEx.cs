@@ -6,50 +6,24 @@ namespace Csla.Test.ValidationRules
 {
   public class HasRegEx : BusinessBase<HasRegEx>
   {
-    private string _ssn;
-
+    public static PropertyInfo<string> SsnProperty = RegisterProperty<string>(c => c.Ssn);
     public string Ssn
     {
-      get { CanReadProperty("Ssn", true); return _ssn; }
-      set
-      {
-        CanWriteProperty("Ssn", true);
-        if (_ssn != value)
-        {
-          _ssn = value;
-          PropertyHasChanged("Ssn");
-        }
-      }
+      get { return GetProperty(SsnProperty); }
+      set { SetProperty(SsnProperty, value); }
     }
 
-    private string _ssn2;
-
+    public static PropertyInfo<string> Ssn2Property = RegisterProperty<string>(c => c.Ssn2);
     public string Ssn2
     {
-      get { CanReadProperty("Ssn2", true); return _ssn2; }
-      set
-      {
-        CanWriteProperty("Ssn2", true);
-        if (_ssn2 != value)
-        {
-          _ssn2 = value;
-          PropertyHasChanged("Ssn2");
-        }
-      }
+      get { return GetProperty(Ssn2Property); }
+      set { SetProperty(Ssn2Property, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.RegExMatch,
-        new Csla.Validation.CommonRules.RegExRuleArgs("Ssn", @"^\d{3}-\d{2}-\d{4}$"));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.RegExMatch,
-        new Csla.Validation.CommonRules.RegExRuleArgs("Ssn2", @"^\d{3}-\d{2}-\d{4}$"));
-    }
-
-
-    protected override object GetIdValue()
-    {
-      return string.Empty;
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.RegExMatch(SsnProperty, @"^\d{3}-\d{2}-\d{4}$"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.RegExMatch(Ssn2Property, @"^\d{3}-\d{2}-\d{4}$"));
     }
   }
 }

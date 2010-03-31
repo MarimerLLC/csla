@@ -12,58 +12,35 @@ namespace Csla.Test.DataPortal
     {
         #region "Business methods"
 
-        private int _ID;
-        private string _firstName;
-        private string _lastName;
-        private string _smallColumn;
         //get the configurationmanager to work right
         public static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
 
+        public static PropertyInfo<int> IDProperty = RegisterProperty<int>(c => c.ID);
         public int ID
         {
-            get { return _ID; }
+          get { return GetProperty(IDProperty); }
+          private set { LoadProperty(IDProperty, value); }
         }
 
+        public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
         public string FirstName
         {
-            get
-            {
-                return _firstName;
-            }
-            set
-            {
-                _firstName = value;
-                PropertyHasChanged("FirstName");
-            }
+          get { return GetProperty(FirstNameProperty); }
+          set { SetProperty(FirstNameProperty, value); }
         }
 
+        public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
         public string LastName
         {
-            get { return _lastName; }
-            set
-            {
-                _lastName = value;
-                PropertyHasChanged("LastName");
-            }
+          get { return GetProperty(LastNameProperty); }
+          set { SetProperty(LastNameProperty, value); }
         }
 
+        public static PropertyInfo<string> SmallColumnProperty = RegisterProperty<string>(c => c.SmallColumn);
         public string SmallColumn
         {
-            get { return _smallColumn; }
-            set
-            {
-                _smallColumn = value;
-                PropertyHasChanged("SmallColumn");
-            }
-        }
-
-        #endregion
-
-        #region "Object ID value"
-
-        protected override object GetIdValue()
-        {
-            return _ID;
+          get { return GetProperty(SmallColumnProperty); }
+          set { SetProperty(SmallColumnProperty, value); }
         }
 
         #endregion
@@ -130,11 +107,11 @@ namespace Csla.Test.DataPortal
         {
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Created");
-            ValidationRules.CheckRules();
+            BusinessRules.CheckRules();
             Console.WriteLine("DataPortal_Create");
         }
 
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
 
@@ -146,15 +123,15 @@ namespace Csla.Test.DataPortal
             Console.WriteLine("DataPortal_Fetch");
             Csla.ApplicationContext.GlobalContext.Clear();
             Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Fetched");
-            ValidationRules.CheckRules();
+            BusinessRules.CheckRules();
         }
 
         protected override void DataPortal_Insert()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-            string firstName = this._firstName;
-            string lastName = this._lastName;
-            string smallColumn = this._smallColumn;
+            string firstName = this.FirstName;
+            string lastName = this.LastName;
+            string smallColumn = this.SmallColumn;
 
             //this command will always execute successfully
             //since it inserts a string less than 5 characters
@@ -198,7 +175,7 @@ namespace Csla.Test.DataPortal
             Csla.ApplicationContext.GlobalContext.Add("TransactionalRoot", "Deleted Self");
         }
 
-        protected override void DataPortal_Delete(object criteria)
+        protected void DataPortal_Delete(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             if (crit._id == 13)

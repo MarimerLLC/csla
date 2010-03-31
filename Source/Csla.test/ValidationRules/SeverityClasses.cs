@@ -6,113 +6,88 @@ namespace Csla.Test.ValidationRules
 {
   public class SeverityRoot : Csla.BusinessBase<SeverityRoot>
   {
-    string _test;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return 0;
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<SeverityRoot>(AlwaysError, "Test");
-      ValidationRules.AddRule<SeverityRoot>(AlwaysWarns, "Test");
-      ValidationRules.AddRule<SeverityRoot>(AlwaysInfo, "Test");
+      BusinessRules.AddRule(new AlwaysError { PrimaryProperty = TestProperty });
+      BusinessRules.AddRule(new AlwaysWarns { PrimaryProperty = TestProperty });
+      BusinessRules.AddRule(new AlwaysInfo { PrimaryProperty = TestProperty });
     }
 
-    private static bool AlwaysInfo(SeverityRoot target, Csla.Validation.RuleArgs e)
+    public void Validate()
     {
-      e.Description = "Always info";
-      e.Severity = Csla.Validation.RuleSeverity.Information;
-      return false;
+      BusinessRules.CheckRules();
     }
 
-    private static bool AlwaysWarns(SeverityRoot target, Csla.Validation.RuleArgs e)
+    public class AlwaysInfo : Rules.BusinessRule
     {
-      e.Description = "Always warns";
-      e.Severity = Csla.Validation.RuleSeverity.Warning;
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddInformationResult("Always info");
+      }
     }
 
-    private static bool AlwaysError(SeverityRoot target, Csla.Validation.RuleArgs e)
+    public class AlwaysWarns : Rules.BusinessRule
     {
-      e.Description = "Always error";
-      e.Severity = Csla.Validation.RuleSeverity.Error;
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddWarningResult("Always warns");
+      }
     }
 
-    public SeverityRoot()
+    public class AlwaysError : Rules.BusinessRule
     {
-      ValidationRules.CheckRules();
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddWarningResult("Always error");
+      }
     }
   }
 
   public class NoErrorRoot : Csla.BusinessBase<NoErrorRoot>
   {
-    string _test;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
-    protected override object GetIdValue()
+    public void Validate()
     {
-      return 0;
+      BusinessRules.CheckRules();
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<NoErrorRoot>(AlwaysWarns, "Test");
-      ValidationRules.AddRule<NoErrorRoot>(AlwaysInfo, "Test");
+      BusinessRules.AddRule(new AlwaysInfo { PrimaryProperty = TestProperty });
+      BusinessRules.AddRule(new AlwaysWarns { PrimaryProperty = TestProperty });
     }
 
-    private static bool AlwaysInfo(NoErrorRoot target, Csla.Validation.RuleArgs e)
+    public class AlwaysInfo : Rules.BusinessRule
     {
-      e.Description = "Always info";
-      e.Severity = Csla.Validation.RuleSeverity.Information;
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddInformationResult("Always info");
+      }
     }
 
-    private static bool AlwaysWarns(NoErrorRoot target, Csla.Validation.RuleArgs e)
+    public class AlwaysWarns : Rules.BusinessRule
     {
-      e.Description = "Always warns";
-      e.Severity = Csla.Validation.RuleSeverity.Warning;
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddWarningResult("Always warns");
+      }
     }
 
     public NoErrorRoot()
     {
-      ValidationRules.CheckRules();
     }
   }
 }

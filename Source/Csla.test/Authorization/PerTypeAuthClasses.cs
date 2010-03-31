@@ -10,58 +10,23 @@ namespace Csla.Test.Authorization
 #endif
   public class PerTypeAuthorization : BusinessBase<PerTypeAuthorization>
   {
-    string _test = string.Empty;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
-    string _name = string.Empty;
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get
-      {
-        CanReadProperty("Name", true);
-        return _name;
-      }
-      set
-      {
-        CanWriteProperty("Name", true);
-        if (!_name.Equals(value))
-        {
-          _name = value;
-          PropertyHasChanged("Name");
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      throw new Exception("The method or operation is not implemented.");
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
     }
 
     protected override void AddAuthorizationRules()
     {
       AuthorizationRules.AllowWrite("Test", "Admin");
-    }
-
-    protected override void AddInstanceAuthorizationRules()
-    {
-      AuthorizationRules.InstanceAllowWrite("Name", "Admin");
     }
   }
 }

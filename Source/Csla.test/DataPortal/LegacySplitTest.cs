@@ -45,7 +45,7 @@ namespace Csla.Test.DataPortalTest
             {
                 test = LegacySplit.NewObject();
                 test = test.Save();
-                test.id = 5;
+                test.Id = 5;
             }
             catch { Assert.Inconclusive(); }
             test.Save();

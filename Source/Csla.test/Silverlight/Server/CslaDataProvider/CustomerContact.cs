@@ -102,11 +102,11 @@ namespace cslalighttest.CslaDataProvider
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.IntegerMinValue, new Csla.Validation.CommonRules.IntegerMinValueRuleArgs(IdProperty, 1));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs(FirstNameProperty));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs(LastNameProperty));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs(FirstNameProperty,30));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs(LastNameProperty, 50));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(IdProperty, 1));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FirstNameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(FirstNameProperty, 30));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
     }
 
 #if !SILVERLIGHT

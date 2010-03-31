@@ -10,53 +10,17 @@ namespace Csla.Test.ValidationRules
   [Serializable()]
   public partial class HasRulesManager2 : BusinessBase<HasRulesManager2>
   {
-    private string _name = string.Empty;
-
-    protected override object GetIdValue()
-    {
-      return _name;
-    }
-
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return _name; }
-      set
-      {
-        if (this._name != value)
-        {
-          this._name = value;
-          PropertyHasChanged("Name");
-        }
-      }
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
     }
 
-    protected override void AddInstanceBusinessRules()
+    protected override void AddBusinessRules()
     {
-      ValidationRules.AddInstanceRule(NameRequired, "Name");
-      ValidationRules.AddInstanceRule(NameLength, new MaxLengthArgs("Name", 10));
-    }
-
-    private bool NameRequired(object target, Validation.RuleArgs e)
-    {
-      if (this._name.Length > 0) return true;
-      else
-      {
-        e.Description = "Name required";
-        return false;
-      }
-    }
-
-    private bool NameLength(object target, Validation.RuleArgs e)
-    {
-      if (this._name.Length <= ((MaxLengthArgs)e).MaxLength)
-      {
-        return true;
-      }
-      else
-      {
-        e.Description = "The value for " + e.PropertyName + " is too long";
-        return false;
-      }
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 10));
     }
 
     [Serializable()]

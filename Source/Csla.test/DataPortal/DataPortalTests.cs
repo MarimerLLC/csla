@@ -204,7 +204,7 @@ namespace Csla.Test.DataPortal
 
             Assert.AreEqual("Fetched", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
             Assert.AreEqual("fetched existing data", root.Data);
-            Assert.AreEqual(456, root.ID); 
+            Assert.AreEqual(456, root.Id); 
        
             //test strongly-typed DataPortal_Create method
             Csla.ApplicationContext.GlobalContext.Clear();
@@ -212,7 +212,7 @@ namespace Csla.Test.DataPortal
 
             Assert.AreEqual("Created", Csla.ApplicationContext.GlobalContext["StronglyTypedDP"]);
             Assert.AreEqual("new default data", root2.Data);
-            Assert.AreEqual(56, root2.ID);
+            Assert.AreEqual(56, root2.Id);
 
             //test strongly-typed DataPortal_Delete method
             Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567);

@@ -7,15 +7,11 @@ namespace Csla.Test.LazyLoad
   [Serializable]
   public class AChild : Csla.BusinessBase<AChild>
   {
-    private Guid _id;
+    public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
     public Guid Id
     {
-      get { return _id; }
-      set
-      {
-        _id = value;
-        PropertyHasChanged();
-      }
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
     }
 
     public int EditLevel
@@ -23,15 +19,11 @@ namespace Csla.Test.LazyLoad
       get { return base.EditLevel; }
     }
 
-    protected override object GetIdValue()
-    {
-      return _id;
-    }
-
     public AChild()
     {
       MarkAsChild();
-      _id = Guid.NewGuid();
+      using (BypassPropertyChecks)
+        Id = Guid.NewGuid();
     }
   }
 }

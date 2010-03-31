@@ -4,44 +4,22 @@ using System.Text;
 
 namespace Csla.Test.Serialization
 {
-    [Serializable()]
-    public class SerializationRoot : BusinessBase<SerializationRoot>
+  [Serializable()]
+  public class SerializationRoot : BusinessBase<SerializationRoot>
+  {
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
+    private string _data = DataProperty.DefaultValue;
+    public string Data
     {
-        string _data = "";
-
-        protected override object GetIdValue( )
-        {
-            return _data;
-        }
-
-        public string Data
-        {
-            get
-            {
-                return _data;
-            }
-
-            set
-            {
-                if(_data != value)
-                {
-                    _data = value;
-                    PropertyHasChanged( );
-                }
-            }
-        }
-
-        //public SerializationRoot()
-        //{
-        //    nonSerializableEventHandler objHandler = new nonSerializableEventHandler();
-        //    objHandler.Reg(this);
-        //}
-
-        protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-        {
- 	        base.OnDeserialized(context);
-            Csla.ApplicationContext.GlobalContext.Add("Deserialized", true);
-            Console.WriteLine("OnDeserialized");
-        }
+      get { return GetProperty(DataProperty, _data); }
+      set { SetProperty(DataProperty, ref _data, value); }
     }
+
+    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    {
+      base.OnDeserialized(context);
+      Csla.ApplicationContext.GlobalContext.Add("Deserialized", true);
+      Console.WriteLine("OnDeserialized");
+    }
+  }
 }

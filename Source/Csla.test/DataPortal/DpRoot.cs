@@ -12,44 +12,15 @@ namespace Csla.Test.DataPortal
 #if SILVERLIGHT
       public DpRoot() { }
 #endif
-    private string _data;
     private string _auth = "No value";
-
-    protected override object GetIdValue()
-    {
-      return _data;
-    }
 
     #region "Get/Set Private Variables"
 
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get
-      {
-        if (CanReadProperty("Data"))
-        {
-          return _data;
-        }
-        else
-        {
-          throw new System.Security.SecurityException("Property get not allowed");
-        }
-      }
-      set
-      {
-        if (CanWriteProperty("Data"))
-        {
-          if (_data != value)
-          {
-            _data = value;
-            PropertyHasChanged("Data");
-          }
-          else
-          {
-            throw new System.Security.SecurityException("Property set not allowed");
-          }
-        }
-      }
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     public string Auth
@@ -92,13 +63,13 @@ namespace Csla.Test.DataPortal
         public static DpRoot NewRoot()
         {
           DpRoot returnValue = new DpRoot();
-          returnValue._data = new Criteria()._data;
+          returnValue.Data = new Criteria()._data;
           return returnValue;
         }
         public static DpRoot GetRoot(string data)
         {
           DpRoot returnValue = new DpRoot();
-          returnValue._data = new Criteria()._data;
+          returnValue.Data = new Criteria()._data;
           returnValue.MarkOld();
           return returnValue;
         }
@@ -136,13 +107,15 @@ namespace Csla.Test.DataPortal
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
-      _data = crit._data;
+      using (BypassPropertyChecks)
+        Data = crit._data;
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
-      _data = crit._data;
+      using (BypassPropertyChecks)
+        Data = crit._data;
       MarkOld();
     }
 
@@ -161,7 +134,7 @@ namespace Csla.Test.DataPortal
       //we would delete here
     }
 
-    protected override void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
     }

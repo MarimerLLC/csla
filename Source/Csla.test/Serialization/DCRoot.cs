@@ -11,36 +11,17 @@ namespace Csla.Test.Serialization
   {
     [DataMember]
     int _data;
+    public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get
-      {
-        CanReadProperty(true);
-        return _data;
-      }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      set
-      {
-        CanWriteProperty(true);
-        if (!_data.Equals(value))
-        {
-          _data = value;
-          PropertyHasChanged();
-        }
-      }
+      get { return GetProperty(DataProperty, _data); }
+      set { SetProperty(DataProperty, ref _data, value); }
     }
 
     private NonCslaChild _child = new NonCslaChild();
     public NonCslaChild Child
     {
       get { return _child; }
-    }
-	
-
-    protected override object GetIdValue()
-    {
-      return _data;
     }
   }
 

@@ -7,30 +7,11 @@ namespace Csla.Test.EditableRootList
   [Serializable]
   public class ERitem : BusinessBase<ERitem>
   {
-    string _data = string.Empty;
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get
-      {
-        CanReadProperty(true);
-        return _data;
-      }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      set
-      {
-        CanWriteProperty(true);
-        if (!_data.Equals(value))
-        {
-          _data = value;
-          PropertyHasChanged();
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _data;
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     private ERitem()
@@ -38,7 +19,8 @@ namespace Csla.Test.EditableRootList
 
     private ERitem(string data)
     {
-      _data = data;
+      using (BypassPropertyChecks)
+        Data = data;
       MarkOld();
     }
 
@@ -67,7 +49,7 @@ namespace Csla.Test.EditableRootList
       ApplicationContext.GlobalContext["DP"] = "DeleteSelf";
     }
 
-    protected override void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       ApplicationContext.GlobalContext["DP"] = "Delete";
     }

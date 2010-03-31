@@ -115,7 +115,7 @@ namespace Csla.Test.DataAnnotations
 
     public string[] GetRules()
     {
-      return ValidationRules.GetRuleDescriptions();
+      return BusinessRules.GetRuleDescriptions();
     }
   }
 
@@ -134,7 +134,7 @@ namespace Csla.Test.DataAnnotations
 
     public string[] GetRules()
     {
-      return ValidationRules.GetRuleDescriptions();
+      return BusinessRules.GetRuleDescriptions();
     }
   }
 
@@ -151,7 +151,7 @@ namespace Csla.Test.DataAnnotations
 
     public string[] GetRules()
     {
-      return ValidationRules.GetRuleDescriptions();
+      return BusinessRules.GetRuleDescriptions();
     }
   }
 

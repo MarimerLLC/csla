@@ -24,8 +24,8 @@ namespace Csla.Test.ValidationRules
       var root = new RuleTestClass();
       foreach (var item in root.Rules)
       {
-        var desc = new Csla.Validation.RuleDescription(item);
-        Assert.AreEqual("MyRule", desc.MethodName, "Wrong method name");
+        var desc = new Csla.Rules.RuleUri(item);
+        Assert.AreEqual("Csla.Test.ValidationRules.MyRule", desc.RuleTypeName, "Wrong rule type name");
       }
     }
   }
@@ -42,19 +42,20 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(MyRule, NameProperty);
-      ValidationRules.AddRule<RuleTestClass>(MyRule, NameProperty);
-    }
-
-    public static bool MyRule(object target, Csla.Validation.RuleArgs e)
-    {
-      e.Description = "My rule broken";
-      return false;
+      BusinessRules.AddRule(new MyRule { PrimaryProperty = NameProperty });
     }
 
     public string[] Rules
     {
-      get { return this.ValidationRules.GetRuleDescriptions(); }
+      get { return this.BusinessRules.GetRuleDescriptions(); }
+    }
+  }
+
+  public class MyRule : Rules.BusinessRule
+  {
+    protected override void Execute(Rules.RuleContext context)
+    {
+      base.Execute(context);
     }
   }
 }

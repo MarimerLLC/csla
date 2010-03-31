@@ -81,14 +81,16 @@ namespace Csla.Testing.Business.BusyStatus
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new FiveSecondsLongRule { PrimaryProperty = RuleFieldProperty });
+      BusinessRules.AddRule(new FiveSecondsLongRule(RuleFieldProperty));
     }
 
     public class FiveSecondsLongRule : Rules.BusinessRule
     {
-      public FiveSecondsLongRule()
+      public FiveSecondsLongRule(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
       {
         IsAsync = true;
+        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
       }
 
       protected override void Execute(RuleContext context)

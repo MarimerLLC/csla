@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Csla.Validation;
+using Csla.Rules;
 using System.ComponentModel;
 using System.Threading;
 using Csla.Core;
@@ -32,78 +32,85 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      AsyncRuleArgs args = new AsyncRuleArgs(NameProperty, ResetProperty);
-      ValidationRules.AddRule(HasAsyncRule.Rule1, args);
-      ValidationRules.AddRule(HasAsyncRule.Rule2, args);
-      ValidationRules.AddRule(HasAsyncRule.Rule3, args);
-      ValidationRules.AddRule(SingletonHasAsyncRule.Instance.Rule1, args);
-      ValidationRules.AddRule(SingletonHasAsyncRule.Instance.Rule2, args);
-      ValidationRules.AddRule(SingletonHasAsyncRule.Instance.Rule3, args);
+      BusinessRules.AddRule(new Rule1(NameProperty));
+      BusinessRules.AddRule(new Rule2(NameProperty));
+      BusinessRules.AddRule(new Rule3(NameProperty));
     }
 
-    private static void Rule1(AsyncValidationRuleContext context)
+    public class Rule1 : BusinessRule
     {
-      Random r = new Random();
-      BackgroundWorker worker = new BackgroundWorker();
-      // Using closures to access the context would be easier but this is not possible
-      // in all languages. Below is an example of how to use the context without closures
-
-      worker.DoWork += (s, e) =>
+      public Rule1(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
       {
-        AsyncValidationRuleContext avrc = (AsyncValidationRuleContext)e.Argument;
-        int sleep = r.Next(0, 20);
-        System.Threading.Thread.Sleep(sleep);
-        ((ManualResetEvent)avrc.PropertyValues["Reset"]).WaitOne();
-        avrc.OutArgs.Result = (string)avrc.PropertyValues["Name"] != "error";
-        e.Result = avrc;
-      };
-      worker.RunWorkerCompleted += (s, e) =>
+        IsAsync = true;
+        InputProperties = new List<IPropertyInfo> { primaryProperty, ResetProperty };
+      }
+
+      protected override void Execute(RuleContext context)
       {
-        AsyncValidationRuleContext avrc = (AsyncValidationRuleContext)e.Result;
-        avrc.OutArgs.Description = "error detected";
-        avrc.Complete();
-      };
+        Random r = new Random();
+        BackgroundWorker worker = new BackgroundWorker();
+        // Using closures to access the context would be easier but this is not possible
+        // in all languages. Below is an example of how to use the context without closures
 
-      // simulating an asynchronous process.
-      worker.RunWorkerAsync(context);
-    }
-    private static void Rule2(AsyncValidationRuleContext context)
-    {
-      Rule1(context);
-    }
-    private static void Rule3(AsyncValidationRuleContext context)
-    {
-      Rule1(context);
-    }
-
-    public class SingletonHasAsyncRule
-    {
-      private SingletonHasAsyncRule() { }
-
-      private static SingletonHasAsyncRule _instance;
-      public static SingletonHasAsyncRule Instance
-      {
-        get
+        worker.DoWork += (s, e) =>
         {
-          if (_instance == null)
-            _instance = new SingletonHasAsyncRule();
-          return _instance;
-        }
+          var avrc = (RuleContext)e.Argument;
+          int sleep = r.Next(0, 20);
+          System.Threading.Thread.Sleep(sleep);
+          ((ManualResetEvent)avrc.InputPropertyValues[avrc.Rule.PrimaryProperty]).WaitOne();
+          var name = avrc.InputPropertyValues[NameProperty];
+          if (name != null || name.ToString() == "error")
+            avrc.AddErrorResult("error detected");
+          e.Result = avrc;
+        };
+        worker.RunWorkerCompleted += (s, e) =>
+        {
+          var avrc = (RuleContext)e.Result;
+          avrc.Complete();
+        };
+
+        // simulating an asynchronous process.
+        worker.RunWorkerAsync(context);
+      }
+    }
+
+    public class Rule2 : BusinessRule
+    {
+      private Rule1 _innerRule;
+
+      public Rule2(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        IsAsync = true;
+        _innerRule = new Rule1(primaryProperty);
+        InputProperties = _innerRule.InputProperties;
       }
 
-      public void Rule1(AsyncValidationRuleContext context)
+      protected override void Execute(RuleContext context)
       {
-        HasAsyncRule.Rule1(context);
+        if (context.Target != null)
+          throw new ArgumentOutOfRangeException("context.Target must be null");
+
+        ((IBusinessRule)_innerRule).Execute(context);
+      }
+    }
+
+    public class Rule3 : BusinessRule
+    {
+      private Rule1 _innerRule;
+
+      public Rule3(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        IsAsync = true;
+        _innerRule = new Rule1(primaryProperty);
+        InputProperties = _innerRule.InputProperties;
       }
 
-      public void Rule2(AsyncValidationRuleContext context)
+      protected override void Execute(RuleContext context)
       {
-        Rule1(context);
-      }
-
-      public void Rule3(AsyncValidationRuleContext context)
-      {
-        Rule1(context);
+        ((IBusinessRule)_innerRule).Execute(context);
       }
     }
   }

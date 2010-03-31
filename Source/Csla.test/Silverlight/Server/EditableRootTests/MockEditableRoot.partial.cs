@@ -13,7 +13,7 @@ namespace Csla.Testing.Business.EditableRootTests
     protected override void DataPortal_Create()
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
 
       LoadProperty<string>(DataPortalMethodProperty, "create");
     }

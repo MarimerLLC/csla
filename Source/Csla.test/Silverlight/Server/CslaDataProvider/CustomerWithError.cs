@@ -82,7 +82,7 @@ namespace cslalighttest.CslaDataProvider
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(Csla.Rules.CommonRules.IntegerMinValue, new Csla.Validation.CommonRules.IntegerMinValueRuleArgs(IdProperty, 1));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(IdProperty, 1));
     }
 
 

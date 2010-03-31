@@ -83,7 +83,7 @@ namespace Csla.Test.Nullable
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Created");
         }
 
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _name = crit._name;
@@ -115,7 +115,7 @@ namespace Csla.Test.Nullable
             }
         }
 
-        protected override void DataPortal_Delete(object criteria)
+        protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Deleted");

@@ -176,7 +176,7 @@ namespace Csla.Test.IO
       Csla.ApplicationContext.GlobalContext["Fetch"] = "No criteria";
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       if (criteria == null)
         Csla.ApplicationContext.GlobalContext["Fetch"] = "Null criteria";

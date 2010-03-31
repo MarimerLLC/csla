@@ -12,39 +12,24 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasBadSharedRule : BusinessBase<HasBadSharedRule>
   {
-    int _data;
-    public int Data
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
+    public string Data
     {
-      get
-      {
-        CanReadProperty("Data", true);
-        return _data;
-      }
-      set
-      {
-        CanWriteProperty("Data", true);
-        if (!_data.Equals(value))
-        {
-          _data = value;
-          PropertyHasChanged("Data");
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _data;
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(BadRule, "Data");
+      BusinessRules.AddRule(new BadRule { PrimaryProperty = DataProperty });
     }
 
-    private bool BadRule(object target, Csla.Validation.RuleArgs e)
+    public class BadRule : Rules.BusinessRule
     {
-      e.Description = "Bad rule";
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddErrorResult("Bad rule");
+      }
     }
   }
 }

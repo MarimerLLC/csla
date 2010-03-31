@@ -16,16 +16,17 @@ namespace Csla.Test.ValidationRules
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
-      _name = crit._name;
-      //Name = crit._name;
+      using (BypassPropertyChecks)
+        Name = crit._name;
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Created");
-      this.ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
-      _name = crit._name;
+      using (BypassPropertyChecks)
+        Name = crit._name;
       MarkOld();
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager", "Fetched");
     }

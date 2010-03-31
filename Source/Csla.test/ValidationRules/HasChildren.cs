@@ -31,19 +31,18 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<HasChildren>(OneItem, ChildListProperty);
+      BusinessRules.AddRule(new OneItem<HasChildren> { PrimaryProperty = ChildListProperty });
     }
 
-    private static bool OneItem<T>(T target, Csla.Validation.RuleArgs e)
+    public class OneItem<T> : Rules.BusinessRule
       where T : HasChildren
     {
-      if (target.ChildList.Count < 1)
+      protected override void Execute(Rules.RuleContext context)
       {
-        e.Description = "At least one item required";
-        return false;
+        var target = (T)context.Target;
+        if (target.ChildList.Count < 1)
+          context.AddErrorResult("At least one item required");
       }
-      else
-        return true;
     }
 
     protected override void Initialize()
@@ -77,7 +76,7 @@ namespace Csla.Test.ValidationRules
 
     void HasChildren_ChildChanged(object sender, ChildChangedEventArgs e)
     {
-      ValidationRules.CheckRules(ChildListProperty);
+      BusinessRules.CheckRules(ChildListProperty);
     }
 
     public static void NewObject(EventHandler<DataPortalResult<HasChildren>> completed)

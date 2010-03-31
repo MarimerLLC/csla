@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Properties;
+using System.Text.RegularExpressions;
 
 namespace Csla.Rules.CommonRules
 {
@@ -104,6 +106,188 @@ namespace Csla.Rules.CommonRules
       if (value != null && value.ToString().Length > Max)
         context.AddErrorResult(
           string.Format("{0} value too long", PrimaryProperty.FriendlyName));
+    }
+  }
+
+  /// <summary>
+  /// Business rule for a minimum value.
+  /// </summary>
+  public class MinValue<T> : BusinessRule
+    where T : IComparable
+  {
+    /// <summary>
+    /// Gets the min value.
+    /// </summary>
+    public T Min { get; private set; }
+    /// <summary>
+    /// Gets or sets the format string used
+    /// to format the Min value.
+    /// </summary>
+    public string Format { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="min">Min length value.</param>
+    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min) 
+      : base(primaryProperty) 
+    {
+      Min = min;
+      this.RuleUri.AddQueryParameter("min", min.ToString());
+      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+    }
+
+    /// <summary>
+    /// Rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
+    protected override void Execute(RuleContext context)
+    {
+      T value = (T)context.InputPropertyValues[PrimaryProperty];
+      int result = value.CompareTo(Min);
+      if (result <= -1)
+      {
+        string outValue;
+        if (string.IsNullOrEmpty(Format))
+          outValue = Min.ToString();
+        else
+          outValue = string.Format(string.Format("{{0:{0}}}", Format), Min);
+        context.AddErrorResult(string.Format(Resources.MinValueRule, PrimaryProperty.FriendlyName, outValue));
+      }
+    }
+  }
+
+  /// <summary>
+  /// Business rule for a maximum value.
+  /// </summary>
+  public class MaxValue<T> : BusinessRule
+    where T : IComparable
+  {
+    /// <summary>
+    /// Gets the max value.
+    /// </summary>
+    public T Max { get; private set; }
+    /// <summary>
+    /// Gets or sets the format string used
+    /// to format the Max value.
+    /// </summary>
+    public string Format { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="max">Max length value.</param>
+    public MaxValue(Csla.Core.IPropertyInfo primaryProperty, T max)
+      : base(primaryProperty)
+    {
+      Max = max;
+      this.RuleUri.AddQueryParameter("max", max.ToString());
+      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+    }
+
+    /// <summary>
+    /// Rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
+    protected override void Execute(RuleContext context)
+    {
+      T value = (T)context.InputPropertyValues[PrimaryProperty];
+      int result = value.CompareTo(Max);
+      if (result >= 1)
+      {
+        string outValue;
+        if (string.IsNullOrEmpty(Format))
+          outValue = Max.ToString();
+        else
+          outValue = string.Format(string.Format("{{0:{0}}}", Format), Max);
+        context.AddErrorResult(string.Format(Resources.MaxValueRule, PrimaryProperty.FriendlyName, outValue));
+      }
+    }
+  }
+
+  /// <summary>
+  /// Business rule that evaluates a regular expression.
+  /// </summary>
+  public class RegExMatch : BusinessRule
+  {
+    #region NullResultOptions
+
+    /// <summary>
+    /// List of options for the NullResult
+    /// property.
+    /// </summary>
+    public enum NullResultOptions
+    {
+      /// <summary>
+      /// Indicates that a null value
+      /// should always result in the 
+      /// rule returning false.
+      /// </summary>
+      ReturnFalse,
+      /// <summary>
+      /// Indicates that a null value
+      /// should always result in the 
+      /// rule returning true.
+      /// </summary>
+      ReturnTrue,
+      /// <summary>
+      /// Indicates that a null value
+      /// should be converted to an
+      /// empty string before the
+      /// regular expression is
+      /// evaluated.
+      /// </summary>
+      ConvertToEmptyString
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Gets the regular expression
+    /// to be evaluated.
+    /// </summary>
+    public string Expression { get; private set; }
+
+    /// <summary>
+    /// Gets or sets a value that controls how
+    /// null input values are handled.
+    /// </summary>
+    public NullResultOptions NullOption { get; set; }
+
+    public RegExMatch(Csla.Core.IPropertyInfo primaryProperty, string expression)
+      : base(primaryProperty)
+    {
+      Expression = expression;
+      RuleUri.AddQueryParameter("e", expression);
+      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+    }
+
+    protected override void Execute(RuleContext context)
+    {
+      var value = context.InputPropertyValues[PrimaryProperty];
+      bool ruleSatisfied = false;
+      Regex expression = new Regex(Expression);
+
+      if (value == null && NullOption == NullResultOptions.ConvertToEmptyString)
+        value = string.Empty;
+
+      if (value == null)
+      {
+        // if the value is null at this point
+        // then return the pre-defined result value
+        ruleSatisfied = (NullOption == NullResultOptions.ReturnTrue);
+      }
+      else
+      {
+        // the value is not null, so run the 
+        // regular expression
+        ruleSatisfied = expression.IsMatch(value.ToString());
+      }
+
+      if (!ruleSatisfied)
+        context.AddErrorResult(string.Format(Resources.RegExMatchRule, PrimaryProperty.FriendlyName));
     }
   }
 }

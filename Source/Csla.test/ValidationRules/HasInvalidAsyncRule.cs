@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Csla.Validation;
+using Csla.Rules;
 using System.ComponentModel;
 using System.Threading;
 
@@ -25,7 +25,7 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(InvalidAsyncValidationRule, NameProperty);
+      BusinessRules.AddRule(new InvalidAsyncValidationRule(NameProperty));
       base.AddBusinessRules();
     }
 
@@ -35,9 +35,19 @@ namespace Csla.Test.ValidationRules
       get { return _reset; }
     }
 
-    private void InvalidAsyncValidationRule(AsyncValidationRuleContext context)
+    public class InvalidAsyncValidationRule : BusinessRule
     {
-      throw new NotImplementedException();
+      public InvalidAsyncValidationRule(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        IsAsync = true;
+        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      }
+
+      protected override void Execute(RuleContext context)
+      {
+        throw new NotImplementedException();
+      }
     }
   }
 }

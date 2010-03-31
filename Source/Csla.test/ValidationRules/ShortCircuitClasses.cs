@@ -9,64 +9,49 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class ShortCircuit : BusinessBase<ShortCircuit>
   {
-    string _test = string.Empty;
+    public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get
-      {
-        CanReadProperty("Test", true);
-        return _test;
-      }
-      set
-      {
-        CanWriteProperty("Test", true);
-        if (!_test.Equals(value))
-        {
-          _test = value;
-          PropertyHasChanged("Test");
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return 0;
+      get { return GetProperty(TestProperty); }
+      set { SetProperty(TestProperty, value); }
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, "Test");
-      ValidationRules.AddRule<ShortCircuit>(AlwaysWarns, "Test");
-      ValidationRules.AddRule<ShortCircuit>(AlwaysFails, "Test", 10);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new AlwaysWarns { PrimaryProperty = TestProperty });
+      BusinessRules.AddRule(new AlwaysFails { PrimaryProperty = TestProperty, Priority = 10 });
     }
 
     public int Threshold
     {
-      get { return ValidationRules.ProcessThroughPriority; }
-      set { ValidationRules.ProcessThroughPriority = value; }
+      get { return BusinessRules.ProcessThroughPriority; }
+      set { BusinessRules.ProcessThroughPriority = value; }
     }
 
     public void CheckRules()
     {
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
     }
 
-    private static bool AlwaysWarns(ShortCircuit target, Csla.Validation.RuleArgs e)
+    public class AlwaysWarns : Rules.BusinessRule
     {
-      e.Description = "Always warns";
-      e.Severity = Csla.Validation.RuleSeverity.Warning;
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddWarningResult("Always warns");
+      }
     }
 
-    private static bool AlwaysFails(ShortCircuit target, Csla.Validation.RuleArgs e)
+    public class AlwaysFails : Rules.BusinessRule
     {
-      e.Description = "Always fails";
-      return false;
+      protected override void Execute(Rules.RuleContext context)
+      {
+        context.AddWarningResult("Always error");
+      }
     }
 
     public ShortCircuit()
     {
-      ValidationRules.CheckRules();
     }
   }
 }

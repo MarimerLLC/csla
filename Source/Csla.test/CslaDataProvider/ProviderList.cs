@@ -40,26 +40,12 @@ namespace Csla.Test.CslaDataProvider
   [Serializable]
   public class ProviderChild : BusinessBase<ProviderChild>
   {
-    int _data;
+    public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
-      get
-      {
-        CanReadProperty(true);
-        return _data;
-      }
-
-      set
-      {
-        CanWriteProperty(true);
-        if (!_data.Equals(value))
-        {
-          _data = value;
-          PropertyHasChanged();
-        }
-      }
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
-
 
     public ProviderChild()
     {

@@ -26,35 +26,16 @@ namespace Csla.Test.Basic
   [Serializable]
   public class RootListChild : BusinessBase<RootListChild>
   {
-    int _data;
+    public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get
-      {
-        CanReadProperty(true);
-        return _data;
-      }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      set
-      {
-        CanWriteProperty(true);
-        if (!_data.Equals(value))
-        {
-          _data = value;
-          PropertyHasChanged();
-        }
-      }
-    }
-
-    protected override object GetIdValue()
-    {
-      return _data;
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
     }
 
     public string[] GetRuleDescriptions()
     {
-      string[] result = ValidationRules.GetRuleDescriptions();
+      string[] result = BusinessRules.GetRuleDescriptions();
       if (result == null)
         result = new string[] { };
       return result;

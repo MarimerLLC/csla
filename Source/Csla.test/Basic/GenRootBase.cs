@@ -69,7 +69,7 @@ namespace Csla.Test.Basic
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Created");
         }
 
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = (Criteria)(criteria);
             _data = crit._data;
@@ -101,7 +101,7 @@ namespace Csla.Test.Basic
             }
         }
 
-        protected override void DataPortal_Delete(object Criteria)
+        protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here
             Csla.ApplicationContext.GlobalContext.Add("GenRoot", "Deleted");

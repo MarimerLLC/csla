@@ -102,7 +102,7 @@ namespace Csla.Test.AppContext
         /// Handles DataPortal fetch calls
         /// </summary>
         /// <param name="criteria"></param>
-        protected override void DataPortal_Fetch(object criteria)
+        protected void DataPortal_Fetch(object criteria)
         {
             Criteria crit = criteria as Criteria;
             this._Data = crit.Data;
@@ -135,7 +135,7 @@ namespace Csla.Test.AppContext
         /// 
         /// </summary>
         /// <param name="criteria"></param>
-        protected override void DataPortal_Delete(object criteria)
+        protected void DataPortal_Delete(object criteria)
         {
             Csla.ApplicationContext.GlobalContext.Add("Root", "Deleted");
         }

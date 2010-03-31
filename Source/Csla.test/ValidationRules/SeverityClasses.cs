@@ -45,7 +45,7 @@ namespace Csla.Test.ValidationRules
     {
       protected override void Execute(Rules.RuleContext context)
       {
-        context.AddWarningResult("Always error");
+        context.AddErrorResult("Always error");
       }
     }
   }
@@ -84,10 +84,6 @@ namespace Csla.Test.ValidationRules
       {
         context.AddWarningResult("Always warns");
       }
-    }
-
-    public NoErrorRoot()
-    {
     }
   }
 }

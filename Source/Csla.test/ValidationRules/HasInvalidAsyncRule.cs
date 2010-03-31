@@ -13,10 +13,12 @@ namespace Csla.Test.ValidationRules
 #endif
   public partial class HasInvalidAsyncRule : BusinessBase<HasInvalidAsyncRule>
   {
-    private static PropertyInfo<string> NameProperty = RegisterProperty(
-      typeof(HasAsyncRule),
-      new PropertyInfo<string>("Name"));
+    public HasInvalidAsyncRule()
+    {
+      Reset = new ManualResetEvent(false);
+    }
 
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -29,10 +31,21 @@ namespace Csla.Test.ValidationRules
       base.AddBusinessRules();
     }
 
-    private ManualResetEvent _reset = new ManualResetEvent(false);
-    public EventWaitHandle Reset
+    public static PropertyInfo<ManualResetEvent> ResetProperty = RegisterProperty<ManualResetEvent>(c => c.Reset);
+    public ManualResetEvent Reset
     {
-      get { return _reset; }
+      get { return GetProperty(ResetProperty); }
+      set { SetProperty(ResetProperty, value); }
+    }
+
+    public Rules.BrokenRulesCollection GetBrokenRules()
+    {
+      return BusinessRules.GetBrokenRules();
+    }
+
+    public void Validate()
+    {
+      BusinessRules.CheckRules();
     }
 
     public class InvalidAsyncValidationRule : BusinessRule
@@ -41,12 +54,24 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+        InputProperties = new List<Core.IPropertyInfo> { primaryProperty, ResetProperty };
       }
 
       protected override void Execute(RuleContext context)
       {
-        throw new NotImplementedException();
+        var bw = new System.ComponentModel.BackgroundWorker();
+        bw.DoWork += (o, e) =>
+          {
+            throw new InvalidOperationException();
+          };
+        bw.RunWorkerCompleted += (o, e) =>
+          {
+            if (e.Error != null)
+              context.AddErrorResult(e.Error.Message);
+            context.Complete();
+            ((ManualResetEvent)context.InputPropertyValues[ResetProperty]).Set();
+          };
+        bw.RunWorkerAsync();
       }
     }
   }

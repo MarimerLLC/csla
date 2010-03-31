@@ -30,90 +30,46 @@ namespace Csla.Test.ValidationRules
       UnitTestContext context = GetContext();
 
       HasAsyncRule har = new HasAsyncRule();
+      context.Assert.IsTrue(har.IsValid, "IsValid 1");
+
       har.ValidationComplete += (o, e) =>
       {
-        context.Assert.IsTrue(har.IsValid);
-        context.Assert.IsTrue(har.IsSavable);
+        context.Assert.IsTrue(har.IsValid, "IsValid 2");
         context.Assert.Success();
       };
-
       har.Name = "success";
-      context.Assert.IsTrue(har.IsValid);
-      context.Assert.IsFalse(har.IsSavable);
-
-      har.Reset.Set();
       context.Complete();
     }
+
     [TestMethod]
     public void TestAsyncRuleError()
     {
       UnitTestContext context = GetContext();
 
       HasAsyncRule har = new HasAsyncRule();
+      context.Assert.IsTrue(har.IsValid, "IsValid 1");
+
       har.ValidationComplete += (o, e) =>
       {
-        context.Assert.IsFalse(har.IsValid);
-        context.Assert.IsFalse(har.IsSavable);
-        context.Assert.AreEqual(6, har.BrokenRulesCollection.Count);
+        context.Assert.IsFalse(har.IsValid, "IsValid 2");
+        context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
         context.Assert.Success();
       };
-
       har.Name = "error";
-      context.Assert.IsTrue(har.IsValid);
-      context.Assert.IsFalse(har.IsSavable);
-
-      har.Reset.Set();
       context.Complete();
     }
 
     [TestMethod]
-    public void VerifyIsValidAndIsSavableChangedWhenAsyncRuleCompletes()
-    {
-      UnitTestContext context = GetContext();
-
-      bool isValidChanged = false;
-      bool isSavableChanged = false;
-
-      HasAsyncRule har = new HasAsyncRule();
-      har.ValidationComplete += (o, e) =>
-      {
-        context.Assert.IsTrue(isValidChanged);
-        context.Assert.IsTrue(isSavableChanged);
-        context.Assert.Success();
-      };
-
-      har.PropertyChanged += (o, e) =>
-      {
-        if (har.IsValid)
-          isValidChanged = har.IsValid;
-        
-        if (har.IsSavable)
-          isSavableChanged = har.IsSavable;
-      };
-      har.Name = "success";
-
-      har.Reset.Set();
-      context.Complete();
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void InvalidAsyncRule()
     {
       UnitTestContext context = GetContext();
-
-      context.Assert.Try(() => 
-      {
-        try
-        {
-          new HasInvalidAsyncRule();
-        }
-        catch (TypeInitializationException ex)
-        {
-          throw ex.InnerException;
-        }
-      });
-      context.Assert.Fail();
+      var root = new HasInvalidAsyncRule();
+      root.Validate();
+      root.Reset.WaitOne();
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.AreEqual(1, root.GetBrokenRules().Count);
+      context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
+      context.Assert.Success();
       context.Complete();
     }
 
@@ -122,7 +78,7 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
 
-      int iterations = 100;
+      int iterations = 20;
       int completed = 0;
       for (int x = 0; x < iterations; x++)
       {
@@ -130,7 +86,8 @@ namespace Csla.Test.ValidationRules
         har.ValidationComplete += (o, e) =>
         {
           context.Assert.AreEqual("error", har.Name);
-          context.Assert.AreEqual(6, har.BrokenRulesCollection.Count);
+          context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
+          System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
           completed++;
           if (completed == iterations)
             context.Assert.Success();
@@ -140,7 +97,6 @@ namespace Csla.Test.ValidationRules
         // each object. This is essentially the only way to communicate back
         // with the object except byref properties.
         har.Name = "error";
-        har.Reset.Set();
       }
 
       context.Complete();

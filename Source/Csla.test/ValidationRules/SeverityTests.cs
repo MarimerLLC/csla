@@ -43,6 +43,7 @@ namespace Csla.Test.ValidationRules
     public void NoError()
     {
       NoErrorRoot root = new NoErrorRoot();
+      root.Validate();
       Assert.AreEqual(2, root.BrokenRulesCollection.Count, "2 rules should be broken (total)");
 
       Assert.IsTrue(root.IsValid, "Object should be valid");

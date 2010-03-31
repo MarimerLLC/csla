@@ -25,7 +25,7 @@ namespace Csla.Test.ValidationRules
       foreach (var item in root.Rules)
       {
         var desc = new Csla.Rules.RuleUri(item);
-        Assert.AreEqual("Csla.Test.ValidationRules.MyRule", desc.RuleTypeName, "Wrong rule type name");
+        Assert.AreEqual("csla.test.validationrules.myrule", desc.RuleTypeName, "Wrong rule type name");
       }
     }
   }

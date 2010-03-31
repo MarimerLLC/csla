@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Csla.Rules;
+using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
+  [Serializable]
   public class BrokenRulesMergeRoot : BusinessBase<BrokenRulesMergeRoot>
   {
-    public BrokenRulesMergeRoot()
-    { }
-
     public static PropertyInfo<string> Test1Property = RegisterProperty<string>(c => c.Test1);
     public string Test1
     {
@@ -52,8 +51,7 @@ namespace Csla.Test.ValidationRules
       get
       {
         var result = new BrokenRulesCollection();
-        foreach (var item in base.BrokenRulesCollection)
-          result.Add(item);
+        result.AddRange(base.BrokenRulesCollection);
         return result;
       }
     }

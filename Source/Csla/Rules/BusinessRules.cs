@@ -17,6 +17,8 @@ namespace Csla.Rules
     , IUndoableObject
 #endif
   {
+    private object SyncRoot = new object();
+
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
 
@@ -90,7 +92,7 @@ namespace Csla.Rules
     /// </summary>
     public BusinessRules()
     {
-      _brokenRules = new BrokenRulesCollection();
+      _brokenRules = new BrokenRulesCollection(true);
     }
 
     /// <summary>
@@ -119,7 +121,7 @@ namespace Csla.Rules
     /// </summary>
     public bool IsValid
     {
-      get { return _brokenRules.Count == 0; }
+      get { return _brokenRules.ErrorCount == 0; }
     }
 
     /// <summary>
@@ -172,11 +174,14 @@ namespace Csla.Rules
     public List<string> CheckRules()
     {
       RunningRules = true;
-      var affectedProperties = RunRules(TypeRules.RuleMethods);
+      var affectedProperties = CheckObjectRules();
+      var properties = ((IManageProperties)Target).GetManagedProperties();
+      foreach (var property in properties)
+        affectedProperties.AddRange(CheckRules(property));
       RunningRules = false;
       if (BusyProperties.Count == 0)
         _target.AllRulesComplete();
-      return affectedProperties;
+      return affectedProperties.Distinct().ToList();
     }
 
     /// <summary>
@@ -191,12 +196,16 @@ namespace Csla.Rules
     public List<string> CheckObjectRules()
     {
       RunningRules = true;
-      var rules = TypeRules.RuleMethods.Where(c => c.PrimaryProperty == null);
+      var rules = from r in TypeRules.RuleMethods
+                  where r.PrimaryProperty == null
+                  orderby r.Priority
+                  select r;
+      _brokenRules.ClearRules(null);
       var affectedProperties = RunRules(rules);
       RunningRules = false;
       if (BusyProperties.Count == 0)
         _target.AllRulesComplete();
-      return affectedProperties;
+      return affectedProperties.Distinct().ToList();
     }
 
     /// <summary>
@@ -212,15 +221,16 @@ namespace Csla.Rules
     {
       RunningRules = true;
       var rules = from r in TypeRules.RuleMethods
-                  where r.AffectedProperties.Count > 0 &&  ReferenceEquals(r.AffectedProperties[0], property)
+                  where ReferenceEquals(r.PrimaryProperty, property)
                   orderby r.Priority
                   select r;
-      var affectedProperties = new List<string> { property.Name };
+      var affectedProperties = new List<string>();
+      _brokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
       RunningRules = false;
       if (BusyProperties.Count == 0)
         _target.AllRulesComplete();
-      return affectedProperties;
+      return affectedProperties.Distinct().ToList();
     }
 
     [NonSerialized]
@@ -238,8 +248,12 @@ namespace Csla.Rules
     private List<string> RunRules(IEnumerable<IBusinessRule> rules)
     {
       var affectedProperties = new List<string>();
+      bool anyRuleBroken = false;
       foreach (var rule in rules)
       {
+        // implicit short-circuiting
+        if (anyRuleBroken && rule.Priority > ProcessThroughPriority)
+          break;
         bool complete = false;
         // set up context
         var context = new RuleContext((r) =>
@@ -247,18 +261,25 @@ namespace Csla.Rules
             // update broken rules list
             if (r.Results != null)
               foreach (var result in r.Results)
+              {
                 _brokenRules.SetBrokenRule(result);
+                if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
+                  anyRuleBroken = true;
+              }
             if (rule.IsAsync)
             {
-              // mark each property as not busy
-              foreach (var item in r.Rule.AffectedProperties)
+              lock (SyncRoot)
               {
-                BusyProperties.Remove(item);
-                if (!BusyProperties.Contains(item))
-                  _target.RuleComplete(item);
+                // mark each property as not busy
+                foreach (var item in r.Rule.AffectedProperties)
+                {
+                  BusyProperties.Remove(item);
+                  if (!BusyProperties.Contains(item))
+                    _target.RuleComplete(item);
+                }
+                if (!RunningRules && BusyProperties.Count == 0)
+                  _target.AllRulesComplete();
               }
-              if (!RunningRules && BusyProperties.Count == 0)
-                _target.AllRulesComplete();
             }
             else
             {
@@ -279,29 +300,43 @@ namespace Csla.Rules
         }
 
         // execute (or start executing) rule
-        rule.Execute(context);
-
-        if (rule.IsAsync)
+        try
         {
-          // mark each property as busy
-          foreach (var item in rule.AffectedProperties)
+          rule.Execute(context);
+          if (rule.IsAsync)
           {
-            if (!BusyProperties.Contains(item))
-              _target.RuleStart(item);
-            BusyProperties.Add(rule.PrimaryProperty);
+            // mark each property as busy
+            foreach (var item in rule.AffectedProperties)
+            {
+              lock (SyncRoot)
+              {
+                if (!BusyProperties.Contains(item))
+                  _target.RuleStart(item);
+                BusyProperties.Add(rule.PrimaryProperty);
+              }
+            }
           }
         }
-        else
+        catch (Exception ex)
         {
+          context.AddErrorResult(ex.Message);
+          if (rule.IsAsync)
+            context.Complete();
+        }
+
+        if (!rule.IsAsync)
+        {
+          // process results
           if (!complete)
             context.Complete();
+          foreach (var item in rule.AffectedProperties)
+            affectedProperties.Add(item.Name);
           if (context.Results != null)
           {
-            // explicit short-circuiting (sync only)
-            var stop = (from r in context.Results
+            // explicit short-circuiting
+            if ((from r in context.Results
                         where r.StopProcessing == true
-                        select r).Count() > 0;
-            if (stop)
+                        select r).Count() > 0)
               break;
           }
         }
@@ -347,7 +382,6 @@ namespace Csla.Rules
 #if SILVERLIGHT
     #region IUndoableObject Members
 
-    private object SyncRoot = new object();
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
 
     int IUndoableObject.EditLevel

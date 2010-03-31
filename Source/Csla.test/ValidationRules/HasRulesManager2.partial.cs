@@ -10,7 +10,6 @@ namespace Csla.Test.ValidationRules
     private HasRulesManager2()
     {
       //prevent direct creation
-      AddBusinessRules();
     }
 
     private void DataPortal_Create(object criteria)

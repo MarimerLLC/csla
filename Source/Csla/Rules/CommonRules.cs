@@ -39,7 +39,15 @@ namespace Csla.Rules.CommonRules
     {
       object value = context.InputPropertyValues[PrimaryProperty];
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
-      var result = this.Attribute.GetValidationResult(value, ctx);
+      System.ComponentModel.DataAnnotations.ValidationResult result = null;
+      try
+      {
+        result = this.Attribute.GetValidationResult(value, ctx);
+      }
+      catch (Exception ex)
+      {
+        context.AddErrorResult(ex.Message);
+      }
       if (result != null)
         context.AddErrorResult(result.ErrorMessage);
     }
@@ -69,7 +77,7 @@ namespace Csla.Rules.CommonRules
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
         context.AddErrorResult(
-          string.Format("{0} value required", PrimaryProperty.FriendlyName));
+          string.Format(Resources.StringRequiredRule, PrimaryProperty.FriendlyName));
     }
   }
 
@@ -105,7 +113,43 @@ namespace Csla.Rules.CommonRules
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length > Max)
         context.AddErrorResult(
-          string.Format("{0} value too long", PrimaryProperty.FriendlyName));
+          string.Format(Resources.StringMaxLengthRule, PrimaryProperty.FriendlyName, Max));
+    }
+  }
+
+  /// <summary>
+  /// Business rule for a minimum length string.
+  /// </summary>
+  public class MinLength : BusinessRule
+  {
+    /// <summary>
+    /// Gets the min length value.
+    /// </summary>
+    public int Min { get; private set; }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="min">Min length value.</param>
+    public MinLength(Csla.Core.IPropertyInfo primaryProperty, int min)
+      : base(primaryProperty)
+    {
+      Min = min;
+      this.RuleUri.AddQueryParameter("min", min.ToString());
+      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+    }
+
+    /// <summary>
+    /// Rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
+    protected override void Execute(RuleContext context)
+    {
+      var value = context.InputPropertyValues[PrimaryProperty];
+      if (value != null && value.ToString().Length > Min)
+        context.AddErrorResult(
+          string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min));
     }
   }
 

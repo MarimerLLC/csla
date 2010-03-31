@@ -19,19 +19,42 @@ namespace Csla.Rules
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyObservableBindingList<BrokenRule>
   {
+    /// <summary>
+    /// Creates a read-write instance
+    /// of the collection.
+    /// </summary>
+    public BrokenRulesCollection()
+    {
+      IsReadOnly = false;
+    }
+
+    internal BrokenRulesCollection(bool readOnly)
+    { }
+
+    internal void ClearRules(Csla.Core.IPropertyInfo property)
+    {
+      this.IsReadOnly = false;
+      List<BrokenRule> brokenRules;
+      if (property == null)
+        brokenRules = this.Where(c => c.Property == null).ToList();
+      else
+        brokenRules = this.Where(c => c.Property == property.Name).ToList();
+      foreach (var item in brokenRules)
+        Remove(item);
+      this.IsReadOnly = true;
+    }
+
     internal void SetBrokenRule(RuleResult result)
     {
       this.IsReadOnly = false;
-      if (result.Success)
-      {
-        var item = this.Where(c => c.RuleName == result.RuleName && c.Property == result.PrimaryProperty.Name).FirstOrDefault();
-        if (item != null)
-          Remove(item);
-      }
-      else
-      {
-        Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
-      }
+      //var old = this.Where(c => c.RuleName == result.RuleName).ToList();
+      //foreach (var item in old)
+      //  Remove(item);
+      if (!result.Success)
+        if (result.PrimaryProperty == null)
+          Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity });
+        else
+          Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
       this.IsReadOnly = true;
     }
 
@@ -119,7 +142,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
     {
-      return this.Where(c => ReferenceEquals(c.Property, property) && c.Severity == severity).FirstOrDefault();
+      return this.Where(c => c.Property == property && c.Severity == severity).FirstOrDefault();
     }
 
     /// <summary>
@@ -220,6 +243,16 @@ namespace Csla.Rules
     public string[] ToArray(RuleSeverity severity)
     {
       return this.Where(c => c.Severity == severity).Select(c => c.Description).ToArray();
+    }
+
+    /// <summary>
+    /// Merges a list of items into the collection.
+    /// </summary>
+    /// <param name="list">List of items to add.</param>
+    public void AddRange(List<BrokenRule> list)
+    {
+      foreach (var item in list)
+        Add(item);
     }
  }
 }

@@ -217,7 +217,7 @@ namespace Csla.Test.ValidationRules
 
         context.Assert.AreEqual(false, root.IsValid, "should not be valid");
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name value required", root.BrokenRulesCollection[0].Description);
+        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
 
         context.Assert.Success();
       });
@@ -237,7 +237,7 @@ namespace Csla.Test.ValidationRules
         context.Assert.AreEqual(false, root.IsValid, "should not be valid");
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
         //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description);
-        Assert.AreEqual("The value for Name is too long", root.BrokenRulesCollection[0].Description);
+        Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
         root.Name = "1234567890";
         context.Assert.AreEqual(true, root.IsValid, "should be valid");
@@ -259,13 +259,13 @@ namespace Csla.Test.ValidationRules
         context.Assert.AreEqual(false, root.IsValid, "should not be valid");
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
         //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
-        Assert.AreEqual("The value for Name is too long", root.BrokenRulesCollection[0].Description);
+        Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
         root = (HasRulesManager)(root.Clone());
         context.Assert.AreEqual(false, root.IsValid, "should not be valid");
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
         //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
-        context.Assert.AreEqual("The value for Name is too long", root.BrokenRulesCollection[0].Description);
+        context.Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
         root.Name = "1234567890";
         context.Assert.AreEqual(true, root.IsValid, "Should be valid");
@@ -302,7 +302,7 @@ namespace Csla.Test.ValidationRules
     public void MergeBrokenRules()
     {
       UnitTestContext context = GetContext();
-      BrokenRulesMergeRoot root = new BrokenRulesMergeRoot();
+      var root = new BrokenRulesMergeRoot();
       root.Validate();
       Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
       context.Assert.AreEqual(2, list.Count, "Should have 2 broken rules");
@@ -362,6 +362,54 @@ namespace Csla.Test.ValidationRules
           context.Complete();
         }
       });
+    }
+
+    [TestMethod]
+    public void RuleThrowsException()
+    {
+      UnitTestContext context = GetContext();
+      var root = new HasBadRule();
+      root.Validate();
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.AreEqual(1, root.GetBrokenRules().Count);
+      context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
+      context.Assert.Success();
+      context.Complete();
+    }
+  }
+
+  [Serializable]
+  public class HasBadRule : BusinessBase<HasBadRule>
+  {
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    public void Validate()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    public Rules.BrokenRulesCollection GetBrokenRules()
+    {
+      return BusinessRules.GetBrokenRules();
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new BadRule());
+    }
+
+    private class BadRule : Rules.BusinessRule
+    {
+      protected override void Execute(Rules.RuleContext context)
+      {
+        throw new InvalidOperationException();
+      }
     }
   }
 }

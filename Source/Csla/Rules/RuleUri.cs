@@ -37,7 +37,7 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
     public RuleUri(IBusinessRule rule, Csla.Core.IPropertyInfo property)
-      : this("rule://" + rule.GetType().FullName + "/" + ((property == null) ? "null" : property.Name))
+      : this("rule://" + (rule.GetType().FullName).Replace("+", "-") + "/" + ((property == null) ? "null" : property.Name))
     { }
 
     /// <summary>
@@ -51,18 +51,27 @@ namespace Csla.Rules
       return new RuleUri(ruleString);
     }
 
+    /// <summary>
+    /// Gets a string representation of the rule URI.
+    /// </summary>
+    /// <returns></returns>
     public override string ToString()
     {
       return _uri.ToString();
     }
 
+    /// <summary>
+    /// Adds a query parameter to the URI.
+    /// </summary>
+    /// <param name="key">Key for the parameter.</param>
+    /// <param name="value">Value of the parameter.</param>
     public void AddQueryParameter(string key, string value)
     {
       var uriText = ToString();
       if (uriText.Contains("?"))
-        uriText = uriText + "&" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
+        uriText = uriText + "&" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
       else
-        uriText = uriText + "?" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
+        uriText = uriText + "?" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
       _uri = new Uri(uriText);
     }
 

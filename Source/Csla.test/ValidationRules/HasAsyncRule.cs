@@ -11,23 +11,11 @@ namespace Csla.Test.ValidationRules
 {
   public partial class HasAsyncRule : BusinessBase<HasAsyncRule>
   {
-    private static PropertyInfo<string> NameProperty = RegisterProperty(
-      typeof(HasAsyncRule),
-      new PropertyInfo<string>("Name"));
-
-    private static PropertyInfo<ManualResetEvent> ResetProperty = RegisterProperty(
-      new PropertyInfo<ManualResetEvent>("Reset", "Reset", new ManualResetEvent(false)));
-
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
-    }
-
-    public ManualResetEvent Reset
-    {
-      get { return GetProperty(ResetProperty); }
-      set { SetProperty(ResetProperty, value); }
     }
 
     protected override void AddBusinessRules()
@@ -43,12 +31,11 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<IPropertyInfo> { primaryProperty, ResetProperty };
+        InputProperties = new List<IPropertyInfo> { primaryProperty };
       }
 
       protected override void Execute(RuleContext context)
       {
-        Random r = new Random();
         BackgroundWorker worker = new BackgroundWorker();
         // Using closures to access the context would be easier but this is not possible
         // in all languages. Below is an example of how to use the context without closures
@@ -56,17 +43,17 @@ namespace Csla.Test.ValidationRules
         worker.DoWork += (s, e) =>
         {
           var avrc = (RuleContext)e.Argument;
-          int sleep = r.Next(0, 20);
-          System.Threading.Thread.Sleep(sleep);
-          ((ManualResetEvent)avrc.InputPropertyValues[avrc.Rule.PrimaryProperty]).WaitOne();
-          var name = avrc.InputPropertyValues[NameProperty];
-          if (name != null || name.ToString() == "error")
-            avrc.AddErrorResult("error detected");
           e.Result = avrc;
+          System.Threading.Thread.Sleep(50);
+          var name = avrc.InputPropertyValues[NameProperty];
+          if (name != null && name.ToString() == "error")
+            avrc.AddErrorResult("error detected");
         };
         worker.RunWorkerCompleted += (s, e) =>
         {
           var avrc = (RuleContext)e.Result;
+          if (e.Error != null)
+            avrc.AddErrorResult(e.Error.Message);
           avrc.Complete();
         };
 
@@ -92,7 +79,7 @@ namespace Csla.Test.ValidationRules
         if (context.Target != null)
           throw new ArgumentOutOfRangeException("context.Target must be null");
 
-        ((IBusinessRule)_innerRule).Execute(context);
+        ((IBusinessRule)_innerRule).Execute(context.GetChainedContext(_innerRule));
       }
     }
 
@@ -110,7 +97,7 @@ namespace Csla.Test.ValidationRules
 
       protected override void Execute(RuleContext context)
       {
-        ((IBusinessRule)_innerRule).Execute(context);
+        ((IBusinessRule)_innerRule).Execute(context.GetChainedContext(_innerRule));
       }
     }
   }

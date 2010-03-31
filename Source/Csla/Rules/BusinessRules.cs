@@ -224,7 +224,7 @@ namespace Csla.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
                   orderby r.Priority
                   select r;
-      var affectedProperties = new List<string>();
+      var affectedProperties = new List<string> { property.Name };
       _brokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
       RunningRules = false;
@@ -258,18 +258,18 @@ namespace Csla.Rules
         // set up context
         var context = new RuleContext((r) =>
           {
-            // update broken rules list
-            if (r.Results != null)
-              foreach (var result in r.Results)
-              {
-                _brokenRules.SetBrokenRule(result);
-                if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
-                  anyRuleBroken = true;
-              }
             if (rule.IsAsync)
             {
               lock (SyncRoot)
               {
+                // update broken rules list
+                if (r.Results != null)
+                  foreach (var result in r.Results)
+                  {
+                    _brokenRules.SetBrokenRule(result);
+                    if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
+                      anyRuleBroken = true;
+                  }
                 // mark each property as not busy
                 foreach (var item in r.Rule.AffectedProperties)
                 {
@@ -283,6 +283,14 @@ namespace Csla.Rules
             }
             else
             {
+              // update broken rules list
+              if (r.Results != null)
+                foreach (var result in r.Results)
+                {
+                  _brokenRules.SetBrokenRule(result);
+                  if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
+                    anyRuleBroken = true;
+                }
               complete = true;
             }
           });

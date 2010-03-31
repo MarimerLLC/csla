@@ -78,26 +78,29 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
 
-      int iterations = 20;
-      int completed = 0;
-      for (int x = 0; x < iterations; x++)
-      {
-        HasAsyncRule har = new HasAsyncRule();
-        har.ValidationComplete += (o, e) =>
+      context.Assert.Try(() =>
         {
-          context.Assert.AreEqual("error", har.Name);
-          context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
-          System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
-          completed++;
-          if (completed == iterations)
-            context.Assert.Success();
-        };
+          int iterations = 20;
+          int completed = 0;
+          for (int x = 0; x < iterations; x++)
+          {
+            HasAsyncRule har = new HasAsyncRule();
+            har.ValidationComplete += (o, e) =>
+            {
+              context.Assert.AreEqual("error", har.Name);
+              context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
+              System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
+              completed++;
+              if (completed == iterations)
+                context.Assert.Success();
+            };
 
-        // set this to error so we can verify that all 6 rules get run for
-        // each object. This is essentially the only way to communicate back
-        // with the object except byref properties.
-        har.Name = "error";
-      }
+            // set this to error so we can verify that all 6 rules get run for
+            // each object. This is essentially the only way to communicate back
+            // with the object except byref properties.
+            har.Name = "error";
+          }
+        });
 
       context.Complete();
     }
@@ -119,15 +122,15 @@ namespace Csla.Test.ValidationRules
       Thread expected = Thread.CurrentThread;
 
       HasAsyncRule har = new HasAsyncRule();
+      context.Assert.IsTrue(har.IsValid, "IsValid 1");
+
       har.ValidationComplete += (o, e) =>
       {
         Thread actual = Thread.CurrentThread;
         context.Assert.AreSame(expected, actual);
         context.Assert.Success();
       };
-
       har.Name = "success";
-      har.Reset.Set();
       context.Complete();
     }
 #endif

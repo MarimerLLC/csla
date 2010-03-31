@@ -87,16 +87,5 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
-
-    [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void BadNonStaticRuleMethod()
-    {
-      UnitTestContext context = GetContext();
-      // creating the object should trigger AddBusinessRules()
-      // which should fail due to the bad exception
-      context.Assert.Try(() => new HasBadSharedRule());
-      context.Complete();
-    }
   }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
+using Csla.Serialization;
 
 #if NUNIT
 using NUnit.Framework;
@@ -188,19 +189,22 @@ namespace Csla.Test.ValidationRules
       UnitTestContext context = GetContext();
       HasRulesManager2.NewHasRulesManager2((o, e) =>
       {
-        HasRulesManager2 root = e.Object;
-        context.Assert.AreEqual(true, root.IsValid);
-        root.BeginEdit();
-        root.Name = "";
-        root.ApplyEdit();
+        context.Assert.Try(() =>
+          {
+            HasRulesManager2 root = e.Object;
+            context.Assert.AreEqual(true, root.IsValid);
+            root.BeginEdit();
+            root.Name = "";
+            root.ApplyEdit();
 
-        context.Assert.AreEqual(false, root.IsValid);
-        HasRulesManager2 rootClone = root.Clone();
-        context.Assert.AreEqual(false, rootClone.IsValid);
+            context.Assert.AreEqual(false, root.IsValid);
+            HasRulesManager2 rootClone = root.Clone();
+            context.Assert.AreEqual(false, rootClone.IsValid);
 
-        rootClone.Name = "something";
-        context.Assert.AreEqual(true, rootClone.IsValid);
-        context.Assert.Success();
+            rootClone.Name = "something";
+            context.Assert.AreEqual(true, rootClone.IsValid);
+            context.Assert.Success();
+          });
       });
       context.Complete();
     }
@@ -212,14 +216,16 @@ namespace Csla.Test.ValidationRules
       UnitTestContext context = GetContext();
       HasRulesManager.NewHasRulesManager((o, e) =>
       {
-        HasRulesManager root = e.Object;
-        root.Name = "";
+        context.Assert.Try(() =>
+          {
+            HasRulesManager root = e.Object;
+            root.Name = "";
 
-        context.Assert.AreEqual(false, root.IsValid, "should not be valid");
-        context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-        context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
-
-        context.Assert.Success();
+            context.Assert.AreEqual(false, root.IsValid, "should not be valid");
+            context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+            context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+            context.Assert.Success();
+          });
       });
 
       context.Complete();
@@ -295,7 +301,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.IsFalse(root.IsValid, "Ssn should not be valid");
 
       context.Assert.Success();
-
+      context.Complete();
     }
 
     [TestMethod]
@@ -309,6 +315,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.IsTrue(list[0].RuleName.Contains(@"rule://root."), "Rule should contain rule://root.");
 
       context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
@@ -334,6 +341,7 @@ namespace Csla.Test.ValidationRules
 
           context.Assert.Success();
         });
+        context.Complete();
       }
     }
 

@@ -355,6 +355,10 @@ namespace Csla.Rules
             context.Complete();
           // copy affected property names
           affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
+          // copy output property names
+          if (context.OutputPropertyValues != null)
+            foreach (var item in context.OutputPropertyValues)
+              affectedProperties.Add(item.Key.Name);
           if (context.Results != null)
           {
             // explicit short-circuiting

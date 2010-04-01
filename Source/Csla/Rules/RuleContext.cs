@@ -21,9 +21,14 @@ namespace Csla.Rules
     public object Target { get; internal set; }
     /// <summary>
     /// Gets a dictionary containing copies of property values from
-    /// the target business object (for use in all async rule implementations).
+    /// the target business object.
     /// </summary>
     public Dictionary<Csla.Core.IPropertyInfo, object> InputPropertyValues { get; internal set; }
+    /// <summary>
+    /// Gets a dictionary containing copies of property values that
+    /// should be updated in the target object.
+    /// </summary>
+    public Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues { get; set; }
     /// <summary>
     /// Gets a reference to the list of results being returned
     /// by this rule.

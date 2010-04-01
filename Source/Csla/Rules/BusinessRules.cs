@@ -270,6 +270,10 @@ namespace Csla.Rules
             {
               lock (SyncRoot)
               {
+                // update output values
+                if (r.OutputPropertyValues != null)
+                  foreach (var item in r.OutputPropertyValues)
+                    ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
                 // update broken rules list
                 if (r.Results != null)
                   foreach (var result in r.Results)
@@ -291,6 +295,10 @@ namespace Csla.Rules
             }
             else
             {
+              // update output values
+              if (r.OutputPropertyValues != null)
+                foreach (var item in r.OutputPropertyValues)
+                  ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
               // update broken rules list
               if (r.Results != null)
                 foreach (var result in r.Results)

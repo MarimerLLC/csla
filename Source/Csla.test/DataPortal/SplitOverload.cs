@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Serialization;
 
 namespace Csla.Test.DataPortalTest
 {
-    class SplitOverload : SplitOverloadBase<SplitOverload>
-    {
-    }
+  [Serializable]
+  class SplitOverload : SplitOverloadBase<SplitOverload>
+  {
+  }
 }

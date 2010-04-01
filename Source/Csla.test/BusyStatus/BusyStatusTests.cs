@@ -199,10 +199,10 @@ namespace cslalighttest.BusyStatus
 
             item.RuleField = "some value";
             context.Assert.IsTrue(item.IsBusy);
-            context.Assert.IsFalse(item.IsSavable);
+            context.Assert.IsFalse(item.IsSavable, "IsSavable");
             item.ValidationComplete += (o2, e2) =>
             {
-              context.Assert.IsFalse(item.IsBusy);
+              context.Assert.IsFalse(item.IsBusy, "IsBusy");
               context.Assert.IsTrue(item.IsSavable);
               item.BeginSave((o4, e4) =>
                 {

@@ -184,9 +184,12 @@ namespace Csla.Rules
       var properties = ((IManageProperties)Target).GetManagedProperties();
       foreach (var property in properties)
         affectedProperties.AddRange(CheckRules(property));
-      RunningRules = false;
-      if (BusyProperties.Count == 0)
-        _target.AllRulesComplete();
+      lock (SyncRoot)
+      {
+        RunningRules = false;
+        if (BusyProperties.Count == 0)
+          _target.AllRulesComplete();
+      }
       return affectedProperties.Distinct().ToList();
     }
 
@@ -208,9 +211,12 @@ namespace Csla.Rules
                   select r;
       BrokenRules.ClearRules(null);
       var affectedProperties = RunRules(rules);
-      RunningRules = false;
-      if (BusyProperties.Count == 0)
-        _target.AllRulesComplete();
+      lock (SyncRoot)
+      {
+        RunningRules = false;
+        if (BusyProperties.Count == 0)
+          _target.AllRulesComplete();
+      }
       return affectedProperties.Distinct().ToList();
     }
 
@@ -233,9 +239,12 @@ namespace Csla.Rules
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
-      RunningRules = false;
-      if (BusyProperties.Count == 0)
-        _target.AllRulesComplete();
+      lock (SyncRoot)
+      {
+        RunningRules = false;
+        if (BusyProperties.Count == 0)
+          _target.AllRulesComplete();
+      }
       return affectedProperties.Distinct().ToList();
     }
 
@@ -319,10 +328,10 @@ namespace Csla.Rules
           rule.Execute(context);
           if (rule.IsAsync)
           {
-            // mark each property as busy
-            foreach (var item in rule.AffectedProperties)
+            lock (SyncRoot)
             {
-              lock (SyncRoot)
+              // mark each property as busy
+              foreach (var item in rule.AffectedProperties)
               {
                 if (!BusyProperties.Contains(item))
                   _target.RuleStart(item);

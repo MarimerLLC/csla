@@ -174,8 +174,8 @@
     <Compile Include="..\..\..\csla.test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Csla.test\LinqObservableCollectionTest.cs">
-      <Link>LinqObservableCollectionTest.cs</Link>
+    <Compile Include="..\..\..\Csla.test\Linq\LinqObservableCollectionTest.cs">
+      <Link>Linq\LinqObservableCollectionTest.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Csla.test\MethodCaller\Caller1.cs">
       <Link>MethodCaller\Caller1.cs</Link>

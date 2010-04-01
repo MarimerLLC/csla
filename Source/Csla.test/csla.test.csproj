@@ -190,7 +190,7 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
-    <Compile Include="LinqObservableCollectionTest.cs" />
+    <Compile Include="Linq\LinqObservableCollectionTest.cs" />
     <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
     <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />
     <Compile Include="MethodCaller\Caller1.cs" />
@@ -321,7 +321,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="cslaTestcs.config" />
     <None Include="DataPortalTestDatabaseDataSet.xsc">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
     </None>
@@ -429,9 +428,7 @@
       <Name>csla.silverlight.server.test</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Linq\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

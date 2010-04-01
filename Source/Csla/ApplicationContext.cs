@@ -47,8 +47,6 @@ namespace Csla
 
     #region User
 
-    private static IPrincipal _principal;
-
     /// <summary>
     /// Get or set the current <see cref="IPrincipal" />
     /// object representing the user's identity.
@@ -598,6 +596,8 @@ namespace Csla
       private const string _localContextName = "Csla.LocalContext";
       private const string _clientContextName = "Csla.ClientContext";
       private const string _globalContextName = "Csla.GlobalContext";
+
+      private static IPrincipal _principal;
 
       public bool IsValid
       {

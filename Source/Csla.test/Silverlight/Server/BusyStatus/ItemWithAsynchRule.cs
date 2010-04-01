@@ -79,6 +79,11 @@ namespace Csla.Testing.Business.BusyStatus
       dp.BeginCreate();
     }
 
+    public bool IsRunningRules
+    {
+      get { return BusinessRules.RunningAsyncRules && BusinessRules.RunningRules; }
+    }
+
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new FiveSecondsLongRule(RuleFieldProperty));

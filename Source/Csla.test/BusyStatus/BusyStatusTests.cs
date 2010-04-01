@@ -188,6 +188,7 @@ namespace cslalighttest.BusyStatus
 #endif
      UnitTestContext context = GetContext();
       ItemWithAsynchRule item;
+      bool saving = false;
       ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
       {
         context.Assert.Try(() =>
@@ -198,21 +199,28 @@ namespace cslalighttest.BusyStatus
 
 
             item.RuleField = "some value";
-            context.Assert.IsTrue(item.IsBusy);
+            context.Assert.IsTrue(item.IsBusy, "IsBusy should be true");
             context.Assert.IsFalse(item.IsSavable, "IsSavable");
             item.ValidationComplete += (o2, e2) =>
             {
-              context.Assert.IsFalse(item.IsBusy, "IsBusy");
-              context.Assert.IsTrue(item.IsSavable);
-              item.BeginSave((o4, e4) =>
+              context.Assert.IsFalse(item.IsRunningRules, "IsRunningRules");
+              lock (item)
+              {
+                if (!saving)
                 {
-                  context.Assert.IsNull(e4.Error);
-                  context.Assert.IsNotNull(e4.NewObject);
-                  item = (ItemWithAsynchRule)e4.NewObject;
-                  if (item != null)
-                    context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
-                  context.Assert.Success();
-                });
+                  saving = true;
+                  context.Assert.IsTrue(item.IsSavable, "IsSavable should be true");
+                  item.BeginSave((o4, e4) =>
+                    {
+                      context.Assert.IsNull(e4.Error);
+                      context.Assert.IsNotNull(e4.NewObject);
+                      item = (ItemWithAsynchRule)e4.NewObject;
+                      if (item != null)
+                        context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
+                      context.Assert.Success();
+                    });
+                }
+              }
             };
           });
       });

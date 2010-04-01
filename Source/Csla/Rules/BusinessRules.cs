@@ -184,12 +184,9 @@ namespace Csla.Rules
       var properties = ((IManageProperties)Target).GetManagedProperties();
       foreach (var property in properties)
         affectedProperties.AddRange(CheckRules(property));
-      lock (SyncRoot)
-      {
-        RunningRules = false;
-        if (BusyProperties.Count == 0)
-          _target.AllRulesComplete();
-      }
+      RunningRules = false;
+      if (!RunningRules && !RunningAsyncRules)
+        _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
     }
 
@@ -204,6 +201,7 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
+      var oldRR = RunningRules;
       RunningRules = true;
       var rules = from r in TypeRules.RuleMethods
                   where r.PrimaryProperty == null
@@ -211,12 +209,9 @@ namespace Csla.Rules
                   select r;
       BrokenRules.ClearRules(null);
       var affectedProperties = RunRules(rules);
-      lock (SyncRoot)
-      {
-        RunningRules = false;
-        if (BusyProperties.Count == 0)
-          _target.AllRulesComplete();
-      }
+      RunningRules = oldRR;
+      if (!RunningRules && !RunningAsyncRules)
+        _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
     }
 
@@ -231,6 +226,7 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules(Csla.Core.IPropertyInfo property)
     {
+      var oldRR = RunningRules;
       RunningRules = true;
       var rules = from r in TypeRules.RuleMethods
                   where ReferenceEquals(r.PrimaryProperty, property)
@@ -239,12 +235,9 @@ namespace Csla.Rules
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
-      lock (SyncRoot)
-      {
-        RunningRules = false;
-        if (BusyProperties.Count == 0)
-          _target.AllRulesComplete();
-      }
+      RunningRules = oldRR;
+      if (!RunningRules && !RunningAsyncRules)
+        _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
     }
 
@@ -292,7 +285,7 @@ namespace Csla.Rules
                   if (!BusyProperties.Contains(item))
                     _target.RuleComplete(item);
                 }
-                if (!RunningRules && BusyProperties.Count == 0)
+                if (!RunningRules && !RunningAsyncRules)
                   _target.AllRulesComplete();
               }
             }
@@ -352,8 +345,8 @@ namespace Csla.Rules
           // process results
           if (!complete)
             context.Complete();
-          foreach (var item in rule.AffectedProperties)
-            affectedProperties.Add(item.Name);
+          // copy affected property names
+          affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
           if (context.Results != null)
           {
             // explicit short-circuiting

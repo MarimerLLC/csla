@@ -30,6 +30,7 @@ namespace Csla.Test.ValidationRules
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasOnlyPerTypeRules root = new HasOnlyPerTypeRules();
+      root.Validate();
       context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
       root.Test = "test";
@@ -50,6 +51,7 @@ namespace Csla.Test.ValidationRules
       ApplicationContext.GlobalContext["Shared"] = 0;
 
       HasPerTypeRules root = new HasPerTypeRules();
+      root.Validate();
       context.Assert.AreEqual(string.Empty, root.Test, "Test string should be empty");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Broken rule count should be 1 first");
       root.Test = "test";

@@ -21,6 +21,15 @@ namespace Csla.Rules
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
+    private BrokenRulesCollection BrokenRules
+    {
+      get
+      {
+        if (_brokenRules == null)
+          _brokenRules = new BrokenRulesCollection(true);
+        return _brokenRules;
+      }
+    }
 
     // reference to current business object
     [NonSerialized]
@@ -91,16 +100,13 @@ namespace Csla.Rules
     /// Creates an instance of the object.
     /// </summary>
     public BusinessRules()
-    {
-      _brokenRules = new BrokenRulesCollection(true);
-    }
+    { }
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="target">Target business object.</param>
     public BusinessRules(IHostRules target)
-      : this()
     {
       SetTarget(target);
     }
@@ -121,7 +127,7 @@ namespace Csla.Rules
     /// </summary>
     public bool IsValid
     {
-      get { return _brokenRules.ErrorCount == 0; }
+      get { return BrokenRules.ErrorCount == 0; }
     }
 
     /// <summary>
@@ -129,7 +135,7 @@ namespace Csla.Rules
     /// </summary>
     public BrokenRulesCollection GetBrokenRules()
     {
-      return _brokenRules;
+      return BrokenRules;
     }
 
     [NonSerialized]
@@ -200,7 +206,7 @@ namespace Csla.Rules
                   where r.PrimaryProperty == null
                   orderby r.Priority
                   select r;
-      _brokenRules.ClearRules(null);
+      BrokenRules.ClearRules(null);
       var affectedProperties = RunRules(rules);
       RunningRules = false;
       if (BusyProperties.Count == 0)
@@ -225,7 +231,7 @@ namespace Csla.Rules
                   orderby r.Priority
                   select r;
       var affectedProperties = new List<string> { property.Name };
-      _brokenRules.ClearRules(property);
+      BrokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
       RunningRules = false;
       if (BusyProperties.Count == 0)
@@ -266,7 +272,7 @@ namespace Csla.Rules
                 if (r.Results != null)
                   foreach (var result in r.Results)
                   {
-                    _brokenRules.SetBrokenRule(result);
+                    BrokenRules.SetBrokenRule(result);
                     if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
                       anyRuleBroken = true;
                   }
@@ -287,7 +293,7 @@ namespace Csla.Rules
               if (r.Results != null)
                 foreach (var result in r.Results)
                 {
-                  _brokenRules.SetBrokenRule(result);
+                  BrokenRules.SetBrokenRule(result);
                   if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
                     anyRuleBroken = true;
                 }
@@ -434,8 +440,6 @@ namespace Csla.Rules
           lock (SyncRoot)
             _brokenRules = (BrokenRulesCollection)MobileFormatter.Deserialize(rules);
         }
-        else
-          _brokenRules = new BrokenRulesCollection(true);
       }
     }
 

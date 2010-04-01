@@ -48,9 +48,9 @@ namespace Csla.Rules
     internal void SetBrokenRule(RuleResult result)
     {
       this.IsReadOnly = false;
-      //var old = this.Where(c => c.RuleName == result.RuleName).ToList();
-      //foreach (var item in old)
-      //  Remove(item);
+      var old = this.Where(c => c.RuleName == result.RuleName).ToList();
+      foreach (var item in old)
+        Remove(item);
       if (!result.Success)
         if (result.PrimaryProperty == null)
           Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity });

@@ -52,7 +52,7 @@ namespace Csla.Test.ValidationRules
       har.ValidationComplete += (o, e) =>
       {
         context.Assert.IsFalse(har.IsValid, "IsValid 2");
-        context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
+        context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
         context.Assert.Success();
       };
       har.Name = "error";
@@ -90,7 +90,7 @@ namespace Csla.Test.ValidationRules
             har.ValidationComplete += (o, e) =>
             {
               context.Assert.AreEqual("error", har.Name);
-              context.Assert.AreEqual(3, har.BrokenRulesCollection.Count);
+              context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
               System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
               completed++;
               if (completed == iterations)

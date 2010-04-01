@@ -37,8 +37,20 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
     public RuleUri(IBusinessRule rule, Csla.Core.IPropertyInfo property)
-      : this("rule://" + (rule.GetType().FullName).Replace("+", "-") + "/" + ((property == null) ? "null" : property.Name))
-    { }
+    {
+      var hostName = (rule.GetType().FullName).Replace("+", "-");
+      hostName = hostName.Replace(" ", "");
+      hostName = hostName.Replace("[", "");
+      hostName = hostName.Replace("]", "");
+      hostName = hostName.Replace("`", "-");
+      hostName = hostName.Replace(",", "-");
+      hostName = hostName.Replace("=", "-");
+
+      var uriString = "rule://" + hostName + "/" + ((property == null) ? "null" : property.Name);
+      _uri = new Uri(uriString);
+      if (_uri.Scheme != "rule")
+        throw new ArgumentException("RuleUri.Scheme");
+    }
 
     /// <summary>
     /// Parses a rule:// URI.

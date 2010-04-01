@@ -434,6 +434,8 @@ namespace Csla.Rules
           lock (SyncRoot)
             _brokenRules = (BrokenRulesCollection)MobileFormatter.Deserialize(rules);
         }
+        else
+          _brokenRules = new BrokenRulesCollection(true);
       }
     }
 

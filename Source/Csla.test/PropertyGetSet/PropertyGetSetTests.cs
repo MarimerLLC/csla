@@ -610,7 +610,7 @@ namespace Csla.Test.PropertyGetSet
       list.Add(new EditableGetSet(true));
       list[0].FieldBackedString = "child change";
 
-      Assert.AreEqual(2, rootChanged);//this event fires twice once for lazy load of the child list and second for the property change on item in the list
+      Assert.AreEqual(4, rootChanged);//this event fires 4 times: lazy load of the child list, Item[], Count and property change on item in the list
       Assert.AreEqual(1, listChanged);
     }
 
@@ -641,9 +641,9 @@ namespace Csla.Test.PropertyGetSet
       child.ManagedChildList.Add(grandChild);
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "child change"; // or c2.FieldBackedString = "child change";
 
-      Assert.AreEqual(3, rootChanged);              //Child, and GrandChild lists lazy loaded + Property changed on GrandChildList Item
-      Assert.AreEqual(2, childChanged);             //GrandChild lists lazy loaded + Property changed on GrandChildList Item
-      Assert.AreEqual(2, childListChanged);         //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(7, rootChanged);              //Child, and GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(4, childChanged);             //GrandChild lists lazy loaded + Property changed on GrandChildList Item
+      Assert.AreEqual(4, childListChanged);         //GrandChild lists lazy loaded + Property changed on GrandChildList Item
       Assert.AreEqual(1, grandChildListChanged);    //Property changed on GrandChildList Item
       Assert.AreEqual(1, grandChildPropertyChanged);//Property changed on GrandChildList Item
     }

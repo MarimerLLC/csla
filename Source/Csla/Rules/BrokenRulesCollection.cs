@@ -24,12 +24,13 @@ namespace Csla.Rules
     /// of the collection.
     /// </summary>
     public BrokenRulesCollection()
-    {
-      IsReadOnly = false;
-    }
+      : this(false)
+    { }
 
     internal BrokenRulesCollection(bool readOnly)
-    { }
+    {
+      IsReadOnly = readOnly;
+    }
 
     internal void ClearRules(Csla.Core.IPropertyInfo property)
     {

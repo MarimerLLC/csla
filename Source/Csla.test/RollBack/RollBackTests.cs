@@ -125,13 +125,15 @@ namespace Csla.Test.RollBack
             Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity();
             p.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(p_PropertyChanged);
 
+            string expected = p.Data;
+
             p.BeginEdit();
             p.Data = "something";
             p.BeginEdit();
             p.CancelEdit();
             p.CancelEdit();
 
-            Assert.IsNull(p.Data);
+            Assert.AreEqual(expected, p.Data);
 
             p.BeginEdit();
             p.BeginEdit();
@@ -139,7 +141,7 @@ namespace Csla.Test.RollBack
             p.ApplyEdit();
             p.CancelEdit();
 
-            Assert.IsNull(p.Data);
+            Assert.AreEqual(expected, p.Data);
 
             p.Data = "data";
             p.BeginEdit();

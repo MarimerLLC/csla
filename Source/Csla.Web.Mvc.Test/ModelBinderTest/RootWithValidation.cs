@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
-using Csla.Validation;
+using Csla.Rules;
 
 namespace Csla.Web.Mvc.Test.ModelBinderTest
 {
@@ -35,7 +35,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs(Max5CharsProperty, 5));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(Max5CharsProperty, 5));
 
       base.AddBusinessRules();
     }

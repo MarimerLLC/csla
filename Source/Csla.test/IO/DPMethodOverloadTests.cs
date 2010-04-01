@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Serialization;
+
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -101,6 +103,7 @@ namespace Csla.Test.IO
     }
   }
 
+  [Serializable]
   public class TestBizObj : Csla.BusinessBase<TestBizObj>
   {
     protected override object GetIdValue()

@@ -285,6 +285,7 @@ namespace cslalighttest.Serialization
 
       int age1 = p.Age;
       string city1 = a.City;
+
       p.BeginEdit();
 
       int age2 = p.Age = 2;

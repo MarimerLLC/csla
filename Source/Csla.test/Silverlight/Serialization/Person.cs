@@ -77,28 +77,5 @@ namespace cslalighttest.Serialization
       get { return GetProperty<Address>(PrimaryAddressProperty); }
       set { SetProperty<Address>(PrimaryAddressProperty, value); }
     }
-
-    public override bool Equals(object theOtherPerson)
-    {
-      Person myOtherPerson = theOtherPerson as Person;
-      if (myOtherPerson == null)
-        return false;
-      if (myOtherPerson.Name != this.Name)
-        return false;
-      if (myOtherPerson.Age != this.Age)
-        return false;
-      if (!this.Addresses.Equals(myOtherPerson.Addresses))
-        return false;
-      if ((myOtherPerson.PrimaryAddress == null) != (this.PrimaryAddress == null))
-        return false;  // not same state of nullity
-      if (this.PrimaryAddress != null && !this.PrimaryAddress.Equals(myOtherPerson.PrimaryAddress))
-        return false;
-      return this.Addresses.Equals(myOtherPerson.Addresses);
-    }
-
-    public override int GetHashCode()
-    {
-      return (this.Name + this.Age.ToString()).GetHashCode();
-    }
   }
 }

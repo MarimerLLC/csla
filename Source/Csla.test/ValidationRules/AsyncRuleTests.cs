@@ -64,12 +64,14 @@ namespace Csla.Test.ValidationRules
     {
       UnitTestContext context = GetContext();
       var root = new HasInvalidAsyncRule();
+      root.ValidationComplete += (o, e) =>
+        {
+          context.Assert.IsFalse(root.IsValid);
+          context.Assert.AreEqual(1, root.GetBrokenRules().Count);
+          context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
+          context.Assert.Success();
+        };
       root.Validate();
-      root.Reset.WaitOne();
-      context.Assert.IsFalse(root.IsValid);
-      context.Assert.AreEqual(1, root.GetBrokenRules().Count);
-      context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
-      context.Assert.Success();
       context.Complete();
     }
 

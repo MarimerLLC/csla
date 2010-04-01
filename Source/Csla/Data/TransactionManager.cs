@@ -212,14 +212,19 @@ namespace Csla.Data
 				_refCount -= 1;
 				if (_refCount == 0)
 				{
-					if (_commit)
-						_transaction.Commit();
-					else
-						_transaction.Rollback();
-
-					_transaction.Dispose();
-					_connection.Dispose();
-					ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
+          try
+          {
+            if (_commit)
+              _transaction.Commit();
+            else
+              _transaction.Rollback();
+          }
+          finally
+          {
+            _transaction.Dispose();
+            _connection.Dispose();
+            ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
+          }
 				}
 			}
 

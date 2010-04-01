@@ -12,7 +12,7 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+#endif
 
 namespace Csla.Test.Data
 {
@@ -86,7 +86,7 @@ namespace Csla.Test.Data
         Assert.IsNotNull(objectContextManager);
         //Throws EntityException
         var table = (from p in objectContextManager.ObjectContext.Table2
-                    select p).ToList();
+                     select p).ToList();
       }
     }
 #endif
@@ -98,7 +98,7 @@ namespace Csla.Test.Data
     public void ExecuteReader_on_Table2_returns_reader_with_3_fields()
     {
       using (var objectContextManager = ConnectionManager<SqlConnection>.GetManager(TestDBConnection, true))
-      {        
+      {
         Assert.IsNotNull(objectContextManager);
         using (var command = new SqlCommand("Select * From Table2", objectContextManager.Connection))
         {
@@ -109,8 +109,8 @@ namespace Csla.Test.Data
       }
     }
 #if !CLIENTONLY
-		[TestMethod]
-		public void Table1_retreived_through_LingToSqlDataContext_has_records()
+    [TestMethod]
+    public void Table1_retreived_through_LingToSqlDataContext_has_records()
     {
       using (var objectContextManager = ContextManager<TestLinqToSqlContextDataContext>.GetManager(TestDBConnection, true))
       {
@@ -119,8 +119,8 @@ namespace Csla.Test.Data
       }
     }
 
-		[TestMethod]
-		public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
+    [TestMethod]
+    public void Table2_retreived_through_LingToEntitiesDataContext_has_records()
     {
       using (var objectContextManager = ObjectContextManager<DataPortalTestDatabaseEntities>.GetManager("DataPortalTestDatabaseEntities", true))
       {
@@ -177,7 +177,7 @@ namespace Csla.Test.Data
       Assert.AreEqual(0, tCount, "Transaction context should have been null");
 
       list = TransactionContextUserList.GetList();
-      Assert.AreEqual(counter, list.Count,"Data should not have been saved.");
+      Assert.AreEqual(counter, list.Count, "Data should not have been saved.");
     }
 
     [TestMethod]
@@ -224,7 +224,7 @@ namespace Csla.Test.Data
         if (r.ToString().StartsWith("__transaction:"))
           tCount++;
       Assert.AreEqual(0, tCount, "Transaction context should have been null");
-      
+
       list = TransactionContextUserList.GetList();
       Assert.AreEqual(beforeInsertCount, list.Count, "Data should not have been saved.");
     }

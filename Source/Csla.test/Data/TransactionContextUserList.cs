@@ -40,22 +40,15 @@ namespace Csla.Test.Data
     {
       using (var manager = TransactionManager<SqlConnection, SqlTransaction>.GetManager(TestDBConnection, true))
       {
-        try
-        {
-          foreach (var oneItem in DeletedList)
-            Csla.DataPortal.UpdateChild(oneItem, this);
+        foreach (var oneItem in DeletedList)
+          Csla.DataPortal.UpdateChild(oneItem, this);
 
-          foreach (var oneItem in this)
-            Csla.DataPortal.UpdateChild(oneItem, this);
+        foreach (var oneItem in this)
+          Csla.DataPortal.UpdateChild(oneItem, this);
 
-          DeletedList.Clear();
-          manager.Transaction.Commit();
-        }
-        catch
-        {
-          manager.Transaction.Rollback();
-          throw;
-        }
+        DeletedList.Clear();
+
+        manager.Commit();
       }
     }
   }

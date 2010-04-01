@@ -297,14 +297,13 @@ namespace Csla
     /// The value "Defaukt" is a shortcut for using the default 
     /// Csla.DataPortalClient.DefaultPortalProxyFactory  implementation.
     /// </para><para>
-    /// <value>The data portal proxy factory fully qualified name.</value>
     public static string DataPortalProxyFactory
     {
       get
       {
         if (string.IsNullOrEmpty(_dataPortalProxyFactory))
         {
-          _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
+          _dataPortalProxyFactory = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
           if (string.IsNullOrEmpty(_dataPortalProxyFactory))
             _dataPortalProxyFactory = "Default";
         }

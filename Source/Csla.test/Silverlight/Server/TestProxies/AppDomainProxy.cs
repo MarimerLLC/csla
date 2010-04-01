@@ -282,8 +282,8 @@ namespace Csla.Testing.Business.TestProxies
         if (asm.FullName == args.Name)
           return asm;
 
-      // if the assembly wasn't already in the appdomain, then try to load it.
-      return Assembly.Load(args.Name);
+      // can't find it...
+      return null;
     }
 
     #endregion

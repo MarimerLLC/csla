@@ -32,15 +32,6 @@ namespace Csla.Test.Authorization
       PerTypeAuthorization root = new PerTypeAuthorization();
       root.Test = "test";
     }
-
-    [TestMethod()]
-    [ExpectedException(typeof(System.Security.SecurityException))]
-    public void DenyWritePerInstance()
-    {
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
-      PerTypeAuthorization root = new PerTypeAuthorization();
-      root.Name = "test";
-    }
   }
 
 }

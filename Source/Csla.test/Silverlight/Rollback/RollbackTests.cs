@@ -26,16 +26,19 @@ namespace Csla.Test.Silverlight.Rollback
 
       RollbackRoot.BeginCreateLocal((o, e) =>
       {
-        var item = e.Object;
-        var initialValue = 0;// item.UnInitedP;
+        context.Assert.Try(() =>
+          {
+            var item = e.Object;
+            var initialValue = 0;// item.UnInitedP;
 
-        item.BeginEdit();
-        item.UnInitedP = 1000;
-        item.Another = "test";
-        item.CancelEdit();
+            item.BeginEdit();
+            item.UnInitedP = 1000;
+            item.Another = "test";
+            item.CancelEdit();
 
-        context.Assert.AreEqual(initialValue, item.UnInitedP);
-        context.Assert.Success();
+            context.Assert.AreEqual(initialValue, item.UnInitedP);
+            context.Assert.Success();
+          });
       });
 
       context.Complete();

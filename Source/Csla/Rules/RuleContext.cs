@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the rule object.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public IBusinessRule Rule { get; internal set; }
     /// <summary>
     /// Gets a reference to the target business object.
@@ -28,11 +30,13 @@ namespace Csla.Rules
     /// Gets a dictionary containing copies of property values that
     /// should be updated in the target object.
     /// </summary>
-    public Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues { get; set; }
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues { get; private set; }
     /// <summary>
     /// Gets a reference to the list of results being returned
     /// by this rule.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public List<RuleResult> Results { get; private set; }
 
     private Action<RuleContext> _completeHandler;
@@ -85,6 +89,8 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddErrorResult(Csla.Core.IPropertyInfo property, string description)
     {
+      if (!Rule.AffectedProperties.Contains(property))
+        throw new ArgumentOutOfRangeException(property.Name);
       if (Results == null)
         Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description));
@@ -110,6 +116,8 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddWarningResult(Csla.Core.IPropertyInfo property, string description)
     {
+      if (!Rule.AffectedProperties.Contains(property))
+        throw new ArgumentOutOfRangeException(property.Name);
       if (Results == null)
         Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning });
@@ -135,9 +143,38 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddInformationResult(Csla.Core.IPropertyInfo property, string description)
     {
+      if (!Rule.AffectedProperties.Contains(property))
+        throw new ArgumentOutOfRangeException(property.Name);
       if (Results == null)
         Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information });
+    }
+
+    /// <summary>
+    /// Add an outbound value to update the rule's primary 
+    /// property on the business object once the rule is complete.
+    /// </summary>
+    /// <param name="value">New property value.</param>
+    public void AddOutValue(object value)
+    {
+      if (OutputPropertyValues == null)
+        OutputPropertyValues = new Dictionary<Core.IPropertyInfo, object>();
+      OutputPropertyValues.Add(Rule.PrimaryProperty, value);
+    }
+
+    /// <summary>
+    /// Add an outbound value to update a property on the business
+    /// object once the rule is complete.
+    /// </summary>
+    /// <param name="property">Property to update.</param>
+    /// <param name="value">New property value.</param>
+    public void AddOutValue(Csla.Core.IPropertyInfo property, object value)
+    {
+      if (!Rule.AffectedProperties.Contains(property))
+        throw new ArgumentOutOfRangeException(property.Name);
+      if (OutputPropertyValues == null)
+        OutputPropertyValues = new Dictionary<Core.IPropertyInfo, object>();
+      OutputPropertyValues.Add(property, value);
     }
 
     /// <summary>

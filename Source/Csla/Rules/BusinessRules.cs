@@ -326,7 +326,6 @@ namespace Csla.Rules
         // execute (or start executing) rule
         try
         {
-          rule.Execute(context);
           if (rule.IsAsync)
           {
             lock (SyncRoot)
@@ -336,10 +335,11 @@ namespace Csla.Rules
               {
                 if (!BusyProperties.Contains(item))
                   _target.RuleStart(item);
-                BusyProperties.Add(rule.PrimaryProperty);
+                BusyProperties.Add(item);
               }
             }
           }
+          rule.Execute(context);
         }
         catch (Exception ex)
         {

@@ -19,6 +19,10 @@ namespace Csla.Rules
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyObservableBindingList<BrokenRule>
   {
+    private int _errorCount;
+    private int _warnCount;
+    private int _infoCount;
+
     /// <summary>
     /// Creates a read-write instance
     /// of the collection.
@@ -42,6 +46,9 @@ namespace Csla.Rules
         brokenRules = this.Where(c => c.Property == property.Name).ToList();
       foreach (var item in brokenRules)
         Remove(item);
+      _errorCount = 0;
+      _warnCount = 0;
+      _infoCount = 0;
       this.IsReadOnly = true;
     }
 
@@ -56,6 +63,9 @@ namespace Csla.Rules
           Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity });
         else
           Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
+      _errorCount = this.Count(c => c.Severity == RuleSeverity.Error);
+      _warnCount = this.Count(c => c.Severity == RuleSeverity.Warning);
+      _infoCount = this.Count(c => c.Severity == RuleSeverity.Information);
       this.IsReadOnly = true;
     }
 
@@ -67,7 +77,7 @@ namespace Csla.Rules
     /// <value>An integer value.</value>
     public int ErrorCount
     {
-      get { return this.Count(c => c.Severity == RuleSeverity.Error); }
+      get { return _errorCount; }
     }
 
     /// <summary>
@@ -78,7 +88,7 @@ namespace Csla.Rules
     /// <value>An integer value.</value>
     public int WarningCount
     {
-      get { return this.Count(c => c.Severity == RuleSeverity.Warning); }
+      get { return _warnCount; }
     }
 
     /// <summary>
@@ -89,7 +99,7 @@ namespace Csla.Rules
     /// <value>An integer value.</value>
     public int InformationCount
     {
-      get { return this.Count(c => c.Severity == RuleSeverity.Information); }
+      get { return _infoCount; }
     }
 
     /// <summary>

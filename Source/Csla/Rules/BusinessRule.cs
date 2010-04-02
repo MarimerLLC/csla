@@ -29,10 +29,20 @@ namespace Csla.Rules
     /// associated with the business object property.
     /// </summary>
     public object UserState { get; protected set; }
+    private Csla.Core.IPropertyInfo _primaryProperty;
     /// <summary>
     /// Gets or sets the primary property affected by this rule.
     /// </summary>
-    public Csla.Core.IPropertyInfo PrimaryProperty { get; set; }
+    public Csla.Core.IPropertyInfo PrimaryProperty 
+    {
+      get { return _primaryProperty; }
+      set
+      {
+        _primaryProperty = value;
+        if (_primaryProperty != null)
+          AffectedProperties.Add(_primaryProperty);
+      }
+    }
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.
@@ -79,11 +89,9 @@ namespace Csla.Rules
     protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
     {
       DefaultSeverity = RuleSeverity.Error;
-      PrimaryProperty = primaryProperty;
       AffectedProperties = new List<Core.IPropertyInfo>();
+      PrimaryProperty = primaryProperty;
       this.RuleUri = new RuleUri(this, primaryProperty);
-      if (primaryProperty != null)
-        AffectedProperties.Add(primaryProperty);
     }
 
     /// <summary>

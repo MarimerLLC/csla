@@ -4,7 +4,7 @@ using Csla;
 namespace Templates
 {
   [Serializable]
-  public class CommandObject : CommandBase
+  public class CommandObject : CommandBase<CommandObject>
   {
     #region Authorization Methods
 

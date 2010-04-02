@@ -85,7 +85,7 @@ namespace Templates
 
     public static void DeleteEditableRootParent(int id)
     {
-      DataPortal.Delete(new SingleCriteria<EditableRootParent, int>(id));
+      DataPortal.Delete<EditableRootParent>(new SingleCriteria<EditableRootParent, int>(id));
     }
 
     private EditableRootParent()

@@ -72,7 +72,7 @@ namespace Templates
 
     public static void DeleteSwitchableObject(int id)
     {
-      DataPortal.Delete(new SingleCriteria<SwitchableObject, int>(id));
+      DataPortal.Delete<SwitchableObject>(new SingleCriteria<SwitchableObject, int>(id));
     }
 
     #endregion

@@ -46,9 +46,7 @@ namespace Csla.Rules
         brokenRules = this.Where(c => c.Property == property.Name).ToList();
       foreach (var item in brokenRules)
         Remove(item);
-      _errorCount = 0;
-      _warnCount = 0;
-      _infoCount = 0;
+      RecalculateCounts();
       this.IsReadOnly = true;
     }
 
@@ -63,10 +61,15 @@ namespace Csla.Rules
           Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity });
         else
           Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
+      RecalculateCounts();
+      this.IsReadOnly = true;
+    }
+
+    private void RecalculateCounts()
+    {
       _errorCount = this.Count(c => c.Severity == RuleSeverity.Error);
       _warnCount = this.Count(c => c.Severity == RuleSeverity.Warning);
       _infoCount = this.Count(c => c.Severity == RuleSeverity.Information);
-      this.IsReadOnly = true;
     }
 
     /// <summary>

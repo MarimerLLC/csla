@@ -323,22 +323,24 @@ namespace Csla.Rules
             context.InputPropertyValues.Add(item, target.ReadProperty(item));
         }
 
+        // mark properties busy
+        if (rule.IsAsync)
+        {
+          lock (SyncRoot)
+          {
+            // mark each property as busy
+            foreach (var item in rule.AffectedProperties)
+            {
+              if (!BusyProperties.Contains(item))
+                _target.RuleStart(item);
+              BusyProperties.Add(item);
+            }
+          }
+        }
+
         // execute (or start executing) rule
         try
         {
-          if (rule.IsAsync)
-          {
-            lock (SyncRoot)
-            {
-              // mark each property as busy
-              foreach (var item in rule.AffectedProperties)
-              {
-                if (!BusyProperties.Contains(item))
-                  _target.RuleStart(item);
-                BusyProperties.Add(item);
-              }
-            }
-          }
           rule.Execute(context);
         }
         catch (Exception ex)

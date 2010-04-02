@@ -161,6 +161,7 @@
     <Compile Include="Server\EmptyCriteria.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
     <Compile Include="Server\Hosts\Silverlight\ISilverlightRequest.cs" />
+    <Compile Include="Server\Hosts\Silverlight\PrimitiveCriteria.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightRequestProcessor.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightResponse.cs" />

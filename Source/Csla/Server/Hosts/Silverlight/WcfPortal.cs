@@ -6,6 +6,7 @@ using System.ServiceModel.Activation;
 using Csla.Core;
 using System.Security.Principal;
 using Csla.Properties;
+using Csla.Silverlight;
 
 namespace Csla.Server.Hosts.Silverlight
 {
@@ -33,6 +34,10 @@ namespace Csla.Server.Hosts.Silverlight
 
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
+        if (criteria is PrimitiveCriteria)
+        {
+          criteria = ((PrimitiveCriteria)criteria).Value;
+        }
 
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
         SilverlightCriteriaRequest createRequest = new SilverlightCriteriaRequest(
@@ -75,6 +80,10 @@ namespace Csla.Server.Hosts.Silverlight
         request = ConvertRequest(request);
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
+        if (criteria is PrimitiveCriteria)
+        {
+          criteria = ((PrimitiveCriteria)criteria).Value;
+        }
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
         SilverlightCriteriaRequest fetchRequest = new SilverlightCriteriaRequest(
           request.TypeName,
@@ -155,6 +164,10 @@ namespace Csla.Server.Hosts.Silverlight
         request = ConvertRequest(request);
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
+        if (criteria is PrimitiveCriteria)
+        {
+          criteria = ((PrimitiveCriteria)criteria).Value;
+        }
 
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
         SilverlightCriteriaRequest deleteRequest = new SilverlightCriteriaRequest(

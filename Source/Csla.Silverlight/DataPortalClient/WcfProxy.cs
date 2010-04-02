@@ -3,6 +3,7 @@ using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
+using Csla.Silverlight;
 
 namespace Csla.DataPortalClient
 {
@@ -224,6 +225,11 @@ namespace Csla.DataPortalClient
     {
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
+
       request.CriteriaData = MobileFormatter.Serialize(criteria);
       request = ConvertRequest(request);
 
@@ -319,6 +325,10 @@ namespace Csla.DataPortalClient
     {
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
       request.CriteriaData = MobileFormatter.Serialize(criteria);
       request = ConvertRequest(request);
       var proxy = GetProxy();
@@ -482,6 +492,10 @@ namespace Csla.DataPortalClient
     {
       var request = GetBaseCriteriaRequest();
       request.TypeName = typeof(T).AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
       request.CriteriaData = MobileFormatter.Serialize(criteria);
       request = ConvertRequest(request);
       var proxy = GetProxy();

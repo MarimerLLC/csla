@@ -22,6 +22,7 @@ using cslalighttest.CslaDataProvider;
 using UnitDriven;
 using Csla.Testing.Business.DataPortal;
 using Single = Csla.Test.DataPortalTest.Single;
+using Csla.Test.DataPortalTest;
 
 namespace Csla.Test.DataPortal
 {
@@ -572,6 +573,62 @@ namespace Csla.Test.DataPortal
           context.Assert.Success();
         });
 
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        5,
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginCreate_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      object userState = "state";
+      Csla.DataPortal.BeginCreate<PrimitiveCriteriaSingle>(100,
+        (o, e) =>
+        {
+          var created = e.Object;
+          context.Assert.IsNotNull(created);
+          context.Assert.AreEqual(created.Id, 100);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(userState, e.UserState);
+          context.Assert.AreEqual("Created", created.MethodCalled);
+          context.Assert.Success();
+        }, userState);
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void Delete_PrimitiveCriteria()
+    {
+      var context = GetContext();
+      object userState = "state";
+      DataPortal<PrimitiveCriteriaSingle> dp = new DataPortal<PrimitiveCriteriaSingle>();
+      dp.DeleteCompleted+=
+        (o1, e1) =>
+      {
+        context.Assert.IsNull(e1.Error);
+
+        context.Assert.AreEqual(dp.GlobalContext["PrimitiveCriteriaSingle"].ToString(), "Deleted");
+        context.Assert.Success();
+      };
+      dp.BeginDelete(5);
       context.Complete();
     }
 #else

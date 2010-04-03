@@ -334,4 +334,45 @@ namespace Csla.Rules.CommonRules
         context.AddErrorResult(string.Format(Resources.RegExMatchRule, PrimaryProperty.FriendlyName));
     }
   }
+
+  /// <summary>
+  /// Adds an information message to a property.
+  /// </summary>
+  /// <remarks>
+  /// Message text is the DefaultDescription property.
+  /// The default priority for this rule is 1, so if any
+  /// rules are broken the infomational text won't appear.
+  /// </remarks>
+  public class InfoMessage : BusinessRule
+  {
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property for message.</param>
+    public InfoMessage(Csla.Core.IPropertyInfo primaryProperty)
+      : base(primaryProperty)
+    {
+      Priority = 1;
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property for message.</param>
+    /// <param name="messageText">Message text.</param>
+    public InfoMessage(Csla.Core.IPropertyInfo primaryProperty, string messageText)
+      : this(primaryProperty)
+    {
+      DefaultDescription = messageText;
+    }
+
+    /// <summary>
+    /// Rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
+    protected override void Execute(RuleContext context)
+    {
+      context.AddInformationResult(DefaultDescription);
+    }
+  }
 }

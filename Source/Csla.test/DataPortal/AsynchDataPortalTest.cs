@@ -556,26 +556,6 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
-#if SILVERLIGHT
-    [TestMethod]
-    public void BeginFetch_sends_cultureinfo_to_dataportal()
-    {
-      string expectedCulture = CultureInfo.CurrentCulture.Name;
-      string expectedUICulture = CultureInfo.CurrentUICulture.Name;
-
-      var context = GetContext();
-      AsyncPortalWithCulture.BeginExecuteCommand(
-        (o, e) =>
-        {
-          //context.Assert.IsNull(e.Error);
-          context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
-          context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
-          context.Assert.Success();
-        });
-
-      context.Complete();
-    }
-
     [TestMethod]
     public void BeginFetch_PrimitiveCriteria()
     {
@@ -620,17 +600,38 @@ namespace Csla.Test.DataPortal
       var context = GetContext();
       object userState = "state";
       DataPortal<PrimitiveCriteriaSingle> dp = new DataPortal<PrimitiveCriteriaSingle>();
-      dp.DeleteCompleted+=
+      dp.DeleteCompleted +=
         (o1, e1) =>
-      {
-        context.Assert.IsNull(e1.Error);
+        {
+          context.Assert.IsNull(e1.Error);
 
-        context.Assert.AreEqual(dp.GlobalContext["PrimitiveCriteriaSingle"].ToString(), "Deleted");
-        context.Assert.Success();
-      };
+          context.Assert.AreEqual(dp.GlobalContext["PrimitiveCriteriaSingle"].ToString(), "Deleted");
+          context.Assert.Success();
+        };
       dp.BeginDelete(5);
       context.Complete();
     }
+
+#if SILVERLIGHT
+    [TestMethod]
+    public void BeginFetch_sends_cultureinfo_to_dataportal()
+    {
+      string expectedCulture = CultureInfo.CurrentCulture.Name;
+      string expectedUICulture = CultureInfo.CurrentUICulture.Name;
+
+      var context = GetContext();
+      AsyncPortalWithCulture.BeginExecuteCommand(
+        (o, e) =>
+        {
+          //context.Assert.IsNull(e.Error);
+          context.Assert.AreEqual(expectedCulture, e.Object.CurrentCulture);
+          context.Assert.AreEqual(expectedUICulture, e.Object.CurrentUICulture);
+          context.Assert.Success();
+        });
+
+      context.Complete();
+    }
+
 #else
     [TestMethod]
     public void BeginFetch_sends_cultureinfo_to_dataportal()

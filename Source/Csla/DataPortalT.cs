@@ -200,7 +200,7 @@ namespace Csla
       try
       {
         object state = request.Argument;
-        if (state is int)
+        if (state is Csla.Server.EmptyCriteria)
           result = (T)Csla.DataPortal.Create<T>();
         else
           result = (T)Csla.DataPortal.Create<T>(state);
@@ -325,7 +325,7 @@ namespace Csla
       try
       {
         object state = request.Argument;
-        if (state is int)
+        if (state is Csla.Server.EmptyCriteria)
           result = (T)Csla.DataPortal.Fetch<T>();
         else
           result = (T)Csla.DataPortal.Fetch<T>(state);

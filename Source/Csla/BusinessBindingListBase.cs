@@ -65,6 +65,7 @@ namespace Csla
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public bool IsDirty
     {
       get
@@ -103,6 +104,7 @@ namespace Csla
     /// a valid state (has no broken validation rules).
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsValid
     {
       get
@@ -122,6 +124,7 @@ namespace Csla
     /// </summary>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsSavable
     {
       get 
@@ -1126,6 +1129,7 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {
@@ -1195,6 +1199,7 @@ namespace Csla
     /// Gets the busy status for this object and its child objects.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public override bool IsBusy
     {
       get

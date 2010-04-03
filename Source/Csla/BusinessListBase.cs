@@ -1277,9 +1277,8 @@ namespace Csla
     /// <remarks>
     /// This value will be Nothing for root objects.
     /// </remarks>
-#if !SILVERLIGHT
     [Browsable(false)]
-#endif
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField=false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {

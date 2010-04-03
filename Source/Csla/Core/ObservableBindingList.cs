@@ -191,9 +191,8 @@ namespace Csla.Core
     /// <summary>
     /// Gets the busy status for this object and its child objects.
     /// </summary>
-#if !SILVERLIGHT
     [Browsable(false)]
-#endif
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsBusy
     {
       get { return false; }
@@ -202,9 +201,8 @@ namespace Csla.Core
     /// <summary>
     /// Gets the busy status for this object.
     /// </summary>
-#if !SILVERLIGHT
     [Browsable(false)]
-#endif
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }

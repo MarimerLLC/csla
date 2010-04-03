@@ -147,6 +147,7 @@ namespace Csla.Core
     /// Gets the busy status for this object and its child objects.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsBusy
     {
       get { throw new NotImplementedException(); }
@@ -156,6 +157,7 @@ namespace Csla.Core
     /// Gets the busy status for this object.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }

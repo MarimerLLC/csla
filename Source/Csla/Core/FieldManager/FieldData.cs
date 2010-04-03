@@ -189,6 +189,7 @@ namespace Csla.Core.FieldManager
     /// any of its child objects are busy.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public bool IsBusy
     {
       get

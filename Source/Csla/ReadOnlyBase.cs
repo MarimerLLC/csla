@@ -1336,6 +1336,7 @@ namespace Csla
     /// running an async operation.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -1347,6 +1348,7 @@ namespace Csla
     /// running an async operation.
     /// </summary>
     [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }

@@ -98,6 +98,16 @@ namespace Csla.Test.DataPortalTest
       DoFetch(id);
     }
 
+    private void DataPortal_Fetch(string id)
+    {
+      DoFetch(int.Parse(id));
+    }
+
+    private void DataPortal_Fetch(Guid id)
+    {
+      DoFetch(1234);
+    }
+
     private void DoFetch(int id)
     {
       Id = id;

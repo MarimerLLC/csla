@@ -576,6 +576,44 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void BeginFetch_StringCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        "5",
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 5);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginFetch_GuidCriteria()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginFetch<PrimitiveCriteriaSingle>(
+        System.Guid.NewGuid(),
+        (o, e) =>
+        {
+          var fetched = e.Object;
+          context.Assert.IsNotNull(fetched);
+          context.Assert.AreEqual(fetched.Id, 1234);//DP_Create with criteria called
+          context.Assert.IsNull(e.Error);
+          context.Assert.IsNull(e.UserState);
+          context.Assert.AreEqual("Fetched", fetched.MethodCalled);
+          context.Assert.Success();
+        });
+      context.Complete();
+    }
+
+    [TestMethod]
     public void BeginCreate_PrimitiveCriteria()
     {
       var context = GetContext();

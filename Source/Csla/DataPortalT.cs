@@ -16,7 +16,7 @@ namespace Csla
   /// </typeparam>
   public class DataPortal<T>
   {
-    internal const int EmptyCriteria = 1;
+    internal static Csla.Server.EmptyCriteria EmptyCriteria = new Server.EmptyCriteria();
 
     #region Data Portal Async Request
 

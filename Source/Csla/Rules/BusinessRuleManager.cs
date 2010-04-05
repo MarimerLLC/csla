@@ -10,29 +10,30 @@ namespace Csla.Rules
   /// </summary>
   public class BusinessRuleManager
   {
-    #region Per Type Rules
 #if !SILVERLIGHT
-    private static System.Collections.Concurrent.ConcurrentDictionary<Type, BusinessRuleManager> _perTypeRules = 
-      new System.Collections.Concurrent.ConcurrentDictionary<Type, BusinessRuleManager>();
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
+      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
 
-    internal static BusinessRuleManager GetRulesForType(Type type)
+    internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
     {
-      return _perTypeRules.GetOrAdd(type, (t) => { return new BusinessRuleManager(); });
+      var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
     }
 #else
-    private static Dictionary<Type, BusinessRuleManager> _perTypeRules = new Dictionary<Type, BusinessRuleManager>();
+    private static Dictionary<RuleSetKey, BusinessRuleManager> _perTypeRules = new Dictionary<RuleSetKey, BusinessRuleManager>();
 
-    internal static BusinessRuleManager GetRulesForType(Type type)
+    internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
     {
       BusinessRuleManager result = null;
-      if (!_perTypeRules.TryGetValue(type, out result))
+      var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+      if (!_perTypeRules.TryGetValue(key, out result))
       {
         lock (_perTypeRules)
         {
-          if (!_perTypeRules.TryGetValue(type, out result))
+          if (!_perTypeRules.TryGetValue(key, out result))
           {
             result = new BusinessRuleManager();
-            _perTypeRules.Add(type, result);
+            _perTypeRules.Add(key, result);
           }
         }
       }
@@ -40,7 +41,31 @@ namespace Csla.Rules
     }
 
 #endif
-    #endregion
+
+    internal static BusinessRuleManager GetRulesForType(Type type)
+    {
+      return GetRulesForType(type, null);
+    }
+
+    private class RuleSetKey
+    {
+      public Type Type { get; set; }
+      public string RuleSet { get; set; }
+
+      public override bool Equals(object obj)
+      {
+        var other = obj as RuleSetKey;
+        if (other == null)
+          return false;
+        else
+          return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;
+      }
+
+      public override int GetHashCode()
+      {
+        return (this.Type.FullName + RuleSet).GetHashCode();
+      }
+    }
 
     /// <summary>
     /// Gets the list of rule objects for the business type.

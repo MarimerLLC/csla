@@ -31,16 +31,6 @@ namespace Csla.Rules
       }
     }
 
-    // reference to current business object
-    [NonSerialized]
-    private IHostRules _target;
-    // reference to per-type rules manager for this object
-    [NonSerialized]
-    private BusinessRuleManager _typeRules;
-    // async rules currently executing
-    [NonSerialized]
-    private ObservableCollection<RuleContext> _validatingRules;
-
     private int _processThroughPriority;
     /// <summary>
     /// Gets or sets the priority through which
@@ -52,12 +42,29 @@ namespace Csla.Rules
       set { _processThroughPriority = value; }
     }
 
+    private string _ruleSet = null;
+    /// <summary>
+    /// Gets or sets the rule set to use for this
+    /// business object instance.
+    /// </summary>
+    public string RuleSet
+    {
+      get { return string.IsNullOrEmpty(_ruleSet) ? "default" : _ruleSet; }
+      set 
+      {
+        _typeRules = null;
+        _ruleSet = value == "default" ? null : value; 
+      }
+    }
+
+    [NonSerialized]
+    private BusinessRuleManager _typeRules;
     private BusinessRuleManager TypeRules
     {
       get
       {
         if (_typeRules == null && _target != null)
-          _typeRules = BusinessRuleManager.GetRulesForType(_target.GetType());
+          _typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), _ruleSet);
         return _typeRules;
       }
     }
@@ -75,16 +82,9 @@ namespace Csla.Rules
       return result.ToArray();
     }
 
-    internal ObservableCollection<RuleContext> ValidatingRules
-    {
-      get
-      {
-        if (_validatingRules == null)
-          _validatingRules = new ObservableCollection<RuleContext>();
-
-        return _validatingRules;
-      }
-    }
+    // reference to current business object
+    [NonSerialized]
+    private IHostRules _target;
 
     internal void SetTarget(IHostRules target)
     {
@@ -381,6 +381,7 @@ namespace Csla.Rules
     /// Adds validation rules corresponding to property
     /// data annotation attributes.
     /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void AddDataAnnotations()
     {
       Type metadataType;

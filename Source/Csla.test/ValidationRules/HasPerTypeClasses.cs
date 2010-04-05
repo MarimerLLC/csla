@@ -76,4 +76,35 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
   }
+
+  public class HasRuleSetRules : Csla.BusinessBase<HasRuleSetRules>
+  {
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.RuleSet = "test";
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 5));
+    }
+
+    public string[] GetDefaultRules()
+    {
+      BusinessRules.RuleSet = "default";
+      return BusinessRules.GetRuleDescriptions();
+    }
+
+    public string[] GetTestRules()
+    {
+      BusinessRules.RuleSet = "test";
+      return BusinessRules.GetRuleDescriptions();
+    }
+  }
 }

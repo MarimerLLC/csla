@@ -89,5 +89,38 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void LoadRuleSets()
+    {
+      UnitTestContext context = GetContext();
+      ApplicationContext.GlobalContext.Clear();
+
+      var root = new HasRuleSetRules();
+
+      var d = root.GetDefaultRules();
+      context.Assert.AreEqual(1, d.Length);
+      
+      root.Name = "abc";
+      context.Assert.IsTrue(root.IsValid, "valid with name");
+      root.Name = "123456";
+      context.Assert.IsTrue(root.IsValid, "valid with long name");
+      root.Name = "";
+      context.Assert.IsFalse(root.IsValid, "not valid with empty name");
+
+
+      var t = root.GetTestRules();
+      context.Assert.AreEqual(2, t.Length);
+
+      root.Name = "abc";
+      context.Assert.IsTrue(root.IsValid, "valid with name");
+      root.Name = "123456";
+      context.Assert.IsFalse(root.IsValid, "not valid with too long name");
+      root.Name = "";
+      context.Assert.IsFalse(root.IsValid, "not valid with empty name");
+
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 }

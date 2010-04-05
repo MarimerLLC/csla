@@ -268,5 +268,35 @@ namespace Csla.Rules
       foreach (var item in list)
         Add(item);
     }
- }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("_errorCount", _errorCount);
+      info.AddValue("_warnCount", _warnCount);
+      info.AddValue("_infoCount", _infoCount);
+      base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _errorCount = info.GetValue<int>("_errorCount");
+      _warnCount = info.GetValue<int>("_warnCount");
+      _infoCount = info.GetValue<int>("_infoCount");
+      base.OnSetState(info);
+    }
+  }
 }

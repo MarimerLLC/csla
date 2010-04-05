@@ -490,8 +490,17 @@ namespace Csla.Rules
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
+      info.AddValue("_ruleSet", _ruleSet);
 #if SILVERLIGHT
-      OnGetStatePartial(info, mode);
+      if (mode == StateMode.Serialization)
+      {
+        if (_stateStack.Count > 0)
+        {
+          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+          byte[] xml = MobileFormatter.Serialize(list);
+          info.AddValue("_stateStack", xml);
+        }
+      }
 #endif
       base.OnGetState(info, mode);
     }
@@ -509,8 +518,22 @@ namespace Csla.Rules
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
+      _ruleSet = info.GetValue<string>("_ruleSet");
 #if SILVERLIGHT
-      OnSetStatePartial(info, mode);
+      if (mode == StateMode.Serialization)
+      {
+        _stateStack.Clear();
+
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          byte[] xml = info.GetValue<byte[]>("_stateStack");
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
+      }
 #endif
       base.OnSetState(info, mode);
     }
@@ -558,54 +581,6 @@ namespace Csla.Rules
 
       base.OnSetChildren(info, formatter);
     }
-
-#if SILVERLIGHT
-    /// <summary>
-    /// Gets the object state.
-    /// </summary>
-    /// <param name="info">Serialization info</param>
-    /// <param name="mode">Serialization mode</param>
-    protected virtual void OnGetStatePartial(SerializationInfo info, StateMode mode)
-    {
-      if (mode == StateMode.Serialization)
-      {
-        if (_stateStack.Count > 0)
-        {
-          MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
-          byte[] xml = MobileFormatter.Serialize(list);
-          info.AddValue("_stateStack", xml);
-        }
-      }
-
-      base.OnGetState(info, mode);
-    }
-
-    /// <summary>
-    /// Sets the object state.
-    /// </summary>
-    /// <param name="info">Serialization info</param>
-    /// <param name="mode">Serialization mode</param>
-    protected virtual void OnSetStatePartial(SerializationInfo info, StateMode mode)
-    {
-      if (mode == StateMode.Serialization)
-      {
-        _stateStack.Clear();
-
-        if (info.Values.ContainsKey("_stateStack"))
-        {
-          //string xml = info.GetValue<string>("_stateStack");
-          byte[] xml = info.GetValue<byte[]>("_stateStack");
-          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
-          SerializationInfo[] layers = list.ToArray();
-          Array.Reverse(layers);
-          foreach (SerializationInfo layer in layers)
-            _stateStack.Push(layer);
-        }
-      }
-
-      base.OnSetState(info, mode);
-    }
-#endif
     #endregion
   }
 }

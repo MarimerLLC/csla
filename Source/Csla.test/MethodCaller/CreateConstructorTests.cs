@@ -30,25 +30,26 @@ namespace Csla.Test.MethodCaller
 #endif
     }
 
-    [TestMethod]
-    [System.ComponentModel.Description("This test does not pass, which tells me the Activator is actually faster than the MethodCaller.")]
-    public void CreateInstanceWithExpressionsFasterThanActivatorSuccess()
-    {
-      int times = 1000000;
-      var start = DateTime.Now;
-      for(int x=0;x<times;x++)
-        Csla.Reflection.MethodCaller.CreateInstance(typeof(TestClass));
-      var end = DateTime.Now;
-      var t1 = end - start;
+    // RDL: removed, because it is too inconsistent to be reliable
+    //[TestMethod]
+    //[System.ComponentModel.Description("This test does not pass, which tells me the Activator is actually faster than the MethodCaller.")]
+    //public void CreateInstanceWithExpressionsFasterThanActivatorSuccess()
+    //{
+    //  int times = 1000000;
+    //  var start = DateTime.Now;
+    //  for(int x=0;x<times;x++)
+    //    Csla.Reflection.MethodCaller.CreateInstance(typeof(TestClass));
+    //  var end = DateTime.Now;
+    //  var t1 = end - start;
 
-      start = DateTime.Now;
-      for (int x = 0; x < times; x++)
-        Activator.CreateInstance(typeof(TestClass));
-      end = DateTime.Now;
-      var t2 = end - start;
+    //  start = DateTime.Now;
+    //  for (int x = 0; x < times; x++)
+    //    Activator.CreateInstance(typeof(TestClass));
+    //  end = DateTime.Now;
+    //  var t2 = end - start;
 
-      Assert.IsTrue(t1 < t2);
-    }
+    //  Assert.IsTrue(t1 < t2);
+    //}
 
     [TestMethod]
     [ExpectedException(typeof(NotSupportedException))]

@@ -375,4 +375,44 @@ namespace Csla.Rules.CommonRules
       context.AddInformationResult(DefaultDescription);
     }
   }
+
+  /// <summary>
+  /// A business rule defined by a lambda expression.
+  /// </summary>
+  public class Lambda : BusinessRule
+  {
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="rule">Rule implementation.</param>
+    public Lambda(Action<RuleContext> rule)
+    {
+      Rule = rule;
+      base.RuleUri.AddQueryParameter("r", Rule.GetHashCode().ToString());
+    }
+    
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Primary property for the rule.</param>
+    /// <param name="rule">Rule implementation.</param>
+    public Lambda(Csla.Core.IPropertyInfo primaryProperty, Action<RuleContext> rule)
+      : base(primaryProperty)
+    {
+      Rule = rule;
+      base.RuleUri.AddQueryParameter("r", Rule.GetHashCode().ToString());
+    }
+
+    private Action<RuleContext> Rule { get; set; }
+
+    /// <summary>
+    /// Executes the rule.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
+    protected override void Execute(RuleContext context)
+    {
+      Rule(context);
+    }
+  }
+
 }

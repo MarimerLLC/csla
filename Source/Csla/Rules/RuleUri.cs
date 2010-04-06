@@ -81,9 +81,9 @@ namespace Csla.Rules
     {
       var uriText = ToString();
       if (uriText.Contains("?"))
-        uriText = uriText + "&" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
+        uriText = uriText + "&" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
       else
-        uriText = uriText + "?" + Uri.EscapeDataString(key) + "=" + Uri.EscapeDataString(value);
+        uriText = uriText + "?" + Uri.EscapeUriString(key) + "=" + Uri.EscapeUriString(value);
       _uri = new Uri(uriText);
     }
 

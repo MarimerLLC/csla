@@ -438,13 +438,6 @@ namespace Csla.Properties {
             }
         }
         
-        public static System.Drawing.Icon favicon {
-            get {
-                object obj = ResourceManager.GetObject("favicon", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
         /// <summary>
         ///   Looks up a localized string similar to Fetch method name not specified in MobileFactory attribute.
         /// </summary>
@@ -496,6 +489,15 @@ namespace Csla.Properties {
         public static string IManagePropertiesRequiredException {
             get {
                 return ResourceManager.GetString("IManagePropertiesRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indexed expressions must be closed.
+        /// </summary>
+        public static string IndexedExpressionsMustBeClosed {
+            get {
+                return ResourceManager.GetString("IndexedExpressionsMustBeClosed", resourceCulture);
             }
         }
         
@@ -608,6 +610,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property..
+        /// </summary>
+        public static string NavigatorProviderSetPriorToTriggerEvent {
+            get {
+                return ResourceManager.GetString("NavigatorProviderSetPriorToTriggerEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ApplyEdit is not valid on a child object.
         /// </summary>
         public static string NoApplyEditChildException {
@@ -716,6 +727,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can not set property if data object is not null.
+        /// </summary>
+        public static string ObjectNotNull {
+            get {
+                return ResourceManager.GetString("ObjectNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object not serializable ({0}).
         /// </summary>
         public static string ObjectNotSerializableFormatted {
@@ -779,6 +799,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified property name &apos;{0}&apos; does not exist.
+        /// </summary>
+        public static string PropertyNameDoesNotExist {
+            get {
+                return ResourceManager.GetString("PropertyNameDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more properties are not registered for this type.
         /// </summary>
         public static string PropertyNotRegistered {
@@ -793,6 +822,15 @@ namespace Csla.Properties {
         public static string PropertyRegisterNotAllowed {
             get {
                 return ResourceManager.GetString("PropertyRegisterNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This property requires {0} index arguments, {1} were provided.
+        /// </summary>
+        public static string PropertyRequiresIndexArguments {
+            get {
+                return ResourceManager.GetString("PropertyRequiresIndexArguments", resourceCulture);
             }
         }
         

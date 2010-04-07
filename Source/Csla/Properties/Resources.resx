@@ -387,10 +387,6 @@
   <data name="BindingSourceNotProvided" xml:space="preserve">
     <value>A root binding source has not been provided.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\favicon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MemberNotFoundException" xml:space="preserve">
     <value>Member not found on object ({0})</value>
   </data>
@@ -438,5 +434,25 @@
   </data>
   <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
     <value>PropertyName '{0}' not found in list</value>
+  </data>
+  <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
+    <value>Indexed expressions must be closed</value>
+    <comment>Csla.Silverlight</comment>
+  </data>
+  <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
+    <value>Please set NavigatorProvider prior to TriggerEvent property.</value>
+    <comment>Csla.Silverlight</comment>
+  </data>
+  <data name="ObjectNotNull" xml:space="preserve">
+    <value>Can not set property if data object is not null</value>
+    <comment>Csla.Silverlight</comment>
+  </data>
+  <data name="PropertyNameDoesNotExist" xml:space="preserve">
+    <value>The specified property name '{0}' does not exist</value>
+    <comment>Csla.Silverlight</comment>
+  </data>
+  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
+    <value>This property requires {0} index arguments, {1} were provided</value>
+    <comment>Csla.Silverlight</comment>
   </data>
 </root>

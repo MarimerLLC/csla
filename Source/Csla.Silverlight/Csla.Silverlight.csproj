@@ -211,6 +211,9 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\BrokenRule.cs">
       <Link>Rules\BrokenRule.cs</Link>
     </Compile>
@@ -474,11 +477,6 @@
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="PropertyLoaderException.cs" />
     <Compile Include="ReadOnlyBindingListBase.cs" />
     <Compile Include="..\Csla\ReadOnlyBase.cs">
@@ -557,38 +555,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources-il.resx" />
-    <EmbeddedResource Include="Properties\Resources.ar.resx" />
-    <EmbeddedResource Include="Properties\Resources.bs.resx" />
-    <EmbeddedResource Include="Properties\Resources.ca-ES.resx" />
-    <EmbeddedResource Include="Properties\Resources.da.resx" />
-    <EmbeddedResource Include="Properties\Resources.de.resx" />
-    <EmbeddedResource Include="Properties\Resources.el.resx" />
-    <EmbeddedResource Include="Properties\Resources.es-ES.resx" />
-    <EmbeddedResource Include="Properties\Resources.es.resx" />
-    <EmbeddedResource Include="Properties\Resources.fr.resx" />
-    <EmbeddedResource Include="Properties\Resources.hr.resx" />
-    <EmbeddedResource Include="Properties\Resources.hu.resx" />
-    <EmbeddedResource Include="Properties\Resources.it.resx" />
-    <EmbeddedResource Include="Properties\Resources.km-KH.resx" />
-    <EmbeddedResource Include="Properties\Resources.nl.resx" />
-    <EmbeddedResource Include="Properties\Resources.no.resx" />
-    <EmbeddedResource Include="Properties\Resources.pt-br.resx" />
-    <EmbeddedResource Include="Properties\Resources.pt.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ro.resx" />
-    <EmbeddedResource Include="Properties\Resources.ru.resx" />
-    <EmbeddedResource Include="Properties\Resources.sr.resx" />
-    <EmbeddedResource Include="Properties\Resources.sv.resx" />
-    <EmbeddedResource Include="Properties\Resources.vi.resx" />
-    <EmbeddedResource Include="Properties\Resources.zh-CHS.resx" />
-    <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -622,6 +588,86 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Csla\Properties\Resources-il.resx">
+      <Link>Properties\Resources-il.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.ar.resx">
+      <Link>Properties\Resources.ar.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.bs.resx">
+      <Link>Properties\Resources.bs.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.ca-ES.resx">
+      <Link>Properties\Resources.ca-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.da.resx">
+      <Link>Properties\Resources.da.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.de.resx">
+      <Link>Properties\Resources.de.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.el.resx">
+      <Link>Properties\Resources.el.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.es-ES.resx">
+      <Link>Properties\Resources.es-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.es.resx">
+      <Link>Properties\Resources.es.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.fr.resx">
+      <Link>Properties\Resources.fr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.hr.resx">
+      <Link>Properties\Resources.hr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.hu.resx">
+      <Link>Properties\Resources.hu.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.it.resx">
+      <Link>Properties\Resources.it.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.km-KH.resx">
+      <Link>Properties\Resources.km-KH.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.nl.resx">
+      <Link>Properties\Resources.nl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.no.resx">
+      <Link>Properties\Resources.no.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.pt-br.resx">
+      <Link>Properties\Resources.pt-br.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.pt.resx">
+      <Link>Properties\Resources.pt.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.ro.resx">
+      <Link>Properties\Resources.ro.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.ru.resx">
+      <Link>Properties\Resources.ru.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.sr.resx">
+      <Link>Properties\Resources.sr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.sv.resx">
+      <Link>Properties\Resources.sv.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.vi.resx">
+      <Link>Properties\Resources.vi.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-CHS.resx">
+      <Link>Properties\Resources.zh-CHS.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-TW.resx">
+      <Link>Properties\Resources.zh-TW.resx</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

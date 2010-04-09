@@ -39,6 +39,7 @@ namespace Csla.Rules
       set
       {
         _primaryProperty = value;
+        this.RuleUri = new RuleUri(this, value);
         if (_primaryProperty != null)
           AffectedProperties.Add(_primaryProperty);
       }

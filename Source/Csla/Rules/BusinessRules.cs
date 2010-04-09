@@ -228,6 +228,21 @@ namespace Csla.Rules
     {
       var oldRR = RunningRules;
       RunningRules = true;
+
+      var affectedProperties = new List<string>();
+      affectedProperties.AddRange(CheckRulesForProperty(property, true));
+
+      RunningRules = oldRR;
+      if (!RunningRules && !RunningAsyncRules)
+        _target.AllRulesComplete();
+      return affectedProperties.Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Invokes all rules for a specific property.
+    /// </summary>
+    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade)
+    {
       var rules = from r in TypeRules.RuleMethods
                   where ReferenceEquals(r.PrimaryProperty, property)
                   orderby r.Priority
@@ -235,9 +250,20 @@ namespace Csla.Rules
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
       affectedProperties.AddRange(RunRules(rules));
-      RunningRules = oldRR;
-      if (!RunningRules && !RunningAsyncRules)
-        _target.AllRulesComplete();
+
+      if (cascade)
+      {
+        // get properties affected by all rules
+        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        foreach (var item in rules)
+          foreach (var p in item.AffectedProperties)
+            if (!ReferenceEquals(property, p))
+              propertiesToRun.Add(p);
+        // run rules for affected properties
+        foreach (var item in propertiesToRun.Distinct())
+          CheckRulesForProperty(item, false);
+      }
+
       return affectedProperties.Distinct().ToList();
     }
 

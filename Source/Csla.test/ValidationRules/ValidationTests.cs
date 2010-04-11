@@ -384,6 +384,19 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void PrivateField()
+    {
+      UnitTestContext context = GetContext();
+      var root = new HasPrivateFields();
+      root.Validate();
+      context.Assert.IsFalse(root.IsValid);
+      root.Name = "abc";
+      context.Assert.IsTrue(root.IsValid);
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 
   [Serializable]
@@ -418,6 +431,37 @@ namespace Csla.Test.ValidationRules
       {
         throw new InvalidOperationException();
       }
+    }
+  }
+
+  [Serializable]
+  public class HasPrivateFields : BusinessBase<HasPrivateFields>
+  {
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    private string _name = NameProperty.DefaultValue;
+    public string Name
+    {
+      get { return GetProperty(NameProperty, _name); }
+      set { SetProperty(NameProperty, ref _name, value); }
+    }
+
+    public void Validate()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    protected override object ReadProperty(Core.IPropertyInfo propertyInfo)
+    {
+      if (ReferenceEquals(propertyInfo, NameProperty))
+        return _name;
+      else
+        return base.ReadProperty(propertyInfo);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
     }
   }
 }

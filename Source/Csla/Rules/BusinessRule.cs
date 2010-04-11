@@ -114,9 +114,6 @@ namespace Csla.Rules
     /// supplied value calling PropertyHasChanged 
     /// if the value does change.
     /// </summary>
-    /// <typeparam name="P">
-    /// Type of the property.
-    /// </typeparam>
     /// <param name="obj">
     /// Object on which to call the method. 
     /// </param>
@@ -130,11 +127,11 @@ namespace Csla.Rules
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
+    protected void LoadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo, object newValue)
     {
       var target = obj as Core.IManageProperties;
       if (target != null)
-        target.LoadProperty<P>(propertyInfo, newValue);
+        target.LoadProperty(propertyInfo, newValue);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
     }
@@ -142,7 +139,6 @@ namespace Csla.Rules
     /// <summary>
     /// Reads a property's managed field value.
     /// </summary>
-    /// <typeparam name="P"></typeparam>
     /// <param name="obj">
     /// Object on which to call the method. 
     /// </param>
@@ -151,7 +147,7 @@ namespace Csla.Rules
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected P ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
+    protected object ReadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo)
     {
       var target = obj as Core.IManageProperties;
       if (target != null)

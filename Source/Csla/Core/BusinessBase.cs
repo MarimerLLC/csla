@@ -1856,7 +1856,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected object ReadProperty(IPropertyInfo propertyInfo)
+    protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
@@ -2449,7 +2449,7 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       ResetChildEditLevel(newValue);
       FieldManager.LoadFieldData(propertyInfo, newValue);

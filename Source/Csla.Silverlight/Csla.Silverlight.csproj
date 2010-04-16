@@ -91,13 +91,6 @@
     <Reference Include="mscorlib" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Controls.Data, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Windows.Interactivity">
-      <HintPath>..\Dependencies\Expression\Silverlight\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="System.Xml.Linq, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -388,36 +381,6 @@
     <Compile Include="..\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
-      <Link>Xaml\ErrorEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\Execute.cs">
-      <Link>Xaml\Execute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
-      <Link>Xaml\ExecuteEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\IErrorDialog.cs">
-      <Link>Xaml\IErrorDialog.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\InvokeMethod.cs">
-      <Link>Xaml\InvokeMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\IsNotConverter.cs">
-      <Link>Xaml\IsNotConverter.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\IViewModel.cs">
-      <Link>Xaml\IViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\TriggerAction.cs">
-      <Link>Xaml\TriggerAction.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModel.cs">
-      <Link>Xaml\ViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
-      <Link>Xaml\ViewModelBase.cs</Link>
-    </Compile>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
     <Compile Include="BusinessBindingListBase.cs" />
@@ -492,30 +455,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Xaml\BoomarkInformation.cs" />
-    <Compile Include="Xaml\ControlNameFactory.cs" />
-    <Compile Include="Xaml\ErrorDialog.cs" />
-    <Compile Include="Xaml\IControlNameFactory.cs" />
-    <Compile Include="Xaml\ISupportNavigation.cs" />
-    <Compile Include="Xaml\NavigationBookmarkProcessedEventArgs.cs" />
-    <Compile Include="Xaml\NavigationEventArgs.cs" />
-    <Compile Include="Xaml\Navigator.cs" />
-    <Compile Include="Xaml\NavigatorProvider.cs" />
-    <Compile Include="Xaml\ValidatedDataGridCheckBoxColumn.cs" />
-    <Compile Include="Xaml\CslaDataProvider.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialization\SerializationAttribute.cs" />
-    <Compile Include="Xaml\ValidatedDataGridColumn.cs" />
-    <Compile Include="Xaml\ValidatedDataGridTextColumn.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="Threading\Semaphore.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="Xaml\BusyAnimation.cs" />
-    <Compile Include="Xaml\ObjectStatus.cs" />
-    <Compile Include="Xaml\BrokenRuleSeverityConverter.cs" />
-    <Compile Include="Xaml\PropertyStatus.cs" />
-    <Compile Include="Xaml\VisualTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
@@ -535,10 +480,6 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <Content Include="ServiceReferences.ClientConfig" />
-    <Page Include="themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

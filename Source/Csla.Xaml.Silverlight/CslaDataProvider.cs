@@ -540,7 +540,7 @@ namespace Csla.Xaml
       try
       {
         var obj = ObjectInstance as Csla.Core.BusinessBase;
-        if (obj != null && !obj.IsChild)
+        if (obj != null)
         {
           IsBusy = true;
           obj.Delete();

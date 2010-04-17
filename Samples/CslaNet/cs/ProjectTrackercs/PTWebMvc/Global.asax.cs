@@ -29,6 +29,7 @@ namespace PTWebMvc
     protected void Application_Start()
     {
       RegisterRoutes(RouteTable.Routes);
+      ModelBinders.Binders.DefaultBinder = new Csla.Web.Mvc.CslaModelBinder();
     }
 
     protected void Application_AcquireRequestState(

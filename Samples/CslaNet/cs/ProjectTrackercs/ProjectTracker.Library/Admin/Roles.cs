@@ -50,7 +50,7 @@ namespace ProjectTracker.Library
         return null;
       }
 
-      protected override object AddNewCore()
+      protected override Role AddNewCore()
       {
         Role item = Role.NewRole();
         Add(item);

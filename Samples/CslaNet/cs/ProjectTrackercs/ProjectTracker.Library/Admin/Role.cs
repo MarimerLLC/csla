@@ -57,28 +57,24 @@ namespace ProjectTracker.Library.Admin
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<Role>(NoDuplicates, IdProperty);
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, NameProperty);
+      BusinessRules.AddRule(new NoDuplicates { PrimaryProperty = IdProperty });
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
     }
 
-    private static bool NoDuplicates<T>(
-      T target, Csla.Validation.RuleArgs e) where T : Role
+    private class NoDuplicates : Csla.Rules.BusinessRule
     {
-      Roles parent = (Roles)target.Parent;
-      if (parent != null)
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
-        foreach (Role item in parent)
-        {
-          if (item.Id == target.ReadProperty(IdProperty) &&
-            !(ReferenceEquals(item, target)))
-          {
-            e.Description = "Role Id must be unique";
-            return false;
-          }
-        }
+        var target = (Role)context.Target;
+        Roles parent = (Roles)target.Parent;
+        if (parent != null)
+          foreach (Role item in parent)
+            if (item.Id == target.ReadProperty(IdProperty) && !(ReferenceEquals(item, target)))
+            {
+              context.AddErrorResult("Role Id must be unique");
+              break;
+            }
       }
-      return true;
     }
 
     #endregion

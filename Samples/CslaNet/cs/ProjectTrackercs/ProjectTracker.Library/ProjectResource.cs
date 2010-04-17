@@ -73,8 +73,7 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule<ProjectResource>(
-        Assignment.ValidRole, RoleProperty);
+      BusinessRules.AddRule(new Assignment.ValidRole { PrimaryProperty = RoleProperty });
     }
 
     #endregion

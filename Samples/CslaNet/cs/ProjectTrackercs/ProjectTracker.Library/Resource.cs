@@ -71,15 +71,11 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, FirstNameProperty);
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength,
-        new Csla.Validation.CommonRules.MaxLengthRuleArgs(FirstNameProperty, 50));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FirstNameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(FirstNameProperty, 50));
 
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, LastNameProperty);
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength,
-        new Csla.Validation.CommonRules.MaxLengthRuleArgs(LastNameProperty, 50));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
     }
 
     #endregion
@@ -204,7 +200,7 @@ namespace ProjectTracker.Library
     }
 
     [Serializable()]
-    private class ExistsCommand : CommandBase
+    private class ExistsCommand : CommandBase<ExistsCommand>
     {
       private int _id;
       private bool _exists;

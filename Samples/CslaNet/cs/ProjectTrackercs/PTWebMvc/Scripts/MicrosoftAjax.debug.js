@@ -1,7 +1,7 @@
 ﻿// Name:        MicrosoftAjax.debug.js
 // Assembly:    System.Web.Extensions
-// Version:     3.5.0.0
-// FileVersion: 3.5.30729.1
+// Version:     4.0.0.0
+// FileVersion: 4.0.20526.0
 //-----------------------------------------------------------------------
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------
@@ -49,20 +49,37 @@ Function.createDelegate = function Function$createDelegate(instance, method) {
 }
 Function.emptyFunction = Function.emptyMethod = function Function$emptyMethod() {
     /// <summary locid="M:J#Function.emptyMethod" />
-    if (arguments.length !== 0) throw Error.parameterCount();
 }
-Function._validateParams = function Function$_validateParams(params, expectedParams) {
-    var e;
-    e = Function._validateParameterCount(params, expectedParams);
+Function.validateParameters = function Function$validateParameters(parameters, expectedParameters, validateParameterCount) {
+    /// <summary locid="M:J#Function.validateParameters" />
+    /// <param name="parameters"></param>
+    /// <param name="expectedParameters"></param>
+    /// <param name="validateParameterCount" type="Boolean" optional="true"></param>
+    /// <returns type="Error" mayBeNull="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "parameters"},
+        {name: "expectedParameters"},
+        {name: "validateParameterCount", type: Boolean, optional: true}
+    ]);
+    if (e) throw e;
+    return Function._validateParams(parameters, expectedParameters, validateParameterCount);
+}
+Function._validateParams = function Function$_validateParams(params, expectedParams, validateParameterCount) {
+    var e, expectedLength = expectedParams.length;
+    validateParameterCount = validateParameterCount || (typeof(validateParameterCount) === "undefined");
+    e = Function._validateParameterCount(params, expectedParams, validateParameterCount);
     if (e) {
         e.popStackFrame();
         return e;
     }
-    for (var i=0; i < params.length; i++) {
-        var expectedParam = expectedParams[Math.min(i, expectedParams.length - 1)];
-        var paramName = expectedParam.name;
+    for (var i = 0, l = params.length; i < l; i++) {
+        var expectedParam = expectedParams[Math.min(i, expectedLength - 1)],
+            paramName = expectedParam.name;
         if (expectedParam.parameterArray) {
-            paramName += "[" + (i - expectedParams.length + 1) + "]";
+            paramName += "[" + (i - expectedLength + 1) + "]";
+        }
+        else if (!validateParameterCount && (i >= expectedLength)) {
+            break;
         }
         e = Function._validateParameter(params[i], expectedParam, paramName);
         if (e) {
@@ -72,18 +89,32 @@ Function._validateParams = function Function$_validateParams(params, expectedPar
     }
     return null;
 }
-Function._validateParameterCount = function Function$_validateParameterCount(params, expectedParams) {
-    var maxParams = expectedParams.length;
-    var minParams = 0;
-    for (var i=0; i < expectedParams.length; i++) {
-        if (expectedParams[i].parameterArray) {
-            maxParams = Number.MAX_VALUE;
-        }
-        else if (!expectedParams[i].optional) {
-            minParams++;
+Function._validateParameterCount = function Function$_validateParameterCount(params, expectedParams, validateParameterCount) {
+    var i, error,
+        expectedLen = expectedParams.length,
+        actualLen = params.length;
+    if (actualLen < expectedLen) {
+        var minParams = expectedLen;
+        for (i = 0; i < expectedLen; i++) {
+            var param = expectedParams[i];
+            if (param.optional || param.parameterArray) {
+                minParams--;
+            }
+        }        
+        if (actualLen < minParams) {
+            error = true;
         }
     }
-    if (params.length < minParams || params.length > maxParams) {
+    else if (validateParameterCount && (actualLen > expectedLen)) {
+        error = true;      
+        for (i = 0; i < expectedLen; i++) {
+            if (expectedParams[i].parameterArray) {
+                error = false; 
+                break;
+            }
+        }  
+    }
+    if (error) {
         var e = Error.parameterCount();
         e.popStackFrame();
         return e;
@@ -91,22 +122,22 @@ Function._validateParameterCount = function Function$_validateParameterCount(par
     return null;
 }
 Function._validateParameter = function Function$_validateParameter(param, expectedParam, paramName) {
-    var e;
-    var expectedType = expectedParam.type;
-    var expectedInteger = !!expectedParam.integer;
-    var expectedDomElement = !!expectedParam.domElement;
-    var mayBeNull = !!expectedParam.mayBeNull;
+    var e,
+        expectedType = expectedParam.type,
+        expectedInteger = !!expectedParam.integer,
+        expectedDomElement = !!expectedParam.domElement,
+        mayBeNull = !!expectedParam.mayBeNull;
     e = Function._validateParameterType(param, expectedType, expectedInteger, expectedDomElement, mayBeNull, paramName);
     if (e) {
         e.popStackFrame();
         return e;
     }
-    var expectedElementType = expectedParam.elementType;
-    var elementMayBeNull = !!expectedParam.elementMayBeNull;
+    var expectedElementType = expectedParam.elementType,
+        elementMayBeNull = !!expectedParam.elementMayBeNull;
     if (expectedType === Array && typeof(param) !== "undefined" && param !== null &&
         (expectedElementType || !elementMayBeNull)) {
-        var expectedElementInteger = !!expectedParam.elementInteger;
-        var expectedElementDomElement = !!expectedParam.elementDomElement;
+        var expectedElementInteger = !!expectedParam.elementInteger,
+            expectedElementDomElement = !!expectedParam.elementDomElement;
         for (var i=0; i < param.length; i++) {
             var elem = param[i];
             e = Function._validateParameterType(elem, expectedElementType,
@@ -121,7 +152,7 @@ Function._validateParameter = function Function$_validateParameter(param, expect
     return null;
 }
 Function._validateParameterType = function Function$_validateParameterType(param, expectedType, expectedInteger, expectedDomElement, mayBeNull, paramName) {
-    var e;
+    var e, i;
     if (typeof(param) === "undefined") {
         if (mayBeNull) {
             return null;
@@ -151,13 +182,13 @@ Function._validateParameterType = function Function$_validateParameterType(param
         if ((param % 1) === 0) {
             var values = expectedType.prototype;
             if (!expectedType.__flags || (param === 0)) {
-                for (var i in values) {
+                for (i in values) {
                     if (values[i] === param) return null;
                 }
             }
             else {
                 var v = param;
-                for (var i in values) {
+                for (i in values) {
                     var vali = values[i];
                     if (vali === 0) continue;
                     if ((vali & param) === vali) {
@@ -171,28 +202,12 @@ Function._validateParameterType = function Function$_validateParameterType(param
         e.popStackFrame();
         return e;
     }
-    if (expectedDomElement) {
-        var val;
-        if (typeof(param.nodeType) !== 'number') {
-            var doc = param.ownerDocument || param.document || param;
-            if (doc != param) {
-                var w = doc.defaultView || doc.parentWindow;
-                val = (w != param) && !(w.document && param.document && (w.document === param.document));
-            }
-            else {
-                val = (typeof(doc.body) === 'undefined');
-            }
-        }
-        else {
-            val = (param.nodeType === 3);
-        }
-        if (val) {
-            e = Error.argument(paramName, Sys.Res.argumentDomElement);
-            e.popStackFrame();
-            return e;
-        }
+    if (expectedDomElement && (!Sys._isDomElement(param) || (param.nodeType === 3))) {
+        e = Error.argument(paramName, Sys.Res.argumentDomElement);
+        e.popStackFrame();
+        return e;
     }
-    if (expectedType && !expectedType.isInstanceOfType(param)) {
+    if (expectedType && !Sys._isInstanceOfType(expectedType, param)) {
         e = Error.argumentType(paramName, Object.getType(param), expectedType);
         e.popStackFrame();
         return e;
@@ -219,15 +234,15 @@ Error.create = function Error$create(message, errorInfo) {
         {name: "errorInfo", mayBeNull: true, optional: true}
     ]);
     if (e) throw e;
-    var e = new Error(message);
-    e.message = message;
+    var err = new Error(message);
+    err.message = message;
     if (errorInfo) {
         for (var v in errorInfo) {
-            e[v] = errorInfo[v];
+            err[v] = errorInfo[v];
         }
     }
-    e.popStackFrame();
-    return e;
+    err.popStackFrame();
+    return err;
 }
 Error.argument = function Error$argument(paramName, message) {
     /// <summary locid="M:J#Error.argument" />
@@ -243,9 +258,9 @@ Error.argument = function Error$argument(paramName, message) {
     if (paramName) {
         displayMessage += "\n" + String.format(Sys.Res.paramName, paramName);
     }
-    var e = Error.create(displayMessage, { name: "Sys.ArgumentException", paramName: paramName });
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, { name: "Sys.ArgumentException", paramName: paramName });
+    err.popStackFrame();
+    return err;
 }
 Error.argumentNull = function Error$argumentNull(paramName, message) {
     /// <summary locid="M:J#Error.argumentNull" />
@@ -261,9 +276,9 @@ Error.argumentNull = function Error$argumentNull(paramName, message) {
     if (paramName) {
         displayMessage += "\n" + String.format(Sys.Res.paramName, paramName);
     }
-    var e = Error.create(displayMessage, { name: "Sys.ArgumentNullException", paramName: paramName });
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, { name: "Sys.ArgumentNullException", paramName: paramName });
+    err.popStackFrame();
+    return err;
 }
 Error.argumentOutOfRange = function Error$argumentOutOfRange(paramName, actualValue, message) {
     /// <summary locid="M:J#Error.argumentOutOfRange" />
@@ -284,13 +299,13 @@ Error.argumentOutOfRange = function Error$argumentOutOfRange(paramName, actualVa
     if (typeof(actualValue) !== "undefined" && actualValue !== null) {
         displayMessage += "\n" + String.format(Sys.Res.actualValue, actualValue);
     }
-    var e = Error.create(displayMessage, {
+    var err = Error.create(displayMessage, {
         name: "Sys.ArgumentOutOfRangeException",
         paramName: paramName,
         actualValue: actualValue
     });
-    e.popStackFrame();
-    return e;
+    err.popStackFrame();
+    return err;
 }
 Error.argumentType = function Error$argumentType(paramName, actualType, expectedType, message) {
     /// <summary locid="M:J#Error.argumentType" />
@@ -320,14 +335,14 @@ Error.argumentType = function Error$argumentType(paramName, actualType, expected
     if (paramName) {
         displayMessage += "\n" + String.format(Sys.Res.paramName, paramName);
     }
-    var e = Error.create(displayMessage, {
+    var err = Error.create(displayMessage, {
         name: "Sys.ArgumentTypeException",
         paramName: paramName,
         actualType: actualType,
         expectedType: expectedType
     });
-    e.popStackFrame();
-    return e;
+    err.popStackFrame();
+    return err;
 }
 Error.argumentUndefined = function Error$argumentUndefined(paramName, message) {
     /// <summary locid="M:J#Error.argumentUndefined" />
@@ -343,9 +358,9 @@ Error.argumentUndefined = function Error$argumentUndefined(paramName, message) {
     if (paramName) {
         displayMessage += "\n" + String.format(Sys.Res.paramName, paramName);
     }
-    var e = Error.create(displayMessage, { name: "Sys.ArgumentUndefinedException", paramName: paramName });
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, { name: "Sys.ArgumentUndefinedException", paramName: paramName });
+    err.popStackFrame();
+    return err;
 }
 Error.format = function Error$format(message) {
     /// <summary locid="M:J#Error.format" />
@@ -356,9 +371,9 @@ Error.format = function Error$format(message) {
     ]);
     if (e) throw e;
     var displayMessage = "Sys.FormatException: " + (message ? message : Sys.Res.format);
-    var e = Error.create(displayMessage, {name: 'Sys.FormatException'});
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, {name: 'Sys.FormatException'});
+    err.popStackFrame();
+    return err;
 }
 Error.invalidOperation = function Error$invalidOperation(message) {
     /// <summary locid="M:J#Error.invalidOperation" />
@@ -369,9 +384,9 @@ Error.invalidOperation = function Error$invalidOperation(message) {
     ]);
     if (e) throw e;
     var displayMessage = "Sys.InvalidOperationException: " + (message ? message : Sys.Res.invalidOperation);
-    var e = Error.create(displayMessage, {name: 'Sys.InvalidOperationException'});
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, {name: 'Sys.InvalidOperationException'});
+    err.popStackFrame();
+    return err;
 }
 Error.notImplemented = function Error$notImplemented(message) {
     /// <summary locid="M:J#Error.notImplemented" />
@@ -382,9 +397,9 @@ Error.notImplemented = function Error$notImplemented(message) {
     ]);
     if (e) throw e;
     var displayMessage = "Sys.NotImplementedException: " + (message ? message : Sys.Res.notImplemented);
-    var e = Error.create(displayMessage, {name: 'Sys.NotImplementedException'});
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, {name: 'Sys.NotImplementedException'});
+    err.popStackFrame();
+    return err;
 }
 Error.parameterCount = function Error$parameterCount(message) {
     /// <summary locid="M:J#Error.parameterCount" />
@@ -395,9 +410,9 @@ Error.parameterCount = function Error$parameterCount(message) {
     ]);
     if (e) throw e;
     var displayMessage = "Sys.ParameterCountException: " + (message ? message : Sys.Res.parameterCount);
-    var e = Error.create(displayMessage, {name: 'Sys.ParameterCountException'});
-    e.popStackFrame();
-    return e;
+    var err = Error.create(displayMessage, {name: 'Sys.ParameterCountException'});
+    err.popStackFrame();
+    return err;
 }
 Error.prototype.popStackFrame = function Error$popStackFrame() {
     /// <summary locid="M:J#checkParam" />
@@ -509,18 +524,6 @@ String.format = function String$format(format, args) {
     if (e) throw e;
     return String._toFormattedString(false, arguments);
 }
-String.localeFormat = function String$localeFormat(format, args) {
-    /// <summary locid="M:J#String.localeFormat" />
-    /// <param name="format" type="String"></param>
-    /// <param name="args" parameterArray="true" mayBeNull="true"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "format", type: String},
-        {name: "args", mayBeNull: true, parameterArray: true}
-    ]);
-    if (e) throw e;
-    return String._toFormattedString(true, arguments);
-}
 String._toFormattedString = function String$_toFormattedString(useLocale, args) {
     var result = '';
     var format = args[0];
@@ -580,7 +583,7 @@ Boolean.parse = function Boolean$parse(value) {
     /// <returns type="Boolean"></returns>
     var e = Function._validateParams(arguments, [
         {name: "value", type: String}
-    ]);
+    ], false);
     if (e) throw e;
     var v = value.trim().toLowerCase();
     if (v === 'false') return false;
@@ -590,936 +593,12 @@ Boolean.parse = function Boolean$parse(value) {
  
 Date.__typeName = 'Date';
 Date.__class = true;
-Date._appendPreOrPostMatch = function Date$_appendPreOrPostMatch(preMatch, strBuilder) {
-    var quoteCount = 0;
-    var escaped = false;
-    for (var i = 0, il = preMatch.length; i < il; i++) {
-        var c = preMatch.charAt(i);
-        switch (c) {
-        case '\'':
-            if (escaped) strBuilder.append("'");
-            else quoteCount++;
-            escaped = false;
-            break;
-        case '\\':
-            if (escaped) strBuilder.append("\\");
-            escaped = !escaped;
-            break;
-        default:
-            strBuilder.append(c);
-            escaped = false;
-            break;
-        }
-    }
-    return quoteCount;
-}
-Date._expandFormat = function Date$_expandFormat(dtf, format) {
-    if (!format) {
-        format = "F";
-    }
-    if (format.length === 1) {
-        switch (format) {
-        case "d":
-            return dtf.ShortDatePattern;
-        case "D":
-            return dtf.LongDatePattern;
-        case "t":
-            return dtf.ShortTimePattern;
-        case "T":
-            return dtf.LongTimePattern;
-        case "F":
-            return dtf.FullDateTimePattern;
-        case "M": case "m":
-            return dtf.MonthDayPattern;
-        case "s":
-            return dtf.SortableDateTimePattern;
-        case "Y": case "y":
-            return dtf.YearMonthPattern;
-        default:
-            throw Error.format(Sys.Res.formatInvalidString);
-        }
-    }
-    return format;
-}
-Date._expandYear = function Date$_expandYear(dtf, year) {
-    if (year < 100) {
-        var curr = new Date().getFullYear();
-        year += curr - (curr % 100);
-        if (year > dtf.Calendar.TwoDigitYearMax) {
-            return year - 100;
-        }
-    }
-    return year;
-}
-Date._getParseRegExp = function Date$_getParseRegExp(dtf, format) {
-    if (!dtf._parseRegExp) {
-        dtf._parseRegExp = {};
-    }
-    else if (dtf._parseRegExp[format]) {
-        return dtf._parseRegExp[format];
-    }
-    var expFormat = Date._expandFormat(dtf, format);
-    expFormat = expFormat.replace(/([\^\$\.\*\+\?\|\[\]\(\)\{\}])/g, "\\\\$1");
-    var regexp = new Sys.StringBuilder("^");
-    var groups = [];
-    var index = 0;
-    var quoteCount = 0;
-    var tokenRegExp = Date._getTokenRegExp();
-    var match;
-    while ((match = tokenRegExp.exec(expFormat)) !== null) {
-        var preMatch = expFormat.slice(index, match.index);
-        index = tokenRegExp.lastIndex;
-        quoteCount += Date._appendPreOrPostMatch(preMatch, regexp);
-        if ((quoteCount%2) === 1) {
-            regexp.append(match[0]);
-            continue;
-        }
-        switch (match[0]) {
-            case 'dddd': case 'ddd':
-            case 'MMMM': case 'MMM':
-                regexp.append("(\\D+)");
-                break;
-            case 'tt': case 't':
-                regexp.append("(\\D*)");
-                break;
-            case 'yyyy':
-                regexp.append("(\\d{4})");
-                break;
-            case 'fff':
-                regexp.append("(\\d{3})");
-                break;
-            case 'ff':
-                regexp.append("(\\d{2})");
-                break;
-            case 'f':
-                regexp.append("(\\d)");
-                break;
-            case 'dd': case 'd':
-            case 'MM': case 'M':
-            case 'yy': case 'y':
-            case 'HH': case 'H':
-            case 'hh': case 'h':
-            case 'mm': case 'm':
-            case 'ss': case 's':
-                regexp.append("(\\d\\d?)");
-                break;
-            case 'zzz':
-                regexp.append("([+-]?\\d\\d?:\\d{2})");
-                break;
-            case 'zz': case 'z':
-                regexp.append("([+-]?\\d\\d?)");
-                break;
-        }
-        Array.add(groups, match[0]);
-    }
-    Date._appendPreOrPostMatch(expFormat.slice(index), regexp);
-    regexp.append("$");
-    var regexpStr = regexp.toString().replace(/\s+/g, "\\s+");
-    var parseRegExp = {'regExp': regexpStr, 'groups': groups};
-    dtf._parseRegExp[format] = parseRegExp;
-    return parseRegExp;
-}
-Date._getTokenRegExp = function Date$_getTokenRegExp() {
-    return /dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z/g;
-}
-Date.parseLocale = function Date$parseLocale(value, formats) {
-    /// <summary locid="M:J#Date.parseLocale" />
-    /// <param name="value" type="String"></param>
-    /// <param name="formats" parameterArray="true" optional="true" mayBeNull="true"></param>
-    /// <returns type="Date"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "value", type: String},
-        {name: "formats", mayBeNull: true, optional: true, parameterArray: true}
-    ]);
-    if (e) throw e;
-    return Date._parse(value, Sys.CultureInfo.CurrentCulture, arguments);
-}
-Date.parseInvariant = function Date$parseInvariant(value, formats) {
-    /// <summary locid="M:J#Date.parseInvariant" />
-    /// <param name="value" type="String"></param>
-    /// <param name="formats" parameterArray="true" optional="true" mayBeNull="true"></param>
-    /// <returns type="Date"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "value", type: String},
-        {name: "formats", mayBeNull: true, optional: true, parameterArray: true}
-    ]);
-    if (e) throw e;
-    return Date._parse(value, Sys.CultureInfo.InvariantCulture, arguments);
-}
-Date._parse = function Date$_parse(value, cultureInfo, args) {
-    var custom = false;
-    for (var i = 1, il = args.length; i < il; i++) {
-        var format = args[i];
-        if (format) {
-            custom = true;
-            var date = Date._parseExact(value, format, cultureInfo);
-            if (date) return date;
-        }
-    }
-    if (! custom) {
-        var formats = cultureInfo._getDateTimeFormats();
-        for (var i = 0, il = formats.length; i < il; i++) {
-            var date = Date._parseExact(value, formats[i], cultureInfo);
-            if (date) return date;
-        }
-    }
-    return null;
-}
-Date._parseExact = function Date$_parseExact(value, format, cultureInfo) {
-    value = value.trim();
-    var dtf = cultureInfo.dateTimeFormat;
-    var parseInfo = Date._getParseRegExp(dtf, format);
-    var match = new RegExp(parseInfo.regExp).exec(value);
-    if (match === null) return null;
-    
-    var groups = parseInfo.groups;
-    var year = null, month = null, date = null, weekDay = null;
-    var hour = 0, min = 0, sec = 0, msec = 0, tzMinOffset = null;
-    var pmHour = false;
-    for (var j = 0, jl = groups.length; j < jl; j++) {
-        var matchGroup = match[j+1];
-        if (matchGroup) {
-            switch (groups[j]) {
-                case 'dd': case 'd':
-                    date = parseInt(matchGroup, 10);
-                    if ((date < 1) || (date > 31)) return null;
-                    break;
-                case 'MMMM':
-                    month = cultureInfo._getMonthIndex(matchGroup);
-                    if ((month < 0) || (month > 11)) return null;
-                    break;
-                case 'MMM':
-                    month = cultureInfo._getAbbrMonthIndex(matchGroup);
-                    if ((month < 0) || (month > 11)) return null;
-                    break;
-                case 'M': case 'MM':
-                    var month = parseInt(matchGroup, 10) - 1;
-                    if ((month < 0) || (month > 11)) return null;
-                    break;
-                case 'y': case 'yy':
-                    year = Date._expandYear(dtf,parseInt(matchGroup, 10));
-                    if ((year < 0) || (year > 9999)) return null;
-                    break;
-                case 'yyyy':
-                    year = parseInt(matchGroup, 10);
-                    if ((year < 0) || (year > 9999)) return null;
-                    break;
-                case 'h': case 'hh':
-                    hour = parseInt(matchGroup, 10);
-                    if (hour === 12) hour = 0;
-                    if ((hour < 0) || (hour > 11)) return null;
-                    break;
-                case 'H': case 'HH':
-                    hour = parseInt(matchGroup, 10);
-                    if ((hour < 0) || (hour > 23)) return null;
-                    break;
-                case 'm': case 'mm':
-                    min = parseInt(matchGroup, 10);
-                    if ((min < 0) || (min > 59)) return null;
-                    break;
-                case 's': case 'ss':
-                    sec = parseInt(matchGroup, 10);
-                    if ((sec < 0) || (sec > 59)) return null;
-                    break;
-                case 'tt': case 't':
-                    var upperToken = matchGroup.toUpperCase();
-                    pmHour = (upperToken === dtf.PMDesignator.toUpperCase());
-                    if (!pmHour && (upperToken !== dtf.AMDesignator.toUpperCase())) return null;
-                    break;
-                case 'f':
-                    msec = parseInt(matchGroup, 10) * 100;
-                    if ((msec < 0) || (msec > 999)) return null;
-                    break;
-                case 'ff':
-                    msec = parseInt(matchGroup, 10) * 10;
-                    if ((msec < 0) || (msec > 999)) return null;
-                    break;
-                case 'fff':
-                    msec = parseInt(matchGroup, 10);
-                    if ((msec < 0) || (msec > 999)) return null;
-                    break;
-                case 'dddd':
-                    weekDay = cultureInfo._getDayIndex(matchGroup);
-                    if ((weekDay < 0) || (weekDay > 6)) return null;
-                    break;
-                case 'ddd':
-                    weekDay = cultureInfo._getAbbrDayIndex(matchGroup);
-                    if ((weekDay < 0) || (weekDay > 6)) return null;
-                    break;
-                case 'zzz':
-                    var offsets = matchGroup.split(/:/);
-                    if (offsets.length !== 2) return null;
-                    var hourOffset = parseInt(offsets[0], 10);
-                    if ((hourOffset < -12) || (hourOffset > 13)) return null;
-                    var minOffset = parseInt(offsets[1], 10);
-                    if ((minOffset < 0) || (minOffset > 59)) return null;
-                    tzMinOffset = (hourOffset * 60) + (matchGroup.startsWith('-')? -minOffset : minOffset);
-                    break;
-                case 'z': case 'zz':
-                    var hourOffset = parseInt(matchGroup, 10);
-                    if ((hourOffset < -12) || (hourOffset > 13)) return null;
-                    tzMinOffset = hourOffset * 60;
-                    break;
-            }
-        }
-    }
-    var result = new Date();
-    if (year === null) {
-        year = result.getFullYear();
-    }
-    if (month === null) {
-        month = result.getMonth();
-    }
-    if (date === null) {
-        date = result.getDate();
-    }
-    result.setFullYear(year, month, date);
-    if (result.getDate() !== date) return null;
-    if ((weekDay !== null) && (result.getDay() !== weekDay)) {
-        return null;
-    }
-    if (pmHour && (hour < 12)) {
-        hour += 12;
-    }
-    result.setHours(hour, min, sec, msec);
-    if (tzMinOffset !== null) {
-        var adjustedMin = result.getMinutes() - (tzMinOffset + result.getTimezoneOffset());
-        result.setHours(result.getHours() + parseInt(adjustedMin/60, 10), adjustedMin%60);
-    }
-    return result;
-}
-Date.prototype.format = function Date$format(format) {
-    /// <summary locid="M:J#Date.format" />
-    /// <param name="format" type="String"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "format", type: String}
-    ]);
-    if (e) throw e;
-    return this._toFormattedString(format, Sys.CultureInfo.InvariantCulture);
-}
-Date.prototype.localeFormat = function Date$localeFormat(format) {
-    /// <summary locid="M:J#Date.localeFormat" />
-    /// <param name="format" type="String"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "format", type: String}
-    ]);
-    if (e) throw e;
-    return this._toFormattedString(format, Sys.CultureInfo.CurrentCulture);
-}
-Date.prototype._toFormattedString = function Date$_toFormattedString(format, cultureInfo) {
-    if (!format || (format.length === 0) || (format === 'i')) {
-        if (cultureInfo && (cultureInfo.name.length > 0)) {
-            return this.toLocaleString();
-        }
-        else {
-            return this.toString();
-        }
-    }
-    var dtf = cultureInfo.dateTimeFormat;
-    format = Date._expandFormat(dtf, format);
-    var ret = new Sys.StringBuilder();
-    var hour;
-    function addLeadingZero(num) {
-        if (num < 10) {
-            return '0' + num;
-        }
-        return num.toString();
-    }
-    function addLeadingZeros(num) {
-        if (num < 10) {
-            return '00' + num;
-        }
-        if (num < 100) {
-            return '0' + num;
-        }
-        return num.toString();
-    }
-    var quoteCount = 0;
-    var tokenRegExp = Date._getTokenRegExp();
-    for (;;) {
-        var index = tokenRegExp.lastIndex;
-        var ar = tokenRegExp.exec(format);
-        var preMatch = format.slice(index, ar ? ar.index : format.length);
-        quoteCount += Date._appendPreOrPostMatch(preMatch, ret);
-        if (!ar) break;
-        if ((quoteCount%2) === 1) {
-            ret.append(ar[0]);
-            continue;
-        }
-        switch (ar[0]) {
-        case "dddd":
-            ret.append(dtf.DayNames[this.getDay()]);
-            break;
-        case "ddd":
-            ret.append(dtf.AbbreviatedDayNames[this.getDay()]);
-            break;
-        case "dd":
-            ret.append(addLeadingZero(this.getDate()));
-            break;
-        case "d":
-            ret.append(this.getDate());
-            break;
-        case "MMMM":
-            ret.append(dtf.MonthNames[this.getMonth()]);
-            break;
-        case "MMM":
-            ret.append(dtf.AbbreviatedMonthNames[this.getMonth()]);
-            break;
-        case "MM":
-            ret.append(addLeadingZero(this.getMonth() + 1));
-            break;
-        case "M":
-            ret.append(this.getMonth() + 1);
-            break;
-        case "yyyy":
-            ret.append(this.getFullYear());
-            break;
-        case "yy":
-            ret.append(addLeadingZero(this.getFullYear() % 100));
-            break;
-        case "y":
-            ret.append(this.getFullYear() % 100);
-            break;
-        case "hh":
-            hour = this.getHours() % 12;
-            if (hour === 0) hour = 12;
-            ret.append(addLeadingZero(hour));
-            break;
-        case "h":
-            hour = this.getHours() % 12;
-            if (hour === 0) hour = 12;
-            ret.append(hour);
-            break;
-        case "HH":
-            ret.append(addLeadingZero(this.getHours()));
-            break;
-        case "H":
-            ret.append(this.getHours());
-            break;
-        case "mm":
-            ret.append(addLeadingZero(this.getMinutes()));
-            break;
-        case "m":
-            ret.append(this.getMinutes());
-            break;
-        case "ss":
-            ret.append(addLeadingZero(this.getSeconds()));
-            break;
-        case "s":
-            ret.append(this.getSeconds());
-            break;
-        case "tt":
-            ret.append((this.getHours() < 12) ? dtf.AMDesignator : dtf.PMDesignator);
-            break;
-        case "t":
-            ret.append(((this.getHours() < 12) ? dtf.AMDesignator : dtf.PMDesignator).charAt(0));
-            break;
-        case "f":
-            ret.append(addLeadingZeros(this.getMilliseconds()).charAt(0));
-            break;
-        case "ff":
-            ret.append(addLeadingZeros(this.getMilliseconds()).substr(0, 2));
-            break;
-        case "fff":
-            ret.append(addLeadingZeros(this.getMilliseconds()));
-            break;
-        case "z":
-            hour = this.getTimezoneOffset() / 60;
-            ret.append(((hour <= 0) ? '+' : '-') + Math.floor(Math.abs(hour)));
-            break;
-        case "zz":
-            hour = this.getTimezoneOffset() / 60;
-            ret.append(((hour <= 0) ? '+' : '-') + addLeadingZero(Math.floor(Math.abs(hour))));
-            break;
-        case "zzz":
-            hour = this.getTimezoneOffset() / 60;
-            ret.append(((hour <= 0) ? '+' : '-') + addLeadingZero(Math.floor(Math.abs(hour))) +
-                dtf.TimeSeparator + addLeadingZero(Math.abs(this.getTimezoneOffset() % 60)));
-            break;
-        }
-    }
-    return ret.toString();
-}
  
 Number.__typeName = 'Number';
 Number.__class = true;
-Number.parseLocale = function Number$parseLocale(value) {
-    /// <summary locid="M:J#Number.parseLocale" />
-    /// <param name="value" type="String"></param>
-    /// <returns type="Number"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "value", type: String}
-    ]);
-    if (e) throw e;
-    return Number._parse(value, Sys.CultureInfo.CurrentCulture);
-}
-Number.parseInvariant = function Number$parseInvariant(value) {
-    /// <summary locid="M:J#Number.parseInvariant" />
-    /// <param name="value" type="String"></param>
-    /// <returns type="Number"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "value", type: String}
-    ]);
-    if (e) throw e;
-    return Number._parse(value, Sys.CultureInfo.InvariantCulture);
-}
-Number._parse = function Number$_parse(value, cultureInfo) {
-    value = value.trim();
-    
-    if (value.match(/^[+-]?infinity$/i)) {
-        return parseFloat(value);
-    }
-    if (value.match(/^0x[a-f0-9]+$/i)) {
-        return parseInt(value);
-    }
-    var numFormat = cultureInfo.numberFormat;
-    var signInfo = Number._parseNumberNegativePattern(value, numFormat, numFormat.NumberNegativePattern);
-    var sign = signInfo[0];
-    var num = signInfo[1];
-    
-    if ((sign === '') && (numFormat.NumberNegativePattern !== 1)) {
-        signInfo = Number._parseNumberNegativePattern(value, numFormat, 1);
-        sign = signInfo[0];
-        num = signInfo[1];
-    }
-    if (sign === '') sign = '+';
-    
-    var exponent;
-    var intAndFraction;
-    var exponentPos = num.indexOf('e');
-    if (exponentPos < 0) exponentPos = num.indexOf('E');
-    if (exponentPos < 0) {
-        intAndFraction = num;
-        exponent = null;
-    }
-    else {
-        intAndFraction = num.substr(0, exponentPos);
-        exponent = num.substr(exponentPos + 1);
-    }
-    
-    var integer;
-    var fraction;
-    var decimalPos = intAndFraction.indexOf(numFormat.NumberDecimalSeparator);
-    if (decimalPos < 0) {
-        integer = intAndFraction;
-        fraction = null;
-    }
-    else {
-        integer = intAndFraction.substr(0, decimalPos);
-        fraction = intAndFraction.substr(decimalPos + numFormat.NumberDecimalSeparator.length);
-    }
-    
-    integer = integer.split(numFormat.NumberGroupSeparator).join('');
-    var altNumGroupSeparator = numFormat.NumberGroupSeparator.replace(/\u00A0/g, " ");
-    if (numFormat.NumberGroupSeparator !== altNumGroupSeparator) {
-        integer = integer.split(altNumGroupSeparator).join('');
-    }
-    
-    var p = sign + integer;
-    if (fraction !== null) {
-        p += '.' + fraction;
-    }
-    if (exponent !== null) {
-        var expSignInfo = Number._parseNumberNegativePattern(exponent, numFormat, 1);
-        if (expSignInfo[0] === '') {
-            expSignInfo[0] = '+';
-        }
-        p += 'e' + expSignInfo[0] + expSignInfo[1];
-    }
-    if (p.match(/^[+-]?\d*\.?\d*(e[+-]?\d+)?$/)) {
-        return parseFloat(p);
-    }
-    return Number.NaN;
-}
-Number._parseNumberNegativePattern = function Number$_parseNumberNegativePattern(value, numFormat, numberNegativePattern) {
-    var neg = numFormat.NegativeSign;
-    var pos = numFormat.PositiveSign;    
-    switch (numberNegativePattern) {
-        case 4: 
-            neg = ' ' + neg;
-            pos = ' ' + pos;
-        case 3: 
-            if (value.endsWith(neg)) {
-                return ['-', value.substr(0, value.length - neg.length)];
-            }
-            else if (value.endsWith(pos)) {
-                return ['+', value.substr(0, value.length - pos.length)];
-            }
-            break;
-        case 2: 
-            neg += ' ';
-            pos += ' ';
-        case 1: 
-            if (value.startsWith(neg)) {
-                return ['-', value.substr(neg.length)];
-            }
-            else if (value.startsWith(pos)) {
-                return ['+', value.substr(pos.length)];
-            }
-            break;
-        case 0: 
-            if (value.startsWith('(') && value.endsWith(')')) {
-                return ['-', value.substr(1, value.length - 2)];
-            }
-            break;
-    }
-    return ['', value];
-}
-Number.prototype.format = function Number$format(format) {
-    /// <summary locid="M:J#Number.format" />
-    /// <param name="format" type="String"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "format", type: String}
-    ]);
-    if (e) throw e;
-    return this._toFormattedString(format, Sys.CultureInfo.InvariantCulture);
-}
-Number.prototype.localeFormat = function Number$localeFormat(format) {
-    /// <summary locid="M:J#Number.localeFormat" />
-    /// <param name="format" type="String"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "format", type: String}
-    ]);
-    if (e) throw e;
-    return this._toFormattedString(format, Sys.CultureInfo.CurrentCulture);
-}
-Number.prototype._toFormattedString = function Number$_toFormattedString(format, cultureInfo) {
-    if (!format || (format.length === 0) || (format === 'i')) {
-        if (cultureInfo && (cultureInfo.name.length > 0)) {
-            return this.toLocaleString();
-        }
-        else {
-            return this.toString();
-        }
-    }
-    
-    var _percentPositivePattern = ["n %", "n%", "%n" ];
-    var _percentNegativePattern = ["-n %", "-n%", "-%n"];
-    var _numberNegativePattern = ["(n)","-n","- n","n-","n -"];
-    var _currencyPositivePattern = ["$n","n$","$ n","n $"];
-    var _currencyNegativePattern = ["($n)","-$n","$-n","$n-","(n$)","-n$","n-$","n$-","-n $","-$ n","n $-","$ n-","$ -n","n- $","($ n)","(n $)"];
-    function zeroPad(str, count, left) {
-        for (var l=str.length; l < count; l++) {
-            str = (left ? ('0' + str) : (str + '0'));
-        }
-        return str;
-    }
-    
-    function expandNumber(number, precision, groupSizes, sep, decimalChar) {
-        
-        var curSize = groupSizes[0];
-        var curGroupIndex = 1;
-        var factor = Math.pow(10, precision);
-        var rounded = (Math.round(number * factor) / factor);
-        if (!isFinite(rounded)) {
-            rounded = number;
-        }
-        number = rounded;
-        
-        var numberString = number.toString();
-        var right = "";
-        var exponent;
-        
-        
-        var split = numberString.split(/e/i);
-        numberString = split[0];
-        exponent = (split.length > 1 ? parseInt(split[1]) : 0);
-        split = numberString.split('.');
-        numberString = split[0];
-        right = split.length > 1 ? split[1] : "";
-        
-        var l;
-        if (exponent > 0) {
-            right = zeroPad(right, exponent, false);
-            numberString += right.slice(0, exponent);
-            right = right.substr(exponent);
-        }
-        else if (exponent < 0) {
-            exponent = -exponent;
-            numberString = zeroPad(numberString, exponent+1, true);
-            right = numberString.slice(-exponent, numberString.length) + right;
-            numberString = numberString.slice(0, -exponent);
-        }
-        if (precision > 0) {
-            if (right.length > precision) {
-                right = right.slice(0, precision);
-            }
-            else {
-                right = zeroPad(right, precision, false);
-            }
-            right = decimalChar + right;
-        }
-        else { 
-            right = "";
-        }
-        var stringIndex = numberString.length-1;
-        var ret = "";
-        while (stringIndex >= 0) {
-            if (curSize === 0 || curSize > stringIndex) {
-                if (ret.length > 0)
-                    return numberString.slice(0, stringIndex + 1) + sep + ret + right;
-                else
-                    return numberString.slice(0, stringIndex + 1) + right;
-            }
-            if (ret.length > 0)
-                ret = numberString.slice(stringIndex - curSize + 1, stringIndex+1) + sep + ret;
-            else
-                ret = numberString.slice(stringIndex - curSize + 1, stringIndex+1);
-            stringIndex -= curSize;
-            if (curGroupIndex < groupSizes.length) {
-                curSize = groupSizes[curGroupIndex];
-                curGroupIndex++;
-            }
-        }
-        return numberString.slice(0, stringIndex + 1) + sep + ret + right;
-    }
-    var nf = cultureInfo.numberFormat;
-    var number = Math.abs(this);
-    if (!format)
-        format = "D";
-    var precision = -1;
-    if (format.length > 1) precision = parseInt(format.slice(1), 10);
-    var pattern;
-    switch (format.charAt(0)) {
-    case "d":
-    case "D":
-        pattern = 'n';
-        if (precision !== -1) {
-            number = zeroPad(""+number, precision, true);
-        }
-        if (this < 0) number = -number;
-        break;
-    case "c":
-    case "C":
-        if (this < 0) pattern = _currencyNegativePattern[nf.CurrencyNegativePattern];
-        else pattern = _currencyPositivePattern[nf.CurrencyPositivePattern];
-        if (precision === -1) precision = nf.CurrencyDecimalDigits;
-        number = expandNumber(Math.abs(this), precision, nf.CurrencyGroupSizes, nf.CurrencyGroupSeparator, nf.CurrencyDecimalSeparator);
-        break;
-    case "n":
-    case "N":
-        if (this < 0) pattern = _numberNegativePattern[nf.NumberNegativePattern];
-        else pattern = 'n';
-        if (precision === -1) precision = nf.NumberDecimalDigits;
-        number = expandNumber(Math.abs(this), precision, nf.NumberGroupSizes, nf.NumberGroupSeparator, nf.NumberDecimalSeparator);
-        break;
-    case "p":
-    case "P":
-        if (this < 0) pattern = _percentNegativePattern[nf.PercentNegativePattern];
-        else pattern = _percentPositivePattern[nf.PercentPositivePattern];
-        if (precision === -1) precision = nf.PercentDecimalDigits;
-        number = expandNumber(Math.abs(this) * 100, precision, nf.PercentGroupSizes, nf.PercentGroupSeparator, nf.PercentDecimalSeparator);
-        break;
-    default:
-        throw Error.format(Sys.Res.formatBadFormatSpecifier);
-    }
-    var regex = /n|\$|-|%/g;
-    var ret = "";
-    for (;;) {
-        var index = regex.lastIndex;
-        var ar = regex.exec(pattern);
-        ret += pattern.slice(index, ar ? ar.index : pattern.length);
-        if (!ar)
-            break;
-        switch (ar[0]) {
-        case "n":
-            ret += number;
-            break;
-        case "$":
-            ret += nf.CurrencySymbol;
-            break;
-        case "-":
-            ret += nf.NegativeSign;
-            break;
-        case "%":
-            ret += nf.PercentSymbol;
-            break;
-        }
-    }
-    return ret;
-}
  
 RegExp.__typeName = 'RegExp';
 RegExp.__class = true;
- 
-Array.__typeName = 'Array';
-Array.__class = true;
-Array.add = Array.enqueue = function Array$enqueue(array, item) {
-    /// <summary locid="M:J#Array.enqueue" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="item" mayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "item", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    array[array.length] = item;
-}
-Array.addRange = function Array$addRange(array, items) {
-    /// <summary locid="M:J#Array.addRange" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="items" type="Array" elementMayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "items", type: Array, elementMayBeNull: true}
-    ]);
-    if (e) throw e;
-    array.push.apply(array, items);
-}
-Array.clear = function Array$clear(array) {
-    /// <summary locid="M:J#Array.clear" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true}
-    ]);
-    if (e) throw e;
-    array.length = 0;
-}
-Array.clone = function Array$clone(array) {
-    /// <summary locid="M:J#Array.clone" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <returns type="Array" elementMayBeNull="true"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true}
-    ]);
-    if (e) throw e;
-    if (array.length === 1) {
-        return [array[0]];
-    }
-    else {
-        return Array.apply(null, array);
-    }
-}
-Array.contains = function Array$contains(array, item) {
-    /// <summary locid="M:J#Array.contains" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="item" mayBeNull="true"></param>
-    /// <returns type="Boolean"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "item", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    return (Array.indexOf(array, item) >= 0);
-}
-Array.dequeue = function Array$dequeue(array) {
-    /// <summary locid="M:J#Array.dequeue" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <returns mayBeNull="true"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true}
-    ]);
-    if (e) throw e;
-    return array.shift();
-}
-Array.forEach = function Array$forEach(array, method, instance) {
-    /// <summary locid="M:J#Array.forEach" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="method" type="Function"></param>
-    /// <param name="instance" optional="true" mayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "method", type: Function},
-        {name: "instance", mayBeNull: true, optional: true}
-    ]);
-    if (e) throw e;
-    for (var i = 0, l = array.length; i < l; i++) {
-        var elt = array[i];
-        if (typeof(elt) !== 'undefined') method.call(instance, elt, i, array);
-    }
-}
-Array.indexOf = function Array$indexOf(array, item, start) {
-    /// <summary locid="M:J#Array.indexOf" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="item" optional="true" mayBeNull="true"></param>
-    /// <param name="start" optional="true" mayBeNull="true"></param>
-    /// <returns type="Number"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "item", mayBeNull: true, optional: true},
-        {name: "start", mayBeNull: true, optional: true}
-    ]);
-    if (e) throw e;
-    if (typeof(item) === "undefined") return -1;
-    var length = array.length;
-    if (length !== 0) {
-        start = start - 0;
-        if (isNaN(start)) {
-            start = 0;
-        }
-        else {
-            if (isFinite(start)) {
-                start = start - (start % 1);
-            }
-            if (start < 0) {
-                start = Math.max(0, length + start);
-            }
-        }
-        for (var i = start; i < length; i++) {
-            if ((typeof(array[i]) !== "undefined") && (array[i] === item)) {
-                return i;
-            }
-        }
-    }
-    return -1;
-}
-Array.insert = function Array$insert(array, index, item) {
-    /// <summary locid="M:J#Array.insert" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="index" mayBeNull="true"></param>
-    /// <param name="item" mayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "index", mayBeNull: true},
-        {name: "item", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    array.splice(index, 0, item);
-}
-Array.parse = function Array$parse(value) {
-    /// <summary locid="M:J#Array.parse" />
-    /// <param name="value" type="String" mayBeNull="true"></param>
-    /// <returns type="Array" elementMayBeNull="true"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "value", type: String, mayBeNull: true}
-    ]);
-    if (e) throw e;
-    if (!value) return [];
-    var v = eval(value);
-    if (!Array.isInstanceOfType(v)) throw Error.argument('value', Sys.Res.arrayParseBadFormat);
-    return v;
-}
-Array.remove = function Array$remove(array, item) {
-    /// <summary locid="M:J#Array.remove" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="item" mayBeNull="true"></param>
-    /// <returns type="Boolean"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "item", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    var index = Array.indexOf(array, item);
-    if (index >= 0) {
-        array.splice(index, 1);
-    }
-    return (index >= 0);
-}
-Array.removeAt = function Array$removeAt(array, index) {
-    /// <summary locid="M:J#Array.removeAt" />
-    /// <param name="array" type="Array" elementMayBeNull="true"></param>
-    /// <param name="index" mayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "array", type: Array, elementMayBeNull: true},
-        {name: "index", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    array.splice(index, 1);
-}
  
 if (!window) this.window = this;
 window.Type = Function;
@@ -1537,7 +616,7 @@ Type.prototype.callBaseMethod = function Type$callBaseMethod(instance, name, bas
         {name: "baseArguments", type: Array, mayBeNull: true, optional: true, elementMayBeNull: true}
     ]);
     if (e) throw e;
-    var baseMethod = this.getBaseMethod(instance, name);
+    var baseMethod = Sys._getBaseMethod(this, instance, name);
     if (!baseMethod) throw Error.invalidOperation(String.format(Sys.Res.methodNotFound, name));
     if (!baseArguments) {
         return baseMethod.apply(instance);
@@ -1556,13 +635,7 @@ Type.prototype.getBaseMethod = function Type$getBaseMethod(instance, name) {
         {name: "name", type: String}
     ]);
     if (e) throw e;
-    if (!this.isInstanceOfType(instance)) throw Error.argumentType('instance', Object.getType(instance), this);
-    var baseType = this.getBaseType();
-    if (baseType) {
-        var baseMethod = baseType.prototype[name];
-        return (baseMethod instanceof Function) ? baseMethod : null;
-    }
-    return null;
+    return Sys._getBaseMethod(this, instance, name);
 }
 Type.prototype.getBaseType = function Type$getBaseType() {
     /// <summary locid="M:J#Type.getBaseType" />
@@ -1654,7 +727,7 @@ Type.prototype.initializeBase = function Type$initializeBase(instance, baseArgum
         {name: "baseArguments", type: Array, mayBeNull: true, optional: true, elementMayBeNull: true}
     ]);
     if (e) throw e;
-    if (!this.isInstanceOfType(instance)) throw Error.argumentType('instance', Object.getType(instance), this);
+    if (!Sys._isInstanceOfType(this, instance)) throw Error.argumentType('instance', Object.getType(instance), this);
     this.resolveInheritance();
     if (this.__baseType) {
         if (!baseArguments) {
@@ -1686,12 +759,7 @@ Type.prototype.isInstanceOfType = function Type$isInstanceOfType(instance) {
         {name: "instance", mayBeNull: true}
     ]);
     if (e) throw e;
-    if (typeof(instance) === "undefined" || instance === null) return false;
-    if (instance instanceof this) return true;
-    var instanceType = Object.getType(instance);
-    return !!(instanceType === this) ||
-           (instanceType.inheritsFrom && instanceType.inheritsFrom(this)) ||
-           (instanceType.implementsInterface && instanceType.implementsInterface(this));
+    return Sys._isInstanceOfType(this, instance);
 }
 Type.prototype.registerClass = function Type$registerClass(typeName, baseType, interfaceTypes) {
     /// <summary locid="M:J#Type.registerClass" />
@@ -1856,23 +924,33 @@ Type.registerNamespace = function Type$registerNamespace(namespacePath) {
         {name: "namespacePath", type: String}
     ]);
     if (e) throw e;
+    Type._registerNamespace(namespacePath);
+}
+Type._registerNamespace = function Type$_registerNamespace(namespacePath) {
     if (!Type.__fullyQualifiedIdentifierRegExp.test(namespacePath)) throw Error.argument('namespacePath', Sys.Res.invalidNameSpace);
     var rootObject = window;
     var namespaceParts = namespacePath.split('.');
     for (var i = 0; i < namespaceParts.length; i++) {
         var currentPart = namespaceParts[i];
         var ns = rootObject[currentPart];
-        if (ns && !ns.__namespace) {
-            throw Error.invalidOperation(String.format(Sys.Res.namespaceContainsObject, namespaceParts.splice(0, i + 1).join('.')));
+        var nsType = typeof(ns);
+        if ((nsType !== "undefined") && (ns !== null)) {
+            if (nsType === "function") {
+                throw Error.invalidOperation(String.format(Sys.Res.namespaceContainsClass, namespaceParts.splice(0, i + 1).join('.')));
+            }
+            if ((typeof(ns) !== "object") || (ns instanceof Array)) {
+                throw Error.invalidOperation(String.format(Sys.Res.namespaceContainsNonObject, namespaceParts.splice(0, i + 1).join('.')));
+            }
         }
         if (!ns) {
-            ns = rootObject[currentPart] = {
-                __namespace: true,
-                __typeName: namespaceParts.slice(0, i + 1).join('.')
-            };
-            if (i === 0) {
+            ns = rootObject[currentPart] = {};
+        }
+        if (!ns.__namespace) {
+            if ((i === 0) && (namespacePath !== "Sys")) {
                 Sys.__rootNamespaces[Sys.__rootNamespaces.length] = ns;
             }
+            ns.__namespace = true;
+            ns.__typeName = namespaceParts.slice(0, i + 1).join('.');
             var parsedName;
             try {
                 parsedName = eval(ns.__typeName);
@@ -1889,14 +967,253 @@ Type.registerNamespace = function Type$registerNamespace(namespacePath) {
         rootObject = ns;
     }
 }
-window.Sys = {
-    __namespace: true,
-    __typeName: "Sys",
-    getName: function() {return "Sys";},
-    __upperCaseTypes: {}
-};
+Type._checkDependency = function Type$_checkDependency(dependency, featureName) {
+    var scripts = Type._registerScript._scripts, isDependent = (scripts ? (!!scripts[dependency]) : false);
+    if ((typeof(featureName) !== 'undefined') && !isDependent) {
+        throw Error.invalidOperation(String.format(Sys.Res.requiredScriptReferenceNotIncluded, 
+        featureName, dependency));
+    }
+    return isDependent;
+}
+Type._registerScript = function Type$_registerScript(scriptName, dependencies) {
+    var scripts = Type._registerScript._scripts;
+    if (!scripts) {
+        Type._registerScript._scripts = scripts = {};
+    }
+    if (scripts[scriptName]) {
+        throw Error.invalidOperation(String.format(Sys.Res.scriptAlreadyLoaded, scriptName));
+    }
+    scripts[scriptName] = true;
+    if (dependencies) {
+        for (var i = 0, l = dependencies.length; i < l; i++) {
+            var dependency = dependencies[i];
+            if (!Type._checkDependency(dependency)) {
+                throw Error.invalidOperation(String.format(Sys.Res.scriptDependencyNotFound, scriptName, dependency));
+            }
+        }
+    }
+}
+Type._registerNamespace("Sys");
+Sys.__upperCaseTypes = {};
 Sys.__rootNamespaces = [Sys];
 Sys.__registeredTypes = {};
+Sys._isInstanceOfType = function Sys$_isInstanceOfType(type, instance) {
+    if (typeof(instance) === "undefined" || instance === null) return false;
+    if (instance instanceof type) return true;
+    var instanceType = Object.getType(instance);
+    return !!(instanceType === type) ||
+           (instanceType.inheritsFrom && instanceType.inheritsFrom(type)) ||
+           (instanceType.implementsInterface && instanceType.implementsInterface(type));
+}
+Sys._getBaseMethod = function Sys$_getBaseMethod(type, instance, name) {
+    if (!Sys._isInstanceOfType(type, instance)) throw Error.argumentType('instance', Object.getType(instance), type);
+    var baseType = type.getBaseType();
+    if (baseType) {
+        var baseMethod = baseType.prototype[name];
+        return (baseMethod instanceof Function) ? baseMethod : null;
+    }
+    return null;
+}
+Sys._isDomElement = function Sys$_isDomElement(obj) {
+    var val = false;
+    if (typeof (obj.nodeType) !== 'number') {
+        var doc = obj.ownerDocument || obj.document || obj;
+        if (doc != obj) {
+            var w = doc.defaultView || doc.parentWindow;
+            val = (w != obj);
+        }
+        else {
+            val = (typeof (doc.body) === 'undefined');
+        }
+    }
+    return !val;
+}
+ 
+Array.__typeName = 'Array';
+Array.__class = true;
+Array.add = Array.enqueue = function Array$enqueue(array, item) {
+    /// <summary locid="M:J#Array.enqueue" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    array[array.length] = item;
+}
+Array.addRange = function Array$addRange(array, items) {
+    /// <summary locid="M:J#Array.addRange" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="items" type="Array" elementMayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "items", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    array.push.apply(array, items);
+}
+Array.clear = function Array$clear(array) {
+    /// <summary locid="M:J#Array.clear" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    array.length = 0;
+}
+Array.clone = function Array$clone(array) {
+    /// <summary locid="M:J#Array.clone" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <returns type="Array" elementMayBeNull="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    if (array.length === 1) {
+        return [array[0]];
+    }
+    else {
+        return Array.apply(null, array);
+    }
+}
+Array.contains = function Array$contains(array, item) {
+    /// <summary locid="M:J#Array.contains" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    /// <returns type="Boolean"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    return (Sys._indexOf(array, item) >= 0);
+}
+Array.dequeue = function Array$dequeue(array) {
+    /// <summary locid="M:J#Array.dequeue" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <returns mayBeNull="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    return array.shift();
+}
+Array.forEach = function Array$forEach(array, method, instance) {
+    /// <summary locid="M:J#Array.forEach" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="method" type="Function"></param>
+    /// <param name="instance" optional="true" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "method", type: Function},
+        {name: "instance", mayBeNull: true, optional: true}
+    ]);
+    if (e) throw e;
+    for (var i = 0, l = array.length; i < l; i++) {
+        var elt = array[i];
+        if (typeof(elt) !== 'undefined') method.call(instance, elt, i, array);
+    }
+}
+Array.indexOf = function Array$indexOf(array, item, start) {
+    /// <summary locid="M:J#Array.indexOf" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" optional="true" mayBeNull="true"></param>
+    /// <param name="start" optional="true" mayBeNull="true"></param>
+    /// <returns type="Number"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true, optional: true},
+        {name: "start", mayBeNull: true, optional: true}
+    ]);
+    if (e) throw e;
+    return Sys._indexOf(array, item, start);
+}
+Array.insert = function Array$insert(array, index, item) {
+    /// <summary locid="M:J#Array.insert" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="index" mayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "index", mayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    array.splice(index, 0, item);
+}
+Array.parse = function Array$parse(value) {
+    /// <summary locid="M:J#Array.parse" />
+    /// <param name="value" type="String" mayBeNull="true"></param>
+    /// <returns type="Array" elementMayBeNull="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String, mayBeNull: true}
+    ]);
+    if (e) throw e;
+    if (!value) return [];
+    var v = eval(value);
+    if (!Array.isInstanceOfType(v)) throw Error.argument('value', Sys.Res.arrayParseBadFormat);
+    return v;
+}
+Array.remove = function Array$remove(array, item) {
+    /// <summary locid="M:J#Array.remove" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    /// <returns type="Boolean"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    var index = Sys._indexOf(array, item);
+    if (index >= 0) {
+        array.splice(index, 1);
+    }
+    return (index >= 0);
+}
+Array.removeAt = function Array$removeAt(array, index) {
+    /// <summary locid="M:J#Array.removeAt" />
+    /// <param name="array" type="Array" elementMayBeNull="true"></param>
+    /// <param name="index" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "array", type: Array, elementMayBeNull: true},
+        {name: "index", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    array.splice(index, 1);
+}
+Sys._indexOf = function Sys$_indexOf(array, item, start) {
+    if (typeof(item) === "undefined") return -1;
+    var length = array.length;
+    if (length !== 0) {
+        start = start - 0;
+        if (isNaN(start)) {
+            start = 0;
+        }
+        else {
+            if (isFinite(start)) {
+                start = start - (start % 1);
+            }
+            if (start < 0) {
+                start = Math.max(0, length + start);
+            }
+        }
+        for (var i = start; i < length; i++) {
+            if ((typeof(array[i]) !== "undefined") && (array[i] === item)) {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+Type._registerScript._scripts = {
+	"MicrosoftAjaxCore.js": true,
+	"MicrosoftAjaxGlobalization.js": true,
+	"MicrosoftAjaxSerialization.js": true,
+	"MicrosoftAjaxComponentModel.js": true,
+	"MicrosoftAjaxHistory.js": true,
+	"MicrosoftAjaxNetwork.js" : true,
+	"MicrosoftAjaxWebServices.js": true };
  
 Sys.IDisposable = function Sys$IDisposable() {
     throw Error.notImplemented();
@@ -1994,20 +1311,6 @@ Sys.StringBuilder.prototype = {
 }
 Sys.StringBuilder.registerClass('Sys.StringBuilder');
  
-if (!window.XMLHttpRequest) {
-    window.XMLHttpRequest = function window$XMLHttpRequest() {
-        var progIDs = [ 'Msxml2.XMLHTTP.3.0', 'Msxml2.XMLHTTP' ];
-        for (var i = 0, l = progIDs.length; i < l; i++) {
-            try {
-                return new ActiveXObject(progIDs[i]);
-            }
-            catch (ex) {
-            }
-        }
-        return null;
-    }
-}
- 
 Sys.Browser = {};
 Sys.Browser.InternetExplorer = {};
 Sys.Browser.Firefox = {};
@@ -2042,6 +1345,35 @@ else if (navigator.userAgent.indexOf(' AppleWebKit/') > -1) {
 else if (navigator.userAgent.indexOf('Opera/') > -1) {
     Sys.Browser.agent = Sys.Browser.Opera;
 }
+ 
+Sys.EventArgs = function Sys$EventArgs() {
+    /// <summary locid="M:J#Sys.EventArgs.#ctor" />
+    if (arguments.length !== 0) throw Error.parameterCount();
+}
+Sys.EventArgs.registerClass('Sys.EventArgs');
+Sys.EventArgs.Empty = new Sys.EventArgs();
+ 
+Sys.CancelEventArgs = function Sys$CancelEventArgs() {
+    /// <summary locid="M:J#Sys.CancelEventArgs.#ctor" />
+    if (arguments.length !== 0) throw Error.parameterCount();
+    Sys.CancelEventArgs.initializeBase(this);
+    this._cancel = false;
+}
+    function Sys$CancelEventArgs$get_cancel() {
+        /// <value type="Boolean" locid="P:J#Sys.CancelEventArgs.cancel"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._cancel;
+    }
+    function Sys$CancelEventArgs$set_cancel(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
+        if (e) throw e;
+        this._cancel = value;
+    }
+Sys.CancelEventArgs.prototype = {
+    get_cancel: Sys$CancelEventArgs$get_cancel,
+    set_cancel: Sys$CancelEventArgs$set_cancel
+}
+Sys.CancelEventArgs.registerClass('Sys.CancelEventArgs', Sys.EventArgs);
 Type.registerNamespace('Sys.UI');
  
 Sys._Debug = function Sys$_Debug() {
@@ -2313,11 +1645,11 @@ Type.prototype.registerEnum = function Type$registerEnum(name, flags) {
     }
     if (parsedName !== this) throw Error.argument('name', Sys.Res.badTypeName);
     if (Sys.__registeredTypes[name]) throw Error.invalidOperation(String.format(Sys.Res.typeRegisteredTwice, name));
-    for (var i in this.prototype) {
-        var val = this.prototype[i];
-        if (!Type.__identifierRegExp.test(i)) throw Error.invalidOperation(String.format(Sys.Res.enumInvalidValueName, i));
+    for (var j in this.prototype) {
+        var val = this.prototype[j];
+        if (!Type.__identifierRegExp.test(j)) throw Error.invalidOperation(String.format(Sys.Res.enumInvalidValueName, j));
         if (typeof(val) !== 'number' || (val % 1) !== 0) throw Error.invalidOperation(Sys.Res.enumValueNotInteger);
-        if (typeof(this[i]) !== 'undefined') throw Error.invalidOperation(String.format(Sys.Res.enumReservedName, i));
+        if (typeof(this[j]) !== 'undefined') throw Error.invalidOperation(String.format(Sys.Res.enumReservedName, j));
     }
     Sys.__upperCaseTypes[name.toUpperCase()] = this;
     for (var i in this.prototype) {
@@ -2353,12 +1685,1770 @@ Type.isFlags = function Type$isFlags(type) {
     if ((typeof(type) === 'undefined') || (type === null)) return false;
     return !!type.__flags;
 }
+Sys.CollectionChange = function Sys$CollectionChange(action, newItems, newStartingIndex, oldItems, oldStartingIndex) {
+    /// <summary locid="M:J#Sys.CollectionChange.#ctor" />
+    /// <param name="action" type="Sys.NotifyCollectionChangedAction"></param>
+    /// <param name="newItems" optional="true" mayBeNull="true"></param>
+    /// <param name="newStartingIndex" type="Number" integer="true" optional="true" mayBeNull="true"></param>
+    /// <param name="oldItems" optional="true" mayBeNull="true"></param>
+    /// <param name="oldStartingIndex" type="Number" integer="true" optional="true" mayBeNull="true"></param>
+    /// <field name="action" type="Sys.NotifyCollectionChangedAction" locid="F:J#Sys.CollectionChange.action"></field>
+    /// <field name="newItems" type="Array" mayBeNull="true" elementMayBeNull="true" locid="F:J#Sys.CollectionChange.newItems"></field>
+    /// <field name="newStartingIndex" type="Number" integer="true" locid="F:J#Sys.CollectionChange.newStartingIndex"></field>
+    /// <field name="oldItems" type="Array" mayBeNull="true" elementMayBeNull="true" locid="F:J#Sys.CollectionChange.oldItems"></field>
+    /// <field name="oldStartingIndex" type="Number" integer="true" locid="F:J#Sys.CollectionChange.oldStartingIndex"></field>
+    var e = Function._validateParams(arguments, [
+        {name: "action", type: Sys.NotifyCollectionChangedAction},
+        {name: "newItems", mayBeNull: true, optional: true},
+        {name: "newStartingIndex", type: Number, mayBeNull: true, integer: true, optional: true},
+        {name: "oldItems", mayBeNull: true, optional: true},
+        {name: "oldStartingIndex", type: Number, mayBeNull: true, integer: true, optional: true}
+    ]);
+    if (e) throw e;
+    this.action = action;
+    if (newItems) {
+        if (!(newItems instanceof Array)) {
+            newItems = [newItems];
+        }
+    }
+    this.newItems = newItems || null;
+    if (typeof newStartingIndex !== "number") {
+        newStartingIndex = -1;
+    }
+    this.newStartingIndex = newStartingIndex;
+    if (oldItems) {
+        if (!(oldItems instanceof Array)) {
+            oldItems = [oldItems];
+        }
+    }
+    this.oldItems = oldItems || null;
+    if (typeof oldStartingIndex !== "number") {
+        oldStartingIndex = -1;
+    }
+    this.oldStartingIndex = oldStartingIndex;
+}
+Sys.CollectionChange.registerClass("Sys.CollectionChange");
+Sys.NotifyCollectionChangedAction = function Sys$NotifyCollectionChangedAction() {
+    /// <summary locid="M:J#Sys.NotifyCollectionChangedAction.#ctor" />
+    /// <field name="add" type="Number" integer="true" static="true" locid="F:J#Sys.NotifyCollectionChangedAction.add"></field>
+    /// <field name="remove" type="Number" integer="true" static="true" locid="F:J#Sys.NotifyCollectionChangedAction.remove"></field>
+    /// <field name="reset" type="Number" integer="true" static="true" locid="F:J#Sys.NotifyCollectionChangedAction.reset"></field>
+    if (arguments.length !== 0) throw Error.parameterCount();
+    throw Error.notImplemented();
+}
+Sys.NotifyCollectionChangedAction.prototype = {
+    add: 0,
+    remove: 1,
+    reset: 2
+}
+Sys.NotifyCollectionChangedAction.registerEnum('Sys.NotifyCollectionChangedAction');
+Sys.NotifyCollectionChangedEventArgs = function Sys$NotifyCollectionChangedEventArgs(changes) {
+    /// <summary locid="M:J#Sys.NotifyCollectionChangedEventArgs.#ctor" />
+    /// <param name="changes" type="Array" elementType="Sys.CollectionChange"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "changes", type: Array, elementType: Sys.CollectionChange}
+    ]);
+    if (e) throw e;
+    this._changes = changes;
+    Sys.NotifyCollectionChangedEventArgs.initializeBase(this);
+}
+    function Sys$NotifyCollectionChangedEventArgs$get_changes() {
+        /// <value type="Array" elementType="Sys.CollectionChange" locid="P:J#Sys.NotifyCollectionChangedEventArgs.changes"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._changes || [];
+    }
+Sys.NotifyCollectionChangedEventArgs.prototype = {
+    get_changes: Sys$NotifyCollectionChangedEventArgs$get_changes
+}
+Sys.NotifyCollectionChangedEventArgs.registerClass("Sys.NotifyCollectionChangedEventArgs", Sys.EventArgs);
+Sys.Observer = function Sys$Observer() {
+    throw Error.invalidOperation();
+}
+Sys.Observer.registerClass("Sys.Observer");
+Sys.Observer.makeObservable = function Sys$Observer$makeObservable(target) {
+    /// <summary locid="M:J#Sys.Observer.makeObservable" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <returns></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "target"}
+    ]);
+    if (e) throw e;
+    var isArray = target instanceof Array,
+        o = Sys.Observer;
+    Sys.Observer._ensureObservable(target);
+    if (target.setValue === o._observeMethods.setValue) return target;
+    o._addMethods(target, o._observeMethods);
+    if (isArray) {
+        o._addMethods(target, o._arrayMethods);
+    }
+    return target;
+}
+Sys.Observer._ensureObservable = function Sys$Observer$_ensureObservable(target) {
+    var type = typeof target;
+    if ((type === "string") || (type === "number") || (type === "boolean") || (type === "date")) {
+        throw Error.invalidOperation(String.format(Sys.Res.notObservable, type));
+    }
+}
+Sys.Observer._addMethods = function Sys$Observer$_addMethods(target, methods) {
+    for (var m in methods) {
+        if (target[m] && (target[m] !== methods[m])) {
+            throw Error.invalidOperation(String.format(Sys.Res.observableConflict, m));
+        }
+        target[m] = methods[m];
+    }
+}
+Sys.Observer._addEventHandler = function Sys$Observer$_addEventHandler(target, eventName, handler) {
+    Sys.Observer._getContext(target, true).events._addHandler(eventName, handler);
+}
+Sys.Observer.addEventHandler = function Sys$Observer$addEventHandler(target, eventName, handler) {
+    /// <summary locid="M:J#Sys.Observer.addEventHandler" />
+    /// <param name="target"></param>
+    /// <param name="eventName" type="String"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "eventName", type: String},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._addEventHandler(target, eventName, handler);
+}
+Sys.Observer._removeEventHandler = function Sys$Observer$_removeEventHandler(target, eventName, handler) {
+    Sys.Observer._getContext(target, true).events._removeHandler(eventName, handler);
+}
+Sys.Observer.removeEventHandler = function Sys$Observer$removeEventHandler(target, eventName, handler) {
+    /// <summary locid="M:J#Sys.Observer.removeEventHandler" />
+    /// <param name="target"></param>
+    /// <param name="eventName" type="String"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "eventName", type: String},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._removeEventHandler(target, eventName, handler);
+}
+Sys.Observer.raiseEvent = function Sys$Observer$raiseEvent(target, eventName, eventArgs) {
+    /// <summary locid="M:J#Sys.Observer.raiseEvent" />
+    /// <param name="target"></param>
+    /// <param name="eventName" type="String"></param>
+    /// <param name="eventArgs" type="Sys.EventArgs"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "eventName", type: String},
+        {name: "eventArgs", type: Sys.EventArgs}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    var ctx = Sys.Observer._getContext(target);
+    if (!ctx) return;
+    var handler = ctx.events.getHandler(eventName);
+    if (handler) {
+        handler(target, eventArgs);
+    }
+}
+Sys.Observer.addPropertyChanged = function Sys$Observer$addPropertyChanged(target, handler) {
+    /// <summary locid="M:J#Sys.Observer.addPropertyChanged" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._addEventHandler(target, "propertyChanged", handler);
+}
+Sys.Observer.removePropertyChanged = function Sys$Observer$removePropertyChanged(target, handler) {
+    /// <summary locid="M:J#Sys.Observer.removePropertyChanged" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._removeEventHandler(target, "propertyChanged", handler);
+}
+Sys.Observer.beginUpdate = function Sys$Observer$beginUpdate(target) {
+    /// <summary locid="M:J#Sys.Observer.beginUpdate" />
+    /// <param name="target" mayBeNull="false"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._getContext(target, true).updating = true;
+}
+Sys.Observer.endUpdate = function Sys$Observer$endUpdate(target) {
+    /// <summary locid="M:J#Sys.Observer.endUpdate" />
+    /// <param name="target" mayBeNull="false"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    var ctx = Sys.Observer._getContext(target);
+    if (!ctx || !ctx.updating) return;
+    ctx.updating = false;
+    var dirty = ctx.dirty;
+    ctx.dirty = false;
+    if (dirty) {
+        if (target instanceof Array) {
+            var changes = ctx.changes;
+            ctx.changes = null;
+            Sys.Observer.raiseCollectionChanged(target, changes);
+        }
+        Sys.Observer.raisePropertyChanged(target, "");
+    }
+}
+Sys.Observer.isUpdating = function Sys$Observer$isUpdating(target) {
+    /// <summary locid="M:J#Sys.Observer.isUpdating" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <returns type="Boolean"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "target"}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    var ctx = Sys.Observer._getContext(target);
+    return ctx ? ctx.updating : false;
+}
+Sys.Observer._setValue = function Sys$Observer$_setValue(target, propertyName, value) {
+    var getter, setter, mainTarget = target, path = propertyName.split('.');
+    for (var i = 0, l = (path.length - 1); i < l ; i++) {
+        var name = path[i];
+        getter = target["get_" + name]; 
+        if (typeof (getter) === "function") {
+            target = getter.call(target);
+        }
+        else {
+            target = target[name];
+        }
+        var type = typeof (target);
+        if ((target === null) || (type === "undefined")) {
+            throw Error.invalidOperation(String.format(Sys.Res.nullReferenceInPath, propertyName));
+        }
+    }    
+    var currentValue, lastPath = path[l];
+    getter = target["get_" + lastPath];
+    setter = target["set_" + lastPath];
+    if (typeof(getter) === 'function') {
+        currentValue = getter.call(target);
+    }
+    else {
+        currentValue = target[lastPath];
+    }
+    if (typeof(setter) === 'function') {
+        setter.call(target, value);
+    }
+    else {
+        target[lastPath] = value;
+    }
+    if (currentValue !== value) {
+        var ctx = Sys.Observer._getContext(mainTarget);
+        if (ctx && ctx.updating) {
+            ctx.dirty = true;
+            return;
+        };
+        Sys.Observer.raisePropertyChanged(mainTarget, path[0]);
+    }
+}
+Sys.Observer.setValue = function Sys$Observer$setValue(target, propertyName, value) {
+    /// <summary locid="M:J#Sys.Observer.setValue" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <param name="propertyName" type="String"></param>
+    /// <param name="value" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target"},
+        {name: "propertyName", type: String},
+        {name: "value", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    Sys.Observer._ensureObservable(target);
+    Sys.Observer._setValue(target, propertyName, value);
+}
+Sys.Observer.raisePropertyChanged = function Sys$Observer$raisePropertyChanged(target, propertyName) {
+    /// <summary locid="M:J#Sys.Observer.raisePropertyChanged" />
+    /// <param name="target" mayBeNull="false"></param>
+    /// <param name="propertyName" type="String"></param>
+    Sys.Observer.raiseEvent(target, "propertyChanged", new Sys.PropertyChangedEventArgs(propertyName));
+}
+Sys.Observer.addCollectionChanged = function Sys$Observer$addCollectionChanged(target, handler) {
+    /// <summary locid="M:J#Sys.Observer.addCollectionChanged" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._addEventHandler(target, "collectionChanged", handler);
+}
+Sys.Observer.removeCollectionChanged = function Sys$Observer$removeCollectionChanged(target, handler) {
+    /// <summary locid="M:J#Sys.Observer.removeCollectionChanged" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    Sys.Observer._removeEventHandler(target, "collectionChanged", handler);
+}
+Sys.Observer._collectionChange = function Sys$Observer$_collectionChange(target, change) {
+    var ctx = Sys.Observer._getContext(target);
+    if (ctx && ctx.updating) {
+        ctx.dirty = true;
+        var changes = ctx.changes;
+        if (!changes) {
+            ctx.changes = changes = [change];
+        }
+        else {
+            changes.push(change);
+        }
+    }
+    else {
+        Sys.Observer.raiseCollectionChanged(target, [change]);
+        Sys.Observer.raisePropertyChanged(target, 'length');
+    }
+}
+Sys.Observer.add = function Sys$Observer$add(target, item) {
+    /// <summary locid="M:J#Sys.Observer.add" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    var change = new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.add, [item], target.length);
+    Array.add(target, item);
+    Sys.Observer._collectionChange(target, change);
+}
+Sys.Observer.addRange = function Sys$Observer$addRange(target, items) {
+    /// <summary locid="M:J#Sys.Observer.addRange" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="items" type="Array" elementMayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "items", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    var change = new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.add, items, target.length);
+    Array.addRange(target, items);
+    Sys.Observer._collectionChange(target, change);
+}
+Sys.Observer.clear = function Sys$Observer$clear(target) {
+    /// <summary locid="M:J#Sys.Observer.clear" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true}
+    ]);
+    if (e) throw e;
+    var oldItems = Array.clone(target);
+    Array.clear(target);
+    Sys.Observer._collectionChange(target, new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.reset, null, -1, oldItems, 0));
+}
+Sys.Observer.insert = function Sys$Observer$insert(target, index, item) {
+    /// <summary locid="M:J#Sys.Observer.insert" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="index" type="Number" integer="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "index", type: Number, integer: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    Array.insert(target, index, item);
+    Sys.Observer._collectionChange(target, new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.add, [item], index));
+}
+Sys.Observer.remove = function Sys$Observer$remove(target, item) {
+    /// <summary locid="M:J#Sys.Observer.remove" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="item" mayBeNull="true"></param>
+    /// <returns type="Boolean"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "item", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    var index = Array.indexOf(target, item);
+    if (index !== -1) {
+        Array.remove(target, item);
+        Sys.Observer._collectionChange(target, new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.remove, null, -1, [item], index));
+        return true;
+    }
+    return false;
+}
+Sys.Observer.removeAt = function Sys$Observer$removeAt(target, index) {
+    /// <summary locid="M:J#Sys.Observer.removeAt" />
+    /// <param name="target" type="Array" elementMayBeNull="true"></param>
+    /// <param name="index" type="Number" integer="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "target", type: Array, elementMayBeNull: true},
+        {name: "index", type: Number, integer: true}
+    ]);
+    if (e) throw e;
+    if ((index > -1) && (index < target.length)) {
+        var item = target[index];
+        Array.removeAt(target, index);
+        Sys.Observer._collectionChange(target, new Sys.CollectionChange(Sys.NotifyCollectionChangedAction.remove, null, -1, [item], index));
+    }
+}
+Sys.Observer.raiseCollectionChanged = function Sys$Observer$raiseCollectionChanged(target, changes) {
+    /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+    /// <param name="target"></param>
+    /// <param name="changes" type="Array" elementType="Sys.CollectionChange"></param>
+    Sys.Observer.raiseEvent(target, "collectionChanged", new Sys.NotifyCollectionChangedEventArgs(changes));
+}
+Sys.Observer._observeMethods = {
+    add_propertyChanged: function(handler) {
+        Sys.Observer._addEventHandler(this, "propertyChanged", handler);
+    },
+    remove_propertyChanged: function(handler) {
+        Sys.Observer._removeEventHandler(this, "propertyChanged", handler);
+    },
+    addEventHandler: function(eventName, handler) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="eventName" type="String"></param>
+        /// <param name="handler" type="Function"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "eventName", type: String},
+            {name: "handler", type: Function}
+        ]);
+        if (e) throw e;
+        Sys.Observer._addEventHandler(this, eventName, handler);
+    },
+    removeEventHandler: function(eventName, handler) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="eventName" type="String"></param>
+        /// <param name="handler" type="Function"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "eventName", type: String},
+            {name: "handler", type: Function}
+        ]);
+        if (e) throw e;
+        Sys.Observer._removeEventHandler(this, eventName, handler);
+    },
+    get_isUpdating: function() {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <returns type="Boolean"></returns>
+        return Sys.Observer.isUpdating(this);
+    },
+    beginUpdate: function() {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        Sys.Observer.beginUpdate(this);
+    },
+    endUpdate: function() {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        Sys.Observer.endUpdate(this);
+    },
+    setValue: function(name, value) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="name" type="String"></param>
+        /// <param name="value" mayBeNull="true"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "name", type: String},
+            {name: "value", mayBeNull: true}
+        ]);
+        if (e) throw e;
+        Sys.Observer._setValue(this, name, value);
+    },
+    raiseEvent: function(eventName, eventArgs) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="eventName" type="String"></param>
+        /// <param name="eventArgs" type="Sys.EventArgs"></param>
+        Sys.Observer.raiseEvent(this, eventName, eventArgs);
+    },
+    raisePropertyChanged: function(name) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="name" type="String"></param>
+        Sys.Observer.raiseEvent(this, "propertyChanged", new Sys.PropertyChangedEventArgs(name));
+    }
+}
+Sys.Observer._arrayMethods = {
+    add_collectionChanged: function(handler) {
+        Sys.Observer._addEventHandler(this, "collectionChanged", handler);
+    },
+    remove_collectionChanged: function(handler) {
+        Sys.Observer._removeEventHandler(this, "collectionChanged", handler);
+    },
+    add: function(item) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="item" mayBeNull="true"></param>
+        Sys.Observer.add(this, item);
+    },
+    addRange: function(items) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="items" type="Array" elementMayBeNull="true"></param>
+        Sys.Observer.addRange(this, items);
+    },
+    clear: function() {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        Sys.Observer.clear(this);
+    },
+    insert: function(index, item) { 
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="index" type="Number" integer="true"></param>
+        /// <param name="item" mayBeNull="true"></param>
+        Sys.Observer.insert(this, index, item);
+    },
+    remove: function(item) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="item" mayBeNull="true"></param>
+        /// <returns type="Boolean"></returns>
+        return Sys.Observer.remove(this, item);
+    },
+    removeAt: function(index) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="index" type="Number" integer="true"></param>
+        Sys.Observer.removeAt(this, index);
+    },
+    raiseCollectionChanged: function(changes) {
+        /// <summary locid="M:J#Sys.Observer.raiseCollectionChanged" />
+        /// <param name="changes" type="Array" elementType="Sys.CollectionChange"></param>
+        Sys.Observer.raiseEvent(this, "collectionChanged", new Sys.NotifyCollectionChangedEventArgs(changes));
+    }
+}
+Sys.Observer._getContext = function Sys$Observer$_getContext(obj, create) {
+    var ctx = obj._observerContext;
+    if (ctx) return ctx();
+    if (create) {
+        return (obj._observerContext = Sys.Observer._createContext())();
+    }
+    return null;
+}
+Sys.Observer._createContext = function Sys$Observer$_createContext() {
+    var ctx = {
+        events: new Sys.EventHandlerList()
+    };
+    return function() {
+        return ctx;
+    }
+}
+Date._appendPreOrPostMatch = function Date$_appendPreOrPostMatch(preMatch, strBuilder) {
+    var quoteCount = 0;
+    var escaped = false;
+    for (var i = 0, il = preMatch.length; i < il; i++) {
+        var c = preMatch.charAt(i);
+        switch (c) {
+        case '\'':
+            if (escaped) strBuilder.append("'");
+            else quoteCount++;
+            escaped = false;
+            break;
+        case '\\':
+            if (escaped) strBuilder.append("\\");
+            escaped = !escaped;
+            break;
+        default:
+            strBuilder.append(c);
+            escaped = false;
+            break;
+        }
+    }
+    return quoteCount;
+}
+Date._expandFormat = function Date$_expandFormat(dtf, format) {
+    if (!format) {
+        format = "F";
+    }
+    var len = format.length;
+    if (len === 1) {
+        switch (format) {
+        case "d":
+            return dtf.ShortDatePattern;
+        case "D":
+            return dtf.LongDatePattern;
+        case "t":
+            return dtf.ShortTimePattern;
+        case "T":
+            return dtf.LongTimePattern;
+        case "f":
+            return dtf.LongDatePattern + " " + dtf.ShortTimePattern;
+        case "F":
+            return dtf.FullDateTimePattern;
+        case "M": case "m":
+            return dtf.MonthDayPattern;
+        case "s":
+            return dtf.SortableDateTimePattern;
+        case "Y": case "y":
+            return dtf.YearMonthPattern;
+        default:
+            throw Error.format(Sys.Res.formatInvalidString);
+        }
+    }
+    else if ((len === 2) && (format.charAt(0) === "%")) {
+        format = format.charAt(1);
+    }
+    return format;
+}
+Date._expandYear = function Date$_expandYear(dtf, year) {
+    var now = new Date(),
+        era = Date._getEra(now);
+    if (year < 100) {
+        var curr = Date._getEraYear(now, dtf, era);
+        year += curr - (curr % 100);
+        if (year > dtf.Calendar.TwoDigitYearMax) {
+            year -= 100;
+        }
+    }
+    return year;
+}
+Date._getEra = function Date$_getEra(date, eras) {
+    if (!eras) return 0;
+    var start, ticks = date.getTime();
+    for (var i = 0, l = eras.length; i < l; i += 4) {
+        start = eras[i+2];
+        if ((start === null) || (ticks >= start)) {
+            return i;
+        }
+    }
+    return 0;
+}
+Date._getEraYear = function Date$_getEraYear(date, dtf, era, sortable) {
+    var year = date.getFullYear();
+    if (!sortable && dtf.eras) {
+        year -= dtf.eras[era + 3];
+    }    
+    return year;
+}
+Date._getParseRegExp = function Date$_getParseRegExp(dtf, format) {
+    if (!dtf._parseRegExp) {
+        dtf._parseRegExp = {};
+    }
+    else if (dtf._parseRegExp[format]) {
+        return dtf._parseRegExp[format];
+    }
+    var expFormat = Date._expandFormat(dtf, format);
+    expFormat = expFormat.replace(/([\^\$\.\*\+\?\|\[\]\(\)\{\}])/g, "\\\\$1");
+    var regexp = new Sys.StringBuilder("^");
+    var groups = [];
+    var index = 0;
+    var quoteCount = 0;
+    var tokenRegExp = Date._getTokenRegExp();
+    var match;
+    while ((match = tokenRegExp.exec(expFormat)) !== null) {
+        var preMatch = expFormat.slice(index, match.index);
+        index = tokenRegExp.lastIndex;
+        quoteCount += Date._appendPreOrPostMatch(preMatch, regexp);
+        if ((quoteCount%2) === 1) {
+            regexp.append(match[0]);
+            continue;
+        }
+        switch (match[0]) {
+            case 'dddd': case 'ddd':
+            case 'MMMM': case 'MMM':
+            case 'gg': case 'g':
+                regexp.append("(\\D+)");
+                break;
+            case 'tt': case 't':
+                regexp.append("(\\D*)");
+                break;
+            case 'yyyy':
+                regexp.append("(\\d{4})");
+                break;
+            case 'fff':
+                regexp.append("(\\d{3})");
+                break;
+            case 'ff':
+                regexp.append("(\\d{2})");
+                break;
+            case 'f':
+                regexp.append("(\\d)");
+                break;
+            case 'dd': case 'd':
+            case 'MM': case 'M':
+            case 'yy': case 'y':
+            case 'HH': case 'H':
+            case 'hh': case 'h':
+            case 'mm': case 'm':
+            case 'ss': case 's':
+                regexp.append("(\\d\\d?)");
+                break;
+            case 'zzz':
+                regexp.append("([+-]?\\d\\d?:\\d{2})");
+                break;
+            case 'zz': case 'z':
+                regexp.append("([+-]?\\d\\d?)");
+                break;
+            case '/':
+                regexp.append("(\\" + dtf.DateSeparator + ")");
+                break;
+            default:
+                Sys.Debug.fail("Invalid date format pattern");
+        }
+        Array.add(groups, match[0]);
+    }
+    Date._appendPreOrPostMatch(expFormat.slice(index), regexp);
+    regexp.append("$");
+    var regexpStr = regexp.toString().replace(/\s+/g, "\\s+");
+    var parseRegExp = {'regExp': regexpStr, 'groups': groups};
+    dtf._parseRegExp[format] = parseRegExp;
+    return parseRegExp;
+}
+Date._getTokenRegExp = function Date$_getTokenRegExp() {
+    return /\/|dddd|ddd|dd|d|MMMM|MMM|MM|M|yyyy|yy|y|hh|h|HH|H|mm|m|ss|s|tt|t|fff|ff|f|zzz|zz|z|gg|g/g;
+}
+Date.parseLocale = function Date$parseLocale(value, formats) {
+    /// <summary locid="M:J#Date.parseLocale" />
+    /// <param name="value" type="String"></param>
+    /// <param name="formats" parameterArray="true" optional="true" mayBeNull="true"></param>
+    /// <returns type="Date"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String},
+        {name: "formats", mayBeNull: true, optional: true, parameterArray: true}
+    ]);
+    if (e) throw e;
+    return Date._parse(value, Sys.CultureInfo.CurrentCulture, arguments);
+}
+Date.parseInvariant = function Date$parseInvariant(value, formats) {
+    /// <summary locid="M:J#Date.parseInvariant" />
+    /// <param name="value" type="String"></param>
+    /// <param name="formats" parameterArray="true" optional="true" mayBeNull="true"></param>
+    /// <returns type="Date"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String},
+        {name: "formats", mayBeNull: true, optional: true, parameterArray: true}
+    ]);
+    if (e) throw e;
+    return Date._parse(value, Sys.CultureInfo.InvariantCulture, arguments);
+}
+Date._parse = function Date$_parse(value, cultureInfo, args) {
+    var i, l, date, format, formats, custom = false;
+    for (i = 1, l = args.length; i < l; i++) {
+        format = args[i];
+        if (format) {
+            custom = true;
+            date = Date._parseExact(value, format, cultureInfo);
+            if (date) return date;
+        }
+    }
+    if (! custom) {
+        formats = cultureInfo._getDateTimeFormats();
+        for (i = 0, l = formats.length; i < l; i++) {
+            date = Date._parseExact(value, formats[i], cultureInfo);
+            if (date) return date;
+        }
+    }
+    return null;
+}
+Date._parseExact = function Date$_parseExact(value, format, cultureInfo) {
+    value = value.trim();
+    var dtf = cultureInfo.dateTimeFormat,
+        parseInfo = Date._getParseRegExp(dtf, format),
+        match = new RegExp(parseInfo.regExp).exec(value);
+    if (match === null) return null;
+    
+    var groups = parseInfo.groups,
+        era = null, year = null, month = null, date = null, weekDay = null,
+        hour = 0, hourOffset, min = 0, sec = 0, msec = 0, tzMinOffset = null,
+        pmHour = false;
+    for (var j = 0, jl = groups.length; j < jl; j++) {
+        var matchGroup = match[j+1];
+        if (matchGroup) {
+            switch (groups[j]) {
+                case 'dd': case 'd':
+                    date = parseInt(matchGroup, 10);
+                    if ((date < 1) || (date > 31)) return null;
+                    break;
+                case 'MMMM':
+                    month = cultureInfo._getMonthIndex(matchGroup);
+                    if ((month < 0) || (month > 11)) return null;
+                    break;
+                case 'MMM':
+                    month = cultureInfo._getAbbrMonthIndex(matchGroup);
+                    if ((month < 0) || (month > 11)) return null;
+                    break;
+                case 'M': case 'MM':
+                    month = parseInt(matchGroup, 10) - 1;
+                    if ((month < 0) || (month > 11)) return null;
+                    break;
+                case 'y': case 'yy':
+                    year = Date._expandYear(dtf,parseInt(matchGroup, 10));
+                    if ((year < 0) || (year > 9999)) return null;
+                    break;
+                case 'yyyy':
+                    year = parseInt(matchGroup, 10);
+                    if ((year < 0) || (year > 9999)) return null;
+                    break;
+                case 'h': case 'hh':
+                    hour = parseInt(matchGroup, 10);
+                    if (hour === 12) hour = 0;
+                    if ((hour < 0) || (hour > 11)) return null;
+                    break;
+                case 'H': case 'HH':
+                    hour = parseInt(matchGroup, 10);
+                    if ((hour < 0) || (hour > 23)) return null;
+                    break;
+                case 'm': case 'mm':
+                    min = parseInt(matchGroup, 10);
+                    if ((min < 0) || (min > 59)) return null;
+                    break;
+                case 's': case 'ss':
+                    sec = parseInt(matchGroup, 10);
+                    if ((sec < 0) || (sec > 59)) return null;
+                    break;
+                case 'tt': case 't':
+                    var upperToken = matchGroup.toUpperCase();
+                    pmHour = (upperToken === dtf.PMDesignator.toUpperCase());
+                    if (!pmHour && (upperToken !== dtf.AMDesignator.toUpperCase())) return null;
+                    break;
+                case 'f':
+                    msec = parseInt(matchGroup, 10) * 100;
+                    if ((msec < 0) || (msec > 999)) return null;
+                    break;
+                case 'ff':
+                    msec = parseInt(matchGroup, 10) * 10;
+                    if ((msec < 0) || (msec > 999)) return null;
+                    break;
+                case 'fff':
+                    msec = parseInt(matchGroup, 10);
+                    if ((msec < 0) || (msec > 999)) return null;
+                    break;
+                case 'dddd':
+                    weekDay = cultureInfo._getDayIndex(matchGroup);
+                    if ((weekDay < 0) || (weekDay > 6)) return null;
+                    break;
+                case 'ddd':
+                    weekDay = cultureInfo._getAbbrDayIndex(matchGroup);
+                    if ((weekDay < 0) || (weekDay > 6)) return null;
+                    break;
+                case 'zzz':
+                    var offsets = matchGroup.split(/:/);
+                    if (offsets.length !== 2) return null;
+                    hourOffset = parseInt(offsets[0], 10);
+                    if ((hourOffset < -12) || (hourOffset > 13)) return null;
+                    var minOffset = parseInt(offsets[1], 10);
+                    if ((minOffset < 0) || (minOffset > 59)) return null;
+                    tzMinOffset = (hourOffset * 60) + (matchGroup.startsWith('-')? -minOffset : minOffset);
+                    break;
+                case 'z': case 'zz':
+                    hourOffset = parseInt(matchGroup, 10);
+                    if ((hourOffset < -12) || (hourOffset > 13)) return null;
+                    tzMinOffset = hourOffset * 60;
+                    break;
+                case 'g': case 'gg':
+                    var eraName = matchGroup;
+                    if (!eraName || !dtf.eras) return null;
+                    eraName = eraName.toLowerCase().trim();
+                    for (var i = 0, l = dtf.eras.length; i < l; i += 4) {
+                        if (eraName === dtf.eras[i + 1].toLowerCase()) {
+                            era = i;
+                            break;
+                        }
+                    }
+                    if (era === null) return null;
+                    break;
+            }
+        }
+    }
+    var result = new Date(), defaults, convert = dtf.Calendar.convert;
+    if (convert) {
+        defaults = convert.fromGregorian(result);
+    }
+    if (!convert) {
+        defaults = [result.getFullYear(), result.getMonth(), result.getDate()];
+    }
+    if (year === null) {
+        year = defaults[0];
+    }
+    else if (dtf.eras) {
+        year += dtf.eras[(era || 0) + 3];
+    }
+    if (month === null) {
+        month = defaults[1];
+    }
+    if (date === null) {
+        date = defaults[2];
+    }
+    if (convert) {
+        result = convert.toGregorian(year, month, date);
+        if (result === null) return null;
+    }
+    else {
+        result.setFullYear(year, month, date);
+        if (result.getDate() !== date) return null;
+        if ((weekDay !== null) && (result.getDay() !== weekDay)) {
+            return null;
+        }
+    }
+    if (pmHour && (hour < 12)) {
+        hour += 12;
+    }
+    result.setHours(hour, min, sec, msec);
+    if (tzMinOffset !== null) {
+        var adjustedMin = result.getMinutes() - (tzMinOffset + result.getTimezoneOffset());
+        result.setHours(result.getHours() + parseInt(adjustedMin/60, 10), adjustedMin%60);
+    }
+    return result;
+}
+Date.prototype.format = function Date$format(format) {
+    /// <summary locid="M:J#Date.format" />
+    /// <param name="format" type="String"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "format", type: String}
+    ]);
+    if (e) throw e;
+    return this._toFormattedString(format, Sys.CultureInfo.InvariantCulture);
+}
+Date.prototype.localeFormat = function Date$localeFormat(format) {
+    /// <summary locid="M:J#Date.localeFormat" />
+    /// <param name="format" type="String"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "format", type: String}
+    ]);
+    if (e) throw e;
+    return this._toFormattedString(format, Sys.CultureInfo.CurrentCulture);
+}
+Date.prototype._toFormattedString = function Date$_toFormattedString(format, cultureInfo) {
+    var dtf = cultureInfo.dateTimeFormat,
+        convert = dtf.Calendar.convert;
+    if (!format || !format.length || (format === 'i')) {
+        if (cultureInfo && cultureInfo.name.length) {
+            if (convert) {
+                return this._toFormattedString(dtf.FullDateTimePattern, cultureInfo);
+            }
+            else {
+                var eraDate = new Date(this.getTime());
+                var era = Date._getEra(this, dtf.eras);
+                eraDate.setFullYear(Date._getEraYear(this, dtf, era));
+                return eraDate.toLocaleString();
+            }
+        }
+        else {
+            return this.toString();
+        }
+    }
+    var eras = dtf.eras,
+        sortable = (format === "s");
+    format = Date._expandFormat(dtf, format);
+    var ret = new Sys.StringBuilder();
+    var hour;
+    function addLeadingZero(num) {
+        if (num < 10) {
+            return '0' + num;
+        }
+        return num.toString();
+    }
+    function addLeadingZeros(num) {
+        if (num < 10) {
+            return '00' + num;
+        }
+        if (num < 100) {
+            return '0' + num;
+        }
+        return num.toString();
+    }
+    function padYear(year) {
+        if (year < 10) {
+            return '000' + year;
+        }
+        else if (year < 100) {
+            return '00' + year;
+        }
+        else if (year < 1000) {
+            return '0' + year;
+        }
+        return year.toString();
+    }
+    
+    var foundDay, checkedDay, dayPartRegExp = /([^d]|^)(d|dd)([^d]|$)/g;
+    function hasDay() {
+        if (foundDay || checkedDay) {
+            return foundDay;
+        }
+        foundDay = dayPartRegExp.test(format);
+        checkedDay = true;
+        return foundDay;
+    }
+    
+    var quoteCount = 0,
+        tokenRegExp = Date._getTokenRegExp(),
+        converted;
+    if (!sortable && convert) {
+        converted = convert.fromGregorian(this);
+    }
+    for (;;) {
+        var index = tokenRegExp.lastIndex;
+        var ar = tokenRegExp.exec(format);
+        var preMatch = format.slice(index, ar ? ar.index : format.length);
+        quoteCount += Date._appendPreOrPostMatch(preMatch, ret);
+        if (!ar) break;
+        if ((quoteCount%2) === 1) {
+            ret.append(ar[0]);
+            continue;
+        }
+        
+        function getPart(date, part) {
+            if (converted) {
+                return converted[part];
+            }
+            switch (part) {
+                case 0: return date.getFullYear();
+                case 1: return date.getMonth();
+                case 2: return date.getDate();
+            }
+        }
+        switch (ar[0]) {
+        case "dddd":
+            ret.append(dtf.DayNames[this.getDay()]);
+            break;
+        case "ddd":
+            ret.append(dtf.AbbreviatedDayNames[this.getDay()]);
+            break;
+        case "dd":
+            foundDay = true;
+            ret.append(addLeadingZero(getPart(this, 2)));
+            break;
+        case "d":
+            foundDay = true;
+            ret.append(getPart(this, 2));
+            break;
+        case "MMMM":
+            ret.append((dtf.MonthGenitiveNames && hasDay())
+                ? dtf.MonthGenitiveNames[getPart(this, 1)]
+                : dtf.MonthNames[getPart(this, 1)]);
+            break;
+        case "MMM":
+            ret.append((dtf.AbbreviatedMonthGenitiveNames && hasDay())
+                ? dtf.AbbreviatedMonthGenitiveNames[getPart(this, 1)]
+                : dtf.AbbreviatedMonthNames[getPart(this, 1)]);
+            break;
+        case "MM":
+            ret.append(addLeadingZero(getPart(this, 1) + 1));
+            break;
+        case "M":
+            ret.append(getPart(this, 1) + 1);
+            break;
+        case "yyyy":
+            ret.append(padYear(converted ? converted[0] : Date._getEraYear(this, dtf, Date._getEra(this, eras), sortable)));
+            break;
+        case "yy":
+            ret.append(addLeadingZero((converted ? converted[0] : Date._getEraYear(this, dtf, Date._getEra(this, eras), sortable)) % 100));
+            break;
+        case "y":
+            ret.append((converted ? converted[0] : Date._getEraYear(this, dtf, Date._getEra(this, eras), sortable)) % 100);
+            break;
+        case "hh":
+            hour = this.getHours() % 12;
+            if (hour === 0) hour = 12;
+            ret.append(addLeadingZero(hour));
+            break;
+        case "h":
+            hour = this.getHours() % 12;
+            if (hour === 0) hour = 12;
+            ret.append(hour);
+            break;
+        case "HH":
+            ret.append(addLeadingZero(this.getHours()));
+            break;
+        case "H":
+            ret.append(this.getHours());
+            break;
+        case "mm":
+            ret.append(addLeadingZero(this.getMinutes()));
+            break;
+        case "m":
+            ret.append(this.getMinutes());
+            break;
+        case "ss":
+            ret.append(addLeadingZero(this.getSeconds()));
+            break;
+        case "s":
+            ret.append(this.getSeconds());
+            break;
+        case "tt":
+            ret.append((this.getHours() < 12) ? dtf.AMDesignator : dtf.PMDesignator);
+            break;
+        case "t":
+            ret.append(((this.getHours() < 12) ? dtf.AMDesignator : dtf.PMDesignator).charAt(0));
+            break;
+        case "f":
+            ret.append(addLeadingZeros(this.getMilliseconds()).charAt(0));
+            break;
+        case "ff":
+            ret.append(addLeadingZeros(this.getMilliseconds()).substr(0, 2));
+            break;
+        case "fff":
+            ret.append(addLeadingZeros(this.getMilliseconds()));
+            break;
+        case "z":
+            hour = this.getTimezoneOffset() / 60;
+            ret.append(((hour <= 0) ? '+' : '-') + Math.floor(Math.abs(hour)));
+            break;
+        case "zz":
+            hour = this.getTimezoneOffset() / 60;
+            ret.append(((hour <= 0) ? '+' : '-') + addLeadingZero(Math.floor(Math.abs(hour))));
+            break;
+        case "zzz":
+            hour = this.getTimezoneOffset() / 60;
+            ret.append(((hour <= 0) ? '+' : '-') + addLeadingZero(Math.floor(Math.abs(hour))) +
+                ":" + addLeadingZero(Math.abs(this.getTimezoneOffset() % 60)));
+            break;
+        case "g":
+        case "gg":
+            if (dtf.eras) {
+                ret.append(dtf.eras[Date._getEra(this, eras) + 1]);
+            }
+            break;
+        case "/":
+            ret.append(dtf.DateSeparator);
+            break;
+        default:
+            Sys.Debug.fail("Invalid date format pattern");
+        }
+    }
+    return ret.toString();
+}
+String.localeFormat = function String$localeFormat(format, args) {
+    /// <summary locid="M:J#String.localeFormat" />
+    /// <param name="format" type="String"></param>
+    /// <param name="args" parameterArray="true" mayBeNull="true"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "format", type: String},
+        {name: "args", mayBeNull: true, parameterArray: true}
+    ]);
+    if (e) throw e;
+    return String._toFormattedString(true, arguments);
+}
+Number.parseLocale = function Number$parseLocale(value) {
+    /// <summary locid="M:J#Number.parseLocale" />
+    /// <param name="value" type="String"></param>
+    /// <returns type="Number"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String}
+    ], false);
+    if (e) throw e;
+    return Number._parse(value, Sys.CultureInfo.CurrentCulture);
+}
+Number.parseInvariant = function Number$parseInvariant(value) {
+    /// <summary locid="M:J#Number.parseInvariant" />
+    /// <param name="value" type="String"></param>
+    /// <returns type="Number"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String}
+    ], false);
+    if (e) throw e;
+    return Number._parse(value, Sys.CultureInfo.InvariantCulture);
+}
+Number._parse = function Number$_parse(value, cultureInfo) {
+    value = value.trim();
+    
+    if (value.match(/^[+-]?infinity$/i)) {
+        return parseFloat(value);
+    }
+    if (value.match(/^0x[a-f0-9]+$/i)) {
+        return parseInt(value);
+    }
+    var numFormat = cultureInfo.numberFormat;
+    var signInfo = Number._parseNumberNegativePattern(value, numFormat, numFormat.NumberNegativePattern);
+    var sign = signInfo[0];
+    var num = signInfo[1];
+    
+    if ((sign === '') && (numFormat.NumberNegativePattern !== 1)) {
+        signInfo = Number._parseNumberNegativePattern(value, numFormat, 1);
+        sign = signInfo[0];
+        num = signInfo[1];
+    }
+    if (sign === '') sign = '+';
+    
+    var exponent;
+    var intAndFraction;
+    var exponentPos = num.indexOf('e');
+    if (exponentPos < 0) exponentPos = num.indexOf('E');
+    if (exponentPos < 0) {
+        intAndFraction = num;
+        exponent = null;
+    }
+    else {
+        intAndFraction = num.substr(0, exponentPos);
+        exponent = num.substr(exponentPos + 1);
+    }
+    
+    var integer;
+    var fraction;
+    var decimalPos = intAndFraction.indexOf(numFormat.NumberDecimalSeparator);
+    if (decimalPos < 0) {
+        integer = intAndFraction;
+        fraction = null;
+    }
+    else {
+        integer = intAndFraction.substr(0, decimalPos);
+        fraction = intAndFraction.substr(decimalPos + numFormat.NumberDecimalSeparator.length);
+    }
+    
+    integer = integer.split(numFormat.NumberGroupSeparator).join('');
+    var altNumGroupSeparator = numFormat.NumberGroupSeparator.replace(/\u00A0/g, " ");
+    if (numFormat.NumberGroupSeparator !== altNumGroupSeparator) {
+        integer = integer.split(altNumGroupSeparator).join('');
+    }
+    
+    var p = sign + integer;
+    if (fraction !== null) {
+        p += '.' + fraction;
+    }
+    if (exponent !== null) {
+        var expSignInfo = Number._parseNumberNegativePattern(exponent, numFormat, 1);
+        if (expSignInfo[0] === '') {
+            expSignInfo[0] = '+';
+        }
+        p += 'e' + expSignInfo[0] + expSignInfo[1];
+    }
+    if (p.match(/^[+-]?\d*\.?\d*(e[+-]?\d+)?$/)) {
+        return parseFloat(p);
+    }
+    return Number.NaN;
+}
+Number._parseNumberNegativePattern = function Number$_parseNumberNegativePattern(value, numFormat, numberNegativePattern) {
+    var neg = numFormat.NegativeSign;
+    var pos = numFormat.PositiveSign;    
+    switch (numberNegativePattern) {
+        case 4: 
+            neg = ' ' + neg;
+            pos = ' ' + pos;
+        case 3: 
+            if (value.endsWith(neg)) {
+                return ['-', value.substr(0, value.length - neg.length)];
+            }
+            else if (value.endsWith(pos)) {
+                return ['+', value.substr(0, value.length - pos.length)];
+            }
+            break;
+        case 2: 
+            neg += ' ';
+            pos += ' ';
+        case 1: 
+            if (value.startsWith(neg)) {
+                return ['-', value.substr(neg.length)];
+            }
+            else if (value.startsWith(pos)) {
+                return ['+', value.substr(pos.length)];
+            }
+            break;
+        case 0: 
+            if (value.startsWith('(') && value.endsWith(')')) {
+                return ['-', value.substr(1, value.length - 2)];
+            }
+            break;
+        default:
+            Sys.Debug.fail("");
+    }
+    return ['', value];
+}
+Number.prototype.format = function Number$format(format) {
+    /// <summary locid="M:J#Number.format" />
+    /// <param name="format" type="String"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "format", type: String}
+    ]);
+    if (e) throw e;
+    return this._toFormattedString(format, Sys.CultureInfo.InvariantCulture);
+}
+Number.prototype.localeFormat = function Number$localeFormat(format) {
+    /// <summary locid="M:J#Number.localeFormat" />
+    /// <param name="format" type="String"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "format", type: String}
+    ]);
+    if (e) throw e;
+    return this._toFormattedString(format, Sys.CultureInfo.CurrentCulture);
+}
+Number.prototype._toFormattedString = function Number$_toFormattedString(format, cultureInfo) {
+    if (!format || (format.length === 0) || (format === 'i')) {
+        if (cultureInfo && (cultureInfo.name.length > 0)) {
+            return this.toLocaleString();
+        }
+        else {
+            return this.toString();
+        }
+    }
+    
+    var _percentPositivePattern = ["n %", "n%", "%n" ];
+    var _percentNegativePattern = ["-n %", "-n%", "-%n"];
+    var _numberNegativePattern = ["(n)","-n","- n","n-","n -"];
+    var _currencyPositivePattern = ["$n","n$","$ n","n $"];
+    var _currencyNegativePattern = ["($n)","-$n","$-n","$n-","(n$)","-n$","n-$","n$-","-n $","-$ n","n $-","$ n-","$ -n","n- $","($ n)","(n $)"];
+    function zeroPad(str, count, left) {
+        for (var l=str.length; l < count; l++) {
+            str = (left ? ('0' + str) : (str + '0'));
+        }
+        return str;
+    }
+    
+    function expandNumber(number, precision, groupSizes, sep, decimalChar) {
+        Sys.Debug.assert(groupSizes.length > 0, "groupSizes must be an array of at least 1");
+        var curSize = groupSizes[0];
+        var curGroupIndex = 1;
+        var factor = Math.pow(10, precision);
+        var rounded = (Math.round(number * factor) / factor);
+        if (!isFinite(rounded)) {
+            rounded = number;
+        }
+        number = rounded;
+        
+        var numberString = number.toString();
+        var right = "";
+        var exponent;
+        
+        
+        var split = numberString.split(/e/i);
+        numberString = split[0];
+        exponent = (split.length > 1 ? parseInt(split[1]) : 0);
+        split = numberString.split('.');
+        numberString = split[0];
+        right = split.length > 1 ? split[1] : "";
+        
+        var l;
+        if (exponent > 0) {
+            right = zeroPad(right, exponent, false);
+            numberString += right.slice(0, exponent);
+            right = right.substr(exponent);
+        }
+        else if (exponent < 0) {
+            exponent = -exponent;
+            numberString = zeroPad(numberString, exponent+1, true);
+            right = numberString.slice(-exponent, numberString.length) + right;
+            numberString = numberString.slice(0, -exponent);
+        }
+        if (precision > 0) {
+            if (right.length > precision) {
+                right = right.slice(0, precision);
+            }
+            else {
+                right = zeroPad(right, precision, false);
+            }
+            right = decimalChar + right;
+        }
+        else { 
+            right = "";
+        }
+        var stringIndex = numberString.length-1;
+        var ret = "";
+        while (stringIndex >= 0) {
+            if (curSize === 0 || curSize > stringIndex) {
+                if (ret.length > 0)
+                    return numberString.slice(0, stringIndex + 1) + sep + ret + right;
+                else
+                    return numberString.slice(0, stringIndex + 1) + right;
+            }
+            if (ret.length > 0)
+                ret = numberString.slice(stringIndex - curSize + 1, stringIndex+1) + sep + ret;
+            else
+                ret = numberString.slice(stringIndex - curSize + 1, stringIndex+1);
+            stringIndex -= curSize;
+            if (curGroupIndex < groupSizes.length) {
+                curSize = groupSizes[curGroupIndex];
+                curGroupIndex++;
+            }
+        }
+        return numberString.slice(0, stringIndex + 1) + sep + ret + right;
+    }
+    var nf = cultureInfo.numberFormat;
+    var number = Math.abs(this);
+    if (!format)
+        format = "D";
+    var precision = -1;
+    if (format.length > 1) precision = parseInt(format.slice(1), 10);
+    var pattern;
+    switch (format.charAt(0)) {
+    case "d":
+    case "D":
+        pattern = 'n';
+        if (precision !== -1) {
+            number = zeroPad(""+number, precision, true);
+        }
+        if (this < 0) number = -number;
+        break;
+    case "c":
+    case "C":
+        if (this < 0) pattern = _currencyNegativePattern[nf.CurrencyNegativePattern];
+        else pattern = _currencyPositivePattern[nf.CurrencyPositivePattern];
+        if (precision === -1) precision = nf.CurrencyDecimalDigits;
+        number = expandNumber(Math.abs(this), precision, nf.CurrencyGroupSizes, nf.CurrencyGroupSeparator, nf.CurrencyDecimalSeparator);
+        break;
+    case "n":
+    case "N":
+        if (this < 0) pattern = _numberNegativePattern[nf.NumberNegativePattern];
+        else pattern = 'n';
+        if (precision === -1) precision = nf.NumberDecimalDigits;
+        number = expandNumber(Math.abs(this), precision, nf.NumberGroupSizes, nf.NumberGroupSeparator, nf.NumberDecimalSeparator);
+        break;
+    case "p":
+    case "P":
+        if (this < 0) pattern = _percentNegativePattern[nf.PercentNegativePattern];
+        else pattern = _percentPositivePattern[nf.PercentPositivePattern];
+        if (precision === -1) precision = nf.PercentDecimalDigits;
+        number = expandNumber(Math.abs(this) * 100, precision, nf.PercentGroupSizes, nf.PercentGroupSeparator, nf.PercentDecimalSeparator);
+        break;
+    default:
+        throw Error.format(Sys.Res.formatBadFormatSpecifier);
+    }
+    var regex = /n|\$|-|%/g;
+    var ret = "";
+    for (;;) {
+        var index = regex.lastIndex;
+        var ar = regex.exec(pattern);
+        ret += pattern.slice(index, ar ? ar.index : pattern.length);
+        if (!ar)
+            break;
+        switch (ar[0]) {
+        case "n":
+            ret += number;
+            break;
+        case "$":
+            ret += nf.CurrencySymbol;
+            break;
+        case "-":
+            if (/[1-9]/.test(number)) {
+                ret += nf.NegativeSign;
+            }
+            break;
+        case "%":
+            ret += nf.PercentSymbol;
+            break;
+        default:
+            Sys.Debug.fail("Invalid number format pattern");
+        }
+    }
+    return ret;
+}
+ 
+Sys.CultureInfo = function Sys$CultureInfo(name, numberFormat, dateTimeFormat) {
+    /// <summary locid="M:J#Sys.CultureInfo.#ctor" />
+    /// <param name="name" type="String"></param>
+    /// <param name="numberFormat" type="Object"></param>
+    /// <param name="dateTimeFormat" type="Object"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "name", type: String},
+        {name: "numberFormat", type: Object},
+        {name: "dateTimeFormat", type: Object}
+    ]);
+    if (e) throw e;
+    this.name = name;
+    this.numberFormat = numberFormat;
+    this.dateTimeFormat = dateTimeFormat;
+}
+    function Sys$CultureInfo$_getDateTimeFormats() {
+        if (! this._dateTimeFormats) {
+            var dtf = this.dateTimeFormat;
+            this._dateTimeFormats =
+              [ dtf.MonthDayPattern,
+                dtf.YearMonthPattern,
+                dtf.ShortDatePattern,
+                dtf.ShortTimePattern,
+                dtf.LongDatePattern,
+                dtf.LongTimePattern,
+                dtf.FullDateTimePattern,
+                dtf.RFC1123Pattern,
+                dtf.SortableDateTimePattern,
+                dtf.UniversalSortableDateTimePattern ];
+        }
+        return this._dateTimeFormats;
+    }
+    function Sys$CultureInfo$_getIndex(value, a1, a2) {
+        var upper = this._toUpper(value),
+            i = Array.indexOf(a1, upper);
+        if (i === -1) {
+            i = Array.indexOf(a2, upper);
+        }
+        return i;
+    }
+    function Sys$CultureInfo$_getMonthIndex(value) {
+        if (!this._upperMonths) {
+            this._upperMonths = this._toUpperArray(this.dateTimeFormat.MonthNames);
+            this._upperMonthsGenitive = this._toUpperArray(this.dateTimeFormat.MonthGenitiveNames);
+        }
+        return this._getIndex(value, this._upperMonths, this._upperMonthsGenitive);
+    }
+    function Sys$CultureInfo$_getAbbrMonthIndex(value) {
+        if (!this._upperAbbrMonths) {
+            this._upperAbbrMonths = this._toUpperArray(this.dateTimeFormat.AbbreviatedMonthNames);
+            this._upperAbbrMonthsGenitive = this._toUpperArray(this.dateTimeFormat.AbbreviatedMonthGenitiveNames);
+        }
+        return this._getIndex(value, this._upperAbbrMonths, this._upperAbbrMonthsGenitive);
+    }
+    function Sys$CultureInfo$_getDayIndex(value) {
+        if (!this._upperDays) {
+            this._upperDays = this._toUpperArray(this.dateTimeFormat.DayNames);
+        }
+        return Array.indexOf(this._upperDays, this._toUpper(value));
+    }
+    function Sys$CultureInfo$_getAbbrDayIndex(value) {
+        if (!this._upperAbbrDays) {
+            this._upperAbbrDays = this._toUpperArray(this.dateTimeFormat.AbbreviatedDayNames);
+        }
+        return Array.indexOf(this._upperAbbrDays, this._toUpper(value));
+    }
+    function Sys$CultureInfo$_toUpperArray(arr) {
+        var result = [];
+        for (var i = 0, il = arr.length; i < il; i++) {
+            result[i] = this._toUpper(arr[i]);
+        }
+        return result;
+    }
+    function Sys$CultureInfo$_toUpper(value) {
+        return value.split("\u00A0").join(' ').toUpperCase();
+    }
+Sys.CultureInfo.prototype = {
+    _getDateTimeFormats: Sys$CultureInfo$_getDateTimeFormats,
+    _getIndex: Sys$CultureInfo$_getIndex,
+    _getMonthIndex: Sys$CultureInfo$_getMonthIndex,
+    _getAbbrMonthIndex: Sys$CultureInfo$_getAbbrMonthIndex,
+    _getDayIndex: Sys$CultureInfo$_getDayIndex,
+    _getAbbrDayIndex: Sys$CultureInfo$_getAbbrDayIndex,
+    _toUpperArray: Sys$CultureInfo$_toUpperArray,
+    _toUpper: Sys$CultureInfo$_toUpper
+}
+Sys.CultureInfo.registerClass('Sys.CultureInfo');
+Sys.CultureInfo._parse = function Sys$CultureInfo$_parse(value) {
+    var dtf = value.dateTimeFormat;
+    if (dtf && !dtf.eras) {
+        dtf.eras = value.eras;
+    }
+    return new Sys.CultureInfo(value.name, value.numberFormat, dtf);
+}
+Sys.CultureInfo.InvariantCulture = Sys.CultureInfo._parse({"name":"","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":true,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"\u00A4","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-Infinity","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"Infinity","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"\u2030","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"@-62135568000000@","MaxSupportedDateTime":"@253402300799999@","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":true},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, dd MMMM yyyy HH:mm:ss","LongDatePattern":"dddd, dd MMMM yyyy","LongTimePattern":"HH:mm:ss","MonthDayPattern":"MMMM dd","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\':\'mm\':\'ss \'GMT\'","ShortDatePattern":"MM/dd/yyyy","ShortTimePattern":"HH:mm","SortableDateTimePattern":"yyyy\'-\'MM\'-\'dd\'T\'HH\':\'mm\':\'ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\'-\'MM\'-\'dd HH\':\'mm\':\'ss\'Z\'","YearMonthPattern":"yyyy MMMM","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":true,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]},"eras":[1,"A.D.",null,0]});
+if (typeof(__cultureInfo) === "object") {
+    Sys.CultureInfo.CurrentCulture = Sys.CultureInfo._parse(__cultureInfo);
+    delete __cultureInfo;    
+}
+else {
+    Sys.CultureInfo.CurrentCulture = Sys.CultureInfo._parse({"name":"en-US","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":false,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"$","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-Infinity","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"Infinity","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"\u2030","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"@-62135568000000@","MaxSupportedDateTime":"@253402300799999@","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":false},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, MMMM dd, yyyy h:mm:ss tt","LongDatePattern":"dddd, MMMM dd, yyyy","LongTimePattern":"h:mm:ss tt","MonthDayPattern":"MMMM dd","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\':\'mm\':\'ss \'GMT\'","ShortDatePattern":"M/d/yyyy","ShortTimePattern":"h:mm tt","SortableDateTimePattern":"yyyy\'-\'MM\'-\'dd\'T\'HH\':\'mm\':\'ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\'-\'MM\'-\'dd HH\':\'mm\':\'ss\'Z\'","YearMonthPattern":"MMMM, yyyy","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":false,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]},"eras":[1,"A.D.",null,0]});
+}
+Type.registerNamespace('Sys.Serialization');
+Sys.Serialization.JavaScriptSerializer = function Sys$Serialization$JavaScriptSerializer() {
+    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.#ctor" />
+    if (arguments.length !== 0) throw Error.parameterCount();
+}
+Sys.Serialization.JavaScriptSerializer.registerClass('Sys.Serialization.JavaScriptSerializer');
+Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs = [];
+Sys.Serialization.JavaScriptSerializer._charsToEscape = [];
+Sys.Serialization.JavaScriptSerializer._dateRegEx = new RegExp('(^|[^\\\\])\\"\\\\/Date\\((-?[0-9]+)(?:[a-zA-Z]|(?:\\+|-)[0-9]{4})?\\)\\\\/\\"', 'g');
+Sys.Serialization.JavaScriptSerializer._escapeChars = {};
+Sys.Serialization.JavaScriptSerializer._escapeRegEx = new RegExp('["\\\\\\x00-\\x1F]', 'i');
+Sys.Serialization.JavaScriptSerializer._escapeRegExGlobal = new RegExp('["\\\\\\x00-\\x1F]', 'g');
+Sys.Serialization.JavaScriptSerializer._jsonRegEx = new RegExp('[^,:{}\\[\\]0-9.\\-+Eaeflnr-u \\n\\r\\t]', 'g');
+Sys.Serialization.JavaScriptSerializer._jsonStringRegEx = new RegExp('"(\\\\.|[^"\\\\])*"', 'g');
+Sys.Serialization.JavaScriptSerializer._serverTypeFieldName = '__type';
+Sys.Serialization.JavaScriptSerializer._init = function Sys$Serialization$JavaScriptSerializer$_init() {
+    var replaceChars = ['\\u0000','\\u0001','\\u0002','\\u0003','\\u0004','\\u0005','\\u0006','\\u0007',
+                        '\\b','\\t','\\n','\\u000b','\\f','\\r','\\u000e','\\u000f','\\u0010','\\u0011',
+                        '\\u0012','\\u0013','\\u0014','\\u0015','\\u0016','\\u0017','\\u0018','\\u0019',
+                        '\\u001a','\\u001b','\\u001c','\\u001d','\\u001e','\\u001f'];
+    Sys.Serialization.JavaScriptSerializer._charsToEscape[0] = '\\';
+    Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs['\\'] = new RegExp('\\\\', 'g');
+    Sys.Serialization.JavaScriptSerializer._escapeChars['\\'] = '\\\\';
+    Sys.Serialization.JavaScriptSerializer._charsToEscape[1] = '"';
+    Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs['"'] = new RegExp('"', 'g');
+    Sys.Serialization.JavaScriptSerializer._escapeChars['"'] = '\\"';
+    for (var i = 0; i < 32; i++) {
+        var c = String.fromCharCode(i);
+        Sys.Serialization.JavaScriptSerializer._charsToEscape[i+2] = c;
+        Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs[c] = new RegExp(c, 'g');
+        Sys.Serialization.JavaScriptSerializer._escapeChars[c] = replaceChars[i];
+    }
+}
+Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeBooleanWithBuilder(object, stringBuilder) {
+    stringBuilder.append(object.toString());
+}
+Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeNumberWithBuilder(object, stringBuilder) {
+    if (isFinite(object)) {
+        stringBuilder.append(String(object));
+    }
+    else {
+        throw Error.invalidOperation(Sys.Res.cannotSerializeNonFiniteNumbers);
+    }
+}
+Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeStringWithBuilder(string, stringBuilder) {
+    stringBuilder.append('"');
+    if (Sys.Serialization.JavaScriptSerializer._escapeRegEx.test(string)) {
+        if (Sys.Serialization.JavaScriptSerializer._charsToEscape.length === 0) {
+            Sys.Serialization.JavaScriptSerializer._init();
+        }
+        if (string.length < 128) {
+            string = string.replace(Sys.Serialization.JavaScriptSerializer._escapeRegExGlobal,
+                function(x) { return Sys.Serialization.JavaScriptSerializer._escapeChars[x]; });
+        }
+        else {
+            for (var i = 0; i < 34; i++) {
+                var c = Sys.Serialization.JavaScriptSerializer._charsToEscape[i];
+                if (string.indexOf(c) !== -1) {
+                    if (Sys.Browser.agent === Sys.Browser.Opera || Sys.Browser.agent === Sys.Browser.FireFox) {
+                        string = string.split(c).join(Sys.Serialization.JavaScriptSerializer._escapeChars[c]);
+                    }
+                    else {
+                        string = string.replace(Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs[c],
+                            Sys.Serialization.JavaScriptSerializer._escapeChars[c]);
+                    }
+                }
+            }
+       }
+    }
+    stringBuilder.append(string);
+    stringBuilder.append('"');
+}
+Sys.Serialization.JavaScriptSerializer._serializeWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeWithBuilder(object, stringBuilder, sort, prevObjects) {
+    var i;
+    switch (typeof object) {
+    case 'object':
+        if (object) {
+            if (prevObjects){
+                for( var j = 0; j < prevObjects.length; j++) {
+                    if (prevObjects[j] === object) {
+                        throw Error.invalidOperation(Sys.Res.cannotSerializeObjectWithCycle);
+                    }
+                }
+            }
+            else {
+                prevObjects = new Array();
+            }
+            try {
+                Array.add(prevObjects, object);
+                
+                if (Number.isInstanceOfType(object)){
+                    Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder(object, stringBuilder);
+                }
+                else if (Boolean.isInstanceOfType(object)){
+                    Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder(object, stringBuilder);
+                }
+                else if (String.isInstanceOfType(object)){
+                    Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder(object, stringBuilder);
+                }
+            
+                else if (Array.isInstanceOfType(object)) {
+                    stringBuilder.append('[');
+                   
+                    for (i = 0; i < object.length; ++i) {
+                        if (i > 0) {
+                            stringBuilder.append(',');
+                        }
+                        Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(object[i], stringBuilder,false,prevObjects);
+                    }
+                    stringBuilder.append(']');
+                }
+                else {
+                    if (Date.isInstanceOfType(object)) {
+                        stringBuilder.append('"\\/Date(');
+                        stringBuilder.append(object.getTime());
+                        stringBuilder.append(')\\/"');
+                        break;
+                    }
+                    var properties = [];
+                    var propertyCount = 0;
+                    for (var name in object) {
+                        if (name.startsWith('$')) {
+                            continue;
+                        }
+                        if (name === Sys.Serialization.JavaScriptSerializer._serverTypeFieldName && propertyCount !== 0){
+                            properties[propertyCount++] = properties[0];
+                            properties[0] = name;
+                        }
+                        else{
+                            properties[propertyCount++] = name;
+                        }
+                    }
+                    if (sort) properties.sort();
+                    stringBuilder.append('{');
+                    var needComma = false;
+                     
+                    for (i=0; i<propertyCount; i++) {
+                        var value = object[properties[i]];
+                        if (typeof value !== 'undefined' && typeof value !== 'function') {
+                            if (needComma) {
+                                stringBuilder.append(',');
+                            }
+                            else {
+                                needComma = true;
+                            }
+                           
+                            Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(properties[i], stringBuilder, sort, prevObjects);
+                            stringBuilder.append(':');
+                            Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(value, stringBuilder, sort, prevObjects);
+                          
+                        }
+                    }
+                stringBuilder.append('}');
+                }
+            }
+            finally {
+                Array.removeAt(prevObjects, prevObjects.length - 1);
+            }
+        }
+        else {
+            stringBuilder.append('null');
+        }
+        break;
+    case 'number':
+        Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder(object, stringBuilder);
+        break;
+    case 'string':
+        Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder(object, stringBuilder);
+        break;
+    case 'boolean':
+        Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder(object, stringBuilder);
+        break;
+    default:
+        stringBuilder.append('null');
+        break;
+    }
+}
+Sys.Serialization.JavaScriptSerializer.serialize = function Sys$Serialization$JavaScriptSerializer$serialize(object) {
+    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.serialize" />
+    /// <param name="object" mayBeNull="true"></param>
+    /// <returns type="String"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "object", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    var stringBuilder = new Sys.StringBuilder();
+    Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(object, stringBuilder, false);
+    return stringBuilder.toString();
+}
+Sys.Serialization.JavaScriptSerializer.deserialize = function Sys$Serialization$JavaScriptSerializer$deserialize(data, secure) {
+    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.deserialize" />
+    /// <param name="data" type="String"></param>
+    /// <param name="secure" type="Boolean" optional="true"></param>
+    /// <returns></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "data", type: String},
+        {name: "secure", type: Boolean, optional: true}
+    ]);
+    if (e) throw e;
+    
+    if (data.length === 0) throw Error.argument('data', Sys.Res.cannotDeserializeEmptyString);
+    try {    
+        var exp = data.replace(Sys.Serialization.JavaScriptSerializer._dateRegEx, "$1new Date($2)");
+        
+        if (secure && Sys.Serialization.JavaScriptSerializer._jsonRegEx.test(
+             exp.replace(Sys.Serialization.JavaScriptSerializer._jsonStringRegEx, ''))) throw null;
+        return eval('(' + exp + ')');
+    }
+    catch (e) {
+         throw Error.argument('data', Sys.Res.cannotDeserializeInvalidJson);
+    }
+}
+Type.registerNamespace('Sys.UI');
  
 Sys.EventHandlerList = function Sys$EventHandlerList() {
     /// <summary locid="M:J#Sys.EventHandlerList.#ctor" />
     if (arguments.length !== 0) throw Error.parameterCount();
     this._list = {};
 }
+    function Sys$EventHandlerList$_addHandler(id, handler) {
+        Array.add(this._getEvent(id, true), handler);
+    }
     function Sys$EventHandlerList$addHandler(id, handler) {
         /// <summary locid="M:J#Sys.EventHandlerList.addHandler" />
         /// <param name="id" type="String"></param>
@@ -2368,7 +3458,12 @@ Sys.EventHandlerList = function Sys$EventHandlerList() {
             {name: "handler", type: Function}
         ]);
         if (e) throw e;
-        Array.add(this._getEvent(id, true), handler);
+        this._addHandler(id, handler);
+    }
+    function Sys$EventHandlerList$_removeHandler(id, handler) {
+        var evt = this._getEvent(id);
+        if (!evt) return;
+        Array.remove(evt, handler);
     }
     function Sys$EventHandlerList$removeHandler(id, handler) {
         /// <summary locid="M:J#Sys.EventHandlerList.removeHandler" />
@@ -2379,9 +3474,7 @@ Sys.EventHandlerList = function Sys$EventHandlerList() {
             {name: "handler", type: Function}
         ]);
         if (e) throw e;
-        var evt = this._getEvent(id);
-        if (!evt) return;
-        Array.remove(evt, handler);
+        this._removeHandler(id, handler);
     }
     function Sys$EventHandlerList$getHandler(id) {
         /// <summary locid="M:J#Sys.EventHandlerList.getHandler" />
@@ -2408,41 +3501,54 @@ Sys.EventHandlerList = function Sys$EventHandlerList() {
         return this._list[id];
     }
 Sys.EventHandlerList.prototype = {
+    _addHandler: Sys$EventHandlerList$_addHandler,
     addHandler: Sys$EventHandlerList$addHandler,
+    _removeHandler: Sys$EventHandlerList$_removeHandler,
     removeHandler: Sys$EventHandlerList$removeHandler,
     getHandler: Sys$EventHandlerList$getHandler,
     _getEvent: Sys$EventHandlerList$_getEvent
 }
 Sys.EventHandlerList.registerClass('Sys.EventHandlerList');
- 
-Sys.EventArgs = function Sys$EventArgs() {
-    /// <summary locid="M:J#Sys.EventArgs.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
+Sys.CommandEventArgs = function Sys$CommandEventArgs(commandName, commandArgument, commandSource) {
+    /// <summary locid="M:J#Sys.CommandEventArgs.#ctor" />
+    /// <param name="commandName" type="String"></param>
+    /// <param name="commandArgument" mayBeNull="true"></param>
+    /// <param name="commandSource" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "commandName", type: String},
+        {name: "commandArgument", mayBeNull: true},
+        {name: "commandSource", mayBeNull: true}
+    ]);
+    if (e) throw e;
+    Sys.CommandEventArgs.initializeBase(this);
+    this._commandName = commandName;
+    this._commandArgument = commandArgument;
+    this._commandSource = commandSource;
 }
-Sys.EventArgs.registerClass('Sys.EventArgs');
-Sys.EventArgs.Empty = new Sys.EventArgs();
- 
-Sys.CancelEventArgs = function Sys$CancelEventArgs() {
-    /// <summary locid="M:J#Sys.CancelEventArgs.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
-    Sys.CancelEventArgs.initializeBase(this);
-    this._cancel = false;
-}
-    function Sys$CancelEventArgs$get_cancel() {
-        /// <value type="Boolean" locid="P:J#Sys.CancelEventArgs.cancel"></value>
+    function Sys$CommandEventArgs$get_commandName() {
+        /// <value type="String" locid="P:J#Sys.CommandEventArgs.commandName"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._cancel;
+        return this._commandName;
     }
-    function Sys$CancelEventArgs$set_cancel(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
-        if (e) throw e;
-        this._cancel = value;
+    function Sys$CommandEventArgs$get_commandArgument() {
+        /// <value mayBeNull="true" locid="P:J#Sys.CommandEventArgs.commandArgument"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._commandArgument;
     }
-Sys.CancelEventArgs.prototype = {
-    get_cancel: Sys$CancelEventArgs$get_cancel,
-    set_cancel: Sys$CancelEventArgs$set_cancel
+    function Sys$CommandEventArgs$get_commandSource() {
+        /// <value mayBeNull="true" locid="P:J#Sys.CommandEventArgs.commandSource"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._commandSource;
+    }
+Sys.CommandEventArgs.prototype = {
+    _commandName: null,
+    _commandArgument: null,
+    _commandSource: null,
+    get_commandName: Sys$CommandEventArgs$get_commandName,
+    get_commandArgument: Sys$CommandEventArgs$get_commandArgument,
+    get_commandSource: Sys$CommandEventArgs$get_commandSource
 }
-Sys.CancelEventArgs.registerClass('Sys.CancelEventArgs', Sys.EventArgs);
+Sys.CommandEventArgs.registerClass("Sys.CommandEventArgs", Sys.CancelEventArgs);
  
 Sys.INotifyPropertyChange = function Sys$INotifyPropertyChange() {
     /// <summary locid="M:J#Sys.INotifyPropertyChange.#ctor" />
@@ -2817,17 +3923,17 @@ Sys.UI.Bounds = function Sys$UI$Bounds(x, y, width, height) {
     /// <summary locid="M:J#Sys.UI.Bounds.#ctor" />
     /// <param name="x" type="Number" integer="true"></param>
     /// <param name="y" type="Number" integer="true"></param>
-    /// <param name="height" type="Number" integer="true"></param>
     /// <param name="width" type="Number" integer="true"></param>
+    /// <param name="height" type="Number" integer="true"></param>
     /// <field name="x" type="Number" integer="true" locid="F:J#Sys.UI.Bounds.x"></field>
     /// <field name="y" type="Number" integer="true" locid="F:J#Sys.UI.Bounds.y"></field>
-    /// <field name="height" type="Number" integer="true" locid="F:J#Sys.UI.Bounds.height"></field>
     /// <field name="width" type="Number" integer="true" locid="F:J#Sys.UI.Bounds.width"></field>
+    /// <field name="height" type="Number" integer="true" locid="F:J#Sys.UI.Bounds.height"></field>
     var e = Function._validateParams(arguments, [
         {name: "x", type: Number, integer: true},
         {name: "y", type: Number, integer: true},
-        {name: "height", type: Number, integer: true},
-        {name: "width", type: Number, integer: true}
+        {name: "width", type: Number, integer: true},
+        {name: "height", type: Number, integer: true}
     ]);
     if (e) throw e;
     this.x = x;
@@ -2858,44 +3964,44 @@ Sys.UI.DomEvent = function Sys$UI$DomEvent(eventObject) {
         {name: "eventObject"}
     ]);
     if (e) throw e;
-    var e = eventObject;
-    var etype = this.type = e.type.toLowerCase();
-    this.rawEvent = e;
-    this.altKey = e.altKey;
-    if (typeof(e.button) !== 'undefined') {
-        this.button = (typeof(e.which) !== 'undefined') ? e.button :
-            (e.button === 4) ? Sys.UI.MouseButton.middleButton :
-            (e.button === 2) ? Sys.UI.MouseButton.rightButton :
+    var ev = eventObject;
+    var etype = this.type = ev.type.toLowerCase();
+    this.rawEvent = ev;
+    this.altKey = ev.altKey;
+    if (typeof(ev.button) !== 'undefined') {
+        this.button = (typeof(ev.which) !== 'undefined') ? ev.button :
+            (ev.button === 4) ? Sys.UI.MouseButton.middleButton :
+            (ev.button === 2) ? Sys.UI.MouseButton.rightButton :
             Sys.UI.MouseButton.leftButton;
     }
     if (etype === 'keypress') {
-        this.charCode = e.charCode || e.keyCode;
+        this.charCode = ev.charCode || ev.keyCode;
     }
-    else if (e.keyCode && (e.keyCode === 46)) {
+    else if (ev.keyCode && (ev.keyCode === 46)) {
         this.keyCode = 127;
     }
     else {
-        this.keyCode = e.keyCode;
+        this.keyCode = ev.keyCode;
     }
-    this.clientX = e.clientX;
-    this.clientY = e.clientY;
-    this.ctrlKey = e.ctrlKey;
-    this.target = e.target ? e.target : e.srcElement;
+    this.clientX = ev.clientX;
+    this.clientY = ev.clientY;
+    this.ctrlKey = ev.ctrlKey;
+    this.target = ev.target ? ev.target : ev.srcElement;
     if (!etype.startsWith('key')) {
-        if ((typeof(e.offsetX) !== 'undefined') && (typeof(e.offsetY) !== 'undefined')) {
-            this.offsetX = e.offsetX;
-            this.offsetY = e.offsetY;
+        if ((typeof(ev.offsetX) !== 'undefined') && (typeof(ev.offsetY) !== 'undefined')) {
+            this.offsetX = ev.offsetX;
+            this.offsetY = ev.offsetY;
         }
-        else if (this.target && (this.target.nodeType !== 3) && (typeof(e.clientX) === 'number')) {
+        else if (this.target && (this.target.nodeType !== 3) && (typeof(ev.clientX) === 'number')) {
             var loc = Sys.UI.DomElement.getLocation(this.target);
             var w = Sys.UI.DomElement._getWindow(this.target);
-            this.offsetX = (w.pageXOffset || 0) + e.clientX - loc.x;
-            this.offsetY = (w.pageYOffset || 0) + e.clientY - loc.y;
+            this.offsetX = (w.pageXOffset || 0) + ev.clientX - loc.x;
+            this.offsetY = (w.pageYOffset || 0) + ev.clientY - loc.y;
         }
     }
-    this.screenX = e.screenX;
-    this.screenY = e.screenY;
-    this.shiftKey = e.shiftKey;
+    this.screenX = ev.screenX;
+    this.screenY = ev.screenY;
+    this.shiftKey = ev.shiftKey;
 }
     function Sys$UI$DomEvent$preventDefault() {
         /// <summary locid="M:J#Sys.UI.DomEvent.preventDefault" />
@@ -2922,15 +4028,17 @@ Sys.UI.DomEvent.prototype = {
     stopPropagation: Sys$UI$DomEvent$stopPropagation
 }
 Sys.UI.DomEvent.registerClass('Sys.UI.DomEvent');
-var $addHandler = Sys.UI.DomEvent.addHandler = function Sys$UI$DomEvent$addHandler(element, eventName, handler) {
+var $addHandler = Sys.UI.DomEvent.addHandler = function Sys$UI$DomEvent$addHandler(element, eventName, handler, autoRemove) {
     /// <summary locid="M:J#Sys.UI.DomEvent.addHandler" />
     /// <param name="element"></param>
     /// <param name="eventName" type="String"></param>
     /// <param name="handler" type="Function"></param>
+    /// <param name="autoRemove" type="Boolean" optional="true"></param>
     var e = Function._validateParams(arguments, [
         {name: "element"},
         {name: "eventName", type: String},
-        {name: "handler", type: Function}
+        {name: "handler", type: Function},
+        {name: "autoRemove", type: Boolean, optional: true}
     ]);
     if (e) throw e;
     Sys.UI.DomEvent._ensureDomNode(element);
@@ -2957,17 +4065,28 @@ var $addHandler = Sys.UI.DomEvent.addHandler = function Sys$UI$DomEvent$addHandl
         }
         element.attachEvent('on' + eventName, browserHandler);
     }
-    eventCache[eventCache.length] = {handler: handler, browserHandler: browserHandler};
+    eventCache[eventCache.length] = {handler: handler, browserHandler: browserHandler, autoRemove: autoRemove };
+    if (autoRemove) {
+        var d = element.dispose;
+        if (d !== Sys.UI.DomEvent._disposeHandlers) {
+            element.dispose = Sys.UI.DomEvent._disposeHandlers;
+            if (typeof(d) !== "undefined") {
+                element._chainDispose = d;
+            }
+        }
+    }
 }
-var $addHandlers = Sys.UI.DomEvent.addHandlers = function Sys$UI$DomEvent$addHandlers(element, events, handlerOwner) {
+var $addHandlers = Sys.UI.DomEvent.addHandlers = function Sys$UI$DomEvent$addHandlers(element, events, handlerOwner, autoRemove) {
     /// <summary locid="M:J#Sys.UI.DomEvent.addHandlers" />
     /// <param name="element"></param>
     /// <param name="events" type="Object"></param>
     /// <param name="handlerOwner" optional="true"></param>
+    /// <param name="autoRemove" type="Boolean" optional="true"></param>
     var e = Function._validateParams(arguments, [
         {name: "element"},
         {name: "events", type: Object},
-        {name: "handlerOwner", optional: true}
+        {name: "handlerOwner", optional: true},
+        {name: "autoRemove", type: Boolean, optional: true}
     ]);
     if (e) throw e;
     Sys.UI.DomEvent._ensureDomNode(element);
@@ -2977,7 +4096,7 @@ var $addHandlers = Sys.UI.DomEvent.addHandlers = function Sys$UI$DomEvent$addHan
         if (handlerOwner) {
             handler = Function.createDelegate(handlerOwner, handler);
         }
-        $addHandler(element, name, handler);
+        $addHandler(element, name, handler, autoRemove || false);
     }
 }
 var $clearHandlers = Sys.UI.DomEvent.clearHandlers = function Sys$UI$DomEvent$clearHandlers(element) {
@@ -2988,15 +4107,32 @@ var $clearHandlers = Sys.UI.DomEvent.clearHandlers = function Sys$UI$DomEvent$cl
     ]);
     if (e) throw e;
     Sys.UI.DomEvent._ensureDomNode(element);
+    Sys.UI.DomEvent._clearHandlers(element, false);
+}
+Sys.UI.DomEvent._clearHandlers = function Sys$UI$DomEvent$_clearHandlers(element, autoRemoving) {
     if (element._events) {
         var cache = element._events;
         for (var name in cache) {
             var handlers = cache[name];
             for (var i = handlers.length - 1; i >= 0; i--) {
-                $removeHandler(element, name, handlers[i].handler);
+                var entry = handlers[i];
+                if (!autoRemoving || entry.autoRemove) {
+                    $removeHandler(element, name, entry.handler);
+                }
             }
         }
         element._events = null;
+    }
+}
+Sys.UI.DomEvent._disposeHandlers = function Sys$UI$DomEvent$_disposeHandlers() {
+    Sys.UI.DomEvent._clearHandlers(this, true);
+    var d = this._chainDispose, type = typeof(d);
+    if (type !== "undefined") {
+        this.dispose = d;
+        this._chainDispose = null;
+        if (type === "function") {
+            this.dispose();
+        }
     }
 }
 var $removeHandler = Sys.UI.DomEvent.removeHandler = function Sys$UI$DomEvent$removeHandler(element, eventName, handler) {
@@ -3010,9 +4146,12 @@ var $removeHandler = Sys.UI.DomEvent.removeHandler = function Sys$UI$DomEvent$re
         {name: "handler", type: Function}
     ]);
     if (e) throw e;
+    Sys.UI.DomEvent._removeHandler(element, eventName, handler);
+}
+Sys.UI.DomEvent._removeHandler = function Sys$UI$DomEvent$_removeHandler(element, eventName, handler) {
     Sys.UI.DomEvent._ensureDomNode(element);
     var browserHandler = null;
-    if ((typeof(element._events) !== 'object') || (element._events == null)) throw Error.invalidOperation(Sys.Res.eventHandlerInvalid);
+    if ((typeof(element._events) !== 'object') || !element._events) throw Error.invalidOperation(Sys.Res.eventHandlerInvalid);
     var cache = element._events[eventName];
     if (!(cache instanceof Array)) throw Error.invalidOperation(Sys.Res.eventHandlerInvalid);
     for (var i = 0, l = cache.length; i < l; i++) {
@@ -3121,25 +4260,24 @@ var $get = Sys.UI.DomElement.getElementById = function Sys$UI$DomElement$getElem
     }
     return null;
 }
-switch(Sys.Browser.agent) {
-    case Sys.Browser.InternetExplorer:
-        Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
-            /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
-            /// <param name="element" domElement="true"></param>
-            /// <returns type="Sys.UI.Point"></returns>
-            var e = Function._validateParams(arguments, [
-                {name: "element", domElement: true}
-            ]);
-            if (e) throw e;
-            if (element.self || element.nodeType === 9) return new Sys.UI.Point(0,0);
-            var clientRect = element.getBoundingClientRect();
-            if (!clientRect) {
-                return new Sys.UI.Point(0,0);
-            }
-            var documentElement = element.ownerDocument.documentElement;
-            var offsetX = clientRect.left - 2 + documentElement.scrollLeft,
-                offsetY = clientRect.top - 2 + documentElement.scrollTop;
-            
+if (document.documentElement.getBoundingClientRect) {
+    Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
+        /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
+        /// <param name="element" domElement="true"></param>
+        /// <returns type="Sys.UI.Point"></returns>
+        var e = Function._validateParams(arguments, [
+            {name: "element", domElement: true}
+        ]);
+        if (e) throw e;
+        if (element.self || element.nodeType === 9) return new Sys.UI.Point(0,0);
+        var clientRect = element.getBoundingClientRect();
+        if (!clientRect) {
+            return new Sys.UI.Point(0,0);
+        }
+        var documentElement = element.ownerDocument.documentElement,
+            offsetX = Math.floor(clientRect.left + 0.5) + documentElement.scrollLeft,
+            offsetY = Math.floor(clientRect.top + 0.5) + documentElement.scrollTop;
+        if (Sys.Browser.agent === Sys.Browser.InternetExplorer) {
             try {
                 var f = element.ownerDocument.parentWindow.frameElement || null;
                 if (f) {
@@ -3149,141 +4287,142 @@ switch(Sys.Browser.agent) {
                 }
             }
             catch(ex) {
-            }    
-            
-            return new Sys.UI.Point(offsetX, offsetY);
-        }
-        break;
-    case Sys.Browser.Safari:
-        Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
-            /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
-            /// <param name="element" domElement="true"></param>
-            /// <returns type="Sys.UI.Point"></returns>
-            var e = Function._validateParams(arguments, [
-                {name: "element", domElement: true}
-            ]);
-            if (e) throw e;
-            if ((element.window && (element.window === element)) || element.nodeType === 9) return new Sys.UI.Point(0,0);
-            var offsetX = 0;
-            var offsetY = 0;
-            var previous = null;
-            var previousStyle = null;
-            var currentStyle;
-            for (var parent = element; parent; previous = parent, previousStyle = currentStyle, parent = parent.offsetParent) {
-                currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
-                var tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
-                if ((parent.offsetLeft || parent.offsetTop) &&
-                    ((tagName !== "BODY") || (!previousStyle || previousStyle.position !== "absolute"))) {
-                    offsetX += parent.offsetLeft;
-                    offsetY += parent.offsetTop;
+            }
+            if (Sys.Browser.version <= 7) {
+                
+                var multiplier, before, rect, d = document.createElement("div");
+                d.style.cssText = "position:absolute !important;left:0px !important;right:0px !important;height:0px !important;width:1px !important;display:hidden !important";
+                try {
+                    before = document.body.childNodes[0];
+                    document.body.insertBefore(d, before);
+                    rect = d.getBoundingClientRect();
+                    document.body.removeChild(d);
+                    multiplier = (rect.right - rect.left);
                 }
-            }
-            currentStyle = Sys.UI.DomElement._getCurrentStyle(element);
-            var elementPosition = currentStyle ? currentStyle.position : null;
-            if (!elementPosition || (elementPosition !== "absolute")) {
-                for (var parent = element.parentNode; parent; parent = parent.parentNode) {
-                    tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
-                    if ((tagName !== "BODY") && (tagName !== "HTML") && (parent.scrollLeft || parent.scrollTop)) {
-                        offsetX -= (parent.scrollLeft || 0);
-                        offsetY -= (parent.scrollTop || 0);
-                    }
-                    currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
-                    var parentPosition = currentStyle ? currentStyle.position : null;
-                    if (parentPosition && (parentPosition === "absolute")) break;
+                catch (e) {
                 }
+                if (multiplier && (multiplier !== 1)) {
+                    offsetX = Math.floor(offsetX / multiplier);
+                    offsetY = Math.floor(offsetY / multiplier);
+                }
+            }        
+            if ((document.documentMode || 0) < 8) {
+                offsetX -= 2;
+                offsetY -= 2;
             }
-            return new Sys.UI.Point(offsetX, offsetY);
         }
-        break;
-    case Sys.Browser.Opera:
-        Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
-            /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
-            /// <param name="element" domElement="true"></param>
-            /// <returns type="Sys.UI.Point"></returns>
-            var e = Function._validateParams(arguments, [
-                {name: "element", domElement: true}
-            ]);
-            if (e) throw e;
-            if ((element.window && (element.window === element)) || element.nodeType === 9) return new Sys.UI.Point(0,0);
-            var offsetX = 0;
-            var offsetY = 0;
-            var previous = null;
-            for (var parent = element; parent; previous = parent, parent = parent.offsetParent) {
-                var tagName = parent.tagName;
-                offsetX += parent.offsetLeft || 0;
-                offsetY += parent.offsetTop || 0;
+        return new Sys.UI.Point(offsetX, offsetY);
+    }
+}
+else if (Sys.Browser.agent === Sys.Browser.Safari) {
+    Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
+        /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
+        /// <param name="element" domElement="true"></param>
+        /// <returns type="Sys.UI.Point"></returns>
+        var e = Function._validateParams(arguments, [
+            {name: "element", domElement: true}
+        ]);
+        if (e) throw e;
+        if ((element.window && (element.window === element)) || element.nodeType === 9) return new Sys.UI.Point(0,0);
+        var offsetX = 0, offsetY = 0,
+            parent,
+            previous = null,
+            previousStyle = null,
+            currentStyle;
+        for (parent = element; parent; previous = parent, previousStyle = currentStyle, parent = parent.offsetParent) {
+            currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
+            var tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
+            if ((parent.offsetLeft || parent.offsetTop) &&
+                ((tagName !== "BODY") || (!previousStyle || previousStyle.position !== "absolute"))) {
+                offsetX += parent.offsetLeft;
+                offsetY += parent.offsetTop;
             }
-            var elementPosition = element.style.position;
-            var elementPositioned = elementPosition && (elementPosition !== "static");
-            for (var parent = element.parentNode; parent; parent = parent.parentNode) {
+            if (previous && Sys.Browser.version >= 3) {
+                offsetX += parseInt(currentStyle.borderLeftWidth);
+                offsetY += parseInt(currentStyle.borderTopWidth);
+            }
+        }
+        currentStyle = Sys.UI.DomElement._getCurrentStyle(element);
+        var elementPosition = currentStyle ? currentStyle.position : null;
+        if (!elementPosition || (elementPosition !== "absolute")) {
+            for (parent = element.parentNode; parent; parent = parent.parentNode) {
                 tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
-                if ((tagName !== "BODY") && (tagName !== "HTML") && (parent.scrollLeft || parent.scrollTop) &&
-                    ((elementPositioned &&
-                    ((parent.style.overflow === "scroll") || (parent.style.overflow === "auto"))))) {
+                if ((tagName !== "BODY") && (tagName !== "HTML") && (parent.scrollLeft || parent.scrollTop)) {
                     offsetX -= (parent.scrollLeft || 0);
                     offsetY -= (parent.scrollTop || 0);
                 }
-                var parentPosition = (parent && parent.style) ? parent.style.position : null;
-                elementPositioned = elementPositioned || (parentPosition && (parentPosition !== "static"));
-            }
-            return new Sys.UI.Point(offsetX, offsetY);
-        }
-        break;
-    default:
-        Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
-            /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
-            /// <param name="element" domElement="true"></param>
-            /// <returns type="Sys.UI.Point"></returns>
-            var e = Function._validateParams(arguments, [
-                {name: "element", domElement: true}
-            ]);
-            if (e) throw e;
-            if ((element.window && (element.window === element)) || element.nodeType === 9) return new Sys.UI.Point(0,0);
-            var offsetX = 0;
-            var offsetY = 0;
-            var previous = null;
-            var previousStyle = null;
-            var currentStyle = null;
-            for (var parent = element; parent; previous = parent, previousStyle = currentStyle, parent = parent.offsetParent) {
-                var tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
                 currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
-                if ((parent.offsetLeft || parent.offsetTop) &&
-                    !((tagName === "BODY") &&
-                    (!previousStyle || previousStyle.position !== "absolute"))) {
-                    offsetX += parent.offsetLeft;
-                    offsetY += parent.offsetTop;
+                var parentPosition = currentStyle ? currentStyle.position : null;
+                if (parentPosition && (parentPosition === "absolute")) break;
+            }
+        }
+        return new Sys.UI.Point(offsetX, offsetY);
+    }
+}
+else {
+    Sys.UI.DomElement.getLocation = function Sys$UI$DomElement$getLocation(element) {
+        /// <summary locid="M:J#Sys.UI.DomElement.getLocation" />
+        /// <param name="element" domElement="true"></param>
+        /// <returns type="Sys.UI.Point"></returns>
+        var e = Function._validateParams(arguments, [
+            {name: "element", domElement: true}
+        ]);
+        if (e) throw e;
+        if ((element.window && (element.window === element)) || element.nodeType === 9) return new Sys.UI.Point(0,0);
+        var offsetX = 0, offsetY = 0,
+            parent,
+            previous = null,
+            previousStyle = null,
+            currentStyle = null;
+        for (parent = element; parent; previous = parent, previousStyle = currentStyle, parent = parent.offsetParent) {
+            var tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
+            currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
+            if ((parent.offsetLeft || parent.offsetTop) &&
+                !((tagName === "BODY") &&
+                (!previousStyle || previousStyle.position !== "absolute"))) {
+                offsetX += parent.offsetLeft;
+                offsetY += parent.offsetTop;
+            }
+            if (previous !== null && currentStyle) {
+                if ((tagName !== "TABLE") && (tagName !== "TD") && (tagName !== "HTML")) {
+                    offsetX += parseInt(currentStyle.borderLeftWidth) || 0;
+                    offsetY += parseInt(currentStyle.borderTopWidth) || 0;
                 }
-                if (previous !== null && currentStyle) {
-                    if ((tagName !== "TABLE") && (tagName !== "TD") && (tagName !== "HTML")) {
+                if (tagName === "TABLE" &&
+                    (currentStyle.position === "relative" || currentStyle.position === "absolute")) {
+                    offsetX += parseInt(currentStyle.marginLeft) || 0;
+                    offsetY += parseInt(currentStyle.marginTop) || 0;
+                }
+            }
+        }
+        currentStyle = Sys.UI.DomElement._getCurrentStyle(element);
+        var elementPosition = currentStyle ? currentStyle.position : null;
+        if (!elementPosition || (elementPosition !== "absolute")) {
+            for (parent = element.parentNode; parent; parent = parent.parentNode) {
+                tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
+                if ((tagName !== "BODY") && (tagName !== "HTML") && (parent.scrollLeft || parent.scrollTop)) {
+                    offsetX -= (parent.scrollLeft || 0);
+                    offsetY -= (parent.scrollTop || 0);
+                    currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
+                    if (currentStyle) {
                         offsetX += parseInt(currentStyle.borderLeftWidth) || 0;
                         offsetY += parseInt(currentStyle.borderTopWidth) || 0;
                     }
-                    if (tagName === "TABLE" &&
-                        (currentStyle.position === "relative" || currentStyle.position === "absolute")) {
-                        offsetX += parseInt(currentStyle.marginLeft) || 0;
-                        offsetY += parseInt(currentStyle.marginTop) || 0;
-                    }
                 }
             }
-            currentStyle = Sys.UI.DomElement._getCurrentStyle(element);
-            var elementPosition = currentStyle ? currentStyle.position : null;
-            if (!elementPosition || (elementPosition !== "absolute")) {
-                for (var parent = element.parentNode; parent; parent = parent.parentNode) {
-                    tagName = parent.tagName ? parent.tagName.toUpperCase() : null;
-                    if ((tagName !== "BODY") && (tagName !== "HTML") && (parent.scrollLeft || parent.scrollTop)) {
-                        offsetX -= (parent.scrollLeft || 0);
-                        offsetY -= (parent.scrollTop || 0);
-                        currentStyle = Sys.UI.DomElement._getCurrentStyle(parent);
-                        if (currentStyle) {
-                            offsetX += parseInt(currentStyle.borderLeftWidth) || 0;
-                            offsetY += parseInt(currentStyle.borderTopWidth) || 0;
-                        }
-                    }
-                }
-            }
-            return new Sys.UI.Point(offsetX, offsetY);
         }
-        break;
+        return new Sys.UI.Point(offsetX, offsetY);
+    }
+}
+Sys.UI.DomElement.isDomElement = function Sys$UI$DomElement$isDomElement(obj) {
+    /// <summary locid="M:J#Sys.UI.DomElement.isDomElement" />
+    /// <param name="obj"></param>
+    /// <returns type="Boolean"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "obj"}
+    ]);
+    if (e) throw e;
+    return Sys._isDomElement(obj);
 }
 Sys.UI.DomElement.removeCssClass = function Sys$UI$DomElement$removeCssClass(element, className) {
     /// <summary locid="M:J#Sys.UI.DomElement.removeCssClass" />
@@ -3299,6 +4438,53 @@ Sys.UI.DomElement.removeCssClass = function Sys$UI$DomElement$removeCssClass(ele
     if (index >= 0) {
         element.className = (currentClassName.substr(0, index) + ' ' +
             currentClassName.substring(index + className.length + 1, currentClassName.length)).trim();
+    }
+}
+Sys.UI.DomElement.resolveElement = function Sys$UI$DomElement$resolveElement(elementOrElementId, containerElement) {
+    /// <summary locid="M:J#Sys.UI.DomElement.resolveElement" />
+    /// <param name="elementOrElementId" mayBeNull="true"></param>
+    /// <param name="containerElement" domElement="true" optional="true" mayBeNull="true"></param>
+    /// <returns domElement="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "elementOrElementId", mayBeNull: true},
+        {name: "containerElement", mayBeNull: true, domElement: true, optional: true}
+    ]);
+    if (e) throw e;
+    var el = elementOrElementId;
+    if (!el) return null;
+    if (typeof(el) === "string") {
+        el = Sys.UI.DomElement.getElementById(el, containerElement);
+        if (!el) {
+            throw Error.argument("elementOrElementId", String.format(Sys.Res.elementNotFound, elementOrElementId));
+        }
+    }
+    else if(!Sys.UI.DomElement.isDomElement(el)) {
+        throw Error.argument("elementOrElementId", Sys.Res.expectedElementOrId);
+    }
+    return el;
+}
+Sys.UI.DomElement.raiseBubbleEvent = function Sys$UI$DomElement$raiseBubbleEvent(source, args) {
+    /// <summary locid="M:J#Sys.UI.DomElement.raiseBubbleEvent" />
+    /// <param name="source" domElement="true"></param>
+    /// <param name="args" type="Sys.EventArgs"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "source", domElement: true},
+        {name: "args", type: Sys.EventArgs}
+    ]);
+    if (e) throw e;
+    var target = source;
+    while (target) {
+        var control = target.control;
+        if (control && control.onBubbleEvent && control.raiseBubbleEvent) {
+            Sys.UI.DomElement._raiseBubbleEventFromControl(control, source, args);
+            return;
+        }
+        target = target.parentNode;
+    }
+}
+Sys.UI.DomElement._raiseBubbleEventFromControl = function Sys$UI$DomElement$_raiseBubbleEventFromControl(control, source, args) {
+    if (!control.onBubbleEvent(source, args)) {
+        control._raiseBubbleEvent(source, args);
     }
 }
 Sys.UI.DomElement.setLocation = function Sys$UI$DomElement$setLocation(element, x, y) {
@@ -3495,374 +4681,6 @@ Sys.IContainer.prototype = {
 }
 Sys.IContainer.registerInterface("Sys.IContainer");
  
-Sys._ScriptLoader = function Sys$_ScriptLoader() {
-    this._scriptsToLoad = null;
-    this._sessions = [];
-    this._scriptLoadedDelegate = Function.createDelegate(this, this._scriptLoadedHandler);
-}
-    function Sys$_ScriptLoader$dispose() {
-        this._stopSession();
-        this._loading = false;
-        if(this._events) {
-            delete this._events;
-        }
-        this._sessions = null;
-        this._currentSession = null;
-        this._scriptLoadedDelegate = null;        
-    }
-    function Sys$_ScriptLoader$loadScripts(scriptTimeout, allScriptsLoadedCallback, scriptLoadFailedCallback, scriptLoadTimeoutCallback) {
-        /// <summary locid="M:J#Sys._ScriptLoader.loadScripts" />
-        /// <param name="scriptTimeout" type="Number" integer="true"></param>
-        /// <param name="allScriptsLoadedCallback" type="Function" mayBeNull="true"></param>
-        /// <param name="scriptLoadFailedCallback" type="Function" mayBeNull="true"></param>
-        /// <param name="scriptLoadTimeoutCallback" type="Function" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "scriptTimeout", type: Number, integer: true},
-            {name: "allScriptsLoadedCallback", type: Function, mayBeNull: true},
-            {name: "scriptLoadFailedCallback", type: Function, mayBeNull: true},
-            {name: "scriptLoadTimeoutCallback", type: Function, mayBeNull: true}
-        ]);
-        if (e) throw e;
-        var session = {
-            allScriptsLoadedCallback: allScriptsLoadedCallback,
-            scriptLoadFailedCallback: scriptLoadFailedCallback,
-            scriptLoadTimeoutCallback: scriptLoadTimeoutCallback,
-            scriptsToLoad: this._scriptsToLoad,
-            scriptTimeout: scriptTimeout };
-        this._scriptsToLoad = null;
-        this._sessions[this._sessions.length] = session;
-        
-        if (!this._loading) {
-            this._nextSession();
-        }
-    }
-    function Sys$_ScriptLoader$notifyScriptLoaded() {
-        /// <summary locid="M:J#Sys._ScriptLoader.notifyScriptLoaded" />
-        if (arguments.length !== 0) throw Error.parameterCount();
-        
-        if(!this._loading) {
-            return;
-        }
-        this._currentTask._notified++;
-        
-        if(Sys.Browser.agent === Sys.Browser.Safari) {           
-            if(this._currentTask._notified === 1) {
-                window.setTimeout(Function.createDelegate(this, function() {
-                    this._scriptLoadedHandler(this._currentTask.get_scriptElement(), true);
-                }), 0);
-            }
-        }
-    }
-    function Sys$_ScriptLoader$queueCustomScriptTag(scriptAttributes) {
-        /// <summary locid="M:J#Sys._ScriptLoader.queueCustomScriptTag" />
-        /// <param name="scriptAttributes" mayBeNull="false"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "scriptAttributes"}
-        ]);
-        if (e) throw e;
-        if(!this._scriptsToLoad) {
-            this._scriptsToLoad = [];
-        }
-        Array.add(this._scriptsToLoad, scriptAttributes);
-    }
-    function Sys$_ScriptLoader$queueScriptBlock(scriptContent) {
-        /// <summary locid="M:J#Sys._ScriptLoader.queueScriptBlock" />
-        /// <param name="scriptContent" type="String" mayBeNull="false"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "scriptContent", type: String}
-        ]);
-        if (e) throw e;
-        if(!this._scriptsToLoad) {
-            this._scriptsToLoad = [];
-        }
-        Array.add(this._scriptsToLoad, {text: scriptContent});
-    }
-    function Sys$_ScriptLoader$queueScriptReference(scriptUrl) {
-        /// <summary locid="M:J#Sys._ScriptLoader.queueScriptReference" />
-        /// <param name="scriptUrl" type="String" mayBeNull="false"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "scriptUrl", type: String}
-        ]);
-        if (e) throw e;
-        if(!this._scriptsToLoad) {
-            this._scriptsToLoad = [];
-        }
-        Array.add(this._scriptsToLoad, {src: scriptUrl});
-    }
-    function Sys$_ScriptLoader$_createScriptElement(queuedScript) {
-        var scriptElement = document.createElement('script');
-        scriptElement.type = 'text/javascript';
-        for (var attr in queuedScript) {
-            scriptElement[attr] = queuedScript[attr];
-        }
-        
-        return scriptElement;
-    }
-    function Sys$_ScriptLoader$_loadScriptsInternal() {
-        var session = this._currentSession;
-        if (session.scriptsToLoad && session.scriptsToLoad.length > 0) {
-            var nextScript = Array.dequeue(session.scriptsToLoad);
-            var scriptElement = this._createScriptElement(nextScript);
-            
-            if (scriptElement.text && Sys.Browser.agent === Sys.Browser.Safari) {
-                scriptElement.innerHTML = scriptElement.text;
-                delete scriptElement.text;
-            }            
-            if (typeof(nextScript.src) === "string") {
-                this._currentTask = new Sys._ScriptLoaderTask(scriptElement, this._scriptLoadedDelegate);
-                this._currentTask.execute();
-            }
-            else {
-                var headElements = document.getElementsByTagName('head');
-                if (headElements.length === 0) {
-                     throw new Error.invalidOperation(Sys.Res.scriptLoadFailedNoHead);
-                }
-                else {
-                     headElements[0].appendChild(scriptElement);
-                }
-                
-                
-                Sys._ScriptLoader._clearScript(scriptElement);
-                this._loadScriptsInternal();
-            }
-        }
-        else {
-            this._stopSession();
-            var callback = session.allScriptsLoadedCallback;
-            if(callback) {
-                callback(this);
-            }
-            this._nextSession();
-        }
-    }
-    function Sys$_ScriptLoader$_nextSession() {
-        if (this._sessions.length === 0) {
-            this._loading = false;
-            this._currentSession = null;
-            return;
-        }
-        this._loading = true;
-        
-        var session = Array.dequeue(this._sessions);
-        this._currentSession = session;
-        this._loadScriptsInternal();
-    }
-    function Sys$_ScriptLoader$_raiseError(multipleCallbacks) {
-        var callback = this._currentSession.scriptLoadFailedCallback;
-        var scriptElement = this._currentTask.get_scriptElement();
-        this._stopSession();
-        
-        if(callback) {
-            callback(this, scriptElement, multipleCallbacks);
-            this._nextSession();
-        }
-        else {
-            this._loading = false;
-            throw Sys._ScriptLoader._errorScriptLoadFailed(scriptElement.src, multipleCallbacks);
-        }
-    }
-    function Sys$_ScriptLoader$_scriptLoadedHandler(scriptElement, loaded) {
-        if(loaded && this._currentTask._notified) {
-            if(this._currentTask._notified > 1) {
-                this._raiseError(true);
-            }
-            else {
-                Array.add(Sys._ScriptLoader._getLoadedScripts(), scriptElement.src);
-                this._currentTask.dispose();
-                this._currentTask = null;
-                this._loadScriptsInternal();
-            }
-        }
-        else {
-            this._raiseError(false);
-        }
-    }
-    function Sys$_ScriptLoader$_scriptLoadTimeoutHandler() {
-        var callback = this._currentSession.scriptLoadTimeoutCallback;
-        this._stopSession();
-        if(callback) {
-            callback(this);
-        }
-        this._nextSession();
-    }
-    function Sys$_ScriptLoader$_stopSession() {
-        if(this._currentTask) {
-            this._currentTask.dispose();
-            this._currentTask = null;
-        }
-    }
-Sys._ScriptLoader.prototype = {
-    dispose: Sys$_ScriptLoader$dispose,
-    loadScripts: Sys$_ScriptLoader$loadScripts,
-    notifyScriptLoaded: Sys$_ScriptLoader$notifyScriptLoaded,
-    queueCustomScriptTag: Sys$_ScriptLoader$queueCustomScriptTag,
-    queueScriptBlock: Sys$_ScriptLoader$queueScriptBlock,
-    queueScriptReference: Sys$_ScriptLoader$queueScriptReference,
-    _createScriptElement: Sys$_ScriptLoader$_createScriptElement,
-    _loadScriptsInternal: Sys$_ScriptLoader$_loadScriptsInternal,
-    _nextSession: Sys$_ScriptLoader$_nextSession,
-    _raiseError: Sys$_ScriptLoader$_raiseError,
-    _scriptLoadedHandler: Sys$_ScriptLoader$_scriptLoadedHandler,
-    _scriptLoadTimeoutHandler: Sys$_ScriptLoader$_scriptLoadTimeoutHandler,
-    _stopSession: Sys$_ScriptLoader$_stopSession    
-}
-Sys._ScriptLoader.registerClass('Sys._ScriptLoader', null, Sys.IDisposable);
-Sys._ScriptLoader.getInstance = function Sys$_ScriptLoader$getInstance() {
-    var sl = Sys._ScriptLoader._activeInstance;
-    if(!sl) {
-        sl = Sys._ScriptLoader._activeInstance = new Sys._ScriptLoader();
-    }
-    return sl;
-}
-Sys._ScriptLoader.isScriptLoaded = function Sys$_ScriptLoader$isScriptLoaded(scriptSrc) {
-    var dummyScript = document.createElement('script');
-    dummyScript.src = scriptSrc;
-    return Array.contains(Sys._ScriptLoader._getLoadedScripts(), dummyScript.src);
-}
-Sys._ScriptLoader.readLoadedScripts = function Sys$_ScriptLoader$readLoadedScripts() {
-    if(!Sys._ScriptLoader._referencedScripts) {
-        var referencedScripts = Sys._ScriptLoader._referencedScripts = [];
-        var existingScripts = document.getElementsByTagName('script');
-        for (i = existingScripts.length - 1; i >= 0; i--) {
-            var scriptNode = existingScripts[i];
-            var scriptSrc = scriptNode.src;
-            if (scriptSrc.length) {
-                if (!Array.contains(referencedScripts, scriptSrc)) {
-                    Array.add(referencedScripts, scriptSrc);
-                }
-            }
-        }
-    }
-}
-Sys._ScriptLoader._clearScript = function Sys$_ScriptLoader$_clearScript(scriptElement) {
-    if (!Sys.Debug.isDebug) {
-        scriptElement.parentNode.removeChild(scriptElement);
-    }
-}
-Sys._ScriptLoader._errorScriptLoadFailed = function Sys$_ScriptLoader$_errorScriptLoadFailed(scriptUrl, multipleCallbacks) {
-    var errorMessage;
-    if(multipleCallbacks) {
-        errorMessage = Sys.Res.scriptLoadMultipleCallbacks;
-    }
-    else {
-        errorMessage = Sys.Res.scriptLoadFailedDebug;
-    }
-    var displayMessage = "Sys.ScriptLoadFailedException: " + String.format(errorMessage, scriptUrl);
-    var e = Error.create(displayMessage, {name: 'Sys.ScriptLoadFailedException', 'scriptUrl': scriptUrl });
-    e.popStackFrame();
-    return e;
-}
-Sys._ScriptLoader._getLoadedScripts = function Sys$_ScriptLoader$_getLoadedScripts() {
-    if(!Sys._ScriptLoader._referencedScripts) {
-        Sys._ScriptLoader._referencedScripts = [];
-        Sys._ScriptLoader.readLoadedScripts();
-    }
-    return Sys._ScriptLoader._referencedScripts;
-}
- 
-Sys._ScriptLoaderTask = function Sys$_ScriptLoaderTask(scriptElement, completedCallback) {
-    /// <summary locid="M:J#Sys._ScriptLoaderTask.#ctor" />
-    /// <param name="scriptElement" domElement="true"></param>
-    /// <param name="completedCallback" type="Function"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "scriptElement", domElement: true},
-        {name: "completedCallback", type: Function}
-    ]);
-    if (e) throw e;
-    this._scriptElement = scriptElement;
-    this._completedCallback = completedCallback;
-    this._notified = 0;
-}
-    function Sys$_ScriptLoaderTask$get_scriptElement() {
-        /// <value domElement="true" locid="P:J#Sys._ScriptLoaderTask.scriptElement"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._scriptElement;
-    }
-    function Sys$_ScriptLoaderTask$dispose() {
-        if(this._disposed) {
-            return;
-        }
-        this._disposed = true;
-        this._removeScriptElementHandlers();
-        Sys._ScriptLoader._clearScript(this._scriptElement);
-        this._scriptElement = null;
-    }
-    function Sys$_ScriptLoaderTask$execute() {
-        /// <summary locid="M:J#Sys._ScriptLoaderTask.execute" />
-        if (arguments.length !== 0) throw Error.parameterCount();
-        this._addScriptElementHandlers();
-        var headElements = document.getElementsByTagName('head');
-        if (headElements.length === 0) {
-             throw new Error.invalidOperation(Sys.Res.scriptLoadFailedNoHead);
-        }
-        else {
-             headElements[0].appendChild(this._scriptElement);
-        }
-    }
-    function Sys$_ScriptLoaderTask$_addScriptElementHandlers() {
-        this._scriptLoadDelegate = Function.createDelegate(this, this._scriptLoadHandler);
-        
-        if (Sys.Browser.agent !== Sys.Browser.InternetExplorer) {
-            this._scriptElement.readyState = 'loaded';
-            $addHandler(this._scriptElement, 'load', this._scriptLoadDelegate);
-        }
-        else {
-            $addHandler(this._scriptElement, 'readystatechange', this._scriptLoadDelegate);
-        }    
-        if (this._scriptElement.addEventListener) {
-            this._scriptErrorDelegate = Function.createDelegate(this, this._scriptErrorHandler);
-            this._scriptElement.addEventListener('error', this._scriptErrorDelegate, false);
-        }
-    }
-    function Sys$_ScriptLoaderTask$_removeScriptElementHandlers() {
-        if(this._scriptLoadDelegate) {
-            var scriptElement = this.get_scriptElement();
-            if (Sys.Browser.agent !== Sys.Browser.InternetExplorer) {
-                $removeHandler(scriptElement, 'load', this._scriptLoadDelegate);
-            }
-            else {
-                $removeHandler(scriptElement, 'readystatechange', this._scriptLoadDelegate);
-            }
-            if (this._scriptErrorDelegate) {
-                this._scriptElement.removeEventListener('error', this._scriptErrorDelegate, false);
-                this._scriptErrorDelegate = null;
-            }
-            this._scriptLoadDelegate = null;
-        }
-    }
-    function Sys$_ScriptLoaderTask$_scriptErrorHandler() {
-        if(this._disposed) {
-            return;
-        }
-        
-        this._completedCallback(this.get_scriptElement(), false);
-    }
-    function Sys$_ScriptLoaderTask$_scriptLoadHandler() {
-        if(this._disposed) {
-            return;
-        }
-        var scriptElement = this.get_scriptElement();
-        if ((scriptElement.readyState !== 'loaded') &&
-            (scriptElement.readyState !== 'complete')) {
-            return;
-        }
-        
-        var _this = this;
-        window.setTimeout(function() {
-            _this._completedCallback(scriptElement, true);
-        }, 0);
-    }
-Sys._ScriptLoaderTask.prototype = {
-    get_scriptElement: Sys$_ScriptLoaderTask$get_scriptElement,
-    dispose: Sys$_ScriptLoaderTask$dispose,
-    execute: Sys$_ScriptLoaderTask$execute,
-    _addScriptElementHandlers: Sys$_ScriptLoaderTask$_addScriptElementHandlers,    
-    _removeScriptElementHandlers: Sys$_ScriptLoaderTask$_removeScriptElementHandlers,    
-    _scriptErrorHandler: Sys$_ScriptLoaderTask$_scriptErrorHandler,
-    _scriptLoadHandler: Sys$_ScriptLoaderTask$_scriptLoadHandler  
-}
-Sys._ScriptLoaderTask.registerClass("Sys._ScriptLoaderTask", null, Sys.IDisposable);
- 
 Sys.ApplicationLoadEventArgs = function Sys$ApplicationLoadEventArgs(components, isPartialLoad) {
     /// <summary locid="M:J#Sys.ApplicationLoadEventArgs.#ctor" />
     /// <param name="components" type="Array" elementType="Sys.Component"></param>
@@ -3892,25 +4710,6 @@ Sys.ApplicationLoadEventArgs.prototype = {
     get_isPartialLoad: Sys$ApplicationLoadEventArgs$get_isPartialLoad
 }
 Sys.ApplicationLoadEventArgs.registerClass('Sys.ApplicationLoadEventArgs', Sys.EventArgs);
-Sys.HistoryEventArgs = function Sys$HistoryEventArgs(state) {
-    /// <summary locid="M:J#Sys.HistoryEventArgs.#ctor" />
-    /// <param name="state" type="Object"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "state", type: Object}
-    ]);
-    if (e) throw e;
-    Sys.HistoryEventArgs.initializeBase(this);
-    this._state = state;
-}
-    function Sys$HistoryEventArgs$get_state() {
-        /// <value type="Object" locid="P:J#Sys.HistoryEventArgs.state"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._state;
-    }
-Sys.HistoryEventArgs.prototype = {
-    get_state: Sys$HistoryEventArgs$get_state
-}
-Sys.HistoryEventArgs.registerClass('Sys.HistoryEventArgs', Sys.EventArgs);
  
 Sys._Application = function Sys$_Application() {
     /// <summary locid="M:J#Sys.Application.#ctor" />
@@ -3920,68 +4719,19 @@ Sys._Application = function Sys$_Application() {
     this._components = {};
     this._createdComponents = [];
     this._secondPassComponents = [];
-    this._appLoadHandler = null;
-    this._beginRequestHandler = null;
-    this._clientId = null;
-    this._currentEntry = '';
-    this._endRequestHandler = null;
-    this._history = null;
-    this._enableHistory = false;
-    this._historyEnabledInScriptManager = false;
-    this._historyFrame = null;
-    this._historyInitialized = false;
-    this._historyInitialLength = 0;
-    this._historyLength = 0;
-    this._historyPointIsNew = false;
-    this._ignoreTimer = false;
-    this._initialState = null;
-    this._state = {};
-    this._timerCookie = 0;
-    this._timerHandler = null;
-    this._uniqueId = null;
     this._unloadHandlerDelegate = Function.createDelegate(this, this._unloadHandler);
-    this._loadHandlerDelegate = Function.createDelegate(this, this._loadHandler);
     Sys.UI.DomEvent.addHandler(window, "unload", this._unloadHandlerDelegate);
-    Sys.UI.DomEvent.addHandler(window, "load", this._loadHandlerDelegate);
+    this._domReady();
 }
     function Sys$_Application$get_isCreatingComponents() {
         /// <value type="Boolean" locid="P:J#Sys.Application.isCreatingComponents"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
         return this._creatingComponents;
     }
-    function Sys$_Application$get_stateString() {
-        /// <value type="String" locid="P:J#Sys.Application.stateString"></value>
+    function Sys$_Application$get_isDisposing() {
+        /// <value type="Boolean" locid="P:J#Sys.Application.isDisposing"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        var hash = window.location.hash;
-        if (this._isSafari2()) {
-            var history = this._getHistory();
-            if (history) {
-                hash = history[window.history.length - this._historyInitialLength];
-            }
-        }
-        if ((hash.length > 0) && (hash.charAt(0) === '#')) {
-            hash = hash.substring(1);
-        }
-        if (Sys.Browser.agent === Sys.Browser.Firefox) {
-            hash = this._serializeState(this._deserializeState(hash, true));
-        }
-        return hash;
-    }
-    function Sys$_Application$get_enableHistory() {
-        /// <value type="Boolean" locid="P:J#Sys.Application.enableHistory"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._enableHistory;
-    }
-    function Sys$_Application$set_enableHistory(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
-        if (e) throw e;
-        if (this._initialized && !this._initializing) {
-            throw Error.invalidOperation(Sys.Res.historyCannotEnableHistory);
-        }
-        else if (this._historyEnabledInScriptManager && !value) {
-            throw Error.invalidOperation(Sys.Res.invalidHistorySettingCombination);
-        }
-        this._enableHistory = value;
+        return this._disposing;
     }
     function Sys$_Application$add_init(handler) {
         /// <summary locid="E:J#Sys.Application.init" />
@@ -4010,17 +4760,6 @@ Sys._Application = function Sys$_Application() {
         if (e) throw e;
         this.get_events().removeHandler("load", handler);
     }
-    function Sys$_Application$add_navigate(handler) {
-        /// <summary locid="E:J#Sys.Application.navigate" />
-        var e = Function._validateParams(arguments, [{name: "handler", type: Function}]);
-        if (e) throw e;
-        this.get_events().addHandler("navigate", handler);
-    }
-    function Sys$_Application$remove_navigate(handler) {
-        var e = Function._validateParams(arguments, [{name: "handler", type: Function}]);
-        if (e) throw e;
-        this.get_events().removeHandler("navigate", handler);
-    }
     function Sys$_Application$add_unload(handler) {
         /// <summary locid="E:J#Sys.Application.unload" />
         var e = Function._validateParams(arguments, [{name: "handler", type: Function}]);
@@ -4043,41 +4782,6 @@ Sys._Application = function Sys$_Application() {
         if (!id) throw Error.invalidOperation(Sys.Res.cantAddWithoutId);
         if (typeof(this._components[id]) !== 'undefined') throw Error.invalidOperation(String.format(Sys.Res.appDuplicateComponent, id));
         this._components[id] = component;
-    }
-    function Sys$_Application$addHistoryPoint(state, title) {
-        /// <summary locid="M:J#Sys.Application.addHistoryPoint" />
-        /// <param name="state" type="Object"></param>
-        /// <param name="title" type="String" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "state", type: Object},
-            {name: "title", type: String, mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        if (!this._enableHistory) throw Error.invalidOperation(Sys.Res.historyCannotAddHistoryPointWithHistoryDisabled);
-        for (var n in state) {
-            var v = state[n];
-            var t = typeof(v);
-            if ((v !== null) && ((t === 'object') || (t === 'function') || (t === 'undefined'))) {
-                throw Error.argument('state', Sys.Res.stateMustBeStringDictionary);
-            }
-        }
-        this._ensureHistory();
-        var initialState = this._state;
-        for (var key in state) {
-            var value = state[key];
-            if (value === null) {
-                if (typeof(initialState[key]) !== 'undefined') {
-                    delete initialState[key];
-                }
-            }
-            else {
-                initialState[key] = value;
-            }
-        }
-        var entry = this._serializeState(initialState);
-        this._historyPointIsNew = true;
-        this._setState(entry, title);
-        this._raiseNavigate();
     }
     function Sys$_Application$beginCreateComponents() {
         /// <summary locid="M:J#Sys.Application.beginCreateComponents" />
@@ -4110,19 +4814,39 @@ Sys._Application = function Sys$_Application() {
             }
             var disposableObjects = Array.clone(this._disposableObjects);
             for (var i = 0, l = disposableObjects.length; i < l; i++) {
-                disposableObjects[i].dispose();
+                var object = disposableObjects[i];
+                if (typeof(object) !== "undefined") {
+                    object.dispose();
+                }
             }
             Array.clear(this._disposableObjects);
             Sys.UI.DomEvent.removeHandler(window, "unload", this._unloadHandlerDelegate);
-            if(this._loadHandlerDelegate) {
-                Sys.UI.DomEvent.removeHandler(window, "load", this._loadHandlerDelegate);
-                this._loadHandlerDelegate = null;
-            }
-            var sl = Sys._ScriptLoader.getInstance();
-            if(sl) {
-                sl.dispose();
+            if (Sys._ScriptLoader) {
+                var sl = Sys._ScriptLoader.getInstance();
+                if(sl) {
+                    sl.dispose();
+                }
             }
             Sys._Application.callBaseMethod(this, 'dispose');
+        }
+    }
+    function Sys$_Application$disposeElement(element, childNodesOnly) {
+        /// <summary locid="M:J#Sys._Application.disposeElement" />
+        /// <param name="element"></param>
+        /// <param name="childNodesOnly" type="Boolean"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "element"},
+            {name: "childNodesOnly", type: Boolean}
+        ]);
+        if (e) throw e;
+        if (element.nodeType === 1) {
+            var children = element.getElementsByTagName("*");
+            for (var i = children.length - 1; i >= 0; i--) {
+                this._disposeElementInternal(children[i]);
+            }
+            if (!childNodesOnly) {
+                this._disposeElementInternal(element);
+            }
         }
     }
     function Sys$_Application$endCreateComponents() {
@@ -4167,18 +4891,30 @@ Sys._Application = function Sys$_Application() {
     function Sys$_Application$initialize() {
         /// <summary locid="M:J#Sys.Application.initialize" />
         if (arguments.length !== 0) throw Error.parameterCount();
-        if(!this._initialized && !this._initializing) {
-            this._initializing = true;
-            window.setTimeout(Function.createDelegate(this, this._doInitialize), 0);
+        if(!this.get_isInitialized() && !this._disposing) {
+            Sys._Application.callBaseMethod(this, 'initialize');
+            this._raiseInit();
+            if (this.get_stateString) {
+                if (Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                    this._beginRequestHandler = Function.createDelegate(this, this._onPageRequestManagerBeginRequest);
+                    Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(this._beginRequestHandler);
+                    this._endRequestHandler = Function.createDelegate(this, this._onPageRequestManagerEndRequest);
+                    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(this._endRequestHandler);
+                }
+                var loadedEntry = this.get_stateString();
+                if (loadedEntry !== this._currentEntry) {
+                    this._navigate(loadedEntry);
+                }
+                else {
+                    this._ensureHistory();
+                }
+            }
+            this.raiseLoad();
         }
     }
     function Sys$_Application$notifyScriptLoaded() {
         /// <summary locid="M:J#Sys.Application.notifyScriptLoaded" />
         if (arguments.length !== 0) throw Error.parameterCount();
-        var sl = Sys._ScriptLoader.getInstance();
-        if(sl) {
-            sl.notifyScriptLoaded();
-        }
     }
     function Sys$_Application$registerDisposableObject(object) {
         /// <summary locid="M:J#Sys.Application.registerDisposableObject" />
@@ -4188,14 +4924,18 @@ Sys._Application = function Sys$_Application() {
         ]);
         if (e) throw e;
         if (!this._disposing) {
-            this._disposableObjects[this._disposableObjects.length] = object;
+            var objects = this._disposableObjects,
+                i = objects.length;
+            objects[i] = object;
+            object.__msdisposeindex = i;
         }
     }
     function Sys$_Application$raiseLoad() {
         /// <summary locid="M:J#Sys.Application.raiseLoad" />
         if (arguments.length !== 0) throw Error.parameterCount();
         var h = this.get_events().getHandler("load");
-        var args = new Sys.ApplicationLoadEventArgs(Array.clone(this._createdComponents), !this._initializing);
+        var args = new Sys.ApplicationLoadEventArgs(Array.clone(this._createdComponents), !!this._loaded);
+        this._loaded = true;
         if (h) {
             h(this, args);
         }
@@ -4214,29 +4954,6 @@ Sys._Application = function Sys$_Application() {
         var id = component.get_id();
         if (id) delete this._components[id];
     }
-    function Sys$_Application$setServerId(clientId, uniqueId) {
-        /// <summary locid="M:J#Sys.Application.setServerId" />
-        /// <param name="clientId" type="String"></param>
-        /// <param name="uniqueId" type="String"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "clientId", type: String},
-            {name: "uniqueId", type: String}
-        ]);
-        if (e) throw e;
-        this._clientId = clientId;
-        this._uniqueId = uniqueId;
-    }
-    function Sys$_Application$setServerState(value) {
-        /// <summary locid="M:J#Sys.Application.setServerState" />
-        /// <param name="value" type="String"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "value", type: String}
-        ]);
-        if (e) throw e;
-        this._ensureHistory();
-        this._state.__s = value;
-        this._updateHiddenField(value);
-    }
     function Sys$_Application$unregisterDisposableObject(object) {
         /// <summary locid="M:J#Sys.Application.unregisterDisposableObject" />
         /// <param name="object" type="Sys.IDisposable"></param>
@@ -4245,277 +4962,131 @@ Sys._Application = function Sys$_Application() {
         ]);
         if (e) throw e;
         if (!this._disposing) {
-            Array.remove(this._disposableObjects, object);
+            var i = object.__msdisposeindex;
+            if (typeof(i) === "number") {
+                var disposableObjects = this._disposableObjects;
+                delete disposableObjects[i];
+                delete object.__msdisposeindex;
+                if (++this._deleteCount > 1000) {
+                    var newArray = [];
+                    for (var j = 0, l = disposableObjects.length; j < l; j++) {
+                        object = disposableObjects[j];
+                        if (typeof(object) !== "undefined") {
+                            object.__msdisposeindex = newArray.length;
+                            newArray.push(object);
+                        }
+                    }
+                    this._disposableObjects = newArray;
+                    this._deleteCount = 0;
+                }
+            }
         }
     }
     function Sys$_Application$_addComponentToSecondPass(component, references) {
         this._secondPassComponents[this._secondPassComponents.length] = {component: component, references: references};
     }
-    function Sys$_Application$_deserializeState(entry, skipDecodeUri) {
-        var result = {};
-        entry = entry || '';
-        var serverSeparator = entry.indexOf('&&');
-        if ((serverSeparator !== -1) && (serverSeparator + 2 < entry.length)) {
-            result.__s = entry.substr(serverSeparator + 2);
-            entry = entry.substr(0, serverSeparator);
-        }
-        var tokens = entry.split('&');
-        for (var i = 0, l = tokens.length; i < l; i++) {
-            var token = tokens[i];
-            var equal = token.indexOf('=');
-            if ((equal !== -1) && (equal + 1 < token.length)) {
-                var name = token.substr(0, equal);
-                var value = token.substr(equal + 1);
-                result[name] = skipDecodeUri ? value : decodeURIComponent(value);
+    function Sys$_Application$_disposeComponents(list) {
+        if (list) {
+            for (var i = list.length - 1; i >= 0; i--) {
+                var item = list[i];
+                if (typeof(item.dispose) === "function") {
+                    item.dispose();
+                }
             }
         }
-        return result;
     }
-    function Sys$_Application$_doInitialize() {
-        Sys._Application.callBaseMethod(this, 'initialize');
+    function Sys$_Application$_disposeElementInternal(element) {
+        var d = element.dispose;
+        if (d && typeof(d) === "function") {
+            element.dispose();
+        }
+        else {
+            var c = element.control;
+            if (c && typeof(c.dispose) === "function") {
+                c.dispose();
+            }
+        }
+        var list = element._behaviors;
+        if (list) {
+            this._disposeComponents(list);
+        }
+        list = element._components;
+        if (list) {
+            this._disposeComponents(list);
+            element._components = null;
+        }
+    }
+    function Sys$_Application$_domReady() {
+        var check, er, app = this;
+        function init() { app.initialize(); }
+        var onload = function() {
+            Sys.UI.DomEvent.removeHandler(window, "load", onload);
+            init();
+        }
+        Sys.UI.DomEvent.addHandler(window, "load", onload);
         
+        if (document.addEventListener) {
+            try {
+                document.addEventListener("DOMContentLoaded", check = function() {
+                    document.removeEventListener("DOMContentLoaded", check, false);
+                    init();
+                }, false);
+            }
+            catch (er) { }
+        }
+        else if (document.attachEvent) {
+            if ((window == window.top) && document.documentElement.doScroll) {
+                var timeout, el = document.createElement("div");
+                check = function() {
+                    try {
+                        el.doScroll("left");
+                    }
+                    catch (er) {
+                        timeout = window.setTimeout(check, 0);
+                        return;
+                    }
+                    el = null;
+                    init();
+                }
+                check();
+            }
+            else {
+		document.attachEvent("onreadystatechange", check = function() {
+                    if (document.readyState === "complete") {
+                        document.detachEvent("onreadystatechange", check);
+                        init();
+                    }
+                });
+            }
+        }
+    }
+    function Sys$_Application$_raiseInit() {
         var handler = this.get_events().getHandler("init");
         if (handler) {
             this.beginCreateComponents();
             handler(this, Sys.EventArgs.Empty);
             this.endCreateComponents();
         }
-        if (Sys.WebForms) {
-            this._beginRequestHandler = Function.createDelegate(this, this._onPageRequestManagerBeginRequest);
-            Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(this._beginRequestHandler);
-            this._endRequestHandler = Function.createDelegate(this, this._onPageRequestManagerEndRequest);
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(this._endRequestHandler);
-        }
-        
-        var loadedEntry = this.get_stateString();
-        if (loadedEntry !== this._currentEntry) {
-            this._navigate(loadedEntry);
-        }
- 
-        this.raiseLoad();
-        this._initializing = false;
-    }
-    function Sys$_Application$_enableHistoryInScriptManager() {
-        this._enableHistory = true;
-        this._historyEnabledInScriptManager = true;
-    }
-    function Sys$_Application$_ensureHistory() {
-        if (!this._historyInitialized && this._enableHistory) {
-            if ((Sys.Browser.agent === Sys.Browser.InternetExplorer) && (Sys.Browser.documentMode < 8)) {
-                this._historyFrame = document.getElementById('__historyFrame');
-                if (!this._historyFrame) throw Error.invalidOperation(Sys.Res.historyMissingFrame);
-                this._ignoreIFrame = true;
-            }
-            if (this._isSafari2()) {
-                var historyElement = document.getElementById('__history');
-                if (!historyElement) throw Error.invalidOperation(Sys.Res.historyMissingHiddenInput);
-                this._setHistory([window.location.hash]);
-                this._historyInitialLength = window.history.length;
-            }
-            
-            this._timerHandler = Function.createDelegate(this, this._onIdle);
-            this._timerCookie = window.setTimeout(this._timerHandler, 100);
-            
-            try {
-                this._initialState = this._deserializeState(this.get_stateString());
-            } catch(e) {}
-            
-            this._historyInitialized = true;
-        }
-    }
-    function Sys$_Application$_getHistory() {
-        var historyElement = document.getElementById('__history');
-        if (!historyElement) return '';
-        var v = historyElement.value;
-        return v ? Sys.Serialization.JavaScriptSerializer.deserialize(v, true) : '';
-    }
-    function Sys$_Application$_isSafari2() {
-        return (Sys.Browser.agent === Sys.Browser.Safari) &&
-            (Sys.Browser.version <= 419.3);
-    }
-    function Sys$_Application$_loadHandler() {
-        if(this._loadHandlerDelegate) {
-            Sys.UI.DomEvent.removeHandler(window, "load", this._loadHandlerDelegate);
-            this._loadHandlerDelegate = null;
-        }
-        this.initialize();
-    }
-    function Sys$_Application$_navigate(entry) {
-        this._ensureHistory();
-        var state = this._deserializeState(entry);
-        
-        if (this._uniqueId) {
-            var oldServerEntry = this._state.__s || '';
-            var newServerEntry = state.__s || '';
-            if (newServerEntry !== oldServerEntry) {
-                this._updateHiddenField(newServerEntry);
-                __doPostBack(this._uniqueId, newServerEntry);
-                this._state = state;
-                return;
-            }
-        }
-        this._setState(entry);
-        this._state = state;
-        this._raiseNavigate();
-    }
-    function Sys$_Application$_onIdle() {
-        delete this._timerCookie;
-        
-        var entry = this.get_stateString();
-        if (entry !== this._currentEntry) {
-            if (!this._ignoreTimer) {
-                this._historyPointIsNew = false;
-                this._navigate(entry);
-                this._historyLength = window.history.length;
-            }
-        }
-        else {
-            this._ignoreTimer = false;
-        }
-        this._timerCookie = window.setTimeout(this._timerHandler, 100);
-    }
-    function Sys$_Application$_onIFrameLoad(entry) {
-        this._ensureHistory();
-        if (!this._ignoreIFrame) {
-            this._historyPointIsNew = false;
-            this._navigate(entry);
-        }
-        this._ignoreIFrame = false;
-    }
-    function Sys$_Application$_onPageRequestManagerBeginRequest(sender, args) {
-        this._ignoreTimer = true;
-    }
-    function Sys$_Application$_onPageRequestManagerEndRequest(sender, args) {
-        var dataItem = args.get_dataItems()[this._clientId];
-        var eventTarget = document.getElementById("__EVENTTARGET");
-        if (eventTarget && eventTarget.value === this._uniqueId) {
-            eventTarget.value = '';
-        }
-        if (typeof(dataItem) !== 'undefined') {
-            this.setServerState(dataItem);
-            this._historyPointIsNew = true;
-        }
-        else {
-            this._ignoreTimer = false;
-        }
-        var entry = this._serializeState(this._state);
-        if (entry !== this._currentEntry) {
-            this._ignoreTimer = true;
-            this._setState(entry);
-            this._raiseNavigate();
-        }
-    }
-    function Sys$_Application$_raiseNavigate() {
-        var h = this.get_events().getHandler("navigate");
-        var stateClone = {};
-        for (var key in this._state) {
-            if (key !== '__s') {
-                stateClone[key] = this._state[key];
-            }
-        }
-        var args = new Sys.HistoryEventArgs(stateClone);
-        if (h) {
-            h(this, args);
-        }
-    }
-    function Sys$_Application$_serializeState(state) {
-        var serialized = [];
-        for (var key in state) {
-            var value = state[key];
-            if (key === '__s') {
-                var serverState = value;
-            }
-            else {
-                if (key.indexOf('=') !== -1) throw Error.argument('state', Sys.Res.stateFieldNameInvalid);
-                serialized[serialized.length] = key + '=' + encodeURIComponent(value);
-            }
-        }
-        return serialized.join('&') + (serverState ? '&&' + serverState : '');
-    }
-    function Sys$_Application$_setHistory(historyArray) {
-        var historyElement = document.getElementById('__history');
-        if (historyElement) {
-            historyElement.value = Sys.Serialization.JavaScriptSerializer.serialize(historyArray);
-        }
-    }
-    function Sys$_Application$_setState(entry, title) {
-        entry = entry || '';
-        if (entry !== this._currentEntry) {
-            if (window.theForm) {
-                var action = window.theForm.action;
-                var hashIndex = action.indexOf('#');
-                window.theForm.action = ((hashIndex !== -1) ? action.substring(0, hashIndex) : action) + '#' + entry;
-            }
-            
-            if (this._historyFrame && this._historyPointIsNew) {
-                this._ignoreIFrame = true;
-                this._historyPointIsNew = false;
-                var frameDoc = this._historyFrame.contentWindow.document;
-                frameDoc.open("javascript:'<html></html>'");
-                frameDoc.write("<html><head><title>" + (title || document.title) +
-                    "</title><scri" + "pt type=\"text/javascript\">parent.Sys.Application._onIFrameLoad('" + 
-                    entry + "');</scri" + "pt></head><body></body></html>");
-                frameDoc.close();
-            }
-            this._ignoreTimer = false;
-            var currentHash = this.get_stateString();
-            this._currentEntry = entry;
-            if (entry !== currentHash) {
-                var loc = document.location;
-                if (loc.href.length - loc.hash.length + entry.length > 1024) {
-                    throw Error.invalidOperation(Sys.Res.urlMustBeLessThan1024chars);
-                }
-                if (this._isSafari2()) {
-                    var history = this._getHistory();
-                    history[window.history.length - this._historyInitialLength + 1] = entry;
-                    this._setHistory(history);
-                    this._historyLength = window.history.length + 1;
-                    var form = document.createElement('form');
-                    form.method = 'get';
-                    form.action = '#' + entry;
-                    document.appendChild(form);
-                    form.submit();
-                    document.removeChild(form);
-                }
-                else {
-                    window.location.hash = entry;
-                }
-                if ((typeof(title) !== 'undefined') && (title !== null)) {
-                    document.title = title;
-                }
-            }
-        }
     }
     function Sys$_Application$_unloadHandler(event) {
         this.dispose();
     }
-    function Sys$_Application$_updateHiddenField(value) {
-        if (this._clientId) {
-            var serverStateField = document.getElementById(this._clientId);
-            if (serverStateField) {
-                serverStateField.value = value;
-            }
-        }
-    }
 Sys._Application.prototype = {
     _creatingComponents: false,
     _disposing: false,
+    _deleteCount: 0,
     get_isCreatingComponents: Sys$_Application$get_isCreatingComponents,
-    get_stateString: Sys$_Application$get_stateString,
-    get_enableHistory: Sys$_Application$get_enableHistory,
-    set_enableHistory: Sys$_Application$set_enableHistory,
+    get_isDisposing: Sys$_Application$get_isDisposing,
     add_init: Sys$_Application$add_init,
     remove_init: Sys$_Application$remove_init,
     add_load: Sys$_Application$add_load,
     remove_load: Sys$_Application$remove_load,
-    add_navigate: Sys$_Application$add_navigate,
-    remove_navigate: Sys$_Application$remove_navigate,
     add_unload: Sys$_Application$add_unload,
     remove_unload: Sys$_Application$remove_unload,
     addComponent: Sys$_Application$addComponent,
-    addHistoryPoint: Sys$_Application$addHistoryPoint,
     beginCreateComponents: Sys$_Application$beginCreateComponents,
     dispose: Sys$_Application$dispose,
+    disposeElement: Sys$_Application$disposeElement,
     endCreateComponents: Sys$_Application$endCreateComponents,
     findComponent: Sys$_Application$findComponent,
     getComponents: Sys$_Application$getComponents,
@@ -4524,32 +5095,693 @@ Sys._Application.prototype = {
     registerDisposableObject: Sys$_Application$registerDisposableObject,
     raiseLoad: Sys$_Application$raiseLoad,
     removeComponent: Sys$_Application$removeComponent,
-    setServerId: Sys$_Application$setServerId,
-    setServerState: Sys$_Application$setServerState,
     unregisterDisposableObject: Sys$_Application$unregisterDisposableObject,
     _addComponentToSecondPass: Sys$_Application$_addComponentToSecondPass,
-    _deserializeState: Sys$_Application$_deserializeState,
-    _doInitialize: Sys$_Application$_doInitialize,
-    _enableHistoryInScriptManager: Sys$_Application$_enableHistoryInScriptManager,    
-    _ensureHistory: Sys$_Application$_ensureHistory,
-    _getHistory: Sys$_Application$_getHistory,
-    _isSafari2: Sys$_Application$_isSafari2,
-    _loadHandler: Sys$_Application$_loadHandler,
-    _navigate: Sys$_Application$_navigate,
-    _onIdle: Sys$_Application$_onIdle,
-    _onIFrameLoad: Sys$_Application$_onIFrameLoad,
-    _onPageRequestManagerBeginRequest: Sys$_Application$_onPageRequestManagerBeginRequest,
-    _onPageRequestManagerEndRequest: Sys$_Application$_onPageRequestManagerEndRequest,
-    _raiseNavigate: Sys$_Application$_raiseNavigate,
-    _serializeState: Sys$_Application$_serializeState,
-    _setHistory: Sys$_Application$_setHistory,
-    _setState: Sys$_Application$_setState,
-    _unloadHandler: Sys$_Application$_unloadHandler,
-    _updateHiddenField: Sys$_Application$_updateHiddenField
+    _disposeComponents: Sys$_Application$_disposeComponents,
+    _disposeElementInternal: Sys$_Application$_disposeElementInternal,
+    _domReady: Sys$_Application$_domReady,
+    _raiseInit: Sys$_Application$_raiseInit,
+    _unloadHandler: Sys$_Application$_unloadHandler
 }
 Sys._Application.registerClass('Sys._Application', Sys.Component, Sys.IContainer);
 Sys.Application = new Sys._Application();
 var $find = Sys.Application.findComponent;
+ 
+Sys.UI.Behavior = function Sys$UI$Behavior(element) {
+    /// <summary locid="M:J#Sys.UI.Behavior.#ctor" />
+    /// <param name="element" domElement="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "element", domElement: true}
+    ]);
+    if (e) throw e;
+    Sys.UI.Behavior.initializeBase(this);
+    this._element = element;
+    var behaviors = element._behaviors;
+    if (!behaviors) {
+        element._behaviors = [this];
+    }
+    else {
+        behaviors[behaviors.length] = this;
+    }
+}
+    function Sys$UI$Behavior$get_element() {
+        /// <value domElement="true" locid="P:J#Sys.UI.Behavior.element"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._element;
+    }
+    function Sys$UI$Behavior$get_id() {
+        /// <value type="String" locid="P:J#Sys.UI.Behavior.id"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        var baseId = Sys.UI.Behavior.callBaseMethod(this, 'get_id');
+        if (baseId) return baseId;
+        if (!this._element || !this._element.id) return '';
+        return this._element.id + '$' + this.get_name();
+    }
+    function Sys$UI$Behavior$get_name() {
+        /// <value type="String" locid="P:J#Sys.UI.Behavior.name"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        if (this._name) return this._name;
+        var name = Object.getTypeName(this);
+        var i = name.lastIndexOf('.');
+        if (i !== -1) name = name.substr(i + 1);
+        if (!this.get_isInitialized()) this._name = name;
+        return name;
+    }
+    function Sys$UI$Behavior$set_name(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: String}]);
+        if (e) throw e;
+        if ((value === '') || (value.charAt(0) === ' ') || (value.charAt(value.length - 1) === ' '))
+            throw Error.argument('value', Sys.Res.invalidId);
+        if (typeof(this._element[value]) !== 'undefined')
+            throw Error.invalidOperation(String.format(Sys.Res.behaviorDuplicateName, value));
+        if (this.get_isInitialized()) throw Error.invalidOperation(Sys.Res.cantSetNameAfterInit);
+        this._name = value;
+    }
+    function Sys$UI$Behavior$initialize() {
+        Sys.UI.Behavior.callBaseMethod(this, 'initialize');
+        var name = this.get_name();
+        if (name) this._element[name] = this;
+    }
+    function Sys$UI$Behavior$dispose() {
+        Sys.UI.Behavior.callBaseMethod(this, 'dispose');
+        var e = this._element;
+        if (e) {
+            var name = this.get_name();
+            if (name) {
+                e[name] = null;
+            }
+            var behaviors = e._behaviors;
+            Array.remove(behaviors, this);
+            if (behaviors.length === 0) {
+                e._behaviors = null;
+            }
+            delete this._element;
+        }
+    }
+Sys.UI.Behavior.prototype = {
+    _name: null,
+    get_element: Sys$UI$Behavior$get_element,
+    get_id: Sys$UI$Behavior$get_id,
+    get_name: Sys$UI$Behavior$get_name,
+    set_name: Sys$UI$Behavior$set_name,
+    initialize: Sys$UI$Behavior$initialize,
+    dispose: Sys$UI$Behavior$dispose
+}
+Sys.UI.Behavior.registerClass('Sys.UI.Behavior', Sys.Component);
+Sys.UI.Behavior.getBehaviorByName = function Sys$UI$Behavior$getBehaviorByName(element, name) {
+    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviorByName" />
+    /// <param name="element" domElement="true"></param>
+    /// <param name="name" type="String"></param>
+    /// <returns type="Sys.UI.Behavior" mayBeNull="true"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "element", domElement: true},
+        {name: "name", type: String}
+    ]);
+    if (e) throw e;
+    var b = element[name];
+    return (b && Sys.UI.Behavior.isInstanceOfType(b)) ? b : null;
+}
+Sys.UI.Behavior.getBehaviors = function Sys$UI$Behavior$getBehaviors(element) {
+    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviors" />
+    /// <param name="element" domElement="true"></param>
+    /// <returns type="Array" elementType="Sys.UI.Behavior"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "element", domElement: true}
+    ]);
+    if (e) throw e;
+    if (!element._behaviors) return [];
+    return Array.clone(element._behaviors);
+}
+Sys.UI.Behavior.getBehaviorsByType = function Sys$UI$Behavior$getBehaviorsByType(element, type) {
+    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviorsByType" />
+    /// <param name="element" domElement="true"></param>
+    /// <param name="type" type="Type"></param>
+    /// <returns type="Array" elementType="Sys.UI.Behavior"></returns>
+    var e = Function._validateParams(arguments, [
+        {name: "element", domElement: true},
+        {name: "type", type: Type}
+    ]);
+    if (e) throw e;
+    var behaviors = element._behaviors;
+    var results = [];
+    if (behaviors) {
+        for (var i = 0, l = behaviors.length; i < l; i++) {
+            if (type.isInstanceOfType(behaviors[i])) {
+                results[results.length] = behaviors[i];
+            }
+        }
+    }
+    return results;
+}
+ 
+Sys.UI.VisibilityMode = function Sys$UI$VisibilityMode() {
+    /// <summary locid="M:J#Sys.UI.VisibilityMode.#ctor" />
+    /// <field name="hide" type="Number" integer="true" static="true" locid="F:J#Sys.UI.VisibilityMode.hide"></field>
+    /// <field name="collapse" type="Number" integer="true" static="true" locid="F:J#Sys.UI.VisibilityMode.collapse"></field>
+    if (arguments.length !== 0) throw Error.parameterCount();
+    throw Error.notImplemented();
+}
+Sys.UI.VisibilityMode.prototype = {
+    hide: 0,
+    collapse: 1
+}
+Sys.UI.VisibilityMode.registerEnum("Sys.UI.VisibilityMode");
+ 
+Sys.UI.Control = function Sys$UI$Control(element) {
+    /// <summary locid="M:J#Sys.UI.Control.#ctor" />
+    /// <param name="element" domElement="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "element", domElement: true}
+    ]);
+    if (e) throw e;
+    if (typeof(element.control) !== 'undefined') throw Error.invalidOperation(Sys.Res.controlAlreadyDefined);
+    Sys.UI.Control.initializeBase(this);
+    this._element = element;
+    element.control = this;
+    var role = this.get_role();
+    if (role) {
+        element.setAttribute("role", role);
+    }
+}
+    function Sys$UI$Control$get_element() {
+        /// <value domElement="true" locid="P:J#Sys.UI.Control.element"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._element;
+    }
+    function Sys$UI$Control$get_id() {
+        /// <value type="String" locid="P:J#Sys.UI.Control.id"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        if (!this._element) return '';
+        return this._element.id;
+    }
+    function Sys$UI$Control$set_id(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: String}]);
+        if (e) throw e;
+        throw Error.invalidOperation(Sys.Res.cantSetId);
+    }
+    function Sys$UI$Control$get_parent() {
+        /// <value type="Sys.UI.Control" locid="P:J#Sys.UI.Control.parent"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        if (this._parent) return this._parent;
+        if (!this._element) return null;
+        
+        var parentElement = this._element.parentNode;
+        while (parentElement) {
+            if (parentElement.control) {
+                return parentElement.control;
+            }
+            parentElement = parentElement.parentNode;
+        }
+        return null;
+    }
+    function Sys$UI$Control$set_parent(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: Sys.UI.Control}]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        var parents = [this];
+        var current = value;
+        while (current) {
+            if (Array.contains(parents, current)) throw Error.invalidOperation(Sys.Res.circularParentChain);
+            parents[parents.length] = current;
+            current = current.get_parent();
+        }
+        this._parent = value;
+    }
+    function Sys$UI$Control$get_role() {
+        /// <value type="String" locid="P:J#Sys.UI.Control.role"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return null;
+    }
+    function Sys$UI$Control$get_visibilityMode() {
+        /// <value type="Sys.UI.VisibilityMode" locid="P:J#Sys.UI.Control.visibilityMode"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        return Sys.UI.DomElement.getVisibilityMode(this._element);
+    }
+    function Sys$UI$Control$set_visibilityMode(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: Sys.UI.VisibilityMode}]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        Sys.UI.DomElement.setVisibilityMode(this._element, value);
+    }
+    function Sys$UI$Control$get_visible() {
+        /// <value type="Boolean" locid="P:J#Sys.UI.Control.visible"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        return Sys.UI.DomElement.getVisible(this._element);
+    }
+    function Sys$UI$Control$set_visible(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        Sys.UI.DomElement.setVisible(this._element, value)
+    }
+    function Sys$UI$Control$addCssClass(className) {
+        /// <summary locid="M:J#Sys.UI.Control.addCssClass" />
+        /// <param name="className" type="String"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "className", type: String}
+        ]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        Sys.UI.DomElement.addCssClass(this._element, className);
+    }
+    function Sys$UI$Control$dispose() {
+        Sys.UI.Control.callBaseMethod(this, 'dispose');
+        if (this._element) {
+            this._element.control = null;
+            delete this._element;
+        }
+        if (this._parent) delete this._parent;
+    }
+    function Sys$UI$Control$onBubbleEvent(source, args) {
+        /// <summary locid="M:J#Sys.UI.Control.onBubbleEvent" />
+        /// <param name="source"></param>
+        /// <param name="args" type="Sys.EventArgs"></param>
+        /// <returns type="Boolean"></returns>
+        var e = Function._validateParams(arguments, [
+            {name: "source"},
+            {name: "args", type: Sys.EventArgs}
+        ]);
+        if (e) throw e;
+        return false;
+    }
+    function Sys$UI$Control$raiseBubbleEvent(source, args) {
+        /// <summary locid="M:J#Sys.UI.Control.raiseBubbleEvent" />
+        /// <param name="source"></param>
+        /// <param name="args" type="Sys.EventArgs"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "source"},
+            {name: "args", type: Sys.EventArgs}
+        ]);
+        if (e) throw e;
+        this._raiseBubbleEvent(source, args);
+    }
+    function Sys$UI$Control$_raiseBubbleEvent(source, args) {
+        var currentTarget = this.get_parent();
+        while (currentTarget) {
+            if (currentTarget.onBubbleEvent(source, args)) {
+                return;
+            }
+            currentTarget = currentTarget.get_parent();
+        }
+    }
+    function Sys$UI$Control$removeCssClass(className) {
+        /// <summary locid="M:J#Sys.UI.Control.removeCssClass" />
+        /// <param name="className" type="String"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "className", type: String}
+        ]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        Sys.UI.DomElement.removeCssClass(this._element, className);
+    }
+    function Sys$UI$Control$toggleCssClass(className) {
+        /// <summary locid="M:J#Sys.UI.Control.toggleCssClass" />
+        /// <param name="className" type="String"></param>
+        var e = Function._validateParams(arguments, [
+            {name: "className", type: String}
+        ]);
+        if (e) throw e;
+        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
+        Sys.UI.DomElement.toggleCssClass(this._element, className);
+    }
+Sys.UI.Control.prototype = {
+    _parent: null,
+    _visibilityMode: Sys.UI.VisibilityMode.hide,
+    get_element: Sys$UI$Control$get_element,
+    get_id: Sys$UI$Control$get_id,
+    set_id: Sys$UI$Control$set_id,
+    get_parent: Sys$UI$Control$get_parent,
+    set_parent: Sys$UI$Control$set_parent,
+    get_role: Sys$UI$Control$get_role,
+    get_visibilityMode: Sys$UI$Control$get_visibilityMode,
+    set_visibilityMode: Sys$UI$Control$set_visibilityMode,
+    get_visible: Sys$UI$Control$get_visible,
+    set_visible: Sys$UI$Control$set_visible,
+    addCssClass: Sys$UI$Control$addCssClass,
+    dispose: Sys$UI$Control$dispose,
+    onBubbleEvent: Sys$UI$Control$onBubbleEvent,
+    raiseBubbleEvent: Sys$UI$Control$raiseBubbleEvent,
+    _raiseBubbleEvent: Sys$UI$Control$_raiseBubbleEvent,
+    removeCssClass: Sys$UI$Control$removeCssClass,
+    toggleCssClass: Sys$UI$Control$toggleCssClass
+}
+Sys.UI.Control.registerClass('Sys.UI.Control', Sys.Component);
+Sys.HistoryEventArgs = function Sys$HistoryEventArgs(state) {
+    /// <summary locid="M:J#Sys.HistoryEventArgs.#ctor" />
+    /// <param name="state" type="Object"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "state", type: Object}
+    ]);
+    if (e) throw e;
+    Sys.HistoryEventArgs.initializeBase(this);
+    this._state = state;
+}
+    function Sys$HistoryEventArgs$get_state() {
+        /// <value type="Object" locid="P:J#Sys.HistoryEventArgs.state"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._state;
+    }
+Sys.HistoryEventArgs.prototype = {
+    get_state: Sys$HistoryEventArgs$get_state
+}
+Sys.HistoryEventArgs.registerClass('Sys.HistoryEventArgs', Sys.EventArgs);
+Sys.Application._appLoadHandler = null;
+Sys.Application._beginRequestHandler = null;
+Sys.Application._clientId = null;
+Sys.Application._currentEntry = '';
+Sys.Application._endRequestHandler = null;
+Sys.Application._history = null;
+Sys.Application._enableHistory = false;
+Sys.Application._historyEnabledInScriptManager = false;
+Sys.Application._historyFrame = null;
+Sys.Application._historyInitialized = false;
+Sys.Application._historyPointIsNew = false;
+Sys.Application._ignoreTimer = false;
+Sys.Application._initialState = null;
+Sys.Application._state = {};
+Sys.Application._timerCookie = 0;
+Sys.Application._timerHandler = null;
+Sys.Application._uniqueId = null;
+Sys._Application.prototype.get_stateString = function Sys$_Application$get_stateString() {
+    /// <summary locid="M:J#Sys._Application.get_stateString" />
+    if (arguments.length !== 0) throw Error.parameterCount();
+    var hash = null;
+    
+    if (Sys.Browser.agent === Sys.Browser.Firefox) {
+        var href = window.location.href;
+        var hashIndex = href.indexOf('#');
+        if (hashIndex !== -1) {
+            hash = href.substring(hashIndex + 1);
+        }
+        else {
+            hash = "";
+        }
+        return hash;
+    }
+    else {
+        hash = window.location.hash;
+    }
+    
+    if ((hash.length > 0) && (hash.charAt(0) === '#')) {
+        hash = hash.substring(1);
+    }
+    return hash;
+};
+Sys._Application.prototype.get_enableHistory = function Sys$_Application$get_enableHistory() {
+    /// <summary locid="M:J#Sys._Application.get_enableHistory" />
+    if (arguments.length !== 0) throw Error.parameterCount();
+    return this._enableHistory;
+};
+Sys._Application.prototype.set_enableHistory = function Sys$_Application$set_enableHistory(value) {
+    if (this._initialized && !this._initializing) {
+        throw Error.invalidOperation(Sys.Res.historyCannotEnableHistory);
+    }
+    else if (this._historyEnabledInScriptManager && !value) {
+        throw Error.invalidOperation(Sys.Res.invalidHistorySettingCombination);
+    }
+    this._enableHistory = value;
+};
+Sys._Application.prototype.add_navigate = function Sys$_Application$add_navigate(handler) {
+    /// <summary locid="E:J#Sys.Application.navigate" />
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    this.get_events().addHandler("navigate", handler);
+};
+Sys._Application.prototype.remove_navigate = function Sys$_Application$remove_navigate(handler) {
+    /// <summary locid="M:J#Sys._Application.remove_navigate" />
+    /// <param name="handler" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "handler", type: Function}
+    ]);
+    if (e) throw e;
+    this.get_events().removeHandler("navigate", handler);
+};
+Sys._Application.prototype.addHistoryPoint = function Sys$_Application$addHistoryPoint(state, title) {
+    /// <summary locid="M:J#Sys.Application.addHistoryPoint" />
+    /// <param name="state" type="Object"></param>
+    /// <param name="title" type="String" optional="true" mayBeNull="true"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "state", type: Object},
+        {name: "title", type: String, mayBeNull: true, optional: true}
+    ]);
+    if (e) throw e;
+    if (!this._enableHistory) throw Error.invalidOperation(Sys.Res.historyCannotAddHistoryPointWithHistoryDisabled);
+    for (var n in state) {
+        var v = state[n];
+        var t = typeof(v);
+        if ((v !== null) && ((t === 'object') || (t === 'function') || (t === 'undefined'))) {
+            throw Error.argument('state', Sys.Res.stateMustBeStringDictionary);
+        }
+    }
+    this._ensureHistory();
+    var initialState = this._state;
+    for (var key in state) {
+        var value = state[key];
+        if (value === null) {
+            if (typeof(initialState[key]) !== 'undefined') {
+                delete initialState[key];
+            }
+        }
+        else {
+            initialState[key] = value;
+        }
+    }
+    var entry = this._serializeState(initialState);
+    this._historyPointIsNew = true;
+    this._setState(entry, title);
+    this._raiseNavigate();
+};
+Sys._Application.prototype.setServerId = function Sys$_Application$setServerId(clientId, uniqueId) {
+    /// <summary locid="M:J#Sys.Application.setServerId" />
+    /// <param name="clientId" type="String"></param>
+    /// <param name="uniqueId" type="String"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "clientId", type: String},
+        {name: "uniqueId", type: String}
+    ]);
+    if (e) throw e;
+    this._clientId = clientId;
+    this._uniqueId = uniqueId;
+};
+Sys._Application.prototype.setServerState = function Sys$_Application$setServerState(value) {
+    /// <summary locid="M:J#Sys.Application.setServerState" />
+    /// <param name="value" type="String"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "value", type: String}
+    ]);
+    if (e) throw e;
+    this._ensureHistory();
+    this._state.__s = value;
+    this._updateHiddenField(value);
+};
+Sys._Application.prototype._deserializeState = function Sys$_Application$_deserializeState(entry) {
+    var result = {};
+    entry = entry || '';
+    var serverSeparator = entry.indexOf('&&');
+    if ((serverSeparator !== -1) && (serverSeparator + 2 < entry.length)) {
+        result.__s = entry.substr(serverSeparator + 2);
+        entry = entry.substr(0, serverSeparator);
+    }
+    var tokens = entry.split('&');
+    for (var i = 0, l = tokens.length; i < l; i++) {
+        var token = tokens[i];
+        var equal = token.indexOf('=');
+        if ((equal !== -1) && (equal + 1 < token.length)) {
+            var name = token.substr(0, equal);
+            var value = token.substr(equal + 1);
+            result[name] = decodeURIComponent(value);
+        }
+    }
+    return result;
+};
+Sys._Application.prototype._enableHistoryInScriptManager = function Sys$_Application$_enableHistoryInScriptManager() {
+    this._enableHistory = true;
+    this._historyEnabledInScriptManager = true;
+};
+Sys._Application.prototype._ensureHistory = function Sys$_Application$_ensureHistory() {
+    if (!this._historyInitialized && this._enableHistory) {
+        if ((Sys.Browser.agent === Sys.Browser.InternetExplorer) && (Sys.Browser.documentMode < 8)) {
+            this._historyFrame = document.getElementById('__historyFrame');
+            if (!this._historyFrame) throw Error.invalidOperation(Sys.Res.historyMissingFrame);
+            this._ignoreIFrame = true;
+        }
+        this._timerHandler = Function.createDelegate(this, this._onIdle);
+        this._timerCookie = window.setTimeout(this._timerHandler, 100);
+        
+        try {
+            this._initialState = this._deserializeState(this.get_stateString());
+        } catch(e) {}
+        
+        this._historyInitialized = true;
+    }
+};
+Sys._Application.prototype._navigate = function Sys$_Application$_navigate(entry) {
+    this._ensureHistory();
+    var state = this._deserializeState(entry);
+    
+    if (this._uniqueId) {
+        var oldServerEntry = this._state.__s || '';
+        var newServerEntry = state.__s || '';
+        if (newServerEntry !== oldServerEntry) {
+            this._updateHiddenField(newServerEntry);
+            __doPostBack(this._uniqueId, newServerEntry);
+            this._state = state;
+            return;
+        }
+    }
+    this._setState(entry);
+    this._state = state;
+    this._raiseNavigate();
+};
+Sys._Application.prototype._onIdle = function Sys$_Application$_onIdle() {
+    delete this._timerCookie;
+    
+    var entry = this.get_stateString();
+    if (entry !== this._currentEntry) {
+        if (!this._ignoreTimer) {
+            this._historyPointIsNew = false;
+            this._navigate(entry);
+        }
+    }
+    else {
+        this._ignoreTimer = false;
+    }
+    this._timerCookie = window.setTimeout(this._timerHandler, 100);
+};
+Sys._Application.prototype._onIFrameLoad = function Sys$_Application$_onIFrameLoad(entry) {
+    this._ensureHistory();
+    if (!this._ignoreIFrame) {
+        this._historyPointIsNew = false;
+        this._navigate(entry);
+    }
+    this._ignoreIFrame = false;
+};
+Sys._Application.prototype._onPageRequestManagerBeginRequest = function Sys$_Application$_onPageRequestManagerBeginRequest(sender, args) {
+    this._ignoreTimer = true;
+};
+Sys._Application.prototype._onPageRequestManagerEndRequest = function Sys$_Application$_onPageRequestManagerEndRequest(sender, args) {
+    var dataItem = args.get_dataItems()[this._clientId];
+    var eventTarget = document.getElementById("__EVENTTARGET");
+    if (eventTarget && eventTarget.value === this._uniqueId) {
+        eventTarget.value = '';
+    }
+    if (typeof(dataItem) !== 'undefined') {
+        this.setServerState(dataItem);
+        this._historyPointIsNew = true;
+    }
+    else {
+        this._ignoreTimer = false;
+    }
+    var entry = this._serializeState(this._state);
+    if (entry !== this._currentEntry) {
+        this._ignoreTimer = true;
+        this._setState(entry);
+        this._raiseNavigate();
+    }
+};
+Sys._Application.prototype._raiseNavigate = function Sys$_Application$_raiseNavigate() {
+    var h = this.get_events().getHandler("navigate");
+    var stateClone = {};
+    for (var key in this._state) {
+        if (key !== '__s') {
+            stateClone[key] = this._state[key];
+        }
+    }
+    var args = new Sys.HistoryEventArgs(stateClone);
+    if (h) {
+        h(this, args);
+    }
+    var err;
+    try {
+        if ((Sys.Browser.agent === Sys.Browser.Firefox) && window.location.hash &&
+            (!window.frameElement || window.top.location.hash)) {
+            window.history.go(0);
+        }
+    }
+    catch(err) {
+    }
+};
+Sys._Application.prototype._serializeState = function Sys$_Application$_serializeState(state) {
+    var serialized = [];
+    for (var key in state) {
+        var value = state[key];
+        if (key === '__s') {
+            var serverState = value;
+        }
+        else {
+            if (key.indexOf('=') !== -1) throw Error.argument('state', Sys.Res.stateFieldNameInvalid);
+            serialized[serialized.length] = key + '=' + encodeURIComponent(value);
+        }
+    }
+    return serialized.join('&') + (serverState ? '&&' + serverState : '');
+};
+Sys._Application.prototype._setState = function Sys$_Application$_setState(entry, title) {
+    if (this._enableHistory) {
+        entry = entry || '';
+        if (entry !== this._currentEntry) {
+            if (window.theForm) {
+                var action = window.theForm.action;
+                var hashIndex = action.indexOf('#');
+                window.theForm.action = ((hashIndex !== -1) ? action.substring(0, hashIndex) : action) + '#' + entry;
+            }
+        
+            if (this._historyFrame && this._historyPointIsNew) {
+                this._ignoreIFrame = true;
+                var frameDoc = this._historyFrame.contentWindow.document;
+                frameDoc.open("javascript:'<html></html>'");
+                frameDoc.write("<html><head><title>" + (title || document.title) +
+                    "</title><scri" + "pt type=\"text/javascript\">parent.Sys.Application._onIFrameLoad(" + 
+                    Sys.Serialization.JavaScriptSerializer.serialize(entry) +
+                    ");</scri" + "pt></head><body></body></html>");
+                frameDoc.close();
+            }
+            this._ignoreTimer = false;
+            this._currentEntry = entry;
+            if (this._historyFrame || this._historyPointIsNew) {
+                var currentHash = this.get_stateString();
+                if (entry !== currentHash) {
+                    var loc = document.location;
+                    if (loc.href.length - loc.hash.length + entry.length > 1024) {
+                        throw Error.invalidOperation(Sys.Res.urlMustBeLessThan1024chars);
+                    }
+                    window.location.hash = entry;
+                    this._currentEntry = this.get_stateString();
+                    if ((typeof(title) !== 'undefined') && (title !== null)) {
+                        document.title = title;
+                    }
+                }
+            }
+            this._historyPointIsNew = false;
+        }
+    }
+};
+Sys._Application.prototype._updateHiddenField = function Sys$_Application$_updateHiddenField(value) {
+    if (this._clientId) {
+        var serverStateField = document.getElementById(this._clientId);
+        if (serverStateField) {
+            serverStateField.value = value;
+        }
+    }
+};
+ 
+if (!window.XMLHttpRequest) {
+    window.XMLHttpRequest = function window$XMLHttpRequest() {
+        var progIDs = [ 'Msxml2.XMLHTTP.3.0', 'Msxml2.XMLHTTP' ];
+        for (var i = 0, l = progIDs.length; i < l; i++) {
+            try {
+                return new ActiveXObject(progIDs[i]);
+            }
+            catch (ex) {
+            }
+        }
+        return null;
+    }
+}
 Type.registerNamespace('Sys.Net');
  
 Sys.Net.WebRequestExecutor = function Sys$Net$WebRequestExecutor() {
@@ -4717,15 +5949,11 @@ Sys.Net.XMLHttpExecutor = function Sys$Net$XMLHttpExecutor() {
             
             _this._clearTimer();
             _this._responseAvailable = true;
-            try {
                 _this._webRequest.completed(Sys.EventArgs.Empty);
-            }
-            finally {
                 if (_this._xmlHttpRequest != null) {
                     _this._xmlHttpRequest.onreadystatechange = Function.emptyMethod;
                     _this._xmlHttpRequest = null;
                 }
-            }
         }
     });
     this._clearTimer = (function() {
@@ -4781,6 +6009,7 @@ Sys.Net.XMLHttpExecutor = function Sys$Net$XMLHttpExecutor() {
         this._xmlHttpRequest.onreadystatechange = this._onReadyStateChange;
         var verb = this._webRequest.get_httpVerb();
         this._xmlHttpRequest.open(verb, this._webRequest.getResolvedUrl(), true );
+        this._xmlHttpRequest.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         if (headers) {
             for (var header in headers) {
                 var val = headers[header];
@@ -5273,47 +6502,152 @@ Sys.Net.WebRequest._resolveUrl = function Sys$Net$WebRequest$_resolveUrl(url, ba
         return baseUrl.substr(0, lastSlash+1) + url;
     }
 }
-Sys.Net.WebRequest._createQueryString = function Sys$Net$WebRequest$_createQueryString(queryString, encodeMethod) {
-    if (!encodeMethod)
-        encodeMethod = encodeURIComponent;
-    var sb = new Sys.StringBuilder();
-    var i = 0;
-    for (var arg in queryString) {
-        var obj = queryString[arg];
-        if (typeof(obj) === "function") continue;
-        var val = Sys.Serialization.JavaScriptSerializer.serialize(obj);
-        if (i !== 0) {
+Sys.Net.WebRequest._createQueryString = function Sys$Net$WebRequest$_createQueryString(queryString, encodeMethod, addParams) {
+    encodeMethod = encodeMethod || encodeURIComponent;
+    var i = 0, obj, val, arg, sb = new Sys.StringBuilder();
+    if (queryString) {
+        for (arg in queryString) {
+            obj = queryString[arg];
+            if (typeof(obj) === "function") continue;
+            val = Sys.Serialization.JavaScriptSerializer.serialize(obj);
+            if (i++) {
+                sb.append('&');
+            }
+            sb.append(arg);
+            sb.append('=');
+            sb.append(encodeMethod(val));
+        }
+    }
+    if (addParams) {
+        if (i) {
             sb.append('&');
         }
-        sb.append(arg);
-        sb.append('=');
-        sb.append(encodeMethod(val));
-        i++;
+        sb.append(addParams);
     }
     return sb.toString();
 }
-Sys.Net.WebRequest._createUrl = function Sys$Net$WebRequest$_createUrl(url, queryString) {
-    if (!queryString) {
+Sys.Net.WebRequest._createUrl = function Sys$Net$WebRequest$_createUrl(url, queryString, addParams) {
+    if (!queryString && !addParams) {
         return url;
     }
-    var qs = Sys.Net.WebRequest._createQueryString(queryString);
-    if (qs.length > 0) {
-        var sep = '?';
-        if (url && url.indexOf('?') !== -1)
-            sep = '&';
-        return url + sep + qs;
-    } else {
-        return url;
-    }
+    var qs = Sys.Net.WebRequest._createQueryString(queryString, null, addParams);
+    return qs.length
+        ? url + ((url && url.indexOf('?') >= 0) ? "&" : "?") + qs
+        : url;
 }
 Sys.Net.WebRequest.registerClass('Sys.Net.WebRequest');
+ 
+Sys._ScriptLoaderTask = function Sys$_ScriptLoaderTask(scriptElement, completedCallback) {
+    /// <summary locid="M:J#Sys._ScriptLoaderTask.#ctor" />
+    /// <param name="scriptElement" domElement="true"></param>
+    /// <param name="completedCallback" type="Function"></param>
+    var e = Function._validateParams(arguments, [
+        {name: "scriptElement", domElement: true},
+        {name: "completedCallback", type: Function}
+    ]);
+    if (e) throw e;
+    this._scriptElement = scriptElement;
+    this._completedCallback = completedCallback;
+}
+    function Sys$_ScriptLoaderTask$get_scriptElement() {
+        /// <value domElement="true" locid="P:J#Sys._ScriptLoaderTask.scriptElement"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._scriptElement;
+    }
+    function Sys$_ScriptLoaderTask$dispose() {
+        if(this._disposed) {
+            return;
+        }
+        this._disposed = true;
+        this._removeScriptElementHandlers();
+        Sys._ScriptLoaderTask._clearScript(this._scriptElement);
+        this._scriptElement = null;
+    }
+    function Sys$_ScriptLoaderTask$execute() {
+        /// <summary locid="M:J#Sys._ScriptLoaderTask.execute" />
+        if (arguments.length !== 0) throw Error.parameterCount();
+        this._addScriptElementHandlers();
+        var headElements = document.getElementsByTagName('head');
+        if (headElements.length === 0) {
+             throw new Error.invalidOperation(Sys.Res.scriptLoadFailedNoHead);
+        }
+        else {
+             headElements[0].appendChild(this._scriptElement);
+        }
+    }
+    function Sys$_ScriptLoaderTask$_addScriptElementHandlers() {
+        this._scriptLoadDelegate = Function.createDelegate(this, this._scriptLoadHandler);
+        
+        if (Sys.Browser.agent !== Sys.Browser.InternetExplorer) {
+            this._scriptElement.readyState = 'loaded';
+            $addHandler(this._scriptElement, 'load', this._scriptLoadDelegate);
+        }
+        else {
+            $addHandler(this._scriptElement, 'readystatechange', this._scriptLoadDelegate);
+        }    
+        if (this._scriptElement.addEventListener) {
+            this._scriptErrorDelegate = Function.createDelegate(this, this._scriptErrorHandler);
+            this._scriptElement.addEventListener('error', this._scriptErrorDelegate, false);
+        }
+    }
+    function Sys$_ScriptLoaderTask$_removeScriptElementHandlers() {
+        if(this._scriptLoadDelegate) {
+            var scriptElement = this.get_scriptElement();
+            if (Sys.Browser.agent !== Sys.Browser.InternetExplorer) {
+                $removeHandler(scriptElement, 'load', this._scriptLoadDelegate);
+            }
+            else {
+                $removeHandler(scriptElement, 'readystatechange', this._scriptLoadDelegate);
+            }
+            if (this._scriptErrorDelegate) {
+                this._scriptElement.removeEventListener('error', this._scriptErrorDelegate, false);
+                this._scriptErrorDelegate = null;
+            }
+            this._scriptLoadDelegate = null;
+        }
+    }
+    function Sys$_ScriptLoaderTask$_scriptErrorHandler() {
+        if(this._disposed) {
+            return;
+        }
+        
+        this._completedCallback(this.get_scriptElement(), false);
+    }
+    function Sys$_ScriptLoaderTask$_scriptLoadHandler() {
+        if(this._disposed) {
+            return;
+        }
+        var scriptElement = this.get_scriptElement();
+        if ((scriptElement.readyState !== 'loaded') &&
+            (scriptElement.readyState !== 'complete')) {
+            return;
+        }
+        
+        this._completedCallback(scriptElement, true);
+    }
+Sys._ScriptLoaderTask.prototype = {
+    get_scriptElement: Sys$_ScriptLoaderTask$get_scriptElement,
+    dispose: Sys$_ScriptLoaderTask$dispose,
+    execute: Sys$_ScriptLoaderTask$execute,
+    _addScriptElementHandlers: Sys$_ScriptLoaderTask$_addScriptElementHandlers,    
+    _removeScriptElementHandlers: Sys$_ScriptLoaderTask$_removeScriptElementHandlers,    
+    _scriptErrorHandler: Sys$_ScriptLoaderTask$_scriptErrorHandler,
+    _scriptLoadHandler: Sys$_ScriptLoaderTask$_scriptLoadHandler  
+}
+Sys._ScriptLoaderTask.registerClass("Sys._ScriptLoaderTask", null, Sys.IDisposable);
+Sys._ScriptLoaderTask._clearScript = function Sys$_ScriptLoaderTask$_clearScript(scriptElement) {
+    if (!Sys.Debug.isDebug) {
+        scriptElement.parentNode.removeChild(scriptElement);
+    }
+}
+Type.registerNamespace('Sys.Net');
  
 Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
 }
     function Sys$Net$WebServiceProxy$get_timeout() {
         /// <value type="Number" locid="P:J#Sys.Net.WebServiceProxy.timeout"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._timeout;
+        return this._timeout || 0;
     }
     function Sys$Net$WebServiceProxy$set_timeout(value) {
         var e = Function._validateParams(arguments, [{name: "value", type: Number}]);
@@ -5324,7 +6658,7 @@ Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
     function Sys$Net$WebServiceProxy$get_defaultUserContext() {
         /// <value mayBeNull="true" locid="P:J#Sys.Net.WebServiceProxy.defaultUserContext"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._userContext;
+        return (typeof(this._userContext) === "undefined") ? null : this._userContext;
     }
     function Sys$Net$WebServiceProxy$set_defaultUserContext(value) {
         var e = Function._validateParams(arguments, [{name: "value", mayBeNull: true}]);
@@ -5334,7 +6668,7 @@ Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
     function Sys$Net$WebServiceProxy$get_defaultSucceededCallback() {
         /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Net.WebServiceProxy.defaultSucceededCallback"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._succeeded;
+        return this._succeeded || null;
     }
     function Sys$Net$WebServiceProxy$set_defaultSucceededCallback(value) {
         var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
@@ -5344,22 +6678,42 @@ Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
     function Sys$Net$WebServiceProxy$get_defaultFailedCallback() {
         /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Net.WebServiceProxy.defaultFailedCallback"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._failed;
+        return this._failed || null;
     }
     function Sys$Net$WebServiceProxy$set_defaultFailedCallback(value) {
         var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
         if (e) throw e;
         this._failed = value;
     }
+    function Sys$Net$WebServiceProxy$get_enableJsonp() {
+        /// <value type="Boolean" locid="P:J#Sys.Net.WebServiceProxy.enableJsonp"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return !!this._jsonp;
+    }
+    function Sys$Net$WebServiceProxy$set_enableJsonp(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
+        if (e) throw e;
+        this._jsonp = value;
+    }
     function Sys$Net$WebServiceProxy$get_path() {
         /// <value type="String" locid="P:J#Sys.Net.WebServiceProxy.path"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._path;
+        return this._path || null;
     }
     function Sys$Net$WebServiceProxy$set_path(value) {
         var e = Function._validateParams(arguments, [{name: "value", type: String}]);
         if (e) throw e;
         this._path = value;
+    }
+    function Sys$Net$WebServiceProxy$get_jsonpCallbackParameter() {
+        /// <value type="String" locid="P:J#Sys.Net.WebServiceProxy.jsonpCallbackParameter"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._callbackParameter || "callback";
+    }
+    function Sys$Net$WebServiceProxy$set_jsonpCallbackParameter(value) {
+        var e = Function._validateParams(arguments, [{name: "value", type: String}]);
+        if (e) throw e;
+        this._callbackParameter = value;
     }
     function Sys$Net$WebServiceProxy$_invoke(servicePath, methodName, useGet, params, onSuccess, onFailure, userContext) {
         /// <summary locid="M:J#Sys.Net.WebServiceProxy._invoke" />
@@ -5370,7 +6724,7 @@ Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
         /// <param name="onSuccess" type="Function" mayBeNull="true" optional="true"></param>
         /// <param name="onFailure" type="Function" mayBeNull="true" optional="true"></param>
         /// <param name="userContext" mayBeNull="true" optional="true"></param>
-        /// <returns type="Sys.Net.WebRequest"></returns>
+        /// <returns type="Sys.Net.WebRequest" mayBeNull="true"></returns>
         var e = Function._validateParams(arguments, [
             {name: "servicePath", type: String},
             {name: "methodName", type: String},
@@ -5381,11 +6735,10 @@ Sys.Net.WebServiceProxy = function Sys$Net$WebServiceProxy() {
             {name: "userContext", mayBeNull: true, optional: true}
         ]);
         if (e) throw e;
-        if (onSuccess === null || typeof onSuccess === 'undefined') onSuccess = this.get_defaultSucceededCallback();
-        if (onFailure === null || typeof onFailure === 'undefined') onFailure = this.get_defaultFailedCallback();
+        onSuccess = onSuccess || this.get_defaultSucceededCallback();
+        onFailure = onFailure || this.get_defaultFailedCallback();
         if (userContext === null || typeof userContext === 'undefined') userContext = this.get_defaultUserContext();
-        
-        return Sys.Net.WebServiceProxy.invoke(servicePath, methodName, useGet, params, onSuccess, onFailure, userContext, this.get_timeout());
+        return Sys.Net.WebServiceProxy.invoke(servicePath, methodName, useGet, params, onSuccess, onFailure, userContext, this.get_timeout(), this.get_enableJsonp(), this.get_jsonpCallbackParameter());
     }
 Sys.Net.WebServiceProxy.prototype = {
     get_timeout: Sys$Net$WebServiceProxy$get_timeout,
@@ -5396,40 +6749,104 @@ Sys.Net.WebServiceProxy.prototype = {
     set_defaultSucceededCallback: Sys$Net$WebServiceProxy$set_defaultSucceededCallback,
     get_defaultFailedCallback: Sys$Net$WebServiceProxy$get_defaultFailedCallback,
     set_defaultFailedCallback: Sys$Net$WebServiceProxy$set_defaultFailedCallback,
+    get_enableJsonp: Sys$Net$WebServiceProxy$get_enableJsonp,
+    set_enableJsonp: Sys$Net$WebServiceProxy$set_enableJsonp,
     get_path: Sys$Net$WebServiceProxy$get_path,
     set_path: Sys$Net$WebServiceProxy$set_path,
+    get_jsonpCallbackParameter: Sys$Net$WebServiceProxy$get_jsonpCallbackParameter,
+    set_jsonpCallbackParameter: Sys$Net$WebServiceProxy$set_jsonpCallbackParameter,
     _invoke: Sys$Net$WebServiceProxy$_invoke
 }
 Sys.Net.WebServiceProxy.registerClass('Sys.Net.WebServiceProxy');
-Sys.Net.WebServiceProxy.invoke = function Sys$Net$WebServiceProxy$invoke(servicePath, methodName, useGet, params, onSuccess, onFailure, userContext, timeout) {
+Sys.Net.WebServiceProxy.invoke = function Sys$Net$WebServiceProxy$invoke(servicePath, methodName, useGet, params, onSuccess, onFailure, userContext, timeout, enableJsonp, jsonpCallbackParameter) {
     /// <summary locid="M:J#Sys.Net.WebServiceProxy.invoke" />
     /// <param name="servicePath" type="String"></param>
-    /// <param name="methodName" type="String"></param>
+    /// <param name="methodName" type="String" mayBeNull="true" optional="true"></param>
     /// <param name="useGet" type="Boolean" optional="true"></param>
     /// <param name="params" mayBeNull="true" optional="true"></param>
     /// <param name="onSuccess" type="Function" mayBeNull="true" optional="true"></param>
     /// <param name="onFailure" type="Function" mayBeNull="true" optional="true"></param>
     /// <param name="userContext" mayBeNull="true" optional="true"></param>
     /// <param name="timeout" type="Number" optional="true"></param>
-    /// <returns type="Sys.Net.WebRequest"></returns>
+    /// <param name="enableJsonp" type="Boolean" optional="true" mayBeNull="true"></param>
+    /// <param name="jsonpCallbackParameter" type="String" optional="true" mayBeNull="true"></param>
+    /// <returns type="Sys.Net.WebRequest" mayBeNull="true"></returns>
     var e = Function._validateParams(arguments, [
         {name: "servicePath", type: String},
-        {name: "methodName", type: String},
+        {name: "methodName", type: String, mayBeNull: true, optional: true},
         {name: "useGet", type: Boolean, optional: true},
         {name: "params", mayBeNull: true, optional: true},
         {name: "onSuccess", type: Function, mayBeNull: true, optional: true},
         {name: "onFailure", type: Function, mayBeNull: true, optional: true},
         {name: "userContext", mayBeNull: true, optional: true},
-        {name: "timeout", type: Number, optional: true}
+        {name: "timeout", type: Number, optional: true},
+        {name: "enableJsonp", type: Boolean, mayBeNull: true, optional: true},
+        {name: "jsonpCallbackParameter", type: String, mayBeNull: true, optional: true}
     ]);
     if (e) throw e;
-    var request = new Sys.Net.WebRequest();
-    request.get_headers()['Content-Type'] = 'application/json; charset=utf-8';
+    var schemeHost = (enableJsonp !== false) ? Sys.Net.WebServiceProxy._xdomain.exec(servicePath) : null,
+        tempCallback, jsonp = schemeHost && (schemeHost.length === 3) && 
+            ((schemeHost[1] !== location.protocol) || (schemeHost[2] !== location.host));
+    useGet = jsonp || useGet;
+    if (jsonp) {
+        jsonpCallbackParameter = jsonpCallbackParameter || "callback";
+        tempCallback = "_jsonp" + Sys._jsonp++;
+    }
     if (!params) params = {};
     var urlParams = params;
     if (!useGet || !urlParams) urlParams = {};
-    request.set_url(Sys.Net.WebRequest._createUrl(servicePath+"/"+encodeURIComponent(methodName), urlParams));
-    var body = null;
+    var script, error, timeoutcookie = null, loader, body = null,
+        url = Sys.Net.WebRequest._createUrl(methodName
+            ? (servicePath+"/"+encodeURIComponent(methodName))
+            : servicePath, urlParams, jsonp ? (jsonpCallbackParameter + "=Sys." + tempCallback) : null);
+    if (jsonp) {
+        script = document.createElement("script");
+        script.src = url;
+        loader = new Sys._ScriptLoaderTask(script, function(script, loaded) {
+            if (!loaded || tempCallback) {
+                jsonpComplete({ Message: String.format(Sys.Res.webServiceFailedNoMsg, methodName) }, -1);
+            }
+        });
+        function jsonpComplete(data, statusCode) {
+            if (timeoutcookie !== null) {
+                window.clearTimeout(timeoutcookie);
+                timeoutcookie = null;
+            }
+            loader.dispose();
+            delete Sys[tempCallback];
+            tempCallback = null; 
+            if ((typeof(statusCode) !== "undefined") && (statusCode !== 200)) {
+                if (onFailure) {
+                    error = new Sys.Net.WebServiceError(false,
+                            data.Message || String.format(Sys.Res.webServiceFailedNoMsg, methodName),
+                            data.StackTrace || null,
+                            data.ExceptionType || null,
+                            data);
+                    error._statusCode = statusCode;
+                    onFailure(error, userContext, methodName);
+                }
+                else {
+                    if (data.StackTrace && data.Message) {
+                        error = data.StackTrace + "-- " + data.Message;
+                    }
+                    else {
+                        error = data.StackTrace || data.Message;
+                    }
+                    error = String.format(error ? Sys.Res.webServiceFailed : Sys.Res.webServiceFailedNoMsg, methodName, error);
+                    throw Sys.Net.WebServiceProxy._createFailedError(methodName, String.format(Sys.Res.webServiceFailed, methodName, error));
+                }
+            }
+            else if (onSuccess) {
+                onSuccess(data, userContext, methodName);
+            }
+        }
+        Sys[tempCallback] = jsonpComplete;
+        loader.execute();
+        return null;
+    }
+    var request = new Sys.Net.WebRequest();
+    request.set_url(url);
+    request.get_headers()['Content-Type'] = 'application/json; charset=utf-8';
     if (!useGet) {
         body = Sys.Serialization.JavaScriptSerializer.serialize(params);
         if (body === "{}") body = "";
@@ -5438,6 +6855,7 @@ Sys.Net.WebServiceProxy.invoke = function Sys$Net$WebServiceProxy$invoke(service
     request.add_completed(onComplete);
     if (timeout && timeout > 0) request.set_timeout(timeout);
     request.invoke();
+    
     function onComplete(response, eventArgs) {
         if (response.get_responseAvailable()) {
             var statusCode = response.get_statusCode();
@@ -5460,25 +6878,21 @@ Sys.Net.WebServiceProxy.invoke = function Sys$Net$WebServiceProxy$invoke(service
             var errorObj = (error === "true");
             if (errorObj) {
                 if (result) {
-                    result = new Sys.Net.WebServiceError(false, result.Message, result.StackTrace, result.ExceptionType);
+                    result = new Sys.Net.WebServiceError(false, result.Message, result.StackTrace, result.ExceptionType, result);
                 }
             }
             else if (contentType.startsWith("application/json")) {
-                if (!result || typeof(result.d) === "undefined") {
-                    throw Sys.Net.WebServiceProxy._createFailedError(methodName, String.format(Sys.Res.webServiceInvalidJsonWrapper, methodName));
-                }
-                result = result.d;
+                result = (!result || (typeof(result.d) === "undefined")) ? result : result.d;
             }
             if (((statusCode < 200) || (statusCode >= 300)) || errorObj) {
                 if (onFailure) {
                     if (!result || !errorObj) {
-                        result = new Sys.Net.WebServiceError(false , String.format(Sys.Res.webServiceFailedNoMsg, methodName), "", "");
+                        result = new Sys.Net.WebServiceError(false , String.format(Sys.Res.webServiceFailedNoMsg, methodName));
                     }
                     result._statusCode = statusCode;
                     onFailure(result, userContext, methodName);
                 }
                 else {
-                    var error;
                     if (result && errorObj) {
                         error = result.get_exceptionType() + "-- " + result.get_message();
                     }
@@ -5530,24 +6944,29 @@ Sys.Net.WebServiceProxy._generateTypedConstructor = function Sys$Net$WebServiceP
         this.__type = type;
     }
 }
+Sys._jsonp = 0;
+Sys.Net.WebServiceProxy._xdomain = /^\s*([a-zA-Z0-9\+\-\.]+\:)\/\/([^?#\/]+)/;
  
-Sys.Net.WebServiceError = function Sys$Net$WebServiceError(timedOut, message, stackTrace, exceptionType) {
+Sys.Net.WebServiceError = function Sys$Net$WebServiceError(timedOut, message, stackTrace, exceptionType, errorObject) {
     /// <summary locid="M:J#Sys.Net.WebServiceError.#ctor" />
     /// <param name="timedOut" type="Boolean"></param>
     /// <param name="message" type="String" mayBeNull="true"></param>
-    /// <param name="stackTrace" type="String" mayBeNull="true"></param>
-    /// <param name="exceptionType" type="String" mayBeNull="true"></param>
+    /// <param name="stackTrace" type="String" mayBeNull="true" optional="true"></param>
+    /// <param name="exceptionType" type="String" mayBeNull="true" optional="true"></param>
+    /// <param name="errorObject" type="Object" mayBeNull="true" optional="true"></param>
     var e = Function._validateParams(arguments, [
         {name: "timedOut", type: Boolean},
         {name: "message", type: String, mayBeNull: true},
-        {name: "stackTrace", type: String, mayBeNull: true},
-        {name: "exceptionType", type: String, mayBeNull: true}
+        {name: "stackTrace", type: String, mayBeNull: true, optional: true},
+        {name: "exceptionType", type: String, mayBeNull: true, optional: true},
+        {name: "errorObject", type: Object, mayBeNull: true, optional: true}
     ]);
     if (e) throw e;
     this._timedOut = timedOut;
     this._message = message;
     this._stackTrace = stackTrace;
     this._exceptionType = exceptionType;
+    this._errorObject = errorObject;
     this._statusCode = -1;
 }
     function Sys$Net$WebServiceError$get_timedOut() {
@@ -5568,1175 +6987,27 @@ Sys.Net.WebServiceError = function Sys$Net$WebServiceError(timedOut, message, st
     function Sys$Net$WebServiceError$get_stackTrace() {
         /// <value type="String" locid="P:J#Sys.Net.WebServiceError.stackTrace"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._stackTrace;
+        return this._stackTrace || "";
     }
     function Sys$Net$WebServiceError$get_exceptionType() {
         /// <value type="String" locid="P:J#Sys.Net.WebServiceError.exceptionType"></value>
         if (arguments.length !== 0) throw Error.parameterCount();
-        return this._exceptionType;
+        return this._exceptionType || "";
+    }
+    function Sys$Net$WebServiceError$get_errorObject() {
+        /// <value type="Object" locid="P:J#Sys.Net.WebServiceError.errorObject"></value>
+        if (arguments.length !== 0) throw Error.parameterCount();
+        return this._errorObject || null;
     }
 Sys.Net.WebServiceError.prototype = {
     get_timedOut: Sys$Net$WebServiceError$get_timedOut,
     get_statusCode: Sys$Net$WebServiceError$get_statusCode,
     get_message: Sys$Net$WebServiceError$get_message,
     get_stackTrace: Sys$Net$WebServiceError$get_stackTrace,
-    get_exceptionType: Sys$Net$WebServiceError$get_exceptionType
+    get_exceptionType: Sys$Net$WebServiceError$get_exceptionType,
+    get_errorObject: Sys$Net$WebServiceError$get_errorObject
 }
 Sys.Net.WebServiceError.registerClass('Sys.Net.WebServiceError');
-Type.registerNamespace('Sys.Services');
-Sys.Services._ProfileService = function Sys$Services$_ProfileService() {
-    /// <summary locid="M:J#Sys.Net.ProfileService.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
-    Sys.Services._ProfileService.initializeBase(this);
-    this.properties = {};
-}
-Sys.Services._ProfileService.DefaultWebServicePath = '';
-    function Sys$Services$_ProfileService$get_defaultLoadCompletedCallback() {
-        /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Services.ProfileService.defaultLoadCompletedCallback"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._defaultLoadCompletedCallback;
-    }
-    function Sys$Services$_ProfileService$set_defaultLoadCompletedCallback(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
-        if (e) throw e;
-        this._defaultLoadCompletedCallback = value;
-    }
-    function Sys$Services$_ProfileService$get_defaultSaveCompletedCallback() {
-        /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Services.ProfileService.defaultSaveCompletedCallback"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._defaultSaveCompletedCallback;
-    }
-    function Sys$Services$_ProfileService$set_defaultSaveCompletedCallback(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
-        if (e) throw e;
-        this._defaultSaveCompletedCallback = value;
-    }
-    function Sys$Services$_ProfileService$get_path() {
-        /// <value type="String" mayBeNull="true" locid="P:J#Sys.Services.ProfileService.path"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._path || '';
-    }
-    function Sys$Services$_ProfileService$load(propertyNames, loadCompletedCallback, failedCallback, userContext) {
-        /// <summary locid="M:J#Sys.Services.ProfileService.load" />
-        /// <param name="propertyNames" type="Array" elementType="String" optional="true" elementMayBeNull="false" mayBeNull="true"></param>
-        /// <param name="loadCompletedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="failedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="userContext" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "propertyNames", type: Array, mayBeNull: true, optional: true, elementType: String},
-            {name: "loadCompletedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "failedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "userContext", mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        var parameters;
-        var methodName;
-        if (!propertyNames) {
-            methodName = "GetAllPropertiesForCurrentUser";
-            parameters = { authenticatedUserOnly: false };
-        }
-        else {
-            methodName = "GetPropertiesForCurrentUser";
-            parameters = { properties: this._clonePropertyNames(propertyNames), authenticatedUserOnly: false };
-        }
-        this._invoke(this._get_path(),
-                                        methodName,
-                                        false,
-                                        parameters,
-                                        Function.createDelegate(this, this._onLoadComplete),
-                                        Function.createDelegate(this, this._onLoadFailed),
-                                        [loadCompletedCallback, failedCallback, userContext]);
-    }
-    function Sys$Services$_ProfileService$save(propertyNames, saveCompletedCallback, failedCallback, userContext) {
-        /// <summary locid="M:J#Sys.Services.ProfileService.save" />
-        /// <param name="propertyNames" type="Array" elementType="String" optional="true" elementMayBeNull="false" mayBeNull="true"></param>
-        /// <param name="saveCompletedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="failedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="userContext" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "propertyNames", type: Array, mayBeNull: true, optional: true, elementType: String},
-            {name: "saveCompletedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "failedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "userContext", mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        var flattenedProperties = this._flattenProperties(propertyNames, this.properties);
-        this._invoke(this._get_path(),
-                                        "SetPropertiesForCurrentUser",
-                                        false,
-                                        { values: flattenedProperties.value, authenticatedUserOnly: false },
-                                        Function.createDelegate(this, this._onSaveComplete),
-                                        Function.createDelegate(this, this._onSaveFailed),
-                                        [saveCompletedCallback, failedCallback, userContext, flattenedProperties.count]);
-    }
-    function Sys$Services$_ProfileService$_clonePropertyNames(arr) {
-        var nodups = [];
-        var seen = {};
-        for (var i=0; i < arr.length; i++) {
-            var prop = arr[i];
-            if(!seen[prop]) { Array.add(nodups, prop); seen[prop]=true; };
-        }
-        return nodups;
-    }
-    function Sys$Services$_ProfileService$_flattenProperties(propertyNames, properties, groupName) {
-        var flattenedProperties = {};
-        var val;
-        var key;
-        var count = 0;
-        if (propertyNames && propertyNames.length === 0) {
-            return { value: flattenedProperties, count: 0 };
-        }
-        for (var property in properties) {
-            val = properties[property];
-            key = groupName ? groupName + "." + property : property;
-            if(Sys.Services.ProfileGroup.isInstanceOfType(val)) {
-                var obj = this._flattenProperties(propertyNames, val, key);
-                var groupProperties = obj.value;
-                count += obj.count; 
-                for(var subKey in groupProperties) {
-                    var subVal = groupProperties[subKey];
-                    flattenedProperties[subKey] = subVal;
-                }
-            }
-            else {
-                if(!propertyNames || Array.indexOf(propertyNames, key) !== -1) {
-                    flattenedProperties[key] = val;
-                    count++; 
-                }
-            }
-        }
-        return { value: flattenedProperties, count: count };
-    }
-    function Sys$Services$_ProfileService$_get_path() {
-        var path = this.get_path();
-        if (!path.length) {
-            path = Sys.Services._ProfileService.DefaultWebServicePath;
-        }
-        if (!path || !path.length) {
-            throw Error.invalidOperation(Sys.Res.servicePathNotSet);
-        }
-        return path;
-    }
-    function Sys$Services$_ProfileService$_onLoadComplete(result, context, methodName) {
-        if (typeof(result) !== "object") {
-            throw Error.invalidOperation(String.format(Sys.Res.webServiceInvalidReturnType, methodName, "Object"));
-        }
-        var unflattened = this._unflattenProperties(result);
-        for (var name in unflattened) {
-            this.properties[name] = unflattened[name];
-        }
-        
-        var callback = context[0] || this.get_defaultLoadCompletedCallback() || this.get_defaultSucceededCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();        
-            callback(result.length, userContext, "Sys.Services.ProfileService.load");
-        }
-    }
-    function Sys$Services$_ProfileService$_onLoadFailed(err, context, methodName) {
-        var callback = context[1] || this.get_defaultFailedCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();        
-            callback(err, userContext, "Sys.Services.ProfileService.load");
-        }
-        else {
-            Sys.Net.WebServiceProxy._defaultFailedCallback(err, methodName);
-        }
-    }
-    function Sys$Services$_ProfileService$_onSaveComplete(result, context, methodName) {
-        var count = context[3];
-        if (result !== null) { 
-            if (result instanceof Array) {
-                count -= result.length;
-            }
-            else if (typeof(result) === 'number') {
-                count = result;
-            }
-            else {
-                throw Error.invalidOperation(String.format(Sys.Res.webServiceInvalidReturnType, methodName, "Array"));
-            }
-        }
-        
-        var callback = context[0] || this.get_defaultSaveCompletedCallback() || this.get_defaultSucceededCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();
-            callback(count, userContext, "Sys.Services.ProfileService.save");
-        }
-    }
-    function Sys$Services$_ProfileService$_onSaveFailed(err, context, methodName) {
-        var callback = context[1] || this.get_defaultFailedCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();
-            callback(err, userContext, "Sys.Services.ProfileService.save");
-        }
-        else {
-            Sys.Net.WebServiceProxy._defaultFailedCallback(err, methodName);
-        }
-    }
-    function Sys$Services$_ProfileService$_unflattenProperties(properties) {
-        var unflattenedProperties = {};
-        var dotIndex;
-        var val;
-        var count = 0;
-        for (var key in properties) {
-            count++;
-            val = properties[key];
-            dotIndex = key.indexOf('.');
-            if (dotIndex !== -1) {
-                var groupName = key.substr(0, dotIndex);
-                key = key.substr(dotIndex+1);
-                var group = unflattenedProperties[groupName];
-                if (!group || !Sys.Services.ProfileGroup.isInstanceOfType(group)) {
-                    group = new Sys.Services.ProfileGroup();
-                    unflattenedProperties[groupName] = group;
-                }
-                group[key] = val;
-            }
-            else {
-                unflattenedProperties[key] = val;
-            }
-        }
-        properties.length = count;
-        return unflattenedProperties;
-    }
-Sys.Services._ProfileService.prototype = {
-    _defaultLoadCompletedCallback: null,
-    _defaultSaveCompletedCallback: null,
-    _path: '',
-    _timeout: 0,
-    get_defaultLoadCompletedCallback: Sys$Services$_ProfileService$get_defaultLoadCompletedCallback,
-    set_defaultLoadCompletedCallback: Sys$Services$_ProfileService$set_defaultLoadCompletedCallback,
-    get_defaultSaveCompletedCallback: Sys$Services$_ProfileService$get_defaultSaveCompletedCallback,
-    set_defaultSaveCompletedCallback: Sys$Services$_ProfileService$set_defaultSaveCompletedCallback,
-    get_path: Sys$Services$_ProfileService$get_path,
-    load: Sys$Services$_ProfileService$load,
-    save: Sys$Services$_ProfileService$save,
-    _clonePropertyNames: Sys$Services$_ProfileService$_clonePropertyNames,    
-    _flattenProperties: Sys$Services$_ProfileService$_flattenProperties,
-    _get_path: Sys$Services$_ProfileService$_get_path,    
-    _onLoadComplete: Sys$Services$_ProfileService$_onLoadComplete,
-    _onLoadFailed: Sys$Services$_ProfileService$_onLoadFailed,
-    _onSaveComplete: Sys$Services$_ProfileService$_onSaveComplete,
-    _onSaveFailed: Sys$Services$_ProfileService$_onSaveFailed,
-    _unflattenProperties: Sys$Services$_ProfileService$_unflattenProperties
-}
-Sys.Services._ProfileService.registerClass('Sys.Services._ProfileService', Sys.Net.WebServiceProxy);
-Sys.Services.ProfileService = new Sys.Services._ProfileService();
-Sys.Services.ProfileGroup = function Sys$Services$ProfileGroup(properties) {
-    /// <summary locid="M:J#Sys.Services.ProfileGroup.#ctor" />
-    /// <param name="properties" optional="true" mayBeNull="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "properties", mayBeNull: true, optional: true}
-    ]);
-    if (e) throw e;
-    if (properties) {
-        for (var property in properties) {
-            this[property] = properties[property];
-        }
-    }
-}
-Sys.Services.ProfileGroup.registerClass('Sys.Services.ProfileGroup');
-Sys.Services._AuthenticationService = function Sys$Services$_AuthenticationService() {
-    /// <summary locid="M:J#Sys.Services.AuthenticationService.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
-    Sys.Services._AuthenticationService.initializeBase(this);
-}
-Sys.Services._AuthenticationService.DefaultWebServicePath = '';
-    function Sys$Services$_AuthenticationService$get_defaultLoginCompletedCallback() {
-        /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Services.AuthenticationService.defaultLoginCompletedCallback"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._defaultLoginCompletedCallback;
-    }
-    function Sys$Services$_AuthenticationService$set_defaultLoginCompletedCallback(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
-        if (e) throw e;
-        this._defaultLoginCompletedCallback = value;
-    }
-    function Sys$Services$_AuthenticationService$get_defaultLogoutCompletedCallback() {
-        /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Services.AuthenticationService.defaultLogoutCompletedCallback"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._defaultLogoutCompletedCallback;
-    }
-    function Sys$Services$_AuthenticationService$set_defaultLogoutCompletedCallback(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
-        if (e) throw e;
-        this._defaultLogoutCompletedCallback = value;
-    }
-    function Sys$Services$_AuthenticationService$get_isLoggedIn() {
-        /// <value type="Boolean" locid="P:J#Sys.Services.AuthenticationService.isLoggedIn"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._authenticated;
-    }
-    function Sys$Services$_AuthenticationService$get_path() {
-        /// <value type="String" mayBeNull="true" locid="P:J#Sys.Services.AuthenticationService.path"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._path || '';
-    }
-    function Sys$Services$_AuthenticationService$login(username, password, isPersistent, customInfo, redirectUrl, loginCompletedCallback, failedCallback, userContext) {
-        /// <summary locid="M:J#Sys.Services.AuthenticationService.login" />
-        /// <param name="username" type="String" mayBeNull="false"></param>
-        /// <param name="password" type="String" mayBeNull="true"></param>
-        /// <param name="isPersistent" type="Boolean" optional="true" mayBeNull="true"></param>
-        /// <param name="customInfo" type="String" optional="true" mayBeNull="true"></param>
-        /// <param name="redirectUrl" type="String" optional="true" mayBeNull="true"></param>
-        /// <param name="loginCompletedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="failedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="userContext" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "username", type: String},
-            {name: "password", type: String, mayBeNull: true},
-            {name: "isPersistent", type: Boolean, mayBeNull: true, optional: true},
-            {name: "customInfo", type: String, mayBeNull: true, optional: true},
-            {name: "redirectUrl", type: String, mayBeNull: true, optional: true},
-            {name: "loginCompletedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "failedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "userContext", mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        this._invoke(this._get_path(), "Login", false,
-                                        { userName: username, password: password, createPersistentCookie: isPersistent },
-                                        Function.createDelegate(this, this._onLoginComplete),
-                                        Function.createDelegate(this, this._onLoginFailed),
-                                        [username, password, isPersistent, customInfo, redirectUrl, loginCompletedCallback, failedCallback, userContext]);
-    }
-    function Sys$Services$_AuthenticationService$logout(redirectUrl, logoutCompletedCallback, failedCallback, userContext) {
-        /// <summary locid="M:J#Sys.Services.AuthenticationService.logout" />
-        /// <param name="redirectUrl" type="String" optional="true" mayBeNull="true"></param>
-        /// <param name="logoutCompletedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="failedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="userContext" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "redirectUrl", type: String, mayBeNull: true, optional: true},
-            {name: "logoutCompletedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "failedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "userContext", mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        this._invoke(this._get_path(), "Logout", false, {}, 
-                                        Function.createDelegate(this, this._onLogoutComplete),
-                                        Function.createDelegate(this, this._onLogoutFailed),
-                                        [redirectUrl, logoutCompletedCallback, failedCallback, userContext]);
-    }
-    function Sys$Services$_AuthenticationService$_get_path() {
-        var path = this.get_path();
-        if(!path.length) {
-            path = Sys.Services._AuthenticationService.DefaultWebServicePath;
-        }
-        if(!path || !path.length) {
-            throw Error.invalidOperation(Sys.Res.servicePathNotSet);
-        }
-        return path;
-    }
-    function Sys$Services$_AuthenticationService$_onLoginComplete(result, context, methodName) {
-        if(typeof(result) !== "boolean") {
-            throw Error.invalidOperation(String.format(Sys.Res.webServiceInvalidReturnType, methodName, "Boolean"));
-        }
-        
-        var redirectUrl = context[4];
-        var userContext = context[7] || this.get_defaultUserContext();
-        var callback = context[5] || this.get_defaultLoginCompletedCallback() || this.get_defaultSucceededCallback();
-        
-        if(result) {
-            this._authenticated = true;
-            if (callback) {
-                callback(true, userContext, "Sys.Services.AuthenticationService.login");
-            }
-            
-            if (typeof(redirectUrl) !== "undefined" && redirectUrl !== null) {
-                window.location.href = redirectUrl;
-            }
-        }
-        else if (callback) {
-            callback(false, userContext, "Sys.Services.AuthenticationService.login");
-        }
-    }
-    function Sys$Services$_AuthenticationService$_onLoginFailed(err, context, methodName) {
-        var callback = context[6] || this.get_defaultFailedCallback();
-        if (callback) {
-            var userContext = context[7] || this.get_defaultUserContext();
-            callback(err, userContext, "Sys.Services.AuthenticationService.login");
-        }
-        else {
-            Sys.Net.WebServiceProxy._defaultFailedCallback(err, methodName);
-        }
-    }
-    function Sys$Services$_AuthenticationService$_onLogoutComplete(result, context, methodName) {
-        if(result !== null) {
-            throw Error.invalidOperation(String.format(Sys.Res.webServiceInvalidReturnType, methodName, "null"));
-        }
-        
-        var redirectUrl = context[0];
-        var userContext = context[3] || this.get_defaultUserContext();
-        var callback = context[1] || this.get_defaultLogoutCompletedCallback() || this.get_defaultSucceededCallback();
-        this._authenticated = false;
-        
-        if (callback) {
-            callback(null, userContext, "Sys.Services.AuthenticationService.logout");
-        }
-        
-        if(!redirectUrl) {
-            window.location.reload();
-        }
-        else {
-            window.location.href = redirectUrl;
-        }
-    }
-    function Sys$Services$_AuthenticationService$_onLogoutFailed(err, context, methodName) {
-        var callback = context[2] || this.get_defaultFailedCallback();
-        if (callback) {
-            callback(err, context[3], "Sys.Services.AuthenticationService.logout");
-        }
-        else {
-            Sys.Net.WebServiceProxy._defaultFailedCallback(err, methodName);
-        }
-    }
-    function Sys$Services$_AuthenticationService$_setAuthenticated(authenticated) {
-        this._authenticated = authenticated;
-    }
-Sys.Services._AuthenticationService.prototype = {
-    _defaultLoginCompletedCallback: null,
-    _defaultLogoutCompletedCallback: null,
-    _path: '',
-    _timeout: 0,
-    _authenticated: false,
-    get_defaultLoginCompletedCallback: Sys$Services$_AuthenticationService$get_defaultLoginCompletedCallback,
-    set_defaultLoginCompletedCallback: Sys$Services$_AuthenticationService$set_defaultLoginCompletedCallback,
-    get_defaultLogoutCompletedCallback: Sys$Services$_AuthenticationService$get_defaultLogoutCompletedCallback,
-    set_defaultLogoutCompletedCallback: Sys$Services$_AuthenticationService$set_defaultLogoutCompletedCallback,
-    get_isLoggedIn: Sys$Services$_AuthenticationService$get_isLoggedIn,
-    get_path: Sys$Services$_AuthenticationService$get_path,  
-    login: Sys$Services$_AuthenticationService$login,
-    logout: Sys$Services$_AuthenticationService$logout,
-    _get_path: Sys$Services$_AuthenticationService$_get_path,
-    _onLoginComplete: Sys$Services$_AuthenticationService$_onLoginComplete,
-    _onLoginFailed: Sys$Services$_AuthenticationService$_onLoginFailed,
-    _onLogoutComplete: Sys$Services$_AuthenticationService$_onLogoutComplete,
-    _onLogoutFailed: Sys$Services$_AuthenticationService$_onLogoutFailed,
-    _setAuthenticated: Sys$Services$_AuthenticationService$_setAuthenticated    
-}
-Sys.Services._AuthenticationService.registerClass('Sys.Services._AuthenticationService', Sys.Net.WebServiceProxy);
-Sys.Services.AuthenticationService = new Sys.Services._AuthenticationService();
-Sys.Services._RoleService = function Sys$Services$_RoleService() {
-    /// <summary locid="M:J#Sys.Services.RoleService.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
-    Sys.Services._RoleService.initializeBase(this);
-    this._roles = [];
-}
-Sys.Services._RoleService.DefaultWebServicePath = '';
-    function Sys$Services$_RoleService$get_defaultLoadCompletedCallback() {
-        /// <value type="Function" mayBeNull="true" locid="P:J#Sys.Services.RoleService.defaultLoadCompletedCallback"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._defaultLoadCompletedCallback;
-    }
-    function Sys$Services$_RoleService$set_defaultLoadCompletedCallback(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Function, mayBeNull: true}]);
-        if (e) throw e;
-        this._defaultLoadCompletedCallback = value;
-    }
-    function Sys$Services$_RoleService$get_path() {
-        /// <value type="String" mayBeNull="true" locid="P:J#Sys.Services.RoleService.path"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._path || '';
-    }
-    function Sys$Services$_RoleService$get_roles() {
-        /// <value type="Array" elementType="String" mayBeNull="false" locid="P:J#Sys.Services.RoleService.roles"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return Array.clone(this._roles);
-    }
-    function Sys$Services$_RoleService$isUserInRole(role) {
-        /// <summary locid="M:J#Sys.Services.RoleService.isUserInRole" />
-        /// <param name="role" type="String" mayBeNull="false"></param>
-        /// <returns type="Boolean"></returns>
-        var e = Function._validateParams(arguments, [
-            {name: "role", type: String}
-        ]);
-        if (e) throw e;
-        var v = this._get_rolesIndex()[role.trim().toLowerCase()];
-        return !!v;
-    }
-    function Sys$Services$_RoleService$load(loadCompletedCallback, failedCallback, userContext) {
-        /// <summary locid="M:J#Sys.Services.RoleService.load" />
-        /// <param name="loadCompletedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="failedCallback" type="Function" optional="true" mayBeNull="true"></param>
-        /// <param name="userContext" optional="true" mayBeNull="true"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "loadCompletedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "failedCallback", type: Function, mayBeNull: true, optional: true},
-            {name: "userContext", mayBeNull: true, optional: true}
-        ]);
-        if (e) throw e;
-        Sys.Net.WebServiceProxy.invoke(
-                    this._get_path(),
-                    "GetRolesForCurrentUser",
-                    false,
-                    {} ,
-                    Function.createDelegate(this, this._onLoadComplete),
-                    Function.createDelegate(this, this._onLoadFailed),
-                    [loadCompletedCallback, failedCallback, userContext],
-                    this.get_timeout());
-    }
-    function Sys$Services$_RoleService$_get_path() {
-        var path = this.get_path();
-        if(!path || !path.length) {
-            path = Sys.Services._RoleService.DefaultWebServicePath;
-        }
-        if(!path || !path.length) {
-            throw Error.invalidOperation(Sys.Res.servicePathNotSet);
-        }
-        return path;
-    }
-    function Sys$Services$_RoleService$_get_rolesIndex() {
-        if (!this._rolesIndex) {
-            var index = {};
-            for(var i=0; i < this._roles.length; i++) {
-                index[this._roles[i].toLowerCase()] = true;
-            }
-            this._rolesIndex = index;
-        }
-        return this._rolesIndex;
-    }
-    function Sys$Services$_RoleService$_onLoadComplete(result, context, methodName) {
-        if(result && !(result instanceof Array)) {
-            throw Error.invalidOperation(String.format(Sys.Res.webServiceInvalidReturnType, methodName, "Array"));
-        }
-        this._roles = result;
-        this._rolesIndex = null;
-        var callback = context[0] || this.get_defaultLoadCompletedCallback() || this.get_defaultSucceededCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();
-            var clonedResult = Array.clone(result);
-            callback(clonedResult, userContext, "Sys.Services.RoleService.load");
-        }
-    }
-    function Sys$Services$_RoleService$_onLoadFailed(err, context, methodName) {
-        var callback = context[1] || this.get_defaultFailedCallback();
-        if (callback) {
-            var userContext = context[2] || this.get_defaultUserContext();
-            callback(err, userContext, "Sys.Services.RoleService.load");
-        }
-        else {
-            Sys.Net.WebServiceProxy._defaultFailedCallback(err, methodName);
-        }
-    }
-Sys.Services._RoleService.prototype = {
-    _defaultLoadCompletedCallback: null,
-    _rolesIndex: null,
-    _timeout: 0,
-    _path: '',
-    get_defaultLoadCompletedCallback: Sys$Services$_RoleService$get_defaultLoadCompletedCallback,
-    set_defaultLoadCompletedCallback: Sys$Services$_RoleService$set_defaultLoadCompletedCallback,
-    get_path: Sys$Services$_RoleService$get_path,
-    get_roles: Sys$Services$_RoleService$get_roles,
-    isUserInRole: Sys$Services$_RoleService$isUserInRole,
-    load: Sys$Services$_RoleService$load,
-    _get_path: Sys$Services$_RoleService$_get_path,  
-    _get_rolesIndex: Sys$Services$_RoleService$_get_rolesIndex,
-    _onLoadComplete: Sys$Services$_RoleService$_onLoadComplete,
-    _onLoadFailed: Sys$Services$_RoleService$_onLoadFailed
-}
-Sys.Services._RoleService.registerClass('Sys.Services._RoleService', Sys.Net.WebServiceProxy);
-Sys.Services.RoleService = new Sys.Services._RoleService();
-Type.registerNamespace('Sys.Serialization');
-Sys.Serialization.JavaScriptSerializer = function Sys$Serialization$JavaScriptSerializer() {
-    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.#ctor" />
-    if (arguments.length !== 0) throw Error.parameterCount();
-}
-Sys.Serialization.JavaScriptSerializer.registerClass('Sys.Serialization.JavaScriptSerializer');
-Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs = [];
-Sys.Serialization.JavaScriptSerializer._charsToEscape = [];
-Sys.Serialization.JavaScriptSerializer._dateRegEx = new RegExp('(^|[^\\\\])\\"\\\\/Date\\((-?[0-9]+)(?:[a-zA-Z]|(?:\\+|-)[0-9]{4})?\\)\\\\/\\"', 'g');
-Sys.Serialization.JavaScriptSerializer._escapeChars = {};
-Sys.Serialization.JavaScriptSerializer._escapeRegEx = new RegExp('["\\\\\\x00-\\x1F]', 'i');
-Sys.Serialization.JavaScriptSerializer._escapeRegExGlobal = new RegExp('["\\\\\\x00-\\x1F]', 'g');
-Sys.Serialization.JavaScriptSerializer._jsonRegEx = new RegExp('[^,:{}\\[\\]0-9.\\-+Eaeflnr-u \\n\\r\\t]', 'g');
-Sys.Serialization.JavaScriptSerializer._jsonStringRegEx = new RegExp('"(\\\\.|[^"\\\\])*"', 'g');
-Sys.Serialization.JavaScriptSerializer._serverTypeFieldName = '__type';
-Sys.Serialization.JavaScriptSerializer._init = function Sys$Serialization$JavaScriptSerializer$_init() {
-    var replaceChars = ['\\u0000','\\u0001','\\u0002','\\u0003','\\u0004','\\u0005','\\u0006','\\u0007',
-                        '\\b','\\t','\\n','\\u000b','\\f','\\r','\\u000e','\\u000f','\\u0010','\\u0011',
-                        '\\u0012','\\u0013','\\u0014','\\u0015','\\u0016','\\u0017','\\u0018','\\u0019',
-                        '\\u001a','\\u001b','\\u001c','\\u001d','\\u001e','\\u001f'];
-    Sys.Serialization.JavaScriptSerializer._charsToEscape[0] = '\\';
-    Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs['\\'] = new RegExp('\\\\', 'g');
-    Sys.Serialization.JavaScriptSerializer._escapeChars['\\'] = '\\\\';
-    Sys.Serialization.JavaScriptSerializer._charsToEscape[1] = '"';
-    Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs['"'] = new RegExp('"', 'g');
-    Sys.Serialization.JavaScriptSerializer._escapeChars['"'] = '\\"';
-    for (var i = 0; i < 32; i++) {
-        var c = String.fromCharCode(i);
-        Sys.Serialization.JavaScriptSerializer._charsToEscape[i+2] = c;
-        Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs[c] = new RegExp(c, 'g');
-        Sys.Serialization.JavaScriptSerializer._escapeChars[c] = replaceChars[i];
-    }
-}
-Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeBooleanWithBuilder(object, stringBuilder) {
-    stringBuilder.append(object.toString());
-}
-Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeNumberWithBuilder(object, stringBuilder) {
-    if (isFinite(object)) {
-        stringBuilder.append(String(object));
-    }
-    else {
-        throw Error.invalidOperation(Sys.Res.cannotSerializeNonFiniteNumbers);
-    }
-}
-Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeStringWithBuilder(string, stringBuilder) {
-    stringBuilder.append('"');
-    if (Sys.Serialization.JavaScriptSerializer._escapeRegEx.test(string)) {
-        if (Sys.Serialization.JavaScriptSerializer._charsToEscape.length === 0) {
-            Sys.Serialization.JavaScriptSerializer._init();
-        }
-        if (string.length < 128) {
-            string = string.replace(Sys.Serialization.JavaScriptSerializer._escapeRegExGlobal,
-                function(x) { return Sys.Serialization.JavaScriptSerializer._escapeChars[x]; });
-        }
-        else {
-            for (var i = 0; i < 34; i++) {
-                var c = Sys.Serialization.JavaScriptSerializer._charsToEscape[i];
-                if (string.indexOf(c) !== -1) {
-                    if (Sys.Browser.agent === Sys.Browser.Opera || Sys.Browser.agent === Sys.Browser.FireFox) {
-                        string = string.split(c).join(Sys.Serialization.JavaScriptSerializer._escapeChars[c]);
-                    }
-                    else {
-                        string = string.replace(Sys.Serialization.JavaScriptSerializer._charsToEscapeRegExs[c],
-                            Sys.Serialization.JavaScriptSerializer._escapeChars[c]);
-                    }
-                }
-            }
-       }
-    }
-    stringBuilder.append(string);
-    stringBuilder.append('"');
-}
-Sys.Serialization.JavaScriptSerializer._serializeWithBuilder = function Sys$Serialization$JavaScriptSerializer$_serializeWithBuilder(object, stringBuilder, sort, prevObjects) {
-    var i;
-    switch (typeof object) {
-    case 'object':
-        if (object) {
-            if (prevObjects){
-                for( var j = 0; j < prevObjects.length; j++) {
-                    if (prevObjects[j] === object) {
-                        throw Error.invalidOperation(Sys.Res.cannotSerializeObjectWithCycle);
-                    }
-                }
-            }
-            else {
-                prevObjects = new Array();
-            }
-            try {
-                Array.add(prevObjects, object);
-                
-                if (Number.isInstanceOfType(object)){
-                    Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder(object, stringBuilder);
-                }
-                else if (Boolean.isInstanceOfType(object)){
-                    Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder(object, stringBuilder);
-                }
-                else if (String.isInstanceOfType(object)){
-                    Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder(object, stringBuilder);
-                }
-            
-                else if (Array.isInstanceOfType(object)) {
-                    stringBuilder.append('[');
-                   
-                    for (i = 0; i < object.length; ++i) {
-                        if (i > 0) {
-                            stringBuilder.append(',');
-                        }
-                        Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(object[i], stringBuilder,false,prevObjects);
-                    }
-                    stringBuilder.append(']');
-                }
-                else {
-                    if (Date.isInstanceOfType(object)) {
-                        stringBuilder.append('"\\/Date(');
-                        stringBuilder.append(object.getTime());
-                        stringBuilder.append(')\\/"');
-                        break;
-                    }
-                    var properties = [];
-                    var propertyCount = 0;
-                    for (var name in object) {
-                        if (name.startsWith('$')) {
-                            continue;
-                        }
-                        if (name === Sys.Serialization.JavaScriptSerializer._serverTypeFieldName && propertyCount !== 0){
-                            properties[propertyCount++] = properties[0];
-                            properties[0] = name;
-                        }
-                        else{
-                            properties[propertyCount++] = name;
-                        }
-                    }
-                    if (sort) properties.sort();
-                    stringBuilder.append('{');
-                    var needComma = false;
-                     
-                    for (i=0; i<propertyCount; i++) {
-                        var value = object[properties[i]];
-                        if (typeof value !== 'undefined' && typeof value !== 'function') {
-                            if (needComma) {
-                                stringBuilder.append(',');
-                            }
-                            else {
-                                needComma = true;
-                            }
-                           
-                            Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(properties[i], stringBuilder, sort, prevObjects);
-                            stringBuilder.append(':');
-                            Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(value, stringBuilder, sort, prevObjects);
-                          
-                        }
-                    }
-                stringBuilder.append('}');
-                }
-            }
-            finally {
-                Array.removeAt(prevObjects, prevObjects.length - 1);
-            }
-        }
-        else {
-            stringBuilder.append('null');
-        }
-        break;
-    case 'number':
-        Sys.Serialization.JavaScriptSerializer._serializeNumberWithBuilder(object, stringBuilder);
-        break;
-    case 'string':
-        Sys.Serialization.JavaScriptSerializer._serializeStringWithBuilder(object, stringBuilder);
-        break;
-    case 'boolean':
-        Sys.Serialization.JavaScriptSerializer._serializeBooleanWithBuilder(object, stringBuilder);
-        break;
-    default:
-        stringBuilder.append('null');
-        break;
-    }
-}
-Sys.Serialization.JavaScriptSerializer.serialize = function Sys$Serialization$JavaScriptSerializer$serialize(object) {
-    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.serialize" />
-    /// <param name="object" mayBeNull="true"></param>
-    /// <returns type="String"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "object", mayBeNull: true}
-    ]);
-    if (e) throw e;
-    var stringBuilder = new Sys.StringBuilder();
-    Sys.Serialization.JavaScriptSerializer._serializeWithBuilder(object, stringBuilder, false);
-    return stringBuilder.toString();
-}
-Sys.Serialization.JavaScriptSerializer.deserialize = function Sys$Serialization$JavaScriptSerializer$deserialize(data, secure) {
-    /// <summary locid="M:J#Sys.Serialization.JavaScriptSerializer.deserialize" />
-    /// <param name="data" type="String"></param>
-    /// <param name="secure" type="Boolean" optional="true"></param>
-    /// <returns></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "data", type: String},
-        {name: "secure", type: Boolean, optional: true}
-    ]);
-    if (e) throw e;
-    
-    if (data.length === 0) throw Error.argument('data', Sys.Res.cannotDeserializeEmptyString);
-    try {    
-        var exp = data.replace(Sys.Serialization.JavaScriptSerializer._dateRegEx, "$1new Date($2)");
-        
-        if (secure && Sys.Serialization.JavaScriptSerializer._jsonRegEx.test(
-             exp.replace(Sys.Serialization.JavaScriptSerializer._jsonStringRegEx, ''))) throw null;
-        return eval('(' + exp + ')');
-    }
-    catch (e) {
-         throw Error.argument('data', Sys.Res.cannotDeserializeInvalidJson);
-    }
-}
- 
-Sys.CultureInfo = function Sys$CultureInfo(name, numberFormat, dateTimeFormat) {
-    /// <summary locid="M:J#Sys.CultureInfo.#ctor" />
-    /// <param name="name" type="String"></param>
-    /// <param name="numberFormat" type="Object"></param>
-    /// <param name="dateTimeFormat" type="Object"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "name", type: String},
-        {name: "numberFormat", type: Object},
-        {name: "dateTimeFormat", type: Object}
-    ]);
-    if (e) throw e;
-    this.name = name;
-    this.numberFormat = numberFormat;
-    this.dateTimeFormat = dateTimeFormat;
-}
-    function Sys$CultureInfo$_getDateTimeFormats() {
-        if (! this._dateTimeFormats) {
-            var dtf = this.dateTimeFormat;
-            this._dateTimeFormats =
-              [ dtf.MonthDayPattern,
-                dtf.YearMonthPattern,
-                dtf.ShortDatePattern,
-                dtf.ShortTimePattern,
-                dtf.LongDatePattern,
-                dtf.LongTimePattern,
-                dtf.FullDateTimePattern,
-                dtf.RFC1123Pattern,
-                dtf.SortableDateTimePattern,
-                dtf.UniversalSortableDateTimePattern ];
-        }
-        return this._dateTimeFormats;
-    }
-    function Sys$CultureInfo$_getMonthIndex(value) {
-        if (!this._upperMonths) {
-            this._upperMonths = this._toUpperArray(this.dateTimeFormat.MonthNames);
-        }
-        return Array.indexOf(this._upperMonths, this._toUpper(value));
-    }
-    function Sys$CultureInfo$_getAbbrMonthIndex(value) {
-        if (!this._upperAbbrMonths) {
-            this._upperAbbrMonths = this._toUpperArray(this.dateTimeFormat.AbbreviatedMonthNames);
-        }
-        return Array.indexOf(this._upperAbbrMonths, this._toUpper(value));
-    }
-    function Sys$CultureInfo$_getDayIndex(value) {
-        if (!this._upperDays) {
-            this._upperDays = this._toUpperArray(this.dateTimeFormat.DayNames);
-        }
-        return Array.indexOf(this._upperDays, this._toUpper(value));
-    }
-    function Sys$CultureInfo$_getAbbrDayIndex(value) {
-        if (!this._upperAbbrDays) {
-            this._upperAbbrDays = this._toUpperArray(this.dateTimeFormat.AbbreviatedDayNames);
-        }
-        return Array.indexOf(this._upperAbbrDays, this._toUpper(value));
-    }
-    function Sys$CultureInfo$_toUpperArray(arr) {
-        var result = [];
-        for (var i = 0, il = arr.length; i < il; i++) {
-            result[i] = this._toUpper(arr[i]);
-        }
-        return result;
-    }
-    function Sys$CultureInfo$_toUpper(value) {
-        return value.split("\u00A0").join(' ').toUpperCase();
-    }
-Sys.CultureInfo.prototype = {
-    _getDateTimeFormats: Sys$CultureInfo$_getDateTimeFormats,
-    _getMonthIndex: Sys$CultureInfo$_getMonthIndex,
-    _getAbbrMonthIndex: Sys$CultureInfo$_getAbbrMonthIndex,
-    _getDayIndex: Sys$CultureInfo$_getDayIndex,
-    _getAbbrDayIndex: Sys$CultureInfo$_getAbbrDayIndex,
-    _toUpperArray: Sys$CultureInfo$_toUpperArray,
-    _toUpper: Sys$CultureInfo$_toUpper
-}
-Sys.CultureInfo._parse = function Sys$CultureInfo$_parse(value) {
-    var cultureInfo = Sys.Serialization.JavaScriptSerializer.deserialize(value);
-    return new Sys.CultureInfo(cultureInfo.name, cultureInfo.numberFormat, cultureInfo.dateTimeFormat);
-}
-Sys.CultureInfo.registerClass('Sys.CultureInfo');
-Sys.CultureInfo.InvariantCulture = Sys.CultureInfo._parse('{"name":"","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":true,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"\u00A4","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-Infinity","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"Infinity","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"\u2030","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"@-62135568000000@","MaxSupportedDateTime":"@253402300799999@","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":true},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, dd MMMM yyyy HH:mm:ss","LongDatePattern":"dddd, dd MMMM yyyy","LongTimePattern":"HH:mm:ss","MonthDayPattern":"MMMM dd","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\':\'mm\':\'ss \'GMT\'","ShortDatePattern":"MM/dd/yyyy","ShortTimePattern":"HH:mm","SortableDateTimePattern":"yyyy\'-\'MM\'-\'dd\'T\'HH\':\'mm\':\'ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\'-\'MM\'-\'dd HH\':\'mm\':\'ss\'Z\'","YearMonthPattern":"yyyy MMMM","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":true,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]}}');
-if (typeof(__cultureInfo) === 'undefined') {
-    var __cultureInfo = '{"name":"en-US","numberFormat":{"CurrencyDecimalDigits":2,"CurrencyDecimalSeparator":".","IsReadOnly":false,"CurrencyGroupSizes":[3],"NumberGroupSizes":[3],"PercentGroupSizes":[3],"CurrencyGroupSeparator":",","CurrencySymbol":"$","NaNSymbol":"NaN","CurrencyNegativePattern":0,"NumberNegativePattern":1,"PercentPositivePattern":0,"PercentNegativePattern":0,"NegativeInfinitySymbol":"-Infinity","NegativeSign":"-","NumberDecimalDigits":2,"NumberDecimalSeparator":".","NumberGroupSeparator":",","CurrencyPositivePattern":0,"PositiveInfinitySymbol":"Infinity","PositiveSign":"+","PercentDecimalDigits":2,"PercentDecimalSeparator":".","PercentGroupSeparator":",","PercentSymbol":"%","PerMilleSymbol":"\u2030","NativeDigits":["0","1","2","3","4","5","6","7","8","9"],"DigitSubstitution":1},"dateTimeFormat":{"AMDesignator":"AM","Calendar":{"MinSupportedDateTime":"@-62135568000000@","MaxSupportedDateTime":"@253402300799999@","AlgorithmType":1,"CalendarType":1,"Eras":[1],"TwoDigitYearMax":2029,"IsReadOnly":false},"DateSeparator":"/","FirstDayOfWeek":0,"CalendarWeekRule":0,"FullDateTimePattern":"dddd, MMMM dd, yyyy h:mm:ss tt","LongDatePattern":"dddd, MMMM dd, yyyy","LongTimePattern":"h:mm:ss tt","MonthDayPattern":"MMMM dd","PMDesignator":"PM","RFC1123Pattern":"ddd, dd MMM yyyy HH\':\'mm\':\'ss \'GMT\'","ShortDatePattern":"M/d/yyyy","ShortTimePattern":"h:mm tt","SortableDateTimePattern":"yyyy\'-\'MM\'-\'dd\'T\'HH\':\'mm\':\'ss","TimeSeparator":":","UniversalSortableDateTimePattern":"yyyy\'-\'MM\'-\'dd HH\':\'mm\':\'ss\'Z\'","YearMonthPattern":"MMMM, yyyy","AbbreviatedDayNames":["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],"ShortestDayNames":["Su","Mo","Tu","We","Th","Fr","Sa"],"DayNames":["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"AbbreviatedMonthNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthNames":["January","February","March","April","May","June","July","August","September","October","November","December",""],"IsReadOnly":false,"NativeCalendarName":"Gregorian Calendar","AbbreviatedMonthGenitiveNames":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec",""],"MonthGenitiveNames":["January","February","March","April","May","June","July","August","September","October","November","December",""]}}';
-}
-Sys.CultureInfo.CurrentCulture = Sys.CultureInfo._parse(__cultureInfo);
-delete __cultureInfo;
- 
-Sys.UI.Behavior = function Sys$UI$Behavior(element) {
-    /// <summary locid="M:J#Sys.UI.Behavior.#ctor" />
-    /// <param name="element" domElement="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "element", domElement: true}
-    ]);
-    if (e) throw e;
-    Sys.UI.Behavior.initializeBase(this);
-    this._element = element;
-    var behaviors = element._behaviors;
-    if (!behaviors) {
-        element._behaviors = [this];
-    }
-    else {
-        behaviors[behaviors.length] = this;
-    }
-}
-    function Sys$UI$Behavior$get_element() {
-        /// <value domElement="true" locid="P:J#Sys.UI.Behavior.element"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._element;
-    }
-    function Sys$UI$Behavior$get_id() {
-        /// <value type="String" locid="P:J#Sys.UI.Behavior.id"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        var baseId = Sys.UI.Behavior.callBaseMethod(this, 'get_id');
-        if (baseId) return baseId;
-        if (!this._element || !this._element.id) return '';
-        return this._element.id + '$' + this.get_name();
-    }
-    function Sys$UI$Behavior$get_name() {
-        /// <value type="String" locid="P:J#Sys.UI.Behavior.name"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        if (this._name) return this._name;
-        var name = Object.getTypeName(this);
-        var i = name.lastIndexOf('.');
-        if (i != -1) name = name.substr(i + 1);
-        if (!this.get_isInitialized()) this._name = name;
-        return name;
-    }
-    function Sys$UI$Behavior$set_name(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: String}]);
-        if (e) throw e;
-        if ((value === '') || (value.charAt(0) === ' ') || (value.charAt(value.length - 1) === ' '))
-            throw Error.argument('value', Sys.Res.invalidId);
-        if (typeof(this._element[value]) !== 'undefined')
-            throw Error.invalidOperation(String.format(Sys.Res.behaviorDuplicateName, value));
-        if (this.get_isInitialized()) throw Error.invalidOperation(Sys.Res.cantSetNameAfterInit);
-        this._name = value;
-    }
-    function Sys$UI$Behavior$initialize() {
-        Sys.UI.Behavior.callBaseMethod(this, 'initialize');
-        var name = this.get_name();
-        if (name) this._element[name] = this;
-    }
-    function Sys$UI$Behavior$dispose() {
-        Sys.UI.Behavior.callBaseMethod(this, 'dispose');
-        if (this._element) {
-            var name = this.get_name();
-            if (name) {
-                this._element[name] = null;
-            }
-            Array.remove(this._element._behaviors, this);
-            delete this._element;
-        }
-    }
-Sys.UI.Behavior.prototype = {
-    _name: null,
-    get_element: Sys$UI$Behavior$get_element,
-    get_id: Sys$UI$Behavior$get_id,
-    get_name: Sys$UI$Behavior$get_name,
-    set_name: Sys$UI$Behavior$set_name,
-    initialize: Sys$UI$Behavior$initialize,
-    dispose: Sys$UI$Behavior$dispose
-}
-Sys.UI.Behavior.registerClass('Sys.UI.Behavior', Sys.Component);
-Sys.UI.Behavior.getBehaviorByName = function Sys$UI$Behavior$getBehaviorByName(element, name) {
-    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviorByName" />
-    /// <param name="element" domElement="true"></param>
-    /// <param name="name" type="String"></param>
-    /// <returns type="Sys.UI.Behavior" mayBeNull="true"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "element", domElement: true},
-        {name: "name", type: String}
-    ]);
-    if (e) throw e;
-    var b = element[name];
-    return (b && Sys.UI.Behavior.isInstanceOfType(b)) ? b : null;
-}
-Sys.UI.Behavior.getBehaviors = function Sys$UI$Behavior$getBehaviors(element) {
-    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviors" />
-    /// <param name="element" domElement="true"></param>
-    /// <returns type="Array" elementType="Sys.UI.Behavior"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "element", domElement: true}
-    ]);
-    if (e) throw e;
-    if (!element._behaviors) return [];
-    return Array.clone(element._behaviors);
-}
-Sys.UI.Behavior.getBehaviorsByType = function Sys$UI$Behavior$getBehaviorsByType(element, type) {
-    /// <summary locid="M:J#Sys.UI.Behavior.getBehaviorsByType" />
-    /// <param name="element" domElement="true"></param>
-    /// <param name="type" type="Type"></param>
-    /// <returns type="Array" elementType="Sys.UI.Behavior"></returns>
-    var e = Function._validateParams(arguments, [
-        {name: "element", domElement: true},
-        {name: "type", type: Type}
-    ]);
-    if (e) throw e;
-    var behaviors = element._behaviors;
-    var results = [];
-    if (behaviors) {
-        for (var i = 0, l = behaviors.length; i < l; i++) {
-            if (type.isInstanceOfType(behaviors[i])) {
-                results[results.length] = behaviors[i];
-            }
-        }
-    }
-    return results;
-}
- 
-Sys.UI.VisibilityMode = function Sys$UI$VisibilityMode() {
-    /// <summary locid="M:J#Sys.UI.VisibilityMode.#ctor" />
-    /// <field name="hide" type="Number" integer="true" static="true" locid="F:J#Sys.UI.VisibilityMode.hide"></field>
-    /// <field name="collapse" type="Number" integer="true" static="true" locid="F:J#Sys.UI.VisibilityMode.collapse"></field>
-    if (arguments.length !== 0) throw Error.parameterCount();
-    throw Error.notImplemented();
-}
-Sys.UI.VisibilityMode.prototype = {
-    hide: 0,
-    collapse: 1
-}
-Sys.UI.VisibilityMode.registerEnum("Sys.UI.VisibilityMode");
- 
-Sys.UI.Control = function Sys$UI$Control(element) {
-    /// <summary locid="M:J#Sys.UI.Control.#ctor" />
-    /// <param name="element" domElement="true"></param>
-    var e = Function._validateParams(arguments, [
-        {name: "element", domElement: true}
-    ]);
-    if (e) throw e;
-    if (typeof(element.control) != 'undefined') throw Error.invalidOperation(Sys.Res.controlAlreadyDefined);
-    Sys.UI.Control.initializeBase(this);
-    this._element = element;
-    element.control = this;
-}
-    function Sys$UI$Control$get_element() {
-        /// <value domElement="true" locid="P:J#Sys.UI.Control.element"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        return this._element;
-    }
-    function Sys$UI$Control$get_id() {
-        /// <value type="String" locid="P:J#Sys.UI.Control.id"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        if (!this._element) return '';
-        return this._element.id;
-    }
-    function Sys$UI$Control$set_id(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: String}]);
-        if (e) throw e;
-        throw Error.invalidOperation(Sys.Res.cantSetId);
-    }
-    function Sys$UI$Control$get_parent() {
-        /// <value type="Sys.UI.Control" locid="P:J#Sys.UI.Control.parent"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        if (this._parent) return this._parent;
-        if (!this._element) return null;
-        
-        var parentElement = this._element.parentNode;
-        while (parentElement) {
-            if (parentElement.control) {
-                return parentElement.control;
-            }
-            parentElement = parentElement.parentNode;
-        }
-        return null;
-    }
-    function Sys$UI$Control$set_parent(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Sys.UI.Control}]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        var parents = [this];
-        var current = value;
-        while (current) {
-            if (Array.contains(parents, current)) throw Error.invalidOperation(Sys.Res.circularParentChain);
-            parents[parents.length] = current;
-            current = current.get_parent();
-        }
-        this._parent = value;
-    }
-    function Sys$UI$Control$get_visibilityMode() {
-        /// <value type="Sys.UI.VisibilityMode" locid="P:J#Sys.UI.Control.visibilityMode"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        return Sys.UI.DomElement.getVisibilityMode(this._element);
-    }
-    function Sys$UI$Control$set_visibilityMode(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Sys.UI.VisibilityMode}]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        Sys.UI.DomElement.setVisibilityMode(this._element, value);
-    }
-    function Sys$UI$Control$get_visible() {
-        /// <value type="Boolean" locid="P:J#Sys.UI.Control.visible"></value>
-        if (arguments.length !== 0) throw Error.parameterCount();
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        return Sys.UI.DomElement.getVisible(this._element);
-    }
-    function Sys$UI$Control$set_visible(value) {
-        var e = Function._validateParams(arguments, [{name: "value", type: Boolean}]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        Sys.UI.DomElement.setVisible(this._element, value)
-    }
-    function Sys$UI$Control$addCssClass(className) {
-        /// <summary locid="M:J#Sys.UI.Control.addCssClass" />
-        /// <param name="className" type="String"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "className", type: String}
-        ]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        Sys.UI.DomElement.addCssClass(this._element, className);
-    }
-    function Sys$UI$Control$dispose() {
-        Sys.UI.Control.callBaseMethod(this, 'dispose');
-        if (this._element) {
-            this._element.control = undefined;
-            delete this._element;
-        }
-        if (this._parent) delete this._parent;
-    }
-    function Sys$UI$Control$onBubbleEvent(source, args) {
-        /// <summary locid="M:J#Sys.UI.Control.onBubbleEvent" />
-        /// <param name="source"></param>
-        /// <param name="args" type="Sys.EventArgs"></param>
-        /// <returns type="Boolean"></returns>
-        var e = Function._validateParams(arguments, [
-            {name: "source"},
-            {name: "args", type: Sys.EventArgs}
-        ]);
-        if (e) throw e;
-        return false;
-    }
-    function Sys$UI$Control$raiseBubbleEvent(source, args) {
-        /// <summary locid="M:J#Sys.UI.Control.raiseBubbleEvent" />
-        /// <param name="source"></param>
-        /// <param name="args" type="Sys.EventArgs"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "source"},
-            {name: "args", type: Sys.EventArgs}
-        ]);
-        if (e) throw e;
-        var currentTarget = this.get_parent();
-        while (currentTarget) {
-            if (currentTarget.onBubbleEvent(source, args)) {
-                return;
-            }
-            currentTarget = currentTarget.get_parent();
-        }
-    }
-    function Sys$UI$Control$removeCssClass(className) {
-        /// <summary locid="M:J#Sys.UI.Control.removeCssClass" />
-        /// <param name="className" type="String"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "className", type: String}
-        ]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        Sys.UI.DomElement.removeCssClass(this._element, className);
-    }
-    function Sys$UI$Control$toggleCssClass(className) {
-        /// <summary locid="M:J#Sys.UI.Control.toggleCssClass" />
-        /// <param name="className" type="String"></param>
-        var e = Function._validateParams(arguments, [
-            {name: "className", type: String}
-        ]);
-        if (e) throw e;
-        if (!this._element) throw Error.invalidOperation(Sys.Res.cantBeCalledAfterDispose);
-        Sys.UI.DomElement.toggleCssClass(this._element, className);
-    }
-Sys.UI.Control.prototype = {
-    _parent: null,
-    _visibilityMode: Sys.UI.VisibilityMode.hide,
-    get_element: Sys$UI$Control$get_element,
-    get_id: Sys$UI$Control$get_id,
-    set_id: Sys$UI$Control$set_id,
-    get_parent: Sys$UI$Control$get_parent,
-    set_parent: Sys$UI$Control$set_parent,
-    get_visibilityMode: Sys$UI$Control$get_visibilityMode,
-    set_visibilityMode: Sys$UI$Control$set_visibilityMode,
-    get_visible: Sys$UI$Control$get_visible,
-    set_visible: Sys$UI$Control$set_visible,
-    addCssClass: Sys$UI$Control$addCssClass,
-    dispose: Sys$UI$Control$dispose,
-    onBubbleEvent: Sys$UI$Control$onBubbleEvent,
-    raiseBubbleEvent: Sys$UI$Control$raiseBubbleEvent,
-    removeCssClass: Sys$UI$Control$removeCssClass,
-    toggleCssClass: Sys$UI$Control$toggleCssClass
-}
-Sys.UI.Control.registerClass('Sys.UI.Control', Sys.Component);
 
 
 Type.registerNamespace('Sys');
@@ -6744,50 +7015,46 @@ Type.registerNamespace('Sys');
 Sys.Res={
 'urlMustBeLessThan1024chars':'The history state must be small enough to not make the url larger than 1024 characters.',
 'argumentTypeName':'Value is not the name of an existing type.',
-'methodRegisteredTwice':'Method {0} has already been registered.',
-'cantSetIdAfterInit':'The id property can\'t be set on this object after initialization.',
 'cantBeCalledAfterDispose':'Can\'t be called after dispose.',
 'componentCantSetIdAfterAddedToApp':'The id property of a component can\'t be set after it\'s been added to the Application object.',
 'behaviorDuplicateName':'A behavior with name \'{0}\' already exists or it is the name of an existing property on the target element.',
 'notATypeName':'Value is not a valid type name.',
-'typeShouldBeTypeOrString':'Value is not a valid type or a valid type name.',
-'historyInvalidHistorySettingCombination':'Cannot set enableHistory to false when ScriptManager.EnableHistory is true.',
+'elementNotFound':'An element with id \'{0}\' could not be found.',
 'stateMustBeStringDictionary':'The state object can only have null and string fields.',
 'boolTrueOrFalse':'Value must be \'true\' or \'false\'.',
 'scriptLoadFailedNoHead':'ScriptLoader requires pages to contain a <head> element.',
 'stringFormatInvalid':'The format string is invalid.',
 'referenceNotFound':'Component \'{0}\' was not found.',
 'enumReservedName':'\'{0}\' is a reserved name that can\'t be used as an enum value name.',
-'eventHandlerNotFound':'Handler not found.',
 'circularParentChain':'The chain of control parents can\'t have circular references.',
+'namespaceContainsNonObject':'Object {0} already exists and is not an object.',
 'undefinedEvent':'\'{0}\' is not an event.',
-'notAMethod':'{0} is not a method.',
 'propertyUndefined':'\'{0}\' is not a property or an existing field.',
+'observableConflict':'Object already contains a member with the name \'{0}\'.',
 'historyCannotEnableHistory':'Cannot set enableHistory after initialization.',
 'eventHandlerInvalid':'Handler was not added through the Sys.UI.DomEvent.addHandler method.',
-'scriptLoadFailedDebug':'The script \'{0}\' failed to load. Check for:\r\n Inaccessible path.\r\n Script errors. (IE) Enable \'Display a notification about every script error\' under advanced settings.\r\n Missing call to Sys.Application.notifyScriptLoaded().',
+'scriptLoadFailedDebug':'The script \'{0}\' failed to load. Check for:\r\n Inaccessible path.\r\n Script errors. (IE) Enable \'Display a notification about every script error\' under advanced settings.',
 'propertyNotWritable':'\'{0}\' is not a writable property.',
 'enumInvalidValueName':'\'{0}\' is not a valid name for an enum value.',
 'controlAlreadyDefined':'A control is already associated with the element.',
 'addHandlerCantBeUsedForError':'Can\'t add a handler for the error event using this method. Please set the window.onerror property instead.',
-'namespaceContainsObject':'Object {0} already exists and is not a namespace.',
 'cantAddNonFunctionhandler':'Can\'t add a handler that is not a function.',
 'invalidNameSpace':'Value is not a valid namespace identifier.',
 'notAnInterface':'Value is not a valid interface.',
 'eventHandlerNotFunction':'Handler must be a function.',
 'propertyNotAnArray':'\'{0}\' is not an Array property.',
+'namespaceContainsClass':'Object {0} already exists as a class, enum, or interface.',
 'typeRegisteredTwice':'Type {0} has already been registered. The type may be defined multiple times or the script file that defines it may have already been loaded. A possible cause is a change of settings during a partial update.',
 'cantSetNameAfterInit':'The name property can\'t be set on this object after initialization.',
 'historyMissingFrame':'For the history feature to work in IE, the page must have an iFrame element with id \'__historyFrame\' pointed to a page that gets its title from the \'title\' query string parameter and calls Sys.Application._onIFrameLoad() on the parent window. This can be done by setting EnableHistory to true on ScriptManager.',
 'appDuplicateComponent':'Two components with the same id \'{0}\' can\'t be added to the application.',
 'historyCannotAddHistoryPointWithHistoryDisabled':'A history point can only be added if enableHistory is set to true.',
-'appComponentMustBeInitialized':'Components must be initialized before they are added to the Application object.',
 'baseNotAClass':'Value is not a class.',
+'expectedElementOrId':'Value must be a DOM element or DOM element Id.',
 'methodNotFound':'No method found with name \'{0}\'.',
 'arrayParseBadFormat':'Value must be a valid string representation for an array. It must start with a \'[\' and end with a \']\'.',
 'stateFieldNameInvalid':'State field names must not contain any \'=\' characters.',
 'cantSetId':'The id property can\'t be set on this object.',
-'historyMissingHiddenInput':'For the history feature to work in Safari 2, the page must have a hidden input element with id \'__history\'.',
 'stringFormatBraceMismatch':'The format string contains an unmatched opening or closing brace.',
 'enumValueNotInteger':'An enumeration definition can only contain integer values.',
 'propertyNullOrUndefined':'Cannot set the properties of \'{0}\' because it returned a null value.',
@@ -6797,16 +7064,17 @@ Sys.Res={
 'createNotComponent':'{0} does not derive from Sys.Component.',
 'createNoDom':'Value must not be null for Controls and Behaviors.',
 'cantAddWithoutId':'Can\'t add a component that doesn\'t have an id.',
+'notObservable':'Instances of type \'{0}\' cannot be observed.',
 'badTypeName':'Value is not the name of the type being registered or the name is a reserved word.',
 'argumentInteger':'Value must be an integer.',
-'scriptLoadMultipleCallbacks':'The script \'{0}\' contains multiple calls to Sys.Application.notifyScriptLoaded(). Only one is allowed.',
 'invokeCalledTwice':'Cannot call invoke more than once.',
 'webServiceFailed':'The server method \'{0}\' failed with the following error: {1}',
-'webServiceInvalidJsonWrapper':'The server method \'{0}\' returned invalid data. The \'d\' property is missing from the JSON wrapper.',
 'argumentType':'Object cannot be converted to the required type.',
 'argumentNull':'Value cannot be null.',
-'controlCantSetId':'The id property can\'t be set on a control.',
+'scriptAlreadyLoaded':'The script \'{0}\' has been referenced multiple times. If referencing Microsoft AJAX scripts explicitly, set the MicrosoftAjaxMode property of the ScriptManager to Explicit.',
+'scriptDependencyNotFound':'The script \'{0}\' failed to load because it is dependent on script \'{1}\'.',
 'formatBadFormatSpecifier':'Format specifier was invalid.',
+'requiredScriptReferenceNotIncluded':'\'{0}\' requires that you have included a script reference to \'{1}\'.',
 'webServiceFailedNoMsg':'The server method \'{0}\' failed.',
 'argumentDomElement':'Value must be a DOM element.',
 'invalidExecutorType':'Could not create a valid Sys.Net.WebRequestExecutor from: {0}.',
@@ -6835,6 +7103,7 @@ Sys.Res={
 'badBaseUrl3':'Cannot find last / in base URL.',
 'setExecutorAfterActive':'Cannot set executor after it has become active.',
 'paramName':'Parameter name: {0}',
+'nullReferenceInPath':'Null reference while evaluating data path: \'{0}\'.',
 'cannotCallOutsideHandler':'Cannot call {0} outside of a completed event handler.',
 'cannotSerializeObjectWithCycle':'Cannot serialize object with cyclic reference within child properties.',
 'format':'One of the identified items was in an invalid format.',
@@ -6846,5 +7115,3 @@ Sys.Res={
 'invalidOperation':'Operation is not valid due to the current state of the object.',
 'breakIntoDebugger':'{0}\r\n\r\nBreak into debugger?'
 };
-
-if(typeof(Sys)!=='undefined')Sys.Application.notifyScriptLoaded();

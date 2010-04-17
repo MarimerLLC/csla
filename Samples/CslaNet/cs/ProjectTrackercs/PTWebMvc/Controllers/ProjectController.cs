@@ -7,7 +7,7 @@ using System.Web.Mvc.Ajax;
 
 namespace PTWebMvc.Controllers
 {
-  public class ProjectController : Controller
+  public class ProjectController : Csla.Web.Mvc.Controller, Csla.Web.Mvc.IModelCreator
   {
     //
     // GET: /Project/
@@ -43,16 +43,31 @@ namespace PTWebMvc.Controllers
     //
     // POST: /Project/Create
 
+    //[AcceptVerbs(HttpVerbs.Post)]
+    //public ActionResult Create(FormCollection collection)
+    //{
+    //  var project = ProjectTracker.Library.Project.NewProject();
+    //  try
+    //  {
+    //    project.Name = collection["Name"];
+    //    project.Started = collection["Started"];
+    //    project.Ended = collection["Ended"];
+    //    project.Description = collection["Description"];
+    //    project = project.Save();
+
+    //    return RedirectToAction("Index");
+    //  }
+    //  catch
+    //  {
+    //    ViewData.Model = project;
+    //    return View();
+    //  }
+    //}
     [AcceptVerbs(HttpVerbs.Post)]
-    public ActionResult Create(FormCollection collection)
+    public ActionResult Create(ProjectTracker.Library.Project project)
     {
-      var project = ProjectTracker.Library.Project.NewProject();
       try
       {
-        project.Name = collection["Name"];
-        project.Started = collection["Started"];
-        project.Ended = collection["Ended"];
-        project.Description = collection["Description"];
         project = project.Save();
 
         return RedirectToAction("Index");
@@ -63,6 +78,7 @@ namespace PTWebMvc.Controllers
         return View();
       }
     }
+
 
     //
     // GET: /Project/Edit/5
@@ -77,25 +93,48 @@ namespace PTWebMvc.Controllers
     //
     // POST: /Project/Edit/5
 
+    //[AcceptVerbs(HttpVerbs.Post)]
+    //public ActionResult Edit(Guid id, FormCollection collection)
+    //{
+    //  var project = ProjectTracker.Library.Project.GetProject(id);
+    //  try
+    //  {
+    //    project.Name = collection["Name"];
+    //    project.Started = collection["Started"];
+    //    project.Ended = collection["Ended"];
+    //    project.Description = collection["Description"];
+    //    project = project.Save();
+
+    //    return RedirectToAction("Index");
+    //  }
+    //  catch
+    //  {
+    //    ViewData.Model = project;
+    //    return View();
+    //  }
+    //}
     [AcceptVerbs(HttpVerbs.Post)]
     public ActionResult Edit(Guid id, FormCollection collection)
     {
       var project = ProjectTracker.Library.Project.GetProject(id);
-      try
+      if (TryUpdateModel<ProjectTracker.Library.Project>(project) && 
+        SaveObject<ProjectTracker.Library.Project>(project, true))
       {
-        project.Name = collection["Name"];
-        project.Started = collection["Started"];
-        project.Ended = collection["Ended"];
-        project.Description = collection["Description"];
-        project = project.Save();
-
         return RedirectToAction("Index");
       }
-      catch
+      else
       {
         ViewData.Model = project;
         return View();
       }
+    }
+
+    object Csla.Web.Mvc.IModelCreator.CreateModel(Type modelType)
+    {
+      if (modelType.Equals(typeof(ProjectTracker.Library.Project)))
+        return ProjectTracker.Library.Project.NewProject();
+      else
+        return null;
     }
   }
 }

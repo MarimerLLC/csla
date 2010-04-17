@@ -1,7 +1,7 @@
 using System;
 using Csla;
 using Csla.Data;
-using Csla.Validation;
+using Csla.Rules;
 
 namespace ProjectTracker.Library
 {
@@ -27,19 +27,15 @@ namespace ProjectTracker.Library
     /// Ensure the Role property value exists
     /// in RoleList
     /// </summary>
-    public static bool ValidRole<T>(T target, RuleArgs e)
-      where T : IHoldRoles
+    public class ValidRole : BusinessRule
     {
-      int role = target.Role;
+      protected override void Execute(RuleContext context)
+      {
+        var target = (IHoldRoles)context.Target;
+        int role = target.Role;
 
-      if (RoleList.GetList().ContainsKey(role))
-      {
-        return true;
-      }
-      else
-      {
-        e.Description = "Role must be in RoleList";
-        return false;
+        if (!RoleList.GetList().ContainsKey(role))
+          context.AddErrorResult("Role must be in RoleList");
       }
     }
 

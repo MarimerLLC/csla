@@ -262,14 +262,14 @@ namespace PTWebForms
         Session["currentObject"] = project.Save();
         rowsAffected = 1;
       }
-      catch (Csla.Validation.ValidationException ex)
+      catch (Csla.Rules.ValidationException ex)
       {
         System.Text.StringBuilder message = new System.Text.StringBuilder();
         message.AppendFormat("{0}", ex.Message);
         if (project.BrokenRulesCollection.Count > 0)
         {
           message.Append("<ul>");
-          foreach (Csla.Validation.BrokenRule rule in project.BrokenRulesCollection)
+          foreach (Csla.Rules.BrokenRule rule in project.BrokenRulesCollection)
             message.AppendFormat("<li>{0}: {1}</li>", rule.Property, rule.Description);
           message.Append("</ul>");
         }

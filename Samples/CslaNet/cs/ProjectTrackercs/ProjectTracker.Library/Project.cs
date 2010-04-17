@@ -22,7 +22,7 @@ namespace ProjectTracker.Library
     public Guid Id
     {
       get { return GetProperty(IdProperty); }
-      private set { LoadProperty(IdProperty, value); }
+      set { LoadProperty(IdProperty, value); }
     }
 
     private static PropertyInfo<string> NameProperty = 
@@ -42,7 +42,7 @@ namespace ProjectTracker.Library
     }
 
     private static PropertyInfo<SmartDate> EndedProperty = 
-      RegisterProperty<SmartDate>(p=>p.Ended, "Ended",new SmartDate(SmartDate.EmptyValue.MaxDate));
+      RegisterProperty<SmartDate>(p=>p.Ended, null ,new SmartDate(SmartDate.EmptyValue.MaxDate));
     public string Ended
     {
       get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
@@ -80,36 +80,20 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired,
-                              new Csla.Validation.RuleArgs(NameProperty));
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength,
-        new Csla.Validation.CommonRules.MaxLengthRuleArgs(NameProperty, 50));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 50));
 
-      var args = new Csla.Validation.DecoratedRuleArgs(NameProperty);
-      args["MaxLength"] = 50;
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringMaxLength,
-        args);
-
-
-      ValidationRules.AddRule<Project>(StartDateGTEndDate, StartedProperty);
-      ValidationRules.AddRule<Project>(StartDateGTEndDate, EndedProperty);
-
-      ValidationRules.AddDependentProperty(StartedProperty, EndedProperty, true);
+      BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartedProperty, AffectedProperties = { EndedProperty } });
+      BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndedProperty, AffectedProperties = { StartedProperty } });
     }
 
-    private static bool StartDateGTEndDate<T>(
-      T target, Csla.Validation.RuleArgs e) where T : Project
+    private class StartDateGTEndDate : Csla.Rules.BusinessRule
     {
-      if (target.ReadProperty(StartedProperty) > target.ReadProperty(EndedProperty))
+      protected override void Execute(Csla.Rules.RuleContext context)
       {
-        e.Description = "Start date can't be after end date";
-        return false;
-      }
-      else
-      {
-        return true;
+        var target = (Project)context.Target;
+        if (target.ReadProperty(StartedProperty) > target.ReadProperty(EndedProperty))
+          context.AddErrorResult("Start date can't be after end date");
       }
     }
 
@@ -146,12 +130,13 @@ namespace ProjectTracker.Library
 
     public static Project GetProject(Guid id)
     {
-      return DataPortal.Fetch<Project>(new SingleCriteria<Project, Guid>(id));
+      //return DataPortal.Fetch<Project>(new SingleCriteria<Project, Guid>(id));
+      return DataPortal.Fetch<Project>(id);
     }
 
     public static void DeleteProject(Guid id)
     {
-      DataPortal.Delete(new SingleCriteria<Project, Guid>(id));
+      DataPortal.Delete<Project>(new SingleCriteria<Project, Guid>(id));
     }
 
     private Project()
@@ -168,11 +153,12 @@ namespace ProjectTracker.Library
       {
         Id = Guid.NewGuid();
         LoadProperty(StartedProperty, DateTime.Today);
-        ValidationRules.CheckRules();
+        BusinessRules.CheckRules();
       }
     }
 
-    private void DataPortal_Fetch(SingleCriteria<Project, Guid> criteria)
+    //private void DataPortal_Fetch(SingleCriteria<Project, Guid> criteria)
+    private void DataPortal_Fetch(Guid id)
     {
       using (var ctx = 
         ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
@@ -180,7 +166,7 @@ namespace ProjectTracker.Library
       {
         // get project data
         var data = (from p in ctx.DataContext.Projects
-                    where p.Id == criteria.Value
+                    where p.Id == id
                     select p).Single();
         using (BypassPropertyChecks)
         {
@@ -282,35 +268,34 @@ namespace ProjectTracker.Library
     }
 
     [Serializable()]
-    private class ExistsCommand : CommandBase
+    private class ExistsCommand : CommandBase<ExistsCommand>
     {
-      private Guid _id;
-      private bool _exists;
+      public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
+      private Guid Id
+      {
+        get { return ReadProperty(IdProperty); }
+        set { LoadProperty(IdProperty, value); }
+      }
 
+      public static PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(c => c.ProjectExists);
       public bool ProjectExists
       {
-        get { return _exists; }
+        get { return ReadProperty(ResultProperty); }
+        private set { LoadProperty(ResultProperty, value); }
       }
 
       public static bool Exists(Guid id)
       {
-        ExistsCommand result = null;
-        result = DataPortal.Execute<ExistsCommand>(
-          new ExistsCommand(id));
+        var result = DataPortal.Execute<ExistsCommand>(new ExistsCommand { Id = id });
         return result.ProjectExists;
-      }
-
-      private ExistsCommand(Guid id)
-      {
-        _id = id;
       }
 
       protected override void DataPortal_Execute()
       {
         using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
         {
-          _exists = ((from p in ctx.DataContext.Projects
-                      where p.Id == _id
+          ProjectExists = ((from p in ctx.DataContext.Projects
+                      where p.Id == Id
                       select p).Count() > 0);
         }
       }

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PTWin", "PTWin\PTWin.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library", "ProjectTracker.Library\ProjectTracker.Library.csproj", "{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}"
 EndProject
-Project("{C8D11400-126E-41CD-887F-60BD40844F9E}") = "PTData", "PTData\PTData.dbproj", "{67CBC824-A49E-4E9B-A947-360F3DFE65C3}"
-EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WcfHost", "www\WcfHost\", "{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
@@ -73,12 +71,6 @@ Global
 		{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}.Release|Any CPU.Build.0 = Release|Any CPU
 		{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Debug|.NET.ActiveCfg = Debug|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Release|.NET.ActiveCfg = Release|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67CBC824-A49E-4E9B-A947-360F3DFE65C3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}.Debug|.NET.ActiveCfg = Debug|.NET
 		{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}.Debug|.NET.Build.0 = Debug|.NET
 		{CBF01FEC-D7D9-41E6-B897-C510D39B56F4}.Debug|Any CPU.ActiveCfg = Debug|.NET

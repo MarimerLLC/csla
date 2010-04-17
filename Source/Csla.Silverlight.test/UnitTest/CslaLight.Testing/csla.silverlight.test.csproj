@@ -421,6 +421,10 @@
       <Project>{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}</Project>
       <Name>csla.silverlight</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Csla.Xaml.Silverlight\Csla.Xaml.Silverlight.csproj">
+      <Project>{2EF8662C-9FC9-4523-B936-B3B173625C5D}</Project>
+      <Name>Csla.Xaml.Silverlight</Name>
+    </ProjectReference>
     <ProjectReference Include="Client\csla.silverlight.client.test.csproj">
       <Project>{62E2C4DF-CC0F-4D62-BBB7-AAAC1C7F7041}</Project>
       <Name>csla.silverlight.client.test</Name>

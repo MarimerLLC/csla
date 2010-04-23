@@ -300,6 +300,11 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     public NullResultOptions NullOption { get; set; }
 
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Primary property.</param>
+    /// <param name="expression">Regular expression.</param>
     public RegExMatch(Csla.Core.IPropertyInfo primaryProperty, string expression)
       : base(primaryProperty)
     {
@@ -308,6 +313,10 @@ namespace Csla.Rules.CommonRules
       InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
     }
 
+    /// <summary>
+    /// Rule implementation.
+    /// </summary>
+    /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];

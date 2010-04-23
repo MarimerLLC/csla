@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
@@ -11,6 +12,7 @@ using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
+using Csla.Rules;
 #if SILVERLIGHT
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
@@ -39,7 +41,8 @@ namespace Csla
     IAuthorizeReadWrite, 
     IDataPortalTarget,
     IManageProperties,
-    INotifyBusy
+    INotifyBusy,
+    IHostRules
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value
@@ -81,7 +84,7 @@ namespace Csla
     protected ReadOnlyBase()
     {
       Initialize();
-      InitializeAuthorizationRules();
+      InitializeBusinessRules();
     }
 
     #endregion
@@ -110,34 +113,48 @@ namespace Csla
     [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
-    [NotUndoable()]
-    [NonSerialized()]
-    private Security.AuthorizationRules _authorizationRules;
-
-    private void InitializeAuthorizationRules()
+    private void InitializeBusinessRules()
     {
-      AddInstanceAuthorizationRules();
-      if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
-      {
-        lock (this.GetType())
-        {
-          if (!Security.SharedAuthorizationRules.RulesExistFor(this.GetType()))
+      var rules = BusinessRuleManager.GetRulesForType(this.GetType());
+      if (!rules.Initialized)
+        lock (rules)
+          if (!rules.Initialized)
           {
-            Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
-            AddAuthorizationRules();
+            rules.Initialized = true;
+            AddBusinessRules();
           }
-        }
+    }
+
+    private Csla.Rules.BusinessRules _businessRules;
+
+    /// <summary>
+    /// Provides access to the broken rules functionality.
+    /// </summary>
+    /// <remarks>
+    /// This property is used within your business logic so you can
+    /// easily call the AddRule() method to associate business
+    /// rules with your object's properties.
+    /// </remarks>
+    protected BusinessRules BusinessRules
+    {
+      get
+      {
+        if (_businessRules == null)
+          _businessRules = new BusinessRules(this);
+        else if (_businessRules.Target == null)
+          _businessRules.SetTarget(this);
+        return _businessRules;
       }
     }
 
-    /// <summary>
-    /// Override this method to add authorization
-    /// rules for your object's properties.
-    /// </summary>
-    protected virtual void AddInstanceAuthorizationRules()
-    {
+    void IHostRules.RuleStart(IPropertyInfo property)
+    { }
 
-    }
+    void Rules.IHostRules.RuleComplete(IPropertyInfo property)
+    { }
+
+    void Rules.IHostRules.AllRulesComplete()
+    { }
 
     /// <summary>
     /// Override this method to add per-type
@@ -148,53 +165,28 @@ namespace Csla
     /// when your object should associate per-type authorization roles
     /// with its properties.
     /// </remarks>
-    protected virtual void AddAuthorizationRules()
-    {
-
-    }
-
-    /// <summary>
-    /// Provides access to the AuthorizationRules object for this
-    /// object.
-    /// </summary>
-    /// <remarks>
-    /// Use this object to add a list of allowed and denied roles for
-    /// reading and writing properties of the object. Typically these
-    /// values are added once when the business object is instantiated.
-    /// </remarks>
-    protected Security.AuthorizationRules AuthorizationRules
-    {
-      get
-      {
-        if (_authorizationRules == null)
-          _authorizationRules = new Security.AuthorizationRules(this.GetType());
-        return _authorizationRules;
-      }
-    }
+    protected virtual void AddBusinessRules()
+    { }
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    public bool CanReadProperty(bool throwOnFalse)
+    /// <param name="property">Property to check.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
-      string propertyName =
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      bool result = CanReadProperty(propertyName);
-      if (throwOnFalse && result == false)
+      bool result = true;
+
+      VerifyAuthorizationCache();
+
+      if (!_readResultCache.TryGetValue(property.Name, out result))
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
-          string.Format("{0} ({1})",
-          Resources.PropertyGetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-        throw ex;
+        result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
+        // store value in cache
+        _readResultCache[property.Name] = result;
       }
+
       return result;
     }
 
@@ -206,33 +198,21 @@ namespace Csla
     /// <param name="propertyName">Name of the property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      bool result = CanReadProperty(propertyName);
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      bool result = CanReadProperty(prop);
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
-          string.Format("{0} ({1})",
+          String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, propertyName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
-    /// calling property.
-    /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(
-      System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit property name")]
-    public bool CanReadProperty()
-    {
-      string propertyName = 
-        new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);
-      return CanReadProperty(propertyName);
     }
 
     /// <summary>
@@ -240,47 +220,13 @@ namespace Csla
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
-    /// </para>
-    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual bool CanReadProperty(string propertyName)
+    public bool CanReadProperty(string propertyName)
     {
-      bool result = true;
-
-      VerifyAuthorizationCache();
-
-      if (!_readResultCache.TryGetValue(propertyName, out result))
-      {
-        result = true;
-        if (AuthorizationRules.HasReadAllowedRoles(propertyName))
-        {
-          // some users are explicitly granted read access
-          // in which case all other users are denied.
-          if (!AuthorizationRules.IsReadAllowed(propertyName))
-            result = false;
-        }
-        else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
-        {
-          // some users are explicitly denied read access.
-          if (AuthorizationRules.IsReadDenied(propertyName))
-            result = false;
-        }
-        // store value in cache
-        _readResultCache[propertyName] = result;
-      }
-      return result;
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      return CanReadProperty(prop);
     }
 
     bool Csla.Security.IAuthorizeReadWrite.CanWriteProperty(string propertyName)
@@ -305,26 +251,23 @@ namespace Csla
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
+    /// the specified method.
     /// </summary>
+    /// <param name="method">Method to execute.</param>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <param name="throwOnFalse">Indicates whether a negative
-    /// result should cause an exception.</param>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    public bool CanExecuteMethod(bool throwOnFalse)
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
+      bool result = true;
 
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      bool result = CanExecuteMethod(methodName);
-      if (throwOnFalse && result == false)
+      VerifyAuthorizationCache();
+
+      if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-        throw ex;
+        result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
+        _executeResultCache[method.Name] = result;
       }
       return result;
-
     }
 
     /// <summary>
@@ -335,6 +278,7 @@ namespace Csla
     /// <param name="methodName">Name of the method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanExecuteMethod(string methodName, bool throwOnFalse)
     {
 
@@ -342,25 +286,9 @@ namespace Csla
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        //ex.Action = System.Security.Permissions.SecurityAction.Deny;
         throw ex;
       }
       return result;
-
-    }
-
-    /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
-    /// the calling method.
-    /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
-    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-    [Obsolete("Use overload requiring explicit method name")]
-    public bool CanExecuteMethod()
-    {
-
-      string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name;
-      return CanExecuteMethod(methodName);
 
     }
 
@@ -370,53 +298,10 @@ namespace Csla
     /// </summary>
     /// <param name="methodName">Name of the method to execute.</param>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
-    /// </para>
-    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {
-
-      bool result = true;
-
-      VerifyAuthorizationCache();
-
-      if (!_executeResultCache.TryGetValue(methodName, out result))
-      {
-        result = true;
-        if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
-        {
-          // some users are explicitly granted read access
-          // in which case all other users are denied
-          if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
-          {
-            result = false;
-          }
-
-        }
-        else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
-        {
-          // some users are explicitly denied read access
-          if (AuthorizationRules.IsExecuteDenied(methodName))
-          {
-            result = false;
-          }
-        }
-        // store value in cache
-        _executeResultCache[methodName] = result;
-      }
-      return result;
-
+      return CanExecuteMethod(new MethodInfo(methodName));
     }
 
     #endregion
@@ -566,7 +451,7 @@ namespace Csla
     {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
-      InitializeAuthorizationRules();
+      InitializeBusinessRules();
       OnDeserialized();
     }
 
@@ -585,7 +470,7 @@ namespace Csla
     private void OnDeserializedHandler(StreamingContext context)
     {
       FieldManager.SetPropertyList(this.GetType());
-      InitializeAuthorizationRules();
+      InitializeBusinessRules();
       OnDeserialized(context);
     }
 

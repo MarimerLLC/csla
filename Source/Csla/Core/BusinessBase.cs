@@ -1,4 +1,3 @@
-// C:\Visual Studio Projects\csla\40\Source\Csla\Core\BusinessBase.cs
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -52,7 +51,6 @@ namespace Csla.Core
     {
       Initialize();
       InitializeBusinessRules();
-      InitializeAuthorizationRules();
     }
 
     #endregion
@@ -362,11 +360,11 @@ namespace Csla.Core
       {
         bool auth;
         if (IsDeleted)
-          auth = Csla.Security.AuthorizationRules.CanDeleteObject(this.GetType());
+          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, this);
         else if (IsNew)
-          auth = Csla.Security.AuthorizationRules.CanCreateObject(this.GetType());
+          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, this);
         else
-          auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+          auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
         return (auth && IsDirty && IsValid && !IsBusy); 
       }
     }
@@ -388,56 +386,26 @@ namespace Csla.Core
     [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
-    [NotUndoable]
-    [NonSerialized]
-    private Security.AuthorizationRules _authorizationRules;
-
-    private void InitializeAuthorizationRules()
-    {
-      if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
-      {
-        lock (this.GetType())
-        {
-          if (!(Csla.Security.SharedAuthorizationRules.RulesExistFor(this.GetType())))
-          {
-            Csla.Security.SharedAuthorizationRules.GetManager(this.GetType(), true);
-            AddAuthorizationRules();
-          }
-        }
-      }
-    }
-
     /// <summary>
-    /// Override this method to add per-type
-    /// authorization rules for your type's properties.
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// calling property.
     /// </summary>
-    /// <remarks>
-    /// AddAuthorizationRules is automatically called by CSLA .NET
-    /// when your object should associate per-type authorization roles
-    /// with its properties.
-    /// </remarks>
-    protected virtual void AddAuthorizationRules()
+    /// <param name="property">Property to check.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
+      bool result = true;
 
-    }
+      VerifyAuthorizationCache();
 
-    /// <summary>
-    /// Provides access to the AuthorizationRules object for this
-    /// object.
-    /// </summary>
-    /// <remarks>
-    /// Use this object to add a list of allowed and denied roles for
-    /// reading and writing properties of the object. Typically these
-    /// values are added once when the business object is instantiated.
-    /// </remarks>
-    protected Security.AuthorizationRules AuthorizationRules
-    {
-      get 
+      if (!_readResultCache.TryGetValue(property.Name, out result))
       {
-        if (_authorizationRules == null)
-          _authorizationRules = new Security.AuthorizationRules(this.GetType());
-        return _authorizationRules;
+        result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
+        // store value in cache
+        _readResultCache[property.Name] = result;
       }
+
+      return result;
     }
 
     /// <summary>
@@ -448,9 +416,13 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      bool result = CanReadProperty(propertyName);
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      bool result = CanReadProperty(prop);
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
@@ -466,47 +438,32 @@ namespace Csla.Core
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can read. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied read access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have read access.
-    /// </para>
-    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual bool CanReadProperty(string propertyName)
+    public bool CanReadProperty(string propertyName)
+    {
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      return CanReadProperty(prop);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// specified property.
+    /// </summary>
+    /// <param name="property">Property to write.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanWriteProperty(Csla.Core.IPropertyInfo property)
     {
       bool result = true;
 
       VerifyAuthorizationCache();
 
-      if (!_readResultCache.TryGetValue(propertyName, out result))
+      if (!_writeResultCache.TryGetValue(property.Name, out result))
       {
-        result = true;
-        if (AuthorizationRules.HasReadAllowedRoles(propertyName))
-        {
-          // some users are explicitly granted read access
-          // in which case all other users are denied
-          if (!AuthorizationRules.IsReadAllowed(propertyName))
-            result = false;
-        }
-        else if (AuthorizationRules.HasReadDeniedRoles(propertyName))
-        {
-          // some users are explicitly denied read access
-          if (AuthorizationRules.IsReadDenied(propertyName))
-            result = false;
-        }
-        // store value in cache
-        _readResultCache[propertyName] = result;
+        result = BusinessRules.HasPermission(AuthorizationActions.WriteProperty, property);
+        _writeResultCache[property.Name] = result;
       }
-      
       return result;
     }
 
@@ -518,9 +475,13 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the property to write.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanWriteProperty(string propertyName, bool throwOnFalse)
     {
-      bool result = CanWriteProperty(propertyName);
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      bool result = CanWriteProperty(prop);
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
@@ -535,46 +496,13 @@ namespace Csla.Core
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to write.</param>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can write. If no list of allowed roles is provided then
-    /// the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are denied write access. All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will have write access.
-    /// </para>
-    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual bool CanWriteProperty(string propertyName)
+    public bool CanWriteProperty(string propertyName)
     {
-      bool result = true;
-
-      VerifyAuthorizationCache();
-
-      if (!_writeResultCache.TryGetValue(propertyName, out result))
-      {
-        result = true;
-        if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))
-        {
-          // some users are explicitly granted write access
-          // in which case all other users are denied
-          if (!AuthorizationRules.IsWriteAllowed(propertyName))
-            result = false;
-        }
-        else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))
-        {
-          // some users are explicitly denied write access
-          if (AuthorizationRules.IsWriteDenied(propertyName))
-            result = false;
-        }
-        _writeResultCache[propertyName] = result;
-      }
-      return result;
+      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      return CanWriteProperty(prop);
     }
 
     private void VerifyAuthorizationCache()
@@ -599,10 +527,32 @@ namespace Csla.Core
     /// Returns <see langword="true" /> if the user is allowed to execute
     /// the specified method.
     /// </summary>
+    /// <param name="method">Method to execute.</param>
+    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
+    {
+      bool result = true;
+
+      VerifyAuthorizationCache();
+
+      if (!_executeResultCache.TryGetValue(method.Name, out result))
+      {
+        result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
+        _executeResultCache[method.Name] = result;
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// the specified method.
+    /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
     /// <param name="methodName">Name of the method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanExecuteMethod(string methodName, bool throwOnFalse)
     {
 
@@ -622,54 +572,10 @@ namespace Csla.Core
     /// </summary>
     /// <param name="methodName">Name of the method to execute.</param>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <remarks>
-    /// <para>
-    /// If a list of allowed roles is provided then only users in those
-    /// roles can execute the method. If no list of allowed roles is 
-    /// provided then the list of denied roles is checked.
-    /// </para><para>
-    /// If a list of denied roles is provided then users in the denied
-    /// roles are not allowed to execute the method. 
-    /// All other users are allowed.
-    /// </para><para>
-    /// If neither a list of allowed nor denied roles is provided then
-    /// all users will be allowed to execute the method..
-    /// </para>
-    /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {
-
-      bool result = true;
-
-      VerifyAuthorizationCache();
-
-      if (!_executeResultCache.TryGetValue(methodName, out result))
-      {
-        result = true;
-        if (AuthorizationRules.HasExecuteAllowedRoles(methodName))
-        {
-          // some users are explicitly granted read access
-          // in which case all other users are denied
-          if (!(AuthorizationRules.IsExecuteAllowed(methodName)))
-          {
-            result = false;
-          }
-
-        }
-        else if (AuthorizationRules.HasExecuteDeniedRoles(methodName))
-        {
-          // some users are explicitly denied read access
-          if (AuthorizationRules.IsExecuteDenied(methodName))
-          {
-            result = false;
-          }
-        }
-        // store value in cache
-        _executeResultCache[methodName] = result;
-      }
-      return result;
-
+      return CanExecuteMethod(new MethodInfo(methodName));
     }
 
     #endregion
@@ -981,6 +887,9 @@ namespace Csla.Core
     #region BusinessRules, IsValid
 
 #if SILVERLIGHT
+    /// <summary>
+    /// Event raised when validation is complete.
+    /// </summary>
     public event EventHandler ValidationComplete;
 
     /// <summary>
@@ -1337,7 +1246,6 @@ namespace Csla.Core
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();
-      InitializeAuthorizationRules();
       FieldDataDeserialized();
 
 #if SILVERLIGHT
@@ -1347,14 +1255,18 @@ namespace Csla.Core
 #endif
     }
 
+#if SILVERLIGHT
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
     /// </summary>
-#if SILVERLIGHT
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized()
 #else
+    /// <summary>
+    /// This method is called on a newly deserialized object
+    /// after deserialization is complete.
+    /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
@@ -1491,6 +1403,49 @@ namespace Csla.Core
     void IEditableBusinessObject.SetParent(IParent parent)
     {
       this.SetParent(parent);
+    }
+
+    #endregion
+
+    #region Register Methods
+
+    /// <summary>
+    /// Indicates that the specified method belongs
+    /// to the type.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object to which the method belongs.
+    /// </param>
+    /// <param name="info">
+    /// IMemberInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided IMemberInfo object.
+    /// </returns>
+    protected static Csla.Core.IMemberInfo RegisterMethod(Type objectType, IMemberInfo info)
+    {
+      var reflected = objectType.GetMethod(info.Name);
+      if (reflected == null)
+        throw new ArgumentException("No such method " + info.Name, "info");
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified method belongs
+    /// to the type.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object to which the method belongs.
+    /// </param>
+    /// <param name="methodName">
+    /// Name of the method.
+    /// </param>
+    /// <returns>
+    /// The provided IMemberInfo object.
+    /// </returns>
+    protected static Csla.Core.IMemberInfo RegisterMethod(Type objectType, string methodName)
+    {
+      return RegisterMethod(objectType, new MethodInfo(methodName));
     }
 
     #endregion

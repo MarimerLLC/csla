@@ -752,7 +752,7 @@ namespace Csla
     {
       get
       {
-        bool auth = Csla.Security.AuthorizationRules.CanEditObject(this.GetType());
+        bool auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
       }
     }

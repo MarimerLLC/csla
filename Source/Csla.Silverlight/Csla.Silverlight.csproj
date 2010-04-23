@@ -111,6 +111,9 @@
     <Compile Include="..\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\IMemberInfo.cs">
+      <Link>Core\IMemberInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\IObservableBindingList.cs">
       <Link>Core\IObservableBindingList.cs</Link>
     </Compile>
@@ -204,8 +207,26 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\MethodInfo.cs">
+      <Link>MethodInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Properties\Resources.Designer.cs">
       <Link>Properties\Resources.Designer.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
+      <Link>Rules\AuthorizationActions.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\AuthorizationContext.cs">
+      <Link>Rules\AuthorizationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\AuthorizationRule.cs">
+      <Link>Rules\AuthorizationRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\AuthorizationRuleManager.cs">
+      <Link>Rules\AuthorizationRuleManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\AuthorizationRules.cs">
+      <Link>Rules\AuthorizationRules.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\BrokenRule.cs">
       <Link>Rules\BrokenRule.cs</Link>
@@ -215,6 +236,9 @@
     </Compile>
     <Compile Include="..\Csla\Rules\BusinessRules.cs">
       <Link>Rules\BusinessRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\IAuthorizationRule.cs">
+      <Link>Rules\IAuthorizationRule.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\IHostRules.cs">
       <Link>Rules\IHostRules.cs</Link>
@@ -291,12 +315,6 @@
     <Compile Include="..\Csla\Rules\RuleSeverity.cs">
       <Link>Rules\RuleSeverity.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Security\AuthorizationRules.cs">
-      <Link>Security\AuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\AuthorizationRulesManager.cs">
-      <Link>Security\AuthorizationRulesManager.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\Security\BusinessPrincipalBase.cs">
       <Link>Security\BusinessPrincipalBase.cs</Link>
     </Compile>
@@ -314,18 +332,6 @@
     </Compile>
     <Compile Include="..\Csla\Security\NoAccessBehavior.cs">
       <Link>Security\NoAccessBehavior.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\ObjectAuthorizationRules.cs">
-      <Link>Security\ObjectAuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\RolesForProperty.cs">
-      <Link>Security\RolesForProperty.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\RolesForType.cs">
-      <Link>Security\RolesForType.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\SharedAuthorizationRules.cs">
-      <Link>Security\SharedAuthorizationRules.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Security\UnauthenticatedIdentity.cs">
       <Link>Security\UnauthenticatedIdentity.cs</Link>

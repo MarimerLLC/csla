@@ -53,6 +53,7 @@ namespace Csla.Rules
       set 
       {
         _typeRules = null;
+        _typeAuthRules = null;
         _ruleSet = value == "default" ? null : value; 
       }
     }
@@ -69,6 +70,18 @@ namespace Csla.Rules
       }
     }
 
+    [NonSerialized]
+    private AuthorizationRuleManager _typeAuthRules;
+    private AuthorizationRuleManager TypeAuthRules
+    {
+      get
+      {
+        if (_typeAuthRules == null && _target != null)
+          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(_target.GetType(), _ruleSet);
+        return _typeAuthRules;
+      }
+    }
+
     /// <summary>
     /// Gets a list of rule:// URI values for
     /// the rules defined in the object.
@@ -77,7 +90,7 @@ namespace Csla.Rules
     public string[] GetRuleDescriptions()
     {
       var result = new List<string>();
-      foreach (var item in TypeRules.RuleMethods)
+      foreach (var item in TypeRules.Rules)
         result.Add(item.RuleName);
       return result.ToArray();
     }
@@ -99,14 +112,14 @@ namespace Csla.Rules
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public BusinessRules()
+    internal BusinessRules()
     { }
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="target">Target business object.</param>
-    public BusinessRules(IHostRules target)
+    internal BusinessRules(IHostRules target)
     {
       SetTarget(target);
     }
@@ -117,7 +130,16 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     public void AddRule(IBusinessRule rule)
     {
-      TypeRules.RuleMethods.Add(rule);
+      TypeRules.Rules.Add(rule);
+    }
+
+    /// <summary>
+    /// Associates an authorization rule with the business object.
+    /// </summary>
+    /// <param name="rule">Rule object.</param>
+    public void AddRule(IAuthorizationRule rule)
+    {
+      TypeAuthRules.Rules.Add(rule);
     }
 
     /// <summary>
@@ -170,6 +192,89 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="action">Authorization action.</param>
+    public static bool HasPermission(Type objectType, AuthorizationActions action)
+    {
+      return false;
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="objectType">Type of business object.</param>
+    public static bool HasPermission(AuthorizationActions action, Type objectType)
+    {
+      if (action == AuthorizationActions.ReadProperty ||
+          action == AuthorizationActions.WriteProperty ||
+          action == AuthorizationActions.ExecuteMethod)
+        throw new ArgumentOutOfRangeException("action");
+
+      bool result = true;
+      var rule =
+        AuthorizationRuleManager.GetRulesForType(objectType).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
+      if (rule != null)
+      {
+        var context = new AuthorizationContext { Rule = rule };
+        rule.Execute(context);
+        result = context.HasPermission;
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-instance authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="obj">Business object instance.</param>
+    public static bool HasPermission(AuthorizationActions action, object obj)
+    {
+      if (action == AuthorizationActions.ReadProperty ||
+          action == AuthorizationActions.WriteProperty ||
+          action == AuthorizationActions.ExecuteMethod)
+        throw new ArgumentOutOfRangeException("action");
+
+      bool result = true;
+      var rule =
+        AuthorizationRuleManager.GetRulesForType(obj.GetType()).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
+      if (rule != null)
+      {
+        var context = new AuthorizationContext { Rule = rule, Target = obj };
+        rule.Execute(context);
+        result = context.HasPermission;
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-property authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="element">Property or method to check.</param>
+    public bool HasPermission(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    {
+      if (action == AuthorizationActions.CreateObject ||
+          action == AuthorizationActions.DeleteObject ||
+          action == AuthorizationActions.GetObject ||
+          action == AuthorizationActions.EditObject)
+        throw new ArgumentOutOfRangeException("action");
+
+      bool result = true;
+      var rule =
+        AuthorizationRuleManager.GetRulesForType(Target.GetType()).Rules.Where(c => c.Element == element && c.Action == action).FirstOrDefault();
+      if (rule != null)
+      {
+        var context = new AuthorizationContext { Rule = rule, Target = this.Target };
+        rule.Execute(context);
+        result = context.HasPermission;
+      }
+      return result;
+    }
+
+    /// <summary>
     /// Invokes all rules for the business type.
     /// </summary>
     /// <returns>
@@ -203,7 +308,7 @@ namespace Csla.Rules
     {
       var oldRR = RunningRules;
       RunningRules = true;
-      var rules = from r in TypeRules.RuleMethods
+      var rules = from r in TypeRules.Rules
                   where r.PrimaryProperty == null
                   orderby r.Priority
                   select r;
@@ -243,7 +348,7 @@ namespace Csla.Rules
     /// </summary>
     private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade)
     {
-      var rules = from r in TypeRules.RuleMethods
+      var rules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
                   orderby r.Priority
                   select r;

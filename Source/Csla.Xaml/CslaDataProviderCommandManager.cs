@@ -111,7 +111,7 @@ namespace Csla.Xaml
           if (list != null)
           {
             result = list.AllowNew;
-            if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+            if (result && !Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
               result = false;
           }
         }
@@ -143,7 +143,7 @@ namespace Csla.Xaml
           if (list != null)
           {
             result = list.AllowRemove;
-            if (result && !Csla.Security.AuthorizationRules.CanEditObject(ctl.Provider.Data.GetType()))
+            if (result && !Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
               result = false;
           }
         }

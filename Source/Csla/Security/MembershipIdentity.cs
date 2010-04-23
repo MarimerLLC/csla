@@ -41,6 +41,9 @@ namespace Csla.Security
     #region OnDeserialized
 
 #if SILVERLIGHT
+    /// <summary>
+    /// Method invoked when the object is deserialized.
+    /// </summary>
     protected override void OnDeserialized()
     {
       _forceInit = _forceInit + 0;
@@ -70,7 +73,6 @@ namespace Csla.Security
     /// <param name="completed">Callback handler for async operation</param>
     /// <param name="userName">Username to validate on server.</param>
     /// <param name="password">Password to validate on server.</param>
-    /// <param name="isRunOnWebServer">True if membership database is on web server (2- or 3-tier), false to use app server (4-tier)</param>
     public static void GetMembershipIdentity(string userName, string password, EventHandler<DataPortalResult<MembershipIdentity>> completed)
     {
       GetMembershipIdentity<MembershipIdentity>(userName, password, completed);
@@ -84,7 +86,6 @@ namespace Csla.Security
     /// <param name="completed">Callback handler for async operation</param>
     /// <param name="userName">Username to validate on server.</param>
     /// <param name="password">Password to validate on server.</param>
-    /// <param name="isRunOnWebServer">True if membership database is on web server (2- or 3-tier), false to use app server (4-tier)</param>
     public static void GetMembershipIdentity<T>(string userName, string password, EventHandler<DataPortalResult<T>> completed) where T : MembershipIdentity
     {
       DataPortal.BeginFetch<T>(new Criteria(userName, password, typeof(T)), completed);
@@ -99,11 +100,6 @@ namespace Csla.Security
     /// </typeparam>
     /// <param name="userName">Username to authenticate.</param>
     /// <param name="password">Password to authenticate.</param>
-    /// <param name="isRunOnWebServer">
-    /// Specifies whether to access the membership provider locally (true),
-    /// or through the data portal (false) presumably to reach an application
-    /// server.
-    /// </param>
     /// <returns></returns>
     public static T GetMembershipIdentity<T>(string userName, string password) where T : MembershipIdentity
     {
@@ -225,10 +221,6 @@ namespace Csla.Security
       /// <param name="name">Username.</param>
       /// <param name="password">Password.</param>
       /// <param name="membershipIdentityType">Membership identity type.</param>
-      /// <param name="isRunOnWebServer">
-      /// Access membership provider locally (true) or via the data portal
-      /// on an application server (false).
-      /// </param>
       public Criteria(string name, string password, Type membershipIdentityType)
       {
         Name = name;

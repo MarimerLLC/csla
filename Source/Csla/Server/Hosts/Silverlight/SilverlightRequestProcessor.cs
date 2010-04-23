@@ -287,6 +287,9 @@ namespace Csla.Server.Hosts.Silverlight
       ApplicationContext.User = request.Principal;
     }
 
+    /// <summary>
+    /// Clears the application context and current principal.
+    /// </summary>
     public static void ClearContext()
     {
       ApplicationContext.Clear();

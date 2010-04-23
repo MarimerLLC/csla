@@ -338,12 +338,12 @@ namespace Csla.Xaml
           if (itemType != null)
           {
 
-            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && list.Count > 0 && !isObjectBusy)
+            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && list.Count > 0 && !isObjectBusy)
               CanRemove = true;
             else
               CanRemove = false;
 
-            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
               CanAddNew = true;
             else
               CanAddNew = false;
@@ -366,12 +366,12 @@ namespace Csla.Xaml
         if (itemType != null)
         {
 
-          if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && list.Count > 0 && !isObjectBusy)
+          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && list.Count > 0 && !isObjectBusy)
             CanRemove = true;
           else
             CanRemove = false;
 
-          if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
             CanAddNew = true;
           else
             CanAddNew = false;
@@ -480,10 +480,10 @@ namespace Csla.Xaml
     {
       Type sourceType = typeof(T);
 
-      CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
-      CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
-      CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
-      CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
+      CanCreateObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, sourceType);
+      CanGetObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, sourceType);
+      CanEditObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, sourceType);
+      CanDeleteObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, sourceType);
     }
 
     #endregion
@@ -563,7 +563,7 @@ namespace Csla.Xaml
     private Delegate CreateHandler(Type objectType)
     {
       var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
+      System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
       Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
       return handler;
     }

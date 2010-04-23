@@ -233,10 +233,6 @@ namespace Csla.Xaml
 
     #region GetMethodParameter
 
-    /// <summary>
-    /// Gets the parameter value to be passed to invoked method.
-    /// </summary>
-    /// <param name="ctrl">Attached control</param>
     private object GetMethodParameter()
     {
       var be = this.GetBindingExpression(MethodParameterProperty);

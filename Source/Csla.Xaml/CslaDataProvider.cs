@@ -302,7 +302,7 @@ namespace Csla.Xaml
       {
         // get factory method info
         BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-        MethodInfo factory = request.ObjectType.GetMethod(
+        System.Reflection.MethodInfo factory = request.ObjectType.GetMethod(
           request.FactoryMethod, flags, null, 
           MethodCaller.GetParameterTypes(parameters), null);
 
@@ -312,8 +312,8 @@ namespace Csla.Xaml
           // so find one with the correct number of
           // parameters 
           int parameterCount = parameters.Length;
-          MethodInfo[] methods = request.ObjectType.GetMethods(flags);
-          foreach (MethodInfo method in methods)
+          System.Reflection.MethodInfo[] methods = request.ObjectType.GetMethods(flags);
+          foreach (System.Reflection.MethodInfo method in methods)
             if (method.Name == request.FactoryMethod && method.GetParameters().Length == parameterCount)
             {
               factory = method;

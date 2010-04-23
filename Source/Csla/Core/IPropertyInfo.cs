@@ -5,12 +5,8 @@ namespace Csla.Core
   /// <summary>
   /// Maintains metadata about a property.
   /// </summary>
-  public interface IPropertyInfo
+  public interface IPropertyInfo : IMemberInfo
   {
-    /// <summary>
-    /// Gets the property name value.
-    /// </summary>
-    string Name { get; }
     /// <summary>
     /// Gets the type of the property.
     /// </summary>

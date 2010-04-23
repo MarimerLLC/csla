@@ -294,7 +294,8 @@ namespace Csla
     /// </para><para>
     /// The value "Defaukt" is a shortcut for using the default 
     /// Csla.DataPortalClient.DefaultPortalProxyFactory  implementation.
-    /// </para><para>
+    /// </para>
+    /// </remarks>
     public static string DataPortalProxyFactory
     {
       get

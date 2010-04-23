@@ -11,7 +11,7 @@ namespace Csla.Reflection
     public int MethodParamsLength { get; private set; }
     public Type FinalArrayElementType { get; private set; }
 
-    public DynamicMethodHandle(MethodInfo info, params object[] parameters)
+    public DynamicMethodHandle(System.Reflection.MethodInfo info, params object[] parameters)
     {
       if (info == null)
       {

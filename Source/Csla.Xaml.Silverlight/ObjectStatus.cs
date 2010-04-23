@@ -136,22 +136,22 @@ namespace Csla.Xaml
 
       if (sourceType != null)
       {
-        if (Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, sourceType))
           VisualStateManager.GoToState(this, "AllowCreate", useTransitions);
         else
           VisualStateManager.GoToState(this, "DenyCreate", useTransitions);
 
-        if (Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, Source))
           VisualStateManager.GoToState(this, "AllowDelete", useTransitions);
         else
           VisualStateManager.GoToState(this, "DenyDelete", useTransitions);
 
-        if (Csla.Security.AuthorizationRules.CanEditObject(sourceType))
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, Source))
           VisualStateManager.GoToState(this, "AllowEdit", useTransitions);
         else
           VisualStateManager.GoToState(this, "DenyEdit", useTransitions);
 
-        if (Csla.Security.AuthorizationRules.CanGetObject(sourceType))
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, sourceType))
           VisualStateManager.GoToState(this, "AllowGet", useTransitions);
         else
           VisualStateManager.GoToState(this, "DenyGet", useTransitions);

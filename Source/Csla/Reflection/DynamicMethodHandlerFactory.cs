@@ -53,7 +53,7 @@ namespace Csla.Reflection
       return Expression.Lambda<DynamicCtorDelegate>(body).Compile();
     }
 
-    public static DynamicMethodDelegate CreateMethod(MethodInfo method)
+    public static DynamicMethodDelegate CreateMethod(System.Reflection.MethodInfo method)
     {
       if (method == null)
         throw new ArgumentNullException("method");

@@ -6,25 +6,26 @@ using System.Text;
 namespace Csla.Rules
 {
   /// <summary>
-  /// Manages the list of rules for a business type.
+  /// Manages the list of authorization 
+  /// rules for a business type.
   /// </summary>
-  public class BusinessRuleManager
+  public class AuthorizationRuleManager
   {
 #if !SILVERLIGHT
-    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
-      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
+      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
 
-    internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
+    internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
-      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
+      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
     }
 #else
-    private static Dictionary<RuleSetKey, BusinessRuleManager> _perTypeRules = new Dictionary<RuleSetKey, BusinessRuleManager>();
+    private static Dictionary<RuleSetKey, AuthorizationRuleManager> _perTypeRules = new Dictionary<RuleSetKey, AuthorizationRuleManager>();
 
-    internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
+    internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
-      BusinessRuleManager result = null;
+      AuthorizationRuleManager result = null;
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
       if (!_perTypeRules.TryGetValue(key, out result))
       {
@@ -32,7 +33,7 @@ namespace Csla.Rules
         {
           if (!_perTypeRules.TryGetValue(key, out result))
           {
-            result = new BusinessRuleManager();
+            result = new AuthorizationRuleManager();
             _perTypeRules.Add(key, result);
           }
         }
@@ -42,7 +43,7 @@ namespace Csla.Rules
 
 #endif
 
-    internal static BusinessRuleManager GetRulesForType(Type type)
+    internal static AuthorizationRuleManager GetRulesForType(Type type)
     {
       return GetRulesForType(type, null);
     }
@@ -70,7 +71,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the list of rule objects for the business type.
     /// </summary>
-    public List<IBusinessRule> Rules { get; private set; }
+    public List<IAuthorizationRule> Rules { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the rules have been
@@ -78,9 +79,9 @@ namespace Csla.Rules
     /// </summary>
     public bool Initialized { get; set; }
 
-    private BusinessRuleManager()
+    private AuthorizationRuleManager()
     {
-      Rules = new List<IBusinessRule>();
+      Rules = new List<IAuthorizationRule>();
     }
   }
 }

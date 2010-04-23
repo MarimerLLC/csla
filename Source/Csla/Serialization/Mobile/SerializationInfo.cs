@@ -47,7 +47,16 @@ namespace Csla.Serialization.Mobile
       public bool IsDirty { get; set; }
 
       #region IMobileObject Members
+
+      /// <summary>
+      /// Creates an instance of the object.
+      /// </summary>
       public FieldData() { }
+
+      /// <summary>
+      /// Gets state information.
+      /// </summary>
+      /// <param name="info">Serialization context.</param>
       public void GetState(SerializationInfo info)
       {
         info.AddValue("FieldData.Value", Value);
@@ -55,10 +64,19 @@ namespace Csla.Serialization.Mobile
         info.AddValue("FieldData.IsDirty", IsDirty);
       }
 
+      /// <summary>
+      /// Gets child serialization information.
+      /// </summary>
+      /// <param name="info">Serialization context.</param>
+      /// <param name="formatter">Serializer instance.</param>
       public void GetChildren(SerializationInfo info, MobileFormatter formatter)
       {
       }
 
+      /// <summary>
+      /// Sets state information.
+      /// </summary>
+      /// <param name="info">Serialization context.</param>
       public void SetState(SerializationInfo info)
       {
         Value = info.GetValue<object>("FieldData.Value");
@@ -66,6 +84,11 @@ namespace Csla.Serialization.Mobile
         IsDirty = info.GetValue<bool>("FieldData.IsDirty");
       }
 
+      /// <summary>
+      /// Sets child serialization information.
+      /// </summary>
+      /// <param name="info">Serialization context.</param>
+      /// <param name="formatter">Serializer instance.</param>
       public void SetChildren(SerializationInfo info, MobileFormatter formatter)
       {
       }
@@ -93,23 +116,66 @@ namespace Csla.Serialization.Mobile
       public bool IsDirty { get; set; }
 
       #region IMobileObject Members
+
+      /// <summary>
+      /// Creates instance of object.
+      /// </summary>
       public ChildData() { }
+
+      /// <summary>
+      /// Method called by MobileFormatter when an object
+      /// should serialize its data. The data should be
+      /// serialized into the SerializationInfo parameter.
+      /// </summary>
+      /// <param name="info">
+      /// Object to contain the serialized data.
+      /// </param>
       public void GetState(SerializationInfo info)
       {
         info.AddValue("ChildData.ReferenceId", ReferenceId);
         info.AddValue("ChildData.IsDirty", IsDirty);
       }
 
+      /// <summary>
+      /// Method called by MobileFormatter when an object
+      /// should serialize its child references. The data should be
+      /// serialized into the SerializationInfo parameter.
+      /// </summary>
+      /// <param name="info">
+      /// Object to contain the serialized data.
+      /// </param>
+      /// <param name="formatter">
+      /// Reference to the formatter performing the serialization.
+      /// </param>
       public void GetChildren(SerializationInfo info, MobileFormatter formatter)
       {
       }
 
+      /// <summary>
+      /// Method called by MobileFormatter when an object
+      /// should be deserialized. The data should be
+      /// deserialized from the SerializationInfo parameter.
+      /// </summary>
+      /// <param name="info">
+      /// Object containing the serialized data.
+      /// </param>
       public void SetState(SerializationInfo info)
       {
         ReferenceId = info.GetValue<int>("ChildData.ReferenceId");
         IsDirty = info.GetValue<bool>("ChildData.IsDirty");
       }
 
+      /// <summary>
+      /// Method called by MobileFormatter when an object
+      /// should deserialize its child references. The data should be
+      /// deserialized from the SerializationInfo parameter.
+      /// </summary>
+      /// <param name="info">
+      /// Object containing the serialized data.
+      /// </param>
+      /// <param name="formatter">
+      /// Reference to the formatter performing the deserialization.
+      /// </param>
       public void SetChildren(SerializationInfo info, MobileFormatter formatter)
       {
       }
@@ -236,14 +302,36 @@ namespace Csla.Serialization.Mobile
 
     #region IMobileObject Members
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public SerializationInfo() { }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should serialize its data. The data should be
+    /// serialized into the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object to contain the serialized data.
+    /// </param>
     public void GetState(SerializationInfo info)
     {
       info.AddValue("SerializationInfo.ReferenceId", ReferenceId);
       info.AddValue("SerializationInfo.TypeName", TypeName);
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should serialize its child references. The data should be
+    /// serialized into the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object to contain the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the serialization.
+    /// </param>
     public void GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (string key in _children.Keys)
@@ -260,12 +348,31 @@ namespace Csla.Serialization.Mobile
       }
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should be deserialized. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
     public void SetState(SerializationInfo info)
     {
       ReferenceId = info.GetValue<int>("SerializationInfo.ReferenceId");
       TypeName = info.GetValue<string>("SerializationInfo.TypeName");
     }
 
+    /// <summary>
+    /// Method called by MobileFormatter when an object
+    /// should deserialize its child references. The data should be
+    /// deserialized from the SerializationInfo parameter.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the serialized data.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to the formatter performing the deserialization.
+    /// </param>
     public void SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (string key in info.Children.Keys)

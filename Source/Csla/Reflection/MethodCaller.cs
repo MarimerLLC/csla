@@ -49,7 +49,7 @@ namespace Csla.Reflection
 
     private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
 
-    private static DynamicMethodHandle GetCachedMethod(object obj, MethodInfo info, params object[] parameters)
+    private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
       var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));
       DynamicMethodHandle mh = null;
@@ -77,7 +77,7 @@ namespace Csla.Reflection
         {
           if (!_methodCache.TryGetValue(key, out mh))
           {
-            MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+            var info = GetMethod(obj.GetType(), method, parameters);
             mh = new DynamicMethodHandle(info, parameters);
             _methodCache.Add(key, mh);
           }
@@ -349,12 +349,12 @@ namespace Csla.Reflection
     /// Object containing method.
     /// </param>
     /// <param name="info">
-    /// MethodInfo for the method.
+    /// System.Reflection.MethodInfo for the method.
     /// </param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static object CallMethod(object obj, MethodInfo info, params object[] parameters)
+    public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
@@ -455,10 +455,10 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
+    public static System.Reflection.MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
     {
 
-      MethodInfo result = null;
+      System.Reflection.MethodInfo result = null;
 
       object[] inParams = null;
       if (parameters == null)
@@ -495,16 +495,16 @@ namespace Csla.Reflection
       return result;
     }
 
-    private static MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
+    private static System.Reflection.MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
     {
-      MethodInfo result = null;
+      System.Reflection.MethodInfo result = null;
       Type currentType = objectType;
       do
       {
-        MethodInfo[] methods = currentType.GetMethods(oneLevelFlags);
+        System.Reflection.MethodInfo[] methods = currentType.GetMethods(oneLevelFlags);
         int parameterCount = parameters.Length;
         // Match based on name and parameter types and parameter arrays
-        foreach (MethodInfo m in methods)
+        foreach (System.Reflection.MethodInfo m in methods)
         {
           if (m.Name == method)
           {
@@ -538,7 +538,7 @@ namespace Csla.Reflection
         if (result == null)
         {
           // match based on parameter name and number of parameters
-          foreach (MethodInfo m in methods)
+          foreach (System.Reflection.MethodInfo m in methods)
           {
             if (m.Name == method && m.GetParameters().Length == parameterCount)
             {
@@ -571,9 +571,9 @@ namespace Csla.Reflection
     /// <param name="types">
     /// Parameter types to pass to method.
     /// </param>
-    public static MethodInfo FindMethod(Type objectType, string method, Type[] types)
+    public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, Type[] types)
     {
-      MethodInfo info = null;
+      System.Reflection.MethodInfo info = null;
       do
       {
         // find for a strongly typed match
@@ -603,16 +603,16 @@ namespace Csla.Reflection
     /// <param name="parameterCount">
     /// Number of parameters to pass to method.
     /// </param>
-    public static MethodInfo FindMethod(Type objectType, string method, int parameterCount)
+    public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, int parameterCount)
     {
       // walk up the inheritance hierarchy looking
       // for a method with the right number of
       // parameters
-      MethodInfo result = null;
+      System.Reflection.MethodInfo result = null;
       Type currentType = objectType;
       do
       {
-        MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
+        System.Reflection.MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
         if (info != null)
         {
           var infoParams = info.GetParameters();
@@ -738,7 +738,7 @@ namespace Csla.Reflection
     /// <param name="obj">Object containing method.</param>
     /// <param name="info">Method info object.</param>
     /// <returns>Any value returned from the method.</returns>
-    public static object CallMethod(object obj, MethodInfo info)
+    public static object CallMethod(object obj, System.Reflection.MethodInfo info)
     {
       object result = null;
       try
@@ -767,7 +767,7 @@ namespace Csla.Reflection
     public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
     {
       object returnValue;
-      MethodInfo factory = objectType.GetMethod(
+      System.Reflection.MethodInfo factory = objectType.GetMethod(
            method, factoryFlags, null,
            MethodCaller.GetParameterTypes(parameters), null);
 
@@ -777,8 +777,8 @@ namespace Csla.Reflection
         // so find one with the correct number of
         // parameters 
         int parameterCount = parameters.Length;
-        MethodInfo[] methods = objectType.GetMethods(factoryFlags);
-        foreach (MethodInfo oneMethod in methods)
+        System.Reflection.MethodInfo[] methods = objectType.GetMethods(factoryFlags);
+        foreach (System.Reflection.MethodInfo oneMethod in methods)
           if (oneMethod.Name == method && oneMethod.GetParameters().Length == parameterCount)
           {
             factory = oneMethod;
@@ -809,15 +809,15 @@ namespace Csla.Reflection
     }
 
     /// <summary>
-    /// Gets a MethodInfo object corresponding to a
+    /// Gets a System.Reflection.MethodInfo object corresponding to a
     /// non-public method.
     /// </summary>
     /// <param name="objectType">Object containing the method.</param>
     /// <param name="method">Name of the method.</param>
-    public static MethodInfo GetNonPublicMethod(Type objectType, string method)
+    public static System.Reflection.MethodInfo GetNonPublicMethod(Type objectType, string method)
     {
 
-      MethodInfo result = null;
+      System.Reflection.MethodInfo result = null;
 
       result = FindMethod(objectType, method, privateMethodFlags);
 
@@ -831,9 +831,9 @@ namespace Csla.Reflection
     /// <param name="objType">Type of object.</param>
     /// <param name="method">Name of the method.</param>
     /// <param name="flags">Flag values.</param>
-    public static MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
+    public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
     {
-      MethodInfo info = null;
+      System.Reflection.MethodInfo info = null;
       do
       {
         // find for a strongly typed match

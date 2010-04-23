@@ -14,7 +14,7 @@ namespace Csla.Server
       this.TransactionalType = TransactionalTypes.Manual;
     }
 
-    public DataPortalMethodInfo(MethodInfo info)
+    public DataPortalMethodInfo(System.Reflection.MethodInfo info)
       : this()
     {
       if (info != null)
@@ -24,17 +24,17 @@ namespace Csla.Server
       }
     }
 
-    private static bool IsRunLocal(MethodInfo method)
+    private static bool IsRunLocal(System.Reflection.MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(RunLocalAttribute), false);
     }
 
-    private static bool IsTransactionalMethod(MethodInfo method)
+    private static bool IsTransactionalMethod(System.Reflection.MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(TransactionalAttribute));
     }
 
-    private static TransactionalTypes GetTransactionalType(MethodInfo method)
+    private static TransactionalTypes GetTransactionalType(System.Reflection.MethodInfo method)
     {
       TransactionalTypes result;
       if (IsTransactionalMethod(method))

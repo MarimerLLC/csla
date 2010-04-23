@@ -17,7 +17,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a method invocation.</exception>
-    public static MethodInfo GetMethod(Expression<Action<TTarget>> method)
+    public static System.Reflection.MethodInfo GetMethod(Expression<Action<TTarget>> method)
     {
       return GetMethodInfo(method);
     }
@@ -27,7 +27,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a method invocation.</exception>
-    public static MethodInfo GetMethod<T1>(Expression<Action<TTarget, T1>> method)
+    public static System.Reflection.MethodInfo GetMethod<T1>(Expression<Action<TTarget, T1>> method)
     {
       return GetMethodInfo(method);
     }
@@ -37,7 +37,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a method invocation.</exception>
-    public static MethodInfo GetMethod<T1, T2>(Expression<Action<TTarget, T1, T2>> method)
+    public static System.Reflection.MethodInfo GetMethod<T1, T2>(Expression<Action<TTarget, T1, T2>> method)
     {
       return GetMethodInfo(method);
     }
@@ -47,12 +47,12 @@ namespace Csla.Reflection
     /// </summary>
     /// <exception cref="ArgumentNullException">The <paramref name="method"/> is null.</exception>
     /// <exception cref="ArgumentException">The <paramref name="method"/> is not a lambda expression or it does not represent a method invocation.</exception>
-    public static MethodInfo GetMethod<T1, T2, T3>(Expression<Action<TTarget, T1, T2, T3>> method)
+    public static System.Reflection.MethodInfo GetMethod<T1, T2, T3>(Expression<Action<TTarget, T1, T2, T3>> method)
     {
       return GetMethodInfo(method);
     }
 
-    private static MethodInfo GetMethodInfo(Expression method)
+    private static System.Reflection.MethodInfo GetMethodInfo(Expression method)
     {
       if (method == null) throw new ArgumentNullException("method");
 

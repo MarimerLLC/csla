@@ -111,6 +111,16 @@ namespace Csla.Server
         _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
       }
     }
+
+    /// <summary>
+    /// Creates a new DataPortalContext object.
+    /// </summary>
+    /// <param name="principal">The current Principal object.</param>
+    /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
+    /// <param name="clientContext">Client context.</param>
+    /// <param name="clientCulture">Client culture.</param>
+    /// <param name="clientUICulture">Client UI culture.</param>
+    /// <param name="globalContext">Global context.</param>
     public DataPortalContext(IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext, ContextDictionary globalContext)
     {
       _principal = principal;

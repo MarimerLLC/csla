@@ -62,9 +62,6 @@ namespace Csla.Core
     /// <param name="childObject">
     /// Reference to the child object that was changed.
     /// </param>
-    /// <param name="listArgs">
-    /// ListChangedEventArgs object or null.
-    /// </param>
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>

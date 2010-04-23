@@ -10,7 +10,9 @@ namespace Csla.Silverlight
   [Serializable]
   public class PrimitiveCriteria : IMobileObject
   {
-
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public PrimitiveCriteria() { }
 
     /// <summary>

@@ -255,14 +255,18 @@ namespace Csla.Xaml
       if (DataObject != null)
       {
         Type sourceType = DataObject.GetType();
-        if (CanCreateObject != Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
-          CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
-        if (CanGetObject != Csla.Security.AuthorizationRules.CanGetObject(sourceType))
-          CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
-        if (CanEditObject != Csla.Security.AuthorizationRules.CanEditObject(sourceType))
-          CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
-        if (CanDeleteObject != Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
-          CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
+        var newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, DataObject);
+        if (CanCreateObject != newValue)
+          CanCreateObject = newValue;
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, DataObject);
+        if (CanGetObject != newValue)
+          CanGetObject = newValue;
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, DataObject);
+        if (CanEditObject != newValue)
+          CanEditObject = newValue;
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, DataObject);
+        if (CanDeleteObject != newValue)
+          CanDeleteObject = newValue;
       }
       else
       {

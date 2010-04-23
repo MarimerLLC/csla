@@ -59,7 +59,7 @@ namespace Csla
           }
         case CallType.Method:
           {
-            MethodInfo m = target.GetType().GetMethod(methodName);
+            System.Reflection.MethodInfo m = target.GetType().GetMethod(methodName);
             return m.Invoke(target, args);
           }
       }

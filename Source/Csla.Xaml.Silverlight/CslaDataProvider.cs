@@ -427,7 +427,7 @@ namespace Csla.Xaml
     private Delegate CreateHandler(Type objectType)
     {
       var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
-      MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
+      System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(this.GetType(), "QueryCompleted");
       Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
       return handler;
     }
@@ -798,27 +798,27 @@ namespace Csla.Xaml
       if (this.Data != null && targetObject != null)
       {
 
-        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsSavable)
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this.Data) && targetObject.IsSavable)
           this.CanSave = true;
         else
           this.CanSave = false;
 
-        if (Csla.Security.AuthorizationRules.CanEditObject(this.Data.GetType()) && targetObject.IsDirty && !isObjectBusy)
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this.Data) && targetObject.IsDirty && !isObjectBusy)
           this.CanCancel = true;
         else
           this.CanCancel = false;
 
-        if (Csla.Security.AuthorizationRules.CanCreateObject(this.Data.GetType()) && !targetObject.IsDirty && !isObjectBusy)
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, this.Data) && !targetObject.IsDirty && !isObjectBusy)
           this.CanCreate = true;
         else
           this.CanCreate = false;
 
-        if (Csla.Security.AuthorizationRules.CanDeleteObject(this.Data.GetType()) && !isObjectBusy)
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, this.Data) && !isObjectBusy)
           this.CanDelete = true;
         else
           this.CanDelete = false;
 
-        if (Csla.Security.AuthorizationRules.CanGetObject(this.Data.GetType()) && !targetObject.IsDirty && !isObjectBusy)
+        if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, this.Data) && !targetObject.IsDirty && !isObjectBusy)
           this.CanFetch = true;
         else
           this.CanFetch = false;
@@ -829,12 +829,12 @@ namespace Csla.Xaml
           if (itemType != null)
           {
 
-            if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0 && !isObjectBusy)
+            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && ((ICollection)this.Data).Count > 0 && !isObjectBusy)
               this.CanRemoveItem = true;
             else
               this.CanRemoveItem = false;
 
-            if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
               this.CanAddNewItem = true;
             else
               this.CanAddNewItem = false;
@@ -857,12 +857,12 @@ namespace Csla.Xaml
         if (itemType != null)
         {
 
-          if (Csla.Security.AuthorizationRules.CanDeleteObject(itemType) && ((ICollection)this.Data).Count > 0 && !isObjectBusy)
+          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && ((ICollection)this.Data).Count > 0 && !isObjectBusy)
             this.CanRemoveItem = true;
           else
             this.CanRemoveItem = false;
 
-          if (Csla.Security.AuthorizationRules.CanCreateObject(itemType) && !isObjectBusy)
+          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
             this.CanAddNewItem = true;
           else
             this.CanAddNewItem = false;
@@ -960,17 +960,21 @@ namespace Csla.Xaml
       if (Data != null)
       {
         Type sourceType = Data.GetType();
-        if (CanCreateObject != Csla.Security.AuthorizationRules.CanCreateObject(sourceType))
-          CanCreateObject = Csla.Security.AuthorizationRules.CanCreateObject(sourceType);
+        var newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, Data);
+        if (CanCreateObject != newValue)
+          CanCreateObject = newValue;
 
-        if (CanGetObject != Csla.Security.AuthorizationRules.CanGetObject(sourceType))
-          CanGetObject = Csla.Security.AuthorizationRules.CanGetObject(sourceType);
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, Data);
+        if (CanGetObject != newValue)
+          CanGetObject = newValue;
 
-        if (CanEditObject != Csla.Security.AuthorizationRules.CanEditObject(sourceType))
-          CanEditObject = Csla.Security.AuthorizationRules.CanEditObject(sourceType);
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, Data);
+        if (CanEditObject != newValue)
+          CanEditObject = newValue;
 
-        if (CanDeleteObject != Csla.Security.AuthorizationRules.CanDeleteObject(sourceType))
-          CanDeleteObject = Csla.Security.AuthorizationRules.CanDeleteObject(sourceType);
+        newValue = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, Data);
+        if (CanDeleteObject != newValue)
+          CanDeleteObject = newValue;
 
       }
       else

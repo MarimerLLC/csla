@@ -112,7 +112,7 @@ namespace Csla.Rules
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    internal BusinessRules()
+    public BusinessRules()
     { }
 
     /// <summary>

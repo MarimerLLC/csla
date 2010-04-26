@@ -33,11 +33,7 @@ namespace Csla.Test.Authorization
 
             Security.TestPrincipal.SimulateLogin();
 
-#if SILVERLIGHT
           Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
-            Assert.AreEqual(true, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
 
             #region "Pre Cloning Tests" 
 

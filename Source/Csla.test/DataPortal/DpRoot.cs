@@ -9,9 +9,6 @@ namespace Csla.Test.DataPortal
   [Serializable()]
   public class DpRoot : BusinessBase<DpRoot>
   {
-#if SILVERLIGHT
-      public DpRoot() { }
-#endif
     private string _auth = "No value";
 
     #region "Get/Set Private Variables"
@@ -83,11 +80,6 @@ namespace Csla.Test.DataPortal
     public static DpRoot GetRoot(string data)
     {
       return (Csla.DataPortal.Fetch<DpRoot>(new Criteria(data)));
-    }
-    private DpRoot()
-    {
-      //prevent direct creation
-      //AddAuthRules();
     }
 #endif
 

@@ -411,10 +411,15 @@ namespace cslalighttest.CslaDataProvider
           };
         provider.ObjectInstance = cust;
 
-        context.Assert.AreEqual(provider.CanEditObject, Csla.Security.AuthorizationRules.CanEditObject(typeof(Customer)));
-        context.Assert.AreEqual(provider.CanGetObject, Csla.Security.AuthorizationRules.CanGetObject(typeof(Customer)));
-        context.Assert.AreEqual(provider.CanDeleteObject, Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Customer)));
-        context.Assert.AreEqual(provider.CanCreateObject, Csla.Security.AuthorizationRules.CanCreateObject(typeof(Customer)));
+        context.Assert.AreEqual(provider.CanEditObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, cust));
+        context.Assert.AreEqual(provider.CanGetObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, cust));
+        context.Assert.AreEqual(provider.CanDeleteObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, cust));
+        context.Assert.AreEqual(provider.CanCreateObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, cust));
+
+        context.Assert.AreEqual(provider.CanEditObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Customer)));
+        context.Assert.AreEqual(provider.CanGetObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(Customer)));
+        context.Assert.AreEqual(provider.CanDeleteObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Customer)));
+        context.Assert.AreEqual(provider.CanCreateObject, Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(Customer)));
         context.Assert.Success();
 
       });

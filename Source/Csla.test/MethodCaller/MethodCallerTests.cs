@@ -174,7 +174,6 @@ namespace Csla.Test.MethodCaller
 
     public void DoSuccess()
     {
-      var x = 0;
     }
 
     public void DoException()

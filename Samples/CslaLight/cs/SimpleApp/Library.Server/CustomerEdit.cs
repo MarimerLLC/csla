@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
-using Csla.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library
 {
@@ -21,6 +21,7 @@ namespace Library
     }
 
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name);
+    [Required(ErrorMessage = "Name required")]
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -40,28 +41,25 @@ namespace Library
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, NameProperty);
-      ValidationRules.AddRule(
-        CustomerEdit.StringOnlyLetters, NameProperty);
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new StringOnlyLetters { PrimaryProperty = NameProperty });
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
     }
 
-    private static bool StringOnlyLetters(object target, RuleArgs e)
+    private class StringOnlyLetters : Csla.Rules.BusinessRule
     {
-      e.Description = "Name must consist of only letters.";
-      e.Severity = RuleSeverity.Error;
-
-      var ce = (CustomerEdit)target;
-      return string.IsNullOrEmpty(ce.Name) ||
-        !(from c in ce.Name.ToCharArray()
-          where !char.IsLetter(c)
-          select c)
-          .Any();
-    }
-
-    protected override void AddAuthorizationRules()
-    {
-      AuthorizationRules.AllowWrite(IdProperty, "None");
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var ce = (CustomerEdit)context.Target;
+        bool result = string.IsNullOrEmpty(ce.Name) ||
+          !(from c in ce.Name.ToCharArray()
+            where !char.IsLetter(c)
+            select c)
+            .Any();
+        if (!result)
+          context.AddErrorResult("Name must consist of only letters.");
+      }
     }
 
     #endregion

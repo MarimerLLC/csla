@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace InventoryDemo
 {
-  public partial class CustomerList : UserControl, Csla.Silverlight.ISupportNavigation
+  public partial class CustomerList : UserControl, Csla.Xaml.ISupportNavigation
   {
     #region ISupportNavigation Members
 

@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace InventoryDemo
 {
-  public partial class WarehouseList : UserControl, Csla.Silverlight.ISupportNavigation
+  public partial class WarehouseList : UserControl, Csla.Xaml.ISupportNavigation
   {
     public WarehouseList()
     {

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="InventoryDemo.CustomerList"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              xmlns:l="clr-namespace:InvLib;assembly=InvLib"
              Loaded="UserControl_Loaded"
              FontSize="16" Foreground="White">
@@ -11,7 +11,7 @@
                            FactoryMethod="GetCustomerList"
                            IsInitialLoadEnabled="True" />
     <csla:ErrorDialog x:Key="CustomerListError"
-                      Source="{StaticResource CustomerList}" />
+                      Source="{StaticResource CustomerList}" ShowExceptionDetail="True" />
     <DataTemplate x:Key="CustomerItem">
       <StackPanel>
         <TextBlock Text="{Binding Path=Name}"

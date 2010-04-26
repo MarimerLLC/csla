@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryDemo", "InventoryDemo\InventoryDemo.csproj", "{4A1F29FF-6E69-4935-AEF9-E9D18DB39FAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventoryDemo.Web", "InventoryDemo.Web\InventoryDemo.Web.csproj", "{A23E7EE8-19BF-4117-8826-3DB8592C55DA}"

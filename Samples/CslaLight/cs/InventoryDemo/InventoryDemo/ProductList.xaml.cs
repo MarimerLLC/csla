@@ -9,11 +9,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using Csla.Silverlight;
+using Csla.Xaml;
 
 namespace InventoryDemo
 {
-  public partial class ProductList : UserControl, Csla.Silverlight.ISupportNavigation
+  public partial class ProductList : UserControl, Csla.Xaml.ISupportNavigation
   {
     #region ISupportNavigation Members
 

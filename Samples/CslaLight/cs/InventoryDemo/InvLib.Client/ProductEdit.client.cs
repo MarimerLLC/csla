@@ -45,7 +45,7 @@ namespace InvLib
       {
         CategoryId = 3;
       }
-      ValidationRules.CheckRules();
+      BusinessRules.CheckRules();
       handler(this, null);
     }
 

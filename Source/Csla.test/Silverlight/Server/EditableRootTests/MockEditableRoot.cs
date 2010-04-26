@@ -54,23 +54,16 @@ namespace Csla.Testing.Business.EditableRootTests
 
     #endregion
 
-    #region  Validation Rules
+    #region  Business Rules
 
     //protected override void AddBusinessRules()
     //{
+    //  base.AddBusinessRules();
     //  // TODO: add business rules
     //}
 
-    #endregion
-
-    #region  Authorization Rules
-
-    //protected override void AddAuthorizationRules()
-    //{
-    //  // add AuthorizationRules here
-    //}
-
-    //protected static void AddObjectAuthorizationRules()
+    //[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    //public static void AddObjectAuthorizationRules()
     //{
     //  // add object-level authorization rules here
     //}

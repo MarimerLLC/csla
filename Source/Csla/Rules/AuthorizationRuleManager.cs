@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 namespace Csla.Rules
 {
@@ -18,7 +19,9 @@ namespace Csla.Rules
     internal static AuthorizationRuleManager GetRulesForType(Type type, string ruleSet)
     {
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
-      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
+      var result = _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
+      InitializePerTypeRules(result, type);
+      return result;
     }
 #else
     private static Dictionary<RuleSetKey, AuthorizationRuleManager> _perTypeRules = new Dictionary<RuleSetKey, AuthorizationRuleManager>();
@@ -38,14 +41,29 @@ namespace Csla.Rules
           }
         }
       }
+      InitializePerTypeRules(result, type);
       return result;
     }
-
 #endif
 
     internal static AuthorizationRuleManager GetRulesForType(Type type)
     {
       return GetRulesForType(type, null);
+    }
+
+    private static void InitializePerTypeRules(AuthorizationRuleManager mgr, Type type)
+    {
+      if (!mgr.InitializedPerType)
+        lock (mgr)
+          if (!mgr.InitializedPerType)
+          {
+            mgr.InitializedPerType = true;
+            // invoke method to add auth roles
+            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+            System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
+            if (method != null)
+              method.Invoke(null, null);
+          }
     }
 
     private class RuleSetKey
@@ -77,7 +95,12 @@ namespace Csla.Rules
     /// Gets or sets a value indicating whether the rules have been
     /// initialized.
     /// </summary>
-    public bool Initialized { get; set; }
+    public bool Initialized { get; internal set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether the rules have been
+    /// initialized.
+    /// </summary>
+    public bool InitializedPerType { get; internal set; }
 
     private AuthorizationRuleManager()
     {

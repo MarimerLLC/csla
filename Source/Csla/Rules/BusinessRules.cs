@@ -143,6 +143,31 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Associates a per-type authorization rule with 
+    /// the business type in the default rule set.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="rule">Rule object.</param>
+    public static void AddRule(Type objectType, IAuthorizationRule rule)
+    {
+      var typeRules = AuthorizationRuleManager.GetRulesForType(objectType, null);
+      typeRules.Rules.Add(rule);
+    }
+
+    /// <summary>
+    /// Associates a per-type authorization rule with 
+    /// the business type.
+    /// </summary>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="rule">Rule object.</param>
+    /// <param name="ruleSet">Rule set name.</param>
+    public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
+    {
+      var typeRules = AuthorizationRuleManager.GetRulesForType(objectType, ruleSet);
+      typeRules.Rules.Add(rule);
+    }
+
+    /// <summary>
     /// Gets a value indicating whether there are
     /// any currently broken rules, which would
     /// mean the object is not valid.

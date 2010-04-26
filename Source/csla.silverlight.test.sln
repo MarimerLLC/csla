@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight.test", "Cs
 		{BA105340-59DD-4708-B9B4-555B03269B80} = {BA105340-59DD-4708-B9B4-555B03269B80}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla", "csla\csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla", "Csla\csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.silverlight", "csla.silverlight\csla.silverlight.csproj", "{458394C6-8425-4CAB-99EA-42BCAA6DE6F4}"
 	ProjectSection(ProjectDependencies) = postProject

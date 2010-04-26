@@ -44,7 +44,7 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Debug\Client\</OutputPath>
-    <DefineConstants>TRACE;TESTING</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;TESTING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

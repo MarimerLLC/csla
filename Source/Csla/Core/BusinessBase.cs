@@ -573,22 +573,24 @@ namespace Csla.Core
     /// the specified method.
     /// </summary>
     /// <returns><see langword="true" /> if execute is allowed.</returns>
-    /// <param name="methodName">Name of the method to execute.</param>
+    /// <param name="method">Method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool CanExecuteMethod(string methodName, bool throwOnFalse)
+    public bool CanExecuteMethod(Csla.Core.IMemberInfo method, bool throwOnFalse)
     {
 
-      bool result = CanExecuteMethod(methodName);
+      bool result = CanExecuteMethod(method);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        System.Security.SecurityException ex = 
+          new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
         throw ex;
       }
       return result;
 
     }
+
 
     /// <summary>
     /// Returns <see langword="true" /> if the user is allowed to execute
@@ -599,7 +601,19 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {
-      return CanExecuteMethod(new MethodInfo(methodName));
+      return CanExecuteMethod(methodName, false);
+    }
+
+    private bool CanExecuteMethod(string methodName, bool throwOnFalse)
+    {
+
+      bool result = CanExecuteMethod(new MethodInfo(methodName));
+      if (throwOnFalse && result == false)
+      {
+        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        throw ex;
+      }
+      return result;
     }
 
     #endregion

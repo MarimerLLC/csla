@@ -51,7 +51,7 @@ namespace Csla.Test.Security
 
     public void DoWork()
     {
-      CanExecuteMethod("DoWork", true);
+      CanExecuteMethod(DoWorkMethod, true);
     }
 
     #region Authorization

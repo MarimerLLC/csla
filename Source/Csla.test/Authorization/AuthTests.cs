@@ -328,11 +328,7 @@ namespace Csla.Test.Authorization
         {
           Csla.ApplicationContext.GlobalContext.Clear();
 
-#if SILVERLIGHT
           Assert.AreEqual(false, Csla.ApplicationContext.User.IsInRole("Admin"));
-#else
-          Assert.AreEqual(false, System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
-#endif
 
           PermissionsRoot pr = PermissionsRoot.NewPermissionsRoot();
           //should fail, because we're not an admin

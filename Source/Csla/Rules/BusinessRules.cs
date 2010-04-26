@@ -139,6 +139,7 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     public void AddRule(IAuthorizationRule rule)
     {
+      EnsureUniqueRule(TypeAuthRules, rule);
       TypeAuthRules.Rules.Add(rule);
     }
 
@@ -150,8 +151,7 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     public static void AddRule(Type objectType, IAuthorizationRule rule)
     {
-      var typeRules = AuthorizationRuleManager.GetRulesForType(objectType, null);
-      typeRules.Rules.Add(rule);
+      AddRule(objectType, rule, null);
     }
 
     /// <summary>
@@ -164,7 +164,19 @@ namespace Csla.Rules
     public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
     {
       var typeRules = AuthorizationRuleManager.GetRulesForType(objectType, ruleSet);
+      EnsureUniqueRule(typeRules, rule);
       typeRules.Rules.Add(rule);
+    }
+
+    private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRule rule)
+    {
+      IAuthorizationRule oldRule = null;
+      if (rule.Element != null)
+        oldRule = mgr.Rules.Where(c => c.Element.Name == rule.Element.Name && c.Action == rule.Action).FirstOrDefault();
+      else
+        oldRule = mgr.Rules.Where(c => c.Element == null && c.Action == rule.Action).FirstOrDefault();
+      if (oldRule != null)
+        throw new ArgumentException("rule");
     }
 
     /// <summary>
@@ -289,7 +301,8 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(Target.GetType()).Rules.Where(c => c.Element == element && c.Action == action).FirstOrDefault();
+        AuthorizationRuleManager.GetRulesForType(Target.GetType()).Rules.
+        Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
       if (rule != null)
       {
         var context = new AuthorizationContext { Rule = rule, Target = this.Target };

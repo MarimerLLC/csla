@@ -172,7 +172,7 @@ namespace Csla.Rules
     {
       IAuthorizationRule oldRule = null;
       if (rule.Element != null)
-        oldRule = mgr.Rules.Where(c => c.Element.Name == rule.Element.Name && c.Action == rule.Action).FirstOrDefault();
+        oldRule = mgr.Rules.Where(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action).FirstOrDefault();
       else
         oldRule = mgr.Rules.Where(c => c.Element == null && c.Action == rule.Action).FirstOrDefault();
       if (oldRule != null)

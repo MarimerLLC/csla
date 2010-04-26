@@ -31,7 +31,7 @@ namespace PTWebForms
     private void ApplyAuthorizationRules()
     {
       Resource obj = GetResource();
-      var canEdit = Csla.Security.AuthorizationRules.CanEditObject(typeof(Resource));
+      var canEdit = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Resource));
       // Resource display
       if (canEdit)
       {

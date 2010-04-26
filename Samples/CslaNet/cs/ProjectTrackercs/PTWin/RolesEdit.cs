@@ -87,7 +87,7 @@ namespace PTWin
     private void RolesEdit_CurrentPrincipalChanged(
       object sender, EventArgs e)
     {
-      if (!Csla.Security.AuthorizationRules.CanEditObject(typeof(Roles)))
+      if (!Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Roles)))
         this.Close();
     }
   }

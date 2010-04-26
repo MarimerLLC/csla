@@ -85,6 +85,18 @@ namespace ProjectTracker.Library
 
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartedProperty, AffectedProperties = { EndedProperty } });
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndedProperty, AffectedProperties = { StartedProperty } });
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, NameProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, StartedProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, EndedProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, DescriptionProperty, "ProjectManager"));
+    }
+
+    protected static void AddObjectAuthorizationRules()
+    {
+      Csla.Rules.BusinessRules.AddRule(typeof(Project), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
+      Csla.Rules.BusinessRules.AddRule(typeof(Project), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
+      Csla.Rules.BusinessRules.AddRule(typeof(Project), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
     }
 
     private class StartDateGTEndDate : Csla.Rules.BusinessRule
@@ -95,28 +107,6 @@ namespace ProjectTracker.Library
         if (target.ReadProperty(StartedProperty) > target.ReadProperty(EndedProperty))
           context.AddErrorResult("Start date can't be after end date");
       }
-    }
-
-    #endregion
-
-    #region  Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      // add AuthorizationRules here
-      AuthorizationRules.AllowWrite(NameProperty, "ProjectManager");
-      AuthorizationRules.AllowWrite(StartedProperty, "ProjectManager");
-      AuthorizationRules.AllowWrite(EndedProperty, "ProjectManager");
-      AuthorizationRules.AllowWrite(DescriptionProperty, "ProjectManager");
-    }
-
-    protected static void AddObjectAuthorizationRules()
-    {
-      // add object-level authorization rules here
-      AuthorizationRules.AllowCreate(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowEdit(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Project), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Project), "Administrator");
     }
 
     #endregion

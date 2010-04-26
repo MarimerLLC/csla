@@ -276,35 +276,35 @@ namespace PTWin
     {
       // Project menu
       this.NewProjectToolStripMenuItem.Enabled =
-        AuthorizationRules.CanCreateObject(typeof(Project));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(Project));
       this.EditProjectToolStripMenuItem.Enabled =
-        AuthorizationRules.CanGetObject(typeof(Project));
-      if (AuthorizationRules.CanEditObject(typeof(Project)))
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(Project));
+      if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Project)))
         this.EditProjectToolStripMenuItem.Text = 
           "Edit project";
       else
         this.EditProjectToolStripMenuItem.Text = 
           "View project";
       this.DeleteProjectToolStripMenuItem.Enabled =
-        AuthorizationRules.CanDeleteObject(typeof(Project));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Project));
 
       // Resource menu
       this.NewResourceToolStripMenuItem.Enabled =
-        AuthorizationRules.CanCreateObject(typeof(Resource));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(Resource));
       this.EditResourceToolStripMenuItem.Enabled =
-        AuthorizationRules.CanGetObject(typeof(Resource));
-      if (AuthorizationRules.CanEditObject(typeof(Resource)))
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(Resource));
+      if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Resource)))
         this.EditResourceToolStripMenuItem.Text = 
           "Edit resource";
       else
         this.EditResourceToolStripMenuItem.Text = 
           "View resource";
       this.DeleteResourceToolStripMenuItem.Enabled =
-        AuthorizationRules.CanDeleteObject(typeof(Resource));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Resource));
 
       // Admin menu
       this.EditRolesToolStripMenuItem.Enabled =
-        AuthorizationRules.CanEditObject(typeof(ProjectTracker.Library.Admin.Roles));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.Admin.Roles));
     }
 
     #endregion

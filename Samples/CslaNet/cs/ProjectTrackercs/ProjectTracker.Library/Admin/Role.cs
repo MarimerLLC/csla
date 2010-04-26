@@ -53,12 +53,15 @@ namespace ProjectTracker.Library.Admin
 
     #endregion
 
-    #region  Validation Rules
+    #region  Business Rules
 
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new NoDuplicates { PrimaryProperty = IdProperty });
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "Administrator"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, NameProperty, "Administrator"));
     }
 
     private class NoDuplicates : Csla.Rules.BusinessRule
@@ -75,16 +78,6 @@ namespace ProjectTracker.Library.Admin
               break;
             }
       }
-    }
-
-    #endregion
-
-    #region  Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      AuthorizationRules.AllowWrite(IdProperty, "Administrator");
-      AuthorizationRules.AllowWrite(NameProperty, "Administrator");
     }
 
     #endregion

@@ -59,14 +59,13 @@ namespace ProjectTracker.Library
 
       #endregion
 
-      #region  Authorization Rules
+      #region  Business Rules
 
       protected static void AddObjectAuthorizationRules()
       {
-        // add object-level authorization rules here
-        AuthorizationRules.AllowCreate(typeof(Roles), "Administrator");
-        AuthorizationRules.AllowEdit(typeof(Roles), "Administrator");
-        AuthorizationRules.AllowDelete(typeof(Roles), "Administrator");
+        Csla.Rules.BusinessRules.AddRule(typeof(Roles), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "Administrator"));
+        Csla.Rules.BusinessRules.AddRule(typeof(Roles), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "Administrator"));
+        Csla.Rules.BusinessRules.AddRule(typeof(Roles), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "Administrator"));
       }
 
       #endregion

@@ -14,7 +14,7 @@ namespace PTWebMvc.Controllers
 
     public ActionResult Index()
     {
-      ViewData["CanEdit"] = Csla.Security.AuthorizationRules.CanEditObject(typeof(ProjectTracker.Library.Project));
+      ViewData["CanEdit"] = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Project));
       ViewData.Model = ProjectTracker.Library.ProjectList.GetProjectList();
 
       return View();

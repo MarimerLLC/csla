@@ -76,26 +76,16 @@ namespace ProjectTracker.Library
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
-    }
 
-    #endregion
-
-    #region  Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      // add AuthorizationRules here
-      AuthorizationRules.AllowWrite(LastNameProperty, "ProjectManager");
-      AuthorizationRules.AllowWrite(FirstNameProperty, "ProjectManager");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, "ProjectManager"));
     }
 
     protected static void AddObjectAuthorizationRules()
     {
-      // add object-level authorization rules here
-      AuthorizationRules.AllowCreate(typeof(Resource), "ProjectManager");
-      AuthorizationRules.AllowEdit(typeof(Resource), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Resource), "ProjectManager");
-      AuthorizationRules.AllowDelete(typeof(Resource), "Administrator");
+      Csla.Rules.BusinessRules.AddRule(typeof(Resource), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
+      Csla.Rules.BusinessRules.AddRule(typeof(Resource), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
+      Csla.Rules.BusinessRules.AddRule(typeof(Resource), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
     }
 
     #endregion

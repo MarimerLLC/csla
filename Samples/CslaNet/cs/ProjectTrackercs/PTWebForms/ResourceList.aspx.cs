@@ -25,8 +25,9 @@ namespace PTWebForms
     private void ApplyAuthorizationRules()
     {
       this.GridView1.Columns[this.GridView1.Columns.Count - 1].Visible =
-        AuthorizationRules.CanDeleteObject(typeof(Resource));
-      NewResourceButton.Visible = AuthorizationRules.CanCreateObject(typeof(Resource));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Resource));
+      NewResourceButton.Visible = 
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(Resource));
     }
 
     #region GridView1

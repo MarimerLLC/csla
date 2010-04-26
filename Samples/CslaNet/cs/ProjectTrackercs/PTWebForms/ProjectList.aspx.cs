@@ -25,9 +25,9 @@ namespace PTWebForms
     {
       this.GridView1.Columns[
         this.GridView1.Columns.Count - 1].Visible =
-        Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Project));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(Project));
       NewProjectButton.Visible =
-        Csla.Security.AuthorizationRules.CanCreateObject(typeof(Project));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(Project));
     }
 
     #region GridView1

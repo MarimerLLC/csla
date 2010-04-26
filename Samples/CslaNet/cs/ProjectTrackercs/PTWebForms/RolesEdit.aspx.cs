@@ -30,8 +30,7 @@ namespace PTWebForms
     private void ApplyAuthorizationRules()
     {
       bool canEdit =
-        Csla.Security.AuthorizationRules.CanEditObject(
-        typeof(ProjectTracker.Library.Admin.Roles));
+        Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.Admin.Roles));
       this.GridView1.Columns[
         this.GridView1.Columns.Count - 1].Visible = canEdit;
       this.AddRoleButton.Visible = canEdit;

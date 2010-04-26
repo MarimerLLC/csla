@@ -33,7 +33,8 @@ namespace PTWebForms
     {
       Project obj = GetProject();
       // project display
-      if (Csla.Security.AuthorizationRules.CanEditObject(typeof(Project)))
+      var canEdit = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Project));
+      if (canEdit)
       {
         if (obj.IsNew)
           this.DetailsView1.DefaultMode = DetailsViewMode.Insert;
@@ -47,13 +48,11 @@ namespace PTWebForms
         this.AddResourceButton.Visible = false;
       }
       this.DetailsView1.Rows[
-        this.DetailsView1.Rows.Count - 1].Visible =
-        Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
+        this.DetailsView1.Rows.Count - 1].Visible = canEdit;
 
       // resource display
       this.GridView1.Columns[
-        this.GridView1.Columns.Count - 1].Visible =
-        Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
+        this.GridView1.Columns.Count - 1].Visible = canEdit;
     }
 
     #region Project DetailsView

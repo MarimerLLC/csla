@@ -56,9 +56,10 @@ namespace ProjectTracker.Library
       set { SetProperty(RoleProperty, value); }
     }
 
+    public static readonly MethodInfo GetResourceMethod = RegisterMethod(typeof(ProjectResource), "GetResource");
     public Resource GetResource()
     {
-      CanExecuteMethod("GetResource", true);
+      CanExecuteMethod(GetResourceMethod, true);
       return Resource.GetResource(GetProperty(ResourceIdProperty));
     }
 
@@ -74,16 +75,9 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Assignment.ValidRole { PrimaryProperty = RoleProperty });
-    }
 
-    #endregion
-
-    #region  Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      AuthorizationRules.AllowWrite(RoleProperty, "ProjectManager");
-      AuthorizationRules.DenyExecute("GetResource", "Guest");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, GetResourceMethod, "Guest"));
     }
 
     #endregion

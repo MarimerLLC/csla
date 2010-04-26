@@ -60,7 +60,7 @@ namespace PTWin
 
     private void ApplyAuthorizationRules()
     {
-      bool canEdit = Csla.Security.AuthorizationRules.CanEditObject(typeof(Project));
+      bool canEdit = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(Project));
       if (!canEdit)
         RebindUI(false, true);
 

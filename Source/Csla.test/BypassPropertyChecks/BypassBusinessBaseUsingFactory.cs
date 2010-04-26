@@ -69,17 +69,16 @@ namespace Csla.Test.BypassPropertyChecks
       set { SetProperty(Id4Property, ref _id4, value); }
     }
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
-      AuthorizationRules.AllowRead(IdProperty, new string[] { "Admin" });
-      AuthorizationRules.AllowWrite(IdProperty, new string[] { "Admin" });
-      AuthorizationRules.AllowRead(Id2Property, new string[] { "Random" });
-      AuthorizationRules.AllowWrite(Id2Property, new string[] { "Random" });
-
-      AuthorizationRules.AllowRead(Id3Property, new string[] { "Admin" });
-      AuthorizationRules.AllowWrite(Id3Property, new string[] { "Admin" });
-      AuthorizationRules.AllowRead(Id4Property, new string[] { "Random" });
-      AuthorizationRules.AllowWrite(Id4Property, new string[] { "Random" });
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, IdProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, IdProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id2Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id2Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id3Property, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id3Property, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id4Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id4Property, new List<string> { "Random" }));
     }
 
     public void LoadIdByPass(int id)

@@ -155,20 +155,21 @@ namespace Csla.Test.DataPortal
 
     #region "Authorization Rules"
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
       string role = "Admin";
 
-      this.AuthorizationRules.DenyRead("DenyReadOnProperty", role);
-      this.AuthorizationRules.DenyWrite("DenyWriteOnProperty", role);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, DenyReadOnPropertyProperty, new List<string> { role }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.WriteProperty, DenyWriteOnPropertyProperty, new List<string> { role }));
 
-      this.AuthorizationRules.DenyRead("DenyReadWriteOnProperty", role);
-      this.AuthorizationRules.DenyWrite("DenyReadWriteOnProperty", role);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, DenyReadWriteOnPropertyProperty, new List<string> { role }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.WriteProperty, DenyReadWriteOnPropertyProperty, new List<string> { role }));
 
-      this.AuthorizationRules.AllowRead("AllowReadWriteOnProperty", role);
-      this.AuthorizationRules.AllowWrite("AllowReadWriteOnProperty", role);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, AllowReadWriteOnPropertyProperty, new List<string> { role }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, AllowReadWriteOnPropertyProperty, new List<string> { role }));
     }
 
+    public static PropertyInfo<string> DenyReadOnPropertyProperty = RegisterProperty<string>(c => c.DenyReadOnProperty);
     public string DenyReadOnProperty
     {
       get
@@ -186,6 +187,7 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    public static PropertyInfo<string> DenyWriteOnPropertyProperty = RegisterProperty<string>(c => c.DenyWriteOnProperty);
     public string DenyWriteOnProperty
     {
       get
@@ -204,6 +206,7 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    public static PropertyInfo<string> DenyReadWriteOnPropertyProperty = RegisterProperty<string>(c => c.DenyReadWriteOnProperty);
     public string DenyReadWriteOnProperty
     {
       get
@@ -224,6 +227,7 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    public static PropertyInfo<string> AllowReadWriteOnPropertyProperty = RegisterProperty<string>(c => c.AllowReadWriteOnProperty);
     public string AllowReadWriteOnProperty
     {
       get

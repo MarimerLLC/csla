@@ -64,9 +64,9 @@ namespace Csla.Test.Windows
       set { SetProperty(AuthLevelProperty, value); }
     }
 
-    public override bool CanReadProperty(string propertyName)
+    public override bool CanReadProperty(Csla.Core.IPropertyInfo propertyName)
     {
-      if (propertyName == FirstNameProperty.Name)
+      if (propertyName.Name == FirstNameProperty.Name)
       {
         return ReadProperty(AuthLevelProperty) > 0;
       }
@@ -75,9 +75,9 @@ namespace Csla.Test.Windows
     }
 
 
-    public override bool CanWriteProperty(string propertyName)
+    public override bool CanWriteProperty(Csla.Core.IPropertyInfo propertyName)
     {
-      if (propertyName == FirstNameProperty.Name)
+      if (propertyName.Name == FirstNameProperty.Name)
       {
         return ReadProperty(AuthLevelProperty) > 1;
       }

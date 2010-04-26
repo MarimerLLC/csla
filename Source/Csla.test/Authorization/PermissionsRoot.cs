@@ -14,13 +14,13 @@ namespace Csla.Test.Security
   public class PermissionsRoot : BusinessBase<PermissionsRoot>
   {
     private int _ID = 0;
-    private string _firstName;
-
     protected override object GetIdValue()
     {
       return _ID;
     }
 
+    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
+    private string _firstName = FirstNameProperty.DefaultValue;
     public string FirstName
     {
       get
@@ -47,6 +47,8 @@ namespace Csla.Test.Security
       }
     }
 
+    public readonly static Csla.Core.IMemberInfo DoWorkMethod = RegisterMethod(typeof(PermissionsRoot), "DoWork");
+
     public void DoWork()
     {
       CanExecuteMethod("DoWork", true);
@@ -54,12 +56,11 @@ namespace Csla.Test.Security
 
     #region Authorization
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
-      this.AuthorizationRules.AllowRead("FirstName", "Admin");
-      this.AuthorizationRules.AllowWrite("FirstName", "Admin");
-
-      this.AuthorizationRules.AllowExecute("DoWork", "Admin");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
     }
 
     #endregion

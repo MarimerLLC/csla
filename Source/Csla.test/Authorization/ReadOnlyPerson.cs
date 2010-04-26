@@ -68,22 +68,21 @@ namespace Csla.Test.Authorization
       }
     }
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
-      base.AddAuthorizationRules();
-      AuthorizationRules.AllowRead(FirstNameProperty, "Admin");
-      AuthorizationRules.DenyRead(MiddleNameProperty, "Admin");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, MiddleNameProperty, new List<string> { "Admin" }));
     }
-    protected override void AddInstanceAuthorizationRules()
-    {
-      base.AddInstanceAuthorizationRules();
-      AuthorizationRules.InstanceAllowRead("LastName", "Admin");
-      AuthorizationRules.InstanceDenyRead("PlaceOfBirth", "Admin");
-    }
+    //protected override void AddInstanceAuthorizationRules()
+    //{
+    //  base.AddInstanceAuthorizationRules();
+    //  AuthorizationRules.InstanceAllowRead("LastName", "Admin");
+    //  AuthorizationRules.InstanceDenyRead("PlaceOfBirth", "Admin");
+    //}
 
-    protected override object GetIdValue()
-    {
-      return null;
-    }
+    //protected override object GetIdValue()
+    //{
+    //  return null;
+    //}
   }
 }

@@ -24,9 +24,9 @@ namespace Csla.Test.Authorization
       set { SetProperty(NameProperty, value); }
     }
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
-      AuthorizationRules.AllowWrite("Test", "Admin");
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, TestProperty, new List<string> { "Admin" }));
     }
   }
 }

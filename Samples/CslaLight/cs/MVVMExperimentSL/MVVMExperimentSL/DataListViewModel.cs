@@ -24,12 +24,9 @@ namespace MVVMexperiment
       BeginRefresh("GetList", 0);
     }
 
-    public void Load(object sender, ExecuteEventArgs e)
+    public void Load()
     {
-      var tag = e.TriggerSource.Tag.ToString();
       int id = 0;
-      if (!string.IsNullOrEmpty(tag))
-        id = int.Parse(tag);
       BeginRefresh("GetList", id);
     }
 

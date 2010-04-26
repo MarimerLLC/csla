@@ -413,21 +413,18 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if read is allowed.</returns>
-    /// <param name="propertyName">Name of the property to read.</param>
+    /// <param name="property">Property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool CanReadProperty(string propertyName, bool throwOnFalse)
+    public bool CanReadProperty(Csla.Core.IPropertyInfo property, bool throwOnFalse)
     {
-      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
-      if (prop == null)
-        throw new ArgumentOutOfRangeException("propertyName");
-      bool result = CanReadProperty(prop);
+      bool result = CanReadProperty(property);
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
           String.Format("{0} ({1})",
-          Resources.PropertyGetNotAllowed, propertyName));
+          Resources.PropertyGetNotAllowed, property.Name));
         throw ex;
       }
       return result;
@@ -441,10 +438,25 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanReadProperty(prop);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// specified property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property to read.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    private bool CanReadProperty(string propertyName, bool throwOnFalse)
+    {
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      return CanReadProperty(prop, throwOnFalse);
     }
 
     /// <summary>
@@ -472,20 +484,17 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <returns><see langword="true" /> if write is allowed.</returns>
-    /// <param name="propertyName">Name of the property to write.</param>
+    /// <param name="property">Property to write.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool CanWriteProperty(string propertyName, bool throwOnFalse)
+    public bool CanWriteProperty(Csla.Core.IPropertyInfo property, bool throwOnFalse)
     {
-      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
-      if (prop == null)
-        throw new ArgumentOutOfRangeException("propertyName");
-      bool result = CanWriteProperty(prop);
+      bool result = CanWriteProperty(property);
       if (throwOnFalse && result == false)
       {
         System.Security.SecurityException ex = new System.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, propertyName));
+          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, property.Name));
         throw ex;
       }
       return result;
@@ -499,10 +508,25 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanWriteProperty(string propertyName)
     {
-      var prop = PropertyInfoManager.GetRegisteredProperties(this.GetType()).Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanWriteProperty(prop);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// specified property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property to write.</param>
+    /// <param name="throwOnFalse">Indicates whether a negative
+    /// result should cause an exception.</param>
+    private bool CanWriteProperty(string propertyName, bool throwOnFalse)
+    {
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      if (prop == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+      return CanWriteProperty(prop, throwOnFalse);
     }
 
     private void VerifyAuthorizationCache()
@@ -1704,7 +1728,7 @@ namespace Csla.Core
     protected P GetProperty<P>(PropertyInfo<P> propertyInfo, Security.NoAccessBehavior noAccess)
     {
       P result = default(P);
-      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         result = ReadProperty<P>(propertyInfo);
       else
         result = propertyInfo.DefaultValue;
@@ -1724,7 +1748,7 @@ namespace Csla.Core
     protected object GetProperty(IPropertyInfo propertyInfo)
     {
       object result = null;
-      if (_bypassPropertyChecks || CanReadProperty(propertyInfo.Name, false))
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo, false))
       {
         var info = FieldManager.GetFieldData(propertyInfo);
         if (info != null)
@@ -2092,7 +2116,7 @@ namespace Csla.Core
     {
       try
       {
-        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
           P oldValue = default(P);
           var fieldData = FieldManager.GetFieldData(propertyInfo);
@@ -2142,7 +2166,7 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, noAccess == Security.NoAccessBehavior.ThrowException))
+      if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
       {
         try
         {
@@ -2190,7 +2214,7 @@ namespace Csla.Core
     {
       try
       {
-        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo.Name, true))
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, true))
         {
           if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
           FieldManager.SetFieldData(propertyInfo, newValue);

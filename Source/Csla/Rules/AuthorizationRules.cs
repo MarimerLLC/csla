@@ -27,12 +27,35 @@ namespace Csla.Rules.CommonRules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
+    /// <param name="roles">List of allowed roles.</param>
+    public IsInRole(AuthorizationActions action, params string[] roles)
+      : base(action)
+    {
+      _roles = new List<string>(roles);
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of allowed roles.</param>
     public IsInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
       _roles = roles;
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="action">Action this rule will enforce.</param>
+    /// <param name="element">Member to be authorized.</param>
+    /// <param name="roles">List of allowed roles.</param>
+    public IsInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, params string[] roles)
+      : base(action, element)
+    {
+      _roles = new List<string>(roles);
     }
 
     /// <summary>
@@ -79,12 +102,35 @@ namespace Csla.Rules.CommonRules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
+    /// <param name="roles">List of disallowed roles.</param>
+    public IsNotInRole(AuthorizationActions action, params string[] roles)
+      : base(action)
+    {
+      _roles = new List<string>(roles);
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of disallowed roles.</param>
     public IsNotInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
       _roles = roles;
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="action">Action this rule will enforce.</param>
+    /// <param name="element">Member to be authorized.</param>
+    /// <param name="roles">List of disallowed roles.</param>
+    public IsNotInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, params string[] roles)
+      : base(action, element)
+    {
+      _roles = new List<string>(roles);
     }
 
     /// <summary>

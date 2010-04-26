@@ -603,6 +603,51 @@ namespace Csla
 
     #endregion
 
+    #region Register Methods
+
+    /// <summary>
+    /// Indicates that the specified method belongs
+    /// to the type.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object to which the method belongs.
+    /// </param>
+    /// <param name="info">
+    /// IMemberInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided IMemberInfo object.
+    /// </returns>
+    protected static Csla.Core.IMemberInfo RegisterMethod(Type objectType, IMemberInfo info)
+    {
+      var reflected = objectType.GetMethod(info.Name);
+      if (reflected == null)
+        throw new ArgumentException(string.Format(Resources.NoSuchMethod, info.Name), "info");
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified method belongs
+    /// to the type.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object to which the method belongs.
+    /// </param>
+    /// <param name="methodName">
+    /// Name of the method.
+    /// </param>
+    /// <returns>
+    /// The provided IMemberInfo object.
+    /// </returns>
+    protected static MethodInfo RegisterMethod(Type objectType, string methodName)
+    {
+      var info = new MethodInfo(methodName);
+      RegisterMethod(objectType, info);
+      return info;
+    }
+
+    #endregion
+
     #region  Get Properties
 
     /// <summary>

@@ -455,4 +455,7 @@
     <value>This property requires {0} index arguments, {1} were provided</value>
     <comment>Csla.Silverlight</comment>
   </data>
+  <data name="NoSuchMethod" xml:space="preserve">
+    <value>No such method {0}</value>
+  </data>
 </root>

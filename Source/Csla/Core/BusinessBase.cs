@@ -1464,7 +1464,7 @@ namespace Csla.Core
     {
       var reflected = objectType.GetMethod(info.Name);
       if (reflected == null)
-        throw new ArgumentException("No such method " + info.Name, "info");
+        throw new ArgumentException(string.Format(Resources.NoSuchMethod, info.Name), "info");
       return info;
     }
 
@@ -1481,9 +1481,11 @@ namespace Csla.Core
     /// <returns>
     /// The provided IMemberInfo object.
     /// </returns>
-    protected static Csla.Core.IMemberInfo RegisterMethod(Type objectType, string methodName)
+    protected static MethodInfo RegisterMethod(Type objectType, string methodName)
     {
-      return RegisterMethod(objectType, new MethodInfo(methodName));
+      var info = new MethodInfo(methodName);
+      RegisterMethod(objectType, info);
+      return info;
     }
 
     #endregion

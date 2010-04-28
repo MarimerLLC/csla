@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using Csla.DataPortalClient;
 using System.Collections.Specialized;
+using Csla.Reflection;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
@@ -95,6 +96,7 @@ namespace Csla
     {
 
       T item = this[index];
+      var handleBusy = false;
       if (item.IsDeleted || (item.IsValid && item.IsDirty))
       {
         T savable = item;
@@ -102,7 +104,11 @@ namespace Csla
         // attempt to clone object
         ICloneable cloneable = savable as ICloneable;
         if (cloneable != null)
+        {
           savable = (T)cloneable.Clone();
+          MethodCaller.CallMethodIfImplemented(item, "MarkBusy");
+          handleBusy = true;
+        }
 
         // commit all changes
         int editLevel = savable.EditLevel;
@@ -113,6 +119,8 @@ namespace Csla
         DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
           {
+            if (handleBusy) 
+              MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
             if (e.Error == null)
             {
               T result = e.Object;

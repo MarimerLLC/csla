@@ -574,11 +574,25 @@ namespace Csla.Xaml
       IsBusy = false;
       var eventArgs = (IDataPortalResult)e;
       if (eventArgs.Error == null)
-        Model = (T)eventArgs.Object;
+      {
+        var model = (T) eventArgs.Object;
+        OnRefreshing(model);
+        Model = model;
+      }
       else
         Error = eventArgs.Error;
       OnRefreshed();
     }
+
+
+    /// <summary>
+    /// Method called after a refresh operation 
+    /// has completed and before the model is updated 
+    /// (when successful).
+    /// </summary>
+    /// <param name="model">The model.</param>
+    protected virtual void OnRefreshing(T model)
+    { }
 
     /// <summary>
     /// Method called after a refresh operation 
@@ -655,7 +669,9 @@ namespace Csla.Xaml
           if (e.Error == null)
           {
             var result = e.NewObject;
-            Model = (T)result;
+            var model = (T)result;
+            OnSaving(model);
+            Model = model; 
           }
           else
           {
@@ -674,6 +690,14 @@ namespace Csla.Xaml
         OnSaved();
       }
     }
+
+    /// <summary>
+    /// Method called after a save operation 
+    /// has completed and before Model is updated 
+    /// (when successful).
+    /// </summary>
+    protected virtual void OnSaving(T model)
+    { }
 
     /// <summary>
     /// Method called after a save operation 

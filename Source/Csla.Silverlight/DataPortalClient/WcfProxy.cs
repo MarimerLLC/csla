@@ -152,7 +152,14 @@ namespace Csla.DataPortalClient
       request.CriteriaData = null;
       request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
       request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      if (ApplicationContext.AuthenticationType == "Windows")
+      {
+        request.Principal = MobileFormatter.Serialize(null);
+      }
+      else
+      {
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      }
       request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
       return request;
@@ -164,7 +171,14 @@ namespace Csla.DataPortalClient
       request.ObjectData = null;
       request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
       request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      if (ApplicationContext.AuthenticationType == "Windows")
+      {
+        request.Principal = MobileFormatter.Serialize(null);
+      }
+      else
+      {
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      }
       request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
       request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
       return request;

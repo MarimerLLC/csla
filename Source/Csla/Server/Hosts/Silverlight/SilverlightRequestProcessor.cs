@@ -284,7 +284,8 @@ namespace Csla.Server.Hosts.Silverlight
     private void SetContext(ISilverlightRequest request)
     {
       ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
-      ApplicationContext.User = request.Principal;
+      if (ApplicationContext.AuthenticationType != "Windows")
+        ApplicationContext.User = request.Principal;
     }
 
     /// <summary>

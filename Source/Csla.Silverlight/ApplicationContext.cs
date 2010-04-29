@@ -202,6 +202,8 @@ namespace Csla
 
     #region Config Settings
 
+    private static string _authenticationType = "Csla";
+
     /// <summary>
     /// Returns the authentication type being used by the
     /// CSLA .NET framework.
@@ -217,7 +219,8 @@ namespace Csla
     /// </remarks>
     public static string AuthenticationType
     {
-      get { return "Csla"; }
+      get { return _authenticationType; }
+      set { _authenticationType = value; }
     }
 
     /// <summary>

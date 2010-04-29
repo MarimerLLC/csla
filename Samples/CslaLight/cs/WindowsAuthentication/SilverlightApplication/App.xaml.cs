@@ -26,6 +26,7 @@ namespace SilverlightApplication
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+      Csla.ApplicationContext.AuthenticationType = "Windows";
       this.RootVisual = new Page();
     }
 

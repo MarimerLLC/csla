@@ -28,12 +28,30 @@ namespace Csla.Xaml
   public class PropertyStatus : ContentControl,
     INotifyPropertyChanged
   {
-    private bool _isReadOnly = false;
+    private bool _isReadOnly = false; 
     private FrameworkElement _lastImage;
     private Point _lastPosition;
     private Point _popupLastPosition;
     private Size _lastAppSize;
     private Size _lastPopupSize;
+    
+    /// <summary>
+    /// Gets or sets a value indicating whether this DependencyProperty field is read only.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this DependencyProperty is read only; otherwise, <c>false</c>.
+    /// </value>
+    protected bool IsReadOnly
+    {
+      get
+      {
+        return _isReadOnly;
+      }
+      set
+      {
+        _isReadOnly = value;
+      }
+    }
 
 
     #region Constructors
@@ -90,35 +108,75 @@ namespace Csla.Xaml
     }
 
     private object _source = null;
-    private string _bindingPath = string.Empty;
-
-    private void SetSource()
+    /// <summary>
+    /// Gets or sets the Source.
+    /// </summary>
+    /// <value>The source.</value>
+    protected object Source
     {
-      var old = _source;
+      get
+      {
+        return _source;
+      }
+      set
+      {
+        _source = value;
+      }
+    }
+
+    private string _bindingPath = string.Empty;
+    /// <summary>
+    /// Gets or sets the binding path.
+    /// </summary>
+    /// <value>The binding path.</value>
+    protected string BindingPath
+    {
+      get
+      {
+        return _bindingPath;
+      }
+      set
+      {
+        _bindingPath = value;
+      }
+    }
+
+    /// <summary>
+    /// Sets the source binding and updates status.
+    /// </summary>
+    protected virtual void SetSource()
+    {
+      var old = Source;
       var binding = GetBindingExpression(PropertyProperty);
       if (binding != null)
       {
         if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-          _bindingPath = binding.ParentBinding.Path.Path;
+          BindingPath = binding.ParentBinding.Path.Path;
         else
-          _bindingPath = string.Empty;
-        _source = GetRealSource(binding.DataItem, _bindingPath);
-        if (_bindingPath.IndexOf('.') > 0)
-          _bindingPath = _bindingPath.Substring(_bindingPath.LastIndexOf('.') + 1);
+          BindingPath = string.Empty;
+        Source = GetRealSource(binding.DataItem, BindingPath);
+        if (BindingPath.IndexOf('.') > 0)
+          BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
       }
       else
       {
-        _source = null;
-        _bindingPath = string.Empty;
+        Source = null;
+        BindingPath = string.Empty;
       }
 
-      HandleIsBusy(old, _source);
+      HandleIsBusy(old, Source);
 
       FindIsReadOnly();
       UpdateState();
     }
 
-    private object GetRealSource(object source, string bindingPath)
+    /// <summary>
+    /// Gets the real source helper method.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="bindingPath">The binding path.</param>
+    /// <returns></returns>
+    protected object GetRealSource(object source, string bindingPath)
     {
       var icv = source as ICollectionView;
       if (icv != null)
@@ -141,10 +199,10 @@ namespace Csla.Xaml
       {
         DetachSource(old);
         AttachSource(source);
-        BusinessBase bb = _source as BusinessBase;
+        BusinessBase bb = Source as BusinessBase;
         if (bb != null)
         {
-          IsBusy = bb.IsPropertyBusy(_bindingPath);
+          IsBusy = bb.IsPropertyBusy(BindingPath);
         }
       }
     }
@@ -171,18 +229,18 @@ namespace Csla.Xaml
 
     void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == _bindingPath)
+      if (e.PropertyName == BindingPath)
         UpdateState();
     }
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      if (e.PropertyName == _bindingPath)
+      if (e.PropertyName == BindingPath)
       {
         bool busy = e.Busy;
-        BusinessBase bb = _source as BusinessBase;
+        BusinessBase bb = Source as BusinessBase;
         if (bb != null)
-          busy = bb.IsPropertyBusy(_bindingPath);
+          busy = bb.IsPropertyBusy(BindingPath);
 
         if (busy != IsBusy)
         {
@@ -254,7 +312,7 @@ namespace Csla.Xaml
     public bool CanRead
     {
       get { return _canRead; }
-      private set
+      protected set
       {
         if (value != _canRead)
         {
@@ -273,7 +331,7 @@ namespace Csla.Xaml
     public bool CanWrite
     {
       get { return _canWrite; }
-      private set
+      protected set
       {
         if (value != _canWrite)
         {
@@ -453,17 +511,20 @@ namespace Csla.Xaml
 
     #region State management
 
-    private void UpdateState()
+    /// <summary>
+    /// Updates the state on control Property.
+    /// </summary>
+    protected virtual void UpdateState()
     {
       Popup popup = (Popup)FindChild(this, "popup");
       if (popup != null)
         popup.IsOpen = false;
 
-      BusinessBase businessObject = _source as BusinessBase;
+      BusinessBase businessObject = Source as BusinessBase;
       if (businessObject != null)
       {
         var allRules = (from r in businessObject.BrokenRulesCollection
-                        where r.Property == _bindingPath
+                        where r.Property == BindingPath
                         select r).ToArray();
 
         var removeRules = (from r in BrokenRules
@@ -503,7 +564,11 @@ namespace Csla.Xaml
       }
     }
 
-    private void GoToState(bool useTransitions)
+    /// <summary>
+    /// Updates the status of the Property in UI
+    /// </summary>
+    /// <param name="useTransitions">if set to <c>true</c> then use transitions.</param>
+    protected virtual void GoToState(bool useTransitions)
     {
       DisablePopup(_lastImage);
       HandleTarget();
@@ -532,41 +597,52 @@ namespace Csla.Xaml
 
     #region TargetControl
 
-    private void FindIsReadOnly()
+    /// <summary>
+    /// Update the ReadOnly status of DependencyProperty 
+    /// </summary>
+    protected virtual void FindIsReadOnly()
     {
-      if (_source != null && !string.IsNullOrEmpty(_bindingPath))
+      if (Source != null && !string.IsNullOrEmpty(BindingPath))
       {
-        var info = _source.GetType().GetProperty(_bindingPath);
+        var info = Source.GetType().GetProperty(BindingPath);
         if (info != null)
         {
-          _isReadOnly = !info.CanWrite;
-          if (!_isReadOnly)
+          IsReadOnly = !info.CanWrite;
+          if (!IsReadOnly)
           {
-            var setter = _source.GetType().GetMethod("set_" + _bindingPath);
+            var setter = Source.GetType().GetMethod("set_" + BindingPath);
             if (setter == null)
-              _isReadOnly = true;
+              IsReadOnly = true;
             else
-              _isReadOnly = !setter.IsPublic;
+              IsReadOnly = !setter.IsPublic;
           }
         }
       }
       else
       {
-        _isReadOnly = false;
+        IsReadOnly = false;
       }
     }
 
-    private void HandleTarget()
+
+    /// <summary>
+    /// Set the status on the target Property. 
+    /// 
+    /// Set IsReadOnly if control implements this property else set IsEnabled. 
+    /// If user is alloed to read the DependencyProperty then hide the actual value 
+    /// by pverriding the value to null or string.Empty.
+    /// </summary>
+    protected virtual void HandleTarget()
     {
-      if (!string.IsNullOrEmpty(_bindingPath))
+      if (!string.IsNullOrEmpty(BindingPath))
       {
-        var b = _source as Csla.Security.IAuthorizeReadWrite;
+        var b = Source as Csla.Security.IAuthorizeReadWrite;
         if (b != null)
         {
-          CanWrite = b.CanWriteProperty(_bindingPath);
+          CanWrite = b.CanWriteProperty(BindingPath);
           if (TargetControl != null)
           {
-            if (CanWrite && !_isReadOnly)
+            if (CanWrite && !IsReadOnly)
             {
               if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
                 MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
@@ -582,7 +658,7 @@ namespace Csla.Xaml
             }
           }
 
-          CanRead = b.CanReadProperty(_bindingPath);
+          CanRead = b.CanReadProperty(BindingPath);
           if (TargetControl != null && !CanRead)
           {
             if (MethodCaller.IsMethodImplemented(TargetControl, "set_Content", null))
@@ -598,7 +674,13 @@ namespace Csla.Xaml
 
     #region Helpers
 
-    private DependencyObject FindChild(DependencyObject parent, string name)
+    /// <summary>
+    /// Find child dependency property.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="name">The name.</param>
+    /// <returns>DependencyObject child</returns>
+    protected DependencyObject FindChild(DependencyObject parent, string name)
     {
       DependencyObject found = null;
       int count = VisualTreeHelper.GetChildrenCount(parent);

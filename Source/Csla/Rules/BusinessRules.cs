@@ -17,6 +17,7 @@ namespace Csla.Rules
     , IUndoableObject
 #endif
   {
+    [NonSerialized] 
     private object SyncRoot = new object();
 
     // list of broken rules for this business object.
@@ -209,13 +210,15 @@ namespace Csla.Rules
       private set { _runningRules = value; }
     }
 
+    private bool _isBusy;
+
     /// <summary>
     /// Gets a value indicating whether any async
     /// rules are currently executing.
     /// </summary>
     public bool RunningAsyncRules
     {
-      get { return BusyProperties.Count > 0; }
+      get { return _isBusy; /* BusyProperties.Count > 0; */ }
     }
 
     /// <summary>
@@ -455,6 +458,7 @@ namespace Csla.Rules
                 foreach (var item in r.Rule.AffectedProperties)
                 {
                   BusyProperties.Remove(item);
+                  _isBusy = BusyProperties.Count > 0;
                   if (!BusyProperties.Contains(item))
                     _target.RuleComplete(item);
                 }
@@ -500,9 +504,11 @@ namespace Csla.Rules
             // mark each property as busy
             foreach (var item in rule.AffectedProperties)
             {
-              if (!BusyProperties.Contains(item))
-                _target.RuleStart(item);
+              var alreadyBusy = BusyProperties.Contains(item);
               BusyProperties.Add(item);
+              _isBusy = true;
+              if (!alreadyBusy)
+                _target.RuleStart(item);
             }
           }
         }
@@ -660,6 +666,7 @@ namespace Csla.Rules
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
+      info.AddValue("_isBusy", _isBusy);
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
       {
@@ -688,6 +695,7 @@ namespace Csla.Rules
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
+      _isBusy = info.GetValue<bool>("_isBusy");
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
       {

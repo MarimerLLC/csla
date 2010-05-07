@@ -32,6 +32,19 @@ namespace Csla.Rules
       }
     }
 
+    private bool _suppressRuleChecking;
+    /// <summary>
+    /// Gets or sets a value indicating whether calling
+    /// CheckRules should result in rule
+    /// methods being invoked.
+    /// </summary>
+    /// <value>True to suppress all rule method invocation.</value>
+    public bool SuppressRuleChecking
+    {
+      get { return _suppressRuleChecking; }
+      set { _suppressRuleChecking = value; }
+    }
+
     private int _processThroughPriority;
     /// <summary>
     /// Gets or sets the priority through which
@@ -296,6 +309,9 @@ namespace Csla.Rules
     /// <param name="element">Property or method to check.</param>
     public bool HasPermission(AuthorizationActions action, Csla.Core.IMemberInfo element)
     {
+      if (_suppressRuleChecking)
+        return true;
+
       if (action == AuthorizationActions.CreateObject ||
           action == AuthorizationActions.DeleteObject ||
           action == AuthorizationActions.GetObject ||
@@ -325,6 +341,9 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules()
     {
+      if (_suppressRuleChecking)
+        return new List<string>();
+
       RunningRules = true;
       var affectedProperties = CheckObjectRules();
       var properties = ((IManageProperties)Target).GetManagedProperties();
@@ -347,6 +366,9 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
+      if (_suppressRuleChecking)
+        return new List<string>();
+
       var oldRR = RunningRules;
       RunningRules = true;
       var rules = from r in TypeRules.Rules
@@ -372,6 +394,9 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckRules(Csla.Core.IPropertyInfo property)
     {
+      if (_suppressRuleChecking)
+        return new List<string>();
+
       var oldRR = RunningRules;
       RunningRules = true;
 
@@ -541,7 +566,7 @@ namespace Csla.Rules
             // explicit short-circuiting
             if ((from r in context.Results
                         where r.StopProcessing == true
-                        select r).Count() > 0)
+                        select r).FirstOrDefault() != null)
               break;
           }
         }

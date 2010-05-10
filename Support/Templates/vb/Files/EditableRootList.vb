@@ -44,5 +44,10 @@ Public Class EditableRootList
     RaiseListChangedEvents = True
   End Sub
 
+  Protected Overrides Sub DataPortal_Update()
+    ' open database and update child objects
+    'MyBase.Child_Update()
+  End Sub
+
 #End Region
 End Class

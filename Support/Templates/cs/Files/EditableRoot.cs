@@ -56,13 +56,12 @@ namespace Templates
 
     public static EditableRoot GetEditableRoot(int id)
     {
-      return DataPortal.Fetch<EditableRoot>(
-        new SingleCriteria<EditableRoot, int>(id));
+      return DataPortal.Fetch<EditableRoot>(id);
     }
 
     public static void DeleteEditableRoot(int id)
     {
-      DataPortal.Delete<EditableRoot>(new SingleCriteria<EditableRoot, int>(id));
+      DataPortal.Delete<EditableRoot>(id);
     }
 
     private EditableRoot()
@@ -80,7 +79,7 @@ namespace Templates
       base.DataPortal_Create();
     }
 
-    private void DataPortal_Fetch(SingleCriteria<EditableRoot, int> criteria)
+    private void DataPortal_Fetch(int criteria)
     {
       // TODO: load values
     }
@@ -100,11 +99,11 @@ namespace Templates
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new SingleCriteria<EditableRoot, int>(this.Id));
+      DataPortal_Delete(this.Id);
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(SingleCriteria<EditableRoot, int> criteria)
+    private void DataPortal_Delete(int criteria)
     {
       // TODO: delete values
     }

@@ -35,25 +35,18 @@ Public Class SwitchableObject
 
 #End Region
 
-#Region "Validation Rules"
+#Region " Business Rules "
 
-  Protected Overloads Overrides Sub AddBusinessRules()
-    ' TODO: add validation rules 
-    ' ValidationRules.AddRule(Nothing, "")
-  End Sub
+  Protected Overrides Sub AddBusinessRules()
 
-#End Region
+    ' TODO: add validation rules
+    'BusinessRules.AddRule(New MyRule, IdProperty)
 
-#Region "Authorization Rules"
-
-  Protected Overloads Overrides Sub AddAuthorizationRules()
-    ' TODO: add authorization rules 
-    AuthorizationRules.AllowWrite(NameProperty, "Role")
   End Sub
 
   Private Shared Sub AddObjectAuthorizationRules()
-    ' TODO: add authorization rules 
-    ' AuthorizationRules.AllowEdit(GetType(SwitchableObject), "Role")
+    'TODO: add authorization rules
+    'BusinessRules.AddRule(...)
   End Sub
 
 #End Region
@@ -65,11 +58,11 @@ Public Class SwitchableObject
   End Function
 
   Public Shared Function GetSwitchableObject(ByVal id As Integer) As SwitchableObject
-    Return DataPortal.Fetch(Of SwitchableObject)(New SingleCriteria(Of SwitchableObject, Integer)(id))
+    Return DataPortal.Fetch(Of SwitchableObject)(id)
   End Function
 
   Public Shared Sub DeleteSwitchableObject(ByVal id As Integer)
-    DataPortal.Delete(New SingleCriteria(Of SwitchableObject, Integer)(id))
+    DataPortal.Delete(Of SwitchableObject)(id)
   End Sub
 
 #End Region
@@ -99,7 +92,7 @@ Public Class SwitchableObject
     MyBase.DataPortal_Create()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of SwitchableObject, Integer))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
     ' TODO: load values 
   End Sub
 
@@ -115,11 +108,11 @@ Public Class SwitchableObject
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overloads Overrides Sub DataPortal_DeleteSelf()
-    DataPortal_Delete(New SingleCriteria(Of SwitchableObject, Integer)(Me.Id))
+    DataPortal_Delete(Me.Id)
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of SwitchableObject, Integer))
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As Integer)
     ' TODO: delete values 
   End Sub
 

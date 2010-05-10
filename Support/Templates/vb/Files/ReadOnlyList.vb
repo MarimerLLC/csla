@@ -19,7 +19,7 @@ Public Class ReadOnlyList
 #Region "Factory Methods"
 
   Public Shared Function GetReadOnlyList(ByVal filter As String) As ReadOnlyList
-    Return DataPortal.Fetch(Of ReadOnlyList)(New SingleCriteria(Of ReadOnlyList, String)(filter))
+    Return DataPortal.Fetch(Of ReadOnlyList)(filter)
   End Function
 
   ' require use of factory methods 
@@ -30,7 +30,7 @@ Public Class ReadOnlyList
 
 #Region "Data Access"
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of ReadOnlyList, String))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As String)
     RaiseListChangedEvents = False
     IsReadOnly = False
     ' TODO: load values 

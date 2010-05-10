@@ -39,27 +39,18 @@ Public Class EditableChild
 
 #End Region
 
-#Region " Validation Rules "
+#Region " Business Rules "
 
   Protected Overrides Sub AddBusinessRules()
+
     ' TODO: add validation rules
-    'ValidationRules.AddRule(Nothing, "")
-  End Sub
-
-#End Region
-
-#Region " Authorization Rules "
-
-  Protected Overrides Sub AddAuthorizationRules()
-
-    ' TODO: add authorization rules
-    AuthorizationRules.AllowWrite(NameProperty, "")
+    'BusinessRules.AddRule(New MyRule, IdProperty)
 
   End Sub
 
   Private Shared Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
-    AuthorizationRules.AllowEdit(GetType(EditableChild), "Role")
+    'BusinessRules.AddRule(...)
   End Sub
 
 #End Region

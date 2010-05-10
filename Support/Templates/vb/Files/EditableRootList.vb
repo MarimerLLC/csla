@@ -7,11 +7,11 @@ Imports Csla.Security
 Public Class EditableRootList
   Inherits BusinessListBase(Of EditableRootList, EditableChild)
 
-#Region "Authorization Rules"
+#Region "Business Rules"
 
   Private Shared Sub AddObjectAuthorizationRules()
     ' TODO: add authorization rules 
-    AuthorizationRules.AllowGet(GetType(EditableRootList), "Role")
+    'Csla.Rules.BusinessRules.AddRule(GetType(EditableRootList), New Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.GetObject, "Role"))
   End Sub
 
 #End Region
@@ -23,7 +23,7 @@ Public Class EditableRootList
   End Function
 
   Public Shared Function GetEditableRootList(ByVal id As Integer) As EditableRootList
-    Return DataPortal.Fetch(Of EditableRootList)(New SingleCriteria(Of EditableRootList, Integer)(id))
+    Return DataPortal.Fetch(Of EditableRootList)(id)
   End Function
 
   ' Require use of factory methods 
@@ -34,7 +34,7 @@ Public Class EditableRootList
 
 #Region "Data Access"
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of EditableRootList, Integer))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
     RaiseListChangedEvents = False
     ' TODO: load values into memory 
     Dim childData As Object = Nothing

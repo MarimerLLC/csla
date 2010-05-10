@@ -56,13 +56,12 @@ namespace Templates
 
     public static SwitchableObject GetSwitchableObject(int id)
     {
-      return DataPortal.Fetch<SwitchableObject>(
-        new SingleCriteria<SwitchableObject, int>(id));
+      return DataPortal.Fetch<SwitchableObject>(id);
     }
 
     public static void DeleteSwitchableObject(int id)
     {
-      DataPortal.Delete<SwitchableObject>(new SingleCriteria<SwitchableObject, int>(id));
+      DataPortal.Delete<SwitchableObject>(id);
     }
 
     #endregion
@@ -94,7 +93,7 @@ namespace Templates
       base.DataPortal_Create();
     }
 
-    private void DataPortal_Fetch(SingleCriteria<SwitchableObject, int> criteria)
+    private void DataPortal_Fetch(int criteria)
     {
       // TODO: load values
     }
@@ -114,11 +113,11 @@ namespace Templates
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new SingleCriteria<SwitchableObject, int>(this.Id));
+      DataPortal_Delete(this.Id);
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(SingleCriteria<SwitchableObject, int> criteria)
+    private void DataPortal_Delete(int criteria)
     {
       // TODO: delete values
     }

@@ -49,8 +49,7 @@ namespace Templates
 
     public static ReadOnlyRoot GetReadOnlyRoot(int id)
     {
-      return DataPortal.Fetch<ReadOnlyRoot>(
-        new SingleCriteria<ReadOnlyRoot, int>(id));
+      return DataPortal.Fetch<ReadOnlyRoot>(id);
     }
 
     private ReadOnlyRoot()
@@ -60,7 +59,7 @@ namespace Templates
 
     #region Data Access
 
-    private void DataPortal_Fetch(SingleCriteria<ReadOnlyRoot, int> criteria)
+    private void DataPortal_Fetch(int criteria)
     {
       // TODO: load values
     }

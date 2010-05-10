@@ -37,29 +37,18 @@ Public Class EditableRoot
 
 #End Region
 
-#Region " Validation Rules "
+#Region " Business Rules "
 
   Protected Overrides Sub AddBusinessRules()
 
     ' TODO: add validation rules
-    'ValidationRules.AddRule(Nothing, "")
-
-  End Sub
-
-#End Region
-
-#Region " Authorization Rules "
-
-  Protected Overrides Sub AddAuthorizationRules()
-
-    ' TODO: add authorization rules
-    'AuthorizationRules.AllowWrite(NameProperty, "")
+    'BusinessRules.AddRule(New MyRule, IdProperty)
 
   End Sub
 
   Private Shared Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
-    'AuthorizationRules.AllowEdit(GetType(EditableRoot), "Role")
+    'BusinessRules.AddRule(...)
   End Sub
 
 #End Region
@@ -71,11 +60,11 @@ Public Class EditableRoot
   End Function
 
   Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot
-    Return DataPortal.Fetch(Of EditableRoot)(New SingleCriteria(Of EditableRoot, Integer)(id))
+    Return DataPortal.Fetch(Of EditableRoot)(id)
   End Function
 
   Public Shared Sub DeleteEditableRoot(ByVal id As Integer)
-    DataPortal.Delete(New SingleCriteria(Of EditableRoot, Integer)(id))
+    DataPortal.Delete(Of EditableRoot)(id)
   End Sub
 
   Private Sub New()
@@ -93,7 +82,7 @@ Public Class EditableRoot
     MyBase.DataPortal_Create()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of EditableRoot, Integer))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
     ' load values
   End Sub
 
@@ -109,10 +98,10 @@ Public Class EditableRoot
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overrides Sub DataPortal_DeleteSelf()
-    DataPortal_Delete(New SingleCriteria(Of EditableRoot, Integer)(Id))
+    DataPortal_Delete(Id)
   End Sub
 
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of EditableRoot, Integer))
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As Integer)
     ' TODO: delete values
   End Sub
 

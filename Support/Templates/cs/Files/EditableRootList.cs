@@ -27,8 +27,7 @@ namespace Templates
 
     public static EditableRootList GetEditableRootList(int id)
     {
-      return DataPortal.Fetch<EditableRootList>(
-        new SingleCriteria<EditableRootList, int>(id));
+      return DataPortal.Fetch<EditableRootList>(id);
     }
 
     private EditableRootList()
@@ -38,8 +37,7 @@ namespace Templates
 
     #region Data Access
 
-    private void DataPortal_Fetch(
-      SingleCriteria<EditableRootList, int> criteria)
+    private void DataPortal_Fetch(int criteria)
     {
       RaiseListChangedEvents = false;
       // TODO: load values into memory

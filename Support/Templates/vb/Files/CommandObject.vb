@@ -1,6 +1,6 @@
 <Serializable()> _
 Public Class CommandObject
-  Inherits CommandBase
+  Inherits CommandBase(Of CommandObject)
 
 #Region " Authorization Rules "
 

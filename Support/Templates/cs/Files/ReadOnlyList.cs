@@ -22,8 +22,7 @@ namespace Templates
 
     public static ReadOnlyList GetReadOnlyList(string filter)
     {
-      return DataPortal.Fetch<ReadOnlyList>(
-        new SingleCriteria<ReadOnlyList, string>(filter));
+      return DataPortal.Fetch<ReadOnlyList>(filter);
     }
 
     private ReadOnlyList()
@@ -33,8 +32,7 @@ namespace Templates
 
     #region Data Access
 
-    private void DataPortal_Fetch(
-      SingleCriteria<ReadOnlyList, string> criteria)
+    private void DataPortal_Fetch(string criteria)
     {
       RaiseListChangedEvents = false;
       IsReadOnly = false;

@@ -47,25 +47,18 @@ Public Class EditableRootParent
   End Property
 #End Region
 
-#Region "Validation Rules"
+#Region " Business Rules "
 
-  Protected Overloads Overrides Sub AddBusinessRules()
-    ' TODO: add validation rules 
-    'ValidationRules.AddRule(RuleMethod, ""); 
-  End Sub
+  Protected Overrides Sub AddBusinessRules()
 
-#End Region
+    ' TODO: add validation rules
+    'BusinessRules.AddRule(New MyRule, IdProperty)
 
-#Region "Authorization Rules"
-
-  Protected Overloads Overrides Sub AddAuthorizationRules()
-    ' TODO: add authorization rules 
-    AuthorizationRules.AllowWrite(NameProperty, "Role")
   End Sub
 
   Private Shared Sub AddObjectAuthorizationRules()
-    ' TODO: add authorization rules 
-    'AuthorizationRules.AllowEdit(GetType(EditableRootParent), "Role")
+    'TODO: add authorization rules
+    'BusinessRules.AddRule(...)
   End Sub
 
 #End Region
@@ -77,11 +70,11 @@ Public Class EditableRootParent
   End Function
 
   Public Shared Function GetEditableRootParent(ByVal id As Integer) As EditableRootParent
-    Return DataPortal.Fetch(Of EditableRootParent)(New SingleCriteria(Of EditableRootParent, Integer)(id))
+    Return DataPortal.Fetch(Of EditableRootParent)(id)
   End Function
 
   Public Shared Sub DeleteEditableRootParent(ByVal id As Integer)
-    DataPortal.Delete(New SingleCriteria(Of EditableRootParent, Integer)(id))
+    DataPortal.Delete(Of EditableRootParent)(id)
   End Sub
 
   ' Require use of factory methods 
@@ -101,7 +94,7 @@ Public Class EditableRootParent
     MyBase.DataPortal_Create()
   End Sub
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of EditableRootParent, Integer))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
     ' TODO: load values 
     LoadProperty(ChildListProperty, EditableChildList.GetEditableChildList(Nothing))
     LoadProperty(ChildProperty, EditableChild.GetEditableChild(Nothing))
@@ -121,11 +114,11 @@ Public Class EditableRootParent
 
   <Transactional(TransactionalTypes.TransactionScope)> _
   Protected Overloads Overrides Sub DataPortal_DeleteSelf()
-    DataPortal_Delete(New SingleCriteria(Of EditableRootParent, Integer)(Me.Id))
+    DataPortal_Delete(Me.Id)
   End Sub
 
   <Transactional(TransactionalTypes.TransactionScope)> _
-  Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of EditableRootParent, Integer))
+  Private Overloads Sub DataPortal_Delete(ByVal criteria As Integer)
     ' TODO: delete values 
     FieldManager.UpdateChildren(Me)
   End Sub

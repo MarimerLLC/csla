@@ -28,16 +28,18 @@ Imports Csla.Security
 
 #End Region
 
-#Region "Authorization Rules"
+#Region " Business Rules "
 
-  Protected Overloads Overrides Sub AddAuthorizationRules()
-    ' TODO: add authorization rules 
-    'AuthorizationRules.AllowRead(NameProperty, "Role")
+  Protected Overrides Sub AddBusinessRules()
+
+    ' TODO: add authorization rules
+    'BusinessRules.AddRule(New MyRule, IdProperty)
+
   End Sub
 
   Private Shared Sub AddObjectAuthorizationRules()
-    ' TODO: add authorization rules 
-    'AuthorizationRules.AllowGet(GetType(ReadOnlyRoot), "Role")
+    'TODO: add authorization rules
+    'BusinessRules.AddRule(...)
   End Sub
 
 #End Region
@@ -45,7 +47,7 @@ Imports Csla.Security
 #Region "Factory Methods"
 
   Public Shared Function GetReadOnlyRoot(ByVal id As Integer) As ReadOnlyRoot
-    Return DataPortal.Fetch(Of ReadOnlyRoot)(New SingleCriteria(Of ReadOnlyRoot, Integer)(id))
+    Return DataPortal.Fetch(Of ReadOnlyRoot)(id)
   End Function
 
   ' require use of factory methods 
@@ -56,7 +58,7 @@ Imports Csla.Security
 
 #Region "Data Access"
 
-  Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of ReadOnlyRoot, Integer))
+  Private Overloads Sub DataPortal_Fetch(ByVal criteria As Integer)
     ' TODO: load values 
   End Sub
 

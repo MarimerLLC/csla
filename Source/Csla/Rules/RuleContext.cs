@@ -36,8 +36,22 @@ namespace Csla.Rules
     /// Gets a reference to the list of results being returned
     /// by this rule.
     /// </summary>
+
+    private List<RuleResult> _results;
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public List<RuleResult> Results { get; private set; }
+    public List<RuleResult> Results 
+    {
+      get
+      {
+        if (_results == null)
+          _results = new List<RuleResult>();
+        return _results;
+      }
+      private set
+      {
+        _results = value;
+      }
+    }
 
     private Action<RuleContext> _completeHandler;
 
@@ -63,8 +77,6 @@ namespace Csla.Rules
       result.Rule = rule;
       result.Target = Target;
       result.InputPropertyValues = InputPropertyValues;
-      if (Results == null)
-        Results = new List<RuleResult>();
       result.Results = Results;
       return result;
     }
@@ -76,9 +88,19 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddErrorResult(string description)
     {
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description));
+    }
+
+    /// <summary>
+    /// Add a Error severity result to the Results list.
+    /// </summary>
+    /// <param name="description">Human-readable description of
+    /// why the rule failed.</param>
+    /// <param name="stopProcessing">True if no further rules should be processed
+    /// for the current property.</param>
+    public void AddErrorResult(string description, bool stopProcessing)
+    {
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -91,8 +113,6 @@ namespace Csla.Rules
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description));
     }
 
@@ -103,9 +123,19 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddWarningResult(string description)
     {
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning });
+    }
+
+    /// <summary>
+    /// Add a Warning severity result to the Results list.
+    /// </summary>
+    /// <param name="description">Human-readable description of
+    /// why the rule failed.</param>
+    /// <param name="stopProcessing">True if no further rules should be processed
+    /// for the current property.</param>
+    public void AddWarningResult(string description, bool stopProcessing)
+    {
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -118,8 +148,6 @@ namespace Csla.Rules
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning });
     }
 
@@ -130,9 +158,19 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddInformationResult(string description)
     {
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information });
+    }
+
+    /// <summary>
+    /// Add an Information severity result to the Results list.
+    /// </summary>
+    /// <param name="description">Human-readable description of
+    /// why the rule failed.</param>
+    /// <param name="stopProcessing">True if no further rules should be processed
+    /// for the current property.</param>
+    public void AddInformationResult(string description, bool stopProcessing)
+    {
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -145,9 +183,17 @@ namespace Csla.Rules
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      if (Results == null)
-        Results = new List<RuleResult>();
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information });
+    }
+
+    /// <summary>
+    /// Add a Success severity result to the Results list.
+    /// </summary>
+    /// <param name="stopProcessing">True if no further rules should be processed
+    /// for the current property.</param>
+    public void AddSuccessResult(bool stopProcessing)
+    {
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -184,11 +230,8 @@ namespace Csla.Rules
     /// </summary>
     public void Complete()
     {
-      if (Results == null)
-      {
-        Results = new List<RuleResult>();
+      if (Results.Count == 0)
         Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty));
-      }
       _completeHandler(this);
     }
   }

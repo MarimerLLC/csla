@@ -30,6 +30,15 @@ namespace Csla.Rules
     /// to the user, but which is less
     /// severe than a warning.
     /// </summary>
-    Information
+    Information,
+
+    /// <summary>
+    /// Represents a business rule
+    /// result that should not
+    /// be displayed to the user,
+    /// and where the rule was
+    /// successful.
+    /// </summary>
+    Success
   }
 }

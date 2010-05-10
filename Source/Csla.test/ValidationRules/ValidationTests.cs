@@ -397,6 +397,28 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void MinMaxValue()
+    {
+      var context = GetContext();
+      var root = new UsesCommonRules();
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.AreEqual(10, root.Data);
+
+      root.Data = 0;
+      context.Assert.IsFalse(root.IsValid);
+
+      root.Data = 20;
+      context.Assert.IsFalse(root.IsValid);
+
+      root.Data = 15;
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 
   [Serializable]
@@ -462,6 +484,24 @@ namespace Csla.Test.ValidationRules
     {
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+    }
+  }
+
+  [Serializable]
+  public class UsesCommonRules : BusinessBase<UsesCommonRules>
+  {
+    private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, null, 10);
+    public int Data
+    {
+      get { return GetProperty(DataProperty); }
+      set { SetProperty(DataProperty, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataProperty, 5));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataProperty, 15));
     }
   }
 }

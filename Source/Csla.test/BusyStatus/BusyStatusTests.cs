@@ -36,13 +36,13 @@ namespace cslalighttest.BusyStatus
       ItemWithAsynchRule.GetItemWithAsynchRule("an id", (o, e) =>
         {
           item = e.Object;
-          context.Assert.IsNull(e.Error);
-          context.Assert.IsNotNull(item);
+          context.Assert.IsNull(e.Error, "Error should be null");
+          context.Assert.IsNotNull(item, "item should not be null");
 
 
           item.RuleField = "some value";
-          context.Assert.IsTrue(item.IsBusy);
-          context.Assert.IsFalse(item.IsSavable);
+          context.Assert.IsTrue(item.IsBusy, "Should be busy");
+          context.Assert.IsFalse(item.IsSavable, "Should not be savable");
           context.Assert.Success();
         });
       context.Complete();

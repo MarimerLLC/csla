@@ -15,7 +15,7 @@ namespace Csla.Test.ValidationRules
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
-    } 
+    }
 
     public static void NewHasRulesManager(EventHandler<DataPortalResult<HasRulesManager>> completed)
     {

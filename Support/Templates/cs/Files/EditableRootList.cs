@@ -49,6 +49,13 @@ namespace Templates
       RaiseListChangedEvents = true;
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
+    protected override void DataPortal_Update()
+    {
+      // TODO: open database, update values
+      //base.Child_Update();
+    }
+
     #endregion
   }
 }

@@ -29,18 +29,18 @@ namespace Templates
 
     #endregion
 
-    #region Authorization Rules
+    #region Business Rules
 
-    protected override void AddAuthorizationRules()
+    protected override void AddBusinessRules()
     {
       // TODO: add authorization rules
-      //AuthorizationRules.AllowRead("Name", "Role");
+      //BusinessRules.AddRule(...);
     }
 
     private static void AddObjectAuthorizationRules()
     {
       // TODO: add authorization rules
-      //AuthorizationRules.AllowGet(typeof(ReadOnlyRoot), "Role");
+      //BusinessRules.AddRule(...);
     }
 
     #endregion

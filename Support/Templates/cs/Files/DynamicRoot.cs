@@ -31,28 +31,18 @@ namespace Templates
 
     #endregion
 
-    #region Validation Rules
+    #region Business Rules
 
     protected override void AddBusinessRules()
     {
       // TODO: add validation rules
-      //ValidationRules.AddRule(RuleMethod, "");
-    }
-
-    #endregion
-
-    #region Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      // TODO: add authorization rules
-      //AuthorizationRules.AllowWrite("Name", "Role");
+      //BusinessRules.AddRule(new Rule(), IdProperty);
     }
 
     private static void AddObjectAuthorizationRules()
     {
       // TODO: add authorization rules
-      //AuthorizationRules.AllowEdit(typeof(DynamicRoot), "Role");
+      //BusinessRules.AddRule(...);
     }
 
     #endregion
@@ -83,7 +73,7 @@ namespace Templates
 
     private void Fetch(object rootData)
     {
-	  MarkOld();
+	    MarkOld();
       // TODO: load values from rootData
     }
 

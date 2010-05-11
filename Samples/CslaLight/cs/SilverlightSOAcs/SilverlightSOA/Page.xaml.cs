@@ -21,7 +21,7 @@ namespace SilverlightSOA
 
     private void CslaDataProvider_DataChanged(object sender, EventArgs e)
     {
-      var dp = (Csla.Silverlight.CslaDataProvider)sender;
+      var dp = (Csla.Xaml.CslaDataProvider)sender;
       if (dp.Error != null)
         MessageBox.Show(dp.Error.ToString());
     }

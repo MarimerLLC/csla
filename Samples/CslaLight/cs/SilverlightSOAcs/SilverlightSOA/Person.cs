@@ -1,6 +1,7 @@
 ﻿using System;
 using Csla;
 using Csla.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace SilverlightSOA
 {
@@ -17,6 +18,7 @@ namespace SilverlightSOA
     }
 
     private static PropertyInfo<string> FirstNameProperty = RegisterProperty(new PropertyInfo<string>("FirstName", "First name"));
+    [Required(ErrorMessage = "First name required")]
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
@@ -24,6 +26,7 @@ namespace SilverlightSOA
     }
 
     private static PropertyInfo<string> LastNameProperty = RegisterProperty(new PropertyInfo<string>("LastName", "Last name"));
+    [Required(ErrorMessage = "Last name required")]
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }
@@ -36,8 +39,7 @@ namespace SilverlightSOA
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, FirstNameProperty);
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, LastNameProperty);
+      base.AddBusinessRules();
     }
 
     #endregion

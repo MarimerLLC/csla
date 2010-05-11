@@ -2,7 +2,7 @@
     <system.serviceModel>
       <client>
         <endpoint address="http://localhost:33077/PersonService.svc" binding="basicHttpBinding"
-          bindingConfiguration="BasicHttpBinding_IPersonService" contract="SilverlightSOA.PersonService.IPersonService"
+          bindingConfiguration="BasicHttpBinding_IPersonService" contract="PersonService.IPersonService"
           name="BasicHttpBinding_IPersonService" />
       </client>
         <bindings>

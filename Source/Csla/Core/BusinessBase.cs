@@ -1850,7 +1850,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Gets a property's value as a specified type.
+    /// Gets a property's value.
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
@@ -1859,11 +1859,18 @@ namespace Csla.Core
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
+      object result = null;
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
-        return info.Value;
+      {
+        result = info.Value;
+      }
       else
-        return null;
+      {
+        result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData(propertyInfo, result);
+      }
+      return result;
     }
 
     #endregion

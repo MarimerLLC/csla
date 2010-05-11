@@ -402,10 +402,12 @@ namespace Csla.Test.ValidationRules
     public void MinMaxValue()
     {
       var context = GetContext();
-      var root = new UsesCommonRules();
-      context.Assert.IsTrue(root.IsValid);
+      var root = Csla.DataPortal.Create<UsesCommonRules>();
+      context.Assert.AreEqual(1, root.Data);
 
-      context.Assert.AreEqual(10, root.Data);
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
+
 
       root.Data = 0;
       context.Assert.IsFalse(root.IsValid);
@@ -490,7 +492,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class UsesCommonRules : BusinessBase<UsesCommonRules>
   {
-    private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, null, 10);
+    private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, null, 1);
     public int Data
     {
       get { return GetProperty(DataProperty); }

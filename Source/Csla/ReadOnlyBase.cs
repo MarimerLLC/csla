@@ -965,13 +965,20 @@ namespace Csla
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected object ReadProperty(IPropertyInfo propertyInfo)
+    protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
+      object result = null;
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
-        return info.Value;
+      {
+        result = info.Value;
+      }
       else
-        return null;
+      {
+        result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData(propertyInfo, result);
+      }
+      return result;
     }
 
     #endregion

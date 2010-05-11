@@ -1,5 +1,5 @@
 ﻿Imports System.Windows.Browser.HtmlPage
-Imports Csla.Silverlight
+Imports Csla.Xaml
 Imports Csla.DataPortal
 
 Partial Public Class Page
@@ -22,7 +22,7 @@ Partial Public Class Page
 
   End Sub
 
-  Private Sub _provider_DataChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles _provider.DataChanged
+  Private Sub CslaDataProvider_DataChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles _provider.DataChanged
 
     If _provider.Error IsNot Nothing Then
       Window.Alert(_provider.Error.Message)

@@ -1,5 +1,6 @@
 ﻿Imports Csla
 Imports Csla.Serialization
+Imports System.ComponentModel.DataAnnotations
 
 <Serializable()> _
 Public Class CustomerEdit
@@ -7,7 +8,7 @@ Public Class CustomerEdit
 
 #Region " Business Methods "
 
-  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id", "Id"))
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Id)
   ''' <Summary>
   ''' Gets and sets the Id value.
   ''' </Summary>
@@ -20,10 +21,11 @@ Public Class CustomerEdit
     End Set
   End Property
 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name", "Name"))
+  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Name)
   ''' <Summary>
   ''' Gets and sets the Name value.
   ''' </Summary>
+  <Required(ErrorMessage:="Name required")> _
   Public Property Name() As String
     Get
       Return GetProperty(NameProperty)
@@ -33,7 +35,7 @@ Public Class CustomerEdit
     End Set
   End Property
 
-  Private Shared StatusProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Status", "Status"))
+  Private Shared StatusProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Status)
   ''' <Summary>
   ''' Gets and sets the Status value.
   ''' </Summary>
@@ -51,7 +53,7 @@ Public Class CustomerEdit
 #Region " Business Rules "
 
   Protected Overrides Sub AddBusinessRules()
-    ValidationRules.AddRule(AddressOf Csla.Validation.CommonRules.StringRequired, NameProperty)
+    MyBase.AddBusinessRules()
   End Sub
 
 #End Region
@@ -108,6 +110,7 @@ Public Class CustomerEdit
   End Sub
 
 #End Region
+
 #Region " .NET Data Access "
 #Else
 #End Region

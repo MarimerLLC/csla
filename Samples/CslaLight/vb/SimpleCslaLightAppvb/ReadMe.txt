@@ -4,7 +4,7 @@ To get this solution running, you must do the following:
 
 2. Set SimpleAppWeb as the startup project
 
-3. Set the SimpleAppTestPage.aspx as the startup page
+3. Set the SimpleAppTestPage.html as the startup page
 
 4. Double-check the port number to make sure the 
    IP port of SimpleAppWeb is 1406. 

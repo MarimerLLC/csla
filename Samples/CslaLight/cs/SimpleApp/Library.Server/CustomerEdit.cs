@@ -21,6 +21,7 @@ namespace Library
     }
 
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name);
+    [Display(Description = "Customer name")]
     [Required(ErrorMessage = "Name required")]
     public string Name
     {
@@ -42,9 +43,17 @@ namespace Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new StringOnlyLetters { PrimaryProperty = NameProperty });
+      //BusinessRules.AddRule(new StringOnlyLetters { PrimaryProperty = NameProperty });
+      BusinessRules.AddRule(new StringOnlyLettersAsync(NameProperty));
 
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
+      BusinessRules.AddRule(
+        new Csla.Rules.CommonRules.IsInRole(
+          Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
+    }
+
+    public override void BeginSave(bool forceUpdate, EventHandler<Csla.Core.SavedEventArgs> handler, object userState)
+    {
+      base.BeginSave(forceUpdate, handler, userState);
     }
 
     private class StringOnlyLetters : Csla.Rules.BusinessRule
@@ -59,6 +68,40 @@ namespace Library
             .Any();
         if (!result)
           context.AddErrorResult("Name must consist of only letters.");
+      }
+    }
+
+    private class StringOnlyLettersAsync : Csla.Rules.BusinessRule
+    {
+      public StringOnlyLettersAsync(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        IsAsync = true;
+        InputProperties = new List<Csla.Core.IPropertyInfo> { primaryProperty };
+      }
+
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var bw = new System.ComponentModel.BackgroundWorker();
+        bw.DoWork += (o, e) =>
+          {
+            System.Threading.Thread.Sleep(2500);
+            var name = (string)context.InputPropertyValues[PrimaryProperty];
+            bool result = string.IsNullOrEmpty(name) ||
+              !(from c in name.ToCharArray()
+                where !char.IsLetter(c)
+                select c)
+                .Any();
+            if (!result)
+              context.AddErrorResult("Name must consist of only letters.");
+          };
+        bw.RunWorkerCompleted += (o, e) =>
+          {
+            if (e.Error != null)
+              context.AddErrorResult(e.Error.Message);
+            context.Complete();
+          };
+        bw.RunWorkerAsync();
       }
     }
 

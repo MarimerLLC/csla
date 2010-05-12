@@ -1046,45 +1046,37 @@ namespace Csla
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    /// <param name="handler">Callback handler.</param>
 #if SILVERLIGHT
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-#else
-    protected virtual void DataPortal_Create()
-#endif
     { }
-
-#if !SILVERLIGHT
-    /// <summary>
-    /// Override this method to allow retrieval of an existing business
-    /// object based on data in the database.
-    /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Fetch(object criteria)
-    {
-      throw new NotSupportedException(Resources.FetchNotSupportedException);
-    }
 
     /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Update()
+    /// <param name="handler">Callback handler.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public virtual void DataPortal_Update(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
     {
       throw new NotSupportedException(Resources.UpdateNotSupportedException);
     }
+#else
+    /// <summary>
+    /// Override this method to load a new business object with default
+    /// values from the database.
+    /// </summary>
+    protected virtual void DataPortal_Create()
+    { }
 
     /// <summary>
-    /// Override this method to allow immediate deletion of a business object.
+    /// Override this method to allow update of a business
+    /// object.
     /// </summary>
-    /// <param name="criteria">An object containing criteria values to identify the object.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
-    protected virtual void DataPortal_Delete(object criteria)
+    protected virtual void DataPortal_Update()
     {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
+      throw new NotSupportedException(Resources.UpdateNotSupportedException);
     }
 #endif
 
@@ -1093,7 +1085,6 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
@@ -1107,7 +1098,6 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
@@ -1122,7 +1112,6 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
@@ -1136,7 +1125,6 @@ namespace Csla
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
@@ -1150,7 +1138,6 @@ namespace Csla
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
@@ -1165,7 +1152,6 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
 #if SILVERLIGHT
     public virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)

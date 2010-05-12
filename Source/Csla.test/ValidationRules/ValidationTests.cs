@@ -421,6 +421,31 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void MinMaxLength()
+    {
+      var context = GetContext();
+
+      var root = Csla.DataPortal.Create<UsesCommonRules>();
+      root.Data = 15;
+      context.Assert.IsTrue(root.IsValid, "Should start valid");
+
+      root.MinCheck = "a";
+      context.Assert.IsFalse(root.IsValid, "Min too short");
+
+      root.MinCheck = "123456";
+      context.Assert.IsTrue(root.IsValid, "Min OK");
+
+      root.MaxCheck = "a";
+      context.Assert.IsTrue(root.IsValid, "Max OK");
+
+      root.MaxCheck = "123456";
+      context.Assert.IsFalse(root.IsValid, "Max too long");
+
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 
   [Serializable]
@@ -499,11 +524,28 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(DataProperty, value); }
     }
 
+    private static PropertyInfo<string> MinCheckProperty = RegisterProperty<string>(c => c.MinCheck, null, "123456");
+    public string MinCheck
+    {
+      get { return GetProperty(MinCheckProperty); }
+      set { SetProperty(MinCheckProperty, value); }
+    }
+
+    private static PropertyInfo<string> MaxCheckProperty = RegisterProperty<string>(c => c.MaxCheck);
+    public string MaxCheck
+    {
+      get { return GetProperty(MaxCheckProperty); }
+      set { SetProperty(MaxCheckProperty, value); }
+    }
+
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataProperty, 15));
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinLength(MinCheckProperty, 5));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(MaxCheckProperty, 5));
     }
   }
 }

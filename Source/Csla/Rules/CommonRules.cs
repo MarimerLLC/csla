@@ -147,7 +147,7 @@ namespace Csla.Rules.CommonRules
     protected override void Execute(RuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
-      if (value != null && value.ToString().Length > Min)
+      if (value != null && value.ToString().Length < Min)
         context.AddErrorResult(
           string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min));
     }

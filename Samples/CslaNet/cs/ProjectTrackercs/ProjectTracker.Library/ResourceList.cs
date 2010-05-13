@@ -2,12 +2,14 @@ using Csla;
 using Csla.Data;
 using System;
 using System.Linq;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
   public class ResourceList : ReadOnlyListBase<ResourceList, ResourceInfo>
   {
+#if !SILVERLIGHT
     #region  Factory Methods
 
     public static ResourceList EmptyList()
@@ -44,6 +46,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

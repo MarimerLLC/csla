@@ -3,6 +3,7 @@ using Csla.Security;
 using Csla.Data;
 using System;
 using System.Linq;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -54,9 +55,21 @@ namespace ProjectTracker.Library
     {
       get
       {
+#if SILVERLIGHT
+        if (!(FieldManager.FieldExists(AssignmentsProperty)))
+        {
+          ResourceAssignments.NewResourceAssignments((result) =>
+            {
+              LoadProperty(AssignmentsProperty, result);
+              OnPropertyChanged(AssignmentsProperty);
+            });
+        }
+        return null;
+#else
         if (!(FieldManager.FieldExists(AssignmentsProperty)))
           LoadProperty(AssignmentsProperty, ResourceAssignments.NewResourceAssignments());
         return GetProperty(AssignmentsProperty);
+#endif
       }
     }
 
@@ -90,6 +103,25 @@ namespace ProjectTracker.Library
 
     #endregion
 
+#if SILVERLIGHT
+    #region Factory Methods
+
+    public static void NewResource(EventHandler<DataPortalResult<Resource>> callback)
+    {
+      var dp = new DataPortal<Resource>();
+      dp.CreateCompleted += callback;
+      dp.BeginCreate();
+    }
+
+    public static void GetResource(int id, EventHandler<DataPortalResult<Resource>> callback)
+    {
+      var dp = new DataPortal<Resource>();
+      dp.FetchCompleted += callback;
+      dp.BeginFetch(new SingleCriteria<Resource, int>(id));
+    }
+
+    #endregion
+#else
     #region  Factory Methods
 
     public static Resource NewResource()
@@ -181,13 +213,16 @@ namespace ProjectTracker.Library
     }
 
     #endregion
+#endif
 
     #region  Exists
 
+#if !SILVERLIGHT
     public static bool Exists(int id)
     {
       return ExistsCommand.Exists(id);
     }
+#endif
 
     [Serializable()]
     private class ExistsCommand : CommandBase<ExistsCommand>
@@ -203,6 +238,7 @@ namespace ProjectTracker.Library
         }
       }
 
+#if !SILVERLIGHT
       public static bool Exists(int id)
       {
         ExistsCommand result = null;
@@ -224,6 +260,7 @@ namespace ProjectTracker.Library
                      select p).Count() > 0;
         }
       }
+#endif
     }
 
     #endregion

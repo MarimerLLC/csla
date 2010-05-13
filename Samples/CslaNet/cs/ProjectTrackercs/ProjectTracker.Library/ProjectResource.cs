@@ -1,5 +1,6 @@
 using Csla;
 using System;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -56,12 +57,12 @@ namespace ProjectTracker.Library
       set { SetProperty(RoleProperty, value); }
     }
 
-    public static readonly MethodInfo GetResourceMethod = RegisterMethod(typeof(ProjectResource), "GetResource");
-    public Resource GetResource()
-    {
-      CanExecuteMethod(GetResourceMethod, true);
-      return Resource.GetResource(GetProperty(ResourceIdProperty));
-    }
+    //public static readonly MethodInfo GetResourceMethod = RegisterMethod(typeof(ProjectResource), "GetResource");
+    //public Resource GetResource()
+    //{
+    //  CanExecuteMethod(GetResourceMethod, true);
+    //  return Resource.GetResource(GetProperty(ResourceIdProperty));
+    //}
 
     public override string ToString()
     {
@@ -77,18 +78,33 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Assignment.ValidRole { PrimaryProperty = RoleProperty });
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, GetResourceMethod, "Guest"));
+      //BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, GetResourceMethod, "Guest"));
     }
 
     #endregion
 
-    #region  Factory Methods
+    #region NewProjectResource
 
     internal static ProjectResource NewProjectResource(int resourceId)
     {
       return DataPortal.CreateChild<ProjectResource>(
         resourceId, RoleList.DefaultRole());
     }
+
+#if SILVERLIGHT
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public override void Child_Create()
+#else
+    protected override void Child_Create()
+#endif
+    {
+      LoadProperty(AssignedProperty, new SmartDate(System.DateTime.Today));
+    }
+
+    #endregion
+
+#if !SILVERLIGHT
+    #region  Factory Methods
 
     internal static ProjectResource GetResource(
       ProjectTracker.DalLinq.Assignment data)
@@ -102,11 +118,6 @@ namespace ProjectTracker.Library
     #endregion
 
     #region  Data Access
-
-    protected override void Child_Create()
-    {
-      LoadProperty(AssignedProperty, new SmartDate(System.DateTime.Today));
-    }
 
     private void Child_Create(int resourceId, int role)
     {
@@ -155,6 +166,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

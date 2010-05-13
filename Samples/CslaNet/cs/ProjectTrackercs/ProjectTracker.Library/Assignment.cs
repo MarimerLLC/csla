@@ -23,6 +23,32 @@ namespace ProjectTracker.Library
 
     #region  Validation Rules
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Ensure the Role property value exists
+    /// in RoleList
+    /// </summary>
+    public class ValidRole : BusinessRule
+    {
+      public ValidRole()
+      {
+        IsAsync = true;
+      }
+
+      protected override void Execute(RuleContext context)
+      {
+        var target = (IHoldRoles)context.Target;
+        int role = target.Role;
+
+        RoleList.GetList((o, e) =>
+          {
+            if (!e.Object.ContainsKey(role))
+              context.AddErrorResult("Role must be in RoleList");
+            context.Complete();
+          });
+      }
+    }
+#else
     /// <summary>
     /// Ensure the Role property value exists
     /// in RoleList
@@ -38,9 +64,11 @@ namespace ProjectTracker.Library
           context.AddErrorResult("Role must be in RoleList");
       }
     }
+#endif
 
     #endregion
 
+#if !SILVERLIGHT
     #region  Data Access
 
     public static byte[] AddAssignment(
@@ -83,6 +111,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

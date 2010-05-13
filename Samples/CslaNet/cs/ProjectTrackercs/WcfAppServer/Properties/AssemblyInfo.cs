@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PTSilverlight")]
+[assembly: AssemblyTitle("WcfAppServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("PTSilverlight")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2008")]
+[assembly: AssemblyCompany("Marimer LLC")]
+[assembly: AssemblyProduct("WcfAppServer")]
+[assembly: AssemblyCopyright("Copyright © Marimer LLC 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("feff4ef4-16ad-4559-a09b-c94bb5e86771")]
+[assembly: Guid("9a3c4cb2-31b1-49f1-8f1a-2a4862e26b44")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -2,6 +2,7 @@ using Csla;
 using Csla.Data;
 using Csla.Security;
 using System;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -14,7 +15,6 @@ namespace ProjectTracker.Library
     [Serializable()]
     public class Roles : BusinessListBase<Roles, Role>
     {
-
       #region  Business Methods
 
       /// <summary>
@@ -50,13 +50,21 @@ namespace ProjectTracker.Library
         return null;
       }
 
+#if SILVERLIGHT
+      protected override void AddNewCore()
+      {
+        var item = Role.NewRole();
+        Add(item);
+        OnAddedNew(item);
+      }
+#else
       protected override Role AddNewCore()
       {
         Role item = Role.NewRole();
         Add(item);
         return item;
       }
-
+#endif
       #endregion
 
       #region  Business Rules
@@ -70,6 +78,7 @@ namespace ProjectTracker.Library
 
       #endregion
 
+#if !SILVERLIGHT
       #region  Factory Methods
 
       public static Roles GetRoles()
@@ -134,7 +143,7 @@ namespace ProjectTracker.Library
       }
 
       #endregion
-
+#endif
     }
   }
 }

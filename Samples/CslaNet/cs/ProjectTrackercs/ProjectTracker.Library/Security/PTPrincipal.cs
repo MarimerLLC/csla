@@ -1,6 +1,7 @@
 using System;
 using System.Security.Principal;
 using Csla.Security;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -13,6 +14,18 @@ namespace ProjectTracker.Library
         : base(identity)
       { }
 
+#if SILVERLIGHT
+      public static void BeginLogin(string username, string password)
+      {
+        PTIdentity.GetPTIdentity(username, password, (o, e) =>
+          {
+            if (e.Error == null && e.Object != null)
+              SetPrincipal(e.Object);
+            else
+              Logout();
+          });
+      }
+#else
       public static bool Login(string username, string password)
       {
         return SetPrincipal(PTIdentity.GetIdentity(username, password));
@@ -22,6 +35,7 @@ namespace ProjectTracker.Library
       {
         SetPrincipal(PTIdentity.GetIdentity(username));
       }
+#endif
 
       private static bool SetPrincipal(PTIdentity identity)
       {

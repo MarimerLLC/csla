@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ProjectTracker.Library.Client")]
+[assembly: AssemblyTitle("ProjectTracker.Library.Sl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ProjectTracker.Library.Client")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2008")]
+[assembly: AssemblyCompany("Marimer LLC")]
+[assembly: AssemblyProduct("ProjectTracker.Library.Sl")]
+[assembly: AssemblyCopyright("Copyright © Marimer LLC 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6ca5eb04-f50c-4956-9e70-972303e9728b")]
+[assembly: Guid("c8bccb03-b465-4f59-b852-d34e42fae9e2")]
 
 // Version information for an assembly consists of the following four values:
 //

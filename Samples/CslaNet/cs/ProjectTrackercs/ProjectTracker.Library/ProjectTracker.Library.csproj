@@ -83,9 +83,7 @@
     <Compile Include="Project.cs" />
     <Compile Include="ProjectCloser.cs" />
     <Compile Include="ProjectInfo.cs" />
-    <Compile Include="ProjectInfo.Server.cs" />
     <Compile Include="ProjectList.cs" />
-    <Compile Include="ProjectList.Server.cs" />
     <Compile Include="ProjectResource.cs" />
     <Compile Include="ProjectResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

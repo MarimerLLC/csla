@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-using ProjectTracker.DalLinq.Security;
 using Csla.Security;
+using Csla.Serialization;
+#if !SILVERLIGHT
+using ProjectTracker.DalLinq.Security;
+#endif
 
 namespace ProjectTracker.Library
 {
@@ -14,6 +17,18 @@ namespace ProjectTracker.Library
     [Serializable()]
     public class PTIdentity : CslaIdentity
     {
+#if SILVERLIGHT
+      #region Factory Methods
+
+      internal static void GetPTIdentity(string username, string password, EventHandler<DataPortalResult<PTIdentity>> callback)
+      {
+        var dp = new DataPortal<PTIdentity>();
+        dp.FetchCompleted += callback;
+        dp.BeginFetch(new UsernameCriteria(username, password));
+      }
+
+      #endregion
+#else
       #region  Factory Methods
 
       internal static PTIdentity GetIdentity(string username, string password)
@@ -102,7 +117,7 @@ namespace ProjectTracker.Library
       }
 
       #endregion
-
+#endif
     }
   }
 }

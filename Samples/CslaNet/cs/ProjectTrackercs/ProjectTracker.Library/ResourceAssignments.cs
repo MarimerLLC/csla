@@ -1,5 +1,6 @@
 using Csla;
 using System;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -27,8 +28,15 @@ namespace ProjectTracker.Library
     {
       if (!(Contains(projectId)))
       {
-        ResourceAssignment project = ResourceAssignment.NewResourceAssignment(projectId);
+#if SILVERLIGHT
+        ResourceAssignment.NewResourceAssignment(projectId, (project) =>
+          {
+            this.Add(project);
+          });
+#else
+        var project = ResourceAssignment.NewResourceAssignment(projectId);
         this.Add(project);
+#endif
       }
       else
       {
@@ -67,6 +75,34 @@ namespace ProjectTracker.Library
 
     #endregion
 
+#if SILVERLIGHT
+    internal static void NewResourceAssignments(Action<ResourceAssignments> callback)
+    {
+      DataPortal.BeginExecute<ResourceAssignmentsCreator>(new ResourceAssignmentsCreator(), (o, e) =>
+        {
+          callback(e.Object.Result);
+        });
+    }
+
+    [Serializable]
+    private class ResourceAssignmentsCreator : CommandBase<ResourceAssignmentsCreator>
+    {
+      public static PropertyInfo<ResourceAssignments> ResultProperty = RegisterProperty<ResourceAssignments>(c => c.Result);
+      public ResourceAssignments Result
+      {
+        get { return ReadProperty(ResultProperty); }
+        set { LoadProperty(ResultProperty, value); }
+      }
+
+#if !SILVERLIGHT
+      protected override void DataPortal_Execute()
+      {
+        Result = ResourceAssignments.NewResourceAssignments();
+      }
+#endif
+    }
+
+#else
     #region  Factory Methods
 
     internal static ResourceAssignments NewResourceAssignments()
@@ -95,6 +131,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

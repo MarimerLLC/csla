@@ -1,5 +1,6 @@
 using Csla;
 using System;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -59,12 +60,13 @@ namespace ProjectTracker.Library
 
     #endregion
 
-    #region  Factory Methods
-
     internal static ProjectResources NewProjectResources()
     {
       return DataPortal.CreateChild<ProjectResources>();
     }
+
+#if !SILVERLIGHT
+    #region  Factory Methods
 
     internal static ProjectResources GetProjectResources(
       ProjectTracker.DalLinq.Assignment[] data)
@@ -91,6 +93,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

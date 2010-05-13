@@ -2,6 +2,7 @@ using Csla;
 using Csla.Data;
 using System;
 using System.Linq;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -10,41 +11,28 @@ namespace ProjectTracker.Library.Admin
   {
     #region  Business Methods
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(r => r.Id);
-    private bool _idSet;
+    public static PropertyInfo<bool> IdSetProperty = RegisterProperty<bool>(c => c.IdSet);
+    private bool IdSet
+    {
+      get { return ReadProperty(IdSetProperty); }
+      set { LoadProperty(IdSetProperty, value); }
+    }
+
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
-      get
-      {
-        if (!_idSet)
-        {
-          _idSet = true;
-          SetProperty(IdProperty, GetMax() + 1);
-        }
-        return GetProperty(IdProperty);
-      }
-      set
-      {
-        _idSet = true;
-        SetProperty(IdProperty, value);
-      }
+      get { return GetProperty(IdProperty); }
+      private set { LoadProperty(IdProperty, value); }
     }
 
-    private int GetMax()
-    {
-      // generate a default id value
-      Roles parent = (Roles)Parent;
-      return parent.Max(c => c.Id);
-    }
-
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(r => r.Name);
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(r => r.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    public static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
@@ -57,6 +45,8 @@ namespace ProjectTracker.Library.Admin
 
     protected override void AddBusinessRules()
     {
+      BusinessRules.AddRule(new NextId());
+
       BusinessRules.AddRule(new NoDuplicates { PrimaryProperty = IdProperty });
       BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
 
@@ -80,14 +70,33 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
+    private class NextId : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (Role)context.Target;
+        if (!target.IdSet)
+        {
+          target.IdSet = true;
+          Roles parent = (Roles)target.Parent;
+          var max = parent.Max(c => c.Id);
+          target.Id = max + 1;
+        }
+      }
+    }
+
     #endregion
 
-    #region  Factory Methods
+    #region Factory Methods
 
     internal static Role NewRole()
     {
       return DataPortal.CreateChild<Role>();
     }
+
+    #endregion
+#if !SILVERLIGHT
+    #region  Factory Methods
 
     internal static Role GetRole(ProjectTracker.DalLinq.getRolesResult data)
     {
@@ -146,6 +155,6 @@ namespace ProjectTracker.Library.Admin
     }
 
     #endregion
-
+#endif
   }
 }

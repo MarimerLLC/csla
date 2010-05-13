@@ -3,6 +3,7 @@ using System.Linq;
 using Csla;
 using Csla.Data;
 using Csla.Security;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -41,8 +42,7 @@ namespace ProjectTracker.Library
       set { SetPropertyConvert<SmartDate, string>(StartedProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> EndedProperty = 
-      RegisterProperty<SmartDate>(p=>p.Ended, null ,new SmartDate(SmartDate.EmptyValue.MaxDate));
+    private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(p => p.Ended, null, new SmartDate(SmartDate.EmptyValue.MaxDate));
     public string Ended
     {
       get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
@@ -57,8 +57,7 @@ namespace ProjectTracker.Library
       set { SetProperty(DescriptionProperty, value); }
     }
 
-    private static PropertyInfo<ProjectResources> ResourcesProperty =
-      RegisterProperty<ProjectResources>(p=>p.Resources);
+    private static PropertyInfo<ProjectResources> ResourcesProperty = RegisterProperty<ProjectResources>(p => p.Resources);
     public ProjectResources Resources
     {
       get
@@ -111,6 +110,7 @@ namespace ProjectTracker.Library
 
     #endregion
 
+#if !SILVERLIGHT
     #region  Factory Methods
 
     public static Project NewProject()
@@ -249,13 +249,16 @@ namespace ProjectTracker.Library
     }
 
     #endregion
+#endif
 
     #region  Exists
 
+#if !SILVERLIGHT
     public static bool Exists(Guid id)
     {
       return ExistsCommand.Exists(id);
     }
+#endif
 
     [Serializable()]
     private class ExistsCommand : CommandBase<ExistsCommand>
@@ -274,6 +277,7 @@ namespace ProjectTracker.Library
         private set { LoadProperty(ResultProperty, value); }
       }
 
+#if !SILVERLIGHT
       public static bool Exists(Guid id)
       {
         var result = DataPortal.Execute<ExistsCommand>(new ExistsCommand { Id = id });
@@ -289,6 +293,7 @@ namespace ProjectTracker.Library
                       select p).Count() > 0);
         }
       }
+#endif
     }
 
     #endregion

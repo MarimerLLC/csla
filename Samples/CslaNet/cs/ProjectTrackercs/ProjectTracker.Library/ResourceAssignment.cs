@@ -1,5 +1,6 @@
 using Csla;
 using System;
+using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -45,12 +46,12 @@ namespace ProjectTracker.Library
       set { SetProperty(RoleProperty, value); }
     }
 
-    public static readonly MethodInfo GetProjectMethod = RegisterMethod(typeof(ResourceAssignment), "GetProject");
-    public Project GetProject()
-    {
-      CanExecuteMethod(GetProjectMethod, true);
-      return Project.GetProject(ProjectId);
-    }
+    //public static readonly MethodInfo GetProjectMethod = RegisterMethod(typeof(ResourceAssignment), "GetProject");
+    //public Project GetProject()
+    //{
+    //  CanExecuteMethod(GetProjectMethod, true);
+    //  return Project.GetProject(ProjectId);
+    //}
 
     public override string ToString()
     {
@@ -70,6 +71,40 @@ namespace ProjectTracker.Library
 
     #endregion
 
+#if SILVERLIGHT
+    internal static void NewResourceAssignment(Guid projectId, Action<ResourceAssignment> callback)
+    {
+      DataPortal.BeginExecute<ResourceAssignmentCreator>(new ResourceAssignmentCreator { ProjectId = projectId }, (o, e) =>
+        {
+          callback(e.Object.Result);
+        });
+    }
+
+    [Serializable]
+    private class ResourceAssignmentCreator : CommandBase<ResourceAssignmentCreator>
+    {
+      public static PropertyInfo<Guid> ProjectIdProperty = RegisterProperty<Guid>(c => c.ProjectId);
+      public Guid ProjectId
+      {
+        get { return ReadProperty(ProjectIdProperty); }
+        set { LoadProperty(ProjectIdProperty, value); }
+      }
+
+      public static PropertyInfo<ResourceAssignment> ResultProperty = RegisterProperty<ResourceAssignment>(c => c.Result);
+      public ResourceAssignment Result
+      {
+        get { return ReadProperty(ResultProperty); }
+        set { LoadProperty(ResultProperty, value); }
+      }
+#if !SILVERLIGHT
+      protected override void DataPortal_Execute()
+      {
+        Result = ResourceAssignment.NewResourceAssignment(projectId);
+      }
+#endif
+    }
+
+#else
     #region  Factory Methods
 
     internal static ResourceAssignment NewResourceAssignment(Guid projectId)
@@ -140,6 +175,6 @@ namespace ProjectTracker.Library
     }
 
     #endregion
-
+#endif
   }
 }

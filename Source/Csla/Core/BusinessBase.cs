@@ -2675,6 +2675,7 @@ namespace Csla.Core
     /// object is busy.
     /// </summary>
     [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public bool IsSelfBusy
     {
       get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }

@@ -1290,7 +1290,7 @@ namespace Csla
     protected void MarkIdle()
     {
       _isBusy = false;
-      OnBusyChanged(new BusyChangedEventArgs("", true));
+      OnBusyChanged(new BusyChangedEventArgs("", false));
     }
 
     /// <summary>

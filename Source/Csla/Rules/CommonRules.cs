@@ -39,6 +39,9 @@ namespace Csla.Rules.CommonRules
     {
       object value = context.InputPropertyValues[PrimaryProperty];
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
+      if (PrimaryProperty != null) {
+         ctx.MemberName =PrimaryProperty.FriendlyName;
+      }
       System.ComponentModel.DataAnnotations.ValidationResult result = null;
       try
       {

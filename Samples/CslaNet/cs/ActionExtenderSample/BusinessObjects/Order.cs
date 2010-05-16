@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using Csla;
+using Csla.Core;
 using Csla.Data;
 using Csla.Security;
+using Csla.Reflection;
 using CslaStore.Data;
 
 namespace CslaStore.Business
@@ -75,6 +78,8 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
+        [StringLength(50)]
         public virtual string UserName
         {
             get
@@ -87,6 +92,7 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
         public virtual string OrderNumber
         {
             get
@@ -111,6 +117,7 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
         public virtual string CardType
         {
             get
@@ -123,6 +130,7 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
         public virtual string CardHolder
         {
             get
@@ -135,6 +143,8 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
+        [StringLength(16)]
         public virtual string CreditCard
         {
             get
@@ -147,6 +157,7 @@ namespace CslaStore.Business
             }
         }
 
+        [Required]
         public virtual string ExpDate
         {
             get
@@ -172,32 +183,20 @@ namespace CslaStore.Business
 
         #endregion
 
-        #region Validation rules
+        #region Read/Load overloads -  Required for Rules to work properly with private backing fields
 
-        protected override void AddBusinessRules()
+        protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
         {
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, userNameProperty);
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, 
-                new Csla.Validation.CommonRules.MaxLengthRuleArgs(userNameProperty, 50));
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, orderNumberProperty);
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, cardTypeProperty);
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, cardHolderProperty);
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, creditCardProperty);
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, 
-                new Csla.Validation.CommonRules.MaxLengthRuleArgs(creditCardProperty, 16));
-            ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, expDateProperty);
+              using (BypassPropertyChecks) {
+                   return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+              }
         }
 
-        #endregion
-
-        #region Authorization rules
-
-        protected override void AddAuthorizationRules()
+        protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
         {
-        }
-
-        protected static void AddObjectAuthorizationRules()
-        {
+              using (BypassPropertyChecks) {
+                   MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+              }
         }
 
         #endregion
@@ -286,11 +285,13 @@ namespace CslaStore.Business
 
         #region Data access
 
+
+
         [RunLocal()]
         protected override void DataPortal_Create()
         {
             _OrderID = Guid.NewGuid();
-            ValidationRules.CheckRules();
+            BusinessRules.CheckRules();
         }
 
         protected void DataPortal_Fetch(SingleCriteria<Order, Guid> criteria)

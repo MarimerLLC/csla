@@ -3,8 +3,10 @@ using System.ComponentModel;
 using Csla;
 using Csla.Data;
 using Csla.Security;
-using Csla.Validation;
 using CslaStore.Data;
+
+using System.ComponentModel.DataAnnotations;
+using Csla.Reflection;
 
 namespace CslaStore.Business
 {
@@ -115,26 +117,57 @@ namespace CslaStore.Business
 
         #endregion
 
-        #region Validation rules
-
-        protected override void AddBusinessRules()
+        #region Read/Load overloads -  Required for Rules to work properly with private backing fields
+        
+        /// <summary>
+        /// Gets a property's value.
+        /// </summary>
+        /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+        /// <returns></returns>
+        protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
         {
-           ValidationRules.AddRule(CommonRules.MinValue<int>, 
-               new Csla.Validation.CommonRules.MinValueRuleArgs<int>(quantityProperty, 1));
+            using (BypassPropertyChecks)
+            {
+                return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+            }
+        }
+
+        /// <summary>
+        /// Loads a property's managed field with the
+        /// supplied value.
+        /// </summary>
+        /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+        /// <param name="newValue">The new value for the property.</param>
+        /// <remarks>
+        /// No authorization checks occur when this method is called,
+        /// and no PropertyChanging or PropertyChanged events are raised.
+        /// Loading values does not cause validation rules to be
+        /// invoked.
+        /// </remarks>
+        protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
+        {
+            using (BypassPropertyChecks)
+            {
+                MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+            }
         }
 
         #endregion
 
         #region Authorization rules
 
-        protected override void AddAuthorizationRules()
-        {
-        }
-
         protected static void AddObjectAuthorizationRules()
         {
         }
 
+        #endregion
+
+        #region Business Rules
+        protected override void AddBusinessRules()
+        {
+            base.AddBusinessRules();
+            BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(quantityProperty, 1));
+        }
         #endregion
 
         #region Factory methods
@@ -156,7 +189,7 @@ namespace CslaStore.Business
         protected override void Child_Create()
         {
             _OrderDetailID = Guid.NewGuid();
-            ValidationRules.CheckRules();
+            BusinessRules.CheckRules();
         }
 
         protected void Child_Fetch(SafeDataReader reader)

@@ -1,12 +1,13 @@
 using System;
 using Csla;
 using Csla.Data;
+using Csla.Rules;
 using Csla.Security;
 
 namespace CslaStore.Business
 {
     [Serializable()]
-    public class OrderDetailCollection : BusinessListBase<OrderDetailCollection, OrderDetail>
+    public class OrderDetailCollection : Csla.BusinessBindingListBase<OrderDetailCollection, OrderDetail>
     {
         #region Constructors
 
@@ -20,7 +21,7 @@ namespace CslaStore.Business
 
         protected static void AddObjectAuthorizationRules()
         {
-            AuthorizationRules.AllowGet(typeof(OrderDetailCollection), "user");
+            BusinessRules.AddRule(typeof(OrderDetailCollection), new Csla.Rules.CommonRules.IsInRole(AuthorizationActions.GetObject, ("user")));
         }
 
         #endregion

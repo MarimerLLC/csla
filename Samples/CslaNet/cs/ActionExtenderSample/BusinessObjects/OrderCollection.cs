@@ -1,8 +1,10 @@
 using System;
 using Csla;
 using Csla.Data;
+using Csla.Rules;
 using Csla.Security;
 using CslaStore.Data;
+using Csla.Rules.CommonRules;
 
 namespace CslaStore.Business
 {
@@ -23,7 +25,7 @@ namespace CslaStore.Business
 
         protected static void AddObjectAuthorizationRules()
         {
-            AuthorizationRules.AllowGet(typeof(OrderCollection), "admin");
+            BusinessRules.AddRule(typeof(OrderCollection), new IsInRole(AuthorizationActions.GetObject, ("admin"))) ;
         }
 
         #endregion

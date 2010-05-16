@@ -7,7 +7,7 @@ using Csla;
 namespace BusinessLibrary
 {
   [Serializable]
-  public class LineItems : BusinessListBase<LineItems, LineItem>
+  public class LineItems : BusinessBindingListBase<LineItems, LineItem>
   {
     private LineItems()
     {

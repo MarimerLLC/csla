@@ -26,9 +26,8 @@ namespace BusinessLibrary
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.MinValue<int>,
-        new Csla.Validation.CommonRules.MinValueRuleArgs<int>(IdProperty, 1));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, NameProperty);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(IdProperty, 1));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty)); 
     }
 
     private LineItem()

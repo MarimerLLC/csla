@@ -37,7 +37,7 @@ namespace BusinessLibrary
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, CustomerNameProperty);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
     }
 
     private Order()

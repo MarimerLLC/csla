@@ -8,6 +8,7 @@ namespace BLBTest
   [Serializable]
   public class DataEdit : BusinessBase<DataEdit>
   {
+    
     private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
@@ -24,12 +25,10 @@ namespace BLBTest
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.MinValue<int>, 
-        new Csla.Validation.CommonRules.MinValueRuleArgs<int>(DataProperty, 10));
-
-      ValidationRules.AddRule(
-        Csla.Validation.CommonRules.StringRequired, NameProperty);
+        base.AddBusinessRules();
+        
+        BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataProperty, 10));
+        BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
     }
 
     public DataEdit()

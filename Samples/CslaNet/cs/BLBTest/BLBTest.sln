@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BLBTest", "BLBTest\BLBTest.csproj", "{2C9B4D16-5F77-4C16-A97A-CC95FB971A06}"
 EndProject
 Global

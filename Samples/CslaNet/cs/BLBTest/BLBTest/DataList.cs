@@ -6,7 +6,7 @@ using Csla;
 namespace BLBTest
 {
   [Serializable]
-  public class DataList : BusinessListBase<DataList, DataEdit>
+  public class DataList : BusinessBindingListBase<DataList, DataEdit>
   {
     public DataList()
     {

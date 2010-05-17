@@ -38,6 +38,10 @@ namespace Csla.Rules
     /// </summary>
 
     private List<RuleResult> _results;
+    /// <summary>
+    /// Gets a list of RuleResult objects containing the
+    /// results of the rule.
+    /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public List<RuleResult> Results 
     {

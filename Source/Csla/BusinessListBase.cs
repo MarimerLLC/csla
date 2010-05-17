@@ -1042,12 +1042,12 @@ namespace Csla
       }
     }
 
+#if SILVERLIGHT
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
     /// <param name="handler">Callback handler.</param>
-#if SILVERLIGHT
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
     { }

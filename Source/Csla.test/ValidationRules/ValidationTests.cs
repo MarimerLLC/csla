@@ -446,6 +446,22 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+    [TestMethod]
+    public void TwoRules()
+    {
+      var context = GetContext();
+
+      var root = new TwoPropertyRules();
+      root.Value2 = "b";
+      context.Assert.IsFalse(root.IsValid);
+
+      root.Value1 = "a";
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
+    }
   }
 
   [Serializable]
@@ -546,6 +562,51 @@ namespace Csla.Test.ValidationRules
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinLength(MinCheckProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(MaxCheckProperty, 5));
+    }
+  }
+
+  [Serializable]
+  public class TwoPropertyRules : BusinessBase<TwoPropertyRules>
+  {
+    private static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
+    public string Value1
+    {
+      get { return GetProperty(Value1Property); }
+      set { SetProperty(Value1Property, value); }
+    }
+
+    private static PropertyInfo<string> Value2Property = RegisterProperty<string>(c => c.Value2);
+    public string Value2
+    {
+      get { return GetProperty(Value2Property); }
+      set { SetProperty(Value2Property, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new TwoProps(Value1Property, Value2Property));
+      BusinessRules.AddRule(new TwoProps(Value2Property, Value1Property));
+    }
+
+    private class TwoProps : Csla.Rules.BusinessRule
+    {
+      public Csla.Core.IPropertyInfo SecondaryProperty { get; set; }
+      public TwoProps(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo secondProperty)
+        : base(primaryProperty)
+      {
+        SecondaryProperty = secondProperty;
+        AffectedProperties.Add(SecondaryProperty);
+        InputProperties = new List<Core.IPropertyInfo> { PrimaryProperty, SecondaryProperty };
+      }
+
+      protected override void Execute(Rules.RuleContext context)
+      {
+        var v1 = (string)context.InputPropertyValues[PrimaryProperty];
+        var v2 = (string)context.InputPropertyValues[SecondaryProperty];
+        if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
+          context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
+      }
     }
   }
 }

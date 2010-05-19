@@ -169,11 +169,18 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
-      var info = FieldManager.GetFieldData(propertyInfo);
-      if (info != null)
-        return info.Value;
-      else
-        return null;
+        object result = null;
+        var info = FieldManager.GetFieldData(propertyInfo);
+        if (info != null)
+        {
+            result = info.Value;
+        }
+        else
+        {
+            result = propertyInfo.DefaultValue;
+            FieldManager.LoadFieldData(propertyInfo, result);
+        }
+        return result;
     }
 
     #endregion

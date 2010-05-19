@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
+using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
 using Csla.Serialization;
@@ -1828,7 +1829,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
-      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       P result = default(P);
@@ -1856,21 +1857,31 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
-      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) != 0) && !FieldManager.FieldExists(propertyInfo))
+      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
-      object result = null;
-      var info = FieldManager.GetFieldData(propertyInfo);
-      if (info != null)
+      if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
       {
-        result = info.Value;
+          using (BypassPropertyChecks)
+          {
+              return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+          }
       }
       else
       {
-        result = propertyInfo.DefaultValue;
-        FieldManager.LoadFieldData(propertyInfo, result);
+          object result = null;
+          var info = FieldManager.GetFieldData(propertyInfo);
+          if (info != null)
+          {
+              result = info.Value;
+          }
+          else
+          {
+              result = propertyInfo.DefaultValue;
+              FieldManager.LoadFieldData(propertyInfo, result);
+          }
+          return result;
       }
-      return result;
     }
 
     #endregion
@@ -2467,7 +2478,18 @@ namespace Csla.Core
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       ResetChildEditLevel(newValue);
-      FieldManager.LoadFieldData(propertyInfo, newValue);
+
+      if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+      {
+          using (BypassPropertyChecks)
+          {
+              MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+          }
+      }
+      else
+      {
+          FieldManager.LoadFieldData(propertyInfo, newValue);
+      }
     }
 
     /// <summary>

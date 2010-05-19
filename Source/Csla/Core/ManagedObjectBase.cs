@@ -169,18 +169,25 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
-        object result = null;
-        var info = FieldManager.GetFieldData(propertyInfo);
-        if (info != null)
+        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
         {
-            result = info.Value;
+            return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
         }
         else
         {
-            result = propertyInfo.DefaultValue;
-            FieldManager.LoadFieldData(propertyInfo, result);
+            object result = null;
+            var info = FieldManager.GetFieldData(propertyInfo);
+            if (info != null)
+            {
+                result = info.Value;
+            }
+            else
+            {
+                result = propertyInfo.DefaultValue;
+                FieldManager.LoadFieldData(propertyInfo, result);
+            }
+            return result;
         }
-        return result;
     }
 
     #endregion
@@ -303,7 +310,14 @@ namespace Csla.Core
     /// </remarks>
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      FieldManager.LoadFieldData(propertyInfo, newValue);
+        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+        {
+            MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+        }
+        else
+        {
+            FieldManager.LoadFieldData(propertyInfo, newValue);
+        }
     }
 
     #endregion

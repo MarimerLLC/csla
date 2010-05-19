@@ -799,6 +799,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attempt to read/load private field property in managed properties..
+        /// </summary>
+        public static string PropertyIsPrivateField {
+            get {
+                return ResourceManager.GetString("PropertyIsPrivateField", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property load or set failed for property {0} ({1}).
         /// </summary>
         public static string PropertyLoadException {

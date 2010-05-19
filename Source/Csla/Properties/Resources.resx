@@ -458,4 +458,7 @@
   <data name="NoSuchMethod" xml:space="preserve">
     <value>No such method {0}</value>
   </data>
+  <data name="PropertyIsPrivateField" xml:space="preserve">
+    <value>Attempt to read/load private field property in managed properties.</value>
+  </data>
 </root>

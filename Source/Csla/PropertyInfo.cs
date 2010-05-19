@@ -188,7 +188,9 @@ namespace Csla
       return new Core.FieldManager.FieldData<T>(name);
     }
 
-    private RelationshipTypes _relationshipType = RelationshipTypes.Child;
+
+    // Default value is ManagedField
+    private RelationshipTypes _relationshipType = RelationshipTypes.None;
 
     /// <summary>
     /// Gets the relationship between the declaring object

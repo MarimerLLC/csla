@@ -144,6 +144,9 @@ namespace Csla.Core.FieldManager
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
     public IFieldData GetFieldData(IPropertyInfo prop)
     {
+      if (prop.RelationshipType == RelationshipTypes.PrivateField)
+        throw new InvalidOperationException(Resources.PropertyIsPrivateField);
+
       try
       {
         return _fieldData[prop.Index];

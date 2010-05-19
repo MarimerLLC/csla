@@ -24,32 +24,30 @@ namespace CslaStore.Business
 
         #region Property registrations
 
-        protected static PropertyInfo<Guid> orderIDProperty =
-            RegisterProperty<Guid>(typeof(Order), new PropertyInfo<Guid>("OrderID", "Order ID", Guid.Empty));
+        protected static PropertyInfo<Guid> orderIDProperty = RegisterProperty(p => p.OrderID, "Order ID", Guid.Empty, RelationshipTypes.PrivateField);
 
-        protected static PropertyInfo<string> userNameProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("UserName", "User Name", string.Empty));
+        protected static PropertyInfo<string> userNameProperty = RegisterProperty(p => p.UserName, "User Name", string.Empty, RelationshipTypes.PrivateField);
 
         protected static PropertyInfo<string> orderNumberProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("OrderNumber", "Order Number", string.Empty));
+            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("OrderNumber", "Order Number", string.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<SmartDate> orderDateProperty =
-            RegisterProperty<SmartDate>(typeof(Order), new PropertyInfo<SmartDate>("OrderDate", "Order Date" , null));
+            RegisterProperty<SmartDate>(typeof(Order), new PropertyInfo<SmartDate>("OrderDate", "Order Date", null, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<string> cardTypeProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CardType", "Card Type", string.Empty));
+            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CardType", "Card Type", string.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<string> cardHolderProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CardHolder", "Card Holder", string.Empty));
+            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CardHolder", "Card Holder", string.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<string> creditCardProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CreditCard", "Credit Card", string.Empty));
+            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("CreditCard", "Credit Card", string.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<string> expDateProperty =
-            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("ExpDate", "Expiration Date", string.Empty));
+            RegisterProperty<string>(typeof(Order), new PropertyInfo<string>("ExpDate", "Expiration Date", string.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<OrderDetailCollection> orderDetailListProperty =
-            RegisterProperty<OrderDetailCollection>(typeof(Order), new PropertyInfo<OrderDetailCollection>("OrderDetailList", 
+            RegisterProperty<OrderDetailCollection>(typeof(Order), new PropertyInfo<OrderDetailCollection>("OrderDetailList",
                 "Order Details", OrderDetailCollection.NewOrderDetailCollection()));
 
         #endregion
@@ -185,19 +183,19 @@ namespace CslaStore.Business
 
         #region Read/Load overloads -  Required for Rules to work properly with private backing fields
 
-        protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
-        {
-              using (BypassPropertyChecks) {
-                   return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
-              }
-        }
+        //protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
+        //{
+        //      using (BypassPropertyChecks) {
+        //           return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+        //      }
+        //}
 
-        protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
-        {
-              using (BypassPropertyChecks) {
-                   MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-              }
-        }
+        //protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
+        //{
+        //      using (BypassPropertyChecks) {
+        //           MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+        //      }
+        //}
 
         #endregion
 

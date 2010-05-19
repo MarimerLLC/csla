@@ -25,24 +25,24 @@ namespace CslaStore.Business
         #region Property registrations
 
         protected static PropertyInfo<Guid> orderDetailIDProperty =
-            RegisterProperty<Guid>(typeof(OrderDetail), 
-            new PropertyInfo<Guid>("OrderDetailID", "Order Detail ID", Guid.Empty));
+            RegisterProperty<Guid>(typeof(OrderDetail),
+            new PropertyInfo<Guid>("OrderDetailID", "Order Detail ID", Guid.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<Guid> orderIDProperty =
-            RegisterProperty<Guid>(typeof(OrderDetail), 
-            new PropertyInfo<Guid>("OrderID", "Order ID", Guid.Empty));
+            RegisterProperty<Guid>(typeof(OrderDetail),
+            new PropertyInfo<Guid>("OrderID", "Order ID", Guid.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<Guid> productIDProperty =
-            RegisterProperty<Guid>(typeof(OrderDetail), 
-            new PropertyInfo<Guid>("ProductID", "Product ID", Guid.Empty));
+            RegisterProperty<Guid>(typeof(OrderDetail),
+            new PropertyInfo<Guid>("ProductID", "Product ID", Guid.Empty, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<decimal> purchaseUnitPriceProperty =
-            RegisterProperty<decimal>(typeof(OrderDetail), 
-            new PropertyInfo<decimal>("PurchaseUnitPrice", "Purchase Unit Price", 0M));
+            RegisterProperty<decimal>(typeof(OrderDetail),
+            new PropertyInfo<decimal>("PurchaseUnitPrice", "Purchase Unit Price", 0M, RelationshipTypes.PrivateField));
 
         protected static PropertyInfo<int> quantityProperty =
-            RegisterProperty<int>(typeof(OrderDetail), 
-            new PropertyInfo<int>("Quantity", "Quantity", 0));
+            RegisterProperty<int>(typeof(OrderDetail),
+            new PropertyInfo<int>("Quantity", "Quantity", 0, RelationshipTypes.PrivateField));
 
         #endregion
 
@@ -119,38 +119,38 @@ namespace CslaStore.Business
 
         #region Read/Load overloads -  Required for Rules to work properly with private backing fields
         
-        /// <summary>
-        /// Gets a property's value.
-        /// </summary>
-        /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
-        /// <returns></returns>
-        protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
-        {
-            using (BypassPropertyChecks)
-            {
-                return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
-            }
-        }
+        ///// <summary>
+        ///// Gets a property's value.
+        ///// </summary>
+        ///// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+        ///// <returns></returns>
+        //protected override object ReadProperty(Csla.Core.IPropertyInfo propertyInfo)
+        //{
+        //    using (BypassPropertyChecks)
+        //    {
+        //        return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+        //    }
+        //}
 
-        /// <summary>
-        /// Loads a property's managed field with the
-        /// supplied value.
-        /// </summary>
-        /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
-        /// <param name="newValue">The new value for the property.</param>
-        /// <remarks>
-        /// No authorization checks occur when this method is called,
-        /// and no PropertyChanging or PropertyChanged events are raised.
-        /// Loading values does not cause validation rules to be
-        /// invoked.
-        /// </remarks>
-        protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
-        {
-            using (BypassPropertyChecks)
-            {
-                MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-            }
-        }
+        ///// <summary>
+        ///// Loads a property's managed field with the
+        ///// supplied value.
+        ///// </summary>
+        ///// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+        ///// <param name="newValue">The new value for the property.</param>
+        ///// <remarks>
+        ///// No authorization checks occur when this method is called,
+        ///// and no PropertyChanging or PropertyChanged events are raised.
+        ///// Loading values does not cause validation rules to be
+        ///// invoked.
+        ///// </remarks>
+        //protected override void LoadProperty(Csla.Core.IPropertyInfo propertyInfo, object newValue)
+        //{
+        //    using (BypassPropertyChecks)
+        //    {
+        //        MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+        //    }
+        //}
 
         #endregion
 

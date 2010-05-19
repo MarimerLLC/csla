@@ -58,7 +58,7 @@ namespace Csla.Rules
     /// Gets a value indicating whether the rule will run
     /// on a background thread.
     /// </summary>
-    public bool IsAsync { get; protected set; }
+    public virtual bool IsAsync { get; protected set; }
     /// <summary>
     /// Gets a unique rule:// URI for the specific instance
     /// of the rule within the context of the business object

@@ -464,6 +464,38 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+
+#if SILVERLIGHT
+    [TestMethod]
+    public void NotifyDataErrorInfo()
+    {
+      var context = GetContext();
+
+      var root = new TwoPropertyRules();
+
+      int errorsChanged = 0;
+      root.ErrorsChanged += (o, e) =>
+        {
+          errorsChanged++;
+        };
+
+      root.Value2 = "b";
+      context.Assert.AreEqual(2, errorsChanged);
+      var indei = root as System.ComponentModel.INotifyDataErrorInfo;
+      context.Assert.IsTrue(indei.HasErrors);
+      int count = 0;
+      foreach (var item in indei.GetErrors("Value2"))
+        count++;
+      context.Assert.IsTrue(count > 0);
+
+      root.Value1 = "a";
+
+      context.Assert.AreEqual(4, errorsChanged);
+
+      context.Assert.Success();
+      context.Complete();
+    }
+#endif
   }
 
   [Serializable]

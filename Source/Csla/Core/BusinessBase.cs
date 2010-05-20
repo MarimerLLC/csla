@@ -41,6 +41,9 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
+#if SILVERLIGHT
+    ,INotifyDataErrorInfo
+#endif
   {
 
     #region Constructors
@@ -3274,6 +3277,41 @@ namespace Csla.Core
       ((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);
 
       base.AcceptingChanges();
+    }
+
+    #endregion
+
+    #region INotifyDataErrorInfo
+
+    /// <summary>
+    /// Event raised when error information has changed.
+    /// </summary>
+    public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+    /// <summary>
+    /// Raises the ErrorsChanged event.
+    /// </summary>
+    /// <param name="e">Event arguments.</param>
+    protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
+    {
+      if (ErrorsChanged != null)
+        ErrorsChanged(this, e);
+    }
+
+    System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+    {
+      return BusinessRules.GetBrokenRules().Where(c => c.Property == propertyName).ToList();
+    }
+
+    bool INotifyDataErrorInfo.HasErrors
+    {
+      get { return !IsSelfValid; }
+    }
+
+    protected override void OnPropertyChanged(string propertyName)
+    {
+      base.OnPropertyChanged(propertyName);
+      OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
     }
 
     #endregion

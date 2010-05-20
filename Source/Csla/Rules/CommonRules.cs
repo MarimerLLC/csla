@@ -8,6 +8,35 @@ using System.Text.RegularExpressions;
 namespace Csla.Rules.CommonRules
 {
   /// <summary>
+  /// Base class used to create common rules.
+  /// </summary>
+  public abstract class CommonBusinessRule : BusinessRule
+  {
+    /// <summary>
+    /// Gets or sets the severity for this rule.
+    /// </summary>
+    public RuleSeverity Severity { get; set; }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Primary property.</param>
+    public CommonBusinessRule(Csla.Core.IPropertyInfo primaryProperty)
+      : base(primaryProperty)
+    {
+      Severity = RuleSeverity.Error;
+    }
+
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    public CommonBusinessRule()
+    {
+      Severity = RuleSeverity.Error;
+    }
+  }
+
+  /// <summary>
   /// Business rule that encapsulates a DataAnnotations
   /// ValidationAttribute rule.
   /// </summary>
@@ -59,7 +88,7 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// Business rule for a required string.
   /// </summary>
-  public class Required : BusinessRule
+  public class Required : CommonBusinessRule
   {
     /// <summary>
     /// Creates an instance of the rule.
@@ -79,15 +108,17 @@ namespace Csla.Rules.CommonRules
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
-        context.AddErrorResult(
-          string.Format(Resources.StringRequiredRule, PrimaryProperty.FriendlyName));
+      {
+        var message = string.Format(Resources.StringRequiredRule, PrimaryProperty.FriendlyName);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+      }
     }
   }
 
   /// <summary>
   /// Business rule for a maximum length string.
   /// </summary>
-  public class MaxLength : BusinessRule
+  public class MaxLength : CommonBusinessRule
   {
     /// <summary>
     /// Gets the max length value.
@@ -115,15 +146,17 @@ namespace Csla.Rules.CommonRules
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length > Max)
-        context.AddErrorResult(
-          string.Format(Resources.StringMaxLengthRule, PrimaryProperty.FriendlyName, Max));
+      {
+        var message = string.Format(Resources.StringMaxLengthRule, PrimaryProperty.FriendlyName, Max);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+      }
     }
   }
 
   /// <summary>
   /// Business rule for a minimum length string.
   /// </summary>
-  public class MinLength : BusinessRule
+  public class MinLength : CommonBusinessRule
   {
     /// <summary>
     /// Gets the min length value.
@@ -151,15 +184,17 @@ namespace Csla.Rules.CommonRules
     {
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length < Min)
-        context.AddErrorResult(
-          string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min));
+      {
+        var message = string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+      }
     }
   }
 
   /// <summary>
   /// Business rule for a minimum value.
   /// </summary>
-  public class MinValue<T> : BusinessRule
+  public class MinValue<T> : CommonBusinessRule
     where T : IComparable
   {
     /// <summary>
@@ -200,7 +235,8 @@ namespace Csla.Rules.CommonRules
           outValue = Min.ToString();
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Min);
-        context.AddErrorResult(string.Format(Resources.MinValueRule, PrimaryProperty.FriendlyName, outValue));
+        var message = string.Format(Resources.MinValueRule, PrimaryProperty.FriendlyName, outValue);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
   }
@@ -208,7 +244,7 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// Business rule for a maximum value.
   /// </summary>
-  public class MaxValue<T> : BusinessRule
+  public class MaxValue<T> : CommonBusinessRule
     where T : IComparable
   {
     /// <summary>
@@ -249,7 +285,8 @@ namespace Csla.Rules.CommonRules
           outValue = Max.ToString();
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Max);
-        context.AddErrorResult(string.Format(Resources.MaxValueRule, PrimaryProperty.FriendlyName, outValue));
+        var message = string.Format(Resources.MaxValueRule, PrimaryProperty.FriendlyName, outValue);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
   }
@@ -257,7 +294,7 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// Business rule that evaluates a regular expression.
   /// </summary>
-  public class RegExMatch : BusinessRule
+  public class RegExMatch : CommonBusinessRule
   {
     #region NullResultOptions
 
@@ -343,7 +380,10 @@ namespace Csla.Rules.CommonRules
       }
 
       if (!ruleSatisfied)
-        context.AddErrorResult(string.Format(Resources.RegExMatchRule, PrimaryProperty.FriendlyName));
+      {
+        var message = string.Format(Resources.RegExMatchRule, PrimaryProperty.FriendlyName);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+      }
     }
   }
 

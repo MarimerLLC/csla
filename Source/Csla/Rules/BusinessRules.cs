@@ -12,7 +12,7 @@ namespace Csla.Rules
   /// Tracks the business rules for a business object.
   /// </summary>
   [Serializable]
-  public class BusinessRules : Csla.Core.MobileObject
+  public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification
 #if SILVERLIGHT
     , IUndoableObject
 #endif
@@ -783,6 +783,21 @@ namespace Csla.Rules
 
       base.OnSetChildren(info, formatter);
     }
+    #endregion
+
+    #region Serialization Notification
+
+    void ISerializationNotification.Deserialized()
+    {
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
+    }
+
+    [System.Runtime.Serialization.OnDeserialized]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
+    {
+      SyncRoot = new object();
+    }
+
     #endregion
   }
 }

@@ -39,8 +39,21 @@ namespace Csla
     /// </summary>
     protected BusinessListBase()
     {
+      Initialize();
       AllowNew = true;
     }
+
+    #region Initialize
+
+    /// <summary>
+    /// Override this method to set up event handlers so user
+    /// code in a partial class can respond to events raised by
+    /// generated code.
+    /// </summary>
+    protected virtual void Initialize()
+    { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
 
     #region ICloneable
 
@@ -745,9 +758,9 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// Returns <see langword="true" /> if this object has changes, is valid,
+    /// the user is authorized and the object is not busy.
     /// </summary>
-    /// <returns>A value indicating if this object is both dirty and valid.</returns>
     public virtual bool IsSavable
     {
       get
@@ -764,14 +777,13 @@ namespace Csla
     {
       get
       {
-        // any non-new deletions make us dirty
+        // run through all the child objects
+        // and if any are busy then then
+        // collection is busy
         foreach (C item in DeletedList)
           if (item.IsBusy)
             return true;
 
-        // run through all the child objects
-        // and if any are dirty then then
-        // collection is dirty
         foreach (C child in this)
           if (child.IsBusy)
             return true;

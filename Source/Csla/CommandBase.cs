@@ -43,7 +43,6 @@ namespace Csla
   {
     #region Constructors
 
-#if SILVERLIGHT
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -51,15 +50,6 @@ namespace Csla
     {
       Initialize();
     }
-#else
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    protected CommandBase()
-    {
-      Initialize();
-    }
-#endif
 
     #endregion
 

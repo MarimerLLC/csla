@@ -38,6 +38,9 @@ namespace Csla
     Server.IDataPortalTarget
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable
   {
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public EditableRootListBase()
     {
       Initialize();

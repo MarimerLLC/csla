@@ -32,7 +32,7 @@ namespace Csla.Testing.Business.EditableChildTests
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Update(LocalProxy<MockList>.CompletedHandler completed)
+    public override void DataPortal_Update(LocalProxy<MockList>.CompletedHandler completed)
     {
       Child_Update();
 

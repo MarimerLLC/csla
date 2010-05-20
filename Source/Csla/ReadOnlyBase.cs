@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Core.FieldManager;
@@ -15,7 +16,6 @@ using Csla.Security;
 using Csla.Rules;
 #if SILVERLIGHT
 using Csla.Serialization;
-using Csla.Serialization.Mobile;
 #endif
 
 namespace Csla
@@ -35,9 +35,7 @@ namespace Csla
   public abstract class ReadOnlyBase<T> : BindableBase, 
     ICloneable, 
     IReadOnlyObject, 
-#if SILVERLIGHT
     ISerializationNotification,
-#endif
     IAuthorizeReadWrite, 
     IDataPortalTarget,
     IManageProperties,
@@ -472,30 +470,16 @@ namespace Csla
 
     #region Serialization Notification
 
-#if SILVERLIGHT
     void ISerializationNotification.Deserialized()
     {
-      if (_fieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
-      InitializeBusinessRules();
-      OnDeserialized();
+      OnDeserializedHandler(new StreamingContext());
     }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
-#else
     [OnDeserialized()]
     private void OnDeserializedHandler(StreamingContext context)
     {
-      FieldManager.SetPropertyList(this.GetType());
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();
       OnDeserialized(context);
     }
@@ -511,7 +495,6 @@ namespace Csla
       // do nothing - this is here so a subclass
       // could override if needed
     }
-#endif
 
     #endregion
 

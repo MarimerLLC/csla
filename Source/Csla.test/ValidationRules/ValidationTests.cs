@@ -398,6 +398,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+#if !SILVERLIGHT
     [TestMethod]
     public void MinMaxValue()
     {
@@ -446,6 +447,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.Success();
       context.Complete();
     }
+#endif
 
     [TestMethod]
     public void TwoRules()

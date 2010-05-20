@@ -46,10 +46,10 @@ namespace Csla.Security
     /// <summary>
     /// Invoked when the object is deserialized.
     /// </summary>
-    protected override void OnDeserialized()
+    protected override void OnDeserialized(StreamingContext context)
     {
       _forceInit = _forceInit && false;
-      base.OnDeserialized();
+      base.OnDeserialized(context);
     }
   }
 }

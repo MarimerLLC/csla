@@ -1267,19 +1267,11 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-#if SILVERLIGHT
-      OnDeserializedHandler();
-#else
       OnDeserializedHandler(new StreamingContext());
-#endif
     }
 
-#if SILVERLIGHT
-    private void OnDeserializedHandler()
-#else
     [OnDeserialized]
     private void OnDeserializedHandler(StreamingContext context)
-#endif
     {
       BusinessRules.SetTarget(this);
       if (_fieldManager != null)
@@ -1287,21 +1279,9 @@ namespace Csla.Core
       InitializeBusinessRules();
       FieldDataDeserialized();
 
-#if SILVERLIGHT
-      OnDeserialized();
-#else
       OnDeserialized(context);
-#endif
     }
 
-#if SILVERLIGHT
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-#else
     /// <summary>
     /// This method is called on a newly deserialized object
     /// after deserialization is complete.
@@ -1309,7 +1289,6 @@ namespace Csla.Core
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(StreamingContext context)
-#endif
     { }
 
     #endregion

@@ -5,6 +5,7 @@ using System.Text;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
+using System.Runtime.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
@@ -54,14 +55,10 @@ namespace Csla.Test.ValidationRules
       this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
     }
 
-#if (SILVERLIGHT)
-    protected override void OnDeserialized()
-    {
-      base.OnDeserialized();
-#else
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    protected override void OnDeserialized(StreamingContext context)
     {
       base.OnDeserialized(context);
+#if !SILVERLIGHT
       ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
 #endif
       this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);

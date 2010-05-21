@@ -27,6 +27,11 @@ namespace Csla.Rules
     private string _property;
     private RuleSeverity _severity;
 
+    public override string ToString()
+    {
+      return Description;
+    }
+
     /// <summary>
     /// Provides access to the name of the broken rule.
     /// </summary>

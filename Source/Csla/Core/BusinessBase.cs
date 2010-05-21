@@ -3300,7 +3300,9 @@ namespace Csla.Core
 
     System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
     {
-      return BusinessRules.GetBrokenRules().Where(c => c.Property == propertyName).ToList();
+      return BusinessRules.GetBrokenRules()
+        .Where(c => c.Property == propertyName && c.Severity == RuleSeverity.Error)
+        .ToList();
     }
 
     bool INotifyDataErrorInfo.HasErrors

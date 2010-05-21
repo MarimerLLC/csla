@@ -31,7 +31,6 @@ namespace Csla.Core
   public abstract class BusinessBase :  UndoableBase,
     IEditableBusinessObject,
     IEditableObject, 
-    IDataErrorInfo, 
     ICloneable, 
     IAuthorizeReadWrite, 
     IParent, 
@@ -43,6 +42,8 @@ namespace Csla.Core
     ISerializationNotification
 #if SILVERLIGHT
     ,INotifyDataErrorInfo
+#else
+    ,IDataErrorInfo
 #endif
   {
 
@@ -1234,6 +1235,7 @@ namespace Csla.Core
 
     #endregion
 
+#if !SILVERLIGHT
     #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -1265,6 +1267,7 @@ namespace Csla.Core
     }
 
     #endregion
+#endif
 
     #region Serialization Notification
 

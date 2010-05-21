@@ -148,6 +148,17 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Associates a business rule with the business object.
+    /// </summary>
+    /// <param name="rule">Rule object.</param>
+    /// <param name="ruleSet">Rule set name.</param>
+    public void AddRule(IBusinessRule rule, string ruleSet)
+    {
+      var typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), ruleSet);
+      typeRules.Rules.Add(rule);
+    }
+
+    /// <summary>
     /// Associates an authorization rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
@@ -595,10 +606,16 @@ namespace Csla.Rules
         metadataType = _target.GetType();
 #endif
 
+      // attributes on class
+      var attList = metadataType.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
+      foreach (var att in attList)
+        AddRule(new CommonRules.DataAnnotation(null, (System.ComponentModel.DataAnnotations.ValidationAttribute)att));
+
+      // attributes on properties
       var propList = metadataType.GetProperties();
       foreach (var prop in propList)
       {
-        var attList = prop.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
+        attList = prop.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
         foreach (var att in attList)
         {
           var target = (IManageProperties)_target;

@@ -57,7 +57,8 @@ namespace Csla.Rules.CommonRules
     {
       this.Attribute = attribute;
       RuleUri.AddQueryParameter("a", attribute.GetType().FullName);
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      if (primaryProperty != null)
+        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
     }
 
     /// <summary>
@@ -66,15 +67,23 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      object value = context.InputPropertyValues[PrimaryProperty];
+
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
-      if (PrimaryProperty != null) {
-         ctx.MemberName =PrimaryProperty.FriendlyName;
-      }
+      if (PrimaryProperty != null)
+        ctx.MemberName = PrimaryProperty.FriendlyName;
+
       System.ComponentModel.DataAnnotations.ValidationResult result = null;
       try
       {
-        result = this.Attribute.GetValidationResult(value, ctx);
+        if (PrimaryProperty != null)
+        {
+          object value = context.InputPropertyValues[PrimaryProperty];
+          result = this.Attribute.GetValidationResult(value, ctx);
+        }
+        else
+        {
+          result = this.Attribute.GetValidationResult(null, ctx);
+        }
       }
       catch (Exception ex)
       {

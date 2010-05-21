@@ -27,6 +27,9 @@ namespace Csla.Rules
     private string _property;
     private RuleSeverity _severity;
 
+    /// <summary>
+    /// Gets a string representation for this object.
+    /// </summary>
     public override string ToString()
     {
       return Description;

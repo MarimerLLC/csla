@@ -3313,10 +3313,27 @@ namespace Csla.Core
       get { return !IsSelfValid; }
     }
 
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// is being changed.</param>
     protected override void OnPropertyChanged(string propertyName)
     {
       base.OnPropertyChanged(propertyName);
       OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for all object properties.
+    /// </summary>
+    protected override void OnUnknownPropertyChanged()
+    {
+      base.OnUnknownPropertyChanged();
+      foreach (var p in FieldManager.GetRegisteredProperties())
+        OnErrorsChanged(new DataErrorsChangedEventArgs(p.Name));
     }
 
     #endregion

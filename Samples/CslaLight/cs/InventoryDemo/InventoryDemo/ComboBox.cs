@@ -37,43 +37,7 @@ namespace InventoryDemo
 
     private object GetMemberValue(object item)
     {
-      return item.GetType().GetProperty(ValueMemberPath).GetValue(item, null);
-    }
-
-    public static DependencyProperty ValueMemberPathProperty =
-      DependencyProperty.Register("ValueMemberPath", typeof(string), typeof(InventoryDemo.ComboBox), null);
-
-    [System.ComponentModel.DescriptionAttribute("SelectedValue")]
-    public string ValueMemberPath
-    {
-      get
-      {
-        return ((string)(base.GetValue(ComboBox.ValueMemberPathProperty)));
-      }
-      set
-      {
-        base.SetValue(ComboBox.ValueMemberPathProperty, value);
-      }
-    }
-
-    public static DependencyProperty SelectedValueProperty =
-      DependencyProperty.Register("SelectedValue", typeof(object), typeof(InventoryDemo.ComboBox),
-      new PropertyMetadata((o, e) => 
-      {
-        ((ComboBox)o).SetSelectionFromValue();
-      }));
-
-    [System.ComponentModel.DescriptionAttribute("SelectedValue")]
-    public object SelectedValue
-    {
-      get
-      {
-        return ((object)(base.GetValue(ComboBox.SelectedValueProperty)));
-      }
-      set
-      {
-        base.SetValue(ComboBox.SelectedValueProperty, value);
-      }
+      return item.GetType().GetProperty(SelectedValuePath).GetValue(item, null);
     }
 
     private void SetSelectionFromValue()

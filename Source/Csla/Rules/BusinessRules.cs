@@ -258,35 +258,11 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
-    /// <param name="objectType">Type of business object.</param>
-    /// <param name="action">Authorization action.</param>
-    public static bool HasPermission(Type objectType, AuthorizationActions action)
-    {
-      return false;
-    }
-
-    /// <summary>
-    /// Checks per-type authorization rules.
-    /// </summary>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(AuthorizationActions action, Type objectType)
     {
-      if (action == AuthorizationActions.ReadProperty ||
-          action == AuthorizationActions.WriteProperty ||
-          action == AuthorizationActions.ExecuteMethod)
-        throw new ArgumentOutOfRangeException("action");
-
-      bool result = true;
-      var rule =
-        AuthorizationRuleManager.GetRulesForType(objectType).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
-      if (rule != null)
-      {
-        var context = new AuthorizationContext { Rule = rule };
-        rule.Execute(context);
-        result = context.HasPermission;
-      }
-      return result;
+      return HasPermission(action, null, objectType);
     }
 
     /// <summary>
@@ -296,6 +272,11 @@ namespace Csla.Rules
     /// <param name="obj">Business object instance.</param>
     public static bool HasPermission(AuthorizationActions action, object obj)
     {
+      return HasPermission(action, obj, obj.GetType());
+    }
+
+    private static bool HasPermission(AuthorizationActions action, object obj, Type objType)
+    {
       if (action == AuthorizationActions.ReadProperty ||
           action == AuthorizationActions.WriteProperty ||
           action == AuthorizationActions.ExecuteMethod)
@@ -303,10 +284,10 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(obj.GetType()).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
+        AuthorizationRuleManager.GetRulesForType(objType).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
       if (rule != null)
       {
-        var context = new AuthorizationContext { Rule = rule, Target = obj };
+        var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType };
         rule.Execute(context);
         result = context.HasPermission;
       }
@@ -335,7 +316,7 @@ namespace Csla.Rules
         Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
       if (rule != null)
       {
-        var context = new AuthorizationContext { Rule = rule, Target = this.Target };
+        var context = new AuthorizationContext { Rule = rule, Target = this.Target, TargetType = this.Target.GetType() };
         rule.Execute(context);
         result = context.HasPermission;
       }

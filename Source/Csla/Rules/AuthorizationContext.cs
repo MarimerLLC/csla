@@ -22,6 +22,10 @@ namespace Csla.Rules
     /// </summary>
     public object Target { get; internal set; }
     /// <summary>
+    /// Gets the type of the target business class.
+    /// </summary>
+    public Type TargetType { get; internal set; }
+    /// <summary>
     /// Gets or sets a value indicating whether the
     /// current user has permission to perform the requested
     /// action.

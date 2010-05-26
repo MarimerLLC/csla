@@ -43,12 +43,12 @@ public static $ClassName$ New$ClassName$()
 
 public static $ClassName$ Get$ClassName$($IdType$ $IdName$)
 {
-  return DataPortal.Fetch<$ClassName$>(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+  return DataPortal.Fetch<$ClassName$>($IdName$);
 }
 
 public static void Delete$ClassName$($IdType$ $IdName$)
 {
-  DataPortal.Delete(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+  DataPortal.Delete<$ClassName$>($IdName$);
 }
 
 private $ClassName$()

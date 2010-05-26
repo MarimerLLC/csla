@@ -47,7 +47,7 @@ public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResu
 {
   var dp = new DataPortal<$ClassName$>();
   dp.FetchCompleted += callback;
-  dp.BeginFetch(new SingleCriteria<$ClassName$, $IdType$>($IdName$));
+  dp.BeginFetch($IdName$);
 }
 
 #endregion]]></Code>

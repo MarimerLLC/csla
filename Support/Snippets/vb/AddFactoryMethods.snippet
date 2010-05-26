@@ -43,11 +43,11 @@ Public Shared Function New$ClassName$() As $ClassName$
 End Function
 
 Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$
-  Return DataPortal.Fetch(Of $ClassName$)(New SingleCriteria(Of $ClassName$, $IdType$)($IdName$))
+  Return DataPortal.Fetch(Of $ClassName$)($IdName$)
 End Function
 
 Public Shared Sub Delete$ClassName$(ByVal $IdName$ As $IdType$)
-  DataPortal.Delete((New SingleCriteria(Of $ClassName$, $IdType$)($IdName$)))
+  DataPortal.Delete(Of $ClassName$)($IdName$)
 End Sub
 
 Private Sub New()

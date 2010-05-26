@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="CslaMvvmSl.EditPerson"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:my="clr-namespace:CslaMvvmSl.ViewModels" Loaded="UserControl_Loaded" xmlns:my1="clr-namespace:Csla.Xaml;assembly=Csla.Xaml">
+  <UserControl.Resources>
+    <CollectionViewSource x:Key="editPersonViewModelViewSource" d:DesignSource="{d:DesignInstance my:EditPersonViewModel, CreateList=True}" />
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" Background="{x:Null}">
+    <Grid DataContext="{StaticResource editPersonViewModelViewSource}" Name="grid1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="200*" />
+      </Grid.RowDefinitions>
+      <sdk:Label Content="Id:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
+      <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="3" Name="idTextBox" Text="{Binding Path=Model.Id, Mode=OneWay}" VerticalAlignment="Center" MinWidth="150" IsReadOnly="True" />
+      <sdk:Label Content="Name:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
+      <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="3" Name="nameTextBox" Text="{Binding Path=Model.Name, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" VerticalAlignment="Center" MinWidth="150" />
+      <StackPanel Grid.ColumnSpan="3" Grid.Row="2" Grid.RowSpan="1" Name="stackPanel1" Orientation="Horizontal" VerticalAlignment="Center">
+        <Button Content="Save" Name="SaveButton" Margin="3" MinWidth="80" VerticalAlignment="Stretch" IsEnabled="{Binding Path=CanSave}" />
+        <Button Content="Cancel" Name="CancelButton" Margin="3" MinWidth="80" VerticalAlignment="Stretch" IsEnabled="{Binding Path=CanCancel}" />
+        <my1:TriggerAction Height="0" Name="SaveTrigger" Width="0" TargetControl="{Binding ElementName=SaveButton}" MethodName="Save" />
+        <my1:TriggerAction Height="0" Name="CancelTrigger" Width="0" MethodName="Cancel" TargetControl="{Binding ElementName=CancelButton}" />
+      </StackPanel>
+    </Grid>
+  </Grid>
+</UserControl>

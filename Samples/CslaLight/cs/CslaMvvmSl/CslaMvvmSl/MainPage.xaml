@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="CslaMvvmSl.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" FontSize="16"
+    d:DesignHeight="300" d:DesignWidth="400" xmlns:my="clr-namespace:Csla.Xaml;assembly=Csla.Xaml" xmlns:my1="clr-namespace:CslaMvvmSl.ViewModels">
+  <UserControl.Resources>
+    <SolidColorBrush x:Key="DarkVioletBrushKey">DarkViolet</SolidColorBrush>
+    <my1:MainPageViewModel x:Key="mainPageViewModelViewSource" />
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" DataContext="{StaticResource mainPageViewModelViewSource}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto" />
+      <ColumnDefinition Width="236*" />
+    </Grid.ColumnDefinitions>
+    <StackPanel Name="stackPanel1">
+      <Button Content="New Person" Name="NewPersonButton" Margin="3" Background="{StaticResource DarkVioletBrushKey}" />
+      <my:TriggerAction Height="0" Name="NewPersonTrigger" Width="0" TargetControl="{Binding ElementName=NewPersonButton}" MethodName="NewPerson" />
+      <Button Background="{StaticResource DarkVioletBrushKey}" Content="Person list" Name="PersonListButton" Margin="3" />
+      <my:TriggerAction Height="0" Name="PersonListTrigger" Width="0" MethodName="ListPersons" TargetControl="{Binding ElementName=PersonListButton}" />
+    </StackPanel>
+    <ContentControl Grid.Column="1" Name="contentControl1" Margin="3" Content="{Binding Path=MainContent}" />
+    <Grid.Background>
+      <RadialGradientBrush Center="0.5,0.1" GradientOrigin="0.5,1" RadiusX="0.54" RadiusY="1">
+        <GradientStop Color="Cornsilk" Offset="0" />
+        <GradientStop Color="Thistle" Offset="1" />
+      </RadialGradientBrush>
+    </Grid.Background>
+  </Grid>
+</UserControl>

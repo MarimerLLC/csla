@@ -1,0 +1,26 @@
+﻿using System;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+
+namespace Bxf
+{
+  public class Status
+  {
+    public Status()
+    {
+      IsOk = true;
+    }
+
+    public string Text { get; set; }
+    public bool IsBusy { get; set; }
+    public bool IsOk { get; set; }
+    public FrameworkElement Visual { get; set; }
+  }
+}

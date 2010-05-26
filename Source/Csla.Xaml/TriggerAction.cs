@@ -30,9 +30,17 @@ namespace Csla.Xaml
     private void CallMethod(object sender, EventArgs e)
     {
       object target = this.DataContext;
-      var icv = target as ICollectionView;
-      if (icv != null)
-        target = icv.CurrentItem;
+      var cvs = target as System.Windows.Data.CollectionViewSource;
+      if (cvs != null && cvs.View != null)
+      {
+        target = cvs.View.CurrentItem;
+      }
+      else
+      {
+        var icv = target as ICollectionView;
+        if (icv != null)
+          target = icv.CurrentItem;
+      }
       if (target == null) return; // can be null at design time - so just exit
 
       var targetMethod = target.GetType().GetMethod(MethodName);

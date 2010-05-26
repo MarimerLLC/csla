@@ -97,8 +97,17 @@ namespace Csla.Web.Mvc
                      select r;
         foreach (var item in errors)
         {
-          string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property);
-          bindingContext.ModelState.AddModelError(mskey, item.Description);
+          ModelState state;
+          string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
+          if (bindingContext.ModelState.TryGetValue(mskey, out state))
+          {
+            if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
+              continue;
+            else
+              bindingContext.ModelState.AddModelError(mskey, item.Description);
+          }
+          else if (mskey == string.Empty)
+            bindingContext.ModelState.AddModelError(mskey, item.Description);
         }
       }
       else

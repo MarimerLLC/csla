@@ -9,6 +9,7 @@ using Csla.Reflection;
 using Csla.Security;
 using Csla.Core;
 using System.Collections;
+using System.Collections.Specialized;
 
 namespace Csla.Xaml
 {
@@ -813,6 +814,9 @@ namespace Csla.Xaml
         var nb = oldValue as INotifyBusy;
         if (nb != null)
           nb.BusyChanged -= Model_BusyChanged;
+        var cc = oldValue as INotifyCollectionChanged;
+        if (cc != null)
+          cc.CollectionChanged -= Model_CollectionChanged;
       }
 
       // hook events on new value
@@ -827,6 +831,9 @@ namespace Csla.Xaml
         var nb = newValue as INotifyBusy;
         if (nb != null)
           nb.BusyChanged += Model_BusyChanged;
+        var cc = newValue as INotifyCollectionChanged;
+        if (cc != null)
+          cc.CollectionChanged += Model_CollectionChanged;
       }
 
       SetProperties();
@@ -850,6 +857,11 @@ namespace Csla.Xaml
     }
 
     private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
+    {
+      SetProperties();
+    }
+
+    private void Model_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       SetProperties();
     }

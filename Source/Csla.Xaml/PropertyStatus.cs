@@ -166,7 +166,6 @@ namespace Csla.Xaml
 
       HandleIsBusy(old, Source);
 
-      FindIsReadOnly();
       UpdateState();
     }
 
@@ -248,30 +247,6 @@ namespace Csla.Xaml
           UpdateState();
         }
       }
-    }
-
-    #endregion
-
-    #region Target property
-
-    /// <summary>
-    /// Gets or sets the target control to which this control is bound.
-    /// THIS FEATURE IS OBSOLETE AND SHOULD NOT BE USED.
-    /// </summary>
-    public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
-      "TargetControl",
-      typeof(object),
-      typeof(PropertyStatus),
-      new PropertyMetadata(null, (o, e) => { ((PropertyStatus)o).HandleTarget(); }));
-
-    /// <summary>
-    /// Gets or sets the target control to which this control is bound.
-    /// THIS FEATURE IS OBSOLETE AND SHOULD NOT BE USED.
-    /// </summary>
-    public object TargetControl
-    {
-      get { return GetValue(TargetControlProperty); }
-      set { SetValue(TargetControlProperty, value); }
     }
 
     #endregion
@@ -571,7 +546,6 @@ namespace Csla.Xaml
     protected virtual void GoToState(bool useTransitions)
     {
       DisablePopup(_lastImage);
-      HandleTarget();
 
       BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
       if (busy != null)
@@ -590,83 +564,6 @@ namespace Csla.Xaml
         VisualStateManager.GoToState(this, RuleSeverity.ToString(), useTransitions);
         _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", RuleSeverity.ToString().ToLower()));
         EnablePopup(_lastImage);
-      }
-    }
-
-    #endregion
-
-    #region TargetControl
-
-    /// <summary>
-    /// Update the ReadOnly status of DependencyProperty 
-    /// </summary>
-    protected virtual void FindIsReadOnly()
-    {
-      if (Source != null && !string.IsNullOrEmpty(BindingPath))
-      {
-        var info = Source.GetType().GetProperty(BindingPath);
-        if (info != null)
-        {
-          IsReadOnly = !info.CanWrite;
-          if (!IsReadOnly)
-          {
-            var setter = Source.GetType().GetMethod("set_" + BindingPath);
-            if (setter == null)
-              IsReadOnly = true;
-            else
-              IsReadOnly = !setter.IsPublic;
-          }
-        }
-      }
-      else
-      {
-        IsReadOnly = false;
-      }
-    }
-
-
-    /// <summary>
-    /// Set the status on the target Property. 
-    /// 
-    /// Set IsReadOnly if control implements this property else set IsEnabled. 
-    /// If user is alloed to read the DependencyProperty then hide the actual value 
-    /// by pverriding the value to null or string.Empty.
-    /// </summary>
-    protected virtual void HandleTarget()
-    {
-      if (!string.IsNullOrEmpty(BindingPath))
-      {
-        var b = Source as Csla.Security.IAuthorizeReadWrite;
-        if (b != null)
-        {
-          CanWrite = b.CanWriteProperty(BindingPath);
-          if (TargetControl != null)
-          {
-            if (CanWrite && !IsReadOnly)
-            {
-              if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", false))
-                MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", false);
-              else
-                MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", true);
-            }
-            else
-            {
-              if (MethodCaller.IsMethodImplemented(TargetControl, "set_IsReadOnly", true))
-                MethodCaller.CallMethod(TargetControl, "set_IsReadOnly", true);
-              else
-                MethodCaller.CallMethodIfImplemented(TargetControl, "set_IsEnabled", false);
-            }
-          }
-
-          CanRead = b.CanReadProperty(BindingPath);
-          if (TargetControl != null && !CanRead)
-          {
-            if (MethodCaller.IsMethodImplemented(TargetControl, "set_Content", null))
-              MethodCaller.CallMethod(TargetControl, "set_Content", null);
-            else
-              MethodCaller.CallMethodIfImplemented(TargetControl, "set_Text", "");
-          }
-        }
       }
     }
 

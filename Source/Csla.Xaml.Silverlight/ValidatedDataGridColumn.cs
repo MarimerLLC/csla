@@ -60,13 +60,7 @@ namespace Csla.Xaml
         panel.Children.Add(_editControl);
 
         PropertyStatus status = new PropertyStatus();
-        //Binding binding = new Binding();
-        //binding.Source = Binding.Source;
-        //binding.Mode = BindingMode.OneWay;
-        //status.SetBinding(PropertyStatus.SourceProperty, binding);
-        //status.Property = Binding.Path.Path;
         status.SetBinding(PropertyStatus.PropertyProperty, Binding);
-        status.TargetControl = _editControl;
 
         panel.Children.Add(status);
       }
@@ -91,13 +85,7 @@ namespace Csla.Xaml
         panel.Children.Add(element);
 
         PropertyStatus status = new PropertyStatus();
-        //Binding binding = new Binding();
-        //binding.Source = Binding.Source;
-        //binding.Mode = BindingMode.OneWay;
-        //status.SetBinding(PropertyStatus.SourceProperty, binding);
-        //status.Property = Binding.Path.Path;
         status.SetBinding(PropertyStatus.PropertyProperty, Binding);
-        status.TargetControl = element;
 
         panel.Children.Add(status);
       }

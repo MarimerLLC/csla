@@ -81,13 +81,13 @@ namespace Csla.Xaml
       }
     }
 
-    private void HookEvent(FrameworkElement oldTarget, FrameworkElement newTarget)
+    private void HookEvent(FrameworkElement oldTarget, string oldEvent, FrameworkElement newTarget, string newEvent)
     {
-      if (!string.IsNullOrEmpty(TriggerEvent) && !ReferenceEquals(oldTarget, newTarget))
+      if (!ReferenceEquals(oldTarget, newTarget) || oldEvent != newEvent)
       {
-        if (oldTarget != null)
+        if (oldTarget != null && !string.IsNullOrEmpty(oldEvent))
         {
-          var eventRef = oldTarget.GetType().GetEvent(TriggerEvent);
+          var eventRef = oldTarget.GetType().GetEvent(oldEvent);
           if (eventRef != null)
           {
             var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
@@ -112,9 +112,9 @@ namespace Csla.Xaml
           }
         }
 
-        if (newTarget != null)
+        if (newTarget != null && !string.IsNullOrEmpty(newEvent))
         {
-          var eventRef = newTarget.GetType().GetEvent(TriggerEvent);
+          var eventRef = newTarget.GetType().GetEvent(newEvent);
           if (eventRef != null)
           {
             var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
@@ -150,8 +150,9 @@ namespace Csla.Xaml
       DependencyProperty.Register("TargetControl", typeof(FrameworkElement),
       typeof(TriggerAction), new PropertyMetadata((o, e) =>
         {
-          ((TriggerAction)o).HookEvent(
-            (FrameworkElement)e.OldValue, (FrameworkElement)e.NewValue);
+          var ta = (TriggerAction)o;
+          ta.HookEvent(
+            (FrameworkElement)e.OldValue, ta.TriggerEvent, (FrameworkElement)e.NewValue, ta.TriggerEvent);
         }));
     /// <summary>
     /// Gets or sets the target UI control.
@@ -169,7 +170,11 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty TriggerEventProperty =
       DependencyProperty.Register("TriggerEvent", typeof(string),
-      typeof(TriggerAction), new PropertyMetadata("Click"));
+      typeof(TriggerAction), new PropertyMetadata("Click", (o, e) => 
+      {
+        var ta = (TriggerAction)o;
+        ta.HookEvent(ta.TargetControl, (string)e.OldValue, ta.TargetControl, (string)e.NewValue);
+      }));
     /// <summary>
     /// Gets or sets the name of the event
     /// that will trigger the action.

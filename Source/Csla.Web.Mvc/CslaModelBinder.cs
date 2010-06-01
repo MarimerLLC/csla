@@ -92,26 +92,27 @@ namespace Csla.Web.Mvc
       var obj = bindingContext.Model as Csla.Core.BusinessBase;
       if (obj != null)
       {
-        var errors = from r in obj.BrokenRulesCollection
-                     where r.Severity == Csla.Rules.RuleSeverity.Error
-                     select r;
-        foreach (var item in errors)
-        {
-          ModelState state;
-          string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
-          if (bindingContext.ModelState.TryGetValue(mskey, out state))
+          var errors = from r in obj.BrokenRulesCollection
+                       where r.Severity == Csla.Rules.RuleSeverity.Error
+                       select r;
+          foreach (var item in errors)
           {
-            if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
-              continue;
-            else
-              bindingContext.ModelState.AddModelError(mskey, item.Description);
+              ModelState state;
+              string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
+              if (bindingContext.ModelState.TryGetValue(mskey, out state))
+              {
+                  if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
+                      continue;
+                  else
+                      bindingContext.ModelState.AddModelError(mskey, item.Description);
+              }
+              else if (mskey == string.Empty)
+                  bindingContext.ModelState.AddModelError(bindingContext.ModelName, item.Description);
           }
-          else if (mskey == string.Empty)
-            bindingContext.ModelState.AddModelError(mskey, item.Description);
-        }
       }
       else
-        base.OnModelUpdated(controllerContext, bindingContext);
+          if (!(bindingContext.Model is IViewModel))
+              base.OnModelUpdated(controllerContext, bindingContext);
     }
 
     /// <summary>

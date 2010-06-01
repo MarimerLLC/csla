@@ -49,6 +49,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="CslaModelBinder.cs" />
     <Compile Include="IModelCreator.cs" />
+    <Compile Include="IViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

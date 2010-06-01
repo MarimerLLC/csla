@@ -21,9 +21,9 @@ namespace Csla.Web.Mvc
     /// <returns>Bound object</returns>
     public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType))) 
-        return BindCslaCollection(controllerContext, bindingContext); 
-      
+      if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
+        return BindCslaCollection(controllerContext, bindingContext);
+
       return base.BindModel(controllerContext, bindingContext);
     }
 
@@ -43,7 +43,7 @@ namespace Csla.Web.Mvc
           continue;      //no value to update skip
         var elementModel = collection[currIdx];
         var elementContext = new ModelBindingContext()
-        {                    
+        {
           ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
           ModelName = subIndexKey,
           ModelState = bindingContext.ModelState,
@@ -61,7 +61,7 @@ namespace Csla.Web.Mvc
           OnModelUpdated(controllerContext, elementContext);
         }
       }
-      
+
       return bindingContext.Model;
     }
 
@@ -92,27 +92,27 @@ namespace Csla.Web.Mvc
       var obj = bindingContext.Model as Csla.Core.BusinessBase;
       if (obj != null)
       {
-          var errors = from r in obj.BrokenRulesCollection
-                       where r.Severity == Csla.Rules.RuleSeverity.Error
-                       select r;
-          foreach (var item in errors)
+        var errors = from r in obj.BrokenRulesCollection
+                     where r.Severity == Csla.Rules.RuleSeverity.Error
+                     select r;
+        foreach (var item in errors)
+        {
+          ModelState state;
+          string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
+          if (bindingContext.ModelState.TryGetValue(mskey, out state))
           {
-              ModelState state;
-              string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
-              if (bindingContext.ModelState.TryGetValue(mskey, out state))
-              {
-                  if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
-                      continue;
-                  else
-                      bindingContext.ModelState.AddModelError(mskey, item.Description);
-              }
-              else if (mskey == string.Empty)
-                  bindingContext.ModelState.AddModelError(bindingContext.ModelName, item.Description);
+            if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
+              continue;
+            else
+              bindingContext.ModelState.AddModelError(mskey, item.Description);
           }
+          else if (mskey == string.Empty)
+            bindingContext.ModelState.AddModelError(bindingContext.ModelName, item.Description);
+        }
       }
       else
-          if (!(bindingContext.Model is IViewModel))
-              base.OnModelUpdated(controllerContext, bindingContext);
+        if (!(bindingContext.Model is IViewModel))
+          base.OnModelUpdated(controllerContext, bindingContext);
     }
 
     /// <summary>

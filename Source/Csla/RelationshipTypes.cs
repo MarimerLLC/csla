@@ -13,12 +13,12 @@ namespace Csla
     /// <summary>
     /// The default value, indicating all values are cleared
     /// </summary>
-    None = 0,
+    None = 0x0,
     /// <summary>
     /// Property is a reference to a child
     /// object contained by the parent.
     /// </summary>
-    Child,
+    Child=0x1,
     /// <summary>
     /// Property is a reference to a lazy
     /// loaded object. Attempting to get
@@ -26,7 +26,7 @@ namespace Csla
     /// prior to a set or load will result in 
     /// an exception.
     /// </summary>
-    LazyLoad,
+    LazyLoad=0x2,
     /// <summary>
     /// Property is stored in a private field. Attemting 
     /// to read or write the property in FieldManager 
@@ -34,6 +34,6 @@ namespace Csla
     /// NonGeneric ReadProperty/LoadProperty will call
     /// property get/set methods. 
     /// </summary>
-    PrivateField,
+    PrivateField=0x4,
   }
 }

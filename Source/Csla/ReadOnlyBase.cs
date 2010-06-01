@@ -951,7 +951,7 @@ namespace Csla
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
 
-        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         {
             return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
         }
@@ -1100,7 +1100,7 @@ namespace Csla
     /// </remarks>
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         {
             MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
         }

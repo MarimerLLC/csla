@@ -1814,7 +1814,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
-      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       P result = default(P);
@@ -1842,10 +1842,10 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
-      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
-      if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
           using (BypassPropertyChecks)
           {
@@ -2464,7 +2464,7 @@ namespace Csla.Core
     {
       ResetChildEditLevel(newValue);
 
-      if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
           using (BypassPropertyChecks)
           {

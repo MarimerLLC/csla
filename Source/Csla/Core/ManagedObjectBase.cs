@@ -169,7 +169,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
-        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         {
             return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
         }
@@ -310,7 +310,7 @@ namespace Csla.Core
     /// </remarks>
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-        if (propertyInfo.RelationshipType == RelationshipTypes.PrivateField)
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         {
             MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
         }

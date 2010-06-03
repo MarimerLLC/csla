@@ -1,0 +1,47 @@
+﻿using System;
+using Csla.Server;
+
+namespace WcfHost
+{
+    public class MyDataPortalExceptionInspector : Csla.Server.IDataPortalExceptionInspector
+    {
+        public void InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
+        {
+            // add your logging code here for exceptions on the server
+
+
+            // Transform to other exception to return to client
+            if (!IsSerializable(ex) || ex.GetType().FullName.Contains("ServerOnlyException"))
+                // transform to genereic exception to send to client
+                throw new GenericBusinessException(ex);
+
+
+        }
+
+
+        private bool IsSerializable(Exception ex)
+        {
+            if (!ex.GetType().IsSerializable) return false;
+            if (ex.InnerException != null)
+            {
+                return IsSerializable(ex.InnerException);
+            }
+            return true;
+        }
+
+
+        private GenericBusinessException ToGenericBusinessException(Exception ex)
+        {
+            Exception inner = null;
+            if (ex.InnerException != null)
+            {
+                return new GenericBusinessException(ex, ToGenericBusinessException(ex.InnerException));
+            }
+            else
+            {
+                return new GenericBusinessException(ex);
+            }
+        }
+
+    }
+}

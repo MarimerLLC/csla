@@ -172,8 +172,10 @@
     <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
+    <Compile Include="Server\DataPortalExceptionHandler.cs" />
     <Compile Include="Server\EmptyCriteria.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
+    <Compile Include="Server\GenericBusinessException.cs" />
     <Compile Include="Server\Hosts\Silverlight\ISilverlightRequest.cs" />
     <Compile Include="Server\Hosts\Silverlight\PrimitiveCriteria.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="Server\Hosts\Silverlight\SilverlightResponse.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightUpdateRequest.cs" />
     <Compile Include="Server\IAuthorizeDataPortal.cs" />
+    <Compile Include="Server\IDataPortalExceptionInspector.cs" />
     <Compile Include="Server\MobileFactoryAttribute.cs" />
     <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Silverlight\Security\WindowsIdentity.cs" />

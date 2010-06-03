@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.ComponentModel;
-using Csla.DataPortalClient;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using Csla.Core;
 
 namespace Csla
 {
@@ -37,10 +35,30 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>, 
+  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>,
     Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject
   {
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    public EditableRootListBase()
+    {
+      Initialize();
+      AllowNew = true;
+    }
+
+    #region Initialize
+
+    /// <summary>
+    /// Override this method to set up event handlers so user
+    /// code in a partial class can respond to events raised by
+    /// generated code.
+    /// </summary>
+    protected virtual void Initialize()
+    { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
 
     #region  SaveItem Methods
 
@@ -119,7 +137,7 @@ namespace Csla
         DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
           {
-            if (handleBusy) 
+            if (handleBusy)
               MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
             if (e.Error == null)
             {
@@ -171,6 +189,37 @@ namespace Csla
 
     #region  Insert, Remove, Clear
 
+    /// <summary>
+    /// Adds a new item to the list.
+    /// Uses ProcyModes.LocalOnly as default. 
+    /// Override in your own class to use other ProxyModes
+    /// </summary>
+    protected override void AddNewCore()
+    {
+      var portal = new Csla.DataPortal<T>(DataPortal.ProxyModes.LocalOnly);
+      portal.CreateCompleted += (o, e) =>
+      {
+        // call OnUnhandledAsyncException if failed
+        if (e.Error != null)
+        {
+          OnUnhandledAsyncException(new ErrorEventArgs(this, e.Error));
+        }
+        else
+        {
+          try
+          {
+            this.Add(e.Object);
+            OnAddedNew(e.Object);
+          }
+          catch (Exception ex)
+          {
+            OnUnhandledAsyncException(new ErrorEventArgs(this, ex));
+          }
+        }
+      };
+
+      portal.BeginCreate();
+    }
     /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
@@ -307,7 +356,7 @@ namespace Csla
     {
       foreach (IEditableBusinessObject child in this)
         child.SetParent(this);
-      
+
       base.OnDeserialized();
     }
 

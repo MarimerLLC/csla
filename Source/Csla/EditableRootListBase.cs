@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.ComponentModel;
 using Csla.Core;
 
@@ -32,9 +31,9 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class EditableRootListBase<T> : 
-    Core.ExtendedBindingList<T>, 
-    Core.IParent, 
+  public abstract class EditableRootListBase<T> :
+    Core.ExtendedBindingList<T>,
+    Core.IParent,
     Server.IDataPortalTarget
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable
   {
@@ -44,6 +43,7 @@ namespace Csla
     public EditableRootListBase()
     {
       Initialize();
+      AllowNew = true;
     }
 
     #region Initialize
@@ -212,6 +212,18 @@ namespace Csla
     #region  Insert, Remove, Clear
 
     /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override object AddNewCore()
+    {
+      T item = Csla.DataPortal.Create<T>();
+      Add(item);
+      this.OnAddingNew(new AddingNewEventArgs(item));
+      return item;
+    }
+
+    /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
     /// </summary>
@@ -244,7 +256,7 @@ namespace Csla
       {
         raiseEventForNewItem = true;
       }
-      
+
       base.RemoveItem(index);
       if (raiseEventForNewItem)
         OnSaved(item, null);

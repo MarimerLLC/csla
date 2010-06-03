@@ -16,7 +16,6 @@ namespace Csla.Server
         private string _stackTrace;
         private IDictionary _data;
         private string _type;
-        private GenericBusinessException _innerBusinessException;
 
         /// <summary>
         /// Gets a string representation of the immediate frames on the call stack.
@@ -59,33 +58,34 @@ namespace Csla.Server
             }
         }
 
-        public Exception InnerBusinessException
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GenericBusinessException"/> class.
+        /// Reads information for a NonSerializable excpeption into GenericBusinessException
+        /// </summary>
+        /// <param name="wrappedException">The wrapped exception.</param>
+        public GenericBusinessException(Exception wrappedException)
+            : base(wrappedException.Message)
         {
-            get
-            {
-                return _innerBusinessException;
-            }
+            this.Source = wrappedException.Source;
+            this.HelpLink = wrappedException.HelpLink;
+            _data = wrappedException.Data;
+            _stackTrace = wrappedException.StackTrace;
+            _type = wrappedException.GetType().ToString();
         }
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericBusinessException"/> class.
-        /// Reads information for a NonSerializable excpetion into GenericBusinessException
         /// </summary>
-        /// <param name="ex">The Exception.</param>
-        public GenericBusinessException(Exception ex)
-            : base(ex.Message)
+        /// <param name="wrappedException">The wrapped exception.</param>
+        /// <param name="innerException">The inner exception.</param>
+        public GenericBusinessException(Exception wrappedException, Exception innerException)
+            : base(wrappedException.Message, innerException)
         {
-
-            this.Source = ex.Source;
-            this.HelpLink = ex.HelpLink;
-            _data = ex.Data;
-            _stackTrace = ex.StackTrace;
-            _type = ex.GetType().ToString();
-            if (ex.InnerException != null)
-            {
-                _innerBusinessException = new GenericBusinessException(ex.InnerException);
-            }
+            this.Source = wrappedException.Source;
+            this.HelpLink = wrappedException.HelpLink;
+            _data = wrappedException.Data;
+            _stackTrace = wrappedException.StackTrace;
+            _type = wrappedException.GetType().ToString();
         }
 
 
@@ -100,20 +100,31 @@ namespace Csla.Server
             : base(info, context)
         {
 
-            _data = (IDictionary)info.GetValue("data", typeof(IDictionary));
-            _stackTrace = info.GetString("stackTrace");
-            _type = info.GetString("type");
-            _innerBusinessException = (GenericBusinessException)info.GetValue("innerBusinessException", typeof(GenericBusinessException));
+            _data = (IDictionary)info.GetValue("_data", typeof(IDictionary));
+            _stackTrace = info.GetString("_stackTrace");
+            _type = info.GetString("_type");
         }
 
+        /// <summary>
+        /// When overridden in a derived class, sets the <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with information about the exception.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+        /// <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        /// <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is a null reference (Nothing in Visual Basic). </exception>
+        /// <PermissionSet>
+        /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Read="*AllFiles*" PathDiscovery="*AllFiles*"/>
+        /// 	<IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="SerializationFormatter"/>
+        /// </PermissionSet>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.LinkDemand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
 
-            info.AddValue("data", _data);
-            info.AddValue("stackTrace", _stackTrace);
-            info.AddValue("type", _type);
-            info.AddValue("innerBusinessException", _innerBusinessException);
+            info.AddValue("_data", _data);
+            info.AddValue("_stackTrace", _stackTrace);
+            info.AddValue("_type", _type);
         }
 
         /// <summary>

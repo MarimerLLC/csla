@@ -62,17 +62,19 @@ namespace Csla.Server
         /// <param name="methodName">Name of the method.</param>
         /// <param name="ex">The exception.</param>
         /// <returns></returns>
-        public Exception ToDataPortalException(Type objectType, object criteria, string methodName, Exception ex)
+        public Exception InspectException(Type objectType, object criteria, string methodName, Exception ex)
         {
             Exception handledException;
-            if (CallExceptionInspector(objectType, null, criteria, methodName, ex, out handledException))
+            if (CallExceptionInspector(objectType, null, criteria, methodName, ex.InnerException, out handledException))
             {
-                ex = handledException;
+                ex = new Csla.Reflection.CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
             }
 
-            return new DataPortalException(
-              methodName + " " + Resources.FailedOnServer,
-              ex, new DataPortalResult());
+            return ex;
+
+            //return new DataPortalException(
+            //  methodName + " " + Resources.FailedOnServer,
+            //  ex, new DataPortalResult());
         }
 
         /// <summary>
@@ -84,17 +86,20 @@ namespace Csla.Server
         /// <param name="methodName">Name of the method.</param>
         /// <param name="ex">The exception.</param>
         /// <returns></returns>
-        public Exception ToDataPortalException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
+        public Exception InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
         {
+            // The exception as parameter is always a CallMethodException containing the business exception as Inner exception 
             Exception handledException;
-            if (CallExceptionInspector(objectType, businessObject, criteria, methodName, ex, out handledException))
+            if (CallExceptionInspector(objectType, businessObject, criteria, methodName, ex.InnerException, out handledException))
             {
-                ex = handledException;
+                // developer should only transform and if rethrows a new we will wrap as new CallMethodException
+                ex = new Csla.Reflection.CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
             }
+            return ex;
 
-            return new DataPortalException(
-              methodName + " " + Resources.FailedOnServer,
-              ex, new DataPortalResult(businessObject));
+            //return new DataPortalException(
+            //  methodName + " " + Resources.FailedOnServer,
+            //  ex, new DataPortalResult(businessObject));
         }
 
         /// <summary>

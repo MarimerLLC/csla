@@ -225,7 +225,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanReadProperty(prop);
@@ -240,7 +240,7 @@ namespace Csla
     /// result should cause an exception.</param>
     private bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanReadProperty(prop, throwOnFalse);

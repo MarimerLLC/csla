@@ -450,7 +450,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanReadProperty(prop);
@@ -465,7 +465,7 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     private bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanReadProperty(prop, throwOnFalse);
@@ -520,7 +520,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanWriteProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanWriteProperty(prop);
@@ -535,7 +535,7 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     private bool CanWriteProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First();
+      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
       if (prop == null)
         throw new ArgumentOutOfRangeException("propertyName");
       return CanWriteProperty(prop, throwOnFalse);

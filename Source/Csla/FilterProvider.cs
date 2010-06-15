@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="FilterProvider.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the method signature for a filter</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla

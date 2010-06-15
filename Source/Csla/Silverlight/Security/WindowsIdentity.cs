@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WindowsIdentity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class to simplify the retrieval of Windows identity</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Core;

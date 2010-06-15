@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="FactoryDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Server-side data portal implementation that</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using Csla.Properties;
 

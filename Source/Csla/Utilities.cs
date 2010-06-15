@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="Utilities.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Contains utility methods used by the</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 using System.Reflection;

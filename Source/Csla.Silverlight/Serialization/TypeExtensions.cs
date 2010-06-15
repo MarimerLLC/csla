@@ -1,4 +1,11 @@
-﻿﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="TypeExtensions.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Contains extension methods for Type.</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Serialization
 {

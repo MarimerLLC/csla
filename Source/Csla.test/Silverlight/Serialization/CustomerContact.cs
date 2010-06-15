@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CustomerContact.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implementation of a test business object using CSLA managed properties backed by</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla;
 using Csla.Core;
 using Csla.Serialization;

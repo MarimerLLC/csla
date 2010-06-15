@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="SimpleDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements the server-side DataPortal as discussed</summary>
+//-----------------------------------------------------------------------
 using System;
 using Csla.Properties;
 using Csla.Reflection;

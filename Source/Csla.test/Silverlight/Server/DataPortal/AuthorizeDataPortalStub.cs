@@ -1,4 +1,11 @@
-﻿using System.Security;
+﻿//-----------------------------------------------------------------------
+// <copyright file="AuthorizeDataPortalStub.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Security;
 using Csla.Server;
 
 namespace  Csla.Testing.Business.DataPortal

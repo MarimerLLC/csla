@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="FactoryProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Data portal proxy class that uses the </summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
 using Csla.Server;

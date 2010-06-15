@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalSelector.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Selects the appropriate data portal implementation</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ITrackStatus.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the common properties required objects</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Core
 {

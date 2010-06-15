@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalExceptionHandler.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using Csla.Properties;
 

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LinqObservableCollection.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Synchronized view over a source list, </summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;

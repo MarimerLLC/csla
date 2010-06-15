@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PrincipalCache.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides a cache for a limited number of</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Security.Principal;
 

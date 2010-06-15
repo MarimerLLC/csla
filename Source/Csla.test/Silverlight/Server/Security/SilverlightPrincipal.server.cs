@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SilverlightPrincipal.server.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Security;
 namespace Csla.Testing.Business.Security
 {

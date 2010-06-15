@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UndoableBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements n-level undo capabilities as</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.ComponentModel;

@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="MethodCaller.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides methods to dynamically find and call methods.</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

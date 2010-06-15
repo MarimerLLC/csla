@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="CslaDesignerDataSourceView.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Object responsible for providing details about</summary>
+//-----------------------------------------------------------------------
 #if !CLIENTONLY
 using System;
 using System.Collections;

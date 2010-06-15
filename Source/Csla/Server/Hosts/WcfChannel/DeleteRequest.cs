@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="DeleteRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Request message for deleting</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Runtime.Serialization;
 

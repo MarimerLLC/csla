@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataMap.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines a mapping between two sets of</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using Csla.Reflection;
 

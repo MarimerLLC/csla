@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ContextBOVerifier.server.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Testing.Business.ApplicationContext
 {

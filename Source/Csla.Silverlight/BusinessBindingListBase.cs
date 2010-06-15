@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BusinessBindingListBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is the base class from which most business collections</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization;
 
 namespace Csla

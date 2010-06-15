@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="AddedNewEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Object containing information about a</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;

@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ExceptionRoot.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>prevent direct creation</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Text;

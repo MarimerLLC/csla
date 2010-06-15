@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="RemovingItemEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Contains event data for the RemovingItem</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Core

@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="CslaDataSourceView.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>The object responsible for managing data binding</summary>
+//-----------------------------------------------------------------------
 #if !CLIENTONLY
 
 using System;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ApplicationContext.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides consistent context information between the client</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Threading;
 using System.Security.Principal;
 using System.Collections.Generic;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UpdateRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Message sent to the Silverlight</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Runtime.Serialization;
 using System.Security.Principal;
 

@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ValidationException.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Exception class indicating that there was a validation</summary>
+//-----------------------------------------------------------------------
 using System;
 using Csla.Serialization;
 

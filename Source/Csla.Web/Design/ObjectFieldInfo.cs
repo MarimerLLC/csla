@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ObjectFieldInfo.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Contains schema information for a single</summary>
+//-----------------------------------------------------------------------
 #if !CLIENTONLY
 using System;
 using System.Web.UI.Design;

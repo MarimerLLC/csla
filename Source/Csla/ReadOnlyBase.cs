@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ReadOnlyBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is a base class from which readonly business classes</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Linq;
 using System.Collections.Generic;

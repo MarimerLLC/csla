@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WcfProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Data portal client-side proxy used to communicate</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

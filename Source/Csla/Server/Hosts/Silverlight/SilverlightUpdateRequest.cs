@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SilverlightUpdateRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Class that will be used to execute an Update request from a Silverlight client.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Security.Principal;
 using Csla.Core;
 

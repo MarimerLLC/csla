@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BusinessPrincipalBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class from which custom principal</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Security.Principal;
 using Csla.Serialization;

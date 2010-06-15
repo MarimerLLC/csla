@@ -1,4 +1,11 @@
-﻿using Csla;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LinqObservableCollectionTest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using Csla;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IdentityFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Verifies user credentials and creates principal/identity based</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using System.Web.Security;
 using Csla.Core;

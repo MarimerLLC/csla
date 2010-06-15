@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NavigationEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This event arguments class is part of BeforeNavigation</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Xaml
 {

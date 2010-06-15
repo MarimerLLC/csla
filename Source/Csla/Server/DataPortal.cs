@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="DataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements the server-side DataPortal </summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Configuration;
 using System.Security.Principal;

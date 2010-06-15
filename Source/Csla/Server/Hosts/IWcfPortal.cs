@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IWcfPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the service contract for the WCF data</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ServiceModel;
 using Csla.Server.Hosts.WcfChannel;

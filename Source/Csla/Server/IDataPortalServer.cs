@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IDataPortalServer.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface implemented by server-side data portal</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Server

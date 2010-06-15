@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WcfPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Exposes server-side DataPortal functionality</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using Csla.Serialization.Mobile;
 using System.ServiceModel;

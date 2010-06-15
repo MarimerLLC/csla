@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IEditableCollection.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the common methods required by all</summary>
+//-----------------------------------------------------------------------
 namespace Csla.Core
 {
   /// <summary>

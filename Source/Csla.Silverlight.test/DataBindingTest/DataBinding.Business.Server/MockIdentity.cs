@@ -1,4 +1,11 @@
-﻿using System.Security.Principal;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MockIdentity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Security.Principal;
 using Csla.Core;
 using Csla.Security;
 using Csla.Serialization;

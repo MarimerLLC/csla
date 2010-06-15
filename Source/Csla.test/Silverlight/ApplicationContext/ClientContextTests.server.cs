@@ -1,4 +1,11 @@
-﻿using System.Configuration;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ClientContextTests.server.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Configuration;
 using System.Security.Principal;
 using Csla.Security;
 using Csla.Testing.Business.ApplicationContext;

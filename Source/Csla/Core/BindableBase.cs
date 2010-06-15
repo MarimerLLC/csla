@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BindableBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This class implements INotifyPropertyChanged</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 

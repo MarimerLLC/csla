@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ObjectSchema.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Object providing access to schema information for</summary>
+//-----------------------------------------------------------------------
 #if !CLIENTONLY
 using System.Web.UI.Design;
 

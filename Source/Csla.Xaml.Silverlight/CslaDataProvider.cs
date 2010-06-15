@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaDataProvider.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Creates, retrieves and manages business objects</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows;
 using System.ComponentModel;
 using System.Collections.ObjectModel;

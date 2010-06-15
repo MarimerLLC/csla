@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ValidatedDataGridColumn.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements a column for the datagrid</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;

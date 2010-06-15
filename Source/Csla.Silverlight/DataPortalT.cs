@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalT.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Creates, retrieves, updates or deletes a</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

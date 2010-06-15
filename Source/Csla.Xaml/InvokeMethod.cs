@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="InvokeMethod.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Invokes a method on a target object when a </summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;

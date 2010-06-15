@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MobileObservableCollection.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Inherit from this base class to easily</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;

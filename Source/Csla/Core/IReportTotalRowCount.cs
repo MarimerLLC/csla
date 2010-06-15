@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IReportTotalRowCount.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implement this interface in a collection</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Core

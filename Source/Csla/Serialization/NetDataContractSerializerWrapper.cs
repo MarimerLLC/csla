@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="NetDataContractSerializerWrapper.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Wraps the <see cref="NetDataContractSerializer"/></summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Runtime.Serialization;
 

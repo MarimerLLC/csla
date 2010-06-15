@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="UseNetDataContractAttribute.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Specify that WCF should serialize objects in a .NET</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;

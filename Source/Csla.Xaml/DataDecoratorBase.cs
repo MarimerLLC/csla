@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="DataDecoratorBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class for creating WPF panel</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Specialized;
 using System.Windows;

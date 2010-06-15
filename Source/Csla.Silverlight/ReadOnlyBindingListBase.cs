@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ReadOnlyBindingListBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is the base class from which readonly collections</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;

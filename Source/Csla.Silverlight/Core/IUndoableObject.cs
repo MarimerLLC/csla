@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IUndoableObject.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the methods required to participate</summary>
+//-----------------------------------------------------------------------
 namespace Csla.Core
 {
   /// <summary>

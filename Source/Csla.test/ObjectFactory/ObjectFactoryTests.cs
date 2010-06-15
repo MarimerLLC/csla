@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ObjectFactoryTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Always make sure to cleanup after each test </summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;

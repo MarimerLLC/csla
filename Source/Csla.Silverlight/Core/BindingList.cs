@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BindingList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base collection class that supports serialization to/from</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Collections;
 using System.Collections.Generic;

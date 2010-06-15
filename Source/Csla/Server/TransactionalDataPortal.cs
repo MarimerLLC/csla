@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="TransactionalDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements the server-side Serviced </summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Transactions;
 

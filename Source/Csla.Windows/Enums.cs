@@ -1,4 +1,11 @@
-﻿namespace Csla.Windows
+﻿//-----------------------------------------------------------------------
+// <copyright file="Enums.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>The possible form actions.</summary>
+//-----------------------------------------------------------------------
+namespace Csla.Windows
 {
   /// <summary>
   /// The possible form actions.

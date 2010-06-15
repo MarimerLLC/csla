@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ChildDataPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Invoke data portal methods on child</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Reflection;
 using Csla.Server;
 

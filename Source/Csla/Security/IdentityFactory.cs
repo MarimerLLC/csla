@@ -1,4 +1,11 @@
-﻿#if !CLIENTPROFILE
+﻿//-----------------------------------------------------------------------
+// <copyright file="IdentityFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>IdentityFactory is an object in charge of retrieving <see cref="MembershipIdentity.Criteria"/> </summary>
+//-----------------------------------------------------------------------
+#if !CLIENTPROFILE
 using System;
 using System.Web.Security;
 using Csla.Core;

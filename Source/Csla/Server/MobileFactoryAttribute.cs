@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MobileFactoryAttribute.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Specifies that the Silverlight WCF data portal</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;

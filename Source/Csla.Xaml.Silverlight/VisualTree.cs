@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="VisualTree.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Contains methods to help work with the visual tree.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;

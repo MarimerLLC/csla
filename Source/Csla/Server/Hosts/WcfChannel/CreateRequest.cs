@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="CreateRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Request message for creating</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Runtime.Serialization;
 

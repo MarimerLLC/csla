@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ProxyFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Object that creates the appropriate</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Server;
 
 namespace Csla.DataPortalClient

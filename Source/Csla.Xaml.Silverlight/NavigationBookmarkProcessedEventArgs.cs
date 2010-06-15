@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NavigationBookmarkProcessedEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Event arguments class that is part of Navigator event</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Xaml
 {

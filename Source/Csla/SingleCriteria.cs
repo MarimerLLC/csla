@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SingleCriteria.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>A single-value criteria used to retrieve business</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;

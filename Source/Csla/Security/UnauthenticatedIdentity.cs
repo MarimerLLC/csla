@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UnauthenticatedIdentity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implementation of a .NET identity object representing</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Security.Principal;
 using Csla.Serialization;
 using System.Collections.Generic;

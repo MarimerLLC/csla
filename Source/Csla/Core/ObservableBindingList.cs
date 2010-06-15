@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ObservableBindingList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Extends ObservableCollection with behaviors required</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;

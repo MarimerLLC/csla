@@ -1,4 +1,11 @@
-﻿using Csla.DataPortalClient;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SecurityTests.client.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using Csla.DataPortalClient;
 using Csla.Testing.Business.Security;
 using cslalighttest.Properties;
 using UnitDriven;

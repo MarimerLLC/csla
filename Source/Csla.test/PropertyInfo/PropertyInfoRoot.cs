@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyInfoRoot.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Note: We exposed the PropertyInfo's so we can test it...</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

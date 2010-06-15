@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SilverlightCriteriaRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Class that will be used to execute a request from a Silverlight client.</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Core;
 using System.Security.Principal;
 

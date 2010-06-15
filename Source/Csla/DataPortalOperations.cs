@@ -1,4 +1,11 @@
-﻿using System.ComponentModel;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalOperations.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>List of data portal operations.</summary>
+//-----------------------------------------------------------------------
+using System.ComponentModel;
 
 namespace Csla
 {

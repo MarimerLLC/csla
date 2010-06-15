@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IMobileObject.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface to be implemented by any object</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Serialization.Mobile
 {

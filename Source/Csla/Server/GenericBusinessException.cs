@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="GenericBusinessException.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This exception is returned as BusinessException in DataPortalException when the </summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections;
 using System.Runtime.Serialization;
 

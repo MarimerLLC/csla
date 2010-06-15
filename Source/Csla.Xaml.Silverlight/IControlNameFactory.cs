@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IControlNameFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines a factory object that maps</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows;
 using System.Windows.Controls;
 

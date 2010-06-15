@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyChangingEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Arguments object containing information about</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Core
 {

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="FieldDataManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Manages properties and property data for</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;

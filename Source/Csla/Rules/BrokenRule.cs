@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BrokenRule.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Stores details about a specific broken business rule.</summary>
+//-----------------------------------------------------------------------
 using System;
 using Csla.Serialization;
 using Csla.Core;

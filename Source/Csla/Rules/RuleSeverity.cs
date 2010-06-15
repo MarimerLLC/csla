@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="RuleSeverity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Values for validation rule severities.</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Rules

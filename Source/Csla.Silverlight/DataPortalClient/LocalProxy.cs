@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LocalProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Data portal proxy used to execute data</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ServiceModel;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;

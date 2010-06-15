@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WorkflowStatus.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Status of the workflow.</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Workflow
 {

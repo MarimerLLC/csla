@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SmartDateConverter.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Converts values to and from a SmartDate.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 
 namespace Csla.Core.TypeConverters

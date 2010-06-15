@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ISerializationNotification.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface defining callback methods used</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Serialization.Mobile
 {

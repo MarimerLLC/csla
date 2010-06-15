@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MobileDictionary.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines a dictionary that can be serialized through</summary>
+//-----------------------------------------------------------------------
+using System.Collections.Generic;
 using System.Linq;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

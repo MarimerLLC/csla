@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="EditableRootListBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is the base class from which collections</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

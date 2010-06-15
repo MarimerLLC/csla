@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="CslaDataSourceConfiguration.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>CslaDataSource configuration form.</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections;
 using System.Web.UI;

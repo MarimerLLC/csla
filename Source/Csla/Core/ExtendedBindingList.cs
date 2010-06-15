@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ExtendedBindingList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Extends BindingList of T by adding extra</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="RuleUri.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Parses a rule:// URI to provide</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 
 namespace Csla.Rules

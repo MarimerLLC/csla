@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UnauthenticatedPrincipal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implementation of a .NET principal object that represents</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Security.Principal;
 using Csla.Serialization;
 namespace Csla.Security

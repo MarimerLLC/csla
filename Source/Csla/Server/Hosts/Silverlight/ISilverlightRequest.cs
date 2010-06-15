@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ISilverlightRequest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface for all requests from Silverlight client</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Core;
 using System.Security.Principal;
 

@@ -1,4 +1,11 @@
-﻿using System.Web.Security;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MockRoleProvider.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Gets a value indicating whether the specified user is in the specified role for the configured applicationName.</summary>
+//-----------------------------------------------------------------------
+using System.Web.Security;
 
 namespace Csla.Testing.Business.Security
 {

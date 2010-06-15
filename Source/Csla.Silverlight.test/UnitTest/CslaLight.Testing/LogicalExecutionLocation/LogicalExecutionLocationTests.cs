@@ -1,4 +1,11 @@
-﻿using Csla;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LogicalExecutionLocationTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using Csla;
 using Csla.DataPortalClient;
 using UnitDriven;
 using Csla.Testing.Business.CommandBase;

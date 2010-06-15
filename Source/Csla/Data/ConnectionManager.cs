@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ConnectionManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides an automated way to reuse open</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Configuration;
 using System.Data;

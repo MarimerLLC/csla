@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="INotifyPropertyChanging.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines an object that raises the PropertyChanging</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Core
 {

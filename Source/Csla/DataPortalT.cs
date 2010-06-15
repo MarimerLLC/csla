@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalT.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Client side data portal used for making asynchronous</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;

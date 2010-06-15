@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MockMembershipProvider.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Mock implementation of a MembershipProvider that gives us predetermined responses for our tests</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Web.Security;
 
 namespace Csla.Testing.Business.Security

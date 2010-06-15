@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="SmartDateTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
 using Csla;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;

@@ -1,4 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyStatus.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Displays validation information for a business</summary>
+//-----------------------------------------------------------------------
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;

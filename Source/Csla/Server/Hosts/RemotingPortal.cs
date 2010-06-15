@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="RemotingPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Exposes server-side DataPortal functionality</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Server.Hosts

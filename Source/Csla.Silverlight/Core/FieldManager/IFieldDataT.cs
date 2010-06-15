@@ -1,4 +1,11 @@
-﻿namespace Csla.Core.FieldManager
+﻿//-----------------------------------------------------------------------
+// <copyright file="IFieldDataT.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the members required by a field</summary>
+//-----------------------------------------------------------------------
+namespace Csla.Core.FieldManager
 {
   /// <summary>
   /// Defines the members required by a field

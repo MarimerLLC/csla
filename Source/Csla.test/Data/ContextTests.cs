@@ -1,4 +1,11 @@
-﻿using System.Linq;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ContextTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using Csla.Data;

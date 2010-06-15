@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="SimpleRoot.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>The unique ID of this object</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
 using System.Text;

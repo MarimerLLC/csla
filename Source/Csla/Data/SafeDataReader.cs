@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="SafeDataReader.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is a DataReader that 'fixes' any null values before</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Data;
 

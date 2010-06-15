@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BindingSourceRefresh.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;

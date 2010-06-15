@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ViewModelBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class used to create ViewModel objects that</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;

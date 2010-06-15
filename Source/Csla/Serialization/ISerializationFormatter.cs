@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ISerializationFormatter.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines an object that can serialize and deserialize</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Serialization

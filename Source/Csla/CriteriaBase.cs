@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="CriteriaBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base type from which Criteria classes can be</summary>
+//-----------------------------------------------------------------------
 using System;
 using Csla.Serialization.Mobile;
 using Csla.Core;

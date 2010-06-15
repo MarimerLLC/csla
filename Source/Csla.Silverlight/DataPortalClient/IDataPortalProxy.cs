@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IDataPortalProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface implemented by data portal proxy</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.DataPortalClient
 {

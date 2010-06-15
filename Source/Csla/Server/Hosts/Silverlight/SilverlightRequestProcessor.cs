@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SilverlightRequestProcessor.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Object taht processes all the requests from a Silverlight client</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Configuration;
 using Csla.Properties;
 

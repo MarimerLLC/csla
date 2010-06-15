@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="DeleteObjectArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Argument object used in the DeleteObject event.</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Web

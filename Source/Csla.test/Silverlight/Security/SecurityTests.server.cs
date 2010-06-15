@@ -1,4 +1,11 @@
-﻿using System.Configuration.Provider;
+﻿//-----------------------------------------------------------------------
+// <copyright file="SecurityTests.server.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Configuration.Provider;
 using System.Reflection;
 using System.Web.Security;
 using Csla.Testing.Business.Security;

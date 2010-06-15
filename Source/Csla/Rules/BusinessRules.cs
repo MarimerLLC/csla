@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BusinessRules.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Tracks the business rules for a business object.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Linq;
 using Csla.Serialization;
 using System.Collections.Generic;

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaDataProviderCommandManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements support for RoutedCommands that can</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows.Input;
 using System.ComponentModel;
 

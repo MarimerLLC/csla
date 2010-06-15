@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IDataPortalResult.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>IDataPortalResult defines the results of DataPortal operation</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla
 {

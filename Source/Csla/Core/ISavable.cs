@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ISavable.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Specifies that the object can save</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Core

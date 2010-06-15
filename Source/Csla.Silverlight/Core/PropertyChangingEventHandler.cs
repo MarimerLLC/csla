@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyChangingEventHandler.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Defines the method signature for the</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Core
 {

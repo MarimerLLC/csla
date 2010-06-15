@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UsernameCriteria.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Criteria class for passing a</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla;
 using Csla.Serialization;
 

@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BrokenRulesCollection.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>A collection of currently broken rules.</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Linq;
 using System.Collections.Generic;

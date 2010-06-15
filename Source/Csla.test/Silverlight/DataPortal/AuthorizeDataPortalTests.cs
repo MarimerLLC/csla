@@ -1,4 +1,11 @@
-﻿using Csla.Testing.Business.DataPortal;
+﻿//-----------------------------------------------------------------------
+// <copyright file="AuthorizeDataPortalTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Set of integration tests for IAUthorizeDataPortal</summary>
+//-----------------------------------------------------------------------
+using Csla.Testing.Business.DataPortal;
 using UnitDriven;
 using Csla.DataPortalClient;
 

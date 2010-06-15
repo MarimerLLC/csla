@@ -1,4 +1,11 @@
-﻿using Csla.Core;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LocalDataPortalTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Testing.Business.EditableRootTests;
 using UnitDriven;

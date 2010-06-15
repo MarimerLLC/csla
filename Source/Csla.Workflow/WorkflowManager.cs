@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WorkflowManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Manages execution of a WF workflow.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Workflow.Runtime;

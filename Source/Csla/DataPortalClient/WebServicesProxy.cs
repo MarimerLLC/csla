@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="WebServicesProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implements a data portal proxy to relay data portal</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;

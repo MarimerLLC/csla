@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Indicates that a field should not be</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Serialization
 {

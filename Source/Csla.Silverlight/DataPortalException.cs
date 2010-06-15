@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalException.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This exception is returned for any errors occuring</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.WcfPortal;
 
 namespace Csla

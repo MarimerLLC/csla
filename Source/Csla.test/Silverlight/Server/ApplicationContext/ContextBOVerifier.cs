@@ -1,4 +1,10 @@
-﻿
+﻿//-----------------------------------------------------------------------
+// <copyright file="ContextBOVerifier.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
 #if SILVERLIGHT
 using Csla.Serialization;
 #endif

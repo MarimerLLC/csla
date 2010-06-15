@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IBusinessRule.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface defining a business/validation</summary>
+//-----------------------------------------------------------------------
+using System.Collections.Generic;
 
 namespace Csla.Rules
 {

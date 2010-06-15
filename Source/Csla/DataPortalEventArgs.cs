@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="DataPortalEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides information about the DataPortal </summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla

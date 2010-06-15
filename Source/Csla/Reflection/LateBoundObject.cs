@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="LateBoundObject.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Enables simple invocation of methods</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Reflection
 {

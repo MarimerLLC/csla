@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IExtendedBindingList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Extends <see cref="IBindingList" /> by adding extra</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 

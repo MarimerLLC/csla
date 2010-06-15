@@ -1,4 +1,11 @@
-﻿#region Namespace imports
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaActionExtenderProperties.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+#region Namespace imports
 
 using System;
 using System.Data;

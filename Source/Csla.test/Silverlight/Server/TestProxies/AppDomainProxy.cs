@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="AppDomainProxy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is a test proxy used to test any type of calls that have to</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Reflection;
 using System.Threading;
 using Csla.Server;

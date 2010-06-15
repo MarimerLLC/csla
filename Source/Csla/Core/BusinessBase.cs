@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="BusinessBase.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This is the non-generic base class from which most</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Linq;
 using System.Collections.Generic;

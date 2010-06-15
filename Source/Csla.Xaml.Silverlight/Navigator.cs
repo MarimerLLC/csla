@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="Navigator.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Class that shows control in a specified container in</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;

@@ -1,4 +1,11 @@
-﻿using System.ComponentModel;
+﻿//-----------------------------------------------------------------------
+// <copyright file="INotifyBusy.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Interface defining an object that notifies when it</summary>
+//-----------------------------------------------------------------------
+using System.ComponentModel;
 
 namespace Csla.Core
 {

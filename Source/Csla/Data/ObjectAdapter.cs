@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ObjectAdapter.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>An ObjectAdapter is used to convert data in an object </summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Collections;
 using System.Collections.Generic;

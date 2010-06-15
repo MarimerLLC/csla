@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="NavigatorProvider.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Navigator provider object.</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows;
 using Csla.Properties;
 

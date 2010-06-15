@@ -1,4 +1,11 @@
-﻿#if !CLIENTONLY
+﻿//-----------------------------------------------------------------------
+// <copyright file="WorkflowManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Manages execution of a WF workflow.</summary>
+//-----------------------------------------------------------------------
+#if !CLIENTONLY
 using System;
 using System.Collections.Generic;
 using System.Threading;

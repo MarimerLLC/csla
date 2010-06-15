@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ReadOnlyBindingList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>A readonly version of BindingList(Of T)</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;

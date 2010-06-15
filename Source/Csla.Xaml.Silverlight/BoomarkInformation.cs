@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BoomarkInformation.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>This class is used to keep track of bookmarks within Navigator.</summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Xaml
 {

@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="ContextDictionary.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Dictionary type that is serializable</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
 

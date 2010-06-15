@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IdentityConverter.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides the functionality of a WPF</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Windows.Data;
 

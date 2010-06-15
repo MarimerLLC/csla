@@ -1,4 +1,11 @@
-﻿using Csla.Core;
+﻿//-----------------------------------------------------------------------
+// <copyright file="BindingListTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using Csla.Core;
 using Csla.Serialization.Mobile;
 using UnitDriven;
 

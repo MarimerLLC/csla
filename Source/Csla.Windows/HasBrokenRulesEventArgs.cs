@@ -1,4 +1,11 @@
-﻿using System.ComponentModel;
+﻿//-----------------------------------------------------------------------
+// <copyright file="HasBrokenRulesEventArgs.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Event args object containing information about a</summary>
+//-----------------------------------------------------------------------
+using System.ComponentModel;
 
 namespace Csla.Windows
 {

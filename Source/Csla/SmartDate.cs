@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="SmartDate.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides a date data type that understands the concept</summary>
+//-----------------------------------------------------------------------
 using System;
 using Csla.Properties;
 using Csla.Serialization.Mobile;

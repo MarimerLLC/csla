@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="MobileObject.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Inherit from this base class to easily</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.ComponentModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

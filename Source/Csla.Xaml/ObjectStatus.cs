@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="ObjectStatus.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Container for other UI controls that exposes</summary>
+//-----------------------------------------------------------------------
 using System;
 using System.Windows;
 using System.ComponentModel;

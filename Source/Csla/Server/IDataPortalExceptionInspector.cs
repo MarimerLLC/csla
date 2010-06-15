@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="IDataPortalExceptionInspector.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Implement this interface to check a DataPortalException before returning Exception to the client. </summary>
+//-----------------------------------------------------------------------
+using System;
 
 namespace Csla.Server
 {

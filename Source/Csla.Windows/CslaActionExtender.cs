@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaActionExtender.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Extender control providing automation around</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Data;
 using System.Collections.Generic;
 using System.ComponentModel;

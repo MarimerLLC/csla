@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="DataPortalMethodCache.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Gets a reference to the DataPortal_Create method for</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using Csla.Reflection;
 

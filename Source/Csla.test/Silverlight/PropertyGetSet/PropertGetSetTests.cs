@@ -1,4 +1,11 @@
-﻿using UnitDriven;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertGetSetTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Test created for Bug Tracker Item 64</summary>
+//-----------------------------------------------------------------------
+using UnitDriven;
 
 #if NUNIT
 using NUnit.Framework;

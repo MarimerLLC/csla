@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="VisibilityMode.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Options controlling how the Authorizer</summary>
+//-----------------------------------------------------------------------
 using System;
 
 namespace Csla.Xaml

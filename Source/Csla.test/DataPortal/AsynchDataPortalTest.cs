@@ -1,4 +1,11 @@
-﻿#if SILVERLIGHT
+﻿//-----------------------------------------------------------------------
+// <copyright file="AsynchDataPortalTest.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Create is an exception - called with SingleCriteria, if BO does not have DP_Create() overload</summary>
+//-----------------------------------------------------------------------
+#if SILVERLIGHT
 using Csla.DataPortalClient;
 #else
 using Csla.Test.Basic;

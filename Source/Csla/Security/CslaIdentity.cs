@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaIdentity.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Provides a base class to simplify creation of</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Linq.Expressions;
 using System.Security.Principal;
 using Csla.Serialization;

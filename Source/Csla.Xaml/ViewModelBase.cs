@@ -503,6 +503,30 @@ namespace Csla.Xaml
     /// Creates or retrieves a new instance of the 
     /// Model by invoking a static factory method.
     /// </summary>
+    /// <param name="factoryMethod">Static factory method function.</param>
+    /// <example>DoRefresh(() => BusinessList.GetList())</example>
+    /// <example>DoRefresh(() => BusinessList.GetList(id))</example>
+    protected void DoRefresh(Func<T> factoryMethod)
+    {
+      if (typeof(T) != null)
+      {
+        Error = null;
+        try
+        {
+          Model = factoryMethod.Invoke();
+        }
+        catch (Exception ex)
+        {
+          Error = ex;
+        }
+        OnRefreshed();
+      }
+    }
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
     /// <param name="factoryMethod">Name of the static factory method.</param>
     /// <param name="factoryParameters">Factory method parameters.</param>
     protected virtual void DoRefresh(string factoryMethod, params object[] factoryParameters)
@@ -532,6 +556,31 @@ namespace Csla.Xaml
       DoRefresh(factoryMethod, new object[] { });
     }
 #endif
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the 
+    /// Model by invoking a static factory method.
+    /// </summary>
+    /// <param name="factoryMethod">Static factory method action.</param>
+    /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
+    /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
+    protected void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
+    {
+      if (typeof(T) != null)
+        try
+        {
+          Error = null;
+          IsBusy = true;
+
+          var handler = (EventHandler<DataPortalResult<T>>)CreateHandler(typeof(T));
+          factoryMethod(handler);
+        }
+        catch (Exception ex)
+        {
+          Error = ex;
+          IsBusy = false;
+        }
+    }
 
     /// <summary>
     /// Creates or retrieves a new instance of the 
@@ -576,20 +625,25 @@ namespace Csla.Xaml
       return handler;
     }
 
-
     private void QueryCompleted(object sender, EventArgs e)
     {
-      IsBusy = false;
-      var eventArgs = (IDataPortalResult)e;
-      if (eventArgs.Error == null)
+      try
       {
-        var model = (T) eventArgs.Object;
-        OnRefreshing(model);
-        Model = model;
+        var eventArgs = (IDataPortalResult)e;
+        if (eventArgs.Error == null)
+        {
+          var model = (T)eventArgs.Object;
+          OnRefreshing(model);
+          Model = model;
+        }
+        else
+          Error = eventArgs.Error;
+        OnRefreshed();
       }
-      else
-        Error = eventArgs.Error;
-      OnRefreshed();
+      finally
+      {
+        IsBusy = false;
+      }
     }
 
 

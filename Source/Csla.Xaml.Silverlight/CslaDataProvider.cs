@@ -414,21 +414,24 @@ namespace Csla.Xaml
     /// </summary>
     public void Refresh()
     {
-      if (_objectType != null && _factoryMethod != null)
-        try
-        {
-          SetError(null);
-          this.IsBusy = true;
-          List<object> parameters = new List<object>(FactoryParameters);
-          Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);
-          parameters.Add(CreateHandler(objectType));
+      if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+      {
+        if (_objectType != null && _factoryMethod != null)
+          try
+          {
+            SetError(null);
+            this.IsBusy = true;
+            List<object> parameters = new List<object>(FactoryParameters);
+            Type objectType = Csla.Reflection.MethodCaller.GetType(_objectType);
+            parameters.Add(CreateHandler(objectType));
 
-          MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());
-        }
-        catch (Exception ex)
-        {
-          this.Error = ex;
-        }
+            MethodCaller.CallFactoryMethod(objectType, _factoryMethod, parameters.ToArray());
+          }
+          catch (Exception ex)
+          {
+            this.Error = ex;
+          }
+      }
     }
 
     private Delegate CreateHandler(Type objectType)

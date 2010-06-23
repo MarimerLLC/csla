@@ -19,23 +19,6 @@ namespace Csla.Rules
   /// </summary>
   public abstract class BusinessRule : IBusinessRule
   {
-    /// <summary>
-    /// Gets the default description used by this rule.
-    /// </summary>
-    public string DefaultDescription { get; protected set; }
-    /// <summary>
-    /// Gets the default severity for this rule.
-    /// </summary>
-    public RuleSeverity DefaultSeverity { get; protected set; }
-    /// <summary>
-    /// Gets the default StopProcessing value for this rule.
-    /// </summary>
-    public bool DefaultStopProcessing { get; protected set; }
-    /// <summary>
-    /// Gets the userstate object provided when this rule was
-    /// associated with the business object property.
-    /// </summary>
-    public object UserState { get; protected set; }
     private Csla.Core.IPropertyInfo _primaryProperty;
     /// <summary>
     /// Gets or sets the primary property affected by this rule.
@@ -96,7 +79,6 @@ namespace Csla.Rules
     /// <param name="primaryProperty">Primary property for this rule.</param>
     protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
     {
-      DefaultSeverity = RuleSeverity.Error;
       AffectedProperties = new List<Core.IPropertyInfo>();
       PrimaryProperty = primaryProperty;
       this.RuleUri = new RuleUri(this, primaryProperty);

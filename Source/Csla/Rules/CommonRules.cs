@@ -414,6 +414,11 @@ namespace Csla.Rules.CommonRules
   public class InfoMessage : BusinessRule
   {
     /// <summary>
+    /// Gets the default description used by this rule.
+    /// </summary>
+    public string MessageText { get; protected set; }
+
+    /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="primaryProperty">Property for message.</param>
@@ -431,7 +436,7 @@ namespace Csla.Rules.CommonRules
     public InfoMessage(Csla.Core.IPropertyInfo primaryProperty, string messageText)
       : this(primaryProperty)
     {
-      DefaultDescription = messageText;
+      MessageText = messageText;
     }
 
     /// <summary>
@@ -440,7 +445,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      context.AddInformationResult(DefaultDescription);
+      context.AddInformationResult(MessageText);
     }
   }
 

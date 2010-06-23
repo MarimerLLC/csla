@@ -12,5 +12,9 @@ namespace Csla.Web.Mvc
   /// </summary>
   public interface IViewModel
   {
+    /// <summary>
+    /// Object property for the contained business object
+    /// </summary>
+    object Model { get; set; }
   }
 }

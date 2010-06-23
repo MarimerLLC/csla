@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
-// <summary>Model binder for use with CSLA .NET editable business</summary>
+// <summary>Model binder for use with CSLA .NET editable business objects.</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
@@ -118,6 +118,9 @@ namespace Csla.Web.Mvc
         }
       }
       else
+        //if (!(bindingContext.Model.GetType().GetInterfaces().Any(x =>
+        //      x.IsGenericType &&
+        //      x.GetGenericTypeDefinition() == typeof(IViewModel<>))))
         if (!(bindingContext.Model is IViewModel))
           base.OnModelUpdated(controllerContext, bindingContext);
     }

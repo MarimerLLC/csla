@@ -72,6 +72,21 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Creates a RuleContext instance for testing.
+    /// </summary>
+    /// <param name="completeHandler">Callback for async rule.</param>
+    /// <param name="rule">Reference to the rule object.</param>
+    /// <param name="target">Target business object.</param>
+    /// <param name="inputPropertyValues">Input property values used by the rule.</param>
+    public RuleContext(Action<RuleContext> completeHandler, IBusinessRule rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues)
+      : this(completeHandler)
+    {
+      Rule = rule;
+      Target = target;
+      InputPropertyValues = inputPropertyValues;
+    }
+
+    /// <summary>
     /// Gets a new RuleContext object for a chained rule.
     /// </summary>
     /// <param name="rule">Chained rule that will use

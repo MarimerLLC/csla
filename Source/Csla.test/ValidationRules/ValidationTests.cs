@@ -462,11 +462,23 @@ namespace Csla.Test.ValidationRules
       var context = GetContext();
 
       var root = new TwoPropertyRules();
-      root.Value2 = "b";
-      context.Assert.IsFalse(root.IsValid);
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      root.Value1 = "a";
-      context.Assert.IsTrue(root.IsValid);
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+        new Dictionary<Core.IPropertyInfo, object> { 
+          { TwoPropertyRules.Value1Property, "a" },
+          { TwoPropertyRules.Value2Property, "b" } 
+        });
+      ((Csla.Rules.IBusinessRule)rule).Execute(ctx);
+      context.Assert.AreEqual(0, ctx.Results.Count);
+
+      ctx = new Csla.Rules.RuleContext(null, rule, root,
+        new Dictionary<Core.IPropertyInfo, object> { 
+          { TwoPropertyRules.Value1Property, "" },
+          { TwoPropertyRules.Value2Property, "a" } 
+        });
+      ((Csla.Rules.IBusinessRule)rule).Execute(ctx);
+      context.Assert.AreEqual(1, ctx.Results.Count);
 
       context.Assert.Success();
       context.Complete();
@@ -609,45 +621,38 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class TwoPropertyRules : BusinessBase<TwoPropertyRules>
   {
-    private static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
+    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
     public string Value1
     {
       get { return GetProperty(Value1Property); }
       set { SetProperty(Value1Property, value); }
     }
 
-    private static PropertyInfo<string> Value2Property = RegisterProperty<string>(c => c.Value2);
+    public static PropertyInfo<string> Value2Property = RegisterProperty<string>(c => c.Value2);
     public string Value2
     {
       get { return GetProperty(Value2Property); }
       set { SetProperty(Value2Property, value); }
     }
+  }
 
-    protected override void AddBusinessRules()
+  public class TwoProps : Csla.Rules.BusinessRule
+  {
+    public Csla.Core.IPropertyInfo SecondaryProperty { get; set; }
+    public TwoProps(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo secondProperty)
+      : base(primaryProperty)
     {
-      base.AddBusinessRules();
-      BusinessRules.AddRule(new TwoProps(Value1Property, Value2Property));
-      BusinessRules.AddRule(new TwoProps(Value2Property, Value1Property));
+      SecondaryProperty = secondProperty;
+      AffectedProperties.Add(SecondaryProperty);
+      InputProperties = new List<Core.IPropertyInfo> { PrimaryProperty, SecondaryProperty };
     }
 
-    private class TwoProps : Csla.Rules.BusinessRule
+    protected override void Execute(Rules.RuleContext context)
     {
-      public Csla.Core.IPropertyInfo SecondaryProperty { get; set; }
-      public TwoProps(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo secondProperty)
-        : base(primaryProperty)
-      {
-        SecondaryProperty = secondProperty;
-        AffectedProperties.Add(SecondaryProperty);
-        InputProperties = new List<Core.IPropertyInfo> { PrimaryProperty, SecondaryProperty };
-      }
-
-      protected override void Execute(Rules.RuleContext context)
-      {
-        var v1 = (string)context.InputPropertyValues[PrimaryProperty];
-        var v2 = (string)context.InputPropertyValues[SecondaryProperty];
-        if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
-          context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
-      }
+      var v1 = (string)context.InputPropertyValues[PrimaryProperty];
+      var v2 = (string)context.InputPropertyValues[SecondaryProperty];
+      if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
+        context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
     }
   }
 }

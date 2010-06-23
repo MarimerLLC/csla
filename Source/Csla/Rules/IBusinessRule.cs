@@ -48,5 +48,11 @@ namespace Csla.Rules
     /// will run asynchronous code.
     /// </summary>
     bool IsAsync { get; }
+    /// <summary>
+    /// Gets a value indicating that the Target property should
+    /// be set even for an async rule (note that using Target
+    /// from a background thread will cause major problems).
+    /// </summary>
+    bool ProvideTargetWhenAsync { get; }
   }
 }

@@ -508,7 +508,7 @@ namespace Csla.Rules
             }
           });
         context.Rule = rule;
-        if (!rule.IsAsync)
+        if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
           context.Target = _target;
 
         // get input properties

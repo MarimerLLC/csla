@@ -101,7 +101,8 @@ namespace Csla.Rules
     {
       var result = new RuleContext(_completeHandler);
       result.Rule = rule;
-      result.Target = Target;
+      if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
+        result.Target = Target;
       result.InputPropertyValues = InputPropertyValues;
       result.Results = Results;
       return result;

@@ -50,6 +50,12 @@ namespace Csla.Rules
     /// </summary>
     public virtual bool IsAsync { get; protected set; }
     /// <summary>
+    /// Gets a value indicating that the Target property should
+    /// be set even for an async rule (note that using Target
+    /// from a background thread will cause major problems).
+    /// </summary>
+    public bool ProvideTargetWhenAsync { get; protected set; }
+    /// <summary>
     /// Gets a unique rule:// URI for the specific instance
     /// of the rule within the context of the business object
     /// where the rule is used.

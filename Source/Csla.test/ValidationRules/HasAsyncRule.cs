@@ -43,6 +43,9 @@ namespace Csla.Test.ValidationRules
 
       protected override void Execute(RuleContext context)
       {
+        if (context.Target != null)
+          throw new ArgumentOutOfRangeException("context.Target must be null");
+
         BackgroundWorker worker = new BackgroundWorker();
         // Using closures to access the context would be easier but this is not possible
         // in all languages. Below is an example of how to use the context without closures
@@ -100,10 +103,14 @@ namespace Csla.Test.ValidationRules
         IsAsync = true;
         _innerRule = new Rule1(primaryProperty);
         InputProperties = _innerRule.InputProperties;
+        ProvideTargetWhenAsync = true;
       }
 
       protected override void Execute(RuleContext context)
       {
+        if (context.Target == null)
+          throw new ArgumentOutOfRangeException("context.Target must not be null");
+
         ((IBusinessRule)_innerRule).Execute(context.GetChainedContext(_innerRule));
       }
     }

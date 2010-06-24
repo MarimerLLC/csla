@@ -634,6 +634,13 @@ namespace Csla.Test.ValidationRules
       get { return GetProperty(Value2Property); }
       set { SetProperty(Value2Property, value); }
     }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new TwoProps(Value1Property, Value2Property));
+      BusinessRules.AddRule(new TwoProps(Value2Property, Value1Property));
+    }
   }
 
   public class TwoProps : Csla.Rules.BusinessRule

@@ -1305,7 +1305,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
-    public bool IsBusy
+    public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
     }
@@ -1317,7 +1317,7 @@ namespace Csla
     /// </summary>
     [Browsable(false)]
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
-    public bool IsSelfBusy
+    public virtual bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }
     }

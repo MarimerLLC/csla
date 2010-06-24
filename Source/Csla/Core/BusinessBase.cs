@@ -2679,7 +2679,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-    public bool IsBusy
+    public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
     }
@@ -2690,7 +2690,7 @@ namespace Csla.Core
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-    public bool IsSelfBusy
+    public virtual bool IsSelfBusy
     {
       get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
@@ -2726,7 +2726,7 @@ namespace Csla.Core
     /// <param name="property">
     /// Property to check.
     /// </param>
-    public bool IsPropertyBusy(Csla.Core.IPropertyInfo property)
+    public virtual bool IsPropertyBusy(Csla.Core.IPropertyInfo property)
     {
       return BusinessRules.GetPropertyBusy(property);
     }

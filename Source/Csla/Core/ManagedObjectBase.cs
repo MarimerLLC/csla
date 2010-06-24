@@ -317,14 +317,7 @@ namespace Csla.Core
     /// </remarks>
     protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-        {
-            MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-        }
-        else
-        {
-            FieldManager.LoadFieldData(propertyInfo, newValue);
-        }
+      MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
     }
 
     #endregion

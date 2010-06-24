@@ -2469,18 +2469,9 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      ResetChildEditLevel(newValue);
-
-      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+      using (BypassPropertyChecks)
       {
-          using (BypassPropertyChecks)
-          {
-              MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-          }
-      }
-      else
-      {
-          FieldManager.LoadFieldData(propertyInfo, newValue);
+        MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
       }
     }
 

@@ -162,7 +162,7 @@ namespace Csla.Xaml
     {
       CslaDataProviderCommandManager ctl = target as CslaDataProviderCommandManager;
       if (ctl != null && ctl.Provider != null)
-        ctl.Provider.RemoveItem(e.Parameter);
+        ctl.Provider.RemoveItem(null, new ExecuteEventArgs { MethodParameter = e.Parameter });
     }
   }
 }

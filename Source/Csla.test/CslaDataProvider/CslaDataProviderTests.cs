@@ -58,7 +58,7 @@ namespace Csla.Test.CslaDataProvider
       list.BeginEdit();
       dp.ManageObjectLifetime = true;
       dp.ObjectInstance = list;
-      dp.RemoveItem(list[0]);
+      dp.RemoveItem(null, new Xaml.ExecuteEventArgs { MethodParameter = list[0] });
       dp.Save();
 
       Assert.AreEqual(1, list.Count);

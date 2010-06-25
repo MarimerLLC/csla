@@ -599,13 +599,16 @@ namespace Csla.Xaml
     /// Removes an item from an editable list
     /// business object.
     /// </summary>
-    /// <param name="item">
-    /// Reference to the child item to remove.
+    /// <param name="sender">Object invoking this method.</param>
+    /// <param name="e">
+    /// ExecuteEventArgs, where MethodParameter contains 
+    /// the item to be removed from the list.
     /// </param>
-    public void RemoveItem(object item)
+    public void RemoveItem(object sender, ExecuteEventArgs e)
     {
       try
       {
+        var item = e.MethodParameter;
         SetError(null);
         var obj = ObjectInstance as System.Collections.IList;
         if (obj != null)

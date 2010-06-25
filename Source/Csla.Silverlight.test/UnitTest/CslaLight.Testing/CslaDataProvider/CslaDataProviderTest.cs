@@ -256,7 +256,7 @@ namespace cslalighttest.CslaDataProvider
         var custs = e1.Object;
         int count = custs.Count;
         provider.ObjectInstance = custs;
-        provider.RemoveItem(custs[0]);
+        provider.RemoveItem(null, new Csla.Xaml.ExecuteEventArgs { MethodParameter = custs[0] });
         provider.AddNewItem();
         provider.AddNewItem();
         context.Assert.AreEqual(count - 1 + 2, custs.Count);
@@ -577,7 +577,7 @@ namespace cslalighttest.CslaDataProvider
         var custs = e1.Object;
         int count = custs.Count;
         provider.ObjectInstance = custs;
-        provider.RemoveItem(custs[0]);
+        provider.RemoveItem(null, new Csla.Xaml.ExecuteEventArgs { MethodParameter = custs[0] });
 
 
         provider.DataChanged += (o4, e4) =>
@@ -620,7 +620,7 @@ namespace cslalighttest.CslaDataProvider
         int count = custs.Count;
         provider.ManageObjectLifetime = true;
         provider.ObjectInstance = custs;
-        provider.RemoveItem(custs[0]);
+        provider.RemoveItem(null, new Csla.Xaml.ExecuteEventArgs { MethodParameter = custs[0] });
         bool continueTest = true;
         provider.DataChanged += (o3, e3) =>
         {

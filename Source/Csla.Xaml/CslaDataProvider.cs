@@ -544,11 +544,14 @@ namespace Csla.Xaml
     /// Removes an item from the list if the object
     /// implements IBindingList and AllowRemove is true.
     /// </summary>
-    /// <param name="item">
-    /// The item to be removed from the list.
+    /// <param name="sender">Object invoking this method.</param>
+    /// <param name="e">
+    /// ExecuteEventArgs, where MethodParameter contains 
+    /// the item to be removed from the list.
     /// </param>
-    public void RemoveItem(object item)
+    public void RemoveItem(object sender, ExecuteEventArgs e)
     {
+      var item = e.MethodParameter;
       // only do something if the object implements
       // IBindingList
       IBindingList list;

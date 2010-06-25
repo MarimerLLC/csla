@@ -58,6 +58,14 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void SpecialCharacterParsing()
+    {
+      var uri = new Csla.Rules.RuleUri("A+ []`,=%Ä", "P+ []`,=%Ä");
+      Assert.AreEqual("a-----25-c3-84", uri.RuleTypeName, "Rule type");
+      Assert.AreEqual("P-----25-C3-84", uri.PropertyName, "Property name");
+    }
+
+    [TestMethod]
     public void LongTypeName()
     {
       var hostName = "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij";

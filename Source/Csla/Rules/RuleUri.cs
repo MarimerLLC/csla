@@ -54,14 +54,7 @@ namespace Csla.Rules
     /// <param name="propertyName">Name of the business object property or the string literal "null".</param>
     public RuleUri(string typeName, string propertyName)
     {
-      var hostName = typeName.Replace("+", "-");
-      hostName = hostName.Replace(" ", "");
-      hostName = hostName.Replace("[", "");
-      hostName = hostName.Replace("]", "");
-      hostName = hostName.Replace("`", "-");
-      hostName = hostName.Replace(",", "-");
-      hostName = hostName.Replace("=", "-");
-
+      var hostName = EncodeString(typeName);
       if (hostName.Length > 63)
       {
         var tmp = hostName;
@@ -71,8 +64,23 @@ namespace Csla.Rules
         hostName = hostName.Substring(0, hostName.Length - 1);
       }
 
-      var uriString = "rule://" + hostName + "/" + propertyName;
+      var uriString = "rule://" + hostName + "/" + EncodeString(propertyName);
       _uri = new Uri(uriString);
+    }
+
+    private static string EncodeString(string value)
+    {
+      var result = value;
+      result = result.Replace("+", "-");
+      result = result.Replace(" ", "");
+      result = result.Replace("[", "");
+      result = result.Replace("]", "");
+      result = result.Replace("`", "-");
+      result = result.Replace(",", "-");
+      result = result.Replace("=", "-");
+      result = System.Uri.EscapeUriString(result);
+      result = result.Replace("%", "-");
+      return result;
     }
 
     /// <summary>

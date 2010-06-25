@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
+using Csla.Serialization;
 
 #if NUNIT
 using NUnit.Framework;
@@ -34,6 +35,36 @@ namespace Csla.Test.ValidationRules
         var desc = new Csla.Rules.RuleUri(item);
         Assert.AreEqual("csla.test.validationrules.myrule", desc.RuleTypeName, "Wrong rule type name");
       }
+    }
+
+    [TestMethod]
+    public void BasicParsing()
+    {
+      var uri = new Csla.Rules.RuleUri("rule://type/property");
+      Assert.AreEqual("type", uri.RuleTypeName, "Rule type");
+      Assert.AreEqual("property", uri.PropertyName, "Property name");
+
+      uri = new Csla.Rules.RuleUri("rule://type/property?p1=a");
+      Assert.AreEqual("type", uri.RuleTypeName, "Rule type");
+      Assert.AreEqual("property", uri.PropertyName, "Property name");
+    }
+
+    [TestMethod]
+    public void NameParsing()
+    {
+      var uri = new Csla.Rules.RuleUri("type", "property");
+      Assert.AreEqual("type", uri.RuleTypeName, "Rule type");
+      Assert.AreEqual("property", uri.PropertyName, "Property name");
+    }
+
+    [TestMethod]
+    public void LongTypeName()
+    {
+      var hostName = "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghij";
+
+      var uri = new Csla.Rules.RuleUri(hostName, "property");
+      Assert.AreEqual(hostName.Replace("/", ""), uri.RuleTypeName, "Rule type");
+      Assert.AreEqual("property", uri.PropertyName, "Property name");
     }
   }
 

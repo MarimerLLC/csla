@@ -366,6 +366,9 @@
     <Compile Include="..\..\..\csla.test\ValidationRules\MaxLengthArgs.cs">
       <Link>Validation\MaxLengthArgs.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\ValidationRules\RuleDescriptionTests.cs">
+      <Link>Validation\RuleDescriptionTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\ValidationRules\SeverityClasses.cs">
       <Link>Validation\SeverityClasses.cs</Link>
     </Compile>

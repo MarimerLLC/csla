@@ -44,8 +44,17 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
     public RuleUri(IBusinessRule rule, Csla.Core.IPropertyInfo property)
+      : this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
+    { }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="typeName">Name of the rule type.</param>
+    /// <param name="propertyName">Name of the business object property or the string literal "null".</param>
+    public RuleUri(string typeName, string propertyName)
     {
-      var hostName = (rule.GetType().FullName).Replace("+", "-");
+      var hostName = typeName.Replace("+", "-");
       hostName = hostName.Replace(" ", "");
       hostName = hostName.Replace("[", "");
       hostName = hostName.Replace("]", "");
@@ -53,10 +62,17 @@ namespace Csla.Rules
       hostName = hostName.Replace(",", "-");
       hostName = hostName.Replace("=", "-");
 
-      var uriString = "rule://" + hostName + "/" + ((property == null) ? "null" : property.Name);
+      if (hostName.Length > 63)
+      {
+        var tmp = hostName;
+        hostName = null;
+        for (int i = 0; i < tmp.Length - 1; i = i + 63)
+          hostName = hostName + tmp.Substring(i, ((i + 63 <= tmp.Length) ? 63 : tmp.Length - i)) + "/";
+        hostName = hostName.Substring(0, hostName.Length - 1);
+      }
+
+      var uriString = "rule://" + hostName + "/" + propertyName;
       _uri = new Uri(uriString);
-      if (_uri.Scheme != "rule")
-        throw new ArgumentException("RuleUri.Scheme");
     }
 
     /// <summary>
@@ -100,7 +116,14 @@ namespace Csla.Rules
     /// </summary>
     public string RuleTypeName
     {
-      get { return Uri.UnescapeDataString(_uri.Host); }
+      get 
+      {
+        string name = _uri.Host;
+        if (_uri.Parts().Length > 1)
+          for (int i = 0; i < _uri.Parts().Length - 1; i++)
+            name = name + _uri.Parts()[i];
+        return name.Replace("/", "");
+      }
     }
 
     /// <summary>
@@ -109,7 +132,36 @@ namespace Csla.Rules
     /// </summary>
     public string PropertyName
     {
-      get { return _uri.LocalPath.Split('/')[1]; }
+      get { return _uri.Parts()[_uri.Parts().Length - 1]; }
     }
   }
+
+  /// <summary>
+  /// Extension methods for System.Uri.
+  /// </summary>
+  public static class UriExtensions
+  {
+    /// <summary>
+    /// Gets the segments (/ delimited parts) of the path.
+    /// </summary>
+    /// <param name="uri">URI to parse.</param>
+    /// <returns>
+    /// On .NET returns the Segments property. On Silverlight
+    /// parses the path by / and returns a string array comparable
+    /// to the .NET Segments property.
+    /// </returns>
+    public static string[] Parts(this System.Uri uri)
+    {
+#if SILVERLIGHT
+      var path = uri.LocalPath.Split('/');
+      string[] result = new string[path.Length - 1];
+      for (int i = 0; i < path.Length - 1; i++)
+        result[i] = path[i + 1];
+      return result;
+#else
+      return uri.Segments;
+#endif
+    }
+  }
+
 }

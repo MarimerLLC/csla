@@ -19,7 +19,7 @@ namespace MembershipTest
     {
       var identity =
         MembershipIdentity.GetMembershipIdentity
-        <MembershipIdentity>(username, password, true);
+        <MembershipIdentity>(username, password);
       return new MyPrincipal(identity);
     }
   }

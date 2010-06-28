@@ -26,9 +26,17 @@ namespace TestApp
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
-      var identity = 
-        Csla.DataPortal.Fetch<CustomIdentity>(
-        new Csla.Security.UsernameCriteria("Guest", ""));
+      CustomIdentity identity = null;
+      try
+      {
+        identity =
+          Csla.DataPortal.Fetch<CustomIdentity>(
+          new Csla.Security.UsernameCriteria("Admin", ""));
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.ToString(), "Login error", MessageBoxButton.OK, MessageBoxImage.Exclamation);        
+      }
       var principal = new CustomPrincipal(identity);
       Csla.ApplicationContext.User = principal;
       UserTextBlock.Text = Csla.ApplicationContext.User.Identity.Name;
@@ -36,7 +44,7 @@ namespace TestApp
       try
       {
         var cust = CustomerEdit.GetCustomer(123);
-        var dp = Resources["Customer"] as Csla.Wpf.CslaDataProvider;
+        var dp = Resources["Customer"] as Csla.Xaml.CslaDataProvider;
         dp.ObjectInstance = cust;
       }
       catch (Exception ex)

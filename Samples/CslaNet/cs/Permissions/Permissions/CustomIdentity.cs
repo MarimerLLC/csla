@@ -15,7 +15,8 @@ namespace TestApp
 
     public bool IsInRole(string role)
     {
-      return _roles.Contains(role);
+      //return _roles.Contains(role);
+      return HasPermission(role);
     }
 
     private List<string> _permissions;

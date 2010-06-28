@@ -38,43 +38,63 @@ namespace TestApp
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.CanRead, NameProperty, -2);
-      ValidationRules.AddRule(Csla.Validation.CommonRules.CanWrite, NameProperty, -2);
-      ValidationRules.AddRule(StopProcessing, NameProperty, -1);
-      ValidationRules.AddRule(Csla.Validation.CommonRules.CanRead, CityProperty, -2);
-      ValidationRules.AddRule(Csla.Validation.CommonRules.CanWrite, CityProperty, -2);
-      ValidationRules.AddRule(StopProcessing, CityProperty, -1);
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.ReadProperty, NameProperty, "CustomerEdit.Name.Read"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, NameProperty, "CustomerEdit.Name.Write"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.ReadProperty, CityProperty, "CustomerEdit.City.Read"));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, CityProperty, "CustomerEdit.City.Write"));
 
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, NameProperty);
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, CityProperty);
+      BusinessRules.AddRule(new CanRead { PrimaryProperty = NameProperty, Priority = -2 });
+      BusinessRules.AddRule(new CanWrite { PrimaryProperty = NameProperty, Priority = -2 });
+      BusinessRules.AddRule(new StopProcessing { PrimaryProperty = NameProperty, Priority = -1 });
+
+      BusinessRules.AddRule(new CanRead { PrimaryProperty = CityProperty, Priority = -2 });
+      BusinessRules.AddRule(new CanWrite { PrimaryProperty = CityProperty, Priority = -2 });
+      BusinessRules.AddRule(new StopProcessing { PrimaryProperty = CityProperty, Priority = -1 });
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CityProperty));
     }
 
-    private static bool StopProcessing(object target, Csla.Validation.RuleArgs e)
+    private class StopProcessing : Csla.Rules.BusinessRule
     {
-      var obj = target as CustomerEdit;
-      if (obj.BrokenRulesCollection.Where(c => c.Property == e.PropertyName).Count() > 0)
-        e.StopProcessing = true;
-      return true;
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var obj = (CustomerEdit)context.Target;
+        if (obj.BrokenRulesCollection.Where(c => c.Property == PrimaryProperty.Name).Count() > 0)
+          context.AddInformationResult(null, true);
+      }
+    }
+
+    private class CanWrite : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (Csla.Core.BusinessBase)context.Target;
+        if (!target.CanWriteProperty(PrimaryProperty))
+          context.AddInformationResult("Not allowed to write property");
+      }
+    }
+
+    private class CanRead : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (Csla.Core.BusinessBase)context.Target;
+        if (!target.CanReadProperty(PrimaryProperty))
+          context.AddInformationResult("Not allowed to read property");
+      }
     }
 
     #endregion
 
     #region Authorization rules
 
-    protected override void AddAuthorizationRules()
-    {
-      AuthorizationRules.AllowRead(NameProperty, "CustomerEdit.Name.Read");
-      AuthorizationRules.AllowWrite(NameProperty, "CustomerEdit.Name.Write");
-      AuthorizationRules.AllowRead(CityProperty, "CustomerEdit.City.Read");
-      AuthorizationRules.AllowWrite(CityProperty, "CustomerEdit.City.Write");
-    }
-
     private static void AddObjectAuthorizationRules()
     {
-      Csla.Security.AuthorizationRules.AllowCreate(typeof(CustomerEdit), "CustomerEdit.Create()");
-      Csla.Security.AuthorizationRules.AllowGet(typeof(CustomerEdit), "CustomerEdit.Get()");
-      Csla.Security.AuthorizationRules.AllowEdit(typeof(CustomerEdit), "CustomerEdit.Edit()");
-      Csla.Security.AuthorizationRules.AllowDelete(typeof(CustomerEdit), "CustomerEdit.Delete()");
+      Csla.Rules.BusinessRules.AddRule(typeof(CustomerEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "CustomerEdit.Create()"));
+      Csla.Rules.BusinessRules.AddRule(typeof(CustomerEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.GetObject, "CustomerEdit.Get()"));
+      Csla.Rules.BusinessRules.AddRule(typeof(CustomerEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "CustomerEdit.Edit()"));
+      Csla.Rules.BusinessRules.AddRule(typeof(CustomerEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "CustomerEdit.Delete()"));
     }
 
     #endregion

@@ -144,13 +144,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Source\Csla.client\Csla.client.csproj">
-      <Project>{0437FE4A-2677-454D-B634-209616CC13FC}</Project>
-      <Name>Csla.client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Source\Csla.Xaml\Csla.Xaml.csproj">
       <Project>{563EFDFA-EB47-4039-955B-654582EA5362}</Project>
       <Name>Csla.Xaml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Source\Csla\Csla.csproj">
+      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
+      <Name>Csla</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

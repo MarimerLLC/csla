@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Csla.Core;
 using Csla;
-using Csla.Validation;
 using System.Threading;
 
 namespace Example
@@ -25,38 +24,41 @@ namespace Example
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(DoAsyncRule, DataProperty);
+      BusinessRules.AddRule(new DoAsyncRule(DataProperty));
     }
 
-    private static void DoAsyncRule(AsyncValidationRuleContext context)
+    private class DoAsyncRule : Csla.Rules.BusinessRule
     {
-      BackgroundWorker worker = new BackgroundWorker();
-      worker.DoWork += (o, e) => Thread.Sleep(3000);
-      worker.RunWorkerCompleted += (o, e) =>
+      public DoAsyncRule(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
       {
-        string val = (string)context.PropertyValues["Data"];
-        if (val == "Error")
-        {
-          context.OutArgs.Result = false;
-          context.OutArgs.Severity = RuleSeverity.Error;
-          context.OutArgs.Description = "Invalid data!";
-        }
-        else if (val == "Warning")
-        {
-          context.OutArgs.Result = false;
-          context.OutArgs.Severity = RuleSeverity.Warning;
-          context.OutArgs.Description = "This might not be a great idea!";
-        }
-        else if (val == "Information")
-        {
-          context.OutArgs.Result = false;
-          context.OutArgs.Severity = RuleSeverity.Information;
-          context.OutArgs.Description = "Just an FYI!";
-        }
+        InputProperties = new List<IPropertyInfo> { PrimaryProperty };
+        IsAsync = true;
+      }
 
-        context.Complete();
-      };
-      worker.RunWorkerAsync();
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        BackgroundWorker worker = new BackgroundWorker();
+        worker.DoWork += (o, e) => Thread.Sleep(3000);
+        worker.RunWorkerCompleted += (o, e) =>
+        {
+          string val = (string)context.InputPropertyValues[PrimaryProperty];
+          if (val == "Error")
+          {
+            context.AddErrorResult("Invalid data!");
+          }
+          else if (val == "Warning")
+          {
+            context.AddWarningResult("This might not be a great idea!");
+          }
+          else if (val == "Information")
+          {
+            context.AddInformationResult("Just an FYI!");
+          }
+          context.Complete();
+        };
+        worker.RunWorkerAsync();
+      }
     }
   }
 

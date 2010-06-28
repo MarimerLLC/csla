@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
              xmlns:this="clr-namespace:MVVMexperiment"
              xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480">
@@ -21,7 +22,7 @@
       <Button Content="Home">
         <i:Interaction.Triggers>
           <i:EventTrigger EventName="Click">
-            <csla:Execute MethodName="Home" />
+            <ei:CallMethodAction TargetObject="{Binding Mode=OneWay}" MethodName="Home"/>
           </i:EventTrigger>
         </i:Interaction.Triggers>
       </Button>

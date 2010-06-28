@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="http://localhost:2519/DeepDataService/DeepDataDAL.asmx?wsdl" docRef="http://localhost:2519/DeepDataService/DeepDataDAL.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
-  <soap address="http://localhost:2519/DeepDataService/DeepDataDAL.asmx" xmlns:q1="http://ws.lhotka.net/" binding="q1:DeepDataDALSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-  <soap address="http://localhost:2519/DeepDataService/DeepDataDAL.asmx" xmlns:q2="http://ws.lhotka.net/" binding="q2:DeepDataDALSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-</discovery>

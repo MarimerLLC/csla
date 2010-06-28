@@ -34,9 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\source\Csla.client\obj\Debug\Csla.dll</HintPath>
+    <Reference Include="Csla">
+      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Windows, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

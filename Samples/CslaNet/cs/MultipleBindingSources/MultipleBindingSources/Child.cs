@@ -39,22 +39,12 @@ namespace MultipleBindingSources
 
     #endregion
 
-    #region Validation Rules
+    #region Business Rules
 
     protected override void AddBusinessRules()
     {
       // TODO: add validation rules
       //ValidationRules.AddRule(RuleMethod, "");
-    }
-
-    #endregion
-
-    #region Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      // TODO: add authorization rules
-      //AuthorizationRules.AllowWrite("Name", "Role");
     }
 
     private static void AddObjectAuthorizationRules()

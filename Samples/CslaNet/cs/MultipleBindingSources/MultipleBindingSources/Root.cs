@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Csla;
-using Csla.Reflection;
-using Csla.Validation;
 
 namespace MultipleBindingSources
 {
@@ -63,33 +61,31 @@ namespace MultipleBindingSources
       System.Windows.Forms.MessageBox.Show(sb.ToString());
     }
 
-    #region Validation Rules
+    #region Business Rules
 
     protected override void AddBusinessRules()
     {
-      // TODO: add validation rules
-      ValidationRules.AddRule<Root>(MakeUpper, NameProperty);
+      BusinessRules.AddRule(new MakeUpper(NameProperty));
     }
 
-    public static bool MakeUpper<T>(T sender, RuleArgs args) where T:Root
+    public class MakeUpper : Csla.Rules.BusinessRule
     {
-      using (sender.BypassPropertyChecks)
+      public MakeUpper(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
       {
-        var value = (string) MethodCaller.CallPropertyGetter(sender, args.PropertyName);
-        if (!string.IsNullOrEmpty(value))
-          MethodCaller.CallPropertySetter(sender, args.PropertyName, value.ToUpper());
+        InputProperties = new List<Csla.Core.IPropertyInfo> { primaryProperty };
       }
-      return true;
-    }
 
-    #endregion
-
-    #region Authorization Rules
-
-    protected override void AddAuthorizationRules()
-    {
-      // TODO: add authorization rules
-      //AuthorizationRules.AllowWrite("Name", "Role");
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var sender = (Root)context.Target;
+        using (sender.BypassPropertyChecks)
+        {
+          var value = (string)context.InputPropertyValues[PrimaryProperty];
+          if (!string.IsNullOrEmpty(value))
+            context.AddOutValue(PrimaryProperty, value.ToUpper());
+        }
+      }
     }
 
     private static void AddObjectAuthorizationRules()
@@ -115,7 +111,7 @@ namespace MultipleBindingSources
 
     public static void DeleteEditableRoot(int id)
     {
-      DataPortal.Delete(new SingleCriteria<Root, int>(id));
+      DataPortal.Delete<Root>(new SingleCriteria<Root, int>(id));
     }
 
     private Root()

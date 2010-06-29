@@ -19,17 +19,6 @@
         </Grid>
     </DataTemplate>
     
-    <Style TargetType="csla:ObjectStatus">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="csla:ObjectStatus">
-                    <ContentPresenter x:Name="presenter"
-                            Content="{TemplateBinding DataContext}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
     <Style TargetType="csla:PropertyStatus">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />
@@ -38,7 +27,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="csla:PropertyStatus">
-                    <Grid Background="{TemplateBinding Background}">
+                    <Grid x:Name="root" Background="{TemplateBinding Background}">
                         <vsm:VisualStateManager.VisualStateGroups>
                             <vsm:VisualStateGroup x:Name="CommonStates">
                                 <vsm:VisualState x:Name="Valid" >

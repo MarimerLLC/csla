@@ -543,19 +543,24 @@ namespace Csla.Xaml
         foreach (var rule in addRules)
           BrokenRules.Add(rule);
 
-        BrokenRule worst = (from r in BrokenRules
-                            orderby r.Severity
-                            select r).FirstOrDefault();
+        IsValid = BrokenRules.Count == 0;
 
-        if (worst != null)
+        if (!IsValid)
         {
-          RuleSeverity = worst.Severity;
-          RuleDescription = worst.Description;
+          BrokenRule worst = (from r in BrokenRules
+                              orderby r.Severity
+                              select r).FirstOrDefault();
+
+          if (worst != null)
+          {
+            RuleSeverity = worst.Severity;
+            RuleDescription = worst.Description;
+          }
+          else
+            RuleDescription = string.Empty;
         }
         else
           RuleDescription = string.Empty;
-
-        IsValid = BrokenRules.Count == 0;
       }
       else
       {

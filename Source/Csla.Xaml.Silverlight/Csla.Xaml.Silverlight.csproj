@@ -103,7 +103,6 @@
     <Compile Include="NavigationEventArgs.cs" />
     <Compile Include="Navigator.cs" />
     <Compile Include="NavigatorProvider.cs" />
-    <Compile Include="ObjectStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidatedDataGridCheckBoxColumn.cs" />
     <Compile Include="ValidatedDataGridColumn.cs" />

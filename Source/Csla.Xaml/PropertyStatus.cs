@@ -246,13 +246,13 @@ namespace Csla.Xaml
 
     void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == BindingPath)
+      if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      if (e.PropertyName == BindingPath)
+      if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
         bool busy = e.Busy;
         BusinessBase bb = Source as BusinessBase;

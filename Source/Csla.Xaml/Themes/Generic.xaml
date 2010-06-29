@@ -18,17 +18,6 @@
         </Grid>
     </DataTemplate>
 
-    <!--Style TargetType="csla:ObjectStatus">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="csla:ObjectStatus">
-                    <ContentPresenter x:Name="presenter"
-                            Content="{TemplateBinding DataContext}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style-->
-
     <Style TargetType="csla:PropertyStatus">
         <Setter Property="Width" Value="16" />
         <Setter Property="Height" Value="16" />

@@ -28,7 +28,7 @@ namespace Csla.Xaml
   [TemplatePart(Name = "image", Type = typeof(FrameworkElement))]
   [TemplatePart(Name = "popup", Type = typeof(Popup))]
   [TemplatePart(Name = "busy", Type = typeof(BusyAnimation))]
-  [TemplateVisualState(Name = "Valid", GroupName = "CommonStates")]
+  [TemplateVisualState(Name = "PropertyValid", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Error", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Warning", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
@@ -588,7 +588,7 @@ namespace Csla.Xaml
       if (IsBusy)
         newState = "Busy";
       else if (IsValid)
-        newState = "Valid";
+        newState = "PropertyValid";
       else
         newState = RuleSeverity.ToString();
 
@@ -597,7 +597,7 @@ namespace Csla.Xaml
         _lastState = newState;
         DisablePopup(_lastImage);
         VisualStateManager.GoToState(this, newState, useTransitions);
-        if (newState != "Busy" && newState != "Valid")
+        if (newState != "Busy" && newState != "PropertyValid")
         {
           _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", newState.ToLower()));
           EnablePopup(_lastImage);

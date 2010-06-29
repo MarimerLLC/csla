@@ -29,7 +29,7 @@
                     <Grid x:Name="root" Background="{TemplateBinding Background}">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Valid" >
+                                <VisualState x:Name="PropertyValid" >
                                     <Storyboard/>
                                 </VisualState>
                                 <VisualState x:Name="Error" >

@@ -30,7 +30,7 @@
                     <Grid x:Name="root" Background="{TemplateBinding Background}">
                         <vsm:VisualStateManager.VisualStateGroups>
                             <vsm:VisualStateGroup x:Name="CommonStates">
-                                <vsm:VisualState x:Name="Valid" >
+                                <vsm:VisualState x:Name="PropertyValid" >
                                     <Storyboard/>
                                 </vsm:VisualState>
                                 <vsm:VisualState x:Name="Error" >

@@ -63,6 +63,8 @@ namespace Csla.Xaml
 
     #region Constructors
 
+    private bool _loading = true;
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -73,7 +75,11 @@ namespace Csla.Xaml
       DefaultStyleKey = typeof(PropertyStatus);
       IsTabStop = false;
 
-      Loaded += (o, e) => GoToState(true);
+      Loaded += (o, e) =>
+        {
+          _loading = false;
+          UpdateState();
+        };
     }
 
     /// <summary>
@@ -148,6 +154,8 @@ namespace Csla.Xaml
       }
     }
 
+    System.Windows.Data.BindingExpression _oldBinding;
+
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
@@ -155,25 +163,28 @@ namespace Csla.Xaml
     {
       var old = Source;
       var binding = GetBindingExpression(PropertyProperty);
-      if (binding != null)
+      if (!ReferenceEquals(_oldBinding, binding))
       {
-        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-          BindingPath = binding.ParentBinding.Path.Path;
+        _oldBinding = binding;
+        if (binding != null)
+        {
+          if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
+            BindingPath = binding.ParentBinding.Path.Path;
+          else
+            BindingPath = string.Empty;
+          Source = GetRealSource(binding.DataItem, BindingPath);
+          if (BindingPath.IndexOf('.') > 0)
+            BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
+        }
         else
+        {
+          Source = null;
           BindingPath = string.Empty;
-        Source = GetRealSource(binding.DataItem, BindingPath);
-        if (BindingPath.IndexOf('.') > 0)
-          BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
-      }
-      else
-      {
-        Source = null;
-        BindingPath = string.Empty;
-      }
+        }
 
-      HandleIsBusy(old, Source);
-
-      UpdateState();
+        HandleSourceEvents(old, Source);
+        UpdateState();
+      }
     }
 
     /// <summary>
@@ -199,7 +210,7 @@ namespace Csla.Xaml
         return source;
     }
 
-    private void HandleIsBusy(object old, object source)
+    private void HandleSourceEvents(object old, object source)
     {
       if (!ReferenceEquals(old, source))
       {
@@ -498,9 +509,19 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void UpdateState()
     {
+      if (_loading) return;
+      if (Source == null || string.IsNullOrEmpty(BindingPath)) return;
+
       Popup popup = (Popup)FindChild(this, "popup");
       if (popup != null)
         popup.IsOpen = false;
+
+      var iarw = Source as Csla.Security.IAuthorizeReadWrite;
+      if (iarw != null)
+      {
+        CanWrite = iarw.CanWriteProperty(_bindingPath);
+        CanRead = iarw.CanReadProperty(_bindingPath);
+      }
 
       BusinessBase businessObject = Source as BusinessBase;
       if (businessObject != null)
@@ -535,42 +556,47 @@ namespace Csla.Xaml
           RuleDescription = string.Empty;
 
         IsValid = BrokenRules.Count == 0;
-        GoToState(true);
       }
       else
       {
         BrokenRules.Clear();
         RuleDescription = string.Empty;
         IsValid = true;
-        GoToState(true);
       }
+      GoToState(true);
     }
 
+    private string _lastState;
     /// <summary>
     /// Updates the status of the Property in UI
     /// </summary>
     /// <param name="useTransitions">if set to <c>true</c> then use transitions.</param>
     protected virtual void GoToState(bool useTransitions)
     {
-      DisablePopup(_lastImage);
+      if (_loading) return;
 
       BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
       if (busy != null)
         busy.IsRunning = IsBusy;
 
+      string newState;
       if (IsBusy)
-      {
-        VisualStateManager.GoToState(this, "Busy", useTransitions);
-      }
+        newState = "Busy";
       else if (IsValid)
-      {
-        VisualStateManager.GoToState(this, "Valid", useTransitions);
-      }
+        newState = "Valid";
       else
+        newState = RuleSeverity.ToString();
+
+      if (newState != _lastState)
       {
-        VisualStateManager.GoToState(this, RuleSeverity.ToString(), useTransitions);
-        _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", RuleSeverity.ToString().ToLower()));
-        EnablePopup(_lastImage);
+        _lastState = newState;
+        DisablePopup(_lastImage);
+        VisualStateManager.GoToState(this, newState, useTransitions);
+        if (newState != "Busy" && newState != "Valid")
+        {
+          _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", newState.ToLower()));
+          EnablePopup(_lastImage);
+        }
       }
     }
 

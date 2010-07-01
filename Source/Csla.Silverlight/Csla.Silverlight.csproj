@@ -111,6 +111,9 @@
     <Compile Include="..\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\ICheckRules.cs">
+      <Link>Core\ICheckRules.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\IMemberInfo.cs">
       <Link>Core\IMemberInfo.cs</Link>
     </Compile>

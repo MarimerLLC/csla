@@ -20,6 +20,17 @@ namespace Csla.Web.Mvc
   /// </summary>
   public class CslaModelBinder : DefaultModelBinder
   {
+    private bool _checkRulesOnModelUpdated;
+
+    /// <summary>
+    /// Creates an instance of the model binder.
+    /// </summary>
+    /// <param name="CheckRulesOnModelUpdated">Value indicating if business rules will be checked after the model is updated.</param>
+    public CslaModelBinder(bool CheckRulesOnModelUpdated = true)
+    {
+      _checkRulesOnModelUpdated = CheckRulesOnModelUpdated;
+    }
+
     /// <summary>
     /// Binds the model by using the specified controller context and binding context.
     /// </summary>
@@ -31,7 +42,20 @@ namespace Csla.Web.Mvc
       if (typeof(Csla.Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
         return BindCslaCollection(controllerContext, bindingContext);
 
-      return base.BindModel(controllerContext, bindingContext);
+      var suppress = bindingContext.Model as Csla.Core.ICheckRules;
+      if (suppress != null)
+        suppress.SuppressRuleChecking();
+      object result = null;
+      try
+      {
+        result = base.BindModel(controllerContext, bindingContext);
+      }
+      finally
+      {
+        if (suppress != null)
+          suppress.ResumeRuleChecking();
+      }
+      return result;
     }
 
     /// <summary>
@@ -49,23 +73,34 @@ namespace Csla.Web.Mvc
         if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
           continue;      //no value to update skip
         var elementModel = collection[currIdx];
-        var elementContext = new ModelBindingContext()
+        var suppress = elementModel as Csla.Core.ICheckRules;
+        if (suppress != null)
+          suppress.SuppressRuleChecking();
+        try
         {
-          ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
-          ModelName = subIndexKey,
-          ModelState = bindingContext.ModelState,
-          PropertyFilter = bindingContext.PropertyFilter,
-          ValueProvider = bindingContext.ValueProvider
-        };
-
-        if (OnModelUpdating(controllerContext, elementContext))
-        {
-          //update element's properties
-          foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))
+          var elementContext = new ModelBindingContext()
           {
-            BindProperty(controllerContext, elementContext, property);
+            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
+            ModelName = subIndexKey,
+            ModelState = bindingContext.ModelState,
+            PropertyFilter = bindingContext.PropertyFilter,
+            ValueProvider = bindingContext.ValueProvider
+          };
+
+          if (OnModelUpdating(controllerContext, elementContext))
+          {
+            //update element's properties
+            foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))
+            {
+              BindProperty(controllerContext, elementContext, property);
+            }
+            OnModelUpdated(controllerContext, elementContext);
           }
-          OnModelUpdated(controllerContext, elementContext);
+        }
+        finally
+        {
+          if (suppress != null)
+            suppress.ResumeRuleChecking();
         }
       }
 
@@ -99,6 +134,12 @@ namespace Csla.Web.Mvc
       var obj = bindingContext.Model as Csla.Core.BusinessBase;
       if (obj != null)
       {
+        if (this._checkRulesOnModelUpdated)
+        {
+          var suppress = obj as Csla.Core.ICheckRules;
+          if (suppress != null)
+            suppress.CheckRules();
+        }
         var errors = from r in obj.BrokenRulesCollection
                      where r.Severity == Csla.Rules.RuleSeverity.Error
                      select r;
@@ -118,9 +159,6 @@ namespace Csla.Web.Mvc
         }
       }
       else
-        //if (!(bindingContext.Model.GetType().GetInterfaces().Any(x =>
-        //      x.IsGenericType &&
-        //      x.GetGenericTypeDefinition() == typeof(IViewModel<>))))
         if (!(bindingContext.Model is IViewModel))
           base.OnModelUpdated(controllerContext, bindingContext);
     }

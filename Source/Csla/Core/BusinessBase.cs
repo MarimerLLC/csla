@@ -44,6 +44,7 @@ namespace Csla.Core
     IDataPortalTarget,
     IManageProperties,
     Rules.IHostRules,
+    ICheckRules,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
@@ -3336,5 +3337,33 @@ namespace Csla.Core
 
     #endregion
 #endif
+
+    #region ISuppressRuleChecking Members
+
+    /// <summary>
+    /// Sets value indicating no rule methods will be invoked.
+    /// </summary>
+    void ICheckRules.SuppressRuleChecking()
+    {
+      BusinessRules.SuppressRuleChecking = true;
+    }
+
+    /// <summary>
+    /// Resets value indicating all rule methods will be invoked.
+    /// </summary>
+    void ICheckRules.ResumeRuleChecking()
+    {
+      BusinessRules.SuppressRuleChecking = false;
+    }
+
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    void ICheckRules.CheckRules()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    #endregion
   }
 }

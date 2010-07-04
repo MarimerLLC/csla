@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
 {
@@ -96,6 +97,22 @@ namespace Csla.Core.FieldManager
       get { return true; }
     }
 
+    bool ITrackStatus.IsChild
+    {
+      get
+      {
+        ITrackStatus child = _data as ITrackStatus;
+        if (child != null)
+        {
+          return child.IsChild;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+
     /// <summary>
     /// Gets a value indicating whether the field
     /// has been changed.
@@ -117,7 +134,6 @@ namespace Csla.Core.FieldManager
         if (child != null)
         {
           return child.IsDirty;
-
         }
         else
         {
@@ -132,7 +148,6 @@ namespace Csla.Core.FieldManager
     public virtual void MarkClean()
     {
       _isDirty = false;
-
     }
 
     bool ITrackStatus.IsNew
@@ -143,7 +158,6 @@ namespace Csla.Core.FieldManager
         if (child != null)
         {
           return child.IsNew;
-
         }
         else
         {
@@ -174,7 +188,6 @@ namespace Csla.Core.FieldManager
         if (child != null)
         {
           return child.IsValid;
-
         }
         else
         {
@@ -202,9 +215,9 @@ namespace Csla.Core.FieldManager
       get
       {
         bool isBusy = false;
-        ITrackStatus status = _data as ITrackStatus;
-        if (status != null)
-          isBusy = status.IsBusy;
+        ITrackStatus child = _data as ITrackStatus;
+        if (child != null)
+          isBusy = child.IsBusy;
 
         return isBusy;
       }

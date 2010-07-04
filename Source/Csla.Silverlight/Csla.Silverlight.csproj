@@ -99,6 +99,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
+      <Link>Core\FieldManager\FieldData.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\FieldManager\PropertyInfoFactory.cs">
       <Link>Core\FieldManager\PropertyInfoFactory.cs</Link>
     </Compile>
@@ -410,7 +413,6 @@
     <Compile Include="Core\AddedNewEventArgs.cs" />
     <Compile Include="Core\BindingList.cs" />
     <Compile Include="Core\ExtendedBindingList.cs" />
-    <Compile Include="Core\FieldManager\FieldData.cs" />
     <Compile Include="Core\FieldManager\FieldDataList.cs" />
     <Compile Include="Core\FieldManager\FieldDataManager.cs" />
     <Compile Include="Core\FieldManager\IFieldData.cs" />

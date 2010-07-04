@@ -461,4 +461,7 @@
   <data name="PropertyIsPrivateField" xml:space="preserve">
     <value>Attempt to read/load private field property in managed properties.</value>
   </data>
+  <data name="ListItemNotAChildException" xml:space="preserve">
+    <value>List item must be marked as a child object</value>
+  </data>
 </root>

@@ -130,5 +130,15 @@ namespace Csla.Core
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     bool IsSavable { get; }
+    /// <summary>
+    /// Returns <see langword="true" /> if this is a child object, 
+    /// <see langword="false" /> if it is a root object.
+    /// </summary>
+    /// <remarks>
+    /// An object should be marked as a child object unless it is the
+    /// top most object (root object) in a business object graph.
+    /// </remarks>
+    /// <returns>A value indicating if this a child object.</returns>
+    bool IsChild { get; }
   }
 }

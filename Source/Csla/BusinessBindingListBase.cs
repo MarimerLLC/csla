@@ -660,7 +660,7 @@ namespace Csla
     /// Indicates whether this collection object is a child object.
     /// </summary>
     /// <returns>True if this is a child object.</returns>
-    protected bool IsChild
+    public bool IsChild
     {
       get { return _isChild; }
     }

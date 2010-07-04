@@ -309,15 +309,23 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
-      // set parent reference
-      item.SetParent(this);
-      // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-      // when an object is inserted we assume it is
-      // a new object and so the edit level when it was
-      // added must be set
-      item.EditLevelAdded = _editLevel;
-      base.InsertItem(index, item);
+      if (item.IsChild)
+      {
+        // set parent reference
+        item.SetParent(this);
+        // set child edit level
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        // when an object is inserted we assume it is
+        // a new object and so the edit level when it was
+        // added must be set
+        item.EditLevelAdded = _editLevel;
+        base.InsertItem(index, item);
+      }
+      else
+      {
+        // item must be marked as a child object
+        throw new InvalidOperationException(Resources.ListItemNotAChildException);
+      }
     }
 
     /// <summary>
@@ -671,7 +679,7 @@ namespace Csla
     /// Indicates whether this collection object is a child object.
     /// </summary>
     /// <returns>True if this is a child object.</returns>
-    protected bool IsChild
+    public bool IsChild
     {
       get { return _isChild; }
     }

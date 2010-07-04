@@ -538,6 +538,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to List item must be marked as a child object.
+        /// </summary>
+        public static string ListItemNotAChildException {
+            get {
+                return ResourceManager.GetString("ListItemNotAChildException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} can not exceed {1}.
         /// </summary>
         public static string MaxValueRule {

@@ -827,7 +827,7 @@ namespace Csla.Core
     /// <summary>
     /// Returns <see langword="true" /> if this is a child (non-root) object.
     /// </summary>
-    protected internal bool IsChild
+    public bool IsChild
     {
       get { return _isChild; }
     }

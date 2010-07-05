@@ -366,7 +366,7 @@ namespace Csla.Test.ValidationRules
           HasChildren root = e.Object;
           context.Assert.AreEqual(false, root.IsValid);
           root.BeginEdit();
-          root.ChildList.Add(new Child());
+          root.ChildList.Add(Csla.DataPortal.CreateChild<Child>());
           context.Assert.AreEqual(true, root.IsValid);
 
           root.CancelEdit();

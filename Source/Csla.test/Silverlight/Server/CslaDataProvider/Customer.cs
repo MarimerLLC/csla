@@ -37,6 +37,7 @@ namespace cslalighttest.CslaDataProvider
     {
       var returnValue = new Customer();
       returnValue.Name = "New";
+      returnValue.MarkAsChild();
       return returnValue;
     }
 

@@ -255,6 +255,9 @@
     <Compile Include="..\Csla\Rules\ValidationException.cs">
       <Link>Rules\ValidationException.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Security\CslaPrincipal.cs">
+      <Link>Security\CslaPrincipal.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -320,9 +323,6 @@
     </Compile>
     <Compile Include="..\Csla\Rules\RuleSeverity.cs">
       <Link>Rules\RuleSeverity.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\BusinessPrincipalBase.cs">
-      <Link>Security\BusinessPrincipalBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Security\CslaIdentity.cs">
       <Link>Security\CSLAIdentity.cs</Link>

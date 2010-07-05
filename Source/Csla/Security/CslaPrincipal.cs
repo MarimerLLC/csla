@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------
-// <copyright file="BusinessPrincipalBase.cs" company="Marimer LLC">
+// <copyright file="CslaPrincipal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -18,14 +18,14 @@ namespace Csla.Security
   /// properly with the data portal.
   /// </summary>
   [Serializable()]
-  public class BusinessPrincipalBase : Csla.Core.MobileObject, IPrincipal
+  public class CslaPrincipal : Csla.Core.MobileObject, IPrincipal
   {
     private IIdentity _identity;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    protected BusinessPrincipalBase() { _identity = new UnauthenticatedIdentity(); }
+    protected CslaPrincipal() { _identity = new UnauthenticatedIdentity(); }
 
     /// <summary>
     /// Returns the user's identity object.
@@ -53,7 +53,7 @@ namespace Csla.Security
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="identity">Identity object for the user.</param>
-    protected BusinessPrincipalBase(IIdentity identity)
+    protected CslaPrincipal(IIdentity identity)
     {
       _identity = identity;
     }

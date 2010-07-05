@@ -182,6 +182,7 @@
     <Compile Include="Rules\ValidationException.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
+    <Compile Include="Security\CslaPrincipal.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
     <Compile Include="Security\MembershipIdentity.cs" />
     <Compile Include="Security\NoAccessBehavior.cs" />
@@ -313,7 +314,6 @@
     <Compile Include="Reflection\LateBoundObject.cs" />
     <Compile Include="Reflection\MethodCacheKey.cs" />
     <Compile Include="Reflection\MethodCaller.cs" />
-    <Compile Include="Security\BusinessPrincipalBase.cs" />
     <Compile Include="Security\IAuthorizeReadWrite.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\BinaryFormatterWrapper.cs" />

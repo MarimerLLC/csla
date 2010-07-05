@@ -16,7 +16,7 @@ namespace Csla.Security
   /// object.
   /// </summary>
   [Serializable]
-  public sealed class UnauthenticatedPrincipal : BusinessPrincipalBase
+  public sealed class UnauthenticatedPrincipal : CslaPrincipal
   {
     /// <summary>
     /// Creates an instance of the object.

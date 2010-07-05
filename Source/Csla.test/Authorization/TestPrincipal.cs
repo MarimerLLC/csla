@@ -14,7 +14,7 @@ using Csla.Serialization;
 namespace Csla.Test.Security
 {
     [Serializable()]
-    public class TestPrincipal : Csla.Security.BusinessPrincipalBase
+    public class TestPrincipal : Csla.Security.CslaPrincipal
     {
       public TestPrincipal() { }
         public override bool IsInRole(string role)

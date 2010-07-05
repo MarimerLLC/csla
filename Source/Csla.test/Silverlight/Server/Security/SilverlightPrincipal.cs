@@ -14,7 +14,7 @@ using Csla.Serialization;
 namespace Csla.Testing.Business.Security
 {
   [Serializable]
-  public partial class SilverlightPrincipal : Csla.Security.BusinessPrincipalBase
+  public partial class SilverlightPrincipal : Csla.Security.CslaPrincipal
   {
     public const string VALID_TEST_UID = "user";
     public const string VALID_TEST_PWD = "1234";

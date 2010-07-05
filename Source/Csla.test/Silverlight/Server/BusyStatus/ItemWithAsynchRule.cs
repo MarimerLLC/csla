@@ -68,6 +68,7 @@ namespace Csla.Testing.Business.BusyStatus
     {
       ItemWithAsynchRule returnValue = new ItemWithAsynchRule();
       returnValue.Id = id;
+      returnValue.MarkAsChild();
       returnValue.MarkOld();
       return returnValue;
     }

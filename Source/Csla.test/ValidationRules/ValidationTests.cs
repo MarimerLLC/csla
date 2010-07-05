@@ -98,6 +98,8 @@ namespace Csla.Test.ValidationRules
         context.Assert.AreEqual(false, root.IsValid);
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
         context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+        context.Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstMessage(HasRulesManager2.NameProperty).Description);
+        context.Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstBrokenRule(HasRulesManager2.NameProperty).Description);
         context.Assert.Success();
       });
 

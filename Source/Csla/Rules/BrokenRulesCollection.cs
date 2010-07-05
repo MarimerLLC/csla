@@ -121,6 +121,25 @@ namespace Csla.Rules
     /// the first broken rule in <see cref="BrokenRulesCollection" /> that corresponds
     /// to a specfic property on the object.
     /// </remarks>
+    /// <param name="property">The property affected by the rule.</param>
+    /// <returns>
+    /// The first BrokenRule object corresponding to the specified property, or null if 
+    /// there are no rules defined for the property.
+    /// </returns>
+    public BrokenRule GetFirstBrokenRule(Csla.Core.IPropertyInfo property)
+    {
+      return GetFirstMessage(property.Name, RuleSeverity.Error);
+    }
+
+    /// <summary>
+    /// Returns the first <see cref="BrokenRule" /> object
+    /// corresponding to the specified property.
+    /// </summary>
+    /// <remarks>
+    /// Code in a business object or UI can also use this value to retrieve
+    /// the first broken rule in <see cref="BrokenRulesCollection" /> that corresponds
+    /// to a specfic property on the object.
+    /// </remarks>
     /// <param name="property">The name of the property affected by the rule.</param>
     /// <returns>
     /// The first BrokenRule object corresponding to the specified property, or null if 
@@ -147,7 +166,23 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property)
     {
-      return this.Where(c => ReferenceEquals(c.Property, property)).FirstOrDefault();
+      return this.Where(c => c.Property == property.Name).FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Returns the first <see cref="BrokenRule"/> object
+    /// corresponding to the specified property
+    /// and severity.
+    /// </summary>
+    /// <param name="property">The property affected by the rule.</param>
+    /// <param name="severity">The severity of broken rule to return.</param>
+    /// <returns>
+    /// The first BrokenRule object corresponding to the specified property, or Nothing
+    /// (null in C#) if there are no rules defined for the property.
+    /// </returns>
+    public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property, RuleSeverity severity)
+    {
+      return GetFirstMessage(property.Name, severity);
     }
 
     /// <summary>

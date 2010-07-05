@@ -1114,22 +1114,7 @@ namespace Csla.Core
 
     #region Data Access
 
-#if SILVERLIGHT
-    /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    /// <remarks>
-    /// Normally you will overload this method to accept a strongly-typed
-    /// criteria parameter, rather than overriding the method with a
-    /// loosely-typed criteria parameter.
-    /// </remarks>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual void DataPortal_Create()
-    {
-      BusinessRules.CheckRules();
-    }
-#else
+#if !SILVERLIGHT
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.

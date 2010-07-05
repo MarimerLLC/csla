@@ -9,14 +9,8 @@ namespace CslaMvvmSl.ViewModels
   {
     public ListPersonsViewModel()
     {
-      this.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(ListPersonsViewModel_PropertyChanged);
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Getting list", IsBusy = true });
       BeginRefresh("GetPersonList");
-    }
-
-    void ListPersonsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-      var tmp = e;  
     }
 
     public ObservableCollection<PersonItemViewModel> PersonList

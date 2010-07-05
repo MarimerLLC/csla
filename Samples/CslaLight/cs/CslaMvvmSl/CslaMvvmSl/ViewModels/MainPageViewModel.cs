@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace CslaMvvmSl.ViewModels
 {
@@ -39,17 +40,29 @@ namespace CslaMvvmSl.ViewModels
       presenter.OnShowView += (view, region) =>
         {
           if (region == "Content")
-            MainContent = view.ViewInstance;
+          {
+            MainContent.Add(view.ViewInstance);
+            while (MainContent.Count > 1)
+              MainContent.RemoveAt(0);
+          }
         };
     }
 
     public static readonly DependencyProperty MainContentProperty =
-        DependencyProperty.Register("MainContent", typeof(UserControl), typeof(MainPageViewModel), null);
-
-    public UserControl MainContent
+      DependencyProperty.Register("MainContent", typeof(ObservableCollection<UserControl>), typeof(MainPageViewModel), new PropertyMetadata(new ObservableCollection<UserControl>()));
+    public ObservableCollection<UserControl> MainContent
     {
-      get { return (UserControl)GetValue(MainContentProperty); }
-      set { SetValue(MainContentProperty, value); }
+      get { return (ObservableCollection<UserControl>)GetValue(MainContentProperty); }
+      private set { SetValue(MainContentProperty, value); }
     }
+
+    //public static readonly DependencyProperty MainContentProperty =
+    //    DependencyProperty.Register("MainContent", typeof(UserControl), typeof(MainPageViewModel), null);
+
+    //public UserControl MainContent
+    //{
+    //  get { return (UserControl)GetValue(MainContentProperty); }
+    //  set { SetValue(MainContentProperty, value); }
+    //}
   }
 }

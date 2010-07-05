@@ -20,7 +20,7 @@
   </UserControl.Resources>
     <Grid x:Name="LayoutRoot" DataContext="{StaticResource listPersonsViewModelPersonListViewSource}">
     <Grid.RowDefinitions>
-      <RowDefinition Height="46*" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="254*" />
     </Grid.RowDefinitions>
     <ListBox Name="listBox1" ItemTemplate="{StaticResource PersonItem}" ItemsSource="{Binding}" Grid.RowSpan="1" Grid.Row="1" />

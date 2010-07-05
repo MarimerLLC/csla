@@ -20,7 +20,104 @@
       <Button Background="{StaticResource DarkVioletBrushKey}" Content="Person list" Name="PersonListButton" Margin="3" />
       <my:TriggerAction Height="0" Name="PersonListTrigger" Width="0" MethodName="ListPersons" TargetControl="{Binding ElementName=PersonListButton}" />
     </StackPanel>
-    <ContentControl Grid.Column="1" Name="contentControl1" Margin="3" Content="{Binding Path=MainContent}" />
+    <!--<ContentControl Grid.Column="1" Name="contentControl1" Margin="3" Content="{Binding Path=MainContent}" />-->
+    <Grid Grid.Column="1">
+      <Grid.Resources>
+        <ItemsPanelTemplate x:Key="TransitionPanel">
+          <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        </ItemsPanelTemplate>
+        <Style x:Key="DialogSwing" TargetType="ListBoxItem">
+          <Setter Property="Padding" Value="3"/>
+          <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+          <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderThickness" Value="1"/>
+          <Setter Property="TabNavigation" Value="Local"/>
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="ContentControl">
+                <Grid x:Name="grid" Background="{TemplateBinding Background}" RenderTransformOrigin="0.5,0.5">
+                  <Grid.RenderTransform>
+                    <CompositeTransform/>
+                  </Grid.RenderTransform>
+                  <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                      <VisualState x:Name="Normal"/>
+                      <VisualState x:Name="MouseOver"/>
+                      <VisualState x:Name="Disabled">
+                        <Storyboard>
+                          <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="contentPresenter">
+                            <SplineDoubleKeyFrame KeyTime="0" Value=".55"/>
+                          </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="SelectionStates">
+                      <VisualState x:Name="Unselected">
+                        <Storyboard>
+                          <DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Selected"/>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="FocusStates">
+                      <VisualState x:Name="Focused">
+                        <Storyboard>
+                          <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Visibility" Storyboard.TargetName="FocusVisualElement">
+                            <DiscreteObjectKeyFrame KeyTime="0">
+                              <DiscreteObjectKeyFrame.Value>
+                                <Visibility>Visible</Visibility>
+                              </DiscreteObjectKeyFrame.Value>
+                            </DiscreteObjectKeyFrame>
+                          </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="Unfocused"/>
+                    </VisualStateGroup>
+                    <VisualStateGroup x:Name="LayoutStates">
+                      <VisualStateGroup.Transitions>
+                        <VisualTransition To="AfterLoaded" GeneratedDuration="0:0:1">
+                          <VisualTransition.GeneratedEasingFunction>
+                        		<CubicEase EasingMode="EaseOut"/>
+                        	</VisualTransition.GeneratedEasingFunction>
+                        </VisualTransition>
+                        <VisualTransition GeneratedDuration="0:0:0.15" From="Loaded"/>
+                        <VisualTransition GeneratedDuration="0:0:0.5"/>
+                      </VisualStateGroup.Transitions>
+                      <VisualState x:Name="BeforeLoaded">
+                        <Storyboard>
+                      		<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+                      		<DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+                      	</Storyboard>
+                      </VisualState>
+                      <VisualState x:Name="AfterLoaded"/>
+                      <VisualState x:Name="BeforeUnloaded">
+                        <Storyboard>
+                          <DoubleAnimationUsingKeyFrames Duration="0:0:0.001" Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationY)" Storyboard.TargetName="grid">
+                            <EasingDoubleKeyFrame KeyTime="0" Value="-95"/>
+                          </DoubleAnimationUsingKeyFrames>
+                          <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+                          <DoubleAnimation Duration="0" To="0" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Storyboard.TargetName="grid" d:IsOptimized="True"/>
+                        </Storyboard>
+                      </VisualState>
+                    </VisualStateGroup>
+                  </VisualStateManager.VisualStateGroups>
+                  <Grid.Projection>
+                    <PlaneProjection CenterOfRotationX="-0.1"/>
+                  </Grid.Projection>
+                  <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}"/>
+                  <Rectangle x:Name="FocusVisualElement" RadiusY="1" RadiusX="1" StrokeThickness="1" Visibility="Collapsed"/>
+                </Grid>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </Grid.Resources>
+      <ListBox x:Name="ContentView" Height="Auto" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Stretch" Width="Auto" Margin="5"
+      			 ItemsPanel="{StaticResource TransitionPanel}" 
+      			 ItemContainerStyle="{StaticResource DialogSwing}" 
+             ItemsSource="{Binding Path=MainContent}" Background="{x:Null}" BorderBrush="#00000000" />
+    </Grid>
     <Grid.Background>
       <RadialGradientBrush Center="0.5,0.1" GradientOrigin="0.5,1" RadiusX="0.54" RadiusY="1">
         <GradientStop Color="Cornsilk" Offset="0" />

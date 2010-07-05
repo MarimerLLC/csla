@@ -13,7 +13,7 @@ namespace CslaMvvmSl.ViewModels
 
     public EditPersonViewModel(int id)
     {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Creating Person", IsBusy = true });
+      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Retrieving Person", IsBusy = true });
       BeginRefresh("GetPerson", id);
     }
 

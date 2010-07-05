@@ -45,16 +45,7 @@ namespace Csla.Web.Mvc
       var suppress = bindingContext.Model as Csla.Core.ICheckRules;
       if (suppress != null)
         suppress.SuppressRuleChecking();
-      object result = null;
-      try
-      {
-        result = base.BindModel(controllerContext, bindingContext);
-      }
-      finally
-      {
-        if (suppress != null)
-          suppress.ResumeRuleChecking();
-      }
+      var result = base.BindModel(controllerContext, bindingContext);
       return result;
     }
 
@@ -76,31 +67,23 @@ namespace Csla.Web.Mvc
         var suppress = elementModel as Csla.Core.ICheckRules;
         if (suppress != null)
           suppress.SuppressRuleChecking();
-        try
+        var elementContext = new ModelBindingContext()
         {
-          var elementContext = new ModelBindingContext()
-          {
-            ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
-            ModelName = subIndexKey,
-            ModelState = bindingContext.ModelState,
-            PropertyFilter = bindingContext.PropertyFilter,
-            ValueProvider = bindingContext.ValueProvider
-          };
+          ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
+          ModelName = subIndexKey,
+          ModelState = bindingContext.ModelState,
+          PropertyFilter = bindingContext.PropertyFilter,
+          ValueProvider = bindingContext.ValueProvider
+        };
 
-          if (OnModelUpdating(controllerContext, elementContext))
-          {
-            //update element's properties
-            foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))
-            {
-              BindProperty(controllerContext, elementContext, property);
-            }
-            OnModelUpdated(controllerContext, elementContext);
-          }
-        }
-        finally
+        if (OnModelUpdating(controllerContext, elementContext))
         {
-          if (suppress != null)
-            suppress.ResumeRuleChecking();
+          //update element's properties
+          foreach (PropertyDescriptor property in GetFilteredModelProperties(controllerContext, elementContext))
+          {
+            BindProperty(controllerContext, elementContext, property);
+          }
+          OnModelUpdated(controllerContext, elementContext);
         }
       }
 
@@ -138,7 +121,10 @@ namespace Csla.Web.Mvc
         {
           var suppress = obj as Csla.Core.ICheckRules;
           if (suppress != null)
+          {
+            suppress.ResumeRuleChecking();
             suppress.CheckRules();
+          }
         }
         var errors = from r in obj.BrokenRulesCollection
                      where r.Severity == Csla.Rules.RuleSeverity.Error

@@ -8,7 +8,7 @@ using Csla.Security;
 namespace MembershipTest
 {
   [Serializable]
-  public class MyPrincipal : BusinessPrincipalBase
+  public class MyPrincipal : CslaPrincipal
   {
     protected MyPrincipal(IIdentity identity)
       : base(identity)

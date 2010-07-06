@@ -7,8 +7,8 @@ namespace ProjectTracker.Library
 {
   namespace Security
   {
-    [Serializable()]
-    public class PTPrincipal : BusinessPrincipalBase
+    [Serializable]
+    public class PTPrincipal : CslaPrincipal
     {
       private PTPrincipal(IIdentity identity)
         : base(identity)

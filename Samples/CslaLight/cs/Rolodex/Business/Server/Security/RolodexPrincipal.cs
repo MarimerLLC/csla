@@ -17,7 +17,7 @@ using Rolodex.Business.Data;
 namespace Rolodex.Business.Security
 {
   [Serializable]
-  public class RolodexPrincipal : BusinessPrincipalBase
+  public class RolodexPrincipal : CslaPrincipal
   {
     private RolodexPrincipal(IIdentity identity)
       : base(identity)

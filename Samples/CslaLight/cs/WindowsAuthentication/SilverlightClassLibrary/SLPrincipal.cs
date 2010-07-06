@@ -6,7 +6,7 @@ using Csla.Serialization;
 namespace ClassLibrary
 {
   [Serializable]
-  public class SLPrincipal : Csla.Security.BusinessPrincipalBase
+  public class SLPrincipal : Csla.Security.CslaPrincipal
   {
     public SLPrincipal()
     { }

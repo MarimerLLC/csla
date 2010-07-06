@@ -10,16 +10,5 @@ namespace WinSortFilter
   [Serializable]
   public class DataList : BusinessBindingListBase<DataList, Data>
   {
-    public DataList()
-    {
-
-    }
-
-    protected override object AddNewCore()
-    {
-      var data = new Data();
-      Add(data);
-      return data;
-    }
   }
 }

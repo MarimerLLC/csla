@@ -9,10 +9,6 @@ namespace WinSortFilter
   [Serializable]
   public class Data : BusinessBase<Data>
   {
-    public Data()
-    {
-      MarkAsChild();
-    }
 
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
@@ -26,6 +22,12 @@ namespace WinSortFilter
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
+    }
+
+    protected override void Child_Create()
+    {
+      base.DataPortal_Create();
+      MarkAsChild();
     }
   }
 }

@@ -6,19 +6,8 @@ using Csla;
 namespace WindowsApplication2
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, Child>
+  public class ChildList : BusinessBindingListBase<ChildList, Child>
   {
-    protected override object AddNewCore()
-    {
-      Child item = new Child();
-      Add(item);
-      return item;
-    }
-
-    public ChildList()
-    {
-      AllowNew = true;
-    }
 
     public void DumpEditLevels(StringBuilder sb)
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
+using Csla.Reflection;
 using Csla.Server;
 using BusinessLibrary;
 
@@ -12,7 +13,7 @@ namespace DataAccess
   {
     public LineItem Create()
     {
-      var obj = (LineItem)Activator.CreateInstance(typeof(LineItem), true);
+      var obj = (LineItem)MethodCaller.CreateInstance(typeof(LineItem));
       MarkAsChild(obj);
       MarkNew(obj);
       CheckRules(obj);

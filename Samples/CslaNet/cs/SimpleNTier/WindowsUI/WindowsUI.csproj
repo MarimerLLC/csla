@@ -99,6 +99,7 @@
     </Compile>
     <None Include="App.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\BusinessLibrary.Order.datasource" />
     <None Include="Properties\Settings.settings">

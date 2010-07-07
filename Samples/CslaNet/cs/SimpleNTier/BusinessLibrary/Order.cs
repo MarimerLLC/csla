@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
 
 namespace BusinessLibrary
@@ -10,30 +7,31 @@ namespace BusinessLibrary
   [Csla.Server.ObjectFactory("DataAccess.OrderFactory, DataAccess")]
   public class Order : BusinessBase<Order>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty(new PropertyInfo<string>("CustomerName", "Customer name"));
+    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(p => p.CustomerName);
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
       set { SetProperty(CustomerNameProperty, value); }
     }
 
-    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty(new PropertyInfo<LineItems>("LineItems", "Line items"));
+    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(p => p.LineItems, RelationshipTypes.LazyLoad);
     public LineItems LineItems
     {
-      get 
+      get
       {
         if (!FieldManager.FieldExists(LineItemsProperty))
           LoadProperty(LineItemsProperty, LineItems.NewList());
-        return GetProperty(LineItemsProperty); 
+        return GetProperty(LineItemsProperty);
       }
     }
+
 
     protected override void AddBusinessRules()
     {

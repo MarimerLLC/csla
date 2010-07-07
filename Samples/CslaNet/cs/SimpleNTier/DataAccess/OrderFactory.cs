@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla;
+using Csla.Reflection;
 using Csla.Server;
 using BusinessLibrary;
 
@@ -14,7 +15,7 @@ namespace DataAccess
 
     public Order Create()
     {
-      var obj = (Order)Activator.CreateInstance(typeof(Order), true);
+      var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
       var id = System.Threading.Interlocked.Decrement(ref _lastId);
       LoadProperty(obj, Order.IdProperty, id);
       MarkNew(obj);
@@ -24,7 +25,7 @@ namespace DataAccess
 
     public Order Fetch(SingleCriteria<Order, int> criteria)
     {
-      var obj = (Order)Activator.CreateInstance(typeof(Order), true);
+      var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
       MarkOld(obj);
       return obj;
     }

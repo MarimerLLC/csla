@@ -488,4 +488,26 @@ namespace Csla.Rules.CommonRules
     }
   }
 
+  /// <summary>
+  /// A rule that establishes a dependency between two properties.
+  /// </summary>
+  public class Dependency : BusinessRule
+  {
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Primary property for the rule.</param>
+    /// <param name="dependencyProperty">Dependent property.</param>
+    /// <remarks>
+    /// When rules are run for the primary property, they will also be run for the dependent
+    /// property. Add a Dependency rule to a property when changing that property should run rules
+    /// on some other property, and you have no other rules that would establish this dependent
+    /// or affected property relationship.
+    /// </remarks>
+    public Dependency(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo dependencyProperty)
+      : base(primaryProperty)
+    {
+      AffectedProperties.Add(dependencyProperty);
+    }
+  }
 }

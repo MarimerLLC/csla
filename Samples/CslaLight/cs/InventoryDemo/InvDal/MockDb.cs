@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 
 namespace InvDal
 {
@@ -15,7 +14,7 @@ namespace InvDal
     public static List<BinData> BinData = new List<BinData>();
     public static List<OrderData> OrderData = new List<OrderData>();
     public static List<OrderLineItemData> OrderLineItemData = new List<OrderLineItemData>();
-        
+
     static MockDb()
     {
       LoadProductCategories();
@@ -95,15 +94,16 @@ namespace InvDal
 
     private static void LoadOrders()
     {
-      OrderData.Add(new OrderData { Id = 1, CustomerId = 1, OrderDate = DateTime.Parse("10/5/08") });
-      OrderData.Add(new OrderData { Id = 2, CustomerId = 2, OrderDate = DateTime.Parse("10/15/08") });
-      OrderData.Add(new OrderData { Id = 3, CustomerId = 3, OrderDate = DateTime.Parse("10/25/08") });
-      OrderData.Add(new OrderData { Id = 4, CustomerId = 4, OrderDate = DateTime.Parse("11/5/08") });
-      OrderData.Add(new OrderData { Id = 5, CustomerId = 1, OrderDate = DateTime.Parse("10/1/08"), ShipDate=DateTime.Parse("1/12/09") });
-      OrderData.Add(new OrderData { Id = 6, CustomerId = 2, OrderDate = DateTime.Parse("9/2/08") });
-      OrderData.Add(new OrderData { Id = 13, CustomerId = 3, OrderDate = DateTime.Parse("12/6/08") });
-      OrderData.Add(new OrderData { Id = 14, CustomerId = 4, OrderDate = DateTime.Parse("11/13/08") });
-      OrderData.Add(new OrderData { Id = 11, CustomerId = 1, OrderDate = DateTime.Parse("12/20/08") });
+      var culture = CultureInfo.GetCultureInfo("en-US");
+      OrderData.Add(new OrderData { Id = 1, CustomerId = 1, OrderDate = DateTime.Parse("10/5/08", culture) });
+      OrderData.Add(new OrderData { Id = 2, CustomerId = 2, OrderDate = DateTime.Parse("10/15/08", culture) });
+      OrderData.Add(new OrderData { Id = 3, CustomerId = 3, OrderDate = DateTime.Parse("10/25/08", culture) });
+      OrderData.Add(new OrderData { Id = 4, CustomerId = 4, OrderDate = DateTime.Parse("11/5/08", culture) });
+      OrderData.Add(new OrderData { Id = 5, CustomerId = 1, OrderDate = DateTime.Parse("10/1/08", culture), ShipDate = DateTime.Parse("1/12/09", culture) });
+      OrderData.Add(new OrderData { Id = 6, CustomerId = 2, OrderDate = DateTime.Parse("9/2/08", culture) });
+      OrderData.Add(new OrderData { Id = 13, CustomerId = 3, OrderDate = DateTime.Parse("12/6/08", culture) });
+      OrderData.Add(new OrderData { Id = 14, CustomerId = 4, OrderDate = DateTime.Parse("11/13/08", culture) });
+      OrderData.Add(new OrderData { Id = 11, CustomerId = 1, OrderDate = DateTime.Parse("12/20/08", culture) });
     }
 
     private static void LoadOrderLineItems()

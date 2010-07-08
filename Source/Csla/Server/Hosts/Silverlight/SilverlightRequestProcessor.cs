@@ -59,11 +59,13 @@ namespace Csla.Server.Hosts.Silverlight
     public SilverlightResponse Create(SilverlightCriteriaRequest request)
     {
       var result = new SilverlightResponse();
+      Type t = null;
+      object criteria = null;
       try
       {
-        object criteria = request.Criteria;
+        criteria = request.Criteria;
         // load type for business object
-        var t = Type.GetType(request.TypeName);
+        t = Type.GetType(request.TypeName);
         if (t == null)
           throw new InvalidOperationException(
             string.Format(Csla.Properties.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
@@ -98,11 +100,13 @@ namespace Csla.Server.Hosts.Silverlight
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        result.Error = ex.InnerException;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Create", ex);
+        result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        result.Error = ex;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Create", ex);
+        result.Error = inspected;
       }
       finally
       {
@@ -119,13 +123,15 @@ namespace Csla.Server.Hosts.Silverlight
     public SilverlightResponse Fetch(SilverlightCriteriaRequest request)
     {
       var result = new SilverlightResponse();
+      Type t = null;
+      object criteria = null;
       try
       {
         // unpack criteria data into object
-        object criteria = request.Criteria;
+        criteria = request.Criteria;
 
         // load type for business object
-        var t = Type.GetType(request.TypeName);
+        t = Type.GetType(request.TypeName);
         if (t == null)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
@@ -155,11 +161,13 @@ namespace Csla.Server.Hosts.Silverlight
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        result.Error = ex.InnerException;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Fetch", ex);
+        result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        result.Error = ex;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Fetch", ex);
+        result.Error = inspected;
       }
       finally
       {
@@ -176,13 +184,15 @@ namespace Csla.Server.Hosts.Silverlight
     public SilverlightResponse Update(SilverlightUpdateRequest request)
     {
       var result = new SilverlightResponse();
+      Type t = null;
+      object obj = null;
       try
       {
         // unpack object
-        object obj = request.ObjectToUpdate;
+        obj = request.ObjectToUpdate;
 
         // load type for business object
-        var t = obj.GetType();
+        t = obj.GetType();
 
         object o = null;
         var factoryInfo = GetMobileFactoryAttribute(t);
@@ -205,11 +215,13 @@ namespace Csla.Server.Hosts.Silverlight
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        result.Error = ex.InnerException;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, obj, "DataPortal.Update", ex);
+        result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        result.Error = ex;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, obj, "DataPortal.Update", ex);
+        result.Error = inspected;
       }
       finally
       {
@@ -226,13 +238,15 @@ namespace Csla.Server.Hosts.Silverlight
     public SilverlightResponse Delete(SilverlightCriteriaRequest request)
     {
       var result = new SilverlightResponse();
+      Type t = null;
+      object criteria = null;
       try
       {
         // unpack criteria data into object
-        object criteria = request.Criteria;
+        criteria = request.Criteria;
 
         // load type for business object
-        var t = Type.GetType(request.TypeName);
+        t = Type.GetType(request.TypeName);
         if (t == null)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
@@ -259,11 +273,13 @@ namespace Csla.Server.Hosts.Silverlight
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        result.Error = ex.InnerException;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Delete", ex);
+        result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        result.Error = ex;
+        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Delete", ex);
+        result.Error = inspected;
       }
       finally
       {

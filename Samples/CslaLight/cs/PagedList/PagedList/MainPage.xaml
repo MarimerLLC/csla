@@ -3,19 +3,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:my="clr-namespace:PagedList" Loaded="UserControl_Loaded">
+    d:DesignHeight="300" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:my="clr-namespace:PagedList" xmlns:Xaml="clr-namespace:Csla.Xaml;assembly=Csla.Xaml" Loaded="UserControl_Loaded">
   <UserControl.Resources>
     <CollectionViewSource x:Key="mainViewModelViewSource" d:DesignSource="{d:DesignInstance my:MainViewModel, CreateList=True}" />
     <CollectionViewSource x:Key="mainViewModelModelViewSource" Source="{Binding Path=Model, Source={StaticResource mainViewModelViewSource}}" />
-    <csla:IsNotConverter x:Key="IsNotConverter" />
+    <Xaml:IsNotConverter x:Key="IsNotConverter" />
   </UserControl.Resources>
   <Grid x:Name="LayoutRoot" Background="White" DataContext="{StaticResource mainViewModelModelViewSource}">
     <StackPanel>
       <StackPanel Orientation="Horizontal" DataContext="{Binding Source={StaticResource mainViewModelViewSource}, Path=CurrentItem}" Margin="5">
         <Button Name="NextButton" Content="Next" IsEnabled="{Binding Path=AutoLoad, Converter={StaticResource IsNotConverter}}" />
-        <csla:TriggerAction TargetControl="{Binding ElementName=NextButton}" TriggerEvent="Click" MethodName="NextPage" />
+        <Xaml:TriggerAction TargetControl="{Binding ElementName=NextButton}" TriggerEvent="Click" MethodName="NextPage" />
       </StackPanel>
       <StackPanel Orientation="Horizontal" Margin="5">
         <CheckBox IsChecked="{Binding Path=CanSave, Source={StaticResource mainViewModelViewSource}}" IsEnabled="False" Content="CanSave" />

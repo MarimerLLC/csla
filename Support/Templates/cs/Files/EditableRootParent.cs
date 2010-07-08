@@ -11,8 +11,7 @@ namespace Templates
     // TODO: add your own fields, properties and methods
 
     // example with private backing field
-    private static PropertyInfo<int> IdProperty =
-      RegisterProperty(new PropertyInfo<int>("Id"));
+    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     private int _Id = IdProperty.DefaultValue;
     public int Id
     {
@@ -21,23 +20,22 @@ namespace Templates
     }
 
     // example with managed backing field
-    private static PropertyInfo<string> NameProperty =
-      RegisterProperty(new PropertyInfo<string>("Name"));
+    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<EditableChildList> ChildListProperty = 
-      RegisterProperty<EditableChildList>(new PropertyInfo<EditableChildList>("ChildList", "Child list"));
+    // example with Editable Child list 
+    private static readonly PropertyInfo<EditableChildList> ChildListProperty =  RegisterProperty<EditableChildList>(p => p.ChildList, "Child list");
     public EditableChildList ChildList
     {
       get { return GetProperty<EditableChildList>(ChildListProperty); }
     }
 
-    private static PropertyInfo<EditableChild> ChildProperty = 
-      RegisterProperty(new PropertyInfo<EditableChild>("Child", "Child"));
+    // Example with Editable Child 
+    private static readonly PropertyInfo<EditableChild> ChildProperty = RegisterProperty<EditableChild>(p => p.Child, "Child"));
     public EditableChild Child
     {
       get { return GetProperty<EditableChild>(ChildProperty); }

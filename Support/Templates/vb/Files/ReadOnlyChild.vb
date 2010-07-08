@@ -11,7 +11,7 @@ Public Class ReadOnlyChild
   ' TODO: add your own fields, properties and methods 
 
   ' example with managed backing field 
-  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id", "Id"))
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id", "Id"))
   Public ReadOnly Property Id() As Integer
     Get
       Return GetProperty(IdProperty)
@@ -19,13 +19,29 @@ Public Class ReadOnlyChild
   End Property
 
   ' example with private backing field 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name", "Name"))
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name", "Name"))
   Private _name As String = NameProperty.DefaultValue
   Public ReadOnly Property Name() As String
     Get
       Return GetProperty(NameProperty, _name)
     End Get
   End Property
+
+#End Region
+
+#Region " Business Rules "
+
+  Protected Overrides Sub AddBusinessRules()
+
+    ' TODO: add authorization rules
+    'BusinessRules.AddRule(New MyRule, IdProperty)
+
+  End Sub
+
+  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
+    'TODO: add authorization rules
+    'BusinessRules.AddRule(...)
+  End Sub
 
 #End Region
 

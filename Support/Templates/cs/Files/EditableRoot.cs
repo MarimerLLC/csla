@@ -11,8 +11,7 @@ namespace Templates
     // TODO: add your own fields, properties and methods
 
     // example with private backing field
-    private static PropertyInfo<int> IdProperty =
-      RegisterProperty(new PropertyInfo<int>("Id"));
+    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     private int _Id = IdProperty.DefaultValue;
     public int Id
     {
@@ -21,8 +20,7 @@ namespace Templates
     }
 
     // example with managed backing field
-    private static PropertyInfo<string> NameProperty =
-      RegisterProperty(new PropertyInfo<string>("Name"));
+    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name));
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -36,7 +34,9 @@ namespace Templates
     protected override void AddBusinessRules()
     {
       // TODO: add validation rules
-      //BusinessRules.AddRule(new Rule(), IdProperty);
+	  base.AddBusinessRules();
+	  
+      //BusinessRules.AddRule(new Rule(IdProperty));
     }
 
     private static void AddObjectAuthorizationRules()

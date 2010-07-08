@@ -18,16 +18,15 @@
 #Region " Validation Rules "
 
 Protected Overrides Sub AddBusinessRules()
-  ' TODO: add validation rules
+    ' call base class implementation to add data annotation rules to BusinessRules 
+    MyBase.AddBusinessRules();
+	
+	' TODO: add validation rules
 End Sub
 
 #End Region
 
 #Region " Authorization Rules "
-
-Protected Overrides Sub AddAuthorizationRules()
-  ' TODO: add authorization rules
-End Sub
 
 Private Shared Sub AddObjectAuthorizationRules()
   ' TODO: add object-level authorization rules

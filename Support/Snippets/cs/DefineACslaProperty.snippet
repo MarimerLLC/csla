@@ -34,7 +34,7 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp" Kind="method decl">
-  <![CDATA[public static PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
+  <![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
 public $PropertyType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property); }

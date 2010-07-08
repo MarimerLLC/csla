@@ -10,7 +10,7 @@ Public Class EditableRootParent
   ' TODO: add your own fields, properties and methods 
 
   ' example with private backing field 
-  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id"))
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id"))
   Private _Id As Integer = IdProperty.DefaultValue
   Public Property Id() As Integer
     Get
@@ -22,7 +22,7 @@ Public Class EditableRootParent
   End Property
 
   ' example with managed backing field 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
   Public Property Name() As String
     Get
       Return GetProperty(NameProperty)
@@ -32,14 +32,14 @@ Public Class EditableRootParent
     End Set
   End Property
 
-  Private Shared ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(New PropertyInfo(Of EditableChildList)("ChildList", "Child list"))
+  Public Shared ReadOnly ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(New PropertyInfo(Of EditableChildList)("ChildList", "Child list"))
   Public ReadOnly Property ChildList() As EditableChildList
     Get
       Return GetProperty(Of EditableChildList)(ChildListProperty)
     End Get
   End Property
 
-  Private Shared ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(New PropertyInfo(Of EditableChild)("Child", "Child"))
+  Public Shared ReadOnly ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(New PropertyInfo(Of EditableChild)("Child", "Child"))
   Public ReadOnly Property Child() As EditableChild
     Get
       Return GetProperty(Of EditableChild)(ChildProperty)
@@ -50,13 +50,15 @@ Public Class EditableRootParent
 #Region " Business Rules "
 
   Protected Overrides Sub AddBusinessRules()
+    'call base class implementation to add data annotation rules to BusinessRules 
+    MyBase.AddBusinessRules();
 
     ' TODO: add validation rules
     'BusinessRules.AddRule(New MyRule, IdProperty)
 
   End Sub
 
-  Private Shared Sub AddObjectAuthorizationRules()
+  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
     'BusinessRules.AddRule(...)
   End Sub

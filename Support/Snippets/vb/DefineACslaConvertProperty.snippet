@@ -1,56 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Keywords />
       <Title>Define a Csla Property with Type Conversion</Title>
       <Author>Rockford Lhotka</Author>
       <Description>Defines a Csla-style Property with type conversion.</Description>
-      <HelpUrl />
-      <SnippetTypes />
-      <Keywords />
+      <HelpUrl>
+      </HelpUrl>
       <Shortcut>cslapropc</Shortcut>
     </Header>
     <Snippet>
       <References />
       <Imports />
       <Declarations>
-        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+        <Literal Editable="true">
           <ID>ClassName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with class name.</ToolTip>
           <Default>BusinessClass</Default>
-          <Function />
+          <Function>
+          </Function>
         </Literal>
-        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+        <Literal Editable="true">
           <ID>FriendlyName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with friendly property name.</ToolTip>
           <Default>Name</Default>
-          <Function />
+          <Function>
+          </Function>
         </Literal>
-        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+        <Literal Editable="true">
           <ID>PropertyName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with property name.</ToolTip>
           <Default>Name</Default>
-          <Function />
+          <Function>
+          </Function>
         </Literal>
-        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+        <Literal Editable="true">
           <ID>PropertyType</ID>
-          <Type />
           <ToolTip>Replace with the property type.</ToolTip>
           <Default>SmartDate</Default>
-          <Function />
+          <Function>
+          </Function>
         </Literal>
-        <Literal Editable="true" xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+        <Literal Editable="true">
           <ID>FieldType</ID>
-          <Type />
           <ToolTip>Replace with the internal field type.</ToolTip>
           <Default>string</Default>
-          <Function />
+          <Function>
+          </Function>
         </Literal>
       </Declarations>
-      <Code Language="VB" Kind="method decl" Delimiter="$"><![CDATA[Private Shared $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(New PropertyInfo(Of $PropertyType$)("$PropertyName$", "$FriendlyName$"))
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, "$FriendlyName$", New $PropertyType$())
 ''' <Summary>
 ''' Gets and sets the $FriendlyName$ value.
 ''' </Summary>

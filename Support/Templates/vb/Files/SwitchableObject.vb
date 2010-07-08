@@ -11,7 +11,7 @@ Public Class SwitchableObject
   ' TODO: add your own fields, properties and methods 
 
   ' example with private backing field 
-  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id"))
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id"))
   Private _Id As Integer = IdProperty.DefaultValue
   Public Property Id() As Integer
     Get
@@ -23,7 +23,7 @@ Public Class SwitchableObject
   End Property
 
   ' example with managed backing field 
-  Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
   Public Property Name() As String
     Get
       Return GetProperty(NameProperty)
@@ -38,13 +38,15 @@ Public Class SwitchableObject
 #Region " Business Rules "
 
   Protected Overrides Sub AddBusinessRules()
+    'call base class implementation to add data annotation rules to BusinessRules 
+    MyBase.AddBusinessRules();
 
     ' TODO: add validation rules
     'BusinessRules.AddRule(New MyRule, IdProperty)
 
   End Sub
 
-  Private Shared Sub AddObjectAuthorizationRules()
+  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
     'BusinessRules.AddRule(...)
   End Sub

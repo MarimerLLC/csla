@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
 
 namespace BusinessLibrary
@@ -27,11 +24,11 @@ namespace BusinessLibrary
     public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty(new PropertyInfo<LineItems>("LineItems", "Line items"));
     public LineItems LineItems
     {
-      get 
+      get
       {
         if (!FieldManager.FieldExists(LineItemsProperty))
           LoadProperty(LineItemsProperty, LineItems.NewList());
-        return GetProperty(LineItemsProperty); 
+        return GetProperty(LineItemsProperty);
       }
     }
 
@@ -48,6 +45,11 @@ namespace BusinessLibrary
       return DataPortal.Create<Order>();
     }
 
+    public static Order GetOrder(int id)
+    {
+      return DataPortal.Fetch<Order>(id);
+    }
+
     public override Order Save()
     {
       return base.Save();
@@ -55,7 +57,7 @@ namespace BusinessLibrary
 
     public static void Delete(int id)
     {
-        DataPortal.Delete<Order>(new SingleCriteria<Order, int> (id));
+      DataPortal.Delete<Order>(new SingleCriteria<Order, int>(id));
     }
   }
 }

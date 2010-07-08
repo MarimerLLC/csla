@@ -46,8 +46,8 @@ namespace BusinessRuleDemo
 
     protected override void AddBusinessRules()
     {
-      // Add data annotation rules to BusinessRules 
-      BusinessRules.AddDataAnnotations();
+      // call base class implementation to add data annotation rules to BusinessRules 
+      base.AddBusinessRules();
 
       // set up dependencies to that Sum is automatially recaclulated when PrimaryProperty is changed 
       BusinessRules.AddRule(new Dependency(Num1Property, SumProperty));
@@ -60,7 +60,6 @@ namespace BusinessRuleDemo
       // calculates sum rule - must alwas un before MinValue with lower priority
       BusinessRules.AddRule(new CalcSum(SumProperty, Num1Property, Num2Property) { Priority = -1 });
       BusinessRules.AddRule(new MinValue<int>(SumProperty, 1));
-
 
       // Name Property
       //BusinessRules.AddRule(new Required(NameProperty));

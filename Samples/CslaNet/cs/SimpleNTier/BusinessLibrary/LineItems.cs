@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
 
 namespace BusinessLibrary
@@ -12,6 +9,13 @@ namespace BusinessLibrary
     // Force creation by factory methods 
     private LineItems()
     {
+    }
+
+    protected override object AddNewCore()
+    {
+      var item = LineItem.NewItem();
+      Add(item);
+      return item;
     }
 
     internal static LineItems NewList()

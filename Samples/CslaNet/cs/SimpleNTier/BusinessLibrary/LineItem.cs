@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
 
 namespace BusinessLibrary
@@ -32,6 +29,11 @@ namespace BusinessLibrary
 
     private LineItem()
     {
+    }
+
+    internal static LineItem NewItem()
+    {
+      return DataPortal.Create<LineItem>();
     }
   }
 }

@@ -9,15 +9,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnitDriven;
 
-#if !NUNIT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+
+#if NUNIT
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
+#elif MSTEST
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif 
 
 namespace Csla.Test.BusinessListBase
@@ -25,6 +27,8 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class BusinessListBaseTests
   {
+#if !SILVERLIGHT
+
     [TestMethod]
     public void CreateList()
     {
@@ -125,6 +129,40 @@ namespace Csla.Test.BusinessListBase
 
       Assert.IsFalse(obj.Children.IsDirty);
       Assert.AreEqual(0, obj.Children.Count);
+    }
+
+#endif
+
+    [TestMethod]
+    public void InsertChild()
+    {
+
+      bool changed = false;
+      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      obj.CollectionChanged += (o, e) =>
+      {
+        changed = true;
+      };
+      var child = Csla.DataPortal.CreateChild<Child>(); // object is marked as child
+      obj.Insert(0, child);
+      Assert.IsTrue(changed);
+      Assert.AreEqual(child, obj[0]);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))] // thrown by BusinessListBase.InsertItem
+    public void InsertNonChildFails()
+    {
+      bool changed = false;
+      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      obj.CollectionChanged += (o, e) =>
+      {
+        changed = true;
+      };
+      var nonChild = new Child(); // object is not marked as child
+      obj.Insert(0, nonChild);
+      Assert.IsTrue(changed);
+      Assert.AreEqual(nonChild, obj[0]);
     }
   }
 }

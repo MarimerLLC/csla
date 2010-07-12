@@ -129,6 +129,15 @@
     <Compile Include="..\..\..\csla.test\Authorization\ReadOnlyPerson.cs">
       <Link>Authorization\ReadOnlyPerson.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\BusinessListBase\BusinessListBaseTests.cs">
+      <Link>BusinessListBase\BusinessListBaseTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\BusinessListBase\Child.cs">
+      <Link>BusinessListBase\Child.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\BusinessListBase\ChildList.cs">
+      <Link>BusinessListBase\ChildList.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\BusyStatus\BusyStatusTests.cs">
       <Link>BusyStatus\BusyStatusTests.cs</Link>
     </Compile>

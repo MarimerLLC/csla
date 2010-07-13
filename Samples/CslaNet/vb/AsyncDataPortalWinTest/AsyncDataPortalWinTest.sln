@@ -1,9 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "AsyncDataPortalWinTest", "AsyncDataPortalWinTest\AsyncDataPortalWinTest.vbproj", "{E35C1460-EC26-4190-A01A-C3D15CC0F25D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\36\cslacs36\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,12 +16,6 @@ Global
 		{E35C1460-EC26-4190-A01A-C3D15CC0F25D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E35C1460-EC26-4190-A01A-C3D15CC0F25D}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{E35C1460-EC26-4190-A01A-C3D15CC0F25D}.Testing|Any CPU.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.Build.0 = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

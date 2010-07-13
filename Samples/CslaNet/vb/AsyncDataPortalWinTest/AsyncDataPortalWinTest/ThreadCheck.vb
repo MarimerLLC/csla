@@ -4,7 +4,7 @@
 Public Class ThreadCheck
   Inherits BusinessBase(Of ThreadCheck)
 
-  Private Shared ThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ThreadCheck), New PropertyInfo(Of Integer)("Thread", "Thread"))
+  Private Shared ThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Thread)
   ''' <Summary>
   ''' Gets and sets the Thread value.
   ''' </Summary>
@@ -17,7 +17,7 @@ Public Class ThreadCheck
     End Set
   End Property
 
-  Private Shared CreateThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(GetType(ThreadCheck), New PropertyInfo(Of Integer)("CreateThread", "CreateThread"))
+  Private Shared CreateThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.CreateThread)
   ''' <Summary>
   ''' Gets and sets the CreateThread value.
   ''' </Summary>
@@ -30,7 +30,7 @@ Public Class ThreadCheck
     End Set
   End Property
 
-  Private Shared DataProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(ThreadCheck), New PropertyInfo(Of String)("Data", "Data"))
+  Private Shared DataProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Data)
   ''' <Summary>
   ''' Gets and sets the Data value.
   ''' </Summary>

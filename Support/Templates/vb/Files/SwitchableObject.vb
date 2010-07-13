@@ -39,14 +39,14 @@ Public Class SwitchableObject
 
   Protected Overrides Sub AddBusinessRules()
     'call base class implementation to add data annotation rules to BusinessRules 
-    MyBase.AddBusinessRules();
+    MyBase.AddBusinessRules()
 
     ' TODO: add validation rules
     'BusinessRules.AddRule(New MyRule, IdProperty)
 
   End Sub
 
-  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
+  Public Shared Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
     'BusinessRules.AddRule(...)
   End Sub

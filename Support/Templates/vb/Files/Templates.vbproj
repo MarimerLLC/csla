@@ -72,6 +72,8 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorizationRule.vb" />
+    <Compile Include="BusinessRule.vb" />
     <Compile Include="CommandObject.vb" />
     <Compile Include="DynamicRoot.vb" />
     <Compile Include="DynamicRootList.vb" />

@@ -3,7 +3,7 @@ Imports Csla
 Imports Csla.Security
 
 <Serializable()> _
-  Public Class ReadOnlyRoot
+Public Class ReadOnlyRoot
   Inherits ReadOnlyBase(Of ReadOnlyRoot)
 #Region "Business Methods"
 
@@ -37,7 +37,7 @@ Imports Csla.Security
 
   End Sub
 
-  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
+  Public Shared Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
     'BusinessRules.AddRule(...)
   End Sub

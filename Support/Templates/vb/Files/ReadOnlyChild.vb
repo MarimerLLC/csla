@@ -38,7 +38,7 @@ Public Class ReadOnlyChild
 
   End Sub
 
-  Public Shared ReadOnly Sub AddObjectAuthorizationRules()
+  Public Shared Sub AddObjectAuthorizationRules()
     'TODO: add authorization rules
     'BusinessRules.AddRule(...)
   End Sub

@@ -28,14 +28,14 @@ namespace Templates
     }
 
     // example with Editable Child list 
-    private static readonly PropertyInfo<EditableChildList> ChildListProperty =  RegisterProperty<EditableChildList>(p => p.ChildList, "Child list");
+    private static readonly PropertyInfo<EditableChildList> ChildListProperty = RegisterProperty<EditableChildList>(p => p.ChildList, "Child list");
     public EditableChildList ChildList
     {
       get { return GetProperty<EditableChildList>(ChildListProperty); }
     }
 
     // Example with Editable Child 
-    private static readonly PropertyInfo<EditableChild> ChildProperty = RegisterProperty<EditableChild>(p => p.Child, "Child"));
+    private static readonly PropertyInfo<EditableChild> ChildProperty = RegisterProperty<EditableChild>(p => p.Child, "Child");
     public EditableChild Child
     {
       get { return GetProperty<EditableChild>(ChildProperty); }

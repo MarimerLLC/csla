@@ -20,7 +20,7 @@ namespace Templates
     }
 
     // example with managed backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterPropertyp => p.Name);
+    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }

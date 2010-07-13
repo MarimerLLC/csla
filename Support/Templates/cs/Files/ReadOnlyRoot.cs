@@ -12,7 +12,7 @@ namespace Templates
     // use snippet cslapropg to create your properties
 
     // example with managed backing field
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty(p => p.Id);
+    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }

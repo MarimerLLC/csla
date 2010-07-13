@@ -20,7 +20,7 @@ namespace Templates
     }
 
     // example with managed backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name));
+    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -34,8 +34,8 @@ namespace Templates
     protected override void AddBusinessRules()
     {
       // TODO: add validation rules
-	  base.AddBusinessRules();
-	  
+      base.AddBusinessRules();
+
       //BusinessRules.AddRule(new Rule(IdProperty));
     }
 

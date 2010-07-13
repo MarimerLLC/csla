@@ -62,6 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorizationRule.cs" />
+    <Compile Include="BusinessRule.cs" />
     <Compile Include="CommandObject.cs" />
     <Compile Include="DynamicRoot.cs" />
     <Compile Include="DynamicRootList.cs" />

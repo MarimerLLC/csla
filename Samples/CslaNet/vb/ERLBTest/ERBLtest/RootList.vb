@@ -36,11 +36,9 @@ Public Class RootList
     Try
       result = MyBase.SaveItem(index)
 
-    Catch ex As Csla.Validation.ValidationException
+    Catch ex As Csla.Rules.ValidationException
       Debug.WriteLine("Item not saved " & index.ToString)
     End Try
     Return result
-
   End Function
-
 End Class

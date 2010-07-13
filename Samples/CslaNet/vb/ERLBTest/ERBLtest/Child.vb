@@ -4,7 +4,7 @@ Imports Csla
 Public Class Child
   Inherits BusinessBase(Of Child)
 
-  Private Shared DataProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Data", "Data"))
+  Private Shared DataProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Data)
   ''' <Summary>
   ''' Gets and sets the Data value.
   ''' </Summary>
@@ -17,7 +17,7 @@ Public Class Child
     End Set
   End Property
 
-  Private Shared Val1Property As PropertyInfo(Of Short) = RegisterProperty(New PropertyInfo(Of Short)("Val1", "Val1"))
+  Private Shared Val1Property As PropertyInfo(Of Short) = RegisterProperty(Of Short)(Function(c) c.Val1)
   ''' <Summary>
   ''' Gets and sets the Val1 value.
   ''' </Summary>
@@ -30,7 +30,7 @@ Public Class Child
     End Set
   End Property
 
-  Private Shared Val2Property As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Val2", "Val2"))
+  Private Shared Val2Property As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Val2)
   ''' <Summary>
   ''' Gets and sets the Val2 value.
   ''' </Summary>
@@ -46,8 +46,7 @@ Public Class Child
 #Region " Validation Rules "
 
   Protected Overrides Sub AddBusinessRules()
-    ValidationRules.AddRule(AddressOf Csla.Validation.CommonRules.MinValue(Of Short), _
-      New Csla.Validation.CommonRules.MinValueRuleArgs(Of Short)("Val1", 100))
+    BusinessRules.AddRule(New Csla.Rules.CommonRules.MinValue(Of Short)(Val1Property, 100))
   End Sub
 
 #End Region
@@ -81,7 +80,7 @@ Public Class Child
   Protected Overrides Sub Child_Create()
     _uniqueId += 1
     LoadProperty(DataProperty, _uniqueId.ToString)
-    ValidationRules.CheckRules()
+    BusinessRules.CheckRules()
     Debug.WriteLine("Create")
   End Sub
 

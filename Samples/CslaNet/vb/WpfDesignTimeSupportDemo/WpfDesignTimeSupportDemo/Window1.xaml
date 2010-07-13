@@ -1,7 +1,7 @@
 <Window x:Class="WpfDesignTimeSupportDemo.Window1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  
+    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"  
     xmlns:business="clr-namespace:WpfDesignTime.Business;assembly=WpfDesignTime.Business"
     Title="Window1" Height="300" Width="300">
   <Window.Background>

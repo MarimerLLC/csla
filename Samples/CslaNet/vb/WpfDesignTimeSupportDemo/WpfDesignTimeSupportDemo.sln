@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WpfDesignTimeSupportDemo", "WpfDesignTimeSupportDemo\WpfDesignTimeSupportDemo.vbproj", "{BFBB137A-A012-414B-9EDB-41F3CF985DED}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WpfDesignTime.Business", "WpfDesignTime.Business\WpfDesignTime.Business.vbproj", "{C16B2295-C0B6-4354-891C-C46A8A21C0AB}"

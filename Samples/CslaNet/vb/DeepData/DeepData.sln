@@ -1,6 +1,11 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C99B3C74-E740-47B1-B89C-77BF646CC034}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
+EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeepData", "DeepData\DeepData.vbproj", "{C13E90BA-7817-419B-868F-77647D7D5822}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeepData.Library", "DeepData.Library\DeepData.Library.vbproj", "{AAFA3139-CF27-47A6-B548-607EE84DCFCF}"
@@ -15,7 +20,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeepData.DAL.DTO", "DeepDat
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DeepDataService", "www\DeepDataService\", "{994865B1-1036-4425-A889-B9E339BAECDD}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFramework = "3.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		ProjectReferences = "{112344E3-6591-4EDD-8806-32DD2A191A11}|DeepData.DAL.DTO.dll;{BEDB6A4C-0544-4258-BDFF-E0C519E9E782}|DeepData.DAL.dll;{8D419408-1331-4BB9-ABB5-1857F0A3E6B2}|DeepData.DTO.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/DeepDataService"
 		Debug.AspNetCompiler.PhysicalPath = "www\DeepDataService\"
@@ -38,11 +43,6 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeepData.DAL.WebService", "DeepData.DAL.WebService\DeepData.DAL.WebService.vbproj", "{6E64A5BE-D76D-42D3-8CEA-E92779943A12}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DeepData.DAL.DLinq", "DeepData.DAL.DLinq\DeepData.DAL.DLinq.vbproj", "{C16EA028-6BAE-494B-AEDD-2162574DE07F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C99B3C74-E740-47B1-B89C-77BF646CC034}"
-	ProjectSection(SolutionItems) = preProject
-		ReadMe.txt = ReadMe.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

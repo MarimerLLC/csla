@@ -1,11 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-16"?>
-<Database Name="C:\VISUAL STUDIO PROJECTS\CSLA\DEEPDATA\DEEPDATA\DEEPDATASTORE.MDF" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=&quot;c:\visual studio projects\csla\deepdata\deepdata\DeepDataStore.mdf&quot;;Integrated Security=True;User Instance=True" SettingsObjectName="DeepData.DAL.DLinq.My.MySettings" SettingsPropertyName="DeepDataStoreConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DeepDataStore" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Projects\Csla\Core-TrunkDev\Samples\CslaNet\vb\DeepData\DeepData\DeepDataStore.mdf;Integrated Security=True;Connect Timeout=30;User Instance=False" SettingsObjectName="DeepData.DAL.DLinq.My.MySettings" SettingsPropertyName="DeepDataStoreConnectionString1" Provider="System.Data.SqlClient" />
   <Table Name="dbo.[Order]" Member="Orders">
     <Type Name="Order">
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Customer" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="Order_OrderLine" Member="OrderLines" OtherKey="OrderId" Type="OrderLine" />
+      <Association Name="Order_OrderLine" Member="OrderLines" ThisKey="Id" OtherKey="OrderId" Type="OrderLine" />
+    </Type>
+  </Table>
+  <Table Name="dbo.OrderLine" Member="OrderLines">
+    <Type Name="OrderLine">
+      <Column Name="OrderId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Product" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="OrderLine_OrderLineDetail" Member="OrderLineDetails" ThisKey="OrderId,Id" OtherKey="OrderId,LineId" Type="OrderLineDetail" />
+      <Association Name="Order_OrderLine" Member="Order" ThisKey="OrderId" OtherKey="Id" Type="Order" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.OrderLineDetail" Member="OrderLineDetails">
@@ -14,16 +22,7 @@
       <Column Name="LineId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="Detail" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="OrderLine_OrderLineDetail" Member="OrderLine" ThisKey="OrderId,LineId" Type="OrderLine" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.OrderLine" Member="OrderLines">
-    <Type Name="OrderLine">
-      <Column Name="OrderId" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="Product" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="OrderLine_OrderLineDetail" Member="OrderLineDetails" OtherKey="OrderId,LineId" Type="OrderLineDetail" />
-      <Association Name="Order_OrderLine" Member="Order" ThisKey="OrderId" Type="Order" IsForeignKey="true" />
+      <Association Name="OrderLine_OrderLineDetail" Member="OrderLine" ThisKey="OrderId,LineId" OtherKey="OrderId,Id" Type="OrderLine" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

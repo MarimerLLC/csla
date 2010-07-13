@@ -16,10 +16,10 @@ Partial Public Class LineItemDetailInfo
 
   Private Sub Fetch(ByVal data)
 
-    _orderId = data.OrderId
-    _lineId = data.LineId
-    _id = data.Id
-    _detail = data.Detail
+    LoadProperty(OrderIdProperty, data.OrderId)
+    LoadProperty(LineIdProperty, data.LineId)
+    LoadProperty(IdProperty, data.Id)
+    LoadProperty(DetailProperty, data.Detail)
 
   End Sub
 

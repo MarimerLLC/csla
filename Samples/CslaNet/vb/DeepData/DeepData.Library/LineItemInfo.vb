@@ -4,43 +4,67 @@ Public Class LineItemInfo
 
 #Region " Business Methods "
 
-  Private _orderId As Integer
-  Public ReadOnly Property OrderId() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared OrderIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.OrderId)
+  ''' <Summary>
+  ''' Gets and sets the NewProperty value.
+  ''' </Summary>
+  Public Property OrderId() As Integer
     Get
-      CanReadProperty(True)
-      Return _orderId
+      Return GetProperty(OrderIdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(OrderIdProperty, value)
+    End Set
   End Property
 
-  Private _id As Integer
-  Public ReadOnly Property Id() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Id)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Id() As Integer
     Get
-      CanReadProperty(True)
-      Return _id
+      Return GetProperty(IdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(IdProperty, value)
+    End Set
   End Property
 
-  Private _product As String = ""
-  Public ReadOnly Property Product() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+
+  Private Shared ProductProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Product)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Product() As String
     Get
-      CanReadProperty(True)
-      Return _product
+      Return GetProperty(ProductProperty)
     End Get
+    Private Set(ByVal value As String)
+      LoadProperty(ProductProperty, value)
+    End Set
   End Property
 
-  Private _detailList As LineItemDetailList = LineItemDetailList.NewList
+
+  Private Shared DetailsProperty As PropertyInfo(Of LineItemDetailList) = RegisterProperty(Of LineItemDetailList)(Function(c) c.Details)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
   Public ReadOnly Property Details() As LineItemDetailList
     Get
-      Return _detailList
+      If (Not FieldManager.FieldExists(DetailsProperty)) Then
+        LoadProperty(DetailsProperty, LineItemDetailList.NewList)
+      End If
+
+      Return GetProperty(DetailsProperty)
     End Get
   End Property
 
 
   Protected Overrides Function GetIdValue() As Object
-    Return String.Format("{0}::{1}", _orderId, _id)
+    Return String.Format("{0}::{1}", OrderId, Id)
   End Function
 
 #End Region
@@ -69,15 +93,15 @@ Public Class LineItemInfo
 
   Private Sub Fetch(ByVal data As SafeDataReader)
 
-    _orderId = data.GetInt32("OrderId")
-    _id = data.GetInt32("Id")
-    _product = data.GetString("Product")
+    LoadProperty(OrderIdProperty, data.GetInt32("OrderId"))
+    LoadProperty(IdProperty, data.GetInt32("Id"))
+    LoadProperty(ProductProperty, data.GetString("Product"))
 
   End Sub
 
   Friend Sub LoadDetail(ByVal data As SafeDataReader)
 
-    _detailList.LoadChild(data)
+    Details.LoadChild(data)
 
   End Sub
 

@@ -17,9 +17,9 @@ Partial Public Class OrderInfo
 
   Private Sub Fetch(ByVal data)
 
-    _id = data.Id
-    _customer = data.Customer
-    _lineItems.LoadItems(data.OrderLines)
+    LoadProperty(IdProperty, data.Id)
+    LoadProperty(CustomerProperty, data.Customer)
+    LineItems.LoadItems(data.OrderLines)
 
   End Sub
 

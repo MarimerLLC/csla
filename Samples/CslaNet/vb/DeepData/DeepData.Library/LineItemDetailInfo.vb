@@ -4,44 +4,65 @@ Public Class LineItemDetailInfo
 
 #Region " Business Methods "
 
-  Private _orderId As Integer
-  Public ReadOnly Property OrderId() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+
+  Private Shared OrderIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.OrderId)
+  ''' <Summary>
+  ''' Gets the   value.
+  ''' </Summary>
+  Public Property OrderId() As Integer
     Get
-      CanReadProperty(True)
-      Return _orderId
+      Return GetProperty(OrderIdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(OrderIdProperty, value)
+    End Set
   End Property
 
-  Private _lineId As Integer
-  Public ReadOnly Property LineId() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared LineIdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.LineId)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property LineId() As Integer
     Get
-      CanReadProperty(True)
-      Return _lineId
+      Return GetProperty(LineIdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(LineIdProperty, value)
+    End Set
   End Property
 
-  Private _id As Integer
-  Public ReadOnly Property Id() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Id)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Id() As Integer
     Get
-      CanReadProperty(True)
-      Return _id
+      Return GetProperty(IdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(IdProperty, value)
+    End Set
   End Property
 
-  Private _detail As String = ""
-  Public ReadOnly Property Detail() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared DetailProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Detail)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Detail() As String
     Get
-      CanReadProperty(True)
-      Return _detail
+      Return GetProperty(DetailProperty)
     End Get
+    Private Set(ByVal value As String)
+      LoadProperty(DetailProperty, value)
+    End Set
   End Property
 
   Protected Overrides Function GetIdValue() As Object
-    Return String.Format("{0}::{1}::{2}", _orderId, _lineId, _id)
+    Return String.Format("{0}::{1}::{2}", OrderId, LineId, Id)
   End Function
 
 #End Region
@@ -70,10 +91,10 @@ Public Class LineItemDetailInfo
 
   Private Sub Fetch(ByVal data As SafeDataReader)
 
-    _orderId = data.GetInt32("OrderId")
-    _lineId = data.GetInt32("LineId")
-    _id = data.GetInt32("Id")
-    _detail = data.GetString("Detail")
+    LoadProperty(OrderIdProperty, data.GetInt32("OrderId"))
+    LoadProperty(LineIdProperty, data.GetInt32("LineId"))
+    LoadProperty(IdProperty, data.GetInt32("Id"))
+    LoadProperty(DetailProperty, data.GetString("Detail"))
 
   End Sub
 

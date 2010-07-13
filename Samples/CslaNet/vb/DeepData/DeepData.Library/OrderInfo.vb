@@ -4,33 +4,52 @@ Public Class OrderInfo
 
 #Region " Business Methods "
 
-  Private _id As Integer
-  Public ReadOnly Property Id() As Integer
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+  Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Id)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Id() As Integer
     Get
-      CanReadProperty(True)
-      Return _id
+      Return GetProperty(IdProperty)
     End Get
+    Private Set(ByVal value As Integer)
+      LoadProperty(IdProperty, value)
+    End Set
   End Property
 
-  Private _customer As String = ""
-  Public ReadOnly Property Customer() As String
-    <System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)> _
+
+
+  Private Shared CustomerProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.Customer)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
+  Public Property Customer() As String
     Get
-      CanReadProperty(True)
-      Return _customer
+      Return GetProperty(CustomerProperty)
     End Get
+    Private Set(ByVal value As String)
+      LoadProperty(CustomerProperty, value)
+    End Set
   End Property
 
-  Private _lineItems As LineItemList = LineItemList.NewList
+
+  Private Shared LineItemsProperty As PropertyInfo(Of LineItemList) = RegisterProperty(Of LineItemList)(Function(c) c.LineItems)
+  ''' <Summary>
+  ''' Gets the NewProperty value.
+  ''' </Summary>
   Public ReadOnly Property LineItems() As LineItemList
     Get
-      Return _lineItems
+      If (Not FieldManager.FieldExists(LineItemsProperty)) Then
+        LoadProperty(LineItemsProperty, LineItemList.NewList)
+      End If
+
+      Return GetProperty(LineItemsProperty)
     End Get
   End Property
 
   Protected Overrides Function GetIdValue() As Object
-    Return _id
+    Return Id
   End Function
 
 #End Region
@@ -60,20 +79,20 @@ Public Class OrderInfo
 
   Private Sub Fetch(ByVal data As SafeDataReader)
 
-    _id = data.GetInt32("Id")
-    _customer = data.GetString("Customer")
+    LoadProperty(IdProperty, data.GetInt32("Id"))
+    LoadProperty(CustomerProperty, data.GetString("Customer"))
 
   End Sub
 
   Friend Sub LoadItem(ByVal data As SafeDataReader)
 
-    _lineItems.LoadChild(data)
+    LineItems.LoadChild(data)
 
   End Sub
 
   Friend Sub LoadDetail(ByVal data As SafeDataReader)
 
-    _lineItems.FindById(data.GetInt32("LineId")).LoadDetail(data)
+    LineItems.FindById(data.GetInt32("LineId")).LoadDetail(data)
 
   End Sub
 

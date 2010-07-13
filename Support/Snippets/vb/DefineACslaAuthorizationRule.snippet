@@ -22,7 +22,7 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="type decl"><![CDATA[Public Class $ClassName$
+      <Code Language="vb" Kind="type decl"><![CDATA[Public Class $ClassName$
 	Inherits Csla.Rules.AuthorizationRule
 	' TODO: Add additional parameters to your rule to the constructor
 	''' <summary>
@@ -31,9 +31,11 @@
 	''' <param name="action">Action this rule will enforce.</param>
 	''' <param name="element">Method or property.</param>
 	Public Sub New(action As AuthorizationActions, element As IMemberInfo)
-			' TODO: Add additional constructor code here 
-
 		MyBase.New(action, element)
+
+		' TODO: Add additional constructor code here 
+
+
 	End Sub
 
 
@@ -43,9 +45,11 @@
 	''' </summary>
 	''' <param name="action">The action.</param>
 	Public Sub New(action As AuthorizationActions)
-			' TODO: Add additional constructor code here 
+		MyBase.New(action)			
+		
+		' TODO: Add additional constructor code here 
 
-		MyBase.New(action)
+
 	End Sub
 
 	Protected Overrides Sub Execute(context As AuthorizationContext)

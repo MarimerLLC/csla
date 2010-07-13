@@ -827,6 +827,8 @@ namespace Csla.Core
     /// <summary>
     /// Returns <see langword="true" /> if this is a child (non-root) object.
     /// </summary>
+    [Browsable(false)]
+    [Display(AutoGenerateField = false)]
     public bool IsChild
     {
       get { return _isChild; }
@@ -2371,7 +2373,7 @@ namespace Csla.Core
       var valuesDiffer = false;
       if (oldValue == null)
         valuesDiffer = newValue != null;
-	  else
+    else
       {
         // use reference equals for objects that inherit from CSLA base class
         if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type)) 

@@ -660,6 +660,8 @@ namespace Csla
     /// Indicates whether this collection object is a child object.
     /// </summary>
     /// <returns>True if this is a child object.</returns>
+    [Browsable(false)]
+    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public bool IsChild
     {
       get { return _isChild; }
@@ -1056,10 +1058,10 @@ namespace Csla
       return Save();
     }
 
-		object Csla.Core.ISavable.Save(bool forceUpdate)
-		{
-			return Save();
-		}
+    object Csla.Core.ISavable.Save(bool forceUpdate)
+    {
+      return Save();
+    }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {

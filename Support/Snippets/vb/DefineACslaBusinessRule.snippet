@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Add a private Business Rule class</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Add a private Business Rule class</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslarule</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>ClassName</ID>
+          <ToolTip>Enter business rule name </ToolTip>
+          <Default>RuleName</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="type decl"><![CDATA[Private Class $ClassName$
+  Inherits Csla.Rules.BusinessRule
+
+  ' TODO: Add additional parameters to your rule to the constructor
+  Public Sub New(primaryProperty As IPropertyInfo)
+
+      ' TODO: If you are  going to add InputProperties make sure to uncomment line below as InputProperties is NULL by default
+      'if (InputProperties == null) InputProperties = new List<IPropertyInfo>();
+
+      ' TODO: Add additional constructor code here 
+
+
+
+      ' TODO: Marke rule for IsAsync if Execute contains asyncronous code 
+      ' IsAsync = true; 
+      MyBase.New(primaryProperty)
+  End Sub
+
+  Protected Overrides Sub Execute(context As RuleContext)
+    ' TODO: Add actual rule code here. 
+    'if (broken condition)
+    '{
+    '  context.AddErrorResult("Broken rule message");
+    '}
+
+    If IsAsync Then
+      context.Complete()
+    End If
+  End Sub
+End Class
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

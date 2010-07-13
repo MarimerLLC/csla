@@ -58,10 +58,13 @@
 ''' <Summary>
 ''' Gets the $FriendlyName$ value.
 ''' </Summary>
-Public ReadOnly Property $PropertyName$() As $PropertyType$
+Public Property $PropertyName$() As $PropertyType$
     Get
         Return GetProperty($PropertyName$Property)
     End Get
+    private Set(ByVal value As $PropertyType$)
+        LoadProperty($PropertyName$Property, value)
+    End Set
 End Property]]></Code>
     </Snippet>
   </CodeSnippet>

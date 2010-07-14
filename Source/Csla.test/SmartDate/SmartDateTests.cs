@@ -428,5 +428,35 @@ namespace Csla.Test.SmartDate
 
     }
     #endregion
+
+    [TestMethod]
+    public void DefaultFormat()
+    {
+      var obj = new SDtest();
+      Assert.AreEqual("", obj.TextDate, "Should be empty");
+
+      var now = DateTime.Now;
+      obj.TextDate = string.Format("{0:g}", now);
+      Assert.AreEqual(string.Format("{0:g}", now), obj.TextDate, "Should be today");
+    }
+  }
+
+  [Serializable]
+  public class SDtest : BusinessBase<SDtest>
+  {
+    public static PropertyInfo<Csla.SmartDate> TextDateProperty = 
+      RegisterProperty<Csla.SmartDate>(c => c.TextDate, null, new Csla.SmartDate { FormatString = "g" });
+    public string TextDate
+    {
+      get { return GetPropertyConvert<Csla.SmartDate, string>(TextDateProperty); }
+      set { SetPropertyConvert<Csla.SmartDate, string>(TextDateProperty, value); }
+    }
+
+    public static PropertyInfo<Csla.SmartDate> MyDateProperty = RegisterProperty<Csla.SmartDate>(c => c.MyDate);
+    public Csla.SmartDate MyDate
+    {
+      get { return GetProperty(MyDateProperty); }
+      set { SetProperty(MyDateProperty, value); }
+    }
   }
 }

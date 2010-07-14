@@ -35,8 +35,9 @@ namespace Csla.Rules
       }
     }
     /// <summary>
-    /// Gets a list of secondary property values to be supplied to the
-    /// rule when it is executed.
+    /// Gets a list of properties affected by this rule. Rules for these
+    /// properties are executed after rules for the primary
+    /// property.
     /// </summary>
     public List<Csla.Core.IPropertyInfo> AffectedProperties { get; private set; }
     /// <summary>

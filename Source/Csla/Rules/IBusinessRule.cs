@@ -26,7 +26,9 @@ namespace Csla.Rules
     /// </summary>
     List<Csla.Core.IPropertyInfo> InputProperties { get; }
     /// <summary>
-    /// Gets a list of properties affected by this rule.
+    /// Gets a list of properties affected by this rule. Rules for these
+    /// properties are executed after rules for the primary
+    /// property.
     /// </summary>
     List<Csla.Core.IPropertyInfo> AffectedProperties { get; }
     /// <summary>

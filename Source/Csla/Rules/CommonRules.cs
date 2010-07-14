@@ -504,10 +504,10 @@ namespace Csla.Rules.CommonRules
     /// on some other property, and you have no other rules that would establish this dependent
     /// or affected property relationship.
     /// </remarks>
-    public Dependency(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo dependencyProperty)
+    public Dependency(Csla.Core.IPropertyInfo primaryProperty, params Csla.Core.IPropertyInfo[] dependencyProperty)
       : base(primaryProperty)
     {
-      AffectedProperties.Add(dependencyProperty);
+      AffectedProperties.AddRange(dependencyProperty);
     }
   }
 }

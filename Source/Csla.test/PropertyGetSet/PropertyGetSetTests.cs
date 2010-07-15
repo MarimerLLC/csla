@@ -68,6 +68,14 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [TestMethod]
+    public void NonGenericLoadProperty()
+    {
+      var root = new EditableGetSet();
+      root.LoadM02(123);
+      Assert.AreEqual(123, root.M02);
+    }
+
+    [TestMethod]
     public void ExplicitFieldProperties()
     {
       EditableGetSet root = new EditableGetSet();

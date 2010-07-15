@@ -2373,10 +2373,10 @@ namespace Csla.Core
       var valuesDiffer = false;
       if (oldValue == null)
         valuesDiffer = newValue != null;
-    else
+      else
       {
         // use reference equals for objects that inherit from CSLA base class
-        if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type)) 
+        if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
           valuesDiffer = !(ReferenceEquals(oldValue, newValue));
         }
@@ -2457,10 +2457,16 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      using (BypassPropertyChecks)
-      {
-        MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-      }
+      var t = this.GetType();
+      var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+      var method = t.GetMethods(flags).Where(c => c.Name == "LoadProperty" && c.IsGenericMethod).FirstOrDefault();
+      var gm = method.MakeGenericMethod(propertyInfo.Type);
+      var p = new object[] { propertyInfo, newValue };
+      gm.Invoke(this, p);
+      //using (BypassPropertyChecks)
+      //{
+      //  MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+      //}
     }
 
     /// <summary>

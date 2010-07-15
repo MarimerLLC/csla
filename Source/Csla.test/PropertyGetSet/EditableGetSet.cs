@@ -88,6 +88,12 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<int>(M02Property, value); }
     }
 
+    public void LoadM02(int value)
+    {
+      var p = M02Property as Core.IPropertyInfo;
+      LoadProperty(p, value);
+    }
+
     private static Csla.PropertyInfo<string> M03Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<string>("M03", "field 3", "n/a"));
     public string M03
     {

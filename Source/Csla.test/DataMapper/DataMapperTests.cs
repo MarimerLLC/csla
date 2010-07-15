@@ -26,6 +26,18 @@ namespace Csla.Test.DataMapper
   public class DataMapperTests
   {
     [TestMethod]
+    public void DictionaryMap()
+    {
+      var target = new ManagedTarget();
+      var source = new Dictionary<string, object>();
+      source.Add("MyInt", 42);
+
+      Csla.Data.DataMapper.Load(source, target, (n) => n);
+      Assert.AreEqual(42, target.MyInt, "Int should match");
+
+    }
+
+    [TestMethod]
     public void NumericTypes()
     {
       DataMapTarget target = new DataMapTarget();
@@ -221,6 +233,17 @@ namespace Csla.Test.DataMapper
     First,
     Second,
     Third
+  }
+
+  [Serializable]
+  public class ManagedTarget : BusinessBase<ManagedTarget>
+  {
+    public static PropertyInfo<int> MyIntProperty = RegisterProperty<int>(c => c.MyInt);
+    public int MyInt
+    {
+      get { return GetProperty(MyIntProperty); }
+      set { SetProperty(MyIntProperty, value); }
+    }
   }
 
   public class DataMapTarget

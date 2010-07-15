@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using Csla;
+using Csla.Serialization;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;
 using UnitDriven;

@@ -372,28 +372,28 @@ namespace Csla.Data
         SetValueWithCoercion(target, handle, value);   
     }
 
-      private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object value)
+    private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object value)
+    {
+      var oldValue = handle.DynamicMemberGet(target);
+
+      Type pType = handle.MemberType;
+
+      if (!pType.IsGenericType
+          || (pType.IsGenericType && pType.GetGenericTypeDefinition() != typeof(Nullable<>)))
       {
-          var oldValue = handle.DynamicMemberGet(target);
-
-          Type pType = handle.MemberType;
-
-          if (!pType.IsGenericType 
-              || (pType.IsGenericType && pType.GetGenericTypeDefinition() != typeof(Nullable<>)))
-          {
-              if (pType.IsValueType && (pType.IsPrimitive || pType == typeof(decimal)) && value == null)
-              {
-                  value = 0;
-              }
-          }
-
-          if(value != null)
-          {
-              Type vType = Utilities.GetPropertyType(value.GetType());
-              value = Utilities.CoerceValue(pType, vType, oldValue, value);
-          }
-          handle.DynamicMemberSet(target, value);
+        if (pType.IsValueType && (pType.IsPrimitive || pType == typeof(decimal)) && value == null)
+        {
+          value = 0;
+        }
       }
+
+      if (value != null)
+      {
+        Type vType = Utilities.GetPropertyType(value.GetType());
+        value = Utilities.CoerceValue(pType, vType, oldValue, value);
+      }
+      handle.DynamicMemberSet(target, value);
+    }
 
     /// <summary>
     /// Sets an object's field with the specified value,

@@ -71,7 +71,7 @@ namespace Csla.Server
         {
           if (target != null)
             target.Child_OnDataPortalException(eventArgs, ex);
-          else
+          else if (obj != null)
             obj.CallMethodIfImplemented("Child_OnDataPortalException",
               eventArgs, ex);
         }
@@ -138,7 +138,7 @@ namespace Csla.Server
         {
           if (target != null)
             target.Child_OnDataPortalException(eventArgs, ex);
-          else
+          else if (obj != null)
             obj.CallMethodIfImplemented("Child_OnDataPortalException",
               eventArgs, ex);
         }
@@ -254,7 +254,7 @@ namespace Csla.Server
           if (target != null)
             target.Child_OnDataPortalException(
               new DataPortalEventArgs(null, objectType, operation), ex);
-          else
+          else if (lb != null)
             lb.CallMethodIfImplemented("Child_OnDataPortalException",
               new DataPortalEventArgs(null, objectType, operation), ex);
         }

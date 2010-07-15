@@ -389,7 +389,7 @@ namespace Csla.Test.ValidationRules
       root.Validate();
       context.Assert.IsFalse(root.IsValid);
       context.Assert.AreEqual(1, root.GetBrokenRules().Count);
-      context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
+      context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/null:Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
       context.Assert.Success();
       context.Complete();
     }

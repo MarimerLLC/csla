@@ -10,21 +10,21 @@ namespace Test.Library
   [Serializable]
   public class OrderEdit : DiffBase<OrderEdit>
   {
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(c => c.CustomerName);
+    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(c => c.CustomerName);
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
       set { SetProperty(CustomerNameProperty, value); }
     }
 
-    private static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(c => c.LineItems);
+    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(c => c.LineItems);
     public LineItems LineItems
     {
       get { return GetProperty(LineItemsProperty); }

@@ -112,7 +112,7 @@
           </StackPanel>
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Name" />
-            <TextBox x:Name="NameTextBox" Width="150" Text="{Binding Name, Mode=TwoWay}" />
+            <TextBox x:Name="NameTextBox" Width="150" Text="{Binding Mode=TwoWay, Path=Name, ValidatesOnNotifyDataErrors=False}" />
             <csla:PropertyStatus Property="{Binding Name}" Margin="5,0,0,0" Style="{StaticResource PropertyStatusStyle1}" Foreground="#FF69ED12" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">

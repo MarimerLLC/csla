@@ -30,11 +30,11 @@
     <StackPanel Margin="10">
       <TextBox Text="{Binding Id, Mode=TwoWay}" Margin="5" FontSize="16" Width="250" HorizontalAlignment="Left" />
       <StackPanel Orientation="Horizontal">
-        <TextBox Text="{Binding FirstName, Mode=TwoWay}"  Margin="5" FontSize="16" Width="250" />
+        <TextBox Text="{Binding FirstName, Mode=TwoWay, ValidatesOnNotifyDataErrors=False}"  Margin="5" FontSize="16" Width="250" />
         <csla:PropertyStatus Property="{Binding Path=FirstName}" />
       </StackPanel>
       <StackPanel Orientation="Horizontal">
-        <TextBox Text="{Binding LastName, Mode=TwoWay}" Margin="5" FontSize="16" Width="250" />
+        <TextBox Text="{Binding Mode=TwoWay, Path=LastName, ValidatesOnNotifyDataErrors=False}" Margin="5" FontSize="16" Width="250" />
         <csla:PropertyStatus Property="{Binding Path=LastName}" />
       </StackPanel>
       <StackPanel Orientation="Horizontal" Margin="5">

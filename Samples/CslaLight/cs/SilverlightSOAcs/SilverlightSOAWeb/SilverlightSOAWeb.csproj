@@ -107,7 +107,6 @@
     <Content Include="Scripts\MicrosoftMvcAjax.js" />
     <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
     <Content Include="Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="SilverlightSOATestPage.aspx" />
     <Content Include="SilverlightSOATestPage.html" />
     <Content Include="Web.config" />
   </ItemGroup>

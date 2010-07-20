@@ -1,1 +1,0 @@
-﻿<% @ServiceHost Service="Sample.Business.Compression.CompressedHost" %>

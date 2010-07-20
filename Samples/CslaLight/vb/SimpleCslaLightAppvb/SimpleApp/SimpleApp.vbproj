@@ -116,6 +116,7 @@
     <Compile Include="App.xaml.vb">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NotConverter.vb" />
     <Compile Include="Page.xaml.vb">
       <DependentUpon>Page.xaml</DependentUpon>
     </Compile>

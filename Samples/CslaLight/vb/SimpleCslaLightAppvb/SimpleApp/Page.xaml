@@ -96,6 +96,7 @@
         </Setter.Value>
       </Setter>
     </Style>
+    <l:NotConverter x:Key="NotConverter" />
   </UserControl.Resources>
   <Grid>
     <VisualStateManager.VisualStateGroups>
@@ -107,13 +108,13 @@
         <StackPanel Margin="5,5,5,5">
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Id" />
-            <TextBox x:Name="IdTextBox" Width="150" Text="{Binding Id, Mode=TwoWay}" />
-            <csla:PropertyStatus TargetControl="{Binding ElementName=IdTextBox}" Property="{Binding Id}" />
+            <TextBox x:Name="IdTextBox" Width="150" Text="{Binding Id, Mode=TwoWay}" IsReadOnly="True" />
+            <csla:PropertyStatus x:Name="IdStatus" Property="{Binding Id}" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Name" />
-            <TextBox x:Name="NameTextBox" Width="150" Text="{Binding Name, Mode=TwoWay}" />
-            <csla:PropertyStatus TargetControl="{Binding ElementName=NameTextBox}" Property="{Binding Name}" Margin="5,0,0,0" Style="{StaticResource PropertyStatusStyle1}" Foreground="#FF69ED12" />
+            <TextBox x:Name="NameTextBox" Width="150" Text="{Binding Mode=TwoWay, Path=Name, ValidatesOnNotifyDataErrors=False}" IsReadOnly="{Binding ElementName=NameStatus, Path=CanWrite, Converter={StaticResource NotConverter}}" />
+            <csla:PropertyStatus x:Name="NameStatus" Property="{Binding Name}" Margin="5,0,0,0" Style="{StaticResource PropertyStatusStyle1}" Foreground="#FF69ED12" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Status" />

@@ -74,6 +74,19 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual(hostName.Replace("/", ""), uri.RuleTypeName, "Rule type");
       Assert.AreEqual("property", uri.PropertyName, "Property name");
     }
+
+    [TestMethod]
+    public void Arguments()
+    {
+      var uri = new Csla.Rules.RuleUri("rule://type/property?p1=v1");
+      Assert.AreEqual(1, uri.Arguments.Count, "Count should be 1");
+      Assert.AreEqual("v1", uri.Arguments["p1"], "Value shoudl be v1");
+
+      uri = new Csla.Rules.RuleUri("rule://type/property?p1=v1&p2=v2");
+      Assert.AreEqual(2, uri.Arguments.Count, "Count should be 2");
+      Assert.AreEqual("v1", uri.Arguments["p1"], "Value shoudl be v1");
+      Assert.AreEqual("v2", uri.Arguments["p2"], "Value shoudl be v2");
+    }
   }
 
   [Serializable]

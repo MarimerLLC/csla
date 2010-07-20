@@ -33,8 +33,11 @@
           <Default>int</Default>
         </Literal>
       </Declarations>
-      <Code Language="CSharp" Kind="method decl">
+      <Code Language="vb" Kind="method decl">
   <![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
+''' <Summary>
+''' Gets or sets the $PropertyName$ value.
+''' </Summary>
 public $PropertyType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property); }

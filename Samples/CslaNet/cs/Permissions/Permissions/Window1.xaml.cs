@@ -29,9 +29,10 @@ namespace TestApp
       CustomIdentity identity = null;
       try
       {
+        var username = "Guest"; // Admin, Guest, Mary, Bob
         identity =
           Csla.DataPortal.Fetch<CustomIdentity>(
-          new Csla.Security.UsernameCriteria("Admin", ""));
+          new Csla.Security.UsernameCriteria(username, ""));
       }
       catch (Exception ex)
       {

@@ -10,7 +10,7 @@ namespace CslaStore.Business
 {
     [Serializable()]
     public class OrderCollection 
-        : EditableRootListBase<Order>
+        : DynamicBindingListBase<Order>
         // : BusinessListBase<OrderCollection, Order>
     {
         #region Constructors

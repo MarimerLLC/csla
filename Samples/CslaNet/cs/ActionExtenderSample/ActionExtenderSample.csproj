@@ -17,8 +17,7 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>http://localhost/ActionExtenderSample/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>

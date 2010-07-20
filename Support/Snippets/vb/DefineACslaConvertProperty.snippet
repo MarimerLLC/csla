@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
@@ -53,9 +53,9 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, "$FriendlyName$", New $PropertyType$())
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, Nothing, New $PropertyType$())
 ''' <Summary>
-''' Gets and sets the $FriendlyName$ value.
+''' Gets or sets the $PropertyName$ value.
 ''' </Summary>
 Public Property $PropertyName$() As String
     Get

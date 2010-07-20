@@ -46,12 +46,17 @@ namespace cslalighttest.EditableRootListTests
       RootSingleItemsList list;
       RootSingleItemsList.GetRootSingleItemsList(1, 2, (o, e) =>
         {
-          context.Assert.IsNotNull(e.Object);
-          list = e.Object;
-          SingleItem item = SingleItem.GetSingleItem();
-          list.Add(item);
-          context.Assert.AreEqual(3, list.Count, "Count should be 3");
-          context.Assert.IsTrue(list[2].IsNew, "Object should be new");
+          if (e.Error != null)
+            context.Assert.Fail(e.Error.Message);
+          else
+          {
+            context.Assert.IsNotNull(e.Object);
+            list = e.Object;
+            SingleItem item = SingleItem.GetSingleItem();
+            list.Add(item);
+            context.Assert.AreEqual(3, list.Count, "Count should be 3");
+            context.Assert.IsTrue(list[2].IsNew, "Object should be new");
+          }
           context.Assert.Success();
         }
         );

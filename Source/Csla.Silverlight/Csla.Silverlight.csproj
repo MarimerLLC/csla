@@ -213,6 +213,9 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DynamicListBase.cs">
+      <Link>DynamicListBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
     </Compile>
@@ -448,7 +451,7 @@
     <Compile Include="DataPortalEventArgs.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalT.cs" />
-    <Compile Include="EditableRootListBase.cs" />
+    <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="NotUndoableAttribute.cs" />
     <Compile Include="PropertyLoaderException.cs" />

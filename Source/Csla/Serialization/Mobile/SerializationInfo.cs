@@ -272,8 +272,15 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public T GetValue<T>(string name)
     {
-      var value = _values[name].Value;
-      return (value != null ? (T)Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
+      try
+      {
+        var value = _values[name].Value;
+        return (value != null ? (T)Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
+      }
+      catch (Exception ex)
+      {
+        throw new InvalidOperationException(string.Format("SerializationInfo.GetValue: {0}", name), ex);
+      }
     }
 
     /// <summary>

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Csla.Test.EditableRootList
 {
-  public class ERlist : Csla.EditableRootListBase<ERitem>
+  public class ERlist : Csla.DynamicBindingListBase<ERitem>
   {
     public ERlist()
     {

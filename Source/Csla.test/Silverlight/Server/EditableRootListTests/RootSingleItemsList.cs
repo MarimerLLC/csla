@@ -18,7 +18,7 @@ using Csla.Serialization;
 namespace Csla.Testing.Business.EditableRootListTests
 {
   [Serializable]
-  public class RootSingleItemsList : EditableRootListBase<SingleItem>
+  public class RootSingleItemsList : DynamicBindingListBase<SingleItem>
  {
 #if SILVERLIGHT
     public RootSingleItemsList() { }

@@ -69,6 +69,20 @@ namespace Csla.Core
     /// </summary>
     public bool RaiseListChangedEvents { get { return _raiseListChangedEvents; } set { _raiseListChangedEvents = value; } }
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Adds a new item to this collection.
+    /// </summary>
+    public void AddNew()
+    {
+      AddNewCore();
+    }
+
+    void IObservableBindingList.AddNew()
+    {
+      AddNew();
+    }
+#else
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
@@ -83,6 +97,7 @@ namespace Csla.Core
     {
       return AddNew();
     }
+#endif
 
     #endregion
 
@@ -463,6 +478,16 @@ namespace Csla.Core
         AddedNew(this, args);
     }
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected virtual void AddNewCore()
+    {
+      throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
+    }
+#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -471,6 +496,7 @@ namespace Csla.Core
     {
       throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
     }
+#endif
 
     #endregion
 

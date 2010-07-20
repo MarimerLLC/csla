@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------
-// <copyright file="EditableRootListBase.cs" company="Marimer LLC">
+﻿//-----------------------------------------------------------------------
+// <copyright file="DynamicListBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -42,14 +42,19 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable()]
-  public abstract class EditableRootListBase<T> : Core.ExtendedBindingList<T>,
+  public abstract class DynamicListBase<T> :
+#if SILVERLIGHT
+    ExtendedBindingList<T>,
+#else
+    ObservableBindingList<T>,
+#endif
     Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject
   {
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public EditableRootListBase()
+    public DynamicListBase()
     {
       Initialize();
       AllowNew = true;
@@ -143,38 +148,49 @@ namespace Csla
         // save object
         DataPortal<T> dp = new DataPortal<T>();
         dp.UpdateCompleted += (o, e) =>
+        {
+          if (handleBusy)
+            MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
+          if (e.Error == null)
           {
-            if (handleBusy)
-              MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
-            if (e.Error == null)
+            T result = e.Object;
+            if (item.IsDeleted)
             {
-              T result = e.Object;
-              if (item.IsDeleted)
-              {
-                //SafeRemoveItem  will raise INotifyCollectionChanged event
-                SafeRemoveItem(index);
-              }
-              else
-              {
-                for (int tmp = 1; tmp <= editLevel; tmp++)
-                  result.CopyState(tmp, false);
-
-                SafeSetItem(index, result);
-                //Because SL Data Grid does not support replace action.
-                // we have to artificially raise remove/insert events
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
-
-              }
-              item.SaveComplete(result, null, null);
-              OnSaved(result, null);
+              //SafeRemoveItem  will raise INotifyCollectionChanged event
+              SafeRemoveItem(index);
             }
             else
             {
-              item.SaveComplete(item, e.Error, null);
-              OnSaved(item, e.Error);
+              for (int tmp = 1; tmp <= editLevel; tmp++)
+                result.CopyState(tmp, false);
+
+              SafeSetItem(index, result);
+#if SILVERLIGHT
+              //Because SL Data Grid does not support replace action.
+              // we have to artificially raise remove/insert events
+              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
+#else
+              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, result, item));
+#endif
             }
-          };
+#if SILVERLIGHT
+            item.SaveComplete(result, null, null);
+#else
+            item.SaveComplete(result);
+#endif
+            OnSaved(result, null);
+          }
+          else
+          {
+#if SILVERLIGHT
+            item.SaveComplete(item, e.Error, null);
+#else
+            item.SaveComplete(item);
+#endif
+            OnSaved(item, e.Error);
+          }
+        };
         dp.BeginUpdate(savable);
       }
     }
@@ -196,6 +212,7 @@ namespace Csla
 
     #region  Insert, Remove, Clear
 
+#if SILVERLIGHT
     /// <summary>
     /// Adds a new item to the list.
     /// Uses ProcyModes.LocalOnly as default. 
@@ -227,6 +244,19 @@ namespace Csla
 
       portal.BeginCreate();
     }
+#else
+    /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override T AddNewCore()
+    {
+      T item = Csla.DataPortal.Create<T>();
+      Add(item);
+      return item;
+    }
+#endif
+
     /// <summary>
     /// Gives the new object a parent reference to this
     /// list.

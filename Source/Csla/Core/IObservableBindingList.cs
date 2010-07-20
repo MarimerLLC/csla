@@ -19,10 +19,17 @@ namespace Csla.Core
   /// </summary>
   public interface IObservableBindingList
   {
+#if SILVERLIGHT
+    /// <summary>
+    /// Creates and adds a new item to the collection.
+    /// </summary>
+    void AddNew();
+#else
     /// <summary>
     /// Creates and adds a new item to the collection.
     /// </summary>
     object AddNew();
+#endif
     /// <summary>
     /// Event indicating that an item is being
     /// removed from the list.

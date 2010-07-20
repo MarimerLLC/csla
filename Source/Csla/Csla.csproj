@@ -133,6 +133,8 @@
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
+    <Compile Include="DynamicBindingListBase.cs" />
+    <Compile Include="DynamicListBase.cs" />
     <Compile Include="MethodInfo.cs" />
     <Compile Include="Core\MobileBindingList.cs" />
     <Compile Include="Core\MobileDictionary.cs" />
@@ -288,7 +290,6 @@
     <Compile Include="Data\ObjectAdapter.cs" />
     <Compile Include="Data\SafeDataReader.cs" />
     <Compile Include="DefaultFilter.cs" />
-    <Compile Include="EditableRootListBase.cs" />
     <Compile Include="EnterpriseServicesSettings.cs" />
     <Compile Include="FilterProvider.cs" />
     <Compile Include="GlobalSuppressions.cs" />

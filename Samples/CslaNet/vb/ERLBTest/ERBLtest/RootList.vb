@@ -2,7 +2,7 @@ Imports Csla
 
 <Serializable()> _
 Public Class RootList
-  Inherits EditableRootListBase(Of Root)
+  Inherits DynamicBindingListBase(Of Root)
 
   Public Shared Function GetList() As RootList
     Return New RootList

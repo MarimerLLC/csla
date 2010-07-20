@@ -4,16 +4,16 @@
 Public Class ThreadCheck
   Inherits BusinessBase(Of ThreadCheck)
 
-  Private Shared ThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Thread)
+  Public Shared ThreadProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(c) c.Thread)
   ''' <Summary>
   ''' Gets and sets the Thread value.
   ''' </Summary>
   Public Property Thread() As Integer
     Get
-      Return GetProperty(Of Integer)(ThreadProperty)
+      Return GetProperty(ThreadProperty)
     End Get
     Set(ByVal value As Integer)
-      SetProperty(Of Integer)(ThreadProperty, value)
+      SetProperty(ThreadProperty, value)
     End Set
   End Property
 

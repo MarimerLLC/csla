@@ -2463,10 +2463,6 @@ namespace Csla.Core
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
       gm.Invoke(this, p);
-      //using (BypassPropertyChecks)
-      //{
-      //  MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
-      //}
     }
 
     /// <summary>

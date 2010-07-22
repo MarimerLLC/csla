@@ -73,6 +73,14 @@ namespace Csla.Test.PropertyGetSet
       var root = new EditableGetSet();
       root.LoadM02(123);
       Assert.AreEqual(123, root.M02);
+
+      var cmd = new Command();
+      cmd.Load("abc");
+      Assert.AreEqual("abc", cmd.Name);
+
+      var ro = new ReadOnly();
+      ro.Load("abc");
+      Assert.AreEqual("abc", ro.Name);
     }
 
     [TestMethod]
@@ -726,5 +734,35 @@ namespace Csla.Test.PropertyGetSet
     }
 
     #endregion
+  }
+
+  [Serializable]
+  public class Command : CommandBase<Command>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return ReadProperty(NameProperty); }
+    }
+
+    public void Load(string name)
+    {
+      LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
+    }
+  }
+
+  [Serializable]
+  public class ReadOnly : ReadOnlyBase<ReadOnly>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return ReadProperty(NameProperty); }
+    }
+
+    public void Load(string name)
+    {
+      LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
+    }
   }
 }

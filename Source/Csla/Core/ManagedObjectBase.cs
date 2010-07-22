@@ -315,9 +315,14 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      MethodCaller.CallPropertySetter(this, propertyInfo.Name, newValue);
+      var t = this.GetType();
+      var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+      var method = t.GetMethods(flags).Where(c => c.Name == "LoadProperty" && c.IsGenericMethod).FirstOrDefault();
+      var gm = method.MakeGenericMethod(propertyInfo.Type);
+      var p = new object[] { propertyInfo, newValue };
+      gm.Invoke(this, p);
     }
 
     #endregion

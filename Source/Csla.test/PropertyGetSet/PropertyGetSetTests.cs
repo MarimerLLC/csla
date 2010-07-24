@@ -5,13 +5,12 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#region using
-
 using System;
 using System.ComponentModel;
 using UnitDriven;
 using Csla.Serialization.Mobile;
 using Csla.Core;
+using Csla.Serialization;
 
 #if NUNIT
 using NUnit.Framework;
@@ -22,8 +21,6 @@ using TestMethod = NUnit.Framework.TestAttribute;
 #elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
-
-#endregion
 
 namespace Csla.Test.PropertyGetSet
 {

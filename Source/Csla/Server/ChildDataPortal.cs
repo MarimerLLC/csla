@@ -79,8 +79,11 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
+        object bo = null;
+        if (obj != null)
+          bo = obj.Instance;
         throw new Csla.DataPortalException(
-          "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, obj.Instance);
+          "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, bo);
       }
 
     }
@@ -146,8 +149,11 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
+        object bo = null;
+        if (obj != null)
+          bo = obj.Instance;
         throw new Csla.DataPortalException(
-          "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, obj.Instance);
+          "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, bo);
       }
 
     }

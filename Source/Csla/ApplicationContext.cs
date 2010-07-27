@@ -24,6 +24,7 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
+    private static Type _webManagerType;
 
     /// <summary>
     /// Gets or sets the context manager responsible
@@ -36,15 +37,13 @@ namespace Csla
       {
         if (_contextManager == null)
         {
-          var webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
-          if (webManagerType != null)
-          {
-            _contextManager = (IContextManager)Activator.CreateInstance(webManagerType);
-            if (!_contextManager.IsValid) _contextManager = null;
-          }
-          if (_contextManager == null)
-            _contextManager = new ApplicationContextManager();
+          if (_webManagerType == null)
+            _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
+          if (_webManagerType != null)
+            _contextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
         }
+        if (_contextManager == null || !_contextManager.IsValid)
+          _contextManager = new ApplicationContextManager();
         return _contextManager; 
       }
       set { _contextManager = value; }

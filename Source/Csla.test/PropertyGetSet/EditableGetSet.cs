@@ -21,7 +21,7 @@ namespace Csla.Test.PropertyGetSet
   [Serializable]
   public class EditableGetSet : EditableGetSetBase<EditableGetSet>
   {
-    private static Csla.PropertyInfo<string> FieldBackedStringProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("FieldBackedString"));
+    private static Csla.PropertyInfo<string> FieldBackedStringProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("FieldBackedString", RelationshipTypes.PrivateField));
     private string _fieldBackedString = FieldBackedStringProperty.DefaultValue;
     public string FieldBackedString
     {
@@ -29,7 +29,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(FieldBackedStringProperty, ref _fieldBackedString, value); }
     }
 
-    private static Csla.PropertyInfo<int> F02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("F02"));
+    private static Csla.PropertyInfo<int> F02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("F02", RelationshipTypes.PrivateField));
     private int _f02 = F02Property.DefaultValue;
     public int F02
     {
@@ -37,7 +37,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<int>(F02Property, ref _f02, value); }
     }
 
-    private static Csla.PropertyInfo<string> F03Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("F03", "field 3", "n/a"));
+    private static Csla.PropertyInfo<string> F03Property = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("F03", "field 3", "n/a", RelationshipTypes.PrivateField));
     private string _f03 = F03Property.DefaultValue;
     public string F03
     {
@@ -45,7 +45,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(F03Property, ref _f03, value); }
     }
 
-    private static Csla.PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("F04"));
+    private static Csla.PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("F04", RelationshipTypes.PrivateField));
     private Csla.SmartDate _F04 = F04Property.DefaultValue;
     public string F04
     {
@@ -53,7 +53,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert(F04Property, ref _F04, value); }
     }
 
-    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("F05", "field 5"));
+    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(typeof(EditableGetSet), new Csla.PropertyInfo<bool>("F05", "field 5", RelationshipTypes.PrivateField));
     private bool _f05 = F05Property.DefaultValue;
     public bool F05
     {
@@ -61,7 +61,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(F05Property, ref _f05, value); }
     }
 
-    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(typeof(EditableGetSet), new Csla.PropertyInfo<object>("F06", "field 6"));
+    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(typeof(EditableGetSet), new Csla.PropertyInfo<object>("F06", "field 6", RelationshipTypes.PrivateField));
     private object _F06 = string.Empty;
     public string F06
     {

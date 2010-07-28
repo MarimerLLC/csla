@@ -97,7 +97,7 @@ namespace cslalighttest.Serialization
 
     #region Properties
 
-    private static PropertyInfo<string> Property_Name = RegisterProperty(new PropertyInfo<string>("Name", "Name"));
+    private static PropertyInfo<string> Property_Name = RegisterProperty(new PropertyInfo<string>("Name", "Name", RelationshipTypes.PrivateField));
     private string _name = Property_Name.DefaultValue;
 
     /// <summary>
@@ -109,7 +109,7 @@ namespace cslalighttest.Serialization
       set { SetProperty(Property_Name, ref _name, value); }
     }
 
-    private static PropertyInfo<CustomerContact> Property_PrimaryContact = RegisterProperty(new PropertyInfo<CustomerContact>("PrimaryContact", "Primary Contact"));
+    private static PropertyInfo<CustomerContact> Property_PrimaryContact = RegisterProperty(new PropertyInfo<CustomerContact>("PrimaryContact", "Primary Contact", RelationshipTypes.PrivateField));
     private CustomerContact _primaryContact = Property_PrimaryContact.DefaultValue;
 
     /// <summary>
@@ -121,7 +121,7 @@ namespace cslalighttest.Serialization
       set { SetProperty(Property_PrimaryContact, ref _primaryContact, value); }
     }
 
-    private static PropertyInfo<CustomerContact> Property_AccountsPayableContact = RegisterProperty(new PropertyInfo<CustomerContact>("AccountsPayableContact", "A/P Contact"));
+    private static PropertyInfo<CustomerContact> Property_AccountsPayableContact = RegisterProperty(new PropertyInfo<CustomerContact>("AccountsPayableContact", "A/P Contact", RelationshipTypes.PrivateField));
     private CustomerContact _accountsPayableContact = Property_AccountsPayableContact.DefaultValue;
 
     /// <summary>

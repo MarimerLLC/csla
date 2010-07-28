@@ -18,7 +18,7 @@ namespace Csla.Test.Serialization
   {
     [DataMember]
     int _data;
-    public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
+    public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, RelationshipTypes.PrivateField);
     public int Data
     {
       get { return GetProperty(DataProperty, _data); }

@@ -681,10 +681,21 @@ namespace Csla
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (CanReadProperty(propertyName, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
+      #region Check to see if the property is marked with RelationshipTypes.PrivateField
+
+      var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (propertyInfo == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
+        throw new InvalidOperationException(Resources.PrivateFieldException);
+
+      #endregion
+
+      if (CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         return field;
-      else
-        return defaultValue;
+
+      return defaultValue;
     }
 
     /// <summary>
@@ -957,26 +968,23 @@ namespace Csla
     /// PropertyInfo object containing property metadata.</param>
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+      {
+        return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+      }
 
-        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-        {
-            return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
-        }
-        else
-        {
-            object result = null;
-            var info = FieldManager.GetFieldData(propertyInfo);
-            if (info != null)
-            {
-                result = info.Value;
-            }
-            else
-            {
-                result = propertyInfo.DefaultValue;
-                FieldManager.LoadFieldData(propertyInfo, result);
-            }
-            return result;
-        }
+      object result = null;
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+      {
+        result = info.Value;
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData(propertyInfo, result);
+      }
+      return result;
     }
 
     #endregion

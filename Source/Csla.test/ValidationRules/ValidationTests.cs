@@ -557,7 +557,7 @@ namespace Csla.Test.ValidationRules
   [Serializable]
   public class HasPrivateFields : BusinessBase<HasPrivateFields>
   {
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, RelationshipTypes.PrivateField);
     private string _name = NameProperty.DefaultValue;
     public string Name
     {

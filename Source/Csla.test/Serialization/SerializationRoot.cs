@@ -14,7 +14,7 @@ namespace Csla.Test.Serialization
   [Serializable()]
   public class SerializationRoot : BusinessBase<SerializationRoot>
   {
-    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
+    public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data, RelationshipTypes.PrivateField);
     private string _data = DataProperty.DefaultValue;
     public string Data
     {

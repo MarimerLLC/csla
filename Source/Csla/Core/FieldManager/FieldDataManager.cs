@@ -145,18 +145,18 @@ namespace Csla.Core.FieldManager
     /// Gets the <see cref="IFieldData" /> object
     /// for a specific field.
     /// </summary>
-    /// <param name="prop">
+    /// <param name="propertyInfo">
     /// The property corresponding to the field.
     /// </param>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
-    public IFieldData GetFieldData(IPropertyInfo prop)
+    public IFieldData GetFieldData(IPropertyInfo propertyInfo)
     {
-      if (prop.RelationshipType == RelationshipTypes.PrivateField)
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PropertyIsPrivateField);
 
       try
       {
-        return _fieldData[prop.Index];
+        return _fieldData[propertyInfo.Index];
       }
       catch (IndexOutOfRangeException ex)
       {

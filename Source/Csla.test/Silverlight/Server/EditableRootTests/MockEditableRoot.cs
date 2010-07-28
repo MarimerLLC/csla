@@ -30,8 +30,8 @@ namespace Csla.Testing.Business.EditableRootTests
       new PropertyInfo<Guid>("Id"));
 
     private static PropertyInfo<string> NameProperty = RegisterProperty(
-      typeof(MockEditableRoot), 
-      new PropertyInfo<string>("Name"));
+      typeof(MockEditableRoot),
+      new PropertyInfo<string>("Name", "Name", RelationshipTypes.PrivateField));
 
     private static PropertyInfo<string> DataPortalMethodProperty = RegisterProperty(
       typeof(MockEditableRoot),

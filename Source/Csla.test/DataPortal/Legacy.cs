@@ -16,7 +16,7 @@ namespace Csla.Test.DataPortalTest
   {
     #region Business Methods
 
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, RelationshipTypes.PrivateField);
     private int _id = IdProperty.DefaultValue;
     public int Id
     {

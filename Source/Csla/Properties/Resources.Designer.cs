@@ -790,6 +790,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Properties with private backing fields must be marked as RelationshipTypes.PrivateField.
+        /// </summary>
+        public static string PrivateFieldException {
+            get {
+                return ResourceManager.GetString("PrivateFieldException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property copy failed.
         /// </summary>
         public static string PropertyCopyFailed {

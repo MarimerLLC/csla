@@ -155,7 +155,7 @@ namespace Csla.Core
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
+        var fd = data as FieldManager.IFieldData<P>;
         if (fd != null)
           result = fd.Value;
         else
@@ -176,25 +176,23 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected object ReadProperty(IPropertyInfo propertyInfo)
     {
-        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-        {
-            return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
-        }
-        else
-        {
-            object result = null;
-            var info = FieldManager.GetFieldData(propertyInfo);
-            if (info != null)
-            {
-                result = info.Value;
-            }
-            else
-            {
-                result = propertyInfo.DefaultValue;
-                FieldManager.LoadFieldData(propertyInfo, result);
-            }
-            return result;
-        }
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+      {
+        return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+      }
+
+      object result = null;
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+      {
+        result = info.Value;
+      }
+      else
+      {
+        result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData(propertyInfo, result);
+      }
+      return result;
     }
 
     #endregion

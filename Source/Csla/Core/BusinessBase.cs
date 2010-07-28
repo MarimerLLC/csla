@@ -525,10 +525,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanWriteProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
-      if (prop == null)
+      var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (propertyInfo == null)
         throw new ArgumentOutOfRangeException("propertyName");
-      return CanWriteProperty(prop);
+      return CanWriteProperty(propertyInfo);
     }
 
     /// <summary>
@@ -540,10 +540,10 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     private bool CanWriteProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
-      if (prop == null)
+      var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (propertyInfo == null)
         throw new ArgumentOutOfRangeException("propertyName");
-      return CanWriteProperty(prop, throwOnFalse);
+      return CanWriteProperty(propertyInfo, throwOnFalse);
     }
 
     private void VerifyAuthorizationCache()
@@ -1543,10 +1543,21 @@ namespace Csla.Core
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-      if (_bypassPropertyChecks || CanReadProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+      #region Check to see if the property is marked with RelationshipTypes.PrivateField
+
+      var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (propertyInfo == null)
+        throw new ArgumentOutOfRangeException("propertyName");
+
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
+        throw new InvalidOperationException(Resources.PrivateFieldException);
+
+      #endregion
+
+      if (_bypassPropertyChecks || CanReadProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         return field;
-      else
-        return defaultValue;
+
+      return defaultValue;
     }
 
     /// <summary>
@@ -1841,31 +1852,30 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
-      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
-          using (BypassPropertyChecks)
-          {
-              return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
-          }
+        using (BypassPropertyChecks)
+        {
+          return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+        }
+      }
+
+      object result = null;
+      var info = FieldManager.GetFieldData(propertyInfo);
+      if (info != null)
+      {
+        result = info.Value;
       }
       else
       {
-          object result = null;
-          var info = FieldManager.GetFieldData(propertyInfo);
-          if (info != null)
-          {
-              result = info.Value;
-          }
-          else
-          {
-              result = propertyInfo.DefaultValue;
-              FieldManager.LoadFieldData(propertyInfo, result);
-          }
-          return result;
+        result = propertyInfo.DefaultValue;
+        FieldManager.LoadFieldData(propertyInfo, result);
       }
+
+      return result;
     }
 
     #endregion
@@ -1985,7 +1995,18 @@ namespace Csla.Core
     {
       try
       {
-        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+        #region Check to see if the property is marked with RelationshipTypes.PrivateField
+
+        var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+        if (propertyInfo == null)
+          throw new ArgumentOutOfRangeException("propertyName");
+
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
+          throw new InvalidOperationException(Resources.PrivateFieldException);
+
+        #endregion
+
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
           bool doChange = false;
           if (field == null)
@@ -2047,7 +2068,18 @@ namespace Csla.Core
     {
       try
       {
-        if (_bypassPropertyChecks || CanWriteProperty(propertyName, noAccess == Security.NoAccessBehavior.ThrowException))
+        #region Check to see if the property is marked with RelationshipTypes.PrivateField
+
+        var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+        if (propertyInfo == null)
+          throw new ArgumentOutOfRangeException("propertyName");
+
+        if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
+          throw new InvalidOperationException(Resources.PrivateFieldException);
+
+        #endregion
+
+        if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
           bool doChange = false;
           if (field == null)

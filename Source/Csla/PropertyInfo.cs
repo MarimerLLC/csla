@@ -36,6 +36,16 @@ namespace Csla
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
+    /// <param name="relationship">Relationship with referenced object.</param>
+    public PropertyInfo(string name, RelationshipTypes relationship) : this(name, string.Empty)
+    {
+      _relationshipType = relationship;
+    }
+
+    /// <summary>
+    /// Creates a new instance of this class.
+    /// </summary>
+    /// <param name="name">Name of the property.</param>
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
@@ -86,8 +96,7 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    /// <param name="relationship">Relationship with
-    /// referenced object.</param>
+    /// <param name="relationship">Relationship with referenced object.</param>
     public PropertyInfo(string name, string friendlyName, RelationshipTypes relationship) : this(name, friendlyName)
     {
       _relationshipType = relationship;

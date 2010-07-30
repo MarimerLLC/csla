@@ -6,6 +6,9 @@
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
 using System;
+#if !WINDOWS_PHONE
+using System.ComponentModel.DataAnnotations;
+#endif
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1308,7 +1311,7 @@ namespace Csla
     /// running an async operation.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsBusy
     {
       get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
@@ -1320,7 +1323,7 @@ namespace Csla
     /// running an async operation.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsSelfBusy
     {
       get { return _isBusy || LoadManager.IsLoading; }

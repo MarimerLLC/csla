@@ -7,6 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+#if !WINDOWS_PHONE
+using System.ComponentModel.DataAnnotations;
+#endif
 using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
@@ -209,7 +212,7 @@ namespace Csla.Core.FieldManager
     /// any of its child objects are busy.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public bool IsBusy
     {
       get

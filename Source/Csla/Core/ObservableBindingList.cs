@@ -17,6 +17,9 @@ using Csla.Core.FieldManager;
 using Csla.Core;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+#if !WINDOWS_PHONE
+using System.ComponentModel.DataAnnotations;
+#endif
 using Csla.Properties;
 
 namespace Csla.Core
@@ -214,7 +217,7 @@ namespace Csla.Core
     /// Gets the busy status for this object and its child objects.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsBusy
     {
       get { return false; }
@@ -224,7 +227,7 @@ namespace Csla.Core
     /// Gets the busy status for this object.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public virtual bool IsSelfBusy
     {
       get { return IsBusy; }

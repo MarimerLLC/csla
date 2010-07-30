@@ -7,6 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+#if !WINDOWS_PHONE
+using System.ComponentModel.DataAnnotations;
+#endif
 using Csla.Serialization;
 using Csla.Core;
 using Csla.Properties;
@@ -1291,7 +1294,7 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField=false)]
+    [Display(AutoGenerateField=false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
     {

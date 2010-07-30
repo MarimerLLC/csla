@@ -1053,7 +1053,9 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
+#if !WINDOWS_PHONE
       BusinessRules.AddDataAnnotations();
+#endif
     }
 
     /// <summary>

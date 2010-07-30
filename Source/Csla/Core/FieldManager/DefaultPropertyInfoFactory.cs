@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 #endif
 using System.Linq;
+using Csla;
 
 namespace Csla.Core.FieldManager
 {

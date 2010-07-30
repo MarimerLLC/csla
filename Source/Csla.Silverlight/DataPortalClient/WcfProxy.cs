@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Data portal client-side proxy used to communicate</summary>
 //-----------------------------------------------------------------------
-#if !WINDOWS_PHONE
 using System;
 using System.ServiceModel;
 using Csla.Serialization;
@@ -674,4 +673,3 @@ namespace Csla.DataPortalClient
     #endregion
   }
 }
-#endif

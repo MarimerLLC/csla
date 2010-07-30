@@ -9,7 +9,15 @@ namespace Csla
   }
 
   internal class DisplayAttribute : Attribute
-  { }
+  {
+    public string Name { get; set; }
+    public bool AutoGenerateField { get; set; }
+    public DisplayAttribute(bool AutoGenerateField = false, string Name = "")
+    {
+      this.AutoGenerateField = AutoGenerateField;
+      this.Name = Name;
+    }
+  }
 
   internal class DataMemberAttribute : Attribute
   { }

@@ -18,10 +18,4 @@ namespace Csla
       this.Name = Name;
     }
   }
-
-  internal class DataMemberAttribute : Attribute
-  { }
-
-  internal class DataContractAttribute : Attribute
-  { }
 }

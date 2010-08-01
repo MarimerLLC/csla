@@ -853,7 +853,16 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not register property {0} after containing type ({1}) has been instantiated.
+        ///   Looks up a localized string similar to Cannot register property {0}, a PropertyInfo with the same name already exists..
+        /// </summary>
+        public static string PropertyRegisterDuplicateNotAllowed {
+            get {
+                return ResourceManager.GetString("PropertyRegisterDuplicateNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot register property {0} after containing type ({1}) has been instantiated.
         /// </summary>
         public static string PropertyRegisterNotAllowed {
             get {
@@ -1083,15 +1092,6 @@ namespace Csla.Properties {
         public static string ValueNotSmartDateException {
             get {
                 return ResourceManager.GetString("ValueNotSmartDateException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string Warning {
-            get {
-                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

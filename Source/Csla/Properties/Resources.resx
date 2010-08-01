@@ -394,7 +394,7 @@
     <value>Target object must implement IManageProperties</value>
   </data>
   <data name="PropertyRegisterNotAllowed" xml:space="preserve">
-    <value>Can not register property {0} after containing type ({1}) has been instantiated</value>
+    <value>Cannot register property {0} after containing type ({1}) has been instantiated</value>
   </data>
   <data name="IEditableCollectionRequiredException" xml:space="preserve">
     <value>Target object must implement IEditableCollection</value>
@@ -417,8 +417,8 @@
   <data name="ActionExtenderWarnOnCancelMessagePropertyDefault" xml:space="preserve">
     <value>Are you sure you want to revert to the previous values?</value>
   </data>
-  <data name="Warning" xml:space="preserve">
-    <value>Warning</value>
+  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
+    <value>Cannot register property {0}, a PropertyInfo with the same name already exists.</value>
   </data>
   <data name="ExecuteBadParams" xml:space="preserve">
     <value>Method to be executed must have 0 or 2 parameters</value>

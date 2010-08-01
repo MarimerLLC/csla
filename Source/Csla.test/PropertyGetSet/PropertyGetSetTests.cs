@@ -575,6 +575,21 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void PropertyRegisteredTwice()
+    {
+      try
+      {
+        var root = new BadGetSetTwo();
+        var tmp = root.Id;
+      }
+      catch (TypeInitializationException ex)
+      {
+        throw ex.InnerException;
+      }
+    }
+
     #region Event Bubbling
 
     private string _changingName;

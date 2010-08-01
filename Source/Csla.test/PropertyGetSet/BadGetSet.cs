@@ -28,4 +28,26 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<int>(IdProperty, value); }
     }
   }
+
+#if TESTING
+  [System.Diagnostics.DebuggerNonUserCode]
+#endif
+  [Serializable]
+  public class BadGetSetTwo : BusinessBase<BadGetSetTwo>
+  {
+    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty<int>(IdProperty); }
+      set { SetProperty<int>(IdProperty, value); }
+    }
+
+    // the registering class is intentionally incorrect for this test
+    private static readonly PropertyInfo<int> IdTwoProperty = RegisterProperty<int>(c => c.Id);
+    public int IdTwo
+    {
+      get { return GetProperty<int>(IdTwoProperty); }
+      set { SetProperty<int>(IdTwoProperty, value); }
+    }
+  }
 }

@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using Csla.Properties;
+using System.Linq;
 
 namespace Csla.Core.FieldManager
 {
@@ -73,6 +74,10 @@ namespace Csla.Core.FieldManager
       {
         if (list.IsLocked)
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
+
+        if (list.Count(pi => pi.Name == info.Name) > 0)
+          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
+
         list.Add(info);
         list.Sort();
       }

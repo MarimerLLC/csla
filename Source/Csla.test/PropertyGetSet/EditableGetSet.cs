@@ -129,6 +129,29 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert<object, string>(M07Property, value); }
     }
 
+    private static readonly PropertyInfo<string> _m08Property = RegisterProperty<string>(c => c.M08);
+    internal string M08
+    {
+      get { return GetProperty(_m08Property); }
+      set { SetProperty(_m08Property, value); }
+    }
+
+    private static readonly PropertyInfo<string> _m09Property = RegisterProperty<string>(c => c.M09);
+    private string M09
+    {
+      get { return GetProperty(_m09Property); }
+      set { SetProperty(_m09Property, value); }
+    }
+
+    public void LoadInternalAndPrivate(string value)
+    {
+      using (BypassPropertyChecks)
+      {
+        LoadProperty(_m08Property, value);
+        LoadProperty(_m09Property, value);
+      }
+    }
+
     private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild"));
     public EditableGetSet ManagedChild
     {

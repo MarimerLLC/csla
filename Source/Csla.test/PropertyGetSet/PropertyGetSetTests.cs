@@ -71,6 +71,9 @@ namespace Csla.Test.PropertyGetSet
       root.LoadM02(123);
       Assert.AreEqual(123, root.M02);
 
+      root.LoadInternalAndPrivate("Test");
+      Assert.AreEqual("Test", root.M08);
+
       var cmd = new Command();
       cmd.Load("abc");
       Assert.AreEqual("abc", cmd.Name);
@@ -757,9 +760,23 @@ namespace Csla.Test.PropertyGetSet
       get { return ReadProperty(NameProperty); }
     }
 
+    private static readonly PropertyInfo<string> _originalNameProperty = RegisterProperty<string>(c => c.OriginalName);
+    internal string OriginalName
+    {
+      get { return ReadProperty(_originalNameProperty); }
+    }
+
+    private static readonly PropertyInfo<string> _originalNamePrivateProperty = RegisterProperty<string>(c => c.OriginalNamePrivate);
+    private string OriginalNamePrivate
+    {
+      get { return ReadProperty(_originalNamePrivateProperty); }
+    }
+
     public void Load(string name)
     {
       LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
+      LoadProperty((Csla.Core.IPropertyInfo)_originalNameProperty, name);
+      LoadProperty((Csla.Core.IPropertyInfo)_originalNamePrivateProperty, name);
     }
   }
 }

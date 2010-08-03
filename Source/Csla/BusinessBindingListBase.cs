@@ -820,17 +820,17 @@ namespace Csla
     {
       T result;
       if (this.IsChild)
-        throw new NotSupportedException(Resources.NoSaveChildException);
+        throw new InvalidOperationException(Resources.NoSaveChildException);
 
       if (_editLevel > 0)
-        throw new Rules.ValidationException(Resources.NoSaveEditingException);
+        throw new InvalidOperationException(Resources.NoSaveEditingException);
 
       if (!IsValid)
         throw new Rules.ValidationException(Resources.NoSaveInvalidException);
 
       if (IsBusy)
         // TODO: Review this resource text
-        throw new Rules.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
 
       if (IsDirty)
         result = (T)DataPortal.Update(this);
@@ -879,28 +879,28 @@ namespace Csla
     {
       if (this.IsChild)
       {
-        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        var error = new InvalidOperationException(Resources.NoSaveChildException);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (EditLevel > 0)
       {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveEditingException);
+        var error = new InvalidOperationException(Resources.NoSaveEditingException);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (!IsValid)
       {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveEditingException);
+        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveInvalidException);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
       }
       else if (IsBusy)
       {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
         OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));

@@ -221,14 +221,14 @@ namespace Csla
 
       if (this.IsChild)
       {
-        NotSupportedException error = new NotSupportedException(Resources.NoSaveChildException);
+        var error = new InvalidOperationException(Resources.NoSaveChildException);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);
       }
       else if (EditLevel > 0)
       {
-        ValidationException error = new ValidationException(Resources.NoSaveEditingException);
+        var error = new InvalidOperationException(Resources.NoSaveEditingException);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);
@@ -242,7 +242,7 @@ namespace Csla
       }
       else if (IsBusy)
       {
-        ValidationException error = new ValidationException(Resources.BusyObjectsMayNotBeSaved);
+        var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
         OnSaved(null, error, userState);

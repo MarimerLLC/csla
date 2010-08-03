@@ -154,7 +154,8 @@ namespace Csla.Xaml
       }
     }
 
-    System.Windows.Data.BindingExpression _oldBinding;
+    private object _oldDataContext;
+    private System.Windows.Data.BindingExpression _oldBinding;
 
     /// <summary>
     /// Sets the source binding and updates status.
@@ -163,8 +164,9 @@ namespace Csla.Xaml
     {
       var old = Source;
       var binding = GetBindingExpression(PropertyProperty);
-      if (!ReferenceEquals(_oldBinding, binding))
+      if (!ReferenceEquals(_oldBinding, binding) || !ReferenceEquals(_oldDataContext, this.DataContext))
       {
+        _oldDataContext = this.DataContext;
         _oldBinding = binding;
         if (binding != null)
         {

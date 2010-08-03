@@ -101,7 +101,7 @@ namespace cslalighttest.BusyStatus
 
         item.BeginSave((o1, e1) =>
           {
-            Csla.Rules.ValidationException error = e1.Error as Csla.Rules.ValidationException;
+            var error = e1.Error as InvalidOperationException;
             context.Assert.IsNotNull(error);
             if (error != null)
               context.Assert.IsTrue(error.Message.ToLower().Contains("busy"));
@@ -129,7 +129,7 @@ namespace cslalighttest.BusyStatus
 
       items.BeginSave((o1, e1) =>
       {
-        var error = e1.Error as Csla.Rules.ValidationException;
+        var error = e1.Error as InvalidOperationException;
         context.Assert.IsNotNull(error);
         if (error != null)
           context.Assert.IsTrue(error.Message.ToLower().Contains("busy"));

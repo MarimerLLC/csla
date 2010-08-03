@@ -315,7 +315,7 @@ namespace Csla.Xaml
       if (Model != null && targetObject != null)
       {
 
-        if (CanEditObject && targetObject.IsSavable)
+        if (CanEditObject && targetObject.IsSavable && !isObjectBusy)
           CanSave = true;
         else
           CanSave = false;

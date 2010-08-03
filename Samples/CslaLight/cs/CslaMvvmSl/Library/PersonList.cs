@@ -23,17 +23,33 @@ namespace Library
     {
       var rlce = RaiseListChangedEvents;
       RaiseListChangedEvents = false;
+      try
+      {
+        foreach (var item in MockDb.Persons)
+          Add(DataPortal.FetchChild<Person>(item.Id, item.FirstName + " " + item.LastName));
+        handler(this, null);
+      }
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
+      finally
+      {
+        RaiseListChangedEvents = rlce;
+      }
+    }
 
-      Add(DataPortal.FetchChild<Person>(31, "Amr"));
-      Add(DataPortal.FetchChild<Person>(2, "Telaa"));
-      Add(DataPortal.FetchChild<Person>(33, "Seww"));
-      Add(DataPortal.FetchChild<Person>(44, "Klew"));
-      Add(DataPortal.FetchChild<Person>(15, "Aej"));
-      Add(DataPortal.FetchChild<Person>(6, "Uiz"));
-
-      RaiseListChangedEvents = rlce;
-
-      handler(this, null);
+    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<PersonList>.CompletedHandler handler)
+    {
+      try
+      {
+        base.Child_Update();
+        handler(this, null);
+      }
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
     }
   }
 }

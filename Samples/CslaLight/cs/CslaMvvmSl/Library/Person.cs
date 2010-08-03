@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Csla;
 using Csla.Serialization;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,9 @@ namespace Library
   [Serializable]
   public class Person : BusinessBase<Person>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static PropertyInfo<int> IdProperty = 
+      RegisterProperty<int>(c => c.Id);
+    private int _id;
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -54,32 +57,94 @@ namespace Library
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public void Child_DeleteSelf()
+    {
+      var data = MockDb.Persons.Where(c => c.Id == this.Id).FirstOrDefault();
+      if (data != null)
+        MockDb.Persons.Remove(data);
+    }
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void DataPortal_Fetch(int id, Csla.DataPortalClient.LocalProxy<Person>.CompletedHandler handler)
     {
-      using (BypassPropertyChecks)
+      try
       {
-        Id = id;
-        Name = "Rocky";
+        using (BypassPropertyChecks)
+        {
+          var data = MockDb.Persons.Where(c => c.Id == id).FirstOrDefault();
+          if (data == null)
+            throw new InvalidOperationException(string.Format("Person {0} not found", id));
+          Id = data.Id;
+          Name = data.FirstName + " " + data.LastName;
+        }
+        handler(this, null);
       }
-      handler(this, null);
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public override void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<Person>.CompletedHandler handler)
     {
-      handler(this, null);
+      try
+      {
+        using (BypassPropertyChecks)
+        {
+          this.Id = MockDb.Persons.Max(c => c.Id) + 1;
+          var fname = this.Name.Split(' ')[0];
+          var lname = this.Name.Split(' ')[1];
+          MockDb.Persons.Add(new PersonData { Id = this.Id, FirstName = fname, LastName = lname });
+        }
+        handler(this, null);
+      }
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<Person>.CompletedHandler handler)
     {
-      handler(this, null);
+      try
+      {
+        using (BypassPropertyChecks)
+        {
+          var data = MockDb.Persons.Where(c => c.Id == this.Id).FirstOrDefault();
+          if (data == null)
+            throw new InvalidOperationException(string.Format("Person {0} not found", this.Id));
+          var fname = this.Name.Split(' ')[0];
+          var lname = this.Name.Split(' ')[1];
+          data.FirstName = fname;
+          data.LastName = lname;
+        }
+        handler(this, null);
+      }
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public override void DataPortal_DeleteSelf(Csla.DataPortalClient.LocalProxy<Person>.CompletedHandler handler)
     {
-      handler(this, null);
+      try
+      {
+        using (BypassPropertyChecks)
+        {
+          var data = MockDb.Persons.Where(c => c.Id == this.Id).FirstOrDefault();
+          if (data != null)
+            MockDb.Persons.Remove(data);
+        }
+        handler(this, null);
+      }
+      catch (Exception ex)
+      {
+        handler(this, ex);
+      }
     }
 
     #endregion

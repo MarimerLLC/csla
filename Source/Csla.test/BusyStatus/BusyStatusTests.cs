@@ -296,7 +296,7 @@ namespace cslalighttest.BusyStatus
         {
           item.Save();
         }
-        catch (Csla.Rules.ValidationException EX)
+        catch (InvalidOperationException EX)
         {
           gotError = true;
         }
@@ -327,7 +327,7 @@ namespace cslalighttest.BusyStatus
       {
         items.Save();
       }
-      catch (Csla.Rules.ValidationException EX)
+      catch (InvalidOperationException EX)
       {
         gotError = true;
       }

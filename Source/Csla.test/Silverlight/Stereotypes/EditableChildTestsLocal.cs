@@ -189,10 +189,10 @@ namespace cslalighttest.Stereotypes
 
     #endregion
 
-    #region Calling Save on non-Root element - Child/GrandChild Save() - NotSupported
+    #region Calling Save on non-Root element - Child/GrandChild Save() - InvalidOperationException
 
     [TestMethod]
-    public void Save_on_EditableChild_Throws_NotSupportedException()
+    public void Save_on_EditableChild_Throws_InvalidOperationException()
     {
       var context = GetContext();
       MockList.FetchByName("c2", (o, e) =>
@@ -212,7 +212,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].Save();
           context.Assert.Fail();
         }
-        catch (NotSupportedException ex)
+        catch (InvalidOperationException ex)
         {
           context.Assert.Success();
         }
@@ -223,7 +223,7 @@ namespace cslalighttest.Stereotypes
     }
 
     [TestMethod]
-    public void Save_on_GrandChildList_Throws_NotSupportedException()
+    public void Save_on_GrandChildList_Throws_InvalidOperationException()
     {
       var context = GetContext();
       MockList.FetchByName("c2", (o, e) =>
@@ -243,7 +243,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].GrandChildren.Save();
           context.Assert.Fail();
         }
-        catch (NotSupportedException ex)
+        catch (InvalidOperationException ex)
         {
           context.Assert.Success();
         }
@@ -254,7 +254,7 @@ namespace cslalighttest.Stereotypes
     }
 
     [TestMethod]
-    public void Save_on_GrandChildList_Item_Throws_NotSupportedException()
+    public void Save_on_GrandChildList_Item_Throws_InvalidOperationException()
     {
       var context = GetContext();
       MockList.FetchByName("c2", (o, e) =>
@@ -274,7 +274,7 @@ namespace cslalighttest.Stereotypes
           e.Object[0].GrandChildren[0].Save();
           context.Assert.Fail();
         }
-        catch (NotSupportedException ex)
+        catch (InvalidOperationException ex)
         {
           context.Assert.Success();
         }

@@ -466,8 +466,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="rule">Rule implementation.</param>
     public Lambda(Action<RuleContext> rule)
     {
-      Rule = rule;
-      base.RuleUri.AddQueryParameter("r", Rule.GetHashCode().ToString());
+      Initialize(rule);
     }
     
     /// <summary>
@@ -478,8 +477,15 @@ namespace Csla.Rules.CommonRules
     public Lambda(Csla.Core.IPropertyInfo primaryProperty, Action<RuleContext> rule)
       : base(primaryProperty)
     {
+      Initialize(rule);
+    }
+
+    private void Initialize(Action<RuleContext> rule)
+    {
       Rule = rule;
-      base.RuleUri.AddQueryParameter("r", Rule.GetHashCode().ToString());
+      base.RuleUri.AddQueryParameter(
+        "r", 
+        Convert.ToBase64String(Encoding.Unicode.GetBytes(Rule.Method.ToString())));
     }
 
     private Action<RuleContext> Rule { get; set; }

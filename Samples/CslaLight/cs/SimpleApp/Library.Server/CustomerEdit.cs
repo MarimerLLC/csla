@@ -43,8 +43,8 @@ namespace Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      //BusinessRules.AddRule(new StringOnlyLetters { PrimaryProperty = NameProperty });
-      BusinessRules.AddRule(new StringOnlyLettersAsync(NameProperty));
+      BusinessRules.AddRule(new StringOnlyLetters { PrimaryProperty = NameProperty });
+      //BusinessRules.AddRule(new StringOnlyLettersAsync(NameProperty));
 
       BusinessRules.AddRule(
         new Csla.Rules.CommonRules.IsInRole(

@@ -467,4 +467,7 @@
   <data name="PrivateFieldException" xml:space="preserve">
     <value>Properties with private backing fields must be marked as RelationshipTypes.PrivateField</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
 </root>

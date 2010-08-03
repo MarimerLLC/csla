@@ -1094,5 +1094,14 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("ValueNotSmartDateException", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
     }
 }

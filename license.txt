@@ -1,4 +1,5 @@
 LICENSE AND WARRANTY
+Version 4.0.1
 
 The CSLA .NET framework is Copyright 2010 by Marimer, LLC. 
 
@@ -48,16 +49,17 @@ The Software comes "as is", with no warranties. None whatsoever. This means
 no express, implied, statutory or other warranty, including without 
 limitation, warranties of merchantability or fitness for a particular 
 purpose, noninfringement, or the presence or absence of errors, whether or 
-not discoverable. Also, you must pass this disclaimer on whenever you 
-distribute the Software. 
+not discoverable. You, and your distributees, use this Software at your own 
+risk. Also, you must pass this disclaimer on whenever you distribute 
+the Software. 
 
 8. Liability.
 Neither Marimer, LLC nor any contributor to the Software will be liable 
-for any of those types of damages known as indirect, special, consequential, 
-incidental, punitive or exemplary related to the Software or this License, to 
-the maximum extent the law permits, no matter what legal theory it’s based 
-on. Also, you must pass this limitation of liability on whenever you 
-distribute the Software. 
+for any type of direct damages or for any of those types of damages known 
+as indirect, special, consequential, incidental, punitive or exemplary 
+related to the Software or this License, to the maximum extent the law 
+permits, no matter what legal theory it’s based on. Also, you must pass 
+this limitation of liability on whenever you distribute the Software. 
 
 9. Patents.
 If you sue anyone over patents that you think may apply to the Software 

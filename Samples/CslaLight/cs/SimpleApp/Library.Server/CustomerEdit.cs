@@ -63,7 +63,7 @@ namespace Library
         var ce = (CustomerEdit)context.Target;
         bool result = string.IsNullOrEmpty(ce.Name) ||
           !(from c in ce.Name.ToCharArray()
-            where !char.IsLetter(c)
+            where char.IsDigit(c)
             select c)
             .Any();
         if (!result)
@@ -89,7 +89,7 @@ namespace Library
             var name = (string)context.InputPropertyValues[PrimaryProperty];
             bool result = string.IsNullOrEmpty(name) ||
               !(from c in name.ToCharArray()
-                where !char.IsLetter(c)
+                where char.IsDigit(c)
                 select c)
                 .Any();
             if (!result)

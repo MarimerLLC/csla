@@ -182,6 +182,7 @@ namespace Library
 
     private void DataPortal_Fetch(SingleCriteria<CustomerEdit, int> criteria)
     {
+      System.Threading.Thread.Sleep(1500);
       using (BypassPropertyChecks)
       {
         Id = criteria.Value;
@@ -192,7 +193,7 @@ namespace Library
 
     protected override void DataPortal_Insert()
     {
-      System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+      System.Threading.Thread.Sleep(1500);
 
       using (BypassPropertyChecks)
       {
@@ -203,12 +204,14 @@ namespace Library
 
     protected override void DataPortal_Update()
     {
+      System.Threading.Thread.Sleep(1500);
       using (BypassPropertyChecks)
         Status = "Updated " + ApplicationContext.ExecutionLocation.ToString();
     }
 
     protected override void DataPortal_DeleteSelf()
     {
+      System.Threading.Thread.Sleep(1500);
       using (BypassPropertyChecks)
         Status = "Deleted " + ApplicationContext.ExecutionLocation.ToString();
     }

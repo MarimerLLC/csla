@@ -32,8 +32,7 @@
         <StackPanel Margin="5,5,5,5">
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Id" />
-            <TextBox x:Name="IdTextBox" Width="150" Text="{Binding Id, Mode=TwoWay}" />
-            <csla:PropertyStatus Property="{Binding Id}" />
+            <TextBox x:Name="IdTextBox" Width="150" Text="{Binding Id, Mode=TwoWay}" IsReadOnly="True" />
           </StackPanel>
           <StackPanel Orientation="Horizontal" Margin="5,5,5,5">
             <TextBlock Width="100" Foreground="White" Text="Name" />

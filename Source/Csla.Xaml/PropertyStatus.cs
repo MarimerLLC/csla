@@ -103,7 +103,20 @@ namespace Csla.Xaml
       "Property",
       typeof(object),
       typeof(PropertyStatus),
-      new PropertyMetadata(new object(), (o, e) => ((PropertyStatus)o).SetSource()));
+      new PropertyMetadata(new object(), (o, e) => 
+        {
+          bool changed = true;
+          if (e.NewValue == null)
+          {
+            if (e.OldValue == null)
+              changed = false;
+          }
+          else if (e.NewValue.Equals(e.OldValue))
+          {
+            changed = false;
+          }
+          ((PropertyStatus)o).SetSource(changed);
+        }));
 
     /// <summary>
     /// Gets or sets the source business
@@ -116,7 +129,7 @@ namespace Csla.Xaml
       set
       {
         SetValue(PropertyProperty, value);
-        SetSource();
+        SetSource(false);
       }
     }
 
@@ -160,11 +173,11 @@ namespace Csla.Xaml
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
-    protected virtual void SetSource()
+    protected virtual void SetSource(bool propertyValueChanged)
     {
       var old = Source;
       var binding = GetBindingExpression(PropertyProperty);
-      if (!ReferenceEquals(_oldBinding, binding) || !ReferenceEquals(_oldDataContext, this.DataContext))
+      if (!ReferenceEquals(_oldBinding, binding) || !ReferenceEquals(_oldDataContext, this.DataContext) || !propertyValueChanged)
       {
         _oldDataContext = this.DataContext;
         _oldBinding = binding;

@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SilverlightUI.OrderEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="410" d:DesignWidth="667" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:my="clr-namespace:SilverlightUI" Loaded="UserControl_Loaded">
+  <UserControl.Resources>
+    <CollectionViewSource x:Key="orderVmViewSource" d:DesignSource="{d:DesignInstance my:OrderVm, CreateList=True}" />
+    <CollectionViewSource x:Key="orderVmLineItemsViewSource" Source="{Binding Path=LineItems, Source={StaticResource orderVmViewSource}}" />
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource orderVmViewSource}, Path=Model.LineItems}">
+    <Grid DataContext="{StaticResource orderVmViewSource}" HorizontalAlignment="Left" Margin="12,24,0,0" Name="grid1" VerticalAlignment="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <sdk:Label Content="Id:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
+      <TextBox Grid.Column="1" Grid.Row="0" Height="23" HorizontalAlignment="Left" Margin="3" Name="idTextBox" Text="{Binding Path=Model.Id, Mode=OneWay}" VerticalAlignment="Center" Width="120" />
+      <sdk:Label Content="Customer Name:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
+      <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="3" Name="customerNameTextBox" Text="{Binding Path=Model.CustomerName, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" VerticalAlignment="Center" Width="120" />
+    </Grid>
+    <sdk:DataGrid AutoGenerateColumns="False" Height="200" HorizontalAlignment="Left" ItemsSource="{Binding}" Margin="12,144,0,0" Name="lineItemsDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" VerticalAlignment="Top" Width="400">
+      <sdk:DataGrid.Columns>
+        <sdk:DataGridTextColumn x:Name="idColumn" Binding="{Binding Path=Id}" Header="Id" Width="SizeToHeader" />
+        <sdk:DataGridTextColumn x:Name="nameColumn" Binding="{Binding Path=Name}" Header="Name" Width="SizeToHeader" />
+      </sdk:DataGrid.Columns>
+    </sdk:DataGrid>
+    <StackPanel Height="64" HorizontalAlignment="Left" Margin="294,22,0,0" Name="stackPanel1" VerticalAlignment="Top" Width="200" DataContext="{Binding Source={StaticResource orderVmViewSource}, Path=CurrentItem}">
+      <Button Content="Save" Height="23" Name="SaveButton" Width="75" IsEnabled="{Binding Path=CanSave}" Margin="3" />
+      <Button Content="Cancel" Height="23" Name="CancelButton" Width="75" IsEnabled="{Binding Path=CanCancel}" Margin="3" />
+      <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save"/>
+      <csla:TriggerAction TargetControl="{Binding ElementName=CancelButton}" MethodName="Cancel"/>
+    </StackPanel>
+    <Button Content="Add item" Height="23" HorizontalAlignment="Left" Margin="419,144,0,0" Name="AddNewButton" VerticalAlignment="Top" Width="75" />
+    <csla:TriggerAction TargetControl="{Binding ElementName=AddNewButton}" MethodName="AddNew" Margin="500,147,147,243" DataContext="{Binding Source={StaticResource orderVmViewSource}, Path=CurrentItem}" />
+  </Grid>
+</UserControl>

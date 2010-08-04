@@ -23,9 +23,16 @@ namespace DataAccess
       return obj;
     }
 
-    public Order Fetch(SingleCriteria<Order, int> criteria)
+    public Order Fetch(int id)
     {
       var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
+      using (BypassPropertyChecks(obj))
+      {
+        LoadProperty(obj, Order.IdProperty, id);
+        LoadProperty(obj, Order.CustomerNameProperty, "Test name");
+        var lif = new LineItemFactory();
+        lif.FetchItems(obj.LineItems);
+      }
       MarkOld(obj);
       return obj;
     }
@@ -37,6 +44,7 @@ namespace DataAccess
         if (!obj.IsNew)
         {
           // delete data
+          return Create();
         }
         MarkNew(obj);
       }
@@ -51,12 +59,14 @@ namespace DataAccess
         {
           // update data
         }
+        var lif = new LineItemFactory();
+        lif.UpdateItems(obj.LineItems);
         MarkOld(obj);
       }
       return obj;
     }
 
-    public void Delete(SingleCriteria<Order, int> criteria)
+    public void Delete(int id)
     {
       // delete data
     }

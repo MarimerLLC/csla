@@ -1,26 +1,16 @@
 ﻿using System;
 using Csla;
+using Csla.Serialization;
 
 namespace BusinessLibrary
 {
   [Serializable]
   public class LineItems : BusinessBindingListBase<LineItems, LineItem>
   {
+#if !SILVERLIGHT
     // Force creation by factory methods 
     private LineItems()
-    {
-    }
-
-    protected override object AddNewCore()
-    {
-      var item = LineItem.NewItem();
-      Add(item);
-      return item;
-    }
-
-    internal static LineItems NewList()
-    {
-      return DataPortal.CreateChild<LineItems>();
-    }
+    { }
+#endif
   }
 }

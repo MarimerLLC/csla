@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Csla;
+using Csla.Serialization;
 
 namespace BusinessLibrary
 {
@@ -15,6 +17,8 @@ namespace BusinessLibrary
     }
 
     public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(p => p.CustomerName);
+    [Required]
+    [Display(Name = "Customer name")]
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
@@ -27,17 +31,25 @@ namespace BusinessLibrary
       get
       {
         if (!FieldManager.FieldExists(LineItemsProperty))
-          LoadProperty(LineItemsProperty, LineItems.NewList());
+        {
+          LoadProperty(LineItemsProperty, DataPortal.CreateChild<LineItems>());
+          OnPropertyChanged(LineItemsProperty);
+        }
         return GetProperty(LineItemsProperty);
       }
     }
 
-
-    protected override void AddBusinessRules()
+    public static void NewOrder(EventHandler<DataPortalResult<Order>> callback)
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
+      DataPortal.BeginCreate<Order>(callback);
     }
 
+    public static void GetOrder(int id, EventHandler<DataPortalResult<Order>> callback)
+    {
+      DataPortal.BeginFetch<Order>(id, callback);
+    }
+
+#if !SILVERLIGHT
     private Order()
     { /* require use of factory methods */ }
 
@@ -46,9 +58,10 @@ namespace BusinessLibrary
       return DataPortal.Create<Order>();
     }
 
-    public override Order Save()
+    public static Order GetOrder(int id)
     {
-      return base.Save();
+      return DataPortal.Fetch<Order>(id);
     }
+#endif
   }
 }

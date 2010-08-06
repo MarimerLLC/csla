@@ -14,7 +14,9 @@
 namespace Csla.WcfPortal {
     using System.Runtime.Serialization;
     
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="CriteriaRequest", Namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight")]
@@ -33,7 +35,9 @@ namespace Csla.WcfPortal {
         private byte[] PrincipalField;
         
         private string TypeNameField;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] ClientContext {
             get {
@@ -46,7 +50,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string ClientCulture {
             get {
@@ -59,7 +65,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string ClientUICulture {
             get {
@@ -72,7 +80,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] CriteriaData {
             get {
@@ -85,7 +95,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] GlobalContext {
             get {
@@ -98,7 +110,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] Principal {
             get {
@@ -111,7 +125,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string TypeName {
             get {
@@ -124,9 +140,14 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
@@ -134,7 +155,9 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="WcfResponse", Namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight")]
@@ -145,7 +168,9 @@ namespace Csla.WcfPortal {
         private byte[] GlobalContextField;
         
         private byte[] ObjectDataField;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public Csla.WcfPortal.WcfErrorInfo ErrorData {
             get {
@@ -158,7 +183,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] GlobalContext {
             get {
@@ -171,7 +198,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] ObjectData {
             get {
@@ -184,9 +213,14 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
@@ -194,7 +228,9 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="WcfErrorInfo", Namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight")]
@@ -211,7 +247,9 @@ namespace Csla.WcfPortal {
         private string StackTraceField;
         
         private string TargetSiteNameField;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string ExceptionTypeName {
             get {
@@ -224,7 +262,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public Csla.WcfPortal.WcfErrorInfo InnerError {
             get {
@@ -237,7 +277,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Message {
             get {
@@ -250,7 +292,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Source {
             get {
@@ -263,7 +307,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string StackTrace {
             get {
@@ -276,7 +322,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string TargetSiteName {
             get {
@@ -289,9 +337,14 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
@@ -299,7 +352,9 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="UpdateRequest", Namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight")]
@@ -316,7 +371,9 @@ namespace Csla.WcfPortal {
         private byte[] ObjectDataField;
         
         private byte[] PrincipalField;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] ClientContext {
             get {
@@ -329,7 +386,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string ClientCulture {
             get {
@@ -342,7 +401,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string ClientUICulture {
             get {
@@ -355,7 +416,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] GlobalContext {
             get {
@@ -368,7 +431,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] ObjectData {
             get {
@@ -381,7 +446,9 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         [System.Runtime.Serialization.DataMemberAttribute()]
         public byte[] Principal {
             get {
@@ -394,9 +461,14 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         protected void RaisePropertyChanged(string propertyName) {
             System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
             if ((propertyChanged != null)) {
@@ -404,47 +476,101 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://ws.lhotka.net/WcfDataPortal", ConfigurationName="WcfPortal.IWcfPortal")]
     public interface IWcfPortal {
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="callback"></param>
+        /// <param name="asyncState"></param>
+        /// <returns></returns>
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/Create", ReplyAction="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/CreateResponse")]
         System.IAsyncResult BeginCreate(Csla.WcfPortal.CriteriaRequest request, System.AsyncCallback callback, object asyncState);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         Csla.WcfPortal.WcfResponse EndCreate(System.IAsyncResult result);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="callback"></param>
+        /// <param name="asyncState"></param>
+        /// <returns></returns>
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/Fetch", ReplyAction="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/FetchResponse")]
         System.IAsyncResult BeginFetch(Csla.WcfPortal.CriteriaRequest request, System.AsyncCallback callback, object asyncState);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         Csla.WcfPortal.WcfResponse EndFetch(System.IAsyncResult result);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="callback"></param>
+        /// <param name="asyncState"></param>
+        /// <returns></returns>
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/Update", ReplyAction="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/UpdateResponse")]
         System.IAsyncResult BeginUpdate(Csla.WcfPortal.UpdateRequest request, System.AsyncCallback callback, object asyncState);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         Csla.WcfPortal.WcfResponse EndUpdate(System.IAsyncResult result);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="callback"></param>
+        /// <param name="asyncState"></param>
+        /// <returns></returns>
         [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/Delete", ReplyAction="http://ws.lhotka.net/WcfDataPortal/IWcfPortal/DeleteResponse")]
         System.IAsyncResult BeginDelete(Csla.WcfPortal.CriteriaRequest request, System.AsyncCallback callback, object asyncState);
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
         Csla.WcfPortal.WcfResponse EndDelete(System.IAsyncResult result);
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface IWcfPortalChannel : Csla.WcfPortal.IWcfPortal, System.ServiceModel.IClientChannel {
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class CreateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancelled"></param>
+        /// <param name="userState"></param>
         public CreateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public Csla.WcfPortal.WcfResponse Result {
             get {
                 base.RaiseExceptionIfNecessary();
@@ -452,18 +578,28 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class FetchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancelled"></param>
+        /// <param name="userState"></param>
         public FetchCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public Csla.WcfPortal.WcfResponse Result {
             get {
                 base.RaiseExceptionIfNecessary();
@@ -471,18 +607,28 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class UpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancelled"></param>
+        /// <param name="userState"></param>
         public UpdateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public Csla.WcfPortal.WcfResponse Result {
             get {
                 base.RaiseExceptionIfNecessary();
@@ -490,18 +636,28 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class DeleteCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancelled"></param>
+        /// <param name="userState"></param>
         public DeleteCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public Csla.WcfPortal.WcfResponse Result {
             get {
                 base.RaiseExceptionIfNecessary();
@@ -509,7 +665,9 @@ namespace Csla.WcfPortal {
             }
         }
     }
-    
+    /// <summary>
+    /// 
+    /// </summary>
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class WcfPortalClient : System.ServiceModel.ClientBase<Csla.WcfPortal.IWcfPortal>, Csla.WcfPortal.IWcfPortal {
@@ -549,26 +707,45 @@ namespace Csla.WcfPortal {
         private EndOperationDelegate onEndCloseDelegate;
         
         private System.Threading.SendOrPostCallback onCloseCompletedDelegate;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public WcfPortalClient() {
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endpointConfigurationName"></param>
         public WcfPortalClient(string endpointConfigurationName) : 
                 base(endpointConfigurationName) {
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endpointConfigurationName"></param>
+        /// <param name="remoteAddress"></param>
         public WcfPortalClient(string endpointConfigurationName, string remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endpointConfigurationName"></param>
+        /// <param name="remoteAddress"></param>
         public WcfPortalClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(endpointConfigurationName, remoteAddress) {
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="binding"></param>
+        /// <param name="remoteAddress"></param>
         public WcfPortalClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
                 base(binding, remoteAddress) {
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public System.Net.CookieContainer CookieContainer {
             get {
                 System.ServiceModel.Channels.IHttpCookieContainerManager httpCookieContainerManager = this.InnerChannel.GetProperty<System.ServiceModel.Channels.IHttpCookieContainerManager>();
@@ -590,17 +767,29 @@ namespace Csla.WcfPortal {
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<CreateCompletedEventArgs> CreateCompleted;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<FetchCompletedEventArgs> FetchCompleted;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<UpdateCompletedEventArgs> UpdateCompleted;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<DeleteCompletedEventArgs> DeleteCompleted;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> OpenCompleted;
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> CloseCompleted;
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -630,11 +819,18 @@ namespace Csla.WcfPortal {
                 this.CreateCompleted(this, new CreateCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
         public void CreateAsync(Csla.WcfPortal.CriteriaRequest request) {
             this.CreateAsync(request, null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="userState"></param>
         public void CreateAsync(Csla.WcfPortal.CriteriaRequest request, object userState) {
             if ((this.onBeginCreateDelegate == null)) {
                 this.onBeginCreateDelegate = new BeginOperationDelegate(this.OnBeginCreate);
@@ -676,11 +872,18 @@ namespace Csla.WcfPortal {
                 this.FetchCompleted(this, new FetchCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
         public void FetchAsync(Csla.WcfPortal.CriteriaRequest request) {
             this.FetchAsync(request, null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="userState"></param>
         public void FetchAsync(Csla.WcfPortal.CriteriaRequest request, object userState) {
             if ((this.onBeginFetchDelegate == null)) {
                 this.onBeginFetchDelegate = new BeginOperationDelegate(this.OnBeginFetch);
@@ -722,11 +925,18 @@ namespace Csla.WcfPortal {
                 this.UpdateCompleted(this, new UpdateCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
         public void UpdateAsync(Csla.WcfPortal.UpdateRequest request) {
             this.UpdateAsync(request, null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="userState"></param>
         public void UpdateAsync(Csla.WcfPortal.UpdateRequest request, object userState) {
             if ((this.onBeginUpdateDelegate == null)) {
                 this.onBeginUpdateDelegate = new BeginOperationDelegate(this.OnBeginUpdate);
@@ -768,11 +978,18 @@ namespace Csla.WcfPortal {
                 this.DeleteCompleted(this, new DeleteCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
         public void DeleteAsync(Csla.WcfPortal.CriteriaRequest request) {
             this.DeleteAsync(request, null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="userState"></param>
         public void DeleteAsync(Csla.WcfPortal.CriteriaRequest request, object userState) {
             if ((this.onBeginDeleteDelegate == null)) {
                 this.onBeginDeleteDelegate = new BeginOperationDelegate(this.OnBeginDelete);
@@ -802,11 +1019,16 @@ namespace Csla.WcfPortal {
                 this.OpenCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public void OpenAsync() {
             this.OpenAsync(null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userState"></param>
         public void OpenAsync(object userState) {
             if ((this.onBeginOpenDelegate == null)) {
                 this.onBeginOpenDelegate = new BeginOperationDelegate(this.OnBeginOpen);
@@ -835,11 +1057,16 @@ namespace Csla.WcfPortal {
                 this.CloseCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         public void CloseAsync() {
             this.CloseAsync(null);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userState"></param>
         public void CloseAsync(object userState) {
             if ((this.onBeginCloseDelegate == null)) {
                 this.onBeginCloseDelegate = new BeginOperationDelegate(this.OnBeginClose);
@@ -852,7 +1079,10 @@ namespace Csla.WcfPortal {
             }
             base.InvokeAsync(this.onBeginCloseDelegate, null, this.onEndCloseDelegate, this.onCloseCompletedDelegate, userState);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override Csla.WcfPortal.IWcfPortal CreateChannel() {
             return new WcfPortalClientChannel(this);
         }

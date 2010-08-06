@@ -5,13 +5,12 @@
 // </copyright>
 // <summary>Delegate for a dynamic constructor method.</summary>
 //-----------------------------------------------------------------------
+#if !WINDOWS_PHONE
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-#if !WINDOWS_PHONE
 using System.Reflection.Emit;
-#endif
 using Csla.Properties;
 using System.Collections.Generic;
 
@@ -201,7 +200,6 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !WINDOWS_PHONE
     private static void EmitCastToReference(ILGenerator il, Type type)
     {
       if (type.IsValueType)
@@ -209,6 +207,6 @@ namespace Csla.Reflection
       else
         il.Emit(OpCodes.Castclass, type);
     }
-#endif
   }
 }
+#endif

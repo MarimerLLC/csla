@@ -52,6 +52,7 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
+#if !WINDOWS_PHONE
     #region Dynamic Method Cache
 
     private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
@@ -124,6 +125,7 @@ namespace Csla.Reflection
     }
 
     #endregion
+#endif
 
     #region GetType
 
@@ -177,10 +179,14 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
+#if WINDOWS_PHONE
+      return Activator.CreateInstance(objectType);
+#else
       var ctor = GetCachedConstructor(objectType);
       if (ctor == null)
         throw new NotImplementedException(Resources.DefaultConstructor + Resources.MethodNotImplemented);
       return ctor.Invoke();
+#endif
     }
 
     #endregion
@@ -188,6 +194,7 @@ namespace Csla.Reflection
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+#if !WINDOWS_PHONE
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
@@ -233,6 +240,7 @@ namespace Csla.Reflection
       }
       return mh;
     }
+#endif
 
     /// <summary>
     /// Invokes a property getter using dynamic
@@ -248,6 +256,10 @@ namespace Csla.Reflection
       if (string.IsNullOrEmpty(property))
         throw new ArgumentException("Argument is null or empty.", "property");
 
+#if WINDOWS_PHONE
+      // TODO: implement method
+      return null;
+#else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberGet == null)
       {
@@ -259,6 +271,7 @@ namespace Csla.Reflection
       }
 
       return mh.DynamicMemberGet(obj);
+#endif
     }
 
     /// <summary>
@@ -275,6 +288,9 @@ namespace Csla.Reflection
       if (string.IsNullOrEmpty(property))
         throw new ArgumentException("Argument is null or empty.", "property");
 
+#if WINDOWS_PHONE
+      // TODO: implement method
+#else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberSet == null)
       {
@@ -286,6 +302,7 @@ namespace Csla.Reflection
       }
 
       mh.DynamicMemberSet(obj, value);
+#endif
     }
 
 
@@ -306,10 +323,15 @@ namespace Csla.Reflection
     /// </param>
     public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
+#if WINDOWS_PHONE
+      // TODO: implement method
+      return null;
+#else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
         return null;
       return CallMethod(obj, mh, parameters);
+#endif
     }
 
     /// <summary>
@@ -321,8 +343,13 @@ namespace Csla.Reflection
     /// <returns>True obj implements a matching method.</returns>
     public static bool IsMethodImplemented(object obj, string method, params object[] parameters)
     {
+#if WINDOWS_PHONE
+      // TODO: implement method
+      return false;
+#else
       var mh = GetCachedMethod(obj, method, parameters);
       return mh != null && mh.DynamicMethod != null;
+#endif
     }
 
     /// <summary>
@@ -341,10 +368,15 @@ namespace Csla.Reflection
     /// </param>
     public static object CallMethod(object obj, string method, params object[] parameters)
     {
+#if WINDOWS_PHONE
+      // TODO: implement method
+      return null;
+#else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, parameters);
+#endif
     }
 
     /// <summary>
@@ -363,12 +395,18 @@ namespace Csla.Reflection
     /// </param>
     public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
+#if WINDOWS_PHONE
+      // TODO: implement method
+      return null;
+#else
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(info.Name + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, parameters);
+#endif
     }
 
+#if !WINDOWS_PHONE
     /// <summary>
     /// Uses reflection to dynamically invoke a method,
     /// throwing an exception if it is not implemented
@@ -444,7 +482,7 @@ namespace Csla.Reflection
     {
       return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
     }
-
+#endif
     #endregion
 
     #region Get/Find Method

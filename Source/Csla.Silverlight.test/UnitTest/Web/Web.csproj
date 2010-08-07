@@ -12,8 +12,7 @@
     <RootNamespace>Web</RootNamespace>
     <AssemblyName>Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SilverlightApplicationList>
-    </SilverlightApplicationList>
+    <SilverlightApplicationList>{5E30B543-3988-4241-98D9-B0D2E44FA02A}|..\CslaLight.Testing\csla.silverlight.test.csproj|ClientBin|False</SilverlightApplicationList>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -78,6 +77,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\cslalighttest.xap" />
+    <Content Include="csla.silverlight.testTestPage.aspx" />
+    <Content Include="csla.silverlight.testTestPage.html" />
     <Content Include="Default.aspx" />
     <Content Include="Silverlight.js" />
     <Content Include="WcfPortal.svc" />

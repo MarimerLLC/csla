@@ -56,8 +56,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xml" />
+    <Reference Include="UnitDrivenPhone">
+      <HintPath>..\..\Dependencies\UnitDriven\UnitDrivenPhone.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Csla.test\Silverlight\ApplicationContext\ClientContextTests.cs">
+      <Link>ApplicationContext\ClientContextTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Csla.test\Silverlight\ApplicationContext\GlobalContextTests.cs">
+      <Link>ApplicationContext\GlobalContextTests.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>

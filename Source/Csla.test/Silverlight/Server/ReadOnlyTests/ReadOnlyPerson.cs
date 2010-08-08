@@ -17,7 +17,7 @@ namespace Csla.Testing.Business.ReadOnlyTest
   [Serializable]
   public partial class ReadOnlyPerson : ReadOnlyBase<ReadOnlyPerson>
   {
-    public const string DataPortalUrl = "http://localhost:2752/WcfPortal.svc";
+    public const string DataPortalUrl = "http://localhost:4832/WcfPortal.svc";
     
     //public ReadOnlyPerson() { }
 

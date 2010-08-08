@@ -30,6 +30,7 @@ using UnitDriven;
 using Csla.Testing.Business.DataPortal;
 using Single = Csla.Test.DataPortalTest.Single;
 using Csla.Test.DataPortalTest;
+using System;
 
 namespace Csla.Test.DataPortal
 {
@@ -125,12 +126,19 @@ namespace Csla.Test.DataPortal
         new Single.Criteria(100),
         (o, e) =>
         {
-          var created = e.Object;
-          context.Assert.IsNotNull(created);
-          context.Assert.AreEqual(created.Id, 100);//DP_Create with criteria called
-          context.Assert.IsNull(e.Error);
-          context.Assert.AreEqual(userState, e.UserState);
-          context.Assert.AreEqual("Created", created.MethodCalled);
+          try
+          {
+            var created = e.Object;
+            context.Assert.IsNotNull(created);
+            context.Assert.AreEqual(created.Id, 100);//DP_Create with criteria called
+            context.Assert.IsNull(e.Error);
+            context.Assert.AreEqual(userState, e.UserState);
+            context.Assert.AreEqual("Created", created.MethodCalled);
+          }
+          catch (Exception ex)
+          {
+            context.Assert.Fail(ex);
+          }
           context.Assert.Success();
         }, userState);
       context.Complete();

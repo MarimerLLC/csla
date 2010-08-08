@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BasicHttpBinding_IWcfPortal" contract="WcfPortal.IWcfPortal" bindingType="basicHttpBinding" address="http://localhost:2752/WcfPortal.svc" bindingConfiguration="BasicHttpBinding_IWcfPortal">
+    <endpoint name="BasicHttpBinding_IWcfPortal" contract="WcfPortal.IWcfPortal" bindingType="basicHttpBinding" address="http://localhost:4832/WcfPortal.svc" bindingConfiguration="BasicHttpBinding_IWcfPortal">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://localhost:2752/WcfPortal.svc</serializedValue>
+          <serializedValue>http://localhost:4832/WcfPortal.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+#if !WINDOWS_PHONE
 using System;
 
 namespace cslalighttest.CslaDataProvider
@@ -14,3 +15,4 @@ namespace cslalighttest.CslaDataProvider
 
   }
 }
+#endif

@@ -486,7 +486,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-#if SILVERLIGHT
+#if SILVERLIGHT && !WINDOWS_PHONE
     [TestMethod]
     public void NotifyDataErrorInfo()
     {

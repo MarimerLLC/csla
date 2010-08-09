@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Xaml;
 using Csla.Serialization;
 using Csla;
 

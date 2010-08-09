@@ -171,9 +171,6 @@
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Properties\Resources.Designer.cs">
-      <Link>Properties\Resources.Designer.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
     </Compile>
@@ -533,6 +530,7 @@
     </Compile>
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

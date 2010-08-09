@@ -32,7 +32,11 @@ namespace Csla.Test.LogicalExecutionLocation
     public void Setup()
     {
       Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+#if WINDOWS_PHONE
+      WcfProxy.DefaultUrl = "http://localhost:4832/WcfPortal.svc";
+#else
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
+#endif
     }
 
     [TestMethod]

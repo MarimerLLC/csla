@@ -10,7 +10,9 @@ using Csla.Serialization;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;
 using UnitDriven;
+#if !WINDOWS_PHONE
 using Microsoft.VisualBasic;
+#endif
 using Csla.Serialization.Mobile;
 using System.Threading;
 
@@ -210,6 +212,7 @@ namespace Csla.Test.SmartDate
     }
     #endregion
 
+#if !WINDOWS_PHONE
     #region Add
     [TestMethod()]
     public void Add()
@@ -240,6 +243,7 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual(d3, d2 - new TimeSpan(30, 0, 0, 0, 0), "Should be equal");
     }
     #endregion
+#endif
 
     #region Comparison
     [TestMethod()]

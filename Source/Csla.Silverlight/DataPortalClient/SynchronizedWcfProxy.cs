@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Implements a data portal proxy object that only</summary>
 //-----------------------------------------------------------------------
-#if !WINDOWS_PHONE
 using System;
 using System.Net;
 using System.Windows;
@@ -264,4 +263,3 @@ namespace Csla.DataPortalClient
     }
   }
 }
-#endif

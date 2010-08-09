@@ -34,6 +34,7 @@ namespace Csla.Test.Linq
   [TestClass]
   public class LinqObservableCollectionTest
   {
+#if !WINDOWS_PHONE
     [TestMethod]
     public void Blb2Loc_WhereOnly()
     {
@@ -41,6 +42,7 @@ namespace Csla.Test.Linq
       var synced = source.ToSyncList(c => c.Id > 100);
       Assert.AreEqual(3, synced.Count);
     }
+#endif
 
     [TestMethod]
     public void Blb2Loc()

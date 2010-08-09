@@ -13,7 +13,7 @@ using UnitDriven;
 namespace Csla.Test.Silverlight.Security
 {
   //[TestClass]
-  public partial class SecurityTests 
+  public partial class SecurityTests
   {
 
     [TestMethod]
@@ -24,13 +24,13 @@ namespace Csla.Test.Silverlight.Security
 
       SilverlightPrincipal.LoginUsingCSLA(
         (o, e) =>
-          {
-            context.Assert.IsNotNull(Csla.ApplicationContext.User);
-            context.Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
-            context.Assert.AreEqual("SilverlightIdentity", Csla.ApplicationContext.User.Identity.Name);
-            context.Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
-            context.Assert.Success();
-          });
+        {
+          context.Assert.IsNotNull(Csla.ApplicationContext.User);
+          context.Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
+          context.Assert.AreEqual("SilverlightIdentity", Csla.ApplicationContext.User.Identity.Name);
+          context.Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
+          context.Assert.Success();
+        });
       context.Complete();
     }
 
@@ -43,13 +43,13 @@ namespace Csla.Test.Silverlight.Security
 
       SilverlightPrincipal.LoginUsingCSLA(
         (o, e) =>
-          {
-            context.Assert.IsNotNull(Csla.ApplicationContext.User);
-            context.Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
-            context.Assert.AreEqual("SilverlightIdentity", Csla.ApplicationContext.User.Identity.Name);
-            context.Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
-            context.Assert.Success();
-          });
+        {
+          context.Assert.IsNotNull(Csla.ApplicationContext.User);
+          context.Assert.AreEqual(true, Csla.ApplicationContext.User.Identity.IsAuthenticated);
+          context.Assert.AreEqual("SilverlightIdentity", Csla.ApplicationContext.User.Identity.Name);
+          context.Assert.AreEqual(true, Csla.ApplicationContext.User.IsInRole(AdminRoleName));
+          context.Assert.Success();
+        });
       context.Complete();
     }
 

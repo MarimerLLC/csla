@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Create is an exception - called with SingleCriteria, if BO does not have DP_Create() overload</summary>
 //-----------------------------------------------------------------------
+#if !WINDOWS_PHONE
 using Csla;
 using Csla.DataPortalClient;
 using System;
@@ -643,3 +644,4 @@ namespace cslalighttest.CslaDataProvider
   }
 
 }
+#endif

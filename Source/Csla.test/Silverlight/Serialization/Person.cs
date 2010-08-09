@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using Csla;
 using Csla.Serialization;
-using Csla.Xaml;
 using Csla.Core.FieldManager;
 
 namespace cslalighttest.Serialization

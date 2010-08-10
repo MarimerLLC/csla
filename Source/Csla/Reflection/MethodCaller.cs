@@ -180,6 +180,8 @@ namespace Csla.Reflection
     public static object CreateInstance(Type objectType)
     {
 #if WINDOWS_PHONE
+      if (objectType.IsValueType)
+        throw new NotSupportedException(string.Format("CreateInstance {0}", objectType.Name));
       return Activator.CreateInstance(objectType);
 #else
       var ctor = GetCachedConstructor(objectType);

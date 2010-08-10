@@ -124,6 +124,7 @@ namespace Csla.Test.MethodCaller
       Assert.AreEqual(returnValue3, 2);
     }
 
+#if !WINDOWS_PHONE
     [TestMethod]
     public void CallDynamicIsFasterThanReflectionSuccess()
     {
@@ -148,6 +149,7 @@ namespace Csla.Test.MethodCaller
 
       Assert.IsTrue(dynamicTime < reflectionTime);
     }
+#endif
 
     [TestMethod]
     [ExpectedException(typeof(CallMethodException))]

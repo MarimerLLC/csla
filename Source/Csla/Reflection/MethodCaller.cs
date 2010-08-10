@@ -257,8 +257,14 @@ namespace Csla.Reflection
         throw new ArgumentException("Argument is null or empty.", "property");
 
 #if WINDOWS_PHONE
-      // TODO: implement method
-      return null;
+      System.Reflection.PropertyInfo p = obj.GetType().GetProperty(property);
+      if (p == null)
+        throw new NotSupportedException(string.Format(
+          CultureInfo.CurrentCulture,
+          "The property '{0}' on Type '{1}' does not have a public getter.",
+          property,
+          obj.GetType()));
+      return p.GetValue(obj, new object[] { });
 #else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberGet == null)
@@ -289,7 +295,14 @@ namespace Csla.Reflection
         throw new ArgumentException("Argument is null or empty.", "property");
 
 #if WINDOWS_PHONE
-      // TODO: implement method
+      System.Reflection.PropertyInfo p = obj.GetType().GetProperty(property);
+      if (p == null)
+        throw new NotSupportedException(string.Format(
+          CultureInfo.CurrentCulture,
+          "The property '{0}' on Type '{1}' does not have a public setter.",
+          property,
+          obj.GetType()));
+      p.SetValue(obj, value, null);
 #else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberSet == null)
@@ -324,8 +337,11 @@ namespace Csla.Reflection
     public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
 #if WINDOWS_PHONE
-      // TODO: implement method
-      return null;
+      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+      if (info != null)
+        return CallMethod(obj, info, parameters);
+      else
+        return null;
 #else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
@@ -344,8 +360,8 @@ namespace Csla.Reflection
     public static bool IsMethodImplemented(object obj, string method, params object[] parameters)
     {
 #if WINDOWS_PHONE
-      // TODO: implement method
-      return false;
+      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+      return info != null;
 #else
       var mh = GetCachedMethod(obj, method, parameters);
       return mh != null && mh.DynamicMethod != null;
@@ -369,8 +385,11 @@ namespace Csla.Reflection
     public static object CallMethod(object obj, string method, params object[] parameters)
     {
 #if WINDOWS_PHONE
-      // TODO: implement method
-      return null;
+      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+      if (info == null)
+        throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+
+      return CallMethod(obj, info, parameters);
 #else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
@@ -396,8 +415,46 @@ namespace Csla.Reflection
     public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
     {
 #if WINDOWS_PHONE
-      // TODO: implement method
-      return null;
+      var infoParams = info.GetParameters();
+      var infoParamsCount = infoParams.Length;
+      bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
+      bool specialParamArray = false;
+      if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(string[])))
+        specialParamArray = true;
+      if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
+        specialParamArray = true;
+      object[] par = null;
+      if (infoParamsCount == 1 && specialParamArray)
+      {
+        par = new object[] { parameters };
+      }
+      else if (infoParamsCount > 1 && hasParamArray && specialParamArray)
+      {
+        par = new object[infoParamsCount];
+        for (int i = 0; i < infoParamsCount - 1; i++)
+          par[i] = parameters[i];
+        par[infoParamsCount - 1] = parameters[infoParamsCount - 1];
+      }
+      else
+      {
+        par = parameters;
+      }
+
+      object result = null;
+      try
+      {
+        result = info.Invoke(obj, par);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
 #else
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
@@ -890,5 +947,14 @@ namespace Csla.Reflection
 
       return info;
     }
+
+#if WINDOWS_PHONE
+    private static object[] GetExtrasArray(int count, Type arrayType)
+    {
+      return new object[count];
+    //  var array = System.Array.CreateInstance(arrayType.GetElementType(), count);
+    //  return (object[])array;
+    }
+#endif
   }
 }

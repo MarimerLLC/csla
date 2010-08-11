@@ -10,9 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
-#if !WINDOWS_PHONE
-using System.Reflection.Emit;
-#endif
 
 namespace Csla.Core.LoadManager
 {

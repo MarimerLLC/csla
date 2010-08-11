@@ -586,7 +586,10 @@ namespace Csla.Test.PropertyGetSet
       }
       catch (TypeInitializationException ex)
       {
-        throw ex.InnerException;
+        if (ex.InnerException != null)
+          throw ex.InnerException;
+        else
+          throw;
       }
     }
 

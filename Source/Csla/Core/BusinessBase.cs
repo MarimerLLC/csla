@@ -3265,7 +3265,7 @@ namespace Csla.Core
 
     #endregion
 
-#if SILVERLIGHT && !WINDOWS_PHONE
+#if SILVERLIGHT
     #region UndoableBase overrides
 
     /// <summary>
@@ -3310,6 +3310,7 @@ namespace Csla.Core
 
     #endregion
 
+#if !WINDOWS_PHONE
     #region INotifyDataErrorInfo
 
     /// <summary>
@@ -3363,6 +3364,7 @@ namespace Csla.Core
     }
 
     #endregion
+#endif
 #endif
 
     #region ISuppressRuleChecking Members

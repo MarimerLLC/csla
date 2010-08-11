@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,6 +58,18 @@
   <ItemGroup>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
       <Link>Core\FieldManager\FieldData.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\FieldManager\FieldDataList.cs">
+      <Link>Core\FieldManager\FieldDataList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\FieldManager\FieldDataManager.cs">
+      <Link>Core\FieldManager\FieldDataManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\FieldManager\IFieldData.cs">
+      <Link>Core\FieldManager\IFieldData.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\FieldManager\IFieldDataT.cs">
+      <Link>Core\FieldManager\IFieldDataT.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\FieldManager\PropertyInfoFactory.cs">
       <Link>Core\FieldManager\PropertyInfoFactory.cs</Link>
@@ -391,18 +403,6 @@
     </Compile>
     <Compile Include="..\Csla.Silverlight\Core\ExtendedBindingList.cs">
       <Link>Core\ExtendedBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\FieldManager\FieldDataList.cs">
-      <Link>Core\FieldManager\FieldDataList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\FieldManager\FieldDataManager.cs">
-      <Link>Core\FieldManager\FieldDataManager.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\FieldManager\IFieldData.cs">
-      <Link>Core\FieldManager\IFieldData.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\FieldManager\IFieldDataT.cs">
-      <Link>Core\FieldManager\IFieldDataT.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\Core\IBindingList.cs">
       <Link>Core\IBindingList.cs</Link>

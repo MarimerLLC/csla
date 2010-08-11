@@ -8,15 +8,24 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
 {
-  [Serializable()]
+  [Serializable]
+#if SILVERLIGHT
+  internal class FieldDataList : Csla.Core.MobileObject, Csla.Serialization.Mobile.ISerializationNotification
+#else
   internal class FieldDataList : ISerializable
+#endif
   {
     [NonSerialized()]
     private Dictionary<string, int> _fieldIndex = new Dictionary<string, int>();
+#if SILVERLIGHT
+    private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();
+#else
     private List<IFieldData> _fields = new List<IFieldData>();
+#endif
 
     public FieldDataList()
     { /* required due to serialization ctor */ }
@@ -60,11 +69,38 @@ namespace Csla.Core.FieldManager
       return null;
     }
 
+#if SILVERLIGHT
+    public Csla.Core.MobileBindingList<IFieldData> GetFieldDataList()
+    {
+      return _fields;
+    }
+#else
     public List<IFieldData> GetFieldDataList()
     {
       return _fields;
     }
+#endif
 
+#if SILVERLIGHT
+    #region ISerializationNotification Members
+
+    void Csla.Serialization.Mobile.ISerializationNotification.Deserialized()
+    {
+      RebuildIndex();
+    }
+
+        private void RebuildIndex()
+    {
+      var position = 0;
+      foreach (IFieldData item in _fields)
+      {
+        _fieldIndex.Add(item.Name, position);
+        position += 1;
+      }
+    }
+
+    #endregion
+#else
     #region  ISerializable
 
     protected FieldDataList(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
@@ -89,6 +125,6 @@ namespace Csla.Core.FieldManager
     }
 
     #endregion
-
+#endif
   }
 }

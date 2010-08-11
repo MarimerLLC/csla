@@ -19,8 +19,15 @@ namespace Csla.Core.FieldManager
   /// a business object.
   /// </summary>
   /// <remarks></remarks>
-  [Serializable()]
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
+  [Serializable]
+#if SILVERLIGHT
+  public class FieldDataManager : MobileObject, IUndoableObject
+#else
   public class FieldDataManager : IUndoableObject, IMobileObject
+#endif
   {
     private string _businessObjectType;
     [NonSerialized]
@@ -29,8 +36,15 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
+#if SILVERLIGHT
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    public FieldDataManager() { }
+#else
     private FieldDataManager()
     { /* exists to support MobileFormatter */ }
+#endif
 
     internal FieldDataManager(Type businessObjectType)
     {
@@ -406,7 +420,11 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
+#if SILVERLIGHT
+    private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
+#else
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
+#endif
 
     /// <summary>
     /// Gets the current edit level of the object.
@@ -421,6 +439,28 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
 
+#if SILVERLIGHT
+      SerializationInfo state = new SerializationInfo(0);
+      OnGetState(state, StateMode.Undo);
+
+      // This is used instead of a foreach because of some weird silverlight bug
+      // throwing an unknown exception from a foreach here.
+      for (var index = 0; index < _fieldData.Length; index++)
+      {
+        var item = _fieldData[index];
+        if (item != null)
+        {
+          var child = item.Value as IUndoableObject;
+          if (child != null)
+          {
+            // cascade call to child
+            child.CopyState(parentEditLevel, parentBindingEdit);
+          }
+        }
+      }
+
+      _stateStack.Push(state);
+#else
       IFieldData[] state = new IFieldData[_propertyList.Count];
 
       for (var index = 0; index < _fieldData.Length; index++)
@@ -451,6 +491,7 @@ namespace Csla.Core.FieldManager
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
+#endif
     }
 
     void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
@@ -460,6 +501,24 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
+#if SILVERLIGHT
+        SerializationInfo state = _stateStack.Pop();
+        OnSetState(state, StateMode.Undo);
+
+        for (var index = 0; index < _fieldData.Length; index++)
+        {
+          var item = _fieldData[index];
+          if (item != null)
+          {
+            // potential child object
+            var child = item.Value as IUndoableObject;
+            if (child != null)
+            {
+              child.UndoChanges(parentEditLevel, parentBindingEdit);
+            }
+          }
+        }
+#else
         IFieldData[] state = null;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
@@ -488,6 +547,7 @@ namespace Csla.Core.FieldManager
           // restore IFieldData object into field collection
           _fieldData[index] = oldItem;
         }
+#endif
       }
     }
 
@@ -558,6 +618,168 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
+#if SILVERLIGHT
+    #region IMobileObject Members
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      info.AddValue("_businessObjectType", _businessObjectType);
+
+      if (mode == StateMode.Serialization && _stateStack.Count > 0)
+      {
+        MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+        byte[] xml = MobileFormatter.Serialize(list);
+        info.AddValue("_stateStack", xml);
+      }
+
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          if (data.Value is IUndoableObject)
+            info.AddValue("child_" + data.Name, true, false);
+          else if (mode == StateMode.Undo && data.Value is IMobileObject) // is IMobileObject but isn't IUndoableObject (such as SmartDate)
+            info.AddValue(data.Name, MobileFormatter.Serialize(data.Value), data.IsDirty);
+          else if(!(data.Value is IMobileObject))
+            info.AddValue(data.Name, data.Value, data.IsDirty);
+            
+        }
+      }
+
+      base.OnGetState(info, mode);
+    }
+
+    /// <summary>
+    /// Serializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="formatter">Serializer instance</param>
+    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IFieldData data in _fieldData)
+      {
+        if (data != null)
+        {
+          IMobileObject mobile = data.Value as IMobileObject;
+          if (mobile != null)
+          {
+            SerializationInfo childInfo = formatter.SerializeObject(mobile);
+            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
+          }
+        }
+      }
+
+      base.OnGetChildren(info, formatter);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      string type = (string)info.Values["_businessObjectType"].Value;
+      Type businessObjecType = Csla.Reflection.MethodCaller.GetType(type);
+      SetPropertyList(businessObjecType);
+
+      if (mode == StateMode.Serialization)
+      {
+        _stateStack.Clear();
+        if (info.Values.ContainsKey("_stateStack"))
+        {
+          //string xml = info.GetValue<string>("_stateStack");
+          byte[] xml = info.GetValue<byte[]>("_stateStack");
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
+          Array.Reverse(layers);
+          foreach (SerializationInfo layer in layers)
+            _stateStack.Push(layer);
+        }
+      }
+
+      // Only clear this list on serialization, otherwise you'll lose
+      // your children during an undo.
+      if (mode == StateMode.Serialization)
+        _fieldData = new IFieldData[_propertyList.Count];
+      
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Values.ContainsKey(property.Name))
+        {
+          SerializationInfo.FieldData value = info.Values[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          if (value.Value != null &&
+            mode == StateMode.Undo &&
+            typeof(IMobileObject).IsAssignableFrom(property.Type) &&
+            !typeof(IUndoableObject).IsAssignableFrom(property.Type))
+          {
+            data.Value = MobileFormatter.Deserialize((byte[])value.Value);
+          }
+          else data.Value = value.Value;
+
+          if (!value.IsDirty)
+            data.MarkClean();
+        }
+        else if (mode == StateMode.Undo && !((property.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField))
+        {
+          IFieldData data = GetFieldData(property);
+          if (data != null)
+          {
+            if (!info.Values.ContainsKey("child_" + property.Name) || !info.GetValue<bool>("child_" + property.Name))
+              _fieldData[property.Index] = null;
+            
+            // We don't want to reset children during an undo.
+            else if (!typeof(IMobileObject).IsAssignableFrom(data.Value.GetType()))
+              data.Value = property.DefaultValue;
+          }
+        }
+      }
+
+      base.OnSetState(info, mode);
+    }
+
+    /// <summary>
+    /// Deserializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="formatter">Serializer instance</param>
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (IPropertyInfo property in _propertyList)
+      {
+        if (info.Children.ContainsKey(property.Name))
+        {
+          SerializationInfo.ChildData childData = info.Children[property.Name];
+
+          IFieldData data = GetOrCreateFieldData(property);
+          data.Value = formatter.GetObject(childData.ReferenceId);
+          if (!childData.IsDirty)
+            data.MarkClean();
+        }
+      }
+
+      base.OnSetChildren(info, formatter);
+    }
+
+    #endregion
+#else
     #region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)
@@ -680,6 +902,7 @@ namespace Csla.Core.FieldManager
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter) { }
 
     #endregion
+#endif
 
     #region Force Static Field Init
 
@@ -690,11 +913,18 @@ namespace Csla.Core.FieldManager
     /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
-      var attr = 
+#if SILVERLIGHT
+      var attr =
+        System.Reflection.BindingFlags.Static |
+        System.Reflection.BindingFlags.Public |
+        System.Reflection.BindingFlags.DeclaredOnly;
+#else
+      var attr =
         System.Reflection.BindingFlags.Static |
         System.Reflection.BindingFlags.Public |
         System.Reflection.BindingFlags.DeclaredOnly |
         System.Reflection.BindingFlags.NonPublic;
+#endif
       var t = type;
       while (t != null)
       {

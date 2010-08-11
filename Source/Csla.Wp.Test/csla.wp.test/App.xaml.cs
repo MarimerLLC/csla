@@ -69,6 +69,8 @@ namespace csla.wp.test
         // An unhandled exception has occurred; break into the debugger
         System.Diagnostics.Debugger.Break();
       }
+      else
+        MessageBox.Show(e.ExceptionObject.Message, "AppFail", MessageBoxButton.OK);
     }
 
     #region Phone application initialization

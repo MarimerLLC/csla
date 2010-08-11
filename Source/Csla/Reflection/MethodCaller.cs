@@ -266,7 +266,14 @@ namespace Csla.Reflection
           "The property '{0}' on Type '{1}' does not have a public getter.",
           property,
           obj.GetType()));
-      return p.GetValue(obj, new object[] { });
+      try
+      {
+        return p.GetValue(obj, new object[] { });
+      }
+      catch (ArgumentException ex)
+      {
+        throw new NotSupportedException("CallPropertyGetter", ex);
+      }
 #else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberGet == null)
@@ -304,7 +311,14 @@ namespace Csla.Reflection
           "The property '{0}' on Type '{1}' does not have a public setter.",
           property,
           obj.GetType()));
-      p.SetValue(obj, value, null);
+      try
+      {
+        p.SetValue(obj, value, null);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new NotSupportedException("CallPropertySetter", ex);
+      }
 #else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberSet == null)

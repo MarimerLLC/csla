@@ -13,7 +13,7 @@ using Csla.Serialization;
 namespace Csla.Test.BypassPropertyChecks
 {
   [Serializable()]
-#if !SILVERLIGHT
+#if !SILVERLIGHT || WINDOWS_PHONE
   [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Test")]
 #else
   [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,cslalighttest, Version=..., Culture=neutral, PublicKeyToken=null")]

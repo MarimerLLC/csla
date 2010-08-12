@@ -3,11 +3,11 @@ Imports Csla.Security
 
 <Serializable()> _
 Public Class DynamicRootList
-  Inherits EditableRootListBase(Of DynamicRoot)
+  Inherits DynamicListBase(Of DynamicRoot)
 
 #Region " Business Methods "
 
-  Protected Overrides Function AddNewCore() As Object
+  Protected Overrides Function AddNewCore() As DynamicRoot
 
     Dim item As DynamicRoot = DynamicRoot.NewDynamicRoot
     Add(item)

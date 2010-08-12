@@ -6,11 +6,11 @@ namespace Templates
 {
   [Serializable]
   public class DynamicRootList :
-    EditableRootListBase<DynamicRoot>
+    DynamicListBase<DynamicRoot>
   {
     #region Business Methods
 
-    protected override object AddNewCore()
+    protected override DynamicRoot AddNewCore()
     {
       DynamicRoot item = DynamicRoot.NewDynamicRoot();
       Add(item);

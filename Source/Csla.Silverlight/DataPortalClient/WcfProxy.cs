@@ -264,9 +264,9 @@ namespace Csla.DataPortalClient
 
     private void proxy_CreateCompleted(object sender, Csla.WcfPortal.CreateCompletedEventArgs e)
     {
-      var response = ConvertResponse(e.Result);
       try
       {
+        var response = ConvertResponse(e.Result);
         if (e.Error == null && response.ErrorData == null)
         {
           var buffer = new System.IO.MemoryStream(response.ObjectData);
@@ -529,9 +529,9 @@ namespace Csla.DataPortalClient
 
     private void proxy_DeleteCompleted(object sender, Csla.WcfPortal.DeleteCompletedEventArgs e)
     {
-      var response = ConvertResponse(e.Result);
       try
       {
+        var response = ConvertResponse(e.Result);
         if (e.Error == null && response.ErrorData == null)
         {
           _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
@@ -549,7 +549,7 @@ namespace Csla.DataPortalClient
       }
       catch (Exception ex)
       {
-        OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
+        OnDeleteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
       }
     }
 

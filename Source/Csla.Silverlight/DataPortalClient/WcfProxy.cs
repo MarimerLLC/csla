@@ -266,8 +266,10 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        var response = ConvertResponse(e.Result);
-        if (e.Error == null && response.ErrorData == null)
+        Csla.WcfPortal.WcfResponse response = null;
+        if (e.Error == null)
+          response = ConvertResponse(e.Result);
+        if (e.Error == null && response != null && response.ErrorData == null)
         {
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
@@ -364,8 +366,10 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        var response = ConvertResponse(e.Result);
-        if (e.Error == null && response.ErrorData == null)
+        Csla.WcfPortal.WcfResponse response = null;
+        if (e.Error == null)
+          response = ConvertResponse(e.Result);
+        if (e.Error == null && response != null && response.ErrorData == null)
         {
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
@@ -443,8 +447,10 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        var response = ConvertResponse(e.Result);
-        if (e.Error == null && response.ErrorData == null)
+        Csla.WcfPortal.WcfResponse response = null;
+        if (e.Error == null)
+          response = ConvertResponse(e.Result);
+        if (e.Error == null && response != null && response.ErrorData == null)
         {
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();
@@ -531,8 +537,10 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        var response = ConvertResponse(e.Result);
-        if (e.Error == null && response.ErrorData == null)
+        Csla.WcfPortal.WcfResponse response = null;
+        if (e.Error == null)
+          response = ConvertResponse(e.Result);
+        if (e.Error == null && response != null && response.ErrorData == null)
         {
           _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnDeleteCompleted(new DataPortalResult<T>(default(T), null, e.UserState));
@@ -606,8 +614,10 @@ namespace Csla.DataPortalClient
     {
       try
       {
-        var response = ConvertResponse(e.Result);
-        if (e.Error == null && response.ErrorData == null)
+        Csla.WcfPortal.WcfResponse response = null;
+        if (e.Error == null)
+          response = ConvertResponse(e.Result);
+        if (e.Error == null && response != null && response.ErrorData == null)
         {
           var buffer = new System.IO.MemoryStream(response.ObjectData);
           var formatter = new MobileFormatter();

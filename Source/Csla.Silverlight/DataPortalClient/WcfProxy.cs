@@ -277,7 +277,7 @@ namespace Csla.DataPortalClient
           _globalContext =  (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnCreateCompleted(new DataPortalResult<T>(obj, null, e.UserState));
         }
-        else if (response.ErrorData != null)
+        else if (response != null && response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
           OnCreateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
@@ -382,10 +382,14 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else // if (e.Result.ErrorData != null)
+        else if (response != null && response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
           OnFetchCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
+        }
+        else
+        {
+          OnFetchCompleted(new DataPortalResult<T>(default(T), e.Error, e.UserState));
         }
       }
       catch (Exception ex)
@@ -463,7 +467,7 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else if (response.ErrorData != null)
+        else if (response != null && response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
           OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
@@ -545,7 +549,7 @@ namespace Csla.DataPortalClient
           _globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
           OnDeleteCompleted(new DataPortalResult<T>(default(T), null, e.UserState));
         }
-        else if (response.ErrorData != null)
+        else if (response != null && response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
           OnDeleteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
@@ -630,7 +634,7 @@ namespace Csla.DataPortalClient
           var ex = new DataPortalException(e.Error.ToErrorInfo());
           OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));
         }
-        else if (response.ErrorData != null)
+        else if (response != null && response.ErrorData != null)
         {
           var ex = new DataPortalException(response.ErrorData);
           OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, e.UserState));

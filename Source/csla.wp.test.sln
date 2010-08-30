@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csla.wp.client.test", "Csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppServer", "Csla.Silverlight.test\UnitTest\AppServer\AppServer.csproj", "{9726646E-F924-4A97-859F-42A87D836EA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Wp", "Csla.Xaml.Wp\Csla.Xaml.Wp.csproj", "{6F545195-2623-4435-B7CE-9084DF1A9A02}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = csla.silverlight.test.vsmdi
@@ -118,6 +120,12 @@ Global
 		{9726646E-F924-4A97-859F-42A87D836EA1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9726646E-F924-4A97-859F-42A87D836EA1}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{9726646E-F924-4A97-859F-42A87D836EA1}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{6F545195-2623-4435-B7CE-9084DF1A9A02}.Testing|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

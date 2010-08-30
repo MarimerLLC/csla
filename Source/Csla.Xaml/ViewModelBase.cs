@@ -12,6 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Reflection;
+#if WINDOWS_PHONE
+using Csla;
+#else
+using System.ComponentModel.DataAnnotations;
+#endif
 using Csla.Reflection;
 using Csla.Security;
 using Csla.Core;
@@ -81,7 +86,7 @@ namespace Csla.Xaml
     /// lifetime of the ManageObjectLifetime.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public bool ManageObjectLifetime
     {
       get { return (bool)GetValue(ManageObjectLifetimeProperty); }
@@ -95,7 +100,7 @@ namespace Csla.Xaml
     /// last asyncronous operation.
     /// </summary>
     [Browsable(false)]
-    [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
+    [Display(AutoGenerateField = false)]
     public Exception Error
     {
       get { return _error; }

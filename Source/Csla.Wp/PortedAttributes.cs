@@ -9,16 +9,51 @@ using System;
 
 namespace Csla
 {
-  internal class BrowsableAttribute : Attribute
+  /// <summary>
+  /// Mock attribute ported from .NET/SL.
+  /// </summary>
+  public class BrowsableAttribute : Attribute
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="flag">Flag value.</param>
     public BrowsableAttribute(bool flag)
     { }
   }
 
-  internal class DisplayAttribute : Attribute
+  /// <summary>
+  /// Defines a user-friendly display name for the property.
+  /// </summary>
+  public class DisplayAttribute : Attribute
   {
-    public string Name { get; set; }
+    private string _name;
+    /// <summary>
+    /// User-friendly property name.
+    /// </summary>
+    public string Name 
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    /// <summary>
+    /// User-friendly property name.
+    /// </summary>
+    public string Description
+    {
+      get { return _name; }
+      set { _name = value; }
+    }
+    /// <summary>
+    /// Gets or sets a value indicating whether to
+    /// autogenerate the field.
+    /// </summary>
     public bool AutoGenerateField { get; set; }
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="AutoGenerateField">AutoGenerateField value.</param>
+    /// <param name="Name">Friendly name.</param>
     public DisplayAttribute(bool AutoGenerateField = false, string Name = "")
     {
       this.AutoGenerateField = AutoGenerateField;

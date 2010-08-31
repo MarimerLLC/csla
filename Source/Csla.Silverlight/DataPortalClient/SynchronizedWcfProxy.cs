@@ -250,7 +250,7 @@ namespace Csla.DataPortalClient
 
     private void RunSynchronized(Delegate method, params object[] arguments)
     {
-      BackgroundWorker worker = new BackgroundWorker();
+      System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
       worker.DoWork += (o, e) =>
       {
         _semaphore = new Semaphore();

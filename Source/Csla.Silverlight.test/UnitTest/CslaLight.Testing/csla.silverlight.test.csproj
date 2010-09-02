@@ -324,8 +324,17 @@
     <Compile Include="..\..\..\csla.test\SmartDate\SmartDateTests.cs">
       <Link>SmartDate\SmartDateTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Threading\BackgroundWorkerTests.cs">
+      <Link>Threading\BackgroundWorkerTests.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\Threading\BusyLockTests.cs">
       <Link>Threading\BusyLockTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\Threading\MyIdentity.cs">
+      <Link>Threading\MyIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\Threading\MyPrincipal.cs">
+      <Link>Threading\MyPrincipal.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csla.test\Utilities\CorerseValueTests.cs">
       <Link>Utilities\CorerseValueTests.cs</Link>

@@ -287,7 +287,10 @@
     <Compile Include="Silverlight\Stereotypes\TestCriteria.cs" />
     <Compile Include="SmartDate\SmartDateTests.cs" />
     <Compile Include="SortedBindingList\SortedBindingListTests.cs" />
+    <Compile Include="Threading\BackgroundWorkerTests.cs" />
     <Compile Include="Threading\BusyLockTests.cs" />
+    <Compile Include="Threading\MyIdentity.cs" />
+    <Compile Include="Threading\MyPrincipal.cs" />
     <Compile Include="Utilities\CorerseValueTests.cs" />
     <Compile Include="Utilities\UtilitiesTestHelper.cs" />
     <Compile Include="ValidationRules\AsyncRuleTests.cs" />

@@ -283,6 +283,7 @@ namespace Csla.Threading
           _myDoWork.Invoke(this, doWorkEventArgs);
         }
         e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, Csla.ApplicationContext.GlobalContext, null);
+        e.Cancel = doWorkEventArgs.Cancel;
       }
       // must implement exception handling and return exception in WorkerAsyncResult
       catch (Exception ex)
@@ -300,19 +301,27 @@ namespace Csla.Threading
     /// <param name="e">The <see cref="System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
     private void InternalRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
-      var workerResult = (WorkerAsyncResult)e.Result;
-      // always set GlobalContext returned in the BW
-      // so it can be addressed in RunWorkerCompleted.
-      GlobalContext = workerResult.GlobalContext;
 
-      // must check for error as accessing e.Result will throw exception
-      // if e.Error is not null.
-      var error = workerResult.Error;
+
+      Exception error = null;
       object result = null;
-      if (workerResult.Error == null)
+
+      if (!e.Cancelled)
       {
-        result = workerResult.Result;
+        var workerResult = (WorkerAsyncResult)e.Result;
+        // always set GlobalContext returned in the BW
+        // so it can be addressed in RunWorkerCompleted.
+        GlobalContext = workerResult.GlobalContext;
+
+        // must check for error as accessing e.Result will throw exception
+        // if e.Error is not null.
+        error = workerResult.Error;
+        if (workerResult.Error == null)
+        {
+          result = workerResult.Result;
+        }
       }
+
 
       if (_myWorkerCompleted != null)
       {

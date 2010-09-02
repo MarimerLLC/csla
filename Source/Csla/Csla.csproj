@@ -282,7 +282,9 @@
     <Compile Include="Server\ServicedDataPortal.cs" />
     <Compile Include="Server\SimpleDataPortal.cs" />
     <Compile Include="Server\TransactionalDataPortal.cs" />
-    <Compile Include="Threading\BackgroundWorker.cs" />
+    <Compile Include="Threading\BackgroundWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Threading\BusyLock.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />

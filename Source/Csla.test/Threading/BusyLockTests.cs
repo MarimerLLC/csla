@@ -67,7 +67,7 @@ namespace Csla.Test.Threading
     {
       BusyBO busy = new BusyBO();
       busy.MarkBusy(true);
-      BackgroundWorker worker = new BackgroundWorker();
+      System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
       worker.DoWork += (o, e) => 
       {
         System.Threading.Thread.Sleep(10);
@@ -95,7 +95,7 @@ namespace Csla.Test.Threading
       busy.MarkBusy(true);
       using (BusyLocker bl = new BusyLocker(busy, TimeSpan.FromSeconds(1)))
       {
-        BackgroundWorker worker = new BackgroundWorker();
+        System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
         worker.DoWork += (o, e) => busy.MarkBusy(false);
         worker.RunWorkerAsync();
       }

@@ -159,7 +159,7 @@ namespace Csla.Core.FieldManager
         // DataAnnotations attribute.
         var display = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
         if (display != null)
-          name = display.Name;
+          name = display.GetName();
 #if !SILVERLIGHT
         else
         {

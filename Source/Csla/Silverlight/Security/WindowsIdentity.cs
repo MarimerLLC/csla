@@ -97,7 +97,7 @@ namespace Csla.Silverlight.Security
 
     #region  IsInRole
 
-    private static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(new PropertyInfo<MobileList<string>>("Roles"));
+    public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(new PropertyInfo<MobileList<string>>("Roles"));
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
@@ -134,7 +134,7 @@ namespace Csla.Silverlight.Security
       }
     }
 
-    private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
+    public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
     /// <summary>
     /// Returns a value indicating whether this identity
     /// represents an authenticated user.
@@ -147,7 +147,7 @@ namespace Csla.Silverlight.Security
       }
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
     /// <summary>
     /// Returns the name of the user.
     /// </summary>

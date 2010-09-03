@@ -75,7 +75,7 @@ namespace Csla.Security
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
-    private static PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
+    public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
@@ -98,7 +98,7 @@ namespace Csla.Security
 
     #region  IIdentity
 
-    private static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType, "AuthenticationType", "Csla");
+    public static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType, "AuthenticationType", "Csla");
     /// <summary>
     /// Gets the authentication type for this identity.
     /// </summary>
@@ -108,7 +108,7 @@ namespace Csla.Security
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
     }
 
-    private static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
+    public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
     /// <summary>
     /// Gets a value indicating whether this identity represents
     /// an authenticated user.
@@ -119,7 +119,7 @@ namespace Csla.Security
       protected set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     /// <summary>
     /// Gets the username value.
     /// </summary>

@@ -22,7 +22,7 @@ namespace Csla.Security
     /// <summary>
     /// Username property definition.
     /// </summary>
-    public static PropertyInfo<string> UsernameProperty = RegisterProperty<string>(c => c.Username);
+    public static readonly PropertyInfo<string> UsernameProperty = RegisterProperty<string>(c => c.Username);
     /// <summary>
     /// Username property definition.
     /// </summary>
@@ -35,7 +35,7 @@ namespace Csla.Security
     /// <summary>
     /// Password property definition.
     /// </summary>
-    public static PropertyInfo<string> PasswordProperty = RegisterProperty<string>(c => c.Password);
+    public static readonly PropertyInfo<string> PasswordProperty = RegisterProperty<string>(c => c.Password);
     /// <summary>
     /// Gets the password.
     /// </summary>

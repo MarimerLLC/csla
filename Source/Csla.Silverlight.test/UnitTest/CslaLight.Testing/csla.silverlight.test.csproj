@@ -424,6 +424,8 @@
     <Compile Include="Utilities\EscapeTests.cs" />
     <Compile Include="Validation\HasRulesManager.partial.cs" />
     <Compile Include="Validation\HasRulesManager2.partial.cs" />
+    <Compile Include="ViewModelTests\TestViewModel.cs" />
+    <Compile Include="ViewModelTests\ViewModelTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

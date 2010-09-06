@@ -198,6 +198,15 @@
     <Compile Include="..\..\..\..\csla.test\Silverlight\Server\Security\SilverlightWindowsIdentity.cs">
       <Link>Security\SilverlightWindowsIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Csla.test\Silverlight\Server\ViewModelTests\TestBindingList.cs">
+      <Link>ViewModelTests\TestBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Csla.test\Silverlight\Server\ViewModelTests\TestBusinessBindingList.cs">
+      <Link>ViewModelTests\TestBusinessBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\Csla.test\Silverlight\Server\ViewModelTests\TestChild.cs">
+      <Link>ViewModelTests\TestChild.cs</Link>
+    </Compile>
     <Compile Include="ApplicationContext\ContextBOVerifier.client.cs" />
     <Compile Include="EditableChildTests\GrandChild.partial.cs" />
     <Compile Include="EditableChildTests\GrandChildList.partial.cs" />
@@ -231,6 +240,7 @@
       <Name>csla.silverlight</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

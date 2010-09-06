@@ -52,7 +52,7 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
-        new PropertyMetadata((o, e) => 
+        new PropertyMetadata((o, e) =>
         {
           var viewmodel = (ViewModelBase<T>)o;
           viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
@@ -738,7 +738,7 @@ namespace Csla.Xaml
             var result = e.NewObject;
             var model = (T)result;
             OnSaving(model);
-            Model = model; 
+            Model = model;
           }
           else
           {
@@ -798,7 +798,17 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void BeginAddNew()
     {
-      ((IBindingList)Model).AddNew();
+      var iobl = (Model as IObservableBindingList);
+      if (iobl != null)
+      {
+        iobl.AddNew();
+      }
+      else
+      {
+        // else try to use as BindingList
+        var ibl = ((IBindingList)Model);
+        ibl.AddNew();
+      }
       SetProperties();
     }
 #else
@@ -808,8 +818,19 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual object DoAddNew()
     {
-      var ibl = ((IBindingList)Model);
-      var result = ibl.AddNew();
+      object result = null;
+      // typically use ObserableCollection 
+      var iobl = (Model as IObservableBindingList);
+      if (iobl != null)
+      {
+        result = iobl.AddNew();
+      }
+      else
+      {
+        // else try to use as BindingList
+        var ibl = ((IBindingList)Model);
+        result = ibl.AddNew();
+      }
       SetProperties();
       return result;
     }

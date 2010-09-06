@@ -315,6 +315,8 @@
     <Compile Include="ValidationRules\ShortCircuitClasses.cs" />
     <Compile Include="ValidationRules\ShortCircuitTests.cs" />
     <Compile Include="ValidationRules\ValidationTests.cs" />
+    <Compile Include="ViewModelTests\TestViewModel.cs" />
+    <Compile Include="ViewModelTests\ViewModelTests.cs" />
     <Compile Include="Windows\EditablePerson.cs" />
     <Compile Include="Windows\PersonForm.cs">
       <SubType>Form</SubType>

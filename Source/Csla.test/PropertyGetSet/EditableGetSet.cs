@@ -129,14 +129,14 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert<object, string>(M07Property, value); }
     }
 
-    private static readonly PropertyInfo<string> _m08Property = RegisterProperty<string>(c => c.M08);
+    public static readonly PropertyInfo<string> _m08Property = RegisterProperty<string>(c => c.M08);
     internal string M08
     {
       get { return GetProperty(_m08Property); }
       set { SetProperty(_m08Property, value); }
     }
 
-    private static readonly PropertyInfo<string> _m09Property = RegisterProperty<string>(c => c.M09);
+    public static readonly PropertyInfo<string> _m09Property = RegisterProperty<string>(c => c.M09);
     private string M09
     {
       get { return GetProperty(_m09Property); }

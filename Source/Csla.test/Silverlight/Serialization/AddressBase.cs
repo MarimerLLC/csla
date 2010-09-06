@@ -14,7 +14,7 @@ namespace cslalighttest.Serialization
   [Serializable]
   public class AddressBase : BusinessBase<AddressBase>
   {
-    private static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(
+    public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(
       typeof(AddressBase),
       new PropertyInfo<string>("City"));
 

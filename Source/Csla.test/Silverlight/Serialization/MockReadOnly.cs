@@ -34,7 +34,7 @@ namespace cslalighttest.Serialization
 
     public MockReadOnly() { }
 
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(
       typeof(MockReadOnly),
       new PropertyInfo<int>("Id"));
 

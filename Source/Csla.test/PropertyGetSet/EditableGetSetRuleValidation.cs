@@ -41,7 +41,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region Properties
 
-    private static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, string.Empty, RelationshipTypes.PrivateField);
+    public static readonly PropertyInfo<System.String> _memberBackedIdProperty = RegisterProperty<System.String>(p => p.MemberBackedId, string.Empty, RelationshipTypes.PrivateField);
     private System.String _memberBackedId = _memberBackedIdProperty.DefaultValue;
     public System.String MemberBackedId
     {
@@ -49,7 +49,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty(_memberBackedIdProperty, ref _memberBackedId, value ); }
     }
 
-    private static readonly PropertyInfo<System.String> _memberBackedIdWithNoRelationshipTypesProperty = RegisterProperty<System.String>(p => p.MemberBackedIdWithNoRelationshipTypes, string.Empty);
+    public static readonly PropertyInfo<System.String> _memberBackedIdWithNoRelationshipTypesProperty = RegisterProperty<System.String>(p => p.MemberBackedIdWithNoRelationshipTypes, string.Empty);
     private System.String _memberBackedIdWithNoRelationshipTypes = _memberBackedIdWithNoRelationshipTypesProperty.DefaultValue;
     public System.String MemberBackedIdWithNoRelationshipTypes
     {
@@ -57,7 +57,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty(_memberBackedIdWithNoRelationshipTypesProperty, ref _memberBackedIdWithNoRelationshipTypes, value); }
     }
 
-    private static readonly PropertyInfo<System.String> _idProperty = RegisterProperty<System.String>(p => p.Id, string.Empty);
+    public static readonly PropertyInfo<System.String> _idProperty = RegisterProperty<System.String>(p => p.Id, string.Empty);
     public System.String Id
     {
       get { return GetProperty(_idProperty); }

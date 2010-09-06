@@ -18,19 +18,19 @@ namespace cslalighttest.Serialization
   {
     static Person() { }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(
       typeof(Person),
       new PropertyInfo<string>("Name"));
 
-    private static readonly PropertyInfo<DateTime> BirthdateProperty = RegisterProperty<DateTime>(
+    public static readonly PropertyInfo<DateTime> BirthdateProperty = RegisterProperty<DateTime>(
       typeof(Person),
       new PropertyInfo<DateTime>("Birthdate"));
 
-    private static readonly PropertyInfo<AddressList> AddressesProperty = RegisterProperty<AddressList>(
+    public static readonly PropertyInfo<AddressList> AddressesProperty = RegisterProperty<AddressList>(
       typeof(Person),
       new PropertyInfo<AddressList>("Addresses"));
 
-    private static readonly PropertyInfo<Address> PrimaryAddressProperty = RegisterProperty<Address>(
+    public static readonly PropertyInfo<Address> PrimaryAddressProperty = RegisterProperty<Address>(
       typeof(Person),
       new PropertyInfo<Address>("PrimaryAddress"));
 

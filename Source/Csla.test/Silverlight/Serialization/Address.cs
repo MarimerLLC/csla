@@ -18,7 +18,7 @@ namespace cslalighttest.Serialization
     {
       MarkAsChild();
     }
-    private static readonly PropertyInfo<string> ZipCodeProperty = RegisterProperty(
+    public static readonly PropertyInfo<string> ZipCodeProperty = RegisterProperty(
       typeof(Address),
       new PropertyInfo<string>("ZipCode"));
 

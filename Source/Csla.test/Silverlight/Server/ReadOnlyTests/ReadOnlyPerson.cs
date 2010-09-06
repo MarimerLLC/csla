@@ -21,11 +21,11 @@ namespace Csla.Testing.Business.ReadOnlyTest
     
     //public ReadOnlyPerson() { }
 
-    private static readonly PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(typeof(ReadOnlyPerson), new PropertyInfo<Guid>("Id"));
+    public static readonly PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(typeof(ReadOnlyPerson), new PropertyInfo<Guid>("Id"));
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(ReadOnlyPerson), new PropertyInfo<string>("Name"));
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(ReadOnlyPerson), new PropertyInfo<string>("Name"));
 
-    private static readonly PropertyInfo<DateTime> BirthdateProperty = RegisterProperty<DateTime>(
+    public static readonly PropertyInfo<DateTime> BirthdateProperty = RegisterProperty<DateTime>(
       typeof(ReadOnlyPerson),
       new PropertyInfo<DateTime>("Birthdate"));
 

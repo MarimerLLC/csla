@@ -778,13 +778,13 @@ namespace Csla.Test.PropertyGetSet
       get { return ReadProperty(NameProperty); }
     }
 
-    private static readonly PropertyInfo<string> _originalNameProperty = RegisterProperty<string>(c => c.OriginalName);
+    public static readonly PropertyInfo<string> _originalNameProperty = RegisterProperty<string>(c => c.OriginalName);
     internal string OriginalName
     {
       get { return ReadProperty(_originalNameProperty); }
     }
 
-    private static readonly PropertyInfo<string> _originalNamePrivateProperty = RegisterProperty<string>(c => c.OriginalNamePrivate);
+    public static readonly PropertyInfo<string> _originalNamePrivateProperty = RegisterProperty<string>(c => c.OriginalNamePrivate);
     private string OriginalNamePrivate
     {
       get { return ReadProperty(_originalNamePrivateProperty); }

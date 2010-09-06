@@ -24,9 +24,9 @@ namespace cslalighttest.Serialization
       return person;
     }
 
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(PersonWIthSmartDateField), new PropertyInfo<string>("Name"));
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(typeof(PersonWIthSmartDateField), new PropertyInfo<string>("Name"));
 
-    private static readonly PropertyInfo<SmartDate> BirthdateProperty = RegisterProperty<SmartDate>(
+    public static readonly PropertyInfo<SmartDate> BirthdateProperty = RegisterProperty<SmartDate>(
       typeof(PersonWIthSmartDateField),
       new PropertyInfo<SmartDate>("Birthdate"));
 

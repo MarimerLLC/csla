@@ -798,16 +798,17 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void BeginAddNew()
     {
-      var iobl = (Model as IObservableBindingList);
-      if (iobl != null)
+      // In SL (for Csla 4.0.x) it will always be an IBindingList 
+      var ibl = (Model as IBindingList);
+      if (ibl != null)
       {
-        iobl.AddNew();
+        ibl.AddNew();
       }
       else
       {
-        // else try to use as BindingList
-        var ibl = ((IBindingList)Model);
-        ibl.AddNew();
+        // else try to use as IObservableBindingList
+        var iobl = ((IObservableBindingList)Model);
+        iobl.AddNew();
       }
       SetProperties();
     }

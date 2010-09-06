@@ -362,7 +362,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
     }
 
     /// <summary>
@@ -378,7 +378,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, relationship));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, relationship));
     }
 
     /// <summary>
@@ -393,7 +393,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
     }
 
     /// <summary>
@@ -410,7 +410,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName, relationship));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, relationship));
     }
 
     /// <summary>
@@ -426,7 +426,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
     }
 
     /// <summary>
@@ -444,7 +444,7 @@ namespace Csla
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(new PropertyInfo<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship));
+      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship));
     }
 
     #endregion

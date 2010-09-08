@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------using System;
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Security.Principal;
 using System.Threading;
@@ -27,7 +26,6 @@ namespace Csla.Test.Threading
   [TestClass]
   public class BackgroundWorkerTests : TestBase
   {
-
     #region Additional test attributes
     // 
     //You can use the following additional attributes as you write your tests:
@@ -35,24 +33,20 @@ namespace Csla.Test.Threading
     private static CultureInfo _originalCulture;
     private static CultureInfo _originalUICulture;
 
-    [ClassInitialize]
-    public static void ClassInit(TestContext context)
-    {
-      BackgroundWorkerSyncContextHelper.Init();
-    }
-
-    [ClassCleanup]
-    public static void ClassCleanup()
-    {
-      BackgroundWorkerSyncContextHelper.Cleanup();
-    }
-
     [TestInitialize]
     public void Setup()
     {
       _originalPrincipal = Csla.ApplicationContext.User;
       _originalCulture = Thread.CurrentThread.CurrentCulture;
       _originalUICulture = Thread.CurrentThread.CurrentUICulture;
+
+      Csla.ApplicationContext.User = new MyPrincipal();
+      Csla.ApplicationContext.ClientContext["BWTEST"] = "TEST";
+      Csla.ApplicationContext.GlobalContext["BWTEST"] = "TEST";
+
+      Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("FR");
+      Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("FR");
+
     }
 
     [TestCleanup]
@@ -64,6 +58,19 @@ namespace Csla.Test.Threading
       Thread.CurrentThread.CurrentUICulture = _originalUICulture;
     }
 
+    //
+    //Use TestInitialize to run code before running each test
+    //[TestInitialize()]
+    //public void MyTestInitialize()
+    //{
+    //}
+    //
+    //Use TestCleanup to run code after each test has run
+    //[TestCleanup()]
+    //public void MyTestCleanup()
+    //{
+    //}
+    //
     #endregion
 
     /// <summary>
@@ -89,59 +96,34 @@ namespace Csla.Test.Threading
     [TestMethod]
     public void BackgroundWorker_RunWorkerAsync_CallsDoWorkAndWorkerCompleted()
     {
-
+      var threadid = Thread.CurrentThread.ManagedThreadId;
       using (UnitTestContext context = GetContext())
       {
-        BackgroundWorkerSyncContextHelper.DoTests(() =>
-        {
+        bool doWorkCalled = false;
 
-          var UIThreadid = Thread.CurrentThread.ManagedThreadId;
+        BackgroundWorker target = new BackgroundWorker();
+        target.DoWork += (o, e) =>
+                           {
+                             doWorkCalled = true;
 
-          _originalPrincipal = Csla.ApplicationContext.User;
-          _originalCulture = Thread.CurrentThread.CurrentCulture;
-          _originalUICulture = Thread.CurrentThread.CurrentUICulture;
-          Csla.ApplicationContext.User = new MyPrincipal();
-          Csla.ApplicationContext.ClientContext["BWTEST"] = "TEST";
-          Csla.ApplicationContext.GlobalContext["BWTEST"] = "TEST";
+                             // make sure that user, clientcontext, globalcontext, currentCulture and currentUIculture are sent 
+                             context.Assert.IsFalse(threadid == Thread.CurrentThread.ManagedThreadId);
+                             context.Assert.IsTrue(Csla.ApplicationContext.User is MyPrincipal);
+                             context.Assert.AreEqual("TEST", Csla.ApplicationContext.GlobalContext["BWTEST"]);
+                             context.Assert.AreEqual("TEST", Csla.ApplicationContext.ClientContext["BWTEST"]);
 
-
-          Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("FR");
-          Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("FR");
-
-          BackgroundWorker target = new BackgroundWorker();
-          bool doWorkCalled = false;
-
-          target.DoWork += (o, e) =>
-          {
-            doWorkCalled = true;
-            context.Assert.IsFalse(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-
-            // make sure that user, clientcontext, globalcontext, currentCulture and currentUIculture are sent 
-            context.Assert.IsTrue(Csla.ApplicationContext.User is MyPrincipal);
-            context.Assert.AreEqual("TEST", Csla.ApplicationContext.GlobalContext["BWTEST"]);
-            context.Assert.AreEqual("TEST", Csla.ApplicationContext.ClientContext["BWTEST"]);
-            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());
-            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentUICulture.Name.ToUpper());
-          };
-          target.RunWorkerCompleted += (o, e) =>
-          {
-            // assert that this callback comes on the "UI" thread 
-            context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-            context.Assert.IsNull(e.Error);
-            context.Assert.IsTrue(doWorkCalled, "Do work has been called");
-            context.Assert.Success();
-          };
-          target.RunWorkerAsync(null);
-
-
-          while (target.IsBusy)
-          {
-            // this is the equvalent to Application.DoEvents in Windows Forms 
-            BackgroundWorkerSyncContextHelper.PumpDispatcher();
-          }
-
-          context.Complete();
-        });
+                             context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());
+                             context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentUICulture.Name.ToUpper());
+                           };
+        target.RunWorkerCompleted += (o, e) =>
+                                       {
+                                         context.Assert.IsTrue(threadid == Thread.CurrentThread.ManagedThreadId);
+                                         context.Assert.IsNull(e.Error);
+                                         context.Assert.IsTrue(doWorkCalled, "Do work has been called");
+                                         context.Assert.Success();
+                                       };
+        target.RunWorkerAsync(null);
+        context.Complete();
       }
     }
 
@@ -152,47 +134,37 @@ namespace Csla.Test.Threading
     [TestMethod]
     public void BackgroundWorker_RunWorkerAsync_ReportsProgress()
     {
+      var threadid = Thread.CurrentThread.ManagedThreadId;
       using (UnitTestContext context = GetContext())
       {
-        BackgroundWorkerSyncContextHelper.DoTests(() =>
-        {
 
-          var UIThreadid = Thread.CurrentThread.ManagedThreadId;
-          int numTimesProgressCalled = 0;
+        int numTimesProgressCalled = 0;
 
-          BackgroundWorker target = new BackgroundWorker();
-          target.DoWork += (o, e) =>
-                              {
-                                // report progress changed 10 times
-                                for (int i = 1; i < 11; i++)
-                                {
-                                  target.ReportProgress(i*10);
-                                }
-                                e.Result = new object();
-                              };
-          target.WorkerReportsProgress = true;
-          target.ProgressChanged += (o, e) =>
-                                      {
-                                        context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-                                        numTimesProgressCalled++;
-                                      };
-          target.RunWorkerCompleted += (o, e) =>
-                                          {
-                                            context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-                                            context.Assert.IsNull(e.Error);
-                                            context.Assert.IsTrue(numTimesProgressCalled == 10,"ReportProgress has been called 10 times");
-                                            context.Assert.Success();
-                                          };
-          target.RunWorkerAsync(null);
-
-          while (target.IsBusy)
-          {
-            // this is the equvalent to Application.DoEvents in Windows Forms 
-            BackgroundWorkerSyncContextHelper.PumpDispatcher();
-          }
-
-          context.Complete();
-        });
+        BackgroundWorker target = new BackgroundWorker();
+        target.DoWork += (o, e) =>
+                           {
+                             // report progress changed 10 times
+                             for (int i = 1; i < 11; i++)
+                             {
+                               target.ReportProgress(i * 10);
+                             }
+                             e.Result = new object();
+                           };
+        target.WorkerReportsProgress = true;
+        target.ProgressChanged += (o, e) =>
+                                    {
+                                      numTimesProgressCalled++;
+                                      context.Assert.IsTrue(threadid == Thread.CurrentThread.ManagedThreadId);
+                                    };
+        target.RunWorkerCompleted += (o, e) =>
+                                       {
+                                         context.Assert.IsTrue(threadid == Thread.CurrentThread.ManagedThreadId);
+                                         context.Assert.IsNull(e.Error);
+                                         context.Assert.IsTrue(numTimesProgressCalled == 10, "ReportProgress has been called 10 times");
+                                         context.Assert.Success();
+                                       };
+        target.RunWorkerAsync(null);
+        context.Complete();
       }
     }
 
@@ -295,7 +267,6 @@ namespace Csla.Test.Threading
         {
           context.Assert.Fail(ex);
         }
-        context.Complete();
       }
     }
   }

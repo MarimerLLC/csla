@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
+#define DEBUG
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,10 @@ namespace Csla.Xaml
 
       var targetMethod = target.GetType().GetMethod(MethodName);
       if (targetMethod == null)
+      {
+        System.Diagnostics.Debug.WriteLine("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), this.DataContext.GetType());
         throw new MissingMethodException(MethodName);
+      }
 
       var pCount = targetMethod.GetParameters().Length;
       try
@@ -177,7 +181,7 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty TriggerEventProperty =
       DependencyProperty.Register("TriggerEvent", typeof(string),
-      typeof(TriggerAction), new PropertyMetadata("Click", (o, e) => 
+      typeof(TriggerAction), new PropertyMetadata("Click", (o, e) =>
       {
         var ta = (TriggerAction)o;
         ta.HookEvent(ta.TargetControl, (string)e.OldValue, ta.TargetControl, (string)e.NewValue);

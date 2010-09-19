@@ -33,7 +33,7 @@ namespace Csla
     /// </summary>
     public static IContextManager ContextManager
     {
-      get 
+      get
       {
         if (_contextManager == null)
         {
@@ -44,7 +44,7 @@ namespace Csla
         }
         if (_contextManager == null || !_contextManager.IsValid)
           _contextManager = new ApplicationContextManager();
-        return _contextManager; 
+        return _contextManager;
       }
       set { _contextManager = value; }
     }
@@ -209,7 +209,7 @@ namespace Csla
     /// </remarks>
     public static string AuthenticationType
     {
-      get 
+      get
       {
         if (_authenticationType == null)
         {
@@ -331,10 +331,11 @@ namespace Csla
     /// <value>The data portal URL string.</value>
     public static string DataPortalUrlString
     {
-      get { 
-        if (_dataPortalUrl == null) 
+      get
+      {
+        if (_dataPortalUrl == null)
         {
-          _dataPortalUrl =  ConfigurationManager.AppSettings["CslaDataPortalUrl"];
+          _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
         }
         return _dataPortalUrl;
       }
@@ -535,7 +536,7 @@ namespace Csla
 
     #region In-Memory Settings
 
-    private static ExecutionLocations _executionLocation = 
+    private static ExecutionLocations _executionLocation =
       ExecutionLocations.Client;
 
     /// <summary>
@@ -552,6 +553,27 @@ namespace Csla
       _executionLocation = location;
     }
 
+    /// <summary>
+    /// The default RuleSet name 
+    /// </summary>
+    public const string DefaultRuleSet = "default";
+
+    /// <summary>
+    /// Gets or sets the RuleSet name to use for static HasPermission calls.
+    /// </summary>
+    /// <value>The rule set.</value>
+    public static string RuleSet
+    {
+      get
+      {
+        var ruleSet = ApplicationContext.ClientContext["__ruleSet"] as string;
+        return string.IsNullOrEmpty(ruleSet) ? ApplicationContext.DefaultRuleSet : ruleSet;
+      }
+      set
+      {
+        ApplicationContext.ClientContext["__ruleSet"] = value;
+      }
+    }
     #endregion
 
     #region Logical Execution Location
@@ -573,14 +595,14 @@ namespace Csla
       /// </summary>
       Server
     }
-    
+
     /// <summary>
     /// Gets a value indicating the logical execution location
     /// of the currently executing code.
     /// </summary>
     public static LogicalExecutionLocations LogicalExecutionLocation
     {
-      get 
+      get
       {
         if (LocalContext.Contains("__logicalExecutionLocation"))
           return (LogicalExecutionLocations)LocalContext["__logicalExecutionLocation"];
@@ -588,7 +610,7 @@ namespace Csla
           return LogicalExecutionLocations.Client;
       }
     }
-    
+
     internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
     {
       LocalContext["__logicalExecutionLocation"] = location;

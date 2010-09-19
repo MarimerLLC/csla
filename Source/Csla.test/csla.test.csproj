@@ -97,6 +97,7 @@
     <Compile Include="AppContext\SimpleRoot.cs" />
     <Compile Include="AppDomainTests\AppDomainTests.cs" />
     <Compile Include="Authorization\AuthTests.cs" />
+    <Compile Include="Authorization\PermissionsRoot2.cs" />
     <Compile Include="Authorization\PerTypeAuthClasses.cs" />
     <Compile Include="Authorization\PerTypeAuthorization.cs" />
     <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />

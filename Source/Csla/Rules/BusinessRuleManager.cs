@@ -23,6 +23,8 @@ namespace Csla.Rules
 
     internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
     {
+      if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
+
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
       return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
     }
@@ -31,6 +33,8 @@ namespace Csla.Rules
 
     internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
     {
+      if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;
+
       BusinessRuleManager result = null;
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
       if (!_perTypeRules.TryGetValue(key, out result))
@@ -52,6 +56,7 @@ namespace Csla.Rules
     internal static BusinessRuleManager GetRulesForType(Type type)
     {
       return GetRulesForType(type, null);
+
     }
 
     private class RuleSetKey

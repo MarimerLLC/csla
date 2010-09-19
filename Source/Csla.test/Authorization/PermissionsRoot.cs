@@ -8,6 +8,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Core;
+using Csla.Rules;
+using Csla.Rules.CommonRules;
 using Csla.Serialization;
 using Csla.DataPortalClient;
 using System.Diagnostics;
@@ -63,6 +66,15 @@ namespace Csla.Test.Security
 
     #region Authorization
 
+
+    public static void AddObjectAuthorizationRules()
+    {
+      // add rules for default ruleset
+      BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
+      BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
+      BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+    }
+
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
@@ -74,7 +86,7 @@ namespace Csla.Test.Security
 
     #region "Constructors"
 #if SILVERLIGHT
-      public PermissionsRoot() { }
+    public PermissionsRoot() { }
 #else
 
     private PermissionsRoot()
@@ -87,10 +99,10 @@ namespace Csla.Test.Security
     #region "factory methods"
 
 #if SILVERLIGHT
-        public static PermissionsRoot NewPermissionsRoot()
-        {
-            return new PermissionsRoot();
-        }
+    public static PermissionsRoot NewPermissionsRoot()
+    {
+      return new PermissionsRoot();
+    }
 #else
     public static PermissionsRoot NewPermissionsRoot()
     {

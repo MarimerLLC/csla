@@ -377,6 +377,28 @@ namespace Csla
       _executionLocation = location;
     }
 
+    /// <summary>
+    /// The default RuleSet name 
+    /// </summary>
+    public const string DefaultRuleSet = "default";
+
+    /// <summary>
+    /// Gets or sets the RuleSet name to use for static HasPermission calls.
+    /// </summary>
+    /// <value>The rule set.</value>
+    public static string RuleSet
+    {
+      get
+      {
+        var ruleSet = ApplicationContext.ClientContext["__ruleSet"] as string;
+        return string.IsNullOrEmpty(ruleSet) ? ApplicationContext.DefaultRuleSet : ruleSet;
+      }
+      set
+      {
+        ApplicationContext.ClientContext["__ruleSet"] = value;
+      }
+    }
+
     #endregion
 
     #region Logical Execution Location

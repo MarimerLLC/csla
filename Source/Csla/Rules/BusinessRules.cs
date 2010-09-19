@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Linq;
+using Csla.Reflection;
 using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
@@ -21,10 +22,10 @@ namespace Csla.Rules
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification
 #if SILVERLIGHT
-    , IUndoableObject
+, IUndoableObject
 #endif
   {
-    [NonSerialized] 
+    [NonSerialized]
     private object SyncRoot = new object();
 
     // list of broken rules for this business object.
@@ -70,18 +71,18 @@ namespace Csla.Rules
     /// </summary>
     public string RuleSet
     {
-      get { return string.IsNullOrEmpty(_ruleSet) ? "default" : _ruleSet; }
-      set 
+      get { return string.IsNullOrEmpty(_ruleSet) ? ApplicationContext.DefaultRuleSet : _ruleSet; }
+      set
       {
         _typeRules = null;
         _typeAuthRules = null;
-        _ruleSet = value == "default" ? null : value; 
+        _ruleSet = value == ApplicationContext.DefaultRuleSet ? null : value;
       }
     }
 
     [NonSerialized]
     private BusinessRuleManager _typeRules;
-    private BusinessRuleManager TypeRules
+    internal BusinessRuleManager TypeRules
     {
       get
       {
@@ -93,7 +94,7 @@ namespace Csla.Rules
 
     [NonSerialized]
     private AuthorizationRuleManager _typeAuthRules;
-    private AuthorizationRuleManager TypeAuthRules
+    internal AuthorizationRuleManager TypeAuthRules
     {
       get
       {
@@ -183,7 +184,7 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     public static void AddRule(Type objectType, IAuthorizationRule rule)
     {
-      AddRule(objectType, rule, null);
+      AddRule(objectType, rule, ApplicationContext.RuleSet);
     }
 
     /// <summary>
@@ -269,7 +270,22 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     public static bool HasPermission(AuthorizationActions action, Type objectType)
     {
-      return HasPermission(action, null, objectType);
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermission(action, null, objectType, ApplicationContext.RuleSet);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="ruleSet">The rule set.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool HasPermission(AuthorizationActions action, Type objectType, string ruleSet)
+    {
+      return HasPermission(action, null, objectType, ruleSet);
     }
 
     /// <summary>
@@ -279,11 +295,26 @@ namespace Csla.Rules
     /// <param name="obj">Business object instance.</param>
     public static bool HasPermission(AuthorizationActions action, object obj)
     {
-      return HasPermission(action, obj, obj.GetType());
+      return HasPermission(action, obj, obj.GetType(), ApplicationContext.RuleSet);
     }
 
-    private static bool HasPermission(AuthorizationActions action, object obj, Type objType)
+    /// <summary>
+    /// Checks per-instance authorization rules.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="obj">Business object instance.</param>
+    /// <param name="ruleSet">The rule set.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
+    /// </returns>
+    public static bool HasPermission(AuthorizationActions action, object obj, string ruleSet)
     {
+      return HasPermission(action, obj, obj.GetType(), ruleSet);
+    }
+
+    private static bool HasPermission(AuthorizationActions action, object obj, Type objType, string ruleSet)
+    {
+
       if (action == AuthorizationActions.ReadProperty ||
           action == AuthorizationActions.WriteProperty ||
           action == AuthorizationActions.ExecuteMethod)
@@ -291,7 +322,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(objType).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
+        AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
       if (rule != null)
       {
         var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType };
@@ -319,7 +350,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(Target.GetType()).Rules.
+        TypeAuthRules.Rules.
         Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
       if (rule != null)
       {
@@ -564,8 +595,8 @@ namespace Csla.Rules
           {
             // explicit short-circuiting
             if ((from r in context.Results
-                        where r.StopProcessing == true
-                        select r).FirstOrDefault() != null)
+                 where r.StopProcessing == true
+                 select r).FirstOrDefault() != null)
               break;
           }
         }

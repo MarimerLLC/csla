@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Rules;
 using Csla.Test.Security;
 using UnitDriven;
 using System.Diagnostics;
@@ -31,7 +32,14 @@ namespace Csla.Test.Authorization
   [TestClass()]
     public class AuthTests
     {
+
         private DataPortal.DpRoot root = DataPortal.DpRoot.NewRoot();
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+          ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+        }
 
         [TestMethod()]
         public void TestAuthCloneRules()
@@ -356,6 +364,78 @@ namespace Csla.Test.Authorization
         //    pr.FirstName = "something";
         //    something = pr.FirstName;
         //}
+
+        [TestMethod] 
+        public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
+        {
+          var root = PermissionsRoot.NewPermissionsRoot();
+          Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+#if SILVERLIGHT
+          Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
+          Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
+#else
+          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+#endif
+
+         //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
+         //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
+         //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+
+          // implicit usage of ApplicationContext.RuleSet
+          ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+          Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+          ApplicationContext.RuleSet = "custom1";
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+          ApplicationContext.RuleSet = "custom2";
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+
+          ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+
+          // directly specifying which ruleset to use
+          Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), ApplicationContext.DefaultRuleSet));
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1"));
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
+
+          Csla.Test.Security.TestPrincipal.SimulateLogout();
+        }
+
+        [TestMethod]
+        public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
+        {
+          var root = PermissionsRoot2.NewPermissionsRoot();
+          Csla.Test.Security.TestPrincipal.SimulateLogin();
+
+#if SILVERLIGHT
+          Assert.IsTrue(Csla.ApplicationContext.User.IsInRole("Admin"));
+          Assert.IsFalse(Csla.ApplicationContext.User.IsInRole("User"));
+#else
+          Assert.IsTrue(System.Threading.Thread.CurrentPrincipal.IsInRole("Admin"));
+          Assert.IsFalse(System.Threading.Thread.CurrentPrincipal.IsInRole("User"));
+#endif
+
+          //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User"), ApplicationContext.DefaultRuleSet);
+          //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "Admin"), "custom1");
+          //BusinessRules.AddRule(typeof(PermissionsRoot), new IsInRole(AuthorizationActions.DeleteObject, "User", "Admin"), "custom2");
+
+          // implicit usage of ApplicationContext.RuleSet
+          ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+          Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+          ApplicationContext.RuleSet = "custom1";
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+          ApplicationContext.RuleSet = "custom2";
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+
+          ApplicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
+
+          // directly specifying which ruleset to use
+          Assert.IsFalse(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), ApplicationContext.DefaultRuleSet));
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1"));
+          Assert.IsTrue(BusinessRules.HasPermission(AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2"));
+
+          Csla.Test.Security.TestPrincipal.SimulateLogout();
+        }
 
 
     }

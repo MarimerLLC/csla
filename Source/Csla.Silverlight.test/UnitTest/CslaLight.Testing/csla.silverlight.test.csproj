@@ -117,6 +117,9 @@
     <Compile Include="..\..\..\csla.test\Authorization\PermissionsRoot.cs">
       <Link>Authorization\PermissionsRoot.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Authorization\PermissionsRoot2.cs">
+      <Link>Authorization\PermissionsRoot2.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\Authorization\PerTypeAuthClasses.cs">
       <Link>Authorization\PerTypeAuthClasses.cs</Link>
     </Compile>

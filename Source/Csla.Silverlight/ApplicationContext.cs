@@ -81,7 +81,7 @@ namespace Csla
       {
         if (_localContext == null)
           lock (_syncLocalContext)
-            if(_localContext == null)
+            if (_localContext == null)
               _localContext = new ContextDictionary();
 
         return _localContext;
@@ -91,7 +91,7 @@ namespace Csla
     #endregion
 
     #region Client/Global Context
-    
+
     private static object _syncClientContext = new object();
 
     /// <summary>
@@ -143,7 +143,7 @@ namespace Csla
       {
         if (_clientContext == null)
           lock (_syncClientContext)
-            if(_clientContext == null)
+            if (_clientContext == null)
               _clientContext = new ContextDictionary();
 
         return _clientContext;
@@ -171,7 +171,7 @@ namespace Csla
       {
         if (_globalContext == null)
           lock (_syncGlobalContext)
-            if(_globalContext == null)
+            if (_globalContext == null)
               _globalContext = new ContextDictionary();
 
         return _globalContext;
@@ -390,7 +390,11 @@ namespace Csla
     {
       get
       {
-        var ruleSet = ApplicationContext.ClientContext["__ruleSet"] as string;
+        object value;
+        string ruleSet = null;
+
+        if (ClientContext.TryGetValue("__ruleSet", out value))
+          ruleSet = value as string;
         return string.IsNullOrEmpty(ruleSet) ? ApplicationContext.DefaultRuleSet : ruleSet;
       }
       set

@@ -132,6 +132,9 @@
     <Compile Include="..\..\..\csla.test\Authorization\ReadOnlyPerson.cs">
       <Link>Authorization\ReadOnlyPerson.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Authorization\RootException.cs">
+      <Link>Authorization\RootException.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Csla.test\BusinessListBase\BusinessListBaseTests.cs">
       <Link>BusinessListBase\BusinessListBaseTests.cs</Link>
     </Compile>
@@ -386,6 +389,9 @@
     </Compile>
     <Compile Include="..\..\..\Csla.test\ValidationRules\RuleDescriptionTests.cs">
       <Link>Validation\RuleDescriptionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Csla.test\ValidationRules\RuleTests.cs">
+      <Link>Validation\RuleTests.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csla.test\ValidationRules\SeverityClasses.cs">
       <Link>Validation\SeverityClasses.cs</Link>

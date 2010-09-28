@@ -102,6 +102,7 @@
     <Compile Include="Authorization\PerTypeAuthorization.cs" />
     <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />
     <Compile Include="Authorization\ReadOnlyPerson.cs" />
+    <Compile Include="Authorization\RootException.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />
@@ -312,6 +313,7 @@
     <Compile Include="ValidationRules\HasRulesManager2.partial.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
     <Compile Include="ValidationRules\RuleDescriptionTests.cs" />
+    <Compile Include="ValidationRules\RuleTests.cs" />
     <Compile Include="ValidationRules\SeverityClasses.cs" />
     <Compile Include="ValidationRules\SeverityTests.cs" />
     <Compile Include="ValidationRules\ShortCircuitClasses.cs" />

@@ -73,12 +73,21 @@ namespace Csla.Rules
 
             // Only call AddObjectAuthorizationRules when there are no rules for this type
             if (RulesExistForType(type)) return;
-
-            // invoke method to add auth roles
-            var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
-            System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
-            if (method != null)
-              method.Invoke(null, null);
+            try
+            {
+              // invoke method to add auth roles
+              var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic |
+                          BindingFlags.FlattenHierarchy;
+              System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
+              if (method != null)
+                method.Invoke(null, null);
+            }
+            catch (Exception)
+            {
+              // remove all loaded rules for this type
+              CleanupRulesForType(type);
+              throw;  // and rethrow the exception
+            }
           }
     }
 
@@ -90,7 +99,32 @@ namespace Csla.Rules
 #if !SILVERLIGHT
         return _perTypeRules.Value.Count(value => value.Key.Type == type) > 1;
 #else
+
         return (_perTypeRules.Count(value => value.Key.Type == type)) > 1;
+#endif
+      }
+
+    }
+
+    private static void CleanupRulesForType(Type type)
+    {
+      lock (_perTypeRules)
+      {
+
+        // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
+#if !SILVERLIGHT
+        var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
+        foreach (var key in typeRules)
+        {
+          AuthorizationRuleManager manager;
+          _perTypeRules.Value.TryRemove(key.Key, out manager);
+        }
+#else
+        var typeRules = _perTypeRules.Where(value => value.Key.Type == type).ToArray();
+        foreach (var key in typeRules)
+        {
+          _perTypeRules.Remove(key.Key);
+        }
 #endif
       }
     }

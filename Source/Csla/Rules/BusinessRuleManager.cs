@@ -53,6 +53,34 @@ namespace Csla.Rules
 
 #endif
 
+
+    /// <summary>
+    /// Remove/delete all the rules for the given type.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    internal static void CleanupRulesForType(Type type)
+    {
+      lock (_perTypeRules)
+      {
+
+        // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
+#if !SILVERLIGHT
+        var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
+        foreach (var key in typeRules)
+        {
+          BusinessRuleManager manager;
+          _perTypeRules.Value.TryRemove(key.Key, out manager);
+        }
+#else
+        var typeRules = _perTypeRules.Where(value => value.Key.Type == type).ToArray();
+        foreach (var key in typeRules)
+        {
+          _perTypeRules.Remove(key.Key);
+        }
+#endif
+      }
+    }
+
     internal static BusinessRuleManager GetRulesForType(Type type)
     {
       return GetRulesForType(type, null);

@@ -74,10 +74,8 @@ namespace Csla.Server
                 {
                     if (target != null)
                         target.DataPortal_OnDataPortalException(eventArgs, ex);
-                    else
-                        obj.CallMethodIfImplemented(
-                          "DataPortal_OnDataPortalException",
-                          eventArgs, ex);
+                    else if (obj != null)
+                        obj.CallMethodIfImplemented("DataPortal_OnDataPortalException",eventArgs, ex);
                 }
                 catch
                 {
@@ -148,10 +146,8 @@ namespace Csla.Server
                 {
                     if (target != null)
                         target.DataPortal_OnDataPortalException(eventArgs, ex);
-                    else
-                        obj.CallMethodIfImplemented(
-                          "DataPortal_OnDataPortalException",
-                          eventArgs, ex);
+                    else if (obj != null)
+                        obj.CallMethodIfImplemented("DataPortal_OnDataPortalException",eventArgs, ex);
                 }
                 catch
                 {
@@ -260,9 +256,7 @@ namespace Csla.Server
                         target.DataPortal_OnDataPortalException(
                           new DataPortalEventArgs(context, objectType, operation), ex);
                     else
-                        lb.CallMethodIfImplemented(
-                          "DataPortal_OnDataPortalException",
-                          new DataPortalEventArgs(context, objectType, operation), ex);
+                        lb.CallMethodIfImplemented("DataPortal_OnDataPortalException", new DataPortalEventArgs(context, objectType, operation), ex);
                 }
                 catch
                 {
@@ -317,10 +311,8 @@ namespace Csla.Server
                 {
                     if (target != null)
                         target.DataPortal_OnDataPortalException(eventArgs, ex);
-                    else
-                        obj.CallMethodIfImplemented(
-                          "DataPortal_OnDataPortalException",
-                          eventArgs, ex);
+                    else if (obj != null)
+                        obj.CallMethodIfImplemented("DataPortal_OnDataPortalException",eventArgs, ex);
                 }
                 catch
                 {

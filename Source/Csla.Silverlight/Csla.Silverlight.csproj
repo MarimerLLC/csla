@@ -470,6 +470,8 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
+    <Compile Include="Rules\BrokenRulesTree.cs" />
+    <Compile Include="Rules\BrukenRulesNode.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">

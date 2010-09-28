@@ -34,7 +34,7 @@ namespace Csla.Test.Silverlight.ApplicationContext
     [TestInitialize]
     public void Setup()
     {
-      _currentPrincipal = Csla.ApplicationContext.User;
+      
     }
 
     [TestCleanup]

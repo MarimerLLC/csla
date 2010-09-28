@@ -149,6 +149,7 @@
     <Compile Include="Security\SilverlightPrincipal.server.cs" />
     <Compile Include="Security\SilverlightWindowsIdentity.cs" />
     <Compile Include="TestProxies\AppDomainProxy.cs" />
+    <Compile Include="Validation\RootThrowsException.cs" />
     <Compile Include="ViewModelTests\TestBindingList.cs" />
     <Compile Include="ViewModelTests\TestBusinessBindingList.cs" />
     <Compile Include="ViewModelTests\TestChild.cs" />

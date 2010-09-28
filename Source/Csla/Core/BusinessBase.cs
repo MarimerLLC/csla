@@ -999,7 +999,16 @@ namespace Csla.Core
           if (!rules.Initialized)
           {
             rules.Initialized = true;
-            AddBusinessRules();
+
+            try
+            {
+              AddBusinessRules();
+            }
+            catch (Exception)
+            {
+              BusinessRuleManager.CleanupRulesForType(this.GetType());
+              throw;  // and rethrow exception
+            }
           }
     }
 

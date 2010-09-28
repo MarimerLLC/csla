@@ -6,7 +6,10 @@
 // <summary>Tracks the business rules for a business object.</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections;
+using System.ComponentModel;
 using System.Linq;
+using Csla.Core.FieldManager;
 using Csla.Reflection;
 using Csla.Serialization;
 using System.Collections.Generic;
@@ -837,5 +840,7 @@ namespace Csla.Rules
     }
 
     #endregion
+
+
   }
 }

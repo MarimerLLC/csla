@@ -42,11 +42,11 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable()]
-  public abstract class ReadOnlyBase<T> : BindableBase, 
-    ICloneable, 
-    IReadOnlyObject, 
+  public abstract class ReadOnlyBase<T> : BindableBase,
+    ICloneable,
+    IReadOnlyObject,
     ISerializationNotification,
-    IAuthorizeReadWrite, 
+    IAuthorizeReadWrite,
     IDataPortalTarget,
     IManageProperties,
     INotifyBusy,
@@ -1464,6 +1464,10 @@ namespace Csla
       LoadProperty(propertyInfo, newValue);
     }
 
+    FieldDataManager IManageProperties.FieldManager
+    {
+      get { return FieldManager; }
+    }
     #endregion
 
     #region MobileFormatter

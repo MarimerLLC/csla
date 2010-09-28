@@ -841,6 +841,73 @@ namespace Csla.Rules
 
     #endregion
 
+    #region Get All Broken Rules (tree)
+
+    /// <summary>
+    /// Gets all broken rules for an object graph.
+    /// </summary>
+    /// <param name="root">The root.</param>
+    /// <returns></returns>
+    public static BrokenRulesTree GetAllBrokenRules(object root)
+    {
+      var list = new BrokenRulesTree();
+      long counter = 1;
+      AddNodeToBrukenRules(ref list, ref counter, null, root);
+
+      return list;
+    }
+
+    private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj)
+    {
+      // is this a single editable object 
+      if (obj is Csla.Core.BusinessBase)
+      {
+        var nodeKey = counter++;
+        var bo = (Csla.Core.BusinessBase)obj;
+        if (!bo.IsValid)
+        {
+          list.Add(new BrukenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj });
+        }
+
+        // uses MethodCaller to get the protected property FieldManager 
+        var fdm = ((IManageProperties)bo).FieldManager;
+
+        // get managed child properties 
+        foreach (var child in fdm.GetChildren())
+        {
+          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child);
+        }
+
+        //// is there registered private properties of RelationShipType child? 
+        //var props = fdm.GetRegisteredProperties();
+        //foreach (var propertyInfo in props)
+        //{
+        //  if (((propertyInfo.RelationshipType & RelationshipTypes.Child) > 0) &&
+        //      ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) > 0))
+        //  {
+        //    AddNodeToBrukenRules(ref list, obj, ((IManageProperties) obj).ReadProperty(propertyInfo));
+        //  }
+        //}
+      }
+
+        // or a list og EditableObject (both BindingList and ObservableCollection)
+      else if (obj is IEditableCollection)
+      {
+        var nodeKey = counter++;
+        var isValid = ((ITrackStatus)obj).IsValid;
+        if (isValid) return; // exit if object is valid 
+
+        list.Add(new BrukenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj });
+
+        foreach (object child in (IEnumerable)obj)
+        {
+          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child);
+        }
+      }
+      return;
+    }
+
+    #endregion
 
   }
 }

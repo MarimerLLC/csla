@@ -3102,6 +3102,10 @@ namespace Csla.Core
       LoadProperty(propertyInfo, newValue);
     }
 
+    FieldDataManager IManageProperties.FieldManager
+    {
+      get { return FieldManager; }
+    }
     #endregion
 
     #region MobileFormatter

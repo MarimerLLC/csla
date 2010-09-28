@@ -171,6 +171,12 @@
     <Compile Include="Rules\AuthorizationRule.cs" />
     <Compile Include="Rules\AuthorizationRuleManager.cs" />
     <Compile Include="Rules\AuthorizationRules.cs" />
+    <Compile Include="Rules\BrokenRulesTree.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Rules\BrukenRulesNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Rules\BusinessRule.cs" />
     <Compile Include="Rules\BusinessRuleManager.cs" />
     <Compile Include="Rules\BusinessRules.cs" />

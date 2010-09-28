@@ -255,6 +255,12 @@
     <Compile Include="..\Csla\Rules\BrokenRulesCollection.cs">
       <Link>Rules\BrokenRulesCollection.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\BrokenRulesTree.cs">
+      <Link>Rules\BrokenRulesTree.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\BrukenRulesNode.cs">
+      <Link>Rules\BrukenRulesNode.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\BusinessRules.cs">
       <Link>Rules\BusinessRules.cs</Link>
     </Compile>
@@ -470,8 +476,6 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
-    <Compile Include="Rules\BrokenRulesTree.cs" />
-    <Compile Include="Rules\BrukenRulesNode.cs" />
     <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">

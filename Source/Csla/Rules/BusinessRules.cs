@@ -847,7 +847,7 @@ namespace Csla.Rules
     /// Gets all broken rules for an object graph.
     /// </summary>
     /// <param name="root">The root.</param>
-    /// <returns></returns>
+    /// <returns>BrukenRulesTree list</returns>
     public static BrokenRulesTree GetAllBrokenRules(object root)
     {
       var list = new BrokenRulesTree();
@@ -869,11 +869,8 @@ namespace Csla.Rules
           list.Add(new BrukenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj });
         }
 
-        // uses MethodCaller to get the protected property FieldManager 
-        var fdm = ((IManageProperties)bo).FieldManager;
-
         // get managed child properties 
-        foreach (var child in fdm.GetChildren())
+        foreach (var child in ((IManageProperties)bo).GetChildren())
         {
           AddNodeToBrukenRules(ref list, ref counter, nodeKey, child);
         }

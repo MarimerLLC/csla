@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Csla.Core;
 
 namespace Csla.Silverlight.Security
-{  
+{
   //[MobileFactory("Csla.Security.IdentityFactory,Csla", "FetchWindowsIdentity")]
   /// <summary>
   /// Base class to simplify the retrieval of Windows identity
@@ -34,7 +34,7 @@ namespace Csla.Silverlight.Security
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-    public WindowsIdentity() 
+    public WindowsIdentity()
     {
       _forceInit = _forceInit + 0;
     }
@@ -97,7 +97,11 @@ namespace Csla.Silverlight.Security
 
     #region  IsInRole
 
+    /// <summary>
+    /// Property info for Roles property
+    /// </summary>
     public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(new PropertyInfo<MobileList<string>>("Roles"));
+
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
@@ -134,7 +138,11 @@ namespace Csla.Silverlight.Security
       }
     }
 
+    /// <summary>
+    /// Property info for IsAuthenticated property
+    /// </summary>
     public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(new PropertyInfo<bool>("IsAuthenticated"));
+
     /// <summary>
     /// Returns a value indicating whether this identity
     /// represents an authenticated user.
@@ -147,7 +155,11 @@ namespace Csla.Silverlight.Security
       }
     }
 
+    /// <summary>
+    /// Property info for Name property
+    /// </summary>
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(new PropertyInfo<string>("Name"));
+
     /// <summary>
     /// Returns the name of the user.
     /// </summary>

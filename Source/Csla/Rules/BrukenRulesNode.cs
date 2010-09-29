@@ -12,7 +12,7 @@ using System.Text;
 namespace Csla.Rules
 {
   /// <summary>
-  // Holds broken rules for an Node in the BrokenRulesTree.
+  /// Holds broken rules for an Node in the BrokenRulesTree.
   /// </summary>
   public class BrukenRulesNode
   {

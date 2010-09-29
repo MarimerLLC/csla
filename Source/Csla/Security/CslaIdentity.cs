@@ -33,7 +33,7 @@ namespace Csla.Security
   /// a .NET identity object for use with BusinessPrincipalBase.
   /// </summary>
   [Serializable]
-  public abstract class CslaIdentityBase<T> : 
+  public abstract class CslaIdentityBase<T> :
     ReadOnlyBase<T>, IIdentity, ICheckRoles
     where T : CslaIdentityBase<T>
   {
@@ -73,9 +73,10 @@ namespace Csla.Security
     #region  IsInRole
 
     /// <summary>
-    /// Gets or sets the list of roles for this user.
+    /// Property info for Roles property
     /// </summary>
     public static readonly PropertyInfo<MobileList<string>> RolesProperty = RegisterProperty<MobileList<string>>(c => c.Roles);
+
     /// <summary>
     /// Gets or sets the list of roles for this user.
     /// </summary>
@@ -98,7 +99,11 @@ namespace Csla.Security
 
     #region  IIdentity
 
+    /// <summary>
+    /// Property info for Authentication property
+    /// </summary>
     public static readonly PropertyInfo<string> AuthenticationTypeProperty = RegisterProperty<string>(c => c.AuthenticationType, "AuthenticationType", "Csla");
+
     /// <summary>
     /// Gets the authentication type for this identity.
     /// </summary>
@@ -108,7 +113,12 @@ namespace Csla.Security
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
     public static readonly PropertyInfo<bool> IsAuthenticatedProperty = RegisterProperty<bool>(c => c.IsAuthenticated);
+
     /// <summary>
     /// Gets a value indicating whether this identity represents
     /// an authenticated user.
@@ -119,7 +129,11 @@ namespace Csla.Security
       protected set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
     }
 
+    /// <summary>
+    /// Property info for Name property
+    /// </summary>
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+
     /// <summary>
     /// Gets the username value.
     /// </summary>

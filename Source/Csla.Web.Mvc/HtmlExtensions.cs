@@ -89,7 +89,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization member action and underlyiong object type.
     /// </summary>
-    /// <typeparam name="T">CSLA object type for which the member action is applied.</typeparam>
     /// <param name="htmlHelper">The HTML helper instance that this method extends.</param>
     /// <param name="action">AuthorizationActions for which the authorization is required.</param>
     /// <param name="target">CSLA object instance.</param>
@@ -119,7 +118,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization member action and underlyiong object type.
     /// </summary>
-    /// <typeparam name="T">CSLA object type for which the member action is applied.</typeparam>
     /// <param name="htmlHelper">The HTML helper instance that this method extends.</param>
     /// <param name="action">AuthorizationActions for which the authorization is required.</param>
     /// <param name="target">CSLA object instance.</param>
@@ -149,7 +147,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization member action and underlyiong object type.
     /// </summary>
-    /// <typeparam name="T">CSLA object type for which the member action is applied.</typeparam>
     /// <param name="htmlHelper">The HTML helper instance that this method extends.</param>
     /// <param name="action">AuthorizationActions for which the authorization is required.</param>
     /// <param name="target">CSLA object instance.</param>
@@ -199,7 +196,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Conditionally render HTML output according to the provided authorization member action and underlyiong object type.
     /// </summary>
-    /// <typeparam name="T">CSLA object type for which the member action is applied.</typeparam>
     /// <param name="htmlHelper">The HTML helper instance that this method extends.</param>
     /// <param name="action">AuthorizationActions for which the authorization is required.</param>
     /// <param name="target">CSLA object instance.</param>

@@ -22,6 +22,6 @@ namespace Csla.Core
     void SetProperty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue);
-    FieldDataManager FieldManager { get; }
+    List<object> GetChildren();
   }
 }

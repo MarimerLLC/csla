@@ -1464,9 +1464,9 @@ namespace Csla
       LoadProperty(propertyInfo, newValue);
     }
 
-    FieldDataManager IManageProperties.FieldManager
+    List<object> IManageProperties.GetChildren()
     {
-      get { return FieldManager; }
+      return FieldManager.GetChildren();
     }
     #endregion
 

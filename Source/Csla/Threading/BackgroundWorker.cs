@@ -274,7 +274,6 @@ namespace Csla.Threading
       // set the background worker thread context
       SetThreadContext(request);
 
-      object result = null;
       try
       {
         var doWorkEventArgs = new DoWorkEventArgs(request.Argument);
@@ -332,8 +331,8 @@ namespace Csla.Threading
     /// <summary>
     /// Raises the <see cref="E:System.ComponentModel.BackgroundWorker.ProgressChanged"/> event.
     /// </summary>
-    /// <param name="percentProgress">The percentage, from 0 to 100, of the background operation that is complete.</param>
-    /// <param name="userState">The state object passed to <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync(System.Object)"/>.</param>
+    /// <param name="sender">The sender.</param>
+    /// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
     /// <exception cref="T:System.InvalidOperationException">
     /// The <see cref="P:System.ComponentModel.BackgroundWorker.WorkerReportsProgress"/> property is set to false.
     /// </exception>

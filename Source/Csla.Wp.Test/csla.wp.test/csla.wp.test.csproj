@@ -62,6 +62,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Csla.test\Authorization\PermissionsRoot2.cs">
+      <Link>Authorization\PermissionsRoot2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Csla.test\Authorization\RootException.cs">
+      <Link>Authorization\RootException.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>

@@ -159,7 +159,12 @@ namespace Csla.Core.FieldManager
         // DataAnnotations attribute.
         var display = propertyInfo.GetCustomAttributes(typeof(DisplayAttribute), true).OfType<DisplayAttribute>().FirstOrDefault();
         if (display != null)
+#if WINDOWS_PHONE
+          name = display.Name;
+#else
           name = display.GetName();
+#endif
+
 #if !SILVERLIGHT
         else
         {

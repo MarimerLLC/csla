@@ -212,6 +212,12 @@
     <Compile Include="..\Csla\Rules\BrokenRulesCollection.cs">
       <Link>Rules\BrokenRulesCollection.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\BrokenRulesTree.cs">
+      <Link>Rules\BrokenRulesTree.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\BrukenRulesNode.cs">
+      <Link>Rules\BrukenRulesNode.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\BusinessRules.cs">
       <Link>Rules\BusinessRules.cs</Link>
     </Compile>

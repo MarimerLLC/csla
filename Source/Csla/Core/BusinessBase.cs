@@ -1039,7 +1039,7 @@ namespace Csla.Core
       OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
     }
 
-    void Rules.IHostRules.RuleComplete(IPropertyInfo property)
+    void IHostRules.RuleComplete(IPropertyInfo property)
     {
       OnPropertyChanged(property);
       OnBusyChanged(new BusyChangedEventArgs(property.Name, false));

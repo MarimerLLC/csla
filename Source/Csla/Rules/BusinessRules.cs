@@ -509,9 +509,8 @@ namespace Csla.Rules
                   foreach (var result in r.Results)
                   {
                     BrokenRules.SetBrokenRule(result);
-                    if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
-                      anyRuleBroken = true;
                   }
+
                 // mark each property as not busy
                 foreach (var item in r.Rule.AffectedProperties)
                 {
@@ -524,7 +523,7 @@ namespace Csla.Rules
                   _target.AllRulesComplete();
               }
             }
-            else
+            else  // Rule is Sync 
             {
               // update output values
               if (r.OutputPropertyValues != null)
@@ -532,12 +531,16 @@ namespace Csla.Rules
                   ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
               // update broken rules list
               if (r.Results != null)
+              {
                 foreach (var result in r.Results)
                 {
                   BrokenRules.SetBrokenRule(result);
-                  if (!rule.IsAsync && !result.Success && result.Severity == RuleSeverity.Error)
-                    anyRuleBroken = true;
                 }
+                // is any rules here broken with severity Error
+                if (r.Results.Where(p => !p.Success && p.Severity == RuleSeverity.Error).Any())
+                  anyRuleBroken = true;
+              }
+
               complete = true;
             }
           });
@@ -592,14 +595,11 @@ namespace Csla.Rules
           affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
           // copy output property names
           if (context.OutputPropertyValues != null)
-            foreach (var item in context.OutputPropertyValues)
-              affectedProperties.Add(item.Key.Name);
+            affectedProperties.AddRange(context.OutputPropertyValues.Select(item => item.Key.Name));
           if (context.Results != null)
           {
             // explicit short-circuiting
-            if ((from r in context.Results
-                 where r.StopProcessing == true
-                 select r).FirstOrDefault() != null)
+            if (context.Results.Where(r => r.StopProcessing).Any())
               break;
           }
         }

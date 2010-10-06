@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Csla.Core;
 using Csla.Rules;
 
@@ -20,6 +21,7 @@ namespace BusinessRuleDemo
       : base(primaryProperty)
     {
       CompareTo = compareToProperty;
+      IsAsync = true;
 
       if (InputProperties == null)
       {
@@ -37,6 +39,8 @@ namespace BusinessRuleDemo
     {
       var value1 = (dynamic)context.InputPropertyValues[PrimaryProperty];
       var value2 = (dynamic)context.InputPropertyValues[CompareTo];
+
+      Thread.Sleep(1000);
 
       if (value1 > value2)
       {

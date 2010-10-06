@@ -18,6 +18,8 @@ namespace BusinessRuleDemo
     public CalcSum(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
+      IsAsync = true;
+
       if (InputProperties == null)
       {
         InputProperties = new List<IPropertyInfo>();

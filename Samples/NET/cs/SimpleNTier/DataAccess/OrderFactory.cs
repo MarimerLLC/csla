@@ -11,13 +11,10 @@ namespace DataAccess
 {
   public class OrderFactory : ObjectFactory
   {
-    private static int _lastId;
-
     public Order Create()
     {
       var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
-      var id = System.Threading.Interlocked.Decrement(ref _lastId);
-      LoadProperty(obj, Order.IdProperty, id);
+      LoadProperty(obj, Order.IdProperty, -1);
       MarkNew(obj);
       CheckRules(obj);
       return obj;
@@ -26,14 +23,48 @@ namespace DataAccess
     public Order Fetch(int id)
     {
       var obj = (Order)MethodCaller.CreateInstance(typeof(Order));
+      var item = (from r in MockDb.Orders
+                  where r.Id == id
+                  select r).First();
       using (BypassPropertyChecks(obj))
       {
-        LoadProperty(obj, Order.IdProperty, id);
-        LoadProperty(obj, Order.CustomerNameProperty, "Test name");
+        LoadProperty(obj, Order.IdProperty, item.Id);
+        LoadProperty(obj, Order.CustomerNameProperty, item.CustomerName);
         var lif = new LineItemFactory();
-        lif.FetchItems(obj.LineItems);
+        LoadProperty(obj, Order.LineItemsProperty, lif.FetchItems(id));
       }
       MarkOld(obj);
+      return obj;
+    }
+
+    public OrderList FetchList()
+    {
+      var obj = (OrderList)MethodCaller.CreateInstance(typeof(OrderList));
+      obj.RaiseListChangedEvents = false;
+
+      obj.AddRange(from r in MockDb.Orders
+                   select GetOrderInfo(r.Id, r.CustomerName));
+
+      obj.RaiseListChangedEvents = true;
+      return obj;
+    }
+
+    private OrderInfo GetOrderInfo(int id, string customerName)
+    {
+      var obj = (OrderInfo)MethodCaller.CreateInstance(typeof(OrderInfo));
+      LoadProperty(obj, OrderInfo.IdProperty, id);
+      LoadProperty(obj, OrderInfo.CustomerNameProperty, customerName);
+      return obj;
+    }
+
+    public OrderInfo FetchInfo(int id)
+    {
+      var obj = (OrderInfo)MethodCaller.CreateInstance(typeof(OrderInfo));
+      var item = (from r in MockDb.Orders
+                  where r.Id == id
+                  select r).First();
+      LoadProperty(obj, OrderInfo.IdProperty, item.Id);
+      LoadProperty(obj, OrderInfo.CustomerNameProperty, item.CustomerName);
       return obj;
     }
 
@@ -44,6 +75,7 @@ namespace DataAccess
         if (!obj.IsNew)
         {
           // delete data
+          Delete(obj.Id);
           return Create();
         }
         MarkNew(obj);
@@ -53,11 +85,15 @@ namespace DataAccess
         if (obj.IsNew)
         {
           // insert data
-          LoadProperty(obj, Order.IdProperty, System.Math.Abs(obj.Id));
+          var id = MockDb.Orders.Max(r => r.Id) + 1;
+          LoadProperty(obj, Order.IdProperty, id);
+          MockDb.Orders.Add(new OrderData { Id = id, CustomerName = obj.CustomerName });
         }
         else
         {
           // update data
+          var item = MockDb.Orders.Where(r => r.Id == obj.Id).First();
+          item.CustomerName = obj.CustomerName;
         }
         var lif = new LineItemFactory();
         lif.UpdateItems(obj.LineItems);
@@ -69,6 +105,12 @@ namespace DataAccess
     public void Delete(int id)
     {
       // delete data
+      var lineItems = from r in MockDb.LineItems
+                      where r.OrderId == id
+                      select r;
+      foreach (var item in lineItems.ToList())
+        MockDb.LineItems.Remove(item);
+      MockDb.Orders.Remove((MockDb.Orders.Where(r => r.Id == id).First()));
     }
   }
 }

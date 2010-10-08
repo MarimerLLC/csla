@@ -50,9 +50,6 @@ namespace BusinessLibrary
     }
 
 #if !SILVERLIGHT
-    private Order()
-    { /* require use of factory methods */ }
-
     public static Order NewOrder()
     {
       return DataPortal.Create<Order>();
@@ -61,6 +58,11 @@ namespace BusinessLibrary
     public static Order GetOrder(int id)
     {
       return DataPortal.Fetch<Order>(id);
+    }
+
+    public static void DeleteOrder(int id)
+    {
+      DataPortal.Delete<Order>(id);
     }
 #endif
   }

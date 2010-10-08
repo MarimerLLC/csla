@@ -71,6 +71,8 @@
     <Compile Include="LineItem.cs" />
     <Compile Include="LineItems.cs" />
     <Compile Include="Order.cs" />
+    <Compile Include="OrderInfo.cs" />
+    <Compile Include="OrderList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

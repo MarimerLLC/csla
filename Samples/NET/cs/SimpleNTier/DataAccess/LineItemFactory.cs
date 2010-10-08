@@ -20,18 +20,21 @@ namespace DataAccess
       return obj;
     }
 
-    internal void FetchItems(LineItems obj)
+    internal LineItems FetchItems(int orderId)
     {
+      var obj = (LineItems)MethodCaller.CreateInstance(typeof(LineItems));
       var rlce = obj.RaiseListChangedEvents;
       obj.RaiseListChangedEvents = false;
-      obj.Add(Fetch(1, "Line 1"));
-      obj.Add(Fetch(2, "Line Test"));
-      obj.Add(Fetch(3, "Line 112"));
-      obj.Add(Fetch(4, "Line as1"));
+
+      obj.AddRange(from r in MockDb.LineItems
+                   where r.OrderId == orderId
+                   select GetLineItem(r.Id, r.Name));
+
       obj.RaiseListChangedEvents = rlce;
+      return obj;
     }
 
-    private LineItem Fetch(int id, string name)
+    private LineItem GetLineItem(int id, string name)
     {
       var obj = (LineItem)MethodCaller.CreateInstance(typeof(LineItem));
       MarkAsChild(obj);

@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LineItemFactory.cs" />
+    <Compile Include="MockDb.cs" />
     <Compile Include="OrderFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

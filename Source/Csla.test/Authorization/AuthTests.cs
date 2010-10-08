@@ -11,6 +11,8 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.Text;
+using Csla;
+using Csla.Serialization;
 using Csla.Rules;
 using Csla.Test.Security;
 using UnitDriven;
@@ -491,5 +493,44 @@ namespace Csla.Test.Authorization
       Assert.IsTrue(RootException.Counter == 2);
     }
 
+    [TestMethod]
+    public void AuthorizeRemoveFromList()
+    {
+      var root = new RootList();
+      root.RemoveAt(0);
+    }
+  }
+
+  [Serializable]
+  public class RootList : BusinessListBase<RootList, ChildItem>
+  {
+    public RootList()
+    {
+      RaiseListChangedEvents = false;
+      Add(Csla.DataPortal.CreateChild<ChildItem>());
+      RaiseListChangedEvents = true;
+    }
+  }
+
+  [Serializable]
+  public class ChildItem : BusinessBase<ChildItem>
+  {
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new NoAuth(AuthorizationActions.DeleteObject));
+    }
+
+    private class NoAuth : Csla.Rules.AuthorizationRule
+    {
+      public NoAuth(AuthorizationActions action)
+        : base(action)
+      {}
+
+      protected override void Execute(AuthorizationContext context)
+      {
+        context.HasPermission = false;
+      }
+    }
   }
 }

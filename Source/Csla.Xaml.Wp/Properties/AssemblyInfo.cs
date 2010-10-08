@@ -1,6 +1,14 @@
-﻿using System.Reflection;
+﻿//-----------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Markup;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -33,3 +41,6 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 [assembly: AssemblyVersion("4.1.0.0")]
 [assembly: AssemblyFileVersion("4.1.0.0")]
+
+[assembly: XmlnsDefinition("http://schemas.lhotka.net/4.1.0/xaml", "Csla")]
+[assembly: XmlnsPrefix("http://schemas.lhotka.net/4.1.0/xaml", "csla")]

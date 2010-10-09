@@ -23,7 +23,9 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="254*" />
     </Grid.RowDefinitions>
-    <ListBox Name="listBox1" ItemTemplate="{StaticResource PersonItem}" ItemsSource="{Binding}" Grid.RowSpan="1" Grid.Row="1" />
+    <ListBox Name="listBox1" 
+             ItemTemplate="{StaticResource PersonItem}" 
+             ItemsSource="{Binding}" Grid.RowSpan="1" Grid.Row="1" />
     <StackPanel Grid.RowSpan="1" Name="stackPanel1" Orientation="Horizontal" DataContext="{Binding Source={StaticResource listPersonsViewModelViewSource}}">
       <Button Content="Save" Name="SaveButton" MinWidth="80" Margin="3" IsEnabled="{Binding Path=CanSave}" />
       <Button Content="Cancel" Name="CancelButton" MinWidth="80" Margin="3" IsEnabled="{Binding Path=CanCancel}" />

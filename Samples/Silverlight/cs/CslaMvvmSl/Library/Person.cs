@@ -11,7 +11,6 @@ namespace Library
   {
     public static PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-    private int _id;
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -24,6 +23,28 @@ namespace Library
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new SpaceRequired(NameProperty));
+    }
+
+    private class SpaceRequired : Csla.Rules.BusinessRule
+    {
+      public SpaceRequired(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        InputProperties = new System.Collections.Generic.List<Csla.Core.IPropertyInfo> { PrimaryProperty };
+      }
+
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var val = (string)context.InputPropertyValues[PrimaryProperty];
+        if (!val.Contains(" "))
+          context.AddErrorResult("Value must contain a space");
+      }
     }
 
     #region Factory Methods

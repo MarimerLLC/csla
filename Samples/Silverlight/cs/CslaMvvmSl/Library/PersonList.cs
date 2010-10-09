@@ -11,9 +11,11 @@ namespace Library
 
     public static void GetPersonList(EventHandler<DataPortalResult<PersonList>> callback)
     {
-      var dp = new DataPortal<PersonList>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch();
+      //var dp = new DataPortal<PersonList>();
+      //dp.FetchCompleted += callback;
+      //dp.BeginFetch();
+
+      DataPortal.BeginFetch<PersonList>(callback);
     }
 
     #endregion

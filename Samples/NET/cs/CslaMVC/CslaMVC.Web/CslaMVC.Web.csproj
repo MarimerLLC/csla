@@ -45,7 +45,8 @@
     <Reference Include="Csla.Web">
       <HintPath>..\..\..\..\..\Bin\Debug\Server\Csla.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Web.Mvc">
+    <Reference Include="Csla.Web.Mvc, Version=4.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Bin\Debug\Server\Csla.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System" />

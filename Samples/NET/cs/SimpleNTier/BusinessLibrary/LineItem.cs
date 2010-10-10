@@ -24,10 +24,5 @@ namespace BusinessLibrary
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
-
-#if !SILVERLIGHT
-    private LineItem()
-    { }
-#endif
   }
 }

@@ -65,14 +65,23 @@ namespace MvcUI.Controllers
     // POST: /Order/Edit/5
 
     [HttpPost]
-    public ActionResult Edit(int id, BusinessLibrary.Order item)
+    public ActionResult Edit(int id, FormCollection collection)
     {
-      LoadProperty(item, BusinessLibrary.Order.IdProperty, id);
-      if (SaveObject<BusinessLibrary.Order>(item, true))
+      var item = BusinessLibrary.Order.GetOrder(id);
+      try
       {
-        return RedirectToAction("Index");
+        UpdateModel(item, collection);
+        if (SaveObject<BusinessLibrary.Order>(item, true))
+        {
+          return RedirectToAction("Index");
+        }
+        else
+        {
+          ViewData.Model = item;
+          return View();
+        }
       }
-      else
+      catch
       {
         ViewData.Model = item;
         return View();

@@ -25,6 +25,13 @@ namespace BusinessLibrary
       private set { LoadProperty(CustomerNameProperty, value); }
     }
 
+    public static readonly PropertyInfo<int> LineItemCountProperty = RegisterProperty<int>(c => c.LineItemCount);
+    public int LineItemCount
+    {
+      get { return GetProperty(LineItemCountProperty); }
+      private set { LoadProperty(LineItemCountProperty, value); }
+    }
+
     public static void GetOrderInfo(int id, EventHandler<DataPortalResult<OrderInfo>> callback)
     {
       DataPortal.BeginFetch<OrderInfo>(id, callback);

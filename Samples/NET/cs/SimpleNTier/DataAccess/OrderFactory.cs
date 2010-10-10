@@ -65,6 +65,8 @@ namespace DataAccess
                   select r).First();
       LoadProperty(obj, OrderInfo.IdProperty, item.Id);
       LoadProperty(obj, OrderInfo.CustomerNameProperty, item.CustomerName);
+      var itemCount = MockDb.LineItems.Where(r => r.OrderId == item.Id).Count();
+      LoadProperty(obj, OrderInfo.LineItemCountProperty, itemCount);
       return obj;
     }
 
@@ -96,7 +98,7 @@ namespace DataAccess
           item.CustomerName = obj.CustomerName;
         }
         var lif = new LineItemFactory();
-        lif.UpdateItems(obj.LineItems);
+        lif.UpdateItems(obj, obj.LineItems);
         MarkOld(obj);
       }
       return obj;

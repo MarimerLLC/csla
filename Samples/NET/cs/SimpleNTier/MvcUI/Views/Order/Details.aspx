@@ -14,8 +14,11 @@
         <div class="display-label">Id</div>
         <div class="display-field"><%: Model.Id %></div>
         
-        <div class="display-label">CustomerName</div>
+        <div class="display-label">Customer Name</div>
         <div class="display-field"><%: Model.CustomerName %></div>
+
+        <div class="display-label">Line Items</div>
+        <div class="display-field"><%: Model.LineItemCount %></div>
         
     </fieldset>
     <p>

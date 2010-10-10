@@ -47,11 +47,27 @@ namespace DataAccess
       return obj;
     }
 
-    internal void UpdateItems(LineItems lineItems)
+    internal void UpdateItems(Order order, LineItems lineItems)
     {
-      GetDeletedList<LineItem>(lineItems).Clear();
+      var delList = GetDeletedList<LineItem>(lineItems);
+      foreach (var item in delList)
+        MockDb.LineItems.Remove(MockDb.LineItems.Where(r => r.Id == item.Id).First());
+      delList.Clear();
+
       foreach (var item in lineItems)
+      {
+        if (item.IsNew)
+        {
+          var data = new LineItemData { OrderId = order.Id, Id = item.Id, Name = item.Name };
+          MockDb.LineItems.Add(data);
+        }
+        else
+        {
+          var data = MockDb.LineItems.Where(r => r.Id == item.Id).First();
+          data.Name = item.Name;
+        }
         MarkOld(item);
+      }
     }
   }
 }

@@ -66,6 +66,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="clientaccesspolicy.xml" />
     <Content Include="ClientBin\SilverlightUI.xap" />
     <Content Include="Silverlight.js" />
     <Content Include="SilverlightUITestPage.aspx" />

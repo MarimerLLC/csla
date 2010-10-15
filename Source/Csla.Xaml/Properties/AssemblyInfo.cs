@@ -51,5 +51,5 @@ using System.Windows.Markup;
 
 [assembly: ThemeInfo(ResourceDictionaryLocation.SourceAssembly, ResourceDictionaryLocation.SourceAssembly)]
 
-[assembly: XmlnsDefinition("http://schemas.lhotka.net/4.1.0/xaml", "Csla")]
+[assembly: XmlnsDefinition("http://schemas.lhotka.net/4.1.0/xaml", "Csla.Xaml")]
 [assembly: XmlnsPrefix("http://schemas.lhotka.net/4.1.0/xaml", "csla")]

@@ -42,5 +42,5 @@ using System.Windows.Markup;
 [assembly: AssemblyVersion("4.1.0.0")]
 [assembly: AssemblyFileVersion("4.1.0.0")]
 
-[assembly: XmlnsDefinition("http://schemas.lhotka.net/4.1.0/xaml", "Csla")]
+[assembly: XmlnsDefinition("http://schemas.lhotka.net/4.1.0/xaml", "Csla.Xaml")]
 [assembly: XmlnsPrefix("http://schemas.lhotka.net/4.1.0/xaml", "csla")]

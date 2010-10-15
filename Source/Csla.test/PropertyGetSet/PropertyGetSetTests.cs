@@ -559,6 +559,10 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(Guid.Empty, root.M06, "Guid should be null");
     }
 
+#if !WINDOWS_PHONE
+// BUG: This method throws an exception during Type Initialization which causes Visual Studio
+// to crash if the debugger is attached to the emulator at the time this is run.
+// https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
@@ -592,6 +596,7 @@ namespace Csla.Test.PropertyGetSet
           throw;
       }
     }
+#endif
 
     #region Event Bubbling
 

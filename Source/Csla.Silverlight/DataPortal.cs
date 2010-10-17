@@ -163,6 +163,66 @@ namespace Csla
       dp.BeginCreate(criteria, userState);
     }
 
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="callback">Delegate reference to a method that is invoked
+    /// when the async operation is complete.</param>
+    /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
+    public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback,  ProxyModes proxyMode)
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>(proxyMode);
+      dp.CreateCompleted += callback;
+      dp.BeginCreate();
+    }
+
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="callback">Delegate reference to a method that is invoked
+    /// when the async operation is complete.</param>
+    /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
+    /// <param name="userState">User state object</param>
+    public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, ProxyModes proxyMode, object userState)
+      where T : IMobileObject
+    {
+      BeginCreate<T>(null, callback, proxyMode, userState);
+    }
+
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+    /// <param name="callback">Delegate reference to a method that is invoked
+    /// when the async operation is complete.</param>
+    /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
+    public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, ProxyModes proxyMode)
+      where T : IMobileObject
+    {
+      BeginCreate<T>(criteria, callback, proxyMode, null);
+    }
+
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">Type of business object.</typeparam>
+    /// <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+    /// <param name="callback">Delegate reference to a method that is invoked
+    /// when the async operation is complete.</param>
+    /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
+    /// <param name="userState">User state object</param>
+    public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, ProxyModes proxyMode, object userState)
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>(proxyMode);
+      dp.CreateCompleted += callback;
+      dp.BeginCreate(criteria, userState);
+    }
+
     #endregion
 
     #region Begin Fetch

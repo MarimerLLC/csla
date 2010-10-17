@@ -299,7 +299,7 @@ namespace Csla
     /// <param name="value">Item to find.</param>
     public int IndexOf(object value)
     {
-      return _baseCollection.IndexOf((T)value);
+      return _filteredCollection.IndexOf((T)value);
     }
 
     /// <summary>

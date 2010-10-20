@@ -6,7 +6,7 @@ using Bxf;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WpfUI
+namespace WpUI
 {
   public class MainWindowPresenter : DependencyObject
   {

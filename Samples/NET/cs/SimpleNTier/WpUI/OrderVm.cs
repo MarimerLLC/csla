@@ -4,18 +4,23 @@ using System.Linq;
 using System.Text;
 using Csla.Xaml;
 
-namespace WpfUI
+namespace WpUI
 {
   public class OrderVm : ViewModel<BusinessLibrary.Order>
   {
     public OrderVm()
     {
-      DoRefresh("NewOrder");
+      BeginRefresh("NewOrder");
     }
 
     protected override void OnError(Exception error)
     {
       Bxf.Shell.Instance.ShowError(error.Message, "Error");
+    }
+
+    public override void AddNew(object sender, ExecuteEventArgs e)
+    {
+      Model.LineItems.AddNew();
     }
   }
 }

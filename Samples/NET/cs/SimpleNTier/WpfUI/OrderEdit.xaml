@@ -27,6 +27,7 @@
       <Label Content="Customer Name:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
       <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="3" Name="customerNameTextBox" Text="{Binding Path=Model.CustomerName, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" VerticalAlignment="Center" Width="120" />
       <csla:PropertyStatus Grid.Column="2" Grid.Row="1" Property="{Binding Path=Model.CustomerName}" />
+      <csla:PropertyInfo Property="{Binding Path=Model.CustomerName}"/>
     </Grid>
     <DataGrid AutoGenerateColumns="False" EnableRowVirtualization="True" Height="174" HorizontalAlignment="Left" ItemsSource="{Binding Source={StaticResource orderVmViewSource}, Path=Model.LineItems}" Margin="20,114,0,0" Name="lineItemsDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" VerticalAlignment="Top" Width="268">
       <DataGrid.Columns>

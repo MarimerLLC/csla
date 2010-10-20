@@ -97,7 +97,7 @@ namespace Csla.Web.Mvc
 
     private class ObjectManager : Csla.Server.ObjectFactory
     {
-      public void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
+      public new void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
       {
         base.LoadProperty(obj, propertyInfo, newValue);
       }

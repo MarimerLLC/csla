@@ -306,7 +306,7 @@ namespace Csla.Xaml
           if (member.MemberType == MemberTypes.Field)
             prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
           else if (member.MemberType == MemberTypes.Property)
-            prop = ((PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
+            prop = ((System.Reflection.PropertyInfo)member).GetValue(childVisual, null) as DependencyProperty;
 
           if (prop != null)
           {

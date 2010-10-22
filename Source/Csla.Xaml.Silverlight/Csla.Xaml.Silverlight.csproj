@@ -86,6 +86,9 @@
     <Compile Include="..\Csla.Xaml\IViewModel.cs">
       <Link>IViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\PropertyStatus.cs">
       <Link>PropertyStatus.cs</Link>
     </Compile>

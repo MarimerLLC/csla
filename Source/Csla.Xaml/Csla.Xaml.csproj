@@ -66,6 +66,7 @@
     <Compile Include="IViewModel.cs" />
     <Compile Include="ObjectStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyInfo.cs" />
     <Compile Include="PropertyStatus.cs" />
     <Compile Include="TriggerAction.cs" />
     <Compile Include="ViewModel.cs" />

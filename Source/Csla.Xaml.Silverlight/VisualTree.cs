@@ -49,7 +49,7 @@ namespace Csla.Xaml
         propertyName = propertyName.Substring(0, start);
       }
 
-      PropertyInfo property = current.GetType().GetProperty(propertyName);
+      System.Reflection.PropertyInfo property = current.GetType().GetProperty(propertyName);
       if (property == null)
         throw new InvalidOperationException(string.Format(
           Resources.PropertyNameDoesNotExist,

@@ -62,6 +62,9 @@
     <Compile Include="..\Csla.Xaml\IViewModel.cs">
       <Link>IViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\TriggerAction.cs">
       <Link>TriggerAction.cs</Link>
     </Compile>

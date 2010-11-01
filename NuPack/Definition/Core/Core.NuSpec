@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA .NET - Core</id>
+    <version>4.0.1.0</version>
+    <category>Framework</category>
+    <authors>
+      <author>Marimer LLC</author>
+    </authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <language>en-US</language>
+    <keywords>CSLA, Core, Busness Objects, Framework, Component, Scalable, Rockford Lhota, Rocky</keywords>
+    <homepage>http://www.lhotka.net/cslanet/</homepage>
+    <created>2010-10-16T11:45:00.0000+10:00</created>
+    <modified>2010-10-16T11:45:00.0000+10:00</modified>
+  </metadata>
+</package>

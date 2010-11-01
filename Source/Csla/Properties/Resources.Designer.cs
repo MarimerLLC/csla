@@ -124,15 +124,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Array is multi-dimensional.
-        /// </summary>
-        public static string ArrayIsMultiDimensional {
-            get {
-                return ResourceManager.GetString("ArrayIsMultiDimensional", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
         /// </summary>
         public static string AuthenticationProviderDoesNotImplementIAuthorizeDataPortal {
@@ -156,15 +147,6 @@ namespace Csla.Properties {
         public static string BindingSourceNotProvided {
             get {
                 return ResourceManager.GetString("BindingSourceNotProvided", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Merge only allowed on custom collection objects.
-        /// </summary>
-        public static string BrokenRulesMergeException {
-            get {
-                return ResourceManager.GetString("BrokenRulesMergeException", resourceCulture);
             }
         }
         
@@ -196,38 +178,11 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot have &apos;member&apos; == &apos;member&apos; in an expression.
-        /// </summary>
-        public static string CannotHaveMemberEqualsMemberInAnExpression {
-            get {
-                return ResourceManager.GetString("CannotHaveMemberEqualsMemberInAnExpression", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cannot serialize collections not of type IMobileObject.
         /// </summary>
         public static string CannotSerializeCollectionsNotOfIMobileObject {
             get {
                 return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are not authorized to read this field.
-        /// </summary>
-        public static string CanReadAuthorizationRuleDescription {
-            get {
-                return ResourceManager.GetString("CanReadAuthorizationRuleDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are not authorized to write to this field.
-        /// </summary>
-        public static string CanWriteAuthorizationRuleDescription {
-            get {
-                return ResourceManager.GetString("CanWriteAuthorizationRuleDescription", resourceCulture);
             }
         }
         
@@ -403,15 +358,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The expression type {0} is not supported to obtain a value.
-        /// </summary>
-        public static string ExpressionTypeNotSupportedToObtainValue {
-            get {
-                return ResourceManager.GetString("ExpressionTypeNotSupportedToObtainValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Factory type or assembly could not be loaded ({0}).
         /// </summary>
         public static string FactoryTypeNotFoundException {
@@ -466,15 +412,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GetIdValue must not return Nothing.
-        /// </summary>
-        public static string GetIdValueCantBeNull {
-            get {
-                return ResourceManager.GetString("GetIdValueCantBeNull", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Target object must implement IEditableCollection.
         /// </summary>
         public static string IEditableCollectionRequiredException {
@@ -502,15 +439,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index is out of range.
-        /// </summary>
-        public static string IndexIsOutOfRange {
-            get {
-                return ResourceManager.GetString("IndexIsOutOfRange", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Insert is an invalid operation.
         /// </summary>
         public static string InsertInvalidException {
@@ -525,15 +453,6 @@ namespace Csla.Properties {
         public static string InsertNotSupportedException {
             get {
                 return ResourceManager.GetString("InsertNotSupportedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Invalid rule method (instance methods of the target object not allowed).
-        /// </summary>
-        public static string InvalidRuleMethodException {
-            get {
-                return ResourceManager.GetString("InvalidRuleMethodException", resourceCulture);
             }
         }
         
@@ -736,15 +655,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Null array reference.
-        /// </summary>
-        public static string NullArrayReference {
-            get {
-                return ResourceManager.GetString("NullArrayReference", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Can not set property if data object is not null.
         /// </summary>
         public static string ObjectNotNull {
@@ -768,24 +678,6 @@ namespace Csla.Properties {
         public static string ObjectTypeCouldNotBeLoaded {
             get {
                 return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Parent value can only be set for child objects.
-        /// </summary>
-        public static string ParentSetException {
-            get {
-                return ResourceManager.GetString("ParentSetException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type parameter must be a primitive type.
-        /// </summary>
-        public static string PrimitiveTypeRequired {
-            get {
-                return ResourceManager.GetString("PrimitiveTypeRequired", resourceCulture);
             }
         }
         
@@ -1024,33 +916,6 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unhandled binding type &apos;{0}&apos;.
-        /// </summary>
-        public static string UnhandledBindingType {
-            get {
-                return ResourceManager.GetString("UnhandledBindingType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unhandled expression type: &apos;{0}&apos;.
-        /// </summary>
-        public static string UnhandledExpressionType {
-            get {
-                return ResourceManager.GetString("UnhandledExpressionType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Can not use unregistered property. Call RegisterProperty() for property {0}.
-        /// </summary>
-        public static string UnRegisteredPropertyException {
-            get {
-                return ResourceManager.GetString("UnRegisteredPropertyException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
         /// </summary>
         public static string UpdateMethodNameNotSpecified {
@@ -1074,15 +939,6 @@ namespace Csla.Properties {
         public static string UserNotAuthorizedException {
             get {
                 return ResourceManager.GetString("UserNotAuthorizedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Validation rule {1} failed in property {0}.
-        /// </summary>
-        public static string ValidationRulesException {
-            get {
-                return ResourceManager.GetString("ValidationRulesException", resourceCulture);
             }
         }
         

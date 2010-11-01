@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -624,6 +624,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.ru.resx">
       <Link>Properties\Resources.ru.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.tr.resx">
+      <Link>Properties\Resources.tr.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.sr.resx">
       <Link>Properties\Resources.sr.resx</Link>

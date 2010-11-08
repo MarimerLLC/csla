@@ -433,6 +433,7 @@
     <Compile Include="Validation\HasRulesManager2.partial.cs" />
     <Compile Include="ViewModelTests\TestViewModel.cs" />
     <Compile Include="ViewModelTests\ViewModelTests.cs" />
+    <Compile Include="ViewModelTests\ViewModelTestsSync.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

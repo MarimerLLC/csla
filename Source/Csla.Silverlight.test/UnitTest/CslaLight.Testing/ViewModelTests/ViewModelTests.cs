@@ -101,5 +101,6 @@ namespace cslalighttest.ViewModelTests
         Debug.WriteLine(ex.ToString());
       }
     }
+
   }
 }

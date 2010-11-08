@@ -39,5 +39,23 @@ namespace Csla.Test.ViewModelTests
       Assert.IsTrue(viewModel.Model.Count() == 2);
 
     }
+
+    [TestMethod]
+    public void ViewModel_CheckAccess_WithNoListModel()
+    {
+      var viewModel = new TestViewModel<TestBusinessBindingList>();
+
+      // unless otherwise set all object level permissions are true
+      Assert.IsTrue(viewModel.CanCreateObject);
+      Assert.IsTrue(viewModel.CanGetObject);
+      Assert.IsTrue(viewModel.CanDeleteObject);
+      Assert.IsTrue(viewModel.CanEditObject);
+
+      // when no Model is set then instance level CanCreate and CanFetch should be the same as object level permissions
+      Assert.IsTrue(viewModel.CanCreate);
+      Assert.IsTrue(viewModel.CanFetch);
+      Assert.IsFalse(viewModel.CanSave);
+      Assert.IsFalse(viewModel.CanDelete);
+    }
   }
 }

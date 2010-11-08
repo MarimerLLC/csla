@@ -317,90 +317,65 @@ namespace Csla.Xaml
       bool isObjectBusy = false;
       if (busyObject != null && busyObject.IsBusy)
         isObjectBusy = true;
-      if (Model != null && targetObject != null)
+
+      // Does Model instance implement ITrackStatus 
+      if (targetObject != null)
       {
+        CanSave = CanEditObject && targetObject.IsSavable && !isObjectBusy;
+        CanCancel = CanEditObject && targetObject.IsDirty && !isObjectBusy;
+        CanCreate = CanCreateObject && !targetObject.IsDirty && !isObjectBusy;
+        CanDelete = CanDeleteObject && !isObjectBusy;
+        CanFetch = CanGetObject && !targetObject.IsDirty && !isObjectBusy;
 
-        if (CanEditObject && targetObject.IsSavable && !isObjectBusy)
-          CanSave = true;
-        else
-          CanSave = false;
-
-        if (CanEditObject && targetObject.IsDirty && !isObjectBusy)
-          CanCancel = true;
-        else
-          CanCancel = false;
-
-        if (CanCreateObject && !targetObject.IsDirty && !isObjectBusy)
-          CanCreate = true;
-        else
-          CanCreate = false;
-
-        if (CanDeleteObject && !isObjectBusy)
-          CanDelete = true;
-        else
-          CanDelete = false;
-
-        if (CanGetObject && !targetObject.IsDirty && !isObjectBusy)
-          CanFetch = true;
-        else
-          CanFetch = false;
-
-        if (list != null)
-        {
-          Type itemType = Csla.Utilities.GetChildItemType(Model.GetType());
-          if (itemType != null)
-          {
-
-            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && list.Count > 0 && !isObjectBusy)
-              CanRemove = true;
-            else
-              CanRemove = false;
-
-            if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
-              CanAddNew = true;
-            else
-              CanAddNew = false;
-          }
-          else
-          {
-            CanAddNew = false;
-            CanRemove = false;
-          }
-        }
-        else
+        // Set properties for List 
+        if (list == null)
         {
           CanRemove = false;
           CanAddNew = false;
         }
+        else
+        {
+          Type itemType = Csla.Utilities.GetChildItemType(Model.GetType());
+          if (itemType == null)
+          {
+            CanAddNew = false;
+            CanRemove = false;
+          }
+          else
+          {
+            CanRemove = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) &&
+                        list.Count > 0 && !isObjectBusy;
+
+            CanAddNew = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) &&
+                        !isObjectBusy;
+          }
+        }
       }
+
+      // Else if Model instance implement ICollection
       else if (list != null)
       {
         Type itemType = Csla.Utilities.GetChildItemType(Model.GetType());
-        if (itemType != null)
-        {
-
-          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) && list.Count > 0 && !isObjectBusy)
-            CanRemove = true;
-          else
-            CanRemove = false;
-
-          if (Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) && !isObjectBusy)
-            CanAddNew = true;
-          else
-            CanAddNew = false;
-        }
-        else
+        if (itemType == null)
         {
           CanAddNew = false;
           CanRemove = false;
+        }
+        else
+        {
+          CanRemove = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, itemType) &&
+                      list.Count > 0 && !isObjectBusy;
+
+          CanAddNew = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, itemType) &&
+                      !isObjectBusy;
         }
       }
       else
       {
         CanCancel = false;
-        CanCreate = false;
+        CanCreate = CanCreateObject;
         CanDelete = false;
-        CanFetch = !IsBusy;
+        CanFetch = CanGetObject && !IsBusy;
         CanSave = false;
         CanRemove = false;
         CanAddNew = false;
@@ -489,6 +464,10 @@ namespace Csla.Xaml
       }
     }
 
+    /// <summary>
+    /// This method is only called from constuctor to set default values immediately.
+    /// Sets the properties at object level.
+    /// </summary>
     private void SetPropertiesAtObjectLevel()
     {
       Type sourceType = typeof(T);
@@ -497,6 +476,9 @@ namespace Csla.Xaml
       CanGetObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, sourceType);
       CanEditObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, sourceType);
       CanDeleteObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, sourceType);
+
+      // call SetProperties to set "instance" values 
+      SetProperties();
     }
 
     #endregion

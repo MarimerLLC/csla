@@ -51,10 +51,22 @@ namespace BusinessLibrary
       {
         MyExpensiveCommand result = null;
         if (IsAsync)
-          MyExpensiveCommand.BeginCommand((r) => result = r);
+        {
+          MyExpensiveCommand.BeginCommand((r) =>
+            {
+              result = r;
+              HandleResult(context, result);
+            });
+        }
         else
+        {
           result = MyExpensiveCommand.DoCommand();
+          HandleResult(context, result);
+        }
+      }
 
+      private static void HandleResult(Csla.Rules.RuleContext context, MyExpensiveCommand result)
+      {
         if (result == null)
           context.AddErrorResult("Command failed to run");
         else if (result.Result)

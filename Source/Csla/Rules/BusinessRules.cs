@@ -866,7 +866,7 @@ namespace Csla.Rules
         var bo = (Csla.Core.BusinessBase)obj;
         if (!bo.IsValid)
         {
-          list.Add(new BrukenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj });
+          list.Add(new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj });
         }
 
         // get managed child properties 
@@ -894,7 +894,7 @@ namespace Csla.Rules
         var isValid = ((ITrackStatus)obj).IsValid;
         if (isValid) return; // exit if object is valid 
 
-        list.Add(new BrukenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj });
+        list.Add(new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj });
 
         foreach (object child in (IEnumerable)obj)
         {

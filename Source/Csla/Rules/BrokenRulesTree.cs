@@ -15,7 +15,7 @@ namespace Csla.Rules
   /// <summary>
   /// Holds a list of broken rules tree list 
   /// </summary>
-  public class BrokenRulesTree : List<BrukenRulesNode>
+  public class BrokenRulesTree : List<BrokenRulesNode>
   {
   }
 }

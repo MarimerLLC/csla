@@ -14,7 +14,7 @@ namespace Csla.Rules
   /// <summary>
   /// Holds broken rules for an Node in the BrokenRulesTree.
   /// </summary>
-  public class BrukenRulesNode
+  public class BrokenRulesNode
   {
     /// <summary>
     /// Gets the parent key. Root key is null.

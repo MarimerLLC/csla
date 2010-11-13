@@ -3,11 +3,10 @@
   <metadata>
     <id>CSLA .NET - Windows Forms</id>
     <version>4.0.1.0</version>
-    <category>Framework</category>
-    <authors>
-      <author>Marimer LLC</author>
-    </authors>
+    <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Windows Forms applications.
@@ -15,12 +14,8 @@ Supports the creation of Windows Forms applications.
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <language>en-US</language>
-    <keywords>CSLA, Windows Forms, Busness Objects, Framework, Component, Scalable, Rockford Lhota, Rocky</keywords>
-    <homepage>http://www.lhotka.net/cslanet/</homepage>
-    <created>2010-10-16T11:45:00.0000+10:00</created>
-    <modified>2010-10-16T11:45:00.0000+10:00</modified>
+    <dependencies>
+      <dependency id="CSLA .NET - Core" version="4.0.1.0" />
+    </dependencies>
   </metadata>
-  <dependencies>
-    <dependency id="CSLA .NET - Core" version="4.0.1.0" />
-  </dependencies>
 </package>

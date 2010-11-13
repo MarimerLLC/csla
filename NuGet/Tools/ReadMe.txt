@@ -1,1 +1,1 @@
-This is the NuPack v1 CTP 1 version released on  6 Oct 2010 from the "NuPack Console" download.
+This is the NuGet v1 CTP 2 version "NuGet Console" download.

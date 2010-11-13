@@ -22,7 +22,7 @@ try
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
     
-    Write-Host "Clean all CLSA .NET NuPack build outpus" -ForegroundColor White
+    Write-Host "Clean all CLSA .NET NuGet build outputs" -ForegroundColor White
     Write-Host "=======================================" -ForegroundColor White
     
     ## NB - Cleanup destination folders

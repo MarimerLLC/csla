@@ -65,17 +65,17 @@ try
     $configuration = "Release"
     $basePath = Get-Location
     $pathToBin = [System.IO.Path]::GetFullPath( "$basePath\..\..\Bin\$configuration" )
-    $pathToNuPackLib = [System.IO.Path]::GetFullPath( "$basePath\$package" )
-    $pathToNuPackPackager = [System.IO.Path]::GetFullPath( "$basePath\..\Tools\NuPack.exe" )
-    $pathToNuPackPackageReleaseFolder = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
+    $pathToNuGetLib = [System.IO.Path]::GetFullPath( "$basePath\$package" )
+    $pathToNuGetPackager = [System.IO.Path]::GetFullPath( "$basePath\..\Tools\NuGet.exe" )
+    $pathToNuGetPackageReleaseFolder = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
 
-    Write-Host "Build NuPack packages for: $package" -ForegroundColor White
-    Write-Host "===================================" -ForegroundColor White
+    Write-Host "Build NuGet packages for: $package" -ForegroundColor White
+    Write-Host "=========================" -ForegroundColor White
 
     ## Cleanup previous build outputs
     ## ------------------------------
@@ -83,36 +83,36 @@ try
 
     ## Copy the build outputs and group per platform
     ## --------------------------------------------
-    Write-Host "Copy CSLA build outputs to NuPack Lib\<PlatForm><Version> folders..." -ForegroundColor Yellow
+    Write-Host "Copy CSLA build outputs to NuGet Lib\<PlatForm><Version> folders..." -ForegroundColor Yellow
 
     ## .NET
     $includes = @("Csla.dll*", "Csla.resources*.dll", "Csla.XML*")
-    CopyMaintainingSubDirectories "$pathToBin\Server\" $includes "$pathtoNuPackLib\Lib\NET4.0" 
+    CopyMaintainingSubDirectories "$pathToBin\Server\" $includes "$pathtoNuGetLib\Lib\NET4.0" 
     
     ## Silverlight
     $includes = @("Csla.dll*", "Csla.resources*.dll", "Csla.XML*")
-    CopyMaintainingSubDirectories "$pathToBin\Silverlight\" $includes "$pathtoNuPackLib\Lib\SL4.0" 
+    CopyMaintainingSubDirectories "$pathToBin\Silverlight\" $includes "$pathtoNuGetLib\Lib\SL4.0" 
     
     ## Windows Phone
-    ## NOTE: According to NuPack team, Profiles aren't supported yet and SL4.0 is to be used for WP7
+    ## NOTE: According to NuGet team, Profiles aren't supported yet and SL4.0 is to be used for WP7
     
 
-    ## Create NuPack package
+    ## Create NuGet package
     ## ----------------------
     
-    ## Before building NuPack package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
+    ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
     $cslaAssembly = Get-ChildItem "$pathToBin\Server\Csla.dll" | Select-Object -First 1
     $productVersion = $cslaAssembly.VersionInfo.ProductVersion
-    ChangeNuSpecVersion "$pathtoNuPackLib\$package.NuSpec" $productVersion
+    ChangeNuSpecVersion "$pathtoNuGetLib\$package.NuSpec" $productVersion
     
-    ## Launch NuPack.exe
-    Write-Host "Build NuPack package: $package..." -ForegroundColor Yellow
-    & $pathToNuPackPackager "$pathtoNuPackLib\$package.NuSpec"
+    ## Launch NuGet.exe
+    Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
+    & $pathToNuGetPackager pack "$pathtoNuGetLib\$package.NuSpec"
 
-    ## Move NuPack package to Package Release folder
-    Move-Item "*.nupkg" -Destination $pathToNuPackPackageReleaseFolder -Force
+    ## Move NuGet package to Package Release folder
+    Move-Item "*.nupkg" -Destination $pathToNuGetPackageReleaseFolder -Force
 
     Write-Host "Done." -ForegroundColor Green
 }

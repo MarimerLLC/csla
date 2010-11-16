@@ -43,7 +43,6 @@ namespace Csla.Rules.CommonRules
     }
   }
 
-#if !WINDOWS_PHONE
   /// <summary>
   /// Business rule that encapsulates a DataAnnotations
   /// ValidationAttribute rule.
@@ -101,7 +100,6 @@ namespace Csla.Rules.CommonRules
         context.AddErrorResult(result.ErrorMessage);
     }
   }
-#endif
 
   /// <summary>
   /// Business rule for a required string.

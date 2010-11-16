@@ -6,9 +6,7 @@
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -12,11 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Reflection;
-#if WINDOWS_PHONE
-using Csla;
-#else
 using System.ComponentModel.DataAnnotations;
-#endif
 using Csla.Reflection;
 using Csla.Security;
 using Csla.Core;

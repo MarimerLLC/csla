@@ -608,7 +608,6 @@ namespace Csla.Rules
       return affectedProperties;
     }
 
-#if !WINDOWS_PHONE
     #region DataAnnotations
 
     /// <summary>
@@ -649,7 +648,6 @@ namespace Csla.Rules
     }
 
     #endregion
-#endif
 
 #if SILVERLIGHT
     #region IUndoableObject Members

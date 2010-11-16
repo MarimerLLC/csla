@@ -12,9 +12,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using Csla.Properties;
 using System.Collections.Specialized;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Reflection;
@@ -1062,9 +1060,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-#if !WINDOWS_PHONE
       BusinessRules.AddDataAnnotations();
-#endif
     }
 
     /// <summary>

@@ -7,9 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using Csla.Serialization;
 
 namespace Csla.Core.FieldManager

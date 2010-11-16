@@ -17,9 +17,7 @@ using Csla.Core.FieldManager;
 using Csla.Core;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using Csla.Properties;
 
 namespace Csla.Core

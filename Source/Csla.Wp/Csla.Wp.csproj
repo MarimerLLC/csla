@@ -33,18 +33,18 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\Wp\Csla.XML</DocumentationFile>
   </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>..\..\Bin\Debug\Wp\</OutputPath>
-        <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE;TESTING</DefineConstants>
-        <NoStdLib>true</NoStdLib>
-        <NoConfig>true</NoConfig>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>..\..\Bin\Debug\Wp\Csla.XML</DocumentationFile>
-    </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\Wp\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE;TESTING</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Debug\Wp\Csla.XML</DocumentationFile>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -554,6 +554,11 @@
     <Compile Include="..\Csla.Silverlight\Utilities.cs">
       <Link>Utilities.cs</Link>
     </Compile>
+    <Compile Include="DataAnnotations\DisplayAttribute.cs" />
+    <Compile Include="DataAnnotations\RequiredAttribute.cs" />
+    <Compile Include="DataAnnotations\ValidationAttribute.cs" />
+    <Compile Include="DataAnnotations\ValidationContext.cs" />
+    <Compile Include="DataAnnotations\ValidationResult.cs" />
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">

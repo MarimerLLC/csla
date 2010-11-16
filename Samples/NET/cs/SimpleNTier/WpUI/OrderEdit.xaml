@@ -4,7 +4,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
+    xmlns:bxfc="clr-namespace:Bxf.Converters;assembly=Bxf"
     xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+    xmlns:my="clr-namespace:WpUI"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -12,19 +14,27 @@
     d:DesignHeight="480" d:DesignWidth="480">
   <UserControl.Resources>
     <CollectionViewSource x:Key="orderVmViewSource"/>
+    <my:BoolToThicknessConverter x:Key="BoolToThickness" />
+    <bxfc:VisibilityConverter x:Key="Visibility" Invert="True" />
   </UserControl.Resources>
   <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}"
-          DataContext="{Binding Source={StaticResource orderVmViewSource},Path=CurrentItem}">
-    <StackPanel Margin="10">
-      <TextBlock Text="Id"/>
-      <TextBox Text="{Binding Path=Model.Id, Mode=OneWay}" IsReadOnly="True"/>
-      <TextBlock Text="Customer name"/>
-      <TextBox Text="{Binding Path=Model.CustomerName, Mode=TwoWay}" />
-      <csla:PropertyInfo Property="{Binding Path=Model.CustomerName}"/>
-      <Button Content="Save" Name="SaveButton"
+          DataContext="{Binding Source={StaticResource orderVmViewSource}, Path=CurrentItem}">
+    <ScrollViewer HorizontalContentAlignment="Stretch" VerticalScrollBarVisibility="Visible">
+      <StackPanel Margin="10">
+        <Button Content="Save" Name="SaveButton"
               IsEnabled="{Binding Path=CanSave}"/>
-      <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}"
+        <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}"
                          MethodName="Save"/>
-    </StackPanel>
+        <TextBlock Text="Id"/>
+        <TextBox Text="{Binding Path=Model.Id, Mode=OneWay}" IsReadOnly="True"/>
+        <TextBlock Text="Customer name"/>
+        <csla:PropertyInfo Name="NameInfo" Property="{Binding Path=Model.CustomerName}"/>
+        <Grid>
+          <Rectangle Margin="10" Fill="Red" Visibility="{Binding ElementName=NameInfo, Path=IsValid, Converter={StaticResource Visibility}}" />
+          <TextBox Text="{Binding Path=Model.CustomerName, Mode=TwoWay}" />
+        </Grid>
+        <TextBlock Text="{Binding ElementName=NameInfo,Path=RuleDescription}" Visibility="{Binding ElementName=NameInfo,Path=IsValid,Converter={StaticResource Visibility}}" Foreground="Red"/>
+      </StackPanel>
+    </ScrollViewer>
   </Grid>
 </UserControl>

@@ -1,7 +1,5 @@
 ﻿using System;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using Csla;
 using Csla.Serialization;
 
@@ -19,9 +17,7 @@ namespace BusinessLibrary
     }
 
     public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(p => p.CustomerName);
-#if !WINDOWS_PHONE
     [Required]
-#endif
     [Display(Name = "Customer name")]
     public string CustomerName
     {
@@ -34,9 +30,9 @@ namespace BusinessLibrary
       base.AddBusinessRules();
       //BusinessRules.AddRule(new MyExpensiveRule { PrimaryProperty = CustomerNameProperty });
 
-#if WINDOWS_PHONE
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
-#endif
+//#if WINDOWS_PHONE
+//      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
+//#endif
     }
 
     public class MyExpensiveRule : Csla.Rules.BusinessRule

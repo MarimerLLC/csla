@@ -555,7 +555,10 @@
       <Link>Utilities.cs</Link>
     </Compile>
     <Compile Include="DataAnnotations\DisplayAttribute.cs" />
+    <Compile Include="DataAnnotations\RangeAttribute.cs" />
+    <Compile Include="DataAnnotations\RegularExpressionAttribute.cs" />
     <Compile Include="DataAnnotations\RequiredAttribute.cs" />
+    <Compile Include="DataAnnotations\StringLengthAttribute.cs" />
     <Compile Include="DataAnnotations\ValidationAttribute.cs" />
     <Compile Include="DataAnnotations\ValidationContext.cs" />
     <Compile Include="DataAnnotations\ValidationResult.cs" />

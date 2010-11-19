@@ -45,5 +45,17 @@ namespace CslaMVC.Web
                 Csla.ApplicationContext.User = principal;
             }
         }
+
+        protected void Application_EndRequest(object sender, EventArgs eventArgs)
+        {
+            //handle json redirects due to forms ticket timeout
+            var app = (HttpApplication)sender;
+            var httpContext = new HttpContextWrapper(app.Context);
+            if (httpContext.Response.StatusCode == 302 && httpContext.Request.IsAjaxRequest())
+            {
+                httpContext.Response.StatusCode = 401;
+                //TODO: produce json result
+            }
+        }
     }
 }

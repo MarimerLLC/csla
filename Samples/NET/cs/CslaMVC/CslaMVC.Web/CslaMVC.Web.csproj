@@ -96,7 +96,9 @@
     <Content Include="Views\Orders\Create.aspx" />
     <Content Include="Views\Orders\Details.aspx" />
     <Content Include="Views\Orders\Index.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />

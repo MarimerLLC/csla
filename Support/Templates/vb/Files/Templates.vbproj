@@ -72,9 +72,14 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizationRule.vb" />
-    <Compile Include="BusinessRule.vb" />
+    <Compile Include="AuthorizationRuleClass.vb" />
+    <Compile Include="BusinessRuleClass.vb" />
     <Compile Include="CommandObject.vb" />
+    <Compile Include="DynamicRootBindingList.vb" />
+    <Compile Include="EditableRootBindingList.vb" />
+    <Compile Include="EditableChildBindingList.vb" />
+    <Compile Include="ReadOnlyBindingList.vb" />
+    <Compile Include="ReadOnlyChildBindingList.vb" />
     <Compile Include="DynamicRoot.vb" />
     <Compile Include="DynamicRootList.vb" />
     <Compile Include="EditableChild.vb" />

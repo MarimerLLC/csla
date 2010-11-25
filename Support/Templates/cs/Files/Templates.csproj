@@ -62,9 +62,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizationRule.cs" />
-    <Compile Include="BusinessRule.cs" />
+    <Compile Include="AuthorizationRuleClass.cs" />
+    <Compile Include="BusinessRuleClass.cs" />
     <Compile Include="CommandObject.cs" />
+    <Compile Include="ReadOnlyBindingList.cs" />
+    <Compile Include="ReadOnlyChildBindingList.cs" />
+    <Compile Include="EditableRootBindingList.cs" />
+    <Compile Include="EditableChildBindingList.cs" />
+    <Compile Include="DynamicRootBindingList.cs" />
     <Compile Include="DynamicRoot.cs" />
     <Compile Include="DynamicRootList.cs" />
     <Compile Include="EditableChild.cs" />

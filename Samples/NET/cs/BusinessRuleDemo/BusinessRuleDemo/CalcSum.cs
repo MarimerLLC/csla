@@ -18,8 +18,6 @@ namespace BusinessRuleDemo
     public CalcSum(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
-      IsAsync = true;
-
       if (InputProperties == null)
       {
         InputProperties = new List<IPropertyInfo>();
@@ -35,9 +33,6 @@ namespace BusinessRuleDemo
       // add calculated value to OutValues 
       // When rule is completed the RuleEngig will update businessobject
       context.AddOutValue(PrimaryProperty, sum);
-
-      if (IsAsync)
-        context.Complete();
     }
   }
 }

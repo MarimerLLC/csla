@@ -21,7 +21,6 @@ namespace BusinessRuleDemo
       : base(primaryProperty)
     {
       CompareTo = compareToProperty;
-      IsAsync = true;
 
       if (InputProperties == null)
       {
@@ -40,14 +39,10 @@ namespace BusinessRuleDemo
       var value1 = (dynamic)context.InputPropertyValues[PrimaryProperty];
       var value2 = (dynamic)context.InputPropertyValues[CompareTo];
 
-      Thread.Sleep(1000);
-
       if (value1 > value2)
       {
         context.AddErrorResult(string.Format("{0} must be less than or equal {1}", PrimaryProperty.FriendlyName, CompareTo.FriendlyName));
       }
-      if (IsAsync)
-        context.Complete();
     }
   }
 }

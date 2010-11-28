@@ -28,7 +28,7 @@ namespace BusinessRuleDemo
 
       // add input properties required by inner rules
       var inputProps = _innerRule.InputProperties.Where(inputProp => !InputProperties.Contains(inputProp));
-      if (inputProps.Count() > 0) 
+      if (inputProps.Count() > 0)
         InputProperties.AddRange(inputProps);
     }
 

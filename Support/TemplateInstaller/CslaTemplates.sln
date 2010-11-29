@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CslaTemplates", "CslaTemplates\CslaTemplates.csproj", "{65EE2675-57FC-4732-AFD5-3686C7745E59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Templates", "..\Templates\cs\Files\Templates.csproj", "{614537E1-9171-4052-BA7C-044CE96BBD62}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65EE2675-57FC-4732-AFD5-3686C7745E59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65EE2675-57FC-4732-AFD5-3686C7745E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65EE2675-57FC-4732-AFD5-3686C7745E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65EE2675-57FC-4732-AFD5-3686C7745E59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{614537E1-9171-4052-BA7C-044CE96BBD62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{614537E1-9171-4052-BA7C-044CE96BBD62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{614537E1-9171-4052-BA7C-044CE96BBD62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{614537E1-9171-4052-BA7C-044CE96BBD62}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

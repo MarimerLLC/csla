@@ -11,6 +11,10 @@ namespace System.ComponentModel.DataAnnotations
   {
     private int _max;
 
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="stringMaxLength">Maximum string length allowed.</param>
     public StringLengthAttribute(int stringMaxLength)
     {
       _max = stringMaxLength;

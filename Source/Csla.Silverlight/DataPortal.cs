@@ -54,7 +54,11 @@ namespace Csla
       get
       {
         if (string.IsNullOrEmpty(_proxyTypeName))
+#if WINDOWS_PHONE
+          _proxyTypeName = "Local";
+#else
           _proxyTypeName = typeof(WcfProxy<>).AssemblyQualifiedName;
+#endif
         return _proxyTypeName;
       }
       set { _proxyTypeName = value; }

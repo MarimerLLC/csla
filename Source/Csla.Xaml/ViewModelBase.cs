@@ -490,6 +490,7 @@ namespace Csla.Xaml
     /// Model by invoking a static factory method.
     /// </summary>
     /// <param name="factoryMethod">Static factory method function.</param>
+    /// <example>DoRefresh(BusinessList.GetList)</example>
     /// <example>DoRefresh(() => BusinessList.GetList())</example>
     /// <example>DoRefresh(() => BusinessList.GetList(id))</example>
     protected void DoRefresh(Func<T> factoryMethod)
@@ -548,6 +549,7 @@ namespace Csla.Xaml
     /// Model by invoking a static factory method.
     /// </summary>
     /// <param name="factoryMethod">Static factory method action.</param>
+    /// <example>BeginRefresh(BusinessList.BeginGetList)</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
     protected void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)

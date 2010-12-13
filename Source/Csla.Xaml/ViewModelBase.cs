@@ -37,6 +37,9 @@ namespace Csla.Xaml
     /// </summary>
     public ViewModelBase()
     {
+#if WINDOWS_PHONE
+      ManageObjectLifetime = false;
+#endif
       SetPropertiesAtObjectLevel();
     }
     #endregion

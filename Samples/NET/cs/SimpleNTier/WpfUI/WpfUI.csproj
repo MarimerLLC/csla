@@ -36,8 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bxf">
-      <HintPath>..\..\..\..\..\..\..\Bxf\Bin\DotNet\Debug\Bxf.dll</HintPath>
+    <Reference Include="Bxf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=494e794d3bed2ce4, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\..\Bxf\Bin\Debug\DotNet\Bxf.dll</HintPath>
     </Reference>
     <Reference Include="Csla">
       <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
@@ -76,6 +76,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MyDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OrderEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -83,6 +87,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindowPresenter.cs" />
+    <Compile Include="MyDialog.xaml.cs">
+      <DependentUpon>MyDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OrderEdit.xaml.cs">
       <DependentUpon>OrderEdit.xaml</DependentUpon>
     </Compile>

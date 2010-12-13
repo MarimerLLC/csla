@@ -10,7 +10,7 @@ namespace SilverlightUI
   {
     public OrderVm()
     {
-      BeginRefresh("NewOrder");
+      BeginRefresh(BusinessLibrary.Order.NewOrder);
     }
 
     protected override void OnError(Exception error)

@@ -10,12 +10,23 @@ namespace WpfUI
   {
     public OrderVm()
     {
-      DoRefresh("NewOrder");
+      //DoRefresh(BusinessLibrary.Order.NewOrder);
+      DoRefresh(() => BusinessLibrary.Order.GetOrder(441));
     }
 
     protected override void OnError(Exception error)
     {
       Bxf.Shell.Instance.ShowError(error.Message, "Error");
     }
+
+    public void Testing()
+    {
+      var tmp = new LineItemVm { Model = Model.LineItems };
+    }
+  }
+
+  public class LineItemVm : ViewModel<BusinessLibrary.LineItems>
+  {
+
   }
 }

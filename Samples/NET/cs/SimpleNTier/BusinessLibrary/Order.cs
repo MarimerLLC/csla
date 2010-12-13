@@ -29,10 +29,6 @@ namespace BusinessLibrary
     {
       base.AddBusinessRules();
       //BusinessRules.AddRule(new MyExpensiveRule { PrimaryProperty = CustomerNameProperty });
-
-//#if WINDOWS_PHONE
-//      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
-//#endif
     }
 
     public class MyExpensiveRule : Csla.Rules.BusinessRule
@@ -105,36 +101,7 @@ namespace BusinessLibrary
 
     public static Order GetOrder(int id)
     {
-      return DataPortal.Fetch<Order>(Key.Get(1, 42));
-    }
-
-    [Serializable]
-    public class Key : CriteriaBase<Key>
-    {
-      public static Key Get(int site, int id)
-      {
-        return new Key(site, id);
-      }
-
-      public Key(int site, int id)
-      {
-        Site = site;
-        Id = id;
-      }
-
-      public static PropertyInfo<int> SiteProperty = RegisterProperty<int>(c => c.Site);
-      public int Site
-      {
-        get { return ReadProperty(SiteProperty); }
-        set { LoadProperty(SiteProperty, value); }
-      }
-
-      public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-      public int Id
-      {
-        get { return ReadProperty(IdProperty); }
-        set { LoadProperty(IdProperty, value); }
-      }
+      return DataPortal.Fetch<Order>(id);
     }
 
     public static void DeleteOrder(int id)

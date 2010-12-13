@@ -5,6 +5,8 @@ using System.Text;
 using Bxf;
 using System.Windows;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using Microsoft.Phone.Controls;
 
 namespace WpUI
 {
@@ -22,7 +24,13 @@ namespace WpUI
         };
       presenter.OnShowView += (view, region) =>
         {
-          MainContent = view.ViewInstance;
+          PivotItem panel = GetPanel(int.Parse(region));
+          var vm = view.Model as IViewModel;
+          if (vm != null)
+            panel.Header = vm.Header;
+          else
+            panel.Header = string.Empty;
+          panel.Content = view.ViewInstance;
         };
 
       if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
@@ -33,7 +41,7 @@ namespace WpUI
             typeof(OrderEdit).AssemblyQualifiedName,
             "orderVmViewSource",
             new OrderVm(),
-            "Main");
+            "1");
         }
         catch (Exception ex)
         {
@@ -42,12 +50,19 @@ namespace WpUI
       }
     }
 
-    public static readonly DependencyProperty MainContentProperty =
-        DependencyProperty.Register("MainContent", typeof(UserControl), typeof(MainWindowPresenter), null);
-    public UserControl MainContent
+    private PivotItem GetPanel(int id)
     {
-      get { return (UserControl)GetValue(MainContentProperty); }
-      set { SetValue(MainContentProperty, value); }
+      while (Panels.Count < id) Panels.Add(new PivotItem());
+      return Panels[id - 1];
+    }
+
+    public static readonly DependencyProperty PanelsProperty =
+        DependencyProperty.Register("Panels", typeof(ObservableCollection<PivotItem>), typeof(MainWindowPresenter), 
+        new PropertyMetadata(new ObservableCollection<PivotItem>()));
+    public ObservableCollection<PivotItem> Panels
+    {
+      get { return (ObservableCollection<PivotItem>)GetValue(PanelsProperty); }
+      set { SetValue(PanelsProperty, value); }
     }
   }
 }

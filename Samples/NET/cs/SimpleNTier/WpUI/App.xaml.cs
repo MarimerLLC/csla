@@ -28,6 +28,9 @@ namespace WpUI
     /// </summary>
     public App()
     {
+      // tell data portal to use WCF
+      Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy<>).AssemblyQualifiedName;
+
       // Global handler for uncaught exceptions. 
       UnhandledException += Application_UnhandledException;
 

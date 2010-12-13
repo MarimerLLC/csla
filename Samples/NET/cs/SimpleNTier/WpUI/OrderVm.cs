@@ -10,7 +10,9 @@ namespace WpUI
   {
     public OrderVm()
     {
-      BeginRefresh("NewOrder");
+      Header = "order";
+      //BeginRefresh(BusinessLibrary.Order.NewOrder);
+      BeginRefresh(handler => BusinessLibrary.Order.GetOrder(441, handler));
     }
 
     protected override void OnError(Exception error)
@@ -18,9 +20,14 @@ namespace WpUI
       Bxf.Shell.Instance.ShowError(error.Message, "Error");
     }
 
-    public override void AddNew(object sender, ExecuteEventArgs e)
+    protected override void OnRefreshed()
     {
-      Model.LineItems.AddNew();
+      base.OnRefreshed();
+      Bxf.Shell.Instance.ShowView(
+        typeof(LineItemList).AssemblyQualifiedName,
+        "lineItemListVmViewSource",
+        new LineItemListVm(Model),
+        "2");
     }
   }
 }

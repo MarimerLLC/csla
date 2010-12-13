@@ -48,6 +48,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\..\license.rtf">
+      <Link>license.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\..\..\readme.rtf">
+      <Link>readme.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="CslaKey.snk" />
     <Content Include="ItemTemplates\CSharp\Csla4\AuthorizationRule.zip">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -99,10 +109,6 @@
     </Content>
     <Content Include="ItemTemplates\VisualBasic\Csla4\AuthorizationRule.zip" />
     <Content Include="ItemTemplates\VisualBasic\Csla4\BusinessRule.zip" />
-    <Content Include="license.rtf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="ItemTemplates\CSharp\Csla4\DynamicRootBindingList.zip">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

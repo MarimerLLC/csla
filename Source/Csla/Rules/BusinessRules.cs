@@ -364,6 +364,17 @@ namespace Csla.Rules
       return result;
     }
 
+    public bool CachePermissionResult(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    {
+      bool result = true;
+      var rule =
+        TypeAuthRules.Rules.
+        Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
+      if (rule != null)
+        result = rule.CacheResult;
+      return result;
+    }
+
     /// <summary>
     /// Invokes all rules for the business type.
     /// </summary>

@@ -48,6 +48,16 @@ namespace Csla.Rules
     protected abstract void Execute(AuthorizationContext context);
 
     /// <summary>
+    /// Gets a value indicating whether the results
+    /// of this rule can be cached at the business
+    /// object level.
+    /// </summary>
+    public virtual bool CacheResult
+    { 
+      get { return true; }
+    }
+
+    /// <summary>
     /// Gets the name of the element (property/method)
     /// to which this rule is associated.
     /// </summary>

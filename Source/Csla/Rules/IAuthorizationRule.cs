@@ -33,5 +33,11 @@ namespace Csla.Rules
     /// will enforce.
     /// </summary>
     AuthorizationActions Action { get; }
+    /// <summary>
+    /// Gets a value indicating whether the results
+    /// of this rule can be cached at the business
+    /// object level.
+    /// </summary>
+    bool CacheResult { get; }
   }
 }

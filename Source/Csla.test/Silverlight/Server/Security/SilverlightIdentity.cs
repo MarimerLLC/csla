@@ -32,7 +32,7 @@ namespace Csla.Testing.Business.Security
       completed(this, null);
     }
 #else
-    protected override void DataPortal_Fetch(object criteria)
+    protected void DataPortal_Fetch(object criteria)
     {
       if (((SilverlightPrincipal.Criteria)criteria).Name == "invalidusername")
       {

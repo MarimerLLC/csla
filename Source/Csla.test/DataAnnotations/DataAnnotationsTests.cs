@@ -71,14 +71,21 @@ namespace Csla.Test.DataAnnotations
       var dp = new Csla.DataPortal<Multiple>();
       dp.CreateCompleted += (o, e) =>
         {
-          var root = e.Object;
-          var rules = root.GetRules();
+          if (e.Error != null)
+          {
+            context.Assert.Fail(e.Error);
+          }
+          else
+          {
+            var root = e.Object;
+            var rules = root.GetRules();
 
-          Assert.AreEqual(3, rules.Length, "Should be 3 rules");
-          Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
-          Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
-          root.Name = "xyz";
-          Assert.AreEqual(2, root.BrokenRulesCollection.Count, "Should be 2 broken rules after edit");
+            Assert.AreEqual(3, rules.Length, "Should be 3 rules");
+            Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
+            Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
+            root.Name = "xyz";
+            Assert.AreEqual(2, root.BrokenRulesCollection.Count, "Should be 2 broken rules after edit");
+          }
           context.Assert.Success();
         };
       dp.BeginCreate();

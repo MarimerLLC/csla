@@ -33,7 +33,7 @@ namespace System.ComponentModel.DataAnnotations
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
       Regex expression = new Regex(_expression);
-      if (value == null || !expression.IsMatch(value.ToString()))
+      if (value != null && !string.IsNullOrEmpty(value.ToString()) && !expression.IsMatch(value.ToString()))
         return new ValidationResult(this.ErrorMessage);
       else
         return null;

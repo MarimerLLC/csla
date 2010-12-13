@@ -58,7 +58,7 @@ namespace System.ComponentModel.DataAnnotations
     /// <param name="validationContext">The context information about the validation operation.</param>
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {
-      if (_comparer.CheckRange(value))
+      if (value != null && !string.IsNullOrEmpty(value.ToString()) && !_comparer.CheckRange(value))
         return new ValidationResult(this.ErrorMessage);
       else
         return null;

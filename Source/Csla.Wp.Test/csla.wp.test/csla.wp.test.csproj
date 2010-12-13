@@ -79,6 +79,9 @@
     <Compile Include="..\..\Csla.test\Authorization\RootException.cs">
       <Link>Authorization\RootException.cs</Link>
     </Compile>
+    <Compile Include="..\..\Csla.test\DataAnnotations\DataAnnotationsTests.cs">
+      <Link>DataAnnotations\DataAnnotationsTests.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -440,6 +443,7 @@
       <Name>Csla.Wp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

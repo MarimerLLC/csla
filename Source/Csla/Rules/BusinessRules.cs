@@ -364,6 +364,12 @@ namespace Csla.Rules
       return result;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the permission
+    /// result can be cached.
+    /// </summary>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="element">Property or method to check.</param>
     public bool CachePermissionResult(AuthorizationActions action, Csla.Core.IMemberInfo element)
     {
       bool result = true;

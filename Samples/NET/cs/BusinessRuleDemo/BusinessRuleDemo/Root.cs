@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using Csla;
+using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
 
@@ -56,6 +58,13 @@ namespace BusinessRuleDemo
       set { SetProperty(StateProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> StateNameProperty = RegisterProperty<string>(c => c.StateName);
+    public string StateName
+    {
+      get { return GetProperty(StateNameProperty); }
+      set { SetProperty(StateNameProperty, value); }
+    }
+
     public static readonly PropertyInfo<string> AdditionalInfoForUSProperty = RegisterProperty<string>(c => c.AdditionalInfoForUS);
     public string AdditionalInfoForUS
     {
@@ -104,6 +113,9 @@ namespace BusinessRuleDemo
       // Name Property - uses DataAnnotation Required combined with a Csla MaxLength rule
       //BusinessRules.AddRule(new Required(NameProperty));
       BusinessRules.AddRule(new MaxLength(NameProperty, 10));
+
+      BusinessRules.AddRule(new SetStateName(StateProperty, StateNameProperty));
+
     }
 
     #endregion
@@ -116,11 +128,23 @@ namespace BusinessRuleDemo
     }
 
     private Root()
-    { /* Require use of factory methods */ }
+    { /* Require use of factory methods */}
+
+    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    {
+      base.OnDeserialized(context);
+
+      this.ChildChanged += MyChildChanged;
+    }
+
+    private void MyChildChanged(object sender, ChildChangedEventArgs e)
+    {
+      Debug.Print(e.ChildObject.ToString(), e.ListChangedArgs);
+    }
 
     #endregion
 
-    private void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
       using (BypassPropertyChecks)
       {
@@ -129,5 +153,7 @@ namespace BusinessRuleDemo
       }
       BusinessRules.CheckRules();
     }
+
+
   }
 }

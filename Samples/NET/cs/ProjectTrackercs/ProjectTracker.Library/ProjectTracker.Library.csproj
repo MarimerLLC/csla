@@ -55,10 +55,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Workflow">
-      <HintPath>..\..\..\..\..\Bin\Debug\Server\Csla.Workflow.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Workflow.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />

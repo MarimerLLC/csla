@@ -57,10 +57,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />

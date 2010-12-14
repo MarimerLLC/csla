@@ -55,10 +55,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Windows">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.Windows.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">

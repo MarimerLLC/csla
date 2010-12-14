@@ -55,6 +55,12 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Csla, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Dependencies\Net\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="Csla.Xaml, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Dependencies\Net\Csla.Xaml.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -142,16 +148,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Source\Csla.Xaml\Csla.Xaml.csproj">
-      <Project>{563EFDFA-EB47-4039-955B-654582EA5362}</Project>
-      <Name>Csla.Xaml</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Source\Csla\Csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

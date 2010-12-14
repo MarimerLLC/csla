@@ -128,15 +128,17 @@ namespace AppDomainProxy
 
     private class DeleteTask
     {
+      public Type ObjectType;
       public object Criteria;
       public DataPortalContext Context;
       public DataPortalResult Result;
     }
 
-    public DataPortalResult Delete(object criteria, DataPortalContext context)
+    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       Thread t = new Thread(DoDelete);
       DeleteTask task = new DeleteTask();
+      task.ObjectType = objectType;
       task.Criteria = criteria;
       task.Context = context;
       t.Start(task);
@@ -147,7 +149,7 @@ namespace AppDomainProxy
     void DoDelete(object state)
     {
       DeleteTask task = state as DeleteTask;
-      task.Result = Portal.Delete(task.Criteria, task.Context);
+      task.Result = Portal.Delete(task.ObjectType, task.Criteria, task.Context);
     }
 
     #endregion
@@ -156,5 +158,6 @@ namespace AppDomainProxy
     {
       get { return true; }
     }
+
   }
 }

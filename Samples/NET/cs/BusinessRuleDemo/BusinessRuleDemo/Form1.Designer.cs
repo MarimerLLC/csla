@@ -35,6 +35,7 @@
       System.Windows.Forms.Label sumLabel;
       System.Windows.Forms.Label additionalInfoForUSLabel;
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+      System.Windows.Forms.Label stateNameLabel;
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.rootBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.num1TextBox = new System.Windows.Forms.TextBox();
@@ -50,11 +51,13 @@
       this.statesNVLBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.readWriteAuthorization1 = new BusinessRuleDemo.Controls.ReadWriteAuthorization(this.components);
       this.additionalInfoForUSTextBox = new System.Windows.Forms.TextBox();
+      this.stateNameTextBox = new System.Windows.Forms.TextBox();
       nameLabel = new System.Windows.Forms.Label();
       num1Label = new System.Windows.Forms.Label();
       num2Label = new System.Windows.Forms.Label();
       sumLabel = new System.Windows.Forms.Label();
       additionalInfoForUSLabel = new System.Windows.Forms.Label();
+      stateNameLabel = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.rootBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.countryNVLBindingSource)).BeginInit();
@@ -232,12 +235,33 @@
       this.additionalInfoForUSTextBox.Size = new System.Drawing.Size(184, 20);
       this.additionalInfoForUSTextBox.TabIndex = 16;
       // 
+      // stateNameLabel
+      // 
+      this.readWriteAuthorization1.SetApplyAuthorization(stateNameLabel, false);
+      stateNameLabel.AutoSize = true;
+      stateNameLabel.Location = new System.Drawing.Point(199, 146);
+      stateNameLabel.Name = "stateNameLabel";
+      stateNameLabel.Size = new System.Drawing.Size(66, 13);
+      stateNameLabel.TabIndex = 16;
+      stateNameLabel.Text = "State Name:";
+      // 
+      // stateNameTextBox
+      // 
+      this.readWriteAuthorization1.SetApplyAuthorization(this.stateNameTextBox, false);
+      this.stateNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.rootBindingSource, "StateName", true));
+      this.stateNameTextBox.Location = new System.Drawing.Point(271, 143);
+      this.stateNameTextBox.Name = "stateNameTextBox";
+      this.stateNameTextBox.Size = new System.Drawing.Size(100, 20);
+      this.stateNameTextBox.TabIndex = 17;
+      // 
       // Form1
       // 
       this.readWriteAuthorization1.SetApplyAuthorization(this, false);
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(732, 304);
+      this.Controls.Add(stateNameLabel);
+      this.Controls.Add(this.stateNameTextBox);
       this.Controls.Add(additionalInfoForUSLabel);
       this.Controls.Add(this.additionalInfoForUSTextBox);
       this.Controls.Add(this.comboBox2);
@@ -281,6 +305,7 @@
     private System.Windows.Forms.BindingSource statesNVLBindingSource;
     private Controls.ReadWriteAuthorization readWriteAuthorization1;
     private System.Windows.Forms.TextBox additionalInfoForUSTextBox;
+    private System.Windows.Forms.TextBox stateNameTextBox;
   }
 }
 

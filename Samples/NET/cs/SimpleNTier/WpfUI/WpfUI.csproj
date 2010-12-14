@@ -36,14 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bxf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=494e794d3bed2ce4, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\..\..\Bxf\Bin\Debug\DotNet\Bxf.dll</HintPath>
+    <Reference Include="Bxf">
+      <HintPath>..\..\..\..\Dependencies\Sl\Bxf.dll</HintPath>
     </Reference>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

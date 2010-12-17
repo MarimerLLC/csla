@@ -60,11 +60,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bxf">
+      <HintPath>..\..\..\..\Dependencies\Sl\Bxf.dll</HintPath>
+    </Reference>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
@@ -120,10 +123,6 @@
     <None Include="Properties\DataSources\CslaMvvmSl.ViewModels.MainPageViewModel.datasource" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bxf.Silverlight\Bxf.Silverlight.csproj">
-      <Project>{F3846635-DF6A-487B-AC38-0665CA055CB6}</Project>
-      <Name>Bxf.Silverlight</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Library\Library.csproj">
       <Project>{FB263B17-0163-478E-B10E-1A27B63E7BCE}</Project>
       <Name>Library</Name>

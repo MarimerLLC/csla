@@ -49,10 +49,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Wp\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Wp\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Wp\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Wp\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Interop" />

@@ -46,12 +46,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.dll</HintPath>
-    </Reference>
-    <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.Xaml.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />

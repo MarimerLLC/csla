@@ -58,20 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientBin\MVVMExperimentSL.xap" />
-    <Content Include="Default.aspx" />
     <Content Include="MVVMExperimentSLTestPage.aspx" />
     <Content Include="MVVMExperimentSLTestPage.html" />
     <Content Include="Silverlight.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Default.aspx.cs">
-      <SubType>ASPXCodeBehind</SubType>
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

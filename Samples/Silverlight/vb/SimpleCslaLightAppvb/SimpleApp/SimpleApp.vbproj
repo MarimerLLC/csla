@@ -82,10 +82,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Silverlight\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="mscorlib" />

@@ -165,7 +165,9 @@ namespace PTWebForms
       Resource obj = GetResource();
       ResourceAssignment res;
       Guid rid = new Guid(e.Keys["ProjectId"].ToString());
-      res = obj.Assignments[rid];
+      res = (from r in obj.Assignments
+               where r.ProjectId == rid
+               select r).First();
       Csla.Data.DataMapper.Map(e.Values, res);
       e.RowsAffected = SaveResource(obj);
     }

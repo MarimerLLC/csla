@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Data;
 using Csla.Security;
@@ -10,60 +11,62 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class Project : BusinessBase<Project>
   {
-    #region  Business Methods
-
-    private static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     private byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
     }
 
-    private static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(p=>p.Id);
+    public static readonly PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
     public Guid Id
     {
       get { return GetProperty(IdProperty); }
       set { LoadProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> NameProperty = 
-      RegisterProperty<string>(p=>p.Name, "Project name");
+    public static readonly PropertyInfo<string> NameProperty = 
+      RegisterProperty<string>(c => c.Name);
+    [Display(Name = "Project name")]
+    [Required]
+    [StringLength(50)]
     public string Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> StartedProperty = 
-      RegisterProperty<SmartDate>(p=>p.Started);
+    public static readonly PropertyInfo<SmartDate> StartedProperty = 
+      RegisterProperty<SmartDate>(c => c.Started);
     public string Started
     {
       get { return GetPropertyConvert<SmartDate, string>(StartedProperty); }
       set { SetPropertyConvert<SmartDate, string>(StartedProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(p => p.Ended, null, new SmartDate(SmartDate.EmptyValue.MaxDate));
+    public static readonly PropertyInfo<SmartDate> EndedProperty = RegisterProperty<SmartDate>(p => p.Ended, null, new SmartDate(SmartDate.EmptyValue.MaxDate));
     public string Ended
     {
       get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
       set { SetPropertyConvert<SmartDate, string>(EndedProperty, value); }
     }
 
-    private static PropertyInfo<string> DescriptionProperty = 
-      RegisterProperty<string>(p=>p.Description);
+    public static readonly PropertyInfo<string> DescriptionProperty = 
+      RegisterProperty<string>(c => c.Description);
     public string Description
     {
       get { return GetProperty(DescriptionProperty); }
       set { SetProperty(DescriptionProperty, value); }
     }
 
-    private static PropertyInfo<ProjectResources> ResourcesProperty = RegisterProperty<ProjectResources>(p => p.Resources);
+    public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
+      RegisterProperty<ProjectResources>(p => p.Resources);
     public ProjectResources Resources
     {
       get
       {
         if (!(FieldManager.FieldExists(ResourcesProperty)))
-          LoadProperty(ResourcesProperty, ProjectResources.NewProjectResources());
+          LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
         return GetProperty(ResourcesProperty);
       }
     }
@@ -73,15 +76,8 @@ namespace ProjectTracker.Library
       return Id.ToString();
     }
 
-    #endregion
-
-    #region  Business Rules
-
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 50));
-
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartedProperty, AffectedProperties = { EndedProperty } });
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndedProperty, AffectedProperties = { StartedProperty } });
 
@@ -108,11 +104,7 @@ namespace ProjectTracker.Library
       }
     }
 
-    #endregion
-
 #if !SILVERLIGHT
-    #region  Factory Methods
-
     public static Project NewProject()
     {
       return DataPortal.Create<Project>();
@@ -120,7 +112,6 @@ namespace ProjectTracker.Library
 
     public static Project GetProject(Guid id)
     {
-      //return DataPortal.Fetch<Project>(new SingleCriteria<Project, Guid>(id));
       return DataPortal.Fetch<Project>(id);
     }
 
@@ -128,135 +119,38 @@ namespace ProjectTracker.Library
     {
       DataPortal.Delete<Project>(new SingleCriteria<Project, Guid>(id));
     }
-
-    private Project()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region  Data Access
-
-    [RunLocal()]
-    protected override void DataPortal_Create()
-    {
-      using (BypassPropertyChecks)
-      {
-        Id = Guid.NewGuid();
-        LoadProperty(StartedProperty, DateTime.Today);
-        BusinessRules.CheckRules();
-      }
-    }
-
-    //private void DataPortal_Fetch(SingleCriteria<Project, Guid> criteria)
-    private void DataPortal_Fetch(Guid id)
-    {
-      using (var ctx = 
-        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
-        GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        // get project data
-        var data = (from p in ctx.DataContext.Projects
-                    where p.Id == id
-                    select p).Single();
-        using (BypassPropertyChecks)
-        {
-          Id = data.Id;
-          Name = data.Name;
-          LoadPropertyConvert<SmartDate, System.DateTime?>(
-            StartedProperty, data.Started);
-          LoadPropertyConvert<SmartDate, System.DateTime?>(
-            EndedProperty, data.Ended);
-          Description = data.Description;
-          TimeStamp = data.LastChanged.ToArray();
-        }
-
-        // get child data
-        LoadProperty(
-          ResourcesProperty, 
-          ProjectResources.GetProjectResources(
-            data.Assignments.ToArray()));
-      }
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
-    {
-      using (var ctx = 
-        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
-        GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        // insert project data
-        System.Data.Linq.Binary lastChanged = null;
-        using (BypassPropertyChecks)
-        {
-          ctx.DataContext.addProject(
-            Id,
-            Name,
-            ReadProperty(StartedProperty),
-            ReadProperty(EndedProperty),
-            Description,
-            ref lastChanged);
-          TimeStamp = lastChanged.ToArray();
-        }
-        // update child objects
-        FieldManager.UpdateChildren(this);
-      }
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Update()
-    {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        // insert project data
-        System.Data.Linq.Binary lastChanged = null;
-        using (BypassPropertyChecks)
-        {
-          ctx.DataContext.updateProject(
-              Id,
-              Name,
-              ReadProperty(StartedProperty),
-              ReadProperty(EndedProperty),
-              Description,
-              TimeStamp,
-              ref lastChanged);
-          TimeStamp = lastChanged.ToArray();
-        }
-        // update child objects
-        FieldManager.UpdateChildren(this);
-      }
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
-    {
-      DataPortal_Delete(
-        new SingleCriteria<Project, Guid>(Id));
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(SingleCriteria<Project, Guid> criteria)
-    {
-      using (var ctx = 
-        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
-        GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        // delete project data
-        ctx.DataContext.deleteProject(criteria.Value);
-        // reset child list field
-        LoadProperty(ResourcesProperty, ProjectResources.NewProjectResources());
-      }
-    }
-
-    #endregion
 #endif
 
+    public static void NewProject(EventHandler<DataPortalResult<Project>> callback)
+    {
+      DataPortal.BeginCreate<Project>(callback);
+    }
+
+    public static void GetProject(Guid id, EventHandler<DataPortalResult<Project>> callback)
+    {
+      DataPortal.BeginFetch<Project>(id, callback);
+    }
+
     #region  Exists
+
+    public static void Exists(Guid id, Action<bool> result)
+    {
+      var cmd = new ExistsCommand(id);
+      DataPortal.BeginExecute<ExistsCommand>(cmd, (o, e) =>
+        {
+          if (e.Error != null)
+            throw e.Error;
+          else
+            result(e.Object.ProjectExists);
+        });
+    }
 
 #if !SILVERLIGHT
     public static bool Exists(Guid id)
     {
-      return ExistsCommand.Exists(id);
+      var cmd = new ExistsCommand(id);
+      cmd = DataPortal.Execute<ExistsCommand>(cmd);
+      return cmd.ProjectExists;
     }
 #endif
 
@@ -277,26 +171,12 @@ namespace ProjectTracker.Library
         private set { LoadProperty(ResultProperty, value); }
       }
 
-#if !SILVERLIGHT
-      public static bool Exists(Guid id)
+      public ExistsCommand(Guid id)
       {
-        var result = DataPortal.Execute<ExistsCommand>(new ExistsCommand { Id = id });
-        return result.ProjectExists;
+        Id = id;
       }
-
-      protected override void DataPortal_Execute()
-      {
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-        {
-          ProjectExists = ((from p in ctx.DataContext.Projects
-                      where p.Id == Id
-                      select p).Count() > 0);
-        }
-      }
-#endif
     }
 
     #endregion
-
   }
 }

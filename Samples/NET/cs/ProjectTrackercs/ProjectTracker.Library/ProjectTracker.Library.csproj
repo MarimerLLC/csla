@@ -82,6 +82,7 @@
     <Compile Include="Assignment.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectCloser.cs" />
+    <Compile Include="ProjectGetter.cs" />
     <Compile Include="ProjectInfo.cs" />
     <Compile Include="ProjectList.cs" />
     <Compile Include="ProjectResource.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Resource.cs" />
     <Compile Include="ResourceAssignment.cs" />
     <Compile Include="ResourceAssignments.cs" />
+    <Compile Include="ResourceGetter.cs" />
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceList.cs" />
     <Compile Include="RoleList.cs" />

@@ -199,7 +199,7 @@ namespace PTWebForms
       Project obj = GetProject();
       int rid = int.Parse(e.Keys["ResourceId"].ToString());
       ProjectResource res =
-        obj.Resources.GetItem(rid);
+        obj.Resources.Where(r => r.ResourceId == rid).First();
       Csla.Data.DataMapper.Map(e.Values, res);
       e.RowsAffected = SaveProject(obj);
     }

@@ -9,24 +9,25 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class RoleList : NameValueListBase<int, string>
   {
-    #region  Business Methods
-
     public static int DefaultRole()
     {
+      RoleList list = null;
 #if SILVERLIGHT
-      return 0;
+      list = _list; // get list from cache
+      if (list == null)
+      {
+        // cache is empty
+        GetList((o, e) => { }); // call factory to initialize cache for next time
+        return 0; 
+      }
 #else
-      RoleList list = GetList();
+      list = GetList(); // call factory to get list
+#endif
       if (list.Count > 0)
         return list.Items[0].Key;
       else
         throw new NullReferenceException("No roles available; default role can not be returned");
-#endif
     }
-
-    #endregion
-
-    #region Static cache
 
     private static RoleList _list;
 
@@ -40,62 +41,25 @@ namespace ProjectTracker.Library
       _list = null;
     }
 
-    #endregion
-
-#if SILVERLIGHT
-    #region Factory Methods
-
     public static void GetList(EventHandler<DataPortalResult<RoleList>> callback)
     {
       if (_list == null)
-      {
-        var dp = new DataPortal<RoleList>();
-        dp.FetchCompleted += (o, e) =>
+        DataPortal.BeginFetch<RoleList>((o, e) =>
           {
             _list = e.Object;
             callback(o, e);
-          };
-        dp.BeginFetch();
-      }
+          });
       else
         callback(null, new DataPortalResult<RoleList>(_list, null, null));
     }
 
-    #endregion
-#else
-    #region  Factory Methods
-
+#if !SILVERLIGHT
     public static RoleList GetList()
     {
       if (_list == null)
         _list = DataPortal.Fetch<RoleList>();
       return _list;
     }
-
-    private RoleList()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region  Data Access
-
-    private void DataPortal_Fetch()
-    {
-      this.RaiseListChangedEvents = false;
-      using (var ctx = 
-        ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.
-        GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        var data = from role in ctx.DataContext.Roles
-                   select new NameValuePair(role.Id, role.Name);
-        IsReadOnly = false;
-        this.AddRange(data);
-        IsReadOnly = true;
-      }
-      this.RaiseListChangedEvents = true;
-    }
-
-    #endregion
 #endif
   }
 }

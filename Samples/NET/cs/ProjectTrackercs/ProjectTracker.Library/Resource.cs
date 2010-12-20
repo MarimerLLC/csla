@@ -1,8 +1,9 @@
+using System;
+using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Security;
 using Csla.Data;
-using System;
-using System.Linq;
 using Csla.Serialization;
 
 namespace ProjectTracker.Library
@@ -10,66 +11,57 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class Resource : BusinessBase<Resource>
   {
-    #region  Business Methods
-
-    private static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     private byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(p=>p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> LastNameProperty = 
-      RegisterProperty<string>(p=>p.LastName, "Last name");
+    public static readonly PropertyInfo<string> LastNameProperty = 
+      RegisterProperty<string>(c => c.LastName);
+    [Display(Name = "Last name")]
+    [Required]
+    [StringLength(50)]
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }
       set { SetProperty(LastNameProperty, value); }
     }
 
-    private static PropertyInfo<string> FirstNameProperty = 
-      RegisterProperty<string>(p=>p.FirstName, "First name");
+    public static readonly PropertyInfo<string> FirstNameProperty = 
+      RegisterProperty<string>(c => c.FirstName);
+    [Display(Name = "First name")]
+    [Required]
+    [StringLength(50)]
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
       set { SetProperty(FirstNameProperty, value); }
     }
 
-    private static PropertyInfo<string> FullNameProperty = 
-      RegisterProperty<string>(p=>p.FullName, "Full name");
+    [Display(Name = "Full name")]
     public string FullName
     {
       get { return LastName + ", " + FirstName; }
     }
 
-    private static PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(p=>p.Assignments);
+    public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
+      RegisterProperty<ResourceAssignments>(c => c.Assignments);
     public ResourceAssignments Assignments
     {
       get
       {
-#if SILVERLIGHT
         if (!(FieldManager.FieldExists(AssignmentsProperty)))
-        {
-          ResourceAssignments.NewResourceAssignments((result) =>
-            {
-              LoadProperty(AssignmentsProperty, result);
-              OnPropertyChanged(AssignmentsProperty);
-            });
-        }
-        return null;
-#else
-        if (!(FieldManager.FieldExists(AssignmentsProperty)))
-          LoadProperty(AssignmentsProperty, ResourceAssignments.NewResourceAssignments());
+          LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
         return GetProperty(AssignmentsProperty);
-#endif
       }
     }
 
@@ -78,18 +70,8 @@ namespace ProjectTracker.Library
       return Id.ToString();
     }
 
-    #endregion
-
-    #region  Business Rules
-
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FirstNameProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(FirstNameProperty, 50));
-
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
-
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, "ProjectManager"));
     }
@@ -101,118 +83,21 @@ namespace ProjectTracker.Library
       Csla.Rules.BusinessRules.AddRule(typeof(Resource), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
     }
 
-    #endregion
-
-#if SILVERLIGHT
-    #region Factory Methods
-
-    public static void NewResource(EventHandler<DataPortalResult<Resource>> callback)
-    {
-      var dp = new DataPortal<Resource>();
-      dp.CreateCompleted += callback;
-      dp.BeginCreate();
-    }
-
-    public static void GetResource(int id, EventHandler<DataPortalResult<Resource>> callback)
-    {
-      var dp = new DataPortal<Resource>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch(new SingleCriteria<Resource, int>(id));
-    }
-
-    #endregion
-#else
-    #region  Factory Methods
-
+#if !SILVERLIGHT
     public static Resource NewResource()
     {
       return DataPortal.Create<Resource>();
     }
 
-    public static void DeleteResource(int id)
-    {
-      DataPortal.Delete<Resource>(new SingleCriteria<Resource, int>(id));
-    }
-
     public static Resource GetResource(int id)
     {
-      return DataPortal.Fetch<Resource>(new SingleCriteria<Resource, int>(id));
+      return DataPortal.Fetch<Resource>(id);
     }
 
-    private Resource()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region  Data Access
-
-    private void DataPortal_Fetch(SingleCriteria<Resource, int> criteria)
+    public static void DeleteResource(int id)
     {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        var data = (from r in ctx.DataContext.Resources
-                    where r.Id == criteria.Value
-                    select r).Single();
-        using (BypassPropertyChecks)
-        {
-          Id = data.Id;
-          LastName = data.LastName;
-          FirstName = data.FirstName;
-          TimeStamp = data.LastChanged.ToArray();
-        }
-        LoadProperty(AssignmentsProperty, ResourceAssignments.GetResourceAssignments(data.Assignments.ToArray()));
-      }
+      DataPortal.Delete<Resource>(id);
     }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Insert()
-    {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        int? newId = null;
-        System.Data.Linq.Binary newLastChanged = null;
-        using (BypassPropertyChecks)
-        {
-          ctx.DataContext.addResource(
-            LastName, FirstName, ref newId, ref newLastChanged);
-          Id = System.Convert.ToInt32(newId);
-          TimeStamp = newLastChanged.ToArray();
-        }
-        FieldManager.UpdateChildren(this);
-      }
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_Update()
-    {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        System.Data.Linq.Binary newLastChanged = null;
-        using (BypassPropertyChecks)
-        {
-          ctx.DataContext.updateResource(Id, LastName, FirstName, TimeStamp, ref newLastChanged);
-          TimeStamp = newLastChanged.ToArray();
-        }
-        FieldManager.UpdateChildren(this);
-      }
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    protected override void DataPortal_DeleteSelf()
-    {
-      DataPortal_Delete(new SingleCriteria<Resource, int>(Id));
-    }
-
-    [Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(SingleCriteria<Resource, int> criteria)
-    {
-      using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-      {
-        ctx.DataContext.deleteResource(criteria.Value);
-      }
-    }
-
-    #endregion
 #endif
 
     #region  Exists
@@ -220,50 +105,46 @@ namespace ProjectTracker.Library
 #if !SILVERLIGHT
     public static bool Exists(int id)
     {
-      return ExistsCommand.Exists(id);
+      var cmd = new ExistsCommand(id);
+      cmd = DataPortal.Execute<ExistsCommand>(cmd);
+      return cmd.ResourceExists;
     }
 #endif
+
+    public static void Exists(int id, Action<bool> result)
+    {
+      var cmd = new ExistsCommand(id);
+      DataPortal.BeginExecute<ExistsCommand>(cmd, (o, e) =>
+        {
+          if (e.Error != null)
+            throw e.Error;
+          else
+            result(e.Object.ResourceExists);
+        });
+    }
 
     [Serializable()]
     private class ExistsCommand : CommandBase<ExistsCommand>
     {
-      private int _id;
-      private bool _exists;
+      public ExistsCommand(int id)
+      {
+        ResourceId = id;
+      }
 
+      public static PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+      public int ResourceId
+      {
+        get { return ReadProperty(ResourceIdProperty); }
+        private set { LoadProperty(ResourceIdProperty, value); }
+      }
+
+      public static PropertyInfo<bool> ResourceExistsProperty = RegisterProperty<bool>(c => c.ResourceExists);
       public bool ResourceExists
       {
-        get
-        {
-          return _exists;
-        }
+        get { return ReadProperty(ResourceExistsProperty); }
+        private set { LoadProperty(ResourceExistsProperty, value); }
       }
-
-#if !SILVERLIGHT
-      public static bool Exists(int id)
-      {
-        ExistsCommand result = null;
-        result = DataPortal.Execute<ExistsCommand>(new ExistsCommand(id));
-        return result.ResourceExists;
-      }
-
-      private ExistsCommand(int id)
-      {
-        _id = id;
-      }
-
-      protected override void DataPortal_Execute()
-      {
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-        {
-          _exists = (from p in ctx.DataContext.Resources
-                     where p.Id == _id
-                     select p).Count() > 0;
-        }
-      }
-#endif
     }
-
     #endregion
-
   }
 }

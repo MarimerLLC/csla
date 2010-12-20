@@ -1,27 +1,32 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public partial class ProjectInfo : ReadOnlyBase<ProjectInfo>
+  public class ProjectInfo : ReadOnlyBase<ProjectInfo>
   {
-    public Guid Id { get; private set; }
-    public string Name { get; private set; }
+    public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
+    [Display(Name = "Project id")]
+    public Guid Id
+    {
+      get { return GetProperty(IdProperty); }
+      private set { LoadProperty(IdProperty, value); }
+    }
+
+    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    [Display(Name = "Project name")]
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      private set { LoadProperty(NameProperty, value); }
+    }
 
     public override string ToString()
     {
       return Name;
-    }
-
-    private ProjectInfo()
-    { /* require use of factory methods */ }
-
-    internal ProjectInfo(Guid id, string name)
-    {
-      Id = id;
-      Name = name;
     }
   }
 }

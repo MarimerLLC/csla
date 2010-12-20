@@ -1,5 +1,6 @@
-using Csla;
 using System;
+using System.Linq;
+using Csla;
 using Csla.Serialization;
 
 namespace ProjectTracker.Library
@@ -7,21 +8,11 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResource>
   {
-    #region  Business Methods
-
-    public ProjectResource GetItem(int resourceId)
-    {
-      foreach (ProjectResource res in this)
-        if (res.ResourceId == resourceId)
-          return res;
-      return null;
-    }
-
     public void Assign(int resourceId)
     {
       if (!(Contains(resourceId)))
       {
-        ProjectResource resource = ProjectResource.NewProjectResource(resourceId);
+        ProjectResource resource = DataPortal.CreateChild<ProjectResource>(resourceId);
         this.Add(resource);
       }
       else
@@ -32,67 +23,27 @@ namespace ProjectTracker.Library
 
     public void Remove(int resourceId)
     {
-      foreach (ProjectResource res in this)
-      {
-        if (res.ResourceId == resourceId)
-        {
-          Remove(res);
-          break;
-        }
-      }
+      var item = (from r in this
+                    where r.ResourceId == resourceId
+                    select r).FirstOrDefault();
+      if (item != null)
+        Remove(item);
     }
 
     public bool Contains(int resourceId)
     {
-      foreach (ProjectResource res in this)
-        if (res.ResourceId == resourceId)
-          return true;
-      return false;
+      var item = (from r in this
+                  where r.ResourceId == resourceId
+                  select r).Count();
+      return item > 0;
     }
 
     public bool ContainsDeleted(int resourceId)
     {
-      foreach (ProjectResource res in DeletedList)
-        if (res.ResourceId == resourceId)
-          return true;
-      return false;
+      var item = (from r in DeletedList
+                  where r.ResourceId == resourceId
+                  select r).Count();
+      return item > 0;
     }
-
-    #endregion
-
-    internal static ProjectResources NewProjectResources()
-    {
-      return DataPortal.CreateChild<ProjectResources>();
-    }
-
-#if !SILVERLIGHT
-    #region  Factory Methods
-
-    internal static ProjectResources GetProjectResources(
-      ProjectTracker.DalLinq.Assignment[] data)
-    {
-      return DataPortal.FetchChild<ProjectResources>(data);
-    }
-
-    private ProjectResources()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region  Data Access
-
-    private void Child_Fetch(
-      ProjectTracker.DalLinq.Assignment[] data)
-    {
-      if (data == null) return;
-
-      this.RaiseListChangedEvents = false;
-      foreach (var value in data)
-        this.Add(ProjectResource.GetResource(value));
-      this.RaiseListChangedEvents = true;
-    }
-
-    #endregion
-#endif
   }
 }

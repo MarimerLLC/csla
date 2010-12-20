@@ -1,40 +1,45 @@
 using Csla;
+using System.ComponentModel.DataAnnotations;
 using System;
 using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
   [Serializable]
-  public class ProjectResource : BusinessBase<ProjectResource>, IHoldRoles
+  public class ProjectResource : BusinessBase<ProjectResource>
   {
-    #region  Business Methods
-
-    private static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     private byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
     }
 
-    private static PropertyInfo<int> ResourceIdProperty = 
-      RegisterProperty<int>(p=>p.ResourceId, "Resource id");
+    public static readonly PropertyInfo<int> ResourceIdProperty = 
+      RegisterProperty<int>(c => c.ResourceId);
+    [Display(Name = "Resource id")]
     public int ResourceId
     {
       get { return GetProperty(ResourceIdProperty); }
+      private set { LoadProperty(ResourceIdProperty, value); }
     }
 
-    private static PropertyInfo<string> FirstNameProperty =
-      RegisterProperty<string>(p=>p.FirstName, "First name");
+    public static readonly PropertyInfo<string> FirstNameProperty =
+      RegisterProperty<string>(c => c.FirstName);
+    [Display(Name = "First name")]
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
+      private set { LoadProperty(FirstNameProperty, value); }
     }
 
-    private static PropertyInfo<string> LastNameProperty =
-      RegisterProperty<string>(p=>p.LastName, "Last name");
+    public static readonly PropertyInfo<string> LastNameProperty =
+      RegisterProperty<string>(c => c.LastName);
+    [Display(Name = "Last name")]
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }
+      private set { LoadProperty(LastNameProperty, value); }
     }
 
     public string FullName
@@ -42,130 +47,34 @@ namespace ProjectTracker.Library
       get { return string.Format("{0}, {1}", LastName, FirstName); }
     }
 
-    private static PropertyInfo<SmartDate> AssignedProperty =
-      RegisterProperty<SmartDate>(p=>p.Assigned, "Date assigned");
+    public static readonly PropertyInfo<SmartDate> AssignedProperty =
+      RegisterProperty<SmartDate>(c => c.Assigned);
+    [Display(Name = "Date assigned")]
     public string Assigned
     {
       get { return GetPropertyConvert<SmartDate, string>(AssignedProperty); }
+      private set { LoadPropertyConvert<SmartDate, string>(AssignedProperty, value); }
     }
 
-    private static PropertyInfo<int> RoleProperty = 
-      RegisterProperty<int>(p=>p.Role, "Role assigned");
+    public static readonly PropertyInfo<int> RoleProperty = 
+      RegisterProperty<int>(c => c.Role);
+    [Display(Name = "Role assigned")]
     public int Role
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
     }
 
-    //public static readonly MethodInfo GetResourceMethod = RegisterMethod(typeof(ProjectResource), "GetResource");
-    //public Resource GetResource()
-    //{
-    //  CanExecuteMethod(GetResourceMethod, true);
-    //  return Resource.GetResource(GetProperty(ResourceIdProperty));
-    //}
-
     public override string ToString()
     {
       return ResourceId.ToString();
     }
 
-    #endregion
-
-    #region  Business Rules
-
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Assignment.ValidRole { PrimaryProperty = RoleProperty });
+      BusinessRules.AddRule(new Assignment.ValidRole(RoleProperty));
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
-      //BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, GetResourceMethod, "Guest"));
     }
-
-    #endregion
-
-    #region NewProjectResource
-
-    internal static ProjectResource NewProjectResource(int resourceId)
-    {
-      return DataPortal.CreateChild<ProjectResource>(
-        resourceId, RoleList.DefaultRole());
-    }
-
-#if SILVERLIGHT
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public override void Child_Create()
-#else
-    protected override void Child_Create()
-#endif
-    {
-      LoadProperty(AssignedProperty, new SmartDate(System.DateTime.Today));
-    }
-
-    #endregion
-
-#if !SILVERLIGHT
-    #region  Factory Methods
-
-    internal static ProjectResource GetResource(
-      ProjectTracker.DalLinq.Assignment data)
-    {
-      return DataPortal.FetchChild<ProjectResource>(data);
-    }
-
-    private ProjectResource()
-    { /* require use of factory methods */ }
-
-    #endregion
-
-    #region  Data Access
-
-    private void Child_Create(int resourceId, int role)
-    {
-      var res = Resource.GetResource(resourceId);
-      LoadProperty(ResourceIdProperty, res.Id);
-      LoadProperty(LastNameProperty, res.LastName);
-      LoadProperty(FirstNameProperty, res.FirstName);
-      LoadProperty(AssignedProperty, Assignment.GetDefaultAssignedDate());
-      LoadProperty(RoleProperty, role);
-    }
-
-    private void Child_Fetch(ProjectTracker.DalLinq.Assignment data)
-    {
-      LoadProperty(ResourceIdProperty, data.ResourceId);
-      LoadProperty(LastNameProperty, data.Resource.LastName);
-      LoadProperty(FirstNameProperty, data.Resource.FirstName);
-      LoadProperty(AssignedProperty, data.Assigned);
-      LoadProperty(RoleProperty, data.Role);
-      TimeStamp = data.LastChanged.ToArray();
-    }
-
-    private void Child_Insert(Project project)
-    {
-      TimeStamp = Assignment.AddAssignment(
-        project.Id, 
-        ReadProperty(ResourceIdProperty), 
-        ReadProperty(AssignedProperty), 
-        ReadProperty(RoleProperty));
-    }
-
-    private void Child_Update(Project project)
-    {
-      TimeStamp = Assignment.UpdateAssignment(
-        project.Id, 
-        ReadProperty(ResourceIdProperty), 
-        ReadProperty(AssignedProperty), 
-        ReadProperty(RoleProperty), 
-        TimeStamp);
-    }
-
-    private void Child_DeleteSelf(Project project)
-    {
-      Assignment.RemoveAssignment(
-        project.Id, 
-        ReadProperty(ResourceIdProperty));
-    }
-
-    #endregion
-#endif
   }
 }

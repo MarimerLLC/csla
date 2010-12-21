@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WcfAppServer", "WcfAppServe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Library.Wp", "ProjectTracker.Library.Wp\ProjectTracker.Library.Wp.csproj", "{74544478-45AC-450C-92A0-D2E1C313C0E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Dal", "ProjectTracker.Dal\ProjectTracker.Dal.csproj", "{677EFBD4-1565-4D5D-A022-C2A85078DB64}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -121,6 +123,16 @@ Global
 		{74544478-45AC-450C-92A0-D2E1C313C0E5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74544478-45AC-450C-92A0-D2E1C313C0E5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{74544478-45AC-450C-92A0-D2E1C313C0E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Release|.NET.ActiveCfg = Release|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{677EFBD4-1565-4D5D-A022-C2A85078DB64}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

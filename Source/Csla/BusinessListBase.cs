@@ -1078,7 +1078,9 @@ namespace Csla
     /// <param name="handler">Callback handler.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    { }
+    {
+      handler((T)this, null);
+    }
 
     /// <summary>
     /// Override this method to allow update of a business

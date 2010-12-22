@@ -461,11 +461,26 @@ namespace Csla.Core
 
     #region AddNewCore
 
+    [NotUndoable]
+    [NonSerialized]
+    private EventHandler<AddedNewEventArgs<T>> _addedNewHandlers = null;
     /// <summary>
     /// Event raised when a new object has been 
     /// added to the collection.
     /// </summary>
-    public event EventHandler<AddedNewEventArgs<T>> AddedNew;
+    public event EventHandler<AddedNewEventArgs<T>> AddedNew
+    {
+      add
+      {
+        _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
+          System.Delegate.Combine(_addedNewHandlers, value);
+      }
+      remove
+      {
+        _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
+          System.Delegate.Remove(_addedNewHandlers, value);
+      }
+    }
 
     /// <summary>
     /// Raises the AddedNew event.
@@ -474,9 +489,11 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void OnAddedNew(T item)
     {
-      var args = new AddedNewEventArgs<T>(item);
-      if (AddedNew != null)
-        AddedNew(this, args);
+      if (_addedNewHandlers != null)
+      {
+        var args = new AddedNewEventArgs<T>(item);
+        _addedNewHandlers(this, args);
+      }
     }
 
 #if SILVERLIGHT

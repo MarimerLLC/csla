@@ -98,7 +98,7 @@ namespace Csla.Server
       this.ExecuteMethodName = "Execute";
     }
 
-        /// <summary>
+    /// <summary>
     /// Creates an instance of the attribute.
     /// </summary>
     /// <param name="factoryType">
@@ -195,6 +195,118 @@ namespace Csla.Server
       this.UpdateMethodName = updateMethod;
       this.DeleteMethodName = deleteMethod;
       this.ExecuteMethodName = executeMethod;
+    }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// The type of factory class or interface.
+    /// </param>
+    public ObjectFactoryAttribute(Type factoryType)
+
+      : this(GetAssemblyQualifiedName(factoryType))
+    { }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// The type of factory class or interface.
+    /// </param>
+    public ObjectFactoryAttribute(Type factoryType, string fetchMethod)
+
+      : this(GetAssemblyQualifiedName(factoryType), fetchMethod)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// The type of factory class or interface.
+    /// </param>
+    /// <param name="createMethod">
+    /// Name of the method to call for a create operation.
+    /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod)
+
+      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod)
+    {
+    }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// The type of factory class or interface.
+    /// </param>
+    /// <param name="createMethod">
+    /// Name of the method to call for a create operation.
+    /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    /// <param name="updateMethod">
+    /// Name of the method to call for a update operation.
+    /// </param>
+    /// <param name="deleteMethod">
+    /// Name of the method to call for a delete operation.
+    /// </param>
+    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
+
+      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod)
+    {
+    }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// The type of factory class or interface.
+    /// </param>
+    /// <param name="createMethod">
+    /// Name of the method to call for a create operation.
+    /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    /// <param name="updateMethod">
+    /// Name of the method to call for a update operation.
+    /// </param>
+    /// <param name="deleteMethod">
+    /// Name of the method to call for a delete operation.
+    /// </param>
+    /// <param name="executeMethod">
+    /// Name of the method to call for a Execute operation.
+    /// </param>
+    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+
+      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
+    {
+    }
+
+    /// <summary>
+    /// Gets the short version of assembly qualified name.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns></returns>
+    private static string GetAssemblyQualifiedName(Type type)
+    {
+      if (type.IsGenericType)
+      {
+        return type.AssemblyQualifiedName;
+      }
+      else
+      {
+        if (type.AssemblyQualifiedName == null) return string.Empty;
+
+        var elements = type.AssemblyQualifiedName.Split(',');
+        return string.Join(",", elements[0], elements[1]);
+
+      }
     }
   }
 }

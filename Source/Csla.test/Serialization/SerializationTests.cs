@@ -48,6 +48,15 @@ namespace Csla.Test.Serialization
       }
     }
 
+    [TestMethod]
+    public void SerializeDataPortalException()
+    {
+      var obj = new Csla.Server.DataPortalException("test message", new Exception("inner message"), null);
+      var obj2 = (Csla.Server.DataPortalException)Csla.Core.ObjectCloner.Clone(obj);
+      Assert.IsFalse(ReferenceEquals(obj, obj2));
+      Assert.AreEqual(obj.Message, obj2.Message);
+    }
+
     [TestMethod()]
     public void TestWithoutSerializableHandler()
     {

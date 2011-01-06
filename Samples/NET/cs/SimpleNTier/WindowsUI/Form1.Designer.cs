@@ -40,7 +40,7 @@
       this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.cslaActionExtender1 = new Csla.Windows.CslaActionExtender(this.components);
       this.SaveButton = new System.Windows.Forms.Button();
-      this.CancelButton = new System.Windows.Forms.Button();
+      this.CancelButton1 = new System.Windows.Forms.Button();
       this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
       this.bindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
       customerNameLabel = new System.Windows.Forms.Label();
@@ -130,7 +130,6 @@
       // SaveButton
       // 
       this.cslaActionExtender1.SetActionType(this.SaveButton, Csla.Windows.CslaFormAction.Save);
-      this.cslaActionExtender1.SetDisableWhenClean(this.SaveButton, false);
       this.SaveButton.Location = new System.Drawing.Point(360, 28);
       this.SaveButton.Name = "SaveButton";
       this.SaveButton.Size = new System.Drawing.Size(75, 23);
@@ -138,16 +137,15 @@
       this.SaveButton.Text = "Save";
       this.SaveButton.UseVisualStyleBackColor = true;
       // 
-      // CancelButton
+      // CancelButton1
       // 
-      this.cslaActionExtender1.SetActionType(this.CancelButton, Csla.Windows.CslaFormAction.Cancel);
-      this.cslaActionExtender1.SetDisableWhenClean(this.CancelButton, false);
-      this.CancelButton.Location = new System.Drawing.Point(360, 57);
-      this.CancelButton.Name = "CancelButton";
-      this.CancelButton.Size = new System.Drawing.Size(75, 23);
-      this.CancelButton.TabIndex = 7;
-      this.CancelButton.Text = "Cancel";
-      this.CancelButton.UseVisualStyleBackColor = true;
+      this.cslaActionExtender1.SetActionType(this.CancelButton1, Csla.Windows.CslaFormAction.Cancel);
+      this.CancelButton1.Location = new System.Drawing.Point(360, 57);
+      this.CancelButton1.Name = "CancelButton1";
+      this.CancelButton1.Size = new System.Drawing.Size(75, 23);
+      this.CancelButton1.TabIndex = 7;
+      this.CancelButton1.Text = "Cancel";
+      this.CancelButton1.UseVisualStyleBackColor = true;
       // 
       // errorProvider1
       // 
@@ -163,7 +161,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(697, 464);
-      this.Controls.Add(this.CancelButton);
+      this.Controls.Add(this.CancelButton1);
       this.Controls.Add(this.SaveButton);
       this.Controls.Add(this.lineItemsDataGridView);
       this.Controls.Add(customerNameLabel);
@@ -194,7 +192,7 @@
     private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
     private Csla.Windows.CslaActionExtender cslaActionExtender1;
     private System.Windows.Forms.Button SaveButton;
-    private System.Windows.Forms.Button CancelButton;
+    private System.Windows.Forms.Button CancelButton1;
     private System.Windows.Forms.ErrorProvider errorProvider1;
     private Csla.Windows.BindingSourceRefresh bindingSourceRefresh1;
   }

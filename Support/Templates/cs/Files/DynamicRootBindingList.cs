@@ -10,7 +10,7 @@ namespace Templates
   {
     #region Business Methods
 
-    protected override DynamicRoot AddNewCore()
+    protected override object AddNewCore()
     {
       DynamicRoot item = DynamicRoot.NewDynamicRoot();
       Add(item);

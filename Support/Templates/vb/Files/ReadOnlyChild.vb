@@ -11,7 +11,7 @@ Public Class ReadOnlyChild
   ' TODO: add your own fields, properties and methods 
 
   ' example with managed backing field 
-  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id", "Id"))
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id)
   Public ReadOnly Property Id() As Integer
     Get
       Return GetProperty(IdProperty)
@@ -19,7 +19,7 @@ Public Class ReadOnlyChild
   End Property
 
   ' example with private backing field 
-  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name", "Name"))
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name, Nothing, RelationshipTypes.PrivateField)
   Private _name As String = NameProperty.DefaultValue
   Public ReadOnly Property Name() As String
     Get

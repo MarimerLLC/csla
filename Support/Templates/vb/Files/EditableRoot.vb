@@ -7,7 +7,7 @@ Public Class EditableRoot
   ' TODO: add your own fields, properties and methods
 
   'example with private backing field
-  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id", "Id"))
+  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id)
   Private _id As Integer = IdProperty.DefaultValue
   ''' <Summary>
   ''' Gets and sets the Id value.
@@ -22,7 +22,7 @@ Public Class EditableRoot
   End Property
 
   'example with managed backing field
-  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name", "Name"))
+  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
   ''' <Summary>
   ''' Gets and sets the Name value.
   ''' </Summary>

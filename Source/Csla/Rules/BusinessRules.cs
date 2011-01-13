@@ -513,7 +513,7 @@ namespace Csla.Rules
         // set up context
         var context = new RuleContext((r) =>
           {
-            if (rule.IsAsync)
+            if (r.Rule.IsAsync)
             {
               lock (SyncRoot)
               {

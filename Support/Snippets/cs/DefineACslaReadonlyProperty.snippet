@@ -2,45 +2,53 @@
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
       <Title>Define a Csla Readonly Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Defines a Csla-style readonly Property with a backing field.</Description>
+      <Description>Csla ReadOnly property </Description>
+      <HelpUrl>
+      </HelpUrl>
       <Shortcut>cslapropg</Shortcut>
     </Header>
     <Snippet>
       <Declarations>
-        <Literal>
+        <Literal Editable="true">
           <ID>ClassName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with class name.</ToolTip>
           <Default>BusinessClass</Default>
+          <Function>
+          </Function>
         </Literal>
-        <Literal>
+        <Literal Editable="true">
           <ID>PropertyName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with property name.</ToolTip>
           <Default>Name</Default>
+          <Function>
+          </Function>
         </Literal>
-        <Literal>
+        <Literal Editable="true">
           <ID>FriendlyName</ID>
-          <Type>String</Type>
           <ToolTip>Replace with friendly property name.</ToolTip>
           <Default>Name</Default>
+          <Function>
+          </Function>
         </Literal>
-        <Literal>
+        <Literal Editable="true">
           <ID>PropertyType</ID>
           <ToolTip>Replace with the property type.</ToolTip>
           <Default>int</Default>
+          <Function>
+          </Function>
         </Literal>
       </Declarations>
-      <Code Language="CSharp" Kind="method decl">
-        <![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
 public $PropertyType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property); }
   private set { LoadProperty($PropertyName$Property, value); }
-}]]>
-      </Code>
+}]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

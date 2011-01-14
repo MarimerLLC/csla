@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Csla ReadWrite property with no authorization or rules</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropna</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>int</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$);
+public $PropertyType$ $PropertyName$
+{
+  get { return ReadProperty($PropertyName$Property); }
+  set 
+  { 
+    LoadProperty($PropertyName$Property, value); 
+    OnPropertyChanged($PropertyName$Property);
+  }
+}]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Csla Child property</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslachild</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>ChildType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>int</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(c => c.$PropertyName$, RelationshipTypes.Child);
+public $ChildType$ $PropertyName$
+{
+  get { return GetProperty($PropertyName$Property); }
+  private set { SetProperty($PropertyName$Property, value); }
+}]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

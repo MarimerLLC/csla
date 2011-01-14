@@ -27,6 +27,18 @@ Public Class AuthorizationRuleClass
     ' TODO: Add additional constructor code here 
 
   End Sub
+ 
+  ' TODO: Uncomment this property if rule result is not static. 
+  ''' <summary>
+  '''  Notify RuelEngine that the result of this AuthzRule can not be cached. 
+  '''  Default is true so AuthzRules will only run once.
+  ''' </summary>
+  'Public Overrides ReadOnly Property CacheResult() as Boolean
+  '   Get
+  '     Return False
+  '  End Get
+  'End Property
+  
 
   Protected Overrides Sub Execute(ByVal context As AuthorizationContext)
     ' TODO: Add actual rule code here. 

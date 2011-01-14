@@ -9,37 +9,37 @@ Public Class EditableRootParent
 
   ' TODO: add your own fields, properties and methods 
 
-  ' example with private backing field 
-  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of String)(Function(p) p.Id)
-  Private _Id As Integer = IdProperty.DefaultValue
-  Public Property Id() As Integer
-    Get
-      Return GetProperty(IdProperty, _Id)
-    End Get
-    Set(ByVal value As Integer)
-      SetProperty(IdProperty, _Id, value)
-    End Set
-  End Property
+	' example with private backing field
+	Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id, RelationshipTypes.PrivateField)
+	Private _Id As Integer = IdProperty.DefaultValue
+	Public Property Id() As Integer
+		Get
+			Return GetProperty(IdProperty, _Id)
+		End Get
+		Set
+			SetProperty(IdProperty, _Id, value)
+		End Set
+	End Property
 
-  ' example with managed backing field 
-  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
-  Public Property Name() As String
-    Get
-      Return GetProperty(NameProperty)
-    End Get
-    Set(ByVal value As String)
-      SetProperty(NameProperty, value)
-    End Set
-  End Property
+	' example with managed backing field
+	Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
+	Public Property Name() As String
+		Get
+			Return GetProperty(NameProperty)
+		End Get
+		Set
+			SetProperty(NameProperty, value)
+		End Set
+	End Property
 
-  Public Shared ReadOnly ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(Function(p) p.ChildList, "Child list"))
+  Public Shared ReadOnly ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(Function(p) p.ChildList, "Child list", RelationshipTypes.Child))
   Public ReadOnly Property ChildList() As EditableChildList
     Get
       Return GetProperty(Of EditableChildList)(ChildListProperty)
     End Get
   End Property
 
-  Public Shared ReadOnly ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(Of EditableChild)(Function(p) p.Child, "Child"))
+  Public Shared ReadOnly ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(Of EditableChild)(Function(p) p.Child, "Child", RelationshipTypes.Child))
   Public ReadOnly Property Child() As EditableChild
     Get
       Return GetProperty(Of EditableChild)(ChildProperty)

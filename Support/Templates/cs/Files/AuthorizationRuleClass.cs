@@ -31,6 +31,16 @@ namespace Templates
 
     }
 
+	// TODO: Uncomment this property if rule result is not static. 
+	/// <summary>
+	///   Notify RuelEngine that the result of this AuthzRule can not be cached. 
+	///   Default is true so AuthzRules will only run once.
+	/// </summary>
+	//public override bool CacheResult
+	//{
+	//   get { return false; }
+	//}
+	
     protected override void Execute(AuthorizationContext context)
     {
       // TODO: Add actual rule code here. 

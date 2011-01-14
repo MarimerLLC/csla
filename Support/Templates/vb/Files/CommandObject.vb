@@ -16,13 +16,16 @@ Public Class CommandObject
 
 #Region " Client-side Code "
 
-  Private _result As Boolean
-
-  Public ReadOnly Property Result() As Boolean
-    Get
-      Return _result
+  Public Shared ReadOnly ResultProperty As PropertyInfo(Of Boolean) = RegisterProperty(Of Boolean)(Function(p) p.Result)
+  Public Property Result() As Boolean
+	Get
+      Return ReadProperty(ResultProperty)
     End Get
+    Private Set
+      LoadProperty(ResultProperty, value)
+    End Set
   End Property
+
 
   Private Sub BeforeServer()
     ' implement code to run on client

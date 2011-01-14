@@ -10,28 +10,28 @@ Public Class SwitchableObject
 
   ' TODO: add your own fields, properties and methods 
 
-  ' example with private backing field 
-  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(New PropertyInfo(Of Integer)("Id"))
-  Private _Id As Integer = IdProperty.DefaultValue
-  Public Property Id() As Integer
-    Get
-      Return GetProperty(IdProperty, _Id)
-    End Get
-    Set(ByVal value As Integer)
-      SetProperty(IdProperty, _Id, value)
-    End Set
-  End Property
+	' example with private backing field
+	Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id, RelationshipTypes.PrivateField)
+	Private _Id As Integer = IdProperty.DefaultValue
+	Public Property Id() As Integer
+		Get
+			Return GetProperty(IdProperty, _Id)
+		End Get
+		Set
+			SetProperty(IdProperty, _Id, value)
+		End Set
+	End Property
 
-  ' example with managed backing field 
-  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))
-  Public Property Name() As String
-    Get
-      Return GetProperty(NameProperty)
-    End Get
-    Set(ByVal value As String)
-      SetProperty(NameProperty, value)
-    End Set
-  End Property
+	' example with managed backing field
+	Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
+	Public Property Name() As String
+		Get
+			Return GetProperty(NameProperty)
+		End Get
+		Set
+			SetProperty(NameProperty, value)
+		End Set
+	End Property
 
 #End Region
 

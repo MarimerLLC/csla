@@ -9,23 +9,25 @@ namespace Templates
     #region Business Methods
 
     // TODO: add your own fields, properties and methods
-    // use snippet cslapropg to create your properties
-
-    // example with managed backing field
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-    }
+    // use snippets to create your properties
 
     // example with private backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
-    private string _name = NameProperty.DefaultValue;
-    public string Name
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
+    private int _Id = IdProperty.DefaultValue;
+    public int Id
     {
-      get { return GetProperty(NameProperty, _name); }
+      get { return GetProperty(IdProperty, _Id); }
+      private set { _Id = value); }
     }
 
+    // example with managed backing field
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      private set { LoadProperty(NameProperty, value); }
+    }
+	
     #endregion
 
     #region Business Rules

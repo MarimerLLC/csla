@@ -11,7 +11,7 @@ namespace Templates
     // TODO: add your own fields, properties and methods
 
     // example with private backing field
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
     private int _Id = IdProperty.DefaultValue;
     public int Id
     {
@@ -20,7 +20,7 @@ namespace Templates
     }
 
     // example with managed backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -47,12 +47,12 @@ namespace Templates
 
     #region Factory Methods
 
-    internal static EditableChild NewEditableChild()
+    internal static EditableChild New()
     {
       return DataPortal.CreateChild<EditableChild>();
     }
 
-    internal static EditableChild GetEditableChild(object childData)
+    internal static EditableChild Get(object childData)
     {
       return DataPortal.FetchChild<EditableChild>(childData);
     }

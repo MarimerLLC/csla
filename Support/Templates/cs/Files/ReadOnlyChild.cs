@@ -11,21 +11,23 @@ namespace Templates
     // TODO: add your own fields, properties and methods
     // use snippet cslapropg to create your properties
 
-    // example with managed backing field
-    private static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    // example with private backing field
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id, RelationshipTypes.PrivateField);
+    private int _Id = IdProperty.DefaultValue;
     public int Id
     {
-      get { return GetProperty(IdProperty); }
+      get { return GetProperty(IdProperty, _Id); }
+      private set { _Id = value); }
     }
 
-    // example with private backing field
-    private static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
-    private string _name = NameProperty.DefaultValue;
+    // example with managed backing field
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty, _name); }
+      get { return GetProperty(NameProperty); }
+      private set { LoadProperty(NameProperty, value); }
     }
-
+	
     #endregion
 
     #region Business Rules

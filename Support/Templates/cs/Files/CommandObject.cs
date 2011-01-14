@@ -38,12 +38,11 @@ namespace Templates
 
     #region Client-side Code
 
-    // TODO: add your own fields and properties
-    bool _result;
-
+    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(p => p.Result);
     public bool Result
     {
-      get { return _result; }
+      get { return ReadProperty(ResultProperty); }
+      private set { LoadProperty(ResultProperty, value); }
     }
 
     private void BeforeServer()

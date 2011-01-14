@@ -8,34 +8,28 @@ Public Class EditableChild
 
   ' TODO: add your own fields, properties and methods
   
-  'example with private backing field
-  Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id)
-  Private _id As Integer = IdProperty.DefaultValue
-  ''' <Summary>
-  ''' Gets and sets the Id value.
-  ''' </Summary>
-  Public Property Id() As Integer
-    Get
-      Return GetProperty(IdProperty, _id)
-    End Get
-    Set(ByVal value As Integer)
-      SetProperty(IdProperty, _id, value)
-    End Set
-  End Property
+	' example with private backing field
+	Public Shared ReadOnly IdProperty As PropertyInfo(Of Integer) = RegisterProperty(Of Integer)(Function(p) p.Id, RelationshipTypes.PrivateField)
+	Private _Id As Integer = IdProperty.DefaultValue
+	Public Property Id() As Integer
+		Get
+			Return GetProperty(IdProperty, _Id)
+		End Get
+		Set
+			SetProperty(IdProperty, _Id, value)
+		End Set
+	End Property
 
-  'example with managed backing field
-  Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
-  ''' <Summary>
-  ''' Gets and sets the Name value.
-  ''' </Summary>
-  Public Property Name() As String
-    Get
-      Return GetProperty(NameProperty)
-    End Get
-    Set(ByVal value As String)
-      SetProperty(NameProperty, value)
-    End Set
-  End Property
+	' example with managed backing field
+	Public Shared ReadOnly NameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(p) p.Name)
+	Public Property Name() As String
+		Get
+			Return GetProperty(NameProperty)
+		End Get
+		Set
+			SetProperty(NameProperty, value)
+		End Set
+	End Property
 
 #End Region
 

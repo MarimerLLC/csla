@@ -32,14 +32,14 @@ Public Class EditableRootParent
 		End Set
 	End Property
 
-  Public Shared ReadOnly ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(Function(p) p.ChildList, "Child list", RelationshipTypes.Child))
+  Public Shared ReadOnly ChildListProperty As PropertyInfo(Of EditableChildList) = RegisterProperty(Of EditableChildList)(Function(p) p.ChildList, "Child list", RelationshipTypes.Child)
   Public ReadOnly Property ChildList() As EditableChildList
     Get
       Return GetProperty(Of EditableChildList)(ChildListProperty)
     End Get
   End Property
 
-  Public Shared ReadOnly ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(Of EditableChild)(Function(p) p.Child, "Child", RelationshipTypes.Child))
+  Public Shared ReadOnly ChildProperty As PropertyInfo(Of EditableChild) = RegisterProperty(Of EditableChild)(Function(p) p.Child, "Child", RelationshipTypes.Child)
   Public ReadOnly Property Child() As EditableChild
     Get
       Return GetProperty(Of EditableChild)(ChildProperty)

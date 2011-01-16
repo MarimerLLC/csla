@@ -7,7 +7,7 @@
       </SnippetTypes>
       <Title>Define a Csla Readonly Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Csla ReadOnly property</Description>
+      <Description>Define a Csla ReadOnly property</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslapropgp</Shortcut>
@@ -42,13 +42,20 @@
           <Function>
           </Function>
         </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the private field name.</ToolTip>
+          <Default>_name</Default>
+          <Function>
+          </Function>
+        </Literal>
       </Declarations>
       <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
 private $PropertyType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
 public $PropertyType$ $PropertyName$
 {
   get { return GetProperty($PropertyName$Property, $PrivateFieldName$); }
-  private set { $PrivateFieldName$ = value); }
+  private set { $PrivateFieldName$ = value; }
 }]]></Code>
     </Snippet>
   </CodeSnippet>

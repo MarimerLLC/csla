@@ -5,9 +5,9 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla Property</Title>
+      <Title>Define a Csla Using reference Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Csla Child property with sync lazy load </Description>
+      <Description>Define a Csla Using reference property</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslapropur</Shortcut>
@@ -22,29 +22,30 @@
           </Function>
         </Literal>
         <Literal Editable="true">
-          <ID>ChildType</ID>
-          <ToolTip>Replace with the property type.</ToolTip>
-          <Default>int</Default>
+          <ID>UsingType</ID>
+          <ToolTip>Replace with the referenced type.</ToolTip>
+          <Default>UsingTypeName</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the referenced object type.</ToolTip>
+          <Default>_name</Default>
           <Function>
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(c => c.$PropertyName$, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
-public $ChildType$ $PropertyName$
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$UsingType$> $PropertyName$Property = RegisterProperty<$UsingType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
+[NotUndoable, NonSerialized]
+private $UsingType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
+public $UsingType$ $PropertyName$
 {
-  get 
-  { 
-    if (!FieldManager.FieldExists(AddressesProperty)) 
-    { 
-       $PropertyName$ = $ChildType$.Get(); 
-    } 
-    return GetProperty($PropertyName$Property);  
-  } 
-  private set 
-  {  
-    LoadProperty($PropertyName$Property, value); 
-    OnPropertyChanged($PropertyName$Property); 
-  } 
+  get { 
+        if ($PrivateFieldName$ == null) 
+          $PrivateFieldName$ = $UsingType$.New(); 
+        return GetProperty($PropertyName$Property,  $PrivateFieldName$); 
+      } 
 }]]></Code>
     </Snippet>
   </CodeSnippet>

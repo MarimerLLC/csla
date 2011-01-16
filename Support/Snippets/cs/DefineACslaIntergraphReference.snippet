@@ -5,9 +5,9 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla Property</Title>
+      <Title>Define a Csla Intergraph Reference Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Csla Child property with sync lazy load </Description>
+      <Description>Define a Csla Intergraph Reference Property</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslapropir</Shortcut>
@@ -28,13 +28,20 @@
           <Function>
           </Function>
         </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the referenced object type.</ToolTip>
+          <Default>_name</Default>
+          <Function>
+          </Function>
+        </Literal>
       </Declarations>
       <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ReferencedType$> $PropertyName$Property = RegisterProperty<$ReferencedType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
 [NotUndoable]
 private $ReferencedType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
 public $ReferencedType$ $PropertyName$
 {
-  get { return GetProperty($PropertyName$Property,  _$PrivateFieldName$); } 
+  get { return GetProperty($PropertyName$Property,  $PrivateFieldName$); } 
   set { SetProperty($PropertyName$Property, ref  $PrivateFieldName$, value); } 
 }]]></Code>
     </Snippet>

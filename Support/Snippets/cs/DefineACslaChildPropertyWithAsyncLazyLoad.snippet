@@ -5,9 +5,9 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla Property</Title>
+      <Title>Define a Csla Child Property with async lazy load</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Csla Child property with async lazy load </Description>
+      <Description>Define a Csla Child property with async lazy load</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslachildla</Shortcut>
@@ -24,7 +24,7 @@
         <Literal Editable="true">
           <ID>ChildType</ID>
           <ToolTip>Replace with the property type.</ToolTip>
-          <Default>int</Default>
+          <Default>ChildTypeName</Default>
           <Function>
           </Function>
         </Literal>
@@ -34,13 +34,13 @@ public $ChildType$ $PropertyName$
 {
   get 
   { 
-    if (!FieldManager.FieldExists(AddressesProperty)) 
+    if (!FieldManager.FieldExists($PropertyName$Property)) 
     { 
         $ChildType$.BeginGet((o,e) => 
           {
             if (e.Error != null) 
               throw e.Error;
-            if !FieldManager.FieldExists(AddressesProperty) 
+            if (!FieldManager.FieldExists($PropertyName$Property))
             {
                $PropertyName$ = e.Object;
             }

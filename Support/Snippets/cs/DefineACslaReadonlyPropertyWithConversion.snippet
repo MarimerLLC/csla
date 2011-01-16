@@ -7,7 +7,7 @@
       </SnippetTypes>
       <Title>Define a Csla Readonly Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Csla ReadOnly property with conversion</Description>
+      <Description>Define a Csla ReadOnly property with conversion</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslapropgc</Shortcut>
@@ -46,7 +46,7 @@
       <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ManagedFieldType$> $PropertyName$Property = RegisterProperty<$ManagedFieldType$>(c => c.$PropertyName$);
 public $PropertyType$ $PropertyName$
 {
-  get { return GetPropertyConvert($PropertyName$Property); }
+  get { return GetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property); }
   set { LoadPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property, value); }
 }]]></Code>
     </Snippet>

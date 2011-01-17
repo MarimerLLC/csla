@@ -76,12 +76,6 @@ namespace BusinessRuleDemo
 
     #region Validation Rules
 
-    public override bool CanWriteProperty(Csla.Core.IPropertyInfo property)
-    {
-      // must override so that authorization rules are not cached
-      return BusinessRules.HasPermission(AuthorizationActions.WriteProperty, property);
-    }
-
     protected override void AddBusinessRules()
     {
       // call base class implementation to add data annotation rules to BusinessRules 

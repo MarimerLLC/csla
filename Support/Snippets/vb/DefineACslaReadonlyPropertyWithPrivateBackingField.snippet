@@ -5,15 +5,22 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla ReadWrite Property Private Backing Field</Title>
+      <Title>Define a Csla Readonly Property with Private Backing Field</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Define a Csla ReadWrite property with private backing field.</Description>
+      <Description>Define a Csla ReadOnly property with private backing field.</Description>
       <HelpUrl>
       </HelpUrl>
-      <Shortcut>cslapropp</Shortcut>
+      <Shortcut>cslapropgp</Shortcut>
     </Header>
     <Snippet>
       <Declarations>
+        <Literal Editable="true">
+          <ID>ClassName</ID>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+          <Function>
+          </Function>
+        </Literal>
         <Literal Editable="true">
           <ID>PropertyName</ID>
           <ToolTip>Replace with property name.</ToolTip>
@@ -37,20 +44,22 @@
         </Literal>
         <Literal Editable="true">
           <ID>PrivateFieldName</ID>
-          <ToolTip>Replace with private field name.</ToolTip>
+          <ToolTip>Replace with the private field name.</ToolTip>
           <Default>_name</Default>
           <Function>
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
-// [NotUndoable, NonSerialized]
-private $PropertyType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
-public $PropertyType$ $PropertyName$
-{
-  get { return GetProperty($PropertyName$Property, $PrivateFieldName$); }
-  set { SetProperty($PropertyName$Property, ref $PrivateFieldName$, value); }
-}]]></Code>
+      <Code Language="csharp" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
+Private $PrivateFieldName$ As $PropertyType$ = $PropertyName$Property.DefaultValue
+Public Property $PropertyName$() As $PropertyType$
+	Get
+		Return GetProperty($PropertyName$Property, $PrivateFieldName$)
+	End Get
+	Private Set(ByVal value as $PropertyType$)
+		$PrivateFieldName$ = value
+	End Set
+End Property]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

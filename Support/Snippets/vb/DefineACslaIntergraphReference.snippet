@@ -36,14 +36,18 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ReferencedType$> $PropertyName$Property = RegisterProperty<$ReferencedType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
-[NotUndoable]
-private $ReferencedType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
-public $ReferencedType$ $PropertyName$
-{
-  get { return GetProperty($PropertyName$Property,  $PrivateFieldName$); } 
-  set { SetProperty($PropertyName$Property, ref  $PrivateFieldName$, value); } 
-}]]></Code>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ReferencedType$) = RegisterProperty(Of $ReferencedType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
+<NotUndoable> _
+Private $PrivateFieldName$ As $ReferencedType$ = $PropertyName$Property.DefaultValue
+Public Property $PropertyName$() As $ReferencedType$
+	Get
+		Return GetProperty($PropertyName$Property, PrivateFieldName)
+	End Get
+	Set(ByRef value as $eferenceType$)
+		SetProperty($PropertyName$Property, PrivateFieldName, value)
+	End Set
+End Property
+]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

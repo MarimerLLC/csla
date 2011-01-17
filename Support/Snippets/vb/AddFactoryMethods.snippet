@@ -38,15 +38,15 @@
       </Declarations>
       <Code Language="VB" Delimiter="$"><![CDATA[#Region " Factory Methods "
 
-Public Shared Function New$ClassName$() As $ClassName$
+Public Shared Function New() As $ClassName$
   Return DataPortal.Create(Of $ClassName$)()
 End Function
 
-Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$
+Public Shared Function Get(ByVal $IdName$ As $IdType$) As $ClassName$
   Return DataPortal.Fetch(Of $ClassName$)($IdName$)
 End Function
 
-Public Shared Sub Delete$ClassName$(ByVal $IdName$ As $IdType$)
+Public Shared Sub Delete(ByVal $IdName$ As $IdType$)
   DataPortal.Delete(Of $ClassName$)($IdName$)
 End Sub
 

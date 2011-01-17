@@ -7,7 +7,7 @@
       </SnippetTypes>
       <Title>Add a private Authorization Rule class</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Add a private Authorization Rule class</Description>
+      <Description>Add a private Authorization Rule class.</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslarulea</Shortcut>
@@ -51,6 +51,17 @@
 
 
 	End Sub
+  
+	' TODO: Uncomment this property if rule result is not static. 
+	''' <summary>
+	'''  Notify RuelEngine that the result of this AuthzRule can not be cached. 
+	'''  Default is true so AuthzRules will only run once.
+	''' </summary>
+	'Public Overrides ReadOnly Property CacheResult() as Boolean
+	'   Get
+	'     Return False
+	'  End Get
+	'End Property
 
 	Protected Overrides Sub Execute(context As AuthorizationContext)
 		' TODO: Add actual rule code here. 

@@ -2,9 +2,9 @@
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
-      <Title>Define a nested Criteria class</Title>
+      <Title>Add a criteria class</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Defines a Csla-style Criteria class.</Description>
+      <Description>Add a nested criteria class to a CSLA .NET business class.</Description>
       <Shortcut>cslacrit</Shortcut>
     </Header>
     <Snippet>
@@ -23,38 +23,37 @@
         </Literal>
         <Literal>
           <ID>IdType</ID>
-          <ToolTip>Replace with the Id variable type.</ToolTip>
-          <Default>Integer</Default>
-        </Literal>
-        <Literal>
-          <ID>IdParam</ID>
           <Type>String</Type>
-          <ToolTip>Id parameter name</ToolTip>
-          <Default>id</Default>
+          <ToolTip>Type of the id field</ToolTip>
+          <Default>int</Default>
         </Literal>
         <Literal>
           <ID>IdProperty</ID>
           <Type>String</Type>
-          <ToolTip>Id property name</ToolTip>
+          <ToolTip>Name of the id property</ToolTip>
           <Default>Id</Default>
+        </Literal>
+        <Literal>
+          <ID>IdParam</ID>
+          <Type>String</Type>
+          <ToolTip>Parameter name for id value</ToolTip>
+          <Default>id</Default>
         </Literal>
       </Declarations>
       <Code Language="VB" Kind="type decl"><![CDATA[<Serializable()> _
-Private Class $ClassName$
+Private Class $ClassName$ Inherits CriteriaBase
 
-  Private $IdField$ As $IdType$
-  Public ReadOnly Property $IdProperty$() As $IdType$
+Public Shared ReadOnly $IdProperty$Property As PropertyInfo(Of $IdType$) = RegisterProperty(Of $IdType$)(Function(c) c.$IdProperty$)
+Public Property $IdProperty$() As $IdType$
     Get
-      Return $IdField$
+        Return ReadProperty($IdProperty$Property)
     End Get
-  End Property
+    Set(ByVal value As $IdType$)
+        LoadProperty($IdProperty$Property, value)
+    End Set
+End Property
 
-  Public Sub New(ByVal $IdParam$ As $IdType$)
-    $IdField$ = $IdParam$
-  End Sub
-
-End Class
-]]></Code>
+End Class]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

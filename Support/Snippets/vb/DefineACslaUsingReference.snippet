@@ -5,12 +5,12 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla Intergraph Reference Property</Title>
+      <Title>Define a Csla Using reference Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Define a Csla Intergraph Reference Property.</Description>
+      <Description>Define a Csla Using reference property.</Description>
       <HelpUrl>
       </HelpUrl>
-      <Shortcut>cslapropir</Shortcut>
+      <Shortcut>cslapropur</Shortcut>
     </Header>
     <Snippet>
       <Declarations>
@@ -22,9 +22,9 @@
           </Function>
         </Literal>
         <Literal Editable="true">
-          <ID>ReferencedType</ID>
-          <ToolTip>Replace with the referenced object type.</ToolTip>
-          <Default>Typename</Default>
+          <ID>UsingType</ID>
+          <ToolTip>Replace with the referenced type.</ToolTip>
+          <Default>UsingTypeName</Default>
           <Function>
           </Function>
         </Literal>
@@ -36,14 +36,18 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ReferencedType$> $PropertyName$Property = RegisterProperty<$ReferencedType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
-[NotUndoable]
-private $ReferencedType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
-public $ReferencedType$ $PropertyName$
-{
-  get { return GetProperty($PropertyName$Property,  $PrivateFieldName$); } 
-  set { SetProperty($PropertyName$Property, ref  $PrivateFieldName$, value); } 
-}]]></Code>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $UsingType$) = RegisterProperty(Of $UsingType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
+<NotUndoable, NonSerialized> _
+Private $PrivateField$Name As $UsingType$ = $PropertyName$Property.DefaultValue
+Public ReadOnly Property $PropertyName$() As $UsingType$
+  Get
+    If $PrivateFieldName$ Is Nothing Then
+      $PrivateFieldName$ = $UsingType$.New$UsingType$()
+    End If
+    Return GetProperty($PropertyName$Property, $PrivateFieldName$)
+  End Get
+End Property
+]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

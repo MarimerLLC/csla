@@ -6,9 +6,9 @@
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
       <Keywords />
-      <Title>Define a Csla Property</Title>
+      <Title>Define a Csla ReadWrite Property</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Defines a Csla-style Property with a backing field.</Description>
+      <Description>Define a Csla ReadWrite property.</Description>
       <HelpUrl>
       </HelpUrl>
       <Shortcut>cslaprop</Shortcut>
@@ -26,8 +26,8 @@
         </Literal>
         <Literal Editable="true">
           <ID>FriendlyName</ID>
-          <ToolTip>Replace with friendly display name.</ToolTip>
-          <Default>NewProperty</Default>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
           <Function>
           </Function>
         </Literal>
@@ -55,9 +55,6 @@
         </Object>
       </Declarations>
       <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
-''' <Summary>
-''' Gets or sets the $PropertyName$ value.
-''' </Summary>
 Public Property $PropertyName$() As $PropertyType$
     Get
         Return GetProperty($PropertyName$Property)

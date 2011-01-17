@@ -15,10 +15,11 @@
           <Default>BusinessType</Default>
         </Literal>
         <Literal>
-          <ID>IdName</ID>
+          <ID>IdProperty</ID>
           <ToolTip>Replace with the Id property info name.</ToolTip>
           <Default>IdProperty</Default>
         </Literal>
+	
         <Literal>
           <ID>IdType</ID>
           <ToolTip>Replace with the Id variable type.</ToolTip>
@@ -45,7 +46,7 @@ protected override void DataPortal_Update()
 
 protected override void DataPortal_DeleteSelf()
 {
-  DataPortal_Delete(new SingleCriteria<$ObjectType$, $IdType$>(GetProperty<$IdType$>($IdName$)));
+  DataPortal_Delete(new SingleCriteria<$ObjectType$, $IdType$>(ReadProperty<$IdType$>($IdProperty$)));
 }
 
 private void DataPortal_Delete(SingleCriteria<$ObjectType$, $IdType$> criteria)

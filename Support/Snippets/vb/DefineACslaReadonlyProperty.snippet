@@ -55,9 +55,6 @@
         </Object>
       </Declarations>
       <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
-''' <Summary>
-''' Gets the $PropertyName$ value.
-''' </Summary>
 Public Property $PropertyName$() As $PropertyType$
     Get
         Return GetProperty($PropertyName$Property)

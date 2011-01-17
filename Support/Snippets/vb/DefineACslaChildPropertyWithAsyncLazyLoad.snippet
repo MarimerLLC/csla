@@ -29,32 +29,27 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(c => c.$PropertyName$, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
-public $ChildType$ $PropertyName$
-{
-  get 
-  { 
-    if (!FieldManager.FieldExists($PropertyName$Property)) 
-    { 
-        $ChildType$.BeginGet$ChildType$((o,e) => 
-          {
-            if (e.Error != null) 
-              throw e.Error;
-            if (!FieldManager.FieldExists($PropertyName$Property))
-            {
-               $PropertyName$ = e.Object;
-            }
-          }); 
-          return null;
-    } 
-    return GetProperty($PropertyName$Property); 
-  } 
-  private set 
-  {  
-    LoadProperty($PropertyName$Property, value); 
-    OnPropertyChanged($PropertyName$Property); 
-  } 
-}]]></Code>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(Function(p) p.$PropertyName$, RelationshipTypes.Child)
+    Property Property $PropertyName$() As $ChildType$
+    Public Get
+      If Not FieldManager.FieldExists($PropertyName$Property) Then
+        $ChildType$.BeginGet$ChildType$(Function (ByVal o As Object, ByVal e As DataPortalResult(Of $ChildType$)) 
+          If (Not e.Error Is Nothing) Then
+            Throw e.Error
+          End If
+          If Not FieldManager.FieldExists($PropertyName$Property) Then
+            $PropertyName$ = e.Object
+          End If
+        End Function)
+        Return Nothing
+      End If
+      Return GetProperty(Of $ChildType$)($PropertyName$)
+    End Get
+    Private Set(ByRef value As $ChildType$)
+      LoadProperty(Of $ChildType$)($PropertyName$, value)
+      OnPropertyChanged($PropertyName$)
+    End Set
+  End Property]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

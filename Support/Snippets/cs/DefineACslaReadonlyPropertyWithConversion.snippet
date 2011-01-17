@@ -47,7 +47,7 @@
 public $PropertyType$ $PropertyName$
 {
   get { return GetPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property); }
-  set { LoadPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property, value); }
+  private set { LoadPropertyConvert<$ManagedFieldType$, $PropertyType$>($PropertyName$Property, value); }
 }]]></Code>
     </Snippet>
   </CodeSnippet>

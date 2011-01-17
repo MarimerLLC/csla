@@ -5,12 +5,12 @@
       <SnippetTypes>
         <SnippetType>Expansion</SnippetType>
       </SnippetTypes>
-      <Title>Define a Csla ReadWrite Property Private Backing Field</Title>
+      <Title>Define a Csla ReadWrite Property With Conversion</Title>
       <Author>Rockford Lhotka</Author>
-      <Description>Define a Csla ReadWrite property with private backing field.</Description>
+      <Description>Define a Csla ReadWrite property with value conversion.</Description>
       <HelpUrl>
       </HelpUrl>
-      <Shortcut>cslapropp</Shortcut>
+      <Shortcut>cslapropc</Shortcut>
     </Header>
     <Snippet>
       <Declarations>
@@ -36,21 +36,22 @@
           </Function>
         </Literal>
         <Literal Editable="true">
-          <ID>PrivateFieldName</ID>
-          <ToolTip>Replace with private field name.</ToolTip>
-          <Default>_name</Default>
+          <ID>ManagedFieldType</ID>
+          <ToolTip>Replace with the managed backing field type</ToolTip>
+          <Default>SmartDate</Default>
           <Function>
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
-// [NotUndoable, NonSerialized]
-private $PropertyType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
-public $PropertyType$ $PropertyName$
-{
-  get { return GetProperty($PropertyName$Property, $PrivateFieldName$); }
-  set { SetProperty($PropertyName$Property, ref $PrivateFieldName$, value); }
-}]]></Code>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ManagedFieldType$) = RegisterProperty(Of $ManagedFieldType$)(Function(c) c.$PropertyName$)
+Public Property $PropertyName$() As $PropertyType$
+	Get
+		Return GetPropertyConvert(Of $ManagedFieldType$, $PropertyType$)(PropertyNameProperty)
+	End Get
+	Set(ByVal value as $PropertyType$)
+		SetPropertyConvert(Of $ManagedFieldType$, $PropertyType$)($PropertyName$Property, value)
+	End Set
+End Property]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

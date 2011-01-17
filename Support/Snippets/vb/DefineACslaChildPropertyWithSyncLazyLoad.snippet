@@ -29,23 +29,19 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$ChildType$> $PropertyName$Property = RegisterProperty<$ChildType$>(c => c.$PropertyName$, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
-public $ChildType$ $PropertyName$
-{
-  get 
-  { 
-    if (!FieldManager.FieldExists($PropertyName$Property)) 
-    { 
-       $PropertyName$ = $ChildType$.Get(); 
-    } 
-    return GetProperty($PropertyName$Property); 
-  } 
-  private set 
-  {  
-    LoadProperty($PropertyName$Property, value); 
-    OnPropertyChanged($PropertyName$Property); 
-  } 
-}]]></Code>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(Function(p) p.$PropertyName$, RelationshipTypes.Child)
+  Public Property $PropertyName$() As $ChildType$
+    Get
+      If Not FieldManager.FieldExists($PropertyName$Property) Then 
+        $PropertyName$ = $ChildType$.Get()
+      End If
+      Return GetProperty(Of $ChildType$)($PropertyName$Property)
+    End Get
+    Private Set(ByRef value As String)
+      LoadProperty(Of $ChildType$)(value)
+      OnPropertyChanged($PropertyName$Property)
+    End Set
+  End Property]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

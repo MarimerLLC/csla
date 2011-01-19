@@ -24,19 +24,19 @@ namespace WindowsApplication2
     {
       Root root = new Root();
       Child child;
-      child = root.Children.AddNew();
+      child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
-      child = root.Children.AddNew();
+      child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
-      child = root.Children.AddNew();
+      child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
-      child = root.Children.AddNew();
+      child = root.RealChildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();

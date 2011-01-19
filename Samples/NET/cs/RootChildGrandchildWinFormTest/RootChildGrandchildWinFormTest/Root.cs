@@ -22,14 +22,19 @@ namespace WindowsApplication2
       set { SetProperty<string>(NameProperty, value); }
     }
 
-    public static PropertyInfo<ChildList> ChildrenProperty = RegisterProperty<ChildList>(p => p.Children, RelationshipTypes.LazyLoad);
-    public ChildList Children
+    public SortedBindingList<Child> Children
+    {
+      get { return new SortedBindingList<Child>(RealChildren); }
+    }
+
+    public static PropertyInfo<ChildList> RealChildrenProperty = RegisterProperty<ChildList>(p => p.RealChildren, RelationshipTypes.LazyLoad);
+    public ChildList RealChildren
     {
       get
       {
-        if (!FieldManager.FieldExists(ChildrenProperty))
-          LoadProperty<ChildList>(ChildrenProperty, new ChildList());
-        return GetProperty<ChildList>(ChildrenProperty);
+        if (!FieldManager.FieldExists(RealChildrenProperty))
+          LoadProperty<ChildList>(RealChildrenProperty, new ChildList());
+        return GetProperty<ChildList>(RealChildrenProperty);
       }
     }
 
@@ -42,7 +47,7 @@ namespace WindowsApplication2
     {
       StringBuilder sb = new StringBuilder();
       sb.AppendFormat("{0} {1}: {2} {3}\r", this.GetType().Name, this.GetIdValue().ToString(), this.EditLevel, this.BindingEdit);
-      var childList = ReadProperty<ChildList>(ChildrenProperty);
+      var childList = ReadProperty<ChildList>(RealChildrenProperty);
       if (childList != null)
         childList.DumpEditLevels(sb);
       else

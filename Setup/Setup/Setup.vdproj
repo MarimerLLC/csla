@@ -57,7 +57,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0F02CAB94C2B4B2BAD7149240A1EB699"
+        "MsmKey" = "8:_0ED75888457E46EC8572B00E76B79D18"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_12B469467BE44E92A66D0D8FBB7AFB74"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1361CC565E834CFDB8204AAD19BFDD8D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1513F302EF3F48BE9669475D178ACB1B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -87,25 +105,37 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_168AC507B14D45C097E723A093E0DACA"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_175FCC4D36FE0B9828D6922B67186916"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_18B8D207D11D48EA9F0AAD20E9A40308"
+        "MsmKey" = "8:_175FCC4D36FE0B9828D6922B67186916"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1A8BD7505CC44780AEF14CC272A8C4CF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_264DF4424E8A4BC189E980B261E332CA"
+        "MsmKey" = "8:_1C4C16BB9E1F478AB4DA9DCA6E056667"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1F8290471FD34675AB75BFEEC7A53B99"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_26694BD264D84665A70AF2811D798D85"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -123,13 +153,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_29D54D48E828484D93CD2999C353D533"
+        "MsmKey" = "8:_29589919D8A44B61BBB5C343759DF66C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2CA7F4D9FB6949A1A3637FA599703D24"
+        "MsmKey" = "8:_2D7D88ACE2F543B2BC7B2AB4EA3C60B3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -141,13 +171,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3095D26053D5431A8DE599255109DE57"
+        "MsmKey" = "8:_30C0070292B54324BF42640A32434C95"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_342E7DCBDD634F319F9067D856DD4EB0"
+        "MsmKey" = "8:_35C050CF0334464E8CE271665C44C00E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -159,31 +189,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_391A03EC1F804C2ABAE960D538F09CC5"
+        "MsmKey" = "8:_3A0F8F7B26174357A2275FE30BBE7691"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3B5B5CC14C4B464A94E2D8FC3F87CB60"
+        "MsmKey" = "8:_3C05187EE607433696252490FAE0492E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3C614CAF10294DDFA06BF9BDE0C365BD"
+        "MsmKey" = "8:_3CCCC9036EF345F8818790787D033C91"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3CF91FEF4AFB48089FDE30BAF3E300E5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_3EBA686E8B624E17A9FA4D1A631B7152"
+        "MsmKey" = "8:_3E93A94EA60C4794985F2E44C6B88EAB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,13 +219,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3FC301C03AF347ED888BB91320BBA6CC"
+        "MsmKey" = "8:_3FF4C94259E248DF8064091AE0C390B5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3FF4C94259E248DF8064091AE0C390B5"
+        "MsmKey" = "8:_404A0ADAEC0E458C99A408222F6393EA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -209,6 +233,12 @@
         {
         "MsmKey" = "8:_452B7347CD28CEDDF0F419EC7C5993B9"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_452B7347CD28CEDDF0F419EC7C5993B9"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -231,19 +261,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_471F0B6FC86945899F08B81475829F15"
+        "MsmKey" = "8:_462DD51D85154A599B876A82CA300C76"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4C9C6CAAD7F6487BAD7F7EA8CBB132ED"
+        "MsmKey" = "8:_46700AF591CA489BA9433862FA549F1C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4E8C8D88F4D0494383E0FBFAEBDD5479"
+        "MsmKey" = "8:_48382D89964F4564B98F08B42496F19A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4C4CBEFF20064CE1A60D37F31B01793E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -255,19 +291,31 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_52C210A81A024329A7334AD4D9683ED9"
+        "MsmKey" = "8:_53F5FFCBBD45412F97212CC6BD3D77E0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5506C61D2F2C4AA88BBB45503DA1824F"
+        "MsmKey" = "8:_554346BC08E64B4EA5ABBFDDEF91C6E7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_55CCD3090E7745A19DE179ABA33FE713"
+        "MsmKey" = "8:_55AB0BA2DE0E419AA2C1066684E68B9E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_57F01D02E88D41F980DB0B017877E712"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5A802082BD774B8F83356E64ACAD1F2B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -285,7 +333,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_5E2F922629CA454ABDF77ACE69F4FFA2"
+        "MsmKey" = "8:_5E4B8E2DCA614CB9AFD443EEA47B14D5"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5FE2324F62C640568B32CDFF14DE994B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -297,7 +351,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_653E9CC99A854885A18247DB1062B308"
+        "MsmKey" = "8:_65A4788D44764226BADC64495A6BEAA8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -309,25 +363,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6FB146C3EEDB4EFC9CE28289452F8894"
+        "MsmKey" = "8:_6A155B70214847FAA5246185862B3B34"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6FC7FFDE75774545B126F558BD8B7B0F"
+        "MsmKey" = "8:_6DC602641E5D4896BBB986AF07DF113C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_72D2CAEA8E164DD0A2740A16C821C3A8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7494E10B197B428BB28DCE79A232CC57"
+        "MsmKey" = "8:_7060FDED45374EE88336A44687EE6CBD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -339,13 +387,43 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_74B4CF1F7E7D4277A8D8437936BE6DBC"
+        "MsmKey" = "8:_7916A9826ACE4B9B9609E04529B671EC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_7B1F089D88CE4D46893E7C1860594AE2"
+        "MsmKey" = "8:_79A0A6370F364C28B3A9E52FC21D88B0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_79F0ABA77874417690F1B111DDDEBE1B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_79F1CB74D0AF45F39A4DD37C9E07A570"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7A2E416F7E214BB1B1B9CF6E7653816D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7B221F69185344128A6599A43E9B3AE2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7B503C7EB3A74D3EA068AE89E78E15D3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -357,7 +435,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7FC300246A144AD3B39A4EFF94507A0D"
+        "MsmKey" = "8:_7D2719CD8EEF42389606A797B7F0482F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7DDC96C6F56D4A74A1445A74BEC2855F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7F277AEA01D94981B73198D3EE5E801A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -369,19 +459,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_80677E93319241BBB9B1D557370DB069"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_8215BE9EEBEE4629B113C56848E52F11"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_878E0E3FF50E44D4AF89C66BEEFE228E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8808B239C12D4AE284634838F5C0178B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -393,7 +477,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8CD70FF38B99418F8E345125C0503311"
+        "MsmKey" = "8:_8A37A8349EEC4F018D6F31471232D18A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_8E0BD27B2C2E45A6B4183244AAF75F9B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -405,19 +495,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_91794BBEAD764BB08619B1F899262335"
+        "MsmKey" = "8:_935D77DD4DA34A94A8DF3D233837F2C3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_98D326BB76D44939B6A15ACC39B432AD"
+        "MsmKey" = "8:_938F2D0336B048D19E0BCE3F1BFB506D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_999714942FD144E6B4524CDA6CD28EAB"
+        "MsmKey" = "8:_97FDBC717CB342DFA81EE3F71323B452"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_99697138F6D34B0EB4B85E9BC12F2627"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -429,37 +525,61 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9D6524B680ED4BC29F2D6A0B080630D5"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "OwnerKey" = "8:_166C5E7722644FAEAC4F31DF42314CDE"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A55AADDB9283407A9A7CD2CB3BE65C03"
+        "MsmKey" = "8:_A43A2C27F9A94257A17A75CE55300DC9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A66C91E9D5AB4722B28A95C77E12AC52"
+        "MsmKey" = "8:_A47DAE368CA24735A0D14EF2F2439410"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_A8CE23285177428FB5128FCE07B16599"
+        "MsmKey" = "8:_A53DC75850EF43528FF4D80EDD19E589"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_AE3A9F9B27B84B0DAFB4F252FC29A3E1"
+        "MsmKey" = "8:_A58D02748C764E3DA6DA7C11FC5D1B64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A916394FFF5F40198DDB490A7570FD9F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AA309A02843E4F778156F15796395CF9"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AB734CBC791B444BA110808EC58E5419"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AD03C09AA68646B5ABBEEAC0B1241391"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AED3F4408EA248189C84445FFDF88F8D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -479,6 +599,18 @@
         {
         "MsmKey" = "8:_B0A63C59A05F86EF5CFCCBF0BB427B7C"
         "OwnerKey" = "8:_1631477AA30BA6A6C9C5FDB474284015"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B0A63C59A05F86EF5CFCCBF0BB427B7C"
+        "OwnerKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B0A63C59A05F86EF5CFCCBF0BB427B7C"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -507,6 +639,24 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B124D8569F8541DBB541077C9343AEAD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B3BE8C378E904639ADF3D89D564708C7"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B4416659B15F404ABB2995BA958C0774"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B58AEB96CCABC189B15415CAF04A7374"
         "OwnerKey" = "8:_5B493C6039BF4D1680675D330AA8409F"
         "MsmSig" = "8:_UNDEFINED"
@@ -519,13 +669,37 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_B8DE7E63E55B4BCE89900AD876A334F4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B8FF70F63F41487AB984607F5B105B10"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B905B3894E7F5C2223B76A4A87721358"
         "OwnerKey" = "8:_2847AC31E02141DDB8AA4DF2BE4F5347"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_BB85D305AC16473DBBF29960D856523A"
+        "MsmKey" = "8:_BBD8111D15B744BCB9FD1D3F2F904E7C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BC3A2AB1DBD74DFDB499AE14F1262EE3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BF3D4FA25C2A45F0A0450C02310E068F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -543,13 +717,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C31EA3E0C340483DAD7AF5BBC12F3A50"
+        "MsmKey" = "8:_C31FDF968D4846ED847AE5AB5224C186"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C31FDF968D4846ED847AE5AB5224C186"
+        "MsmKey" = "8:_C3ABEE99C23344EDAB6469695595BD65"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C4938CF589B340639C9CCB796609BBC9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -597,31 +777,67 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C96EE0A2679F4D3C95031C8F2EC621EC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_CAF880DD582647EEAAD728BBE019D170"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CB61079B1EC4465E84DBE10DB1DD18BF"
+        "MsmKey" = "8:_CAF8D48C95944BD597376793C4CA11D5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CC91A0E1B4A24B2BAA6844074D3A39C6"
+        "MsmKey" = "8:_CDC6406FFF5C49599932EDBE93B2BAD0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D50AC7CEED0C485DACFA96413E5B6ABD"
+        "MsmKey" = "8:_D0FCB72FB9B54107AF98BE653A7011D3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D59E28E412A440DDA668138EB8BFA60F"
+        "MsmKey" = "8:_D11EDA8D677B42DEBB60B1AC2D02E871"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D2D135FD6DA34BABBB4D4D8ED6D0D435"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D36EFF19EE0240D1AD6644C41700616B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D50D045E90984E4C85FAFCB334FB8F7C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8A2D82152E64D868EC8F7EE0CF7039F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D8CB4EBE2E6340EB92059478DAF419B4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -645,14 +861,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E5EF58DED563447C9AB700B894186BF0"
+        "MsmKey" = "8:_E872597C786300F7CAD92DC6E425F901"
+        "OwnerKey" = "8:_166C5E7722644FAEAC4F31DF42314CDE"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EBCD8B11ABA840F0AC057229018B8ADA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E872597C786300F7CAD92DC6E425F901"
-        "OwnerKey" = "8:_166C5E7722644FAEAC4F31DF42314CDE"
+        "MsmKey" = "8:_ECE45CBB767B41138A7AAD6D9718DD3D"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -663,7 +885,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EEC0D29C5C124C9EB9587F5F13EB1B5D"
+        "MsmKey" = "8:_EF694EE7AAFC409FB68F591795A13602"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F06E425FBF374CD8ABCBE7B704B111A6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -687,7 +915,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F5954A6CE0DE4ED386BF38EFD0E9597F"
+        "MsmKey" = "8:_F3F98E80DAF44C1EAB998CA2543EE89F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -699,7 +927,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F997AAA333E24E32B5C5DDD791B08478"
+        "MsmKey" = "8:_F9F5738BB95A40B481840C017FF4F931"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -719,6 +947,12 @@
         {
         "MsmKey" = "8:_FAC50800BF2B0DB74C8627E8639E539F"
         "OwnerKey" = "8:_5B493C6039BF4D1680675D330AA8409F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FCDBEDDA6FE049FD95B3B87912DAE634"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1008,10 +1242,70 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0F02CAB94C2B4B2BAD7149240A1EB699"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0ED75888457E46EC8572B00E76B79D18"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyChild.vb"
-            "TargetName" = "8:ReadOnlyChild.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyRoot.vb"
+            "TargetName" = "8:ReadOnlyRoot.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_12B469467BE44E92A66D0D8FBB7AFB74"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRootParent.cs"
+            "TargetName" = "8:EditableRootParent.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1361CC565E834CFDB8204AAD19BFDD8D"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddDataAccessRegion.snippet"
+            "TargetName" = "8:AddDataAccessRegion.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1513F302EF3F48BE9669475D178ACB1B"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\NameValueList.vb"
+            "TargetName" = "8:NameValueList.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -1059,26 +1353,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_168AC507B14D45C097E723A093E0DACA"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRootList.cs"
-            "TargetName" = "8:EditableRootList.cs"
-            "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_175FCC4D36FE0B9828D6922B67186916"
             {
             "AssemblyRegister" = "3:1"
@@ -1110,12 +1384,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_18B8D207D11D48EA9F0AAD20E9A40308"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1A8BD7505CC44780AEF14CC272A8C4CF"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\SwitchableObject.vb"
-            "TargetName" = "8:SwitchableObject.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\AuthorizationRuleClass.cs"
+            "TargetName" = "8:AuthorizationRuleClass.cs"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1130,12 +1404,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_264DF4424E8A4BC189E980B261E332CA"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1C4C16BB9E1F478AB4DA9DCA6E056667"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaProperty.snippet"
-            "TargetName" = "8:DefineACslaProperty.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\DynamicRootList.cs"
+            "TargetName" = "8:DynamicRootList.cs"
             "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1F8290471FD34675AB75BFEEC7A53B99"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\SwitchableObject.cs"
+            "TargetName" = "8:SwitchableObject.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_26694BD264D84665A70AF2811D798D85"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyChildBindingList.vb"
+            "TargetName" = "8:ReadOnlyChildBindingList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1170,12 +1484,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29D54D48E828484D93CD2999C353D533"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_29589919D8A44B61BBB5C343759DF66C"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRootList.vb"
-            "TargetName" = "8:EditableRootList.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaChildPropertyWithSyncLazyLoad.snippet"
+            "TargetName" = "8:DefineACslaChildPropertyWithSyncLazyLoad.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1190,12 +1504,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2CA7F4D9FB6949A1A3637FA599703D24"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2D7D88ACE2F543B2BC7B2AB4EA3C60B3"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRootParent.cs"
-            "TargetName" = "8:EditableRootParent.cs"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableChildList.vb"
+            "TargetName" = "8:EditableChildList.vb"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1230,10 +1544,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3095D26053D5431A8DE599255109DE57"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_30C0070292B54324BF42640A32434C95"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaConvertProperty.snippet"
-            "TargetName" = "8:DefineACslaConvertProperty.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyChildList.cs"
+            "TargetName" = "8:ReadOnlyChildList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_35C050CF0334464E8CE271665C44C00E"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaChildPropertyWithAsyncLazyLoad.snippet"
+            "TargetName" = "8:DefineACslaChildPropertyWithAsyncLazyLoad.snippet"
             "Tag" = "8:"
             "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
@@ -1250,30 +1584,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_342E7DCBDD634F319F9067D856DD4EB0"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3A0F8F7B26174357A2275FE30BBE7691"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRoot.cs"
-            "TargetName" = "8:EditableRoot.cs"
-            "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_391A03EC1F804C2ABAE960D538F09CC5"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableChild.vb"
-            "TargetName" = "8:EditableChild.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\DynamicRootBindingList.vb"
+            "TargetName" = "8:DynamicRootBindingList.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -1290,12 +1604,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3B5B5CC14C4B464A94E2D8FC3F87CB60"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C05187EE607433696252490FAE0492E"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\NameValueList.cs"
-            "TargetName" = "8:NameValueList.cs"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaReadonlyPropertyWithConversion.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithConversion.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1310,12 +1624,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C614CAF10294DDFA06BF9BDE0C365BD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CCCC9036EF345F8818790787D033C91"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddAsyncFactoryMethods.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddAsyncFactoryMethods.snippet"
             "TargetName" = "8:AddAsyncFactoryMethods.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1330,32 +1644,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CF91FEF4AFB48089FDE30BAF3E300E5"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3E93A94EA60C4794985F2E44C6B88EAB"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\AuthorizationRule.vb"
-            "TargetName" = "8:AuthorizationRule.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaChildProperty.snippet"
+            "TargetName" = "8:DefineACslaChildProperty.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3EBA686E8B624E17A9FA4D1A631B7152"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyProperty.snippet"
-            "TargetName" = "8:DefineACslaReadonlyProperty.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1401,12 +1695,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3FC301C03AF347ED888BB91320BBA6CC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_404A0ADAEC0E458C99A408222F6393EA"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddFactoryMethods.snippet"
-            "TargetName" = "8:AddFactoryMethods.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\AuthorizationRuleClass.vb"
+            "TargetName" = "8:AuthorizationRuleClass.vb"
             "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1452,70 +1746,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_471F0B6FC86945899F08B81475829F15"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_462DD51D85154A599B876A82CA300C76"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaProperty.snippet"
-            "TargetName" = "8:DefineACslaProperty.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C9C6CAAD7F6487BAD7F7EA8CBB132ED"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaConvertProperty.snippet"
-            "TargetName" = "8:DefineACslaConvertProperty.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4E8C8D88F4D0494383E0FBFAEBDD5479"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyRoot.vb"
-            "TargetName" = "8:ReadOnlyRoot.vb"
-            "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52C210A81A024329A7334AD4D9683ED9"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableChild.cs"
-            "TargetName" = "8:EditableChild.cs"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyChild.cs"
+            "TargetName" = "8:ReadOnlyChild.cs"
             "Tag" = "8:"
             "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
@@ -1532,10 +1766,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5506C61D2F2C4AA88BBB45503DA1824F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_46700AF591CA489BA9433862FA549F1C"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaSmartDateProperty.snippet"
-            "TargetName" = "8:DefineACslaSmartDateProperty.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyProperty.snippet"
+            "TargetName" = "8:DefineACslaReadonlyProperty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_48382D89964F4564B98F08B42496F19A"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaReadonlyProperty.snippet"
+            "TargetName" = "8:DefineACslaReadonlyProperty.snippet"
             "Tag" = "8:"
             "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
@@ -1552,12 +1806,112 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_55CCD3090E7745A19DE179ABA33FE713"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C4CBEFF20064CE1A60D37F31B01793E"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyChildList.cs"
-            "TargetName" = "8:ReadOnlyChildList.cs"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithPrivateBackingField.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_53F5FFCBBD45412F97212CC6BD3D77E0"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaPropertyWithConversion.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithConversion.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_554346BC08E64B4EA5ABBFDDEF91C6E7"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaChildPropertyWithSyncLazyLoad.snippet"
+            "TargetName" = "8:DefineACslaChildPropertyWithSyncLazyLoad.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_55AB0BA2DE0E419AA2C1066684E68B9E"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyPropertyWithConversion.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithConversion.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57F01D02E88D41F980DB0B017877E712"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddAsyncFactoryMethods.snippet"
+            "TargetName" = "8:AddAsyncFactoryMethods.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A802082BD774B8F83356E64ACAD1F2B"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaAuthorizationRule.snippet"
+            "TargetName" = "8:DefineACslaAuthorizationRule.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1603,10 +1957,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5E2F922629CA454ABDF77ACE69F4FFA2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5E4B8E2DCA614CB9AFD443EEA47B14D5"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddBusinessRegions.snippet"
-            "TargetName" = "8:AddBusinessRegions.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddACriteriaClass.snippet"
+            "TargetName" = "8:AddACriteriaClass.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5FE2324F62C640568B32CDFF14DE994B"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddACriteriaClass.snippet"
+            "TargetName" = "8:AddACriteriaClass.snippet"
             "Tag" = "8:"
             "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
@@ -1623,10 +1997,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_653E9CC99A854885A18247DB1062B308"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_65A4788D44764226BADC64495A6BEAA8"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddDataAccessRegion.snippet"
-            "TargetName" = "8:AddDataAccessRegion.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaAuthorizationRule.snippet"
+            "TargetName" = "8:DefineACslaAuthorizationRule.snippet"
             "Tag" = "8:"
             "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
@@ -1663,10 +2037,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6FB146C3EEDB4EFC9CE28289452F8894"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6A155B70214847FAA5246185862B3B34"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\NameValueList.vb"
-            "TargetName" = "8:NameValueList.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\DynamicRoot.cs"
+            "TargetName" = "8:DynamicRoot.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6DC602641E5D4896BBB986AF07DF113C"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\CommandObject.vb"
+            "TargetName" = "8:CommandObject.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -1683,7 +2077,47 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6FC7FFDE75774545B126F558BD8B7B0F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7060FDED45374EE88336A44687EE6CBD"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRootList.vb"
+            "TargetName" = "8:EditableRootList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7916A9826ACE4B9B9609E04529B671EC"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyBindingList.vb"
+            "TargetName" = "8:ReadOnlyBindingList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79A0A6370F364C28B3A9E52FC21D88B0"
             {
             "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableChildList.cs"
             "TargetName" = "8:EditableChildList.cs"
@@ -1703,10 +2137,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_72D2CAEA8E164DD0A2740A16C821C3A8"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79F0ABA77874417690F1B111DDDEBE1B"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\BusinessRule.vb"
-            "TargetName" = "8:BusinessRule.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRoot.vb"
+            "TargetName" = "8:EditableRoot.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -1723,12 +2157,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7494E10B197B428BB28DCE79A232CC57"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79F1CB74D0AF45F39A4DD37C9E07A570"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyChild.cs"
-            "TargetName" = "8:ReadOnlyChild.cs"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaProperty.snippet"
+            "TargetName" = "8:DefineACslaProperty.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1743,12 +2177,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74B4CF1F7E7D4277A8D8437936BE6DBC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7A2E416F7E214BB1B1B9CF6E7653816D"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaSmartDateProperty.snippet"
-            "TargetName" = "8:DefineACslaSmartDateProperty.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaUsingReference.snippet"
+            "TargetName" = "8:DefineACslaUsingReference.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1763,12 +2197,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7B1F089D88CE4D46893E7C1860594AE2"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7B221F69185344128A6599A43E9B3AE2"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\SwitchableObject.cs"
-            "TargetName" = "8:SwitchableObject.cs"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyList.vb"
+            "TargetName" = "8:ReadOnlyList.vb"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1783,10 +2217,70 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7FC300246A144AD3B39A4EFF94507A0D"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7B503C7EB3A74D3EA068AE89E78E15D3"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyList.cs"
-            "TargetName" = "8:ReadOnlyList.cs"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaReadonlyPropertyWithNoAuthorization.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithNoAuthorization.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D2719CD8EEF42389606A797B7F0482F"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithPrivateBackingField.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DDC96C6F56D4A74A1445A74BEC2855F"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddFactoryMethods.snippet"
+            "TargetName" = "8:AddFactoryMethods.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7F277AEA01D94981B73198D3EE5E801A"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyBindingList.cs"
+            "TargetName" = "8:ReadOnlyBindingList.cs"
             "Tag" = "8:"
             "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
@@ -1834,30 +2328,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80677E93319241BBB9B1D557370DB069"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8808B239C12D4AE284634838F5C0178B"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\AuthorizationRule.cs"
-            "TargetName" = "8:AuthorizationRule.cs"
-            "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8215BE9EEBEE4629B113C56848E52F11"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddFactoryMethods.snippet"
-            "TargetName" = "8:AddFactoryMethods.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaBusinessRule.snippet"
+            "TargetName" = "8:DefineACslaBusinessRule.snippet"
             "Tag" = "8:"
             "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
@@ -1894,10 +2368,30 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CD70FF38B99418F8E345125C0503311"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8A37A8349EEC4F018D6F31471232D18A"
             {
             "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyChildList.vb"
             "TargetName" = "8:ReadOnlyChildList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8E0BD27B2C2E45A6B4183244AAF75F9B"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableChildBindingList.vb"
+            "TargetName" = "8:EditableChildBindingList.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -1934,7 +2428,27 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_91794BBEAD764BB08619B1F899262335"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_935D77DD4DA34A94A8DF3D233837F2C3"
+            {
+            "SourcePath" = "8:D:\\Users\\Illiante\\Documents\\release\\CslaSource.zip"
+            "TargetName" = "8:CslaSource.zip"
+            "Tag" = "8:"
+            "Folder" = "8:_8A71680D1CD844D49806419D485BED42"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_938F2D0336B048D19E0BCE3F1BFB506D"
             {
             "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddBusinessRegions.snippet"
             "TargetName" = "8:AddBusinessRegions.snippet"
@@ -1954,10 +2468,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_98D326BB76D44939B6A15ACC39B432AD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_97FDBC717CB342DFA81EE3F71323B452"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddACriteriaClass.snippet"
-            "TargetName" = "8:AddACriteriaClass.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaProperty.snippet"
+            "TargetName" = "8:DefineACslaProperty.snippet"
             "Tag" = "8:"
             "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
@@ -1974,32 +2488,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_999714942FD144E6B4524CDA6CD28EAB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_99697138F6D34B0EB4B85E9BC12F2627"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\DynamicRoot.vb"
-            "TargetName" = "8:DynamicRoot.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaPropertyWithPrivateBackingField.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithPrivateBackingField.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D6524B680ED4BC29F2D6A0B080630D5"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\DynamicRootList.cs"
-            "TargetName" = "8:DynamicRootList.cs"
-            "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2045,10 +2539,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A55AADDB9283407A9A7CD2CB3BE65C03"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A43A2C27F9A94257A17A75CE55300DC9"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\DynamicRootList.vb"
-            "TargetName" = "8:DynamicRootList.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyChild.vb"
+            "TargetName" = "8:ReadOnlyChild.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -2065,12 +2559,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A66C91E9D5AB4722B28A95C77E12AC52"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A47DAE368CA24735A0D14EF2F2439410"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRootParent.vb"
-            "TargetName" = "8:EditableRootParent.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaBusinessRule.snippet"
+            "TargetName" = "8:DefineACslaBusinessRule.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2085,12 +2579,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A8CE23285177428FB5128FCE07B16599"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A53DC75850EF43528FF4D80EDD19E589"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableChildList.vb"
-            "TargetName" = "8:EditableChildList.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaChildPropertyWithAsyncLazyLoad.snippet"
+            "TargetName" = "8:DefineACslaChildPropertyWithAsyncLazyLoad.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2105,12 +2599,112 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AE3A9F9B27B84B0DAFB4F252FC29A3E1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A58D02748C764E3DA6DA7C11FC5D1B64"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\BusinessRule.cs"
-            "TargetName" = "8:BusinessRule.cs"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\BusinessRuleClass.cs"
+            "TargetName" = "8:BusinessRuleClass.cs"
             "Tag" = "8:"
             "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A916394FFF5F40198DDB490A7570FD9F"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddFactoryMethods.snippet"
+            "TargetName" = "8:AddFactoryMethods.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AA309A02843E4F778156F15796395CF9"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaSmartDateProperty.snippet"
+            "TargetName" = "8:DefineACslaSmartDateProperty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AB734CBC791B444BA110808EC58E5419"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddDataAccessRegion.snippet"
+            "TargetName" = "8:AddDataAccessRegion.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AD03C09AA68646B5ABBEEAC0B1241391"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaIntergraphReference.snippet"
+            "TargetName" = "8:DefineACslaIntergraphReference.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AED3F4408EA248189C84445FFDF88F8D"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\SwitchableObject.vb"
+            "TargetName" = "8:SwitchableObject.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2176,6 +2770,66 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B124D8569F8541DBB541077C9343AEAD"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyList.cs"
+            "TargetName" = "8:ReadOnlyList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B3BE8C378E904639ADF3D89D564708C7"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRootList.cs"
+            "TargetName" = "8:EditableRootList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B4416659B15F404ABB2995BA958C0774"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithNoAuthorizationOrDirty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B58AEB96CCABC189B15415CAF04A7374"
             {
             "SourcePath" = "8:Csla.xml"
@@ -2216,6 +2870,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8DE7E63E55B4BCE89900AD876A334F4"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\DynamicRoot.vb"
+            "TargetName" = "8:DynamicRoot.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B8FF70F63F41487AB984607F5B105B10"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyPropertyWithNoAuthorization.snippet"
+            "TargetName" = "8:DefineACslaReadonlyPropertyWithNoAuthorization.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B905B3894E7F5C2223B76A4A87721358"
             {
             "SourcePath" = "8:System.Xml.Linq.xml"
@@ -2236,12 +2930,52 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BB85D305AC16473DBBF29960D856523A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BBD8111D15B744BCB9FD1D3F2F904E7C"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\ReadOnlyList.vb"
-            "TargetName" = "8:ReadOnlyList.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddBusinessRegions.snippet"
+            "TargetName" = "8:AddBusinessRegions.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BC3A2AB1DBD74DFDB499AE14F1262EE3"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaSmartDateProperty.snippet"
+            "TargetName" = "8:DefineACslaSmartDateProperty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BF3D4FA25C2A45F0A0450C02310E068F"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithNoAuthorizationOrDirty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2276,10 +3010,30 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C31EA3E0C340483DAD7AF5BBC12F3A50"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C3ABEE99C23344EDAB6469695595BD65"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\CommandObject.vb"
-            "TargetName" = "8:CommandObject.vb"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaIntergraphReference.snippet"
+            "TargetName" = "8:DefineACslaIntergraphReference.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C4938CF589B340639C9CCB796609BBC9"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableChild.vb"
+            "TargetName" = "8:EditableChild.vb"
             "Tag" = "8:"
             "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
@@ -2347,12 +3101,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CB61079B1EC4465E84DBE10DB1DD18BF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C96EE0A2679F4D3C95031C8F2EC621EC"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddDataAccessRegion.snippet"
-            "TargetName" = "8:AddDataAccessRegion.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\BusinessRuleClass.vb"
+            "TargetName" = "8:BusinessRuleClass.vb"
             "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2367,10 +3121,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC91A0E1B4A24B2BAA6844074D3A39C6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CAF8D48C95944BD597376793C4CA11D5"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\CommandObject.cs"
-            "TargetName" = "8:CommandObject.cs"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyChildBindingList.cs"
+            "TargetName" = "8:ReadOnlyChildBindingList.cs"
             "Tag" = "8:"
             "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
@@ -2387,7 +3141,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D50AC7CEED0C485DACFA96413E5B6ABD"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CDC6406FFF5C49599932EDBE93B2BAD0"
             {
             "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\ReadOnlyRoot.cs"
             "TargetName" = "8:ReadOnlyRoot.cs"
@@ -2407,12 +3161,132 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D59E28E412A440DDA668138EB8BFA60F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D0FCB72FB9B54107AF98BE653A7011D3"
             {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddACriteriaClass.snippet"
-            "TargetName" = "8:AddACriteriaClass.snippet"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRoot.cs"
+            "TargetName" = "8:EditableRoot.cs"
             "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D11EDA8D677B42DEBB60B1AC2D02E871"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\CommandObject.cs"
+            "TargetName" = "8:CommandObject.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D2D135FD6DA34BABBB4D4D8ED6D0D435"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRootParent.vb"
+            "TargetName" = "8:EditableRootParent.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D36EFF19EE0240D1AD6644C41700616B"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaChildProperty.snippet"
+            "TargetName" = "8:DefineACslaChildProperty.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D50D045E90984E4C85FAFCB334FB8F7C"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableChildBindingList.cs"
+            "TargetName" = "8:EditableChildBindingList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8A2D82152E64D868EC8F7EE0CF7039F"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\DynamicRootList.vb"
+            "TargetName" = "8:DynamicRootList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8CB4EBE2E6340EB92059478DAF419B4"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableChild.cs"
+            "TargetName" = "8:EditableChild.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2467,26 +3341,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E5EF58DED563447C9AB700B894186BF0"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaReadonlyProperty.snippet"
-            "TargetName" = "8:DefineACslaReadonlyProperty.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E872597C786300F7CAD92DC6E425F901"
             {
             "AssemblyRegister" = "3:1"
@@ -2518,6 +3372,46 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EBCD8B11ABA840F0AC057229018B8ADA"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\NameValueList.cs"
+            "TargetName" = "8:NameValueList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ECE45CBB767B41138A7AAD6D9718DD3D"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaPropertyWithPrivateBackingField.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithPrivateBackingField.snippet"
+            "Tag" = "8:"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ED471F205054CCF45D00CE777F80A8BD"
             {
             "SourcePath" = "8:System.Data.Services.Client.xml"
@@ -2538,12 +3432,32 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EEC0D29C5C124C9EB9587F5F13EB1B5D"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF694EE7AAFC409FB68F591795A13602"
             {
-            "SourcePath" = "8:D:\\Users\\Illiante\\Documents\\release\\CslaSource.zip"
-            "TargetName" = "8:CslaSource.zip"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaPropertyWithConversion.snippet"
+            "TargetName" = "8:DefineACslaPropertyWithConversion.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_8A71680D1CD844D49806419D485BED42"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F06E425FBF374CD8ABCBE7B704B111A6"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\DynamicRootBindingList.cs"
+            "TargetName" = "8:DynamicRootBindingList.cs"
+            "Tag" = "8:"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2589,12 +3503,12 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F5954A6CE0DE4ED386BF38EFD0E9597F"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F3F98E80DAF44C1EAB998CA2543EE89F"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\DynamicRoot.cs"
-            "TargetName" = "8:DynamicRoot.cs"
+            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaUsingReference.snippet"
+            "TargetName" = "8:DefineACslaUsingReference.snippet"
             "Tag" = "8:"
-            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
+            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2609,12 +3523,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F997AAA333E24E32B5C5DDD791B08478"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F9F5738BB95A40B481840C017FF4F931"
             {
-            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRoot.vb"
-            "TargetName" = "8:EditableRoot.vb"
+            "SourcePath" = "8:..\\..\\Support\\Templates\\cs\\Files\\EditableRootBindingList.cs"
+            "TargetName" = "8:EditableRootBindingList.cs"
             "Tag" = "8:"
-            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Folder" = "8:_9A80CA79D12D4C97B28894641E44F2F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2647,6 +3561,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FCDBEDDA6FE049FD95B3B87912DAE634"
+            {
+            "SourcePath" = "8:..\\..\\Support\\Templates\\vb\\Files\\EditableRootBindingList.vb"
+            "TargetName" = "8:EditableRootBindingList.vb"
+            "Tag" = "8:"
+            "Folder" = "8:_EFBE8D6CAB884BA6881E109E2575A659"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
         }
@@ -2925,8 +3859,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
-        "ProductCode" = "8:{F608683D-7D35-44AA-8009-41DDD54DB5C8}"
-        "PackageCode" = "8:{BF964330-A2EC-46F2-8FE8-368CD3D8CD8E}"
+        "ProductCode" = "8:{74924E6C-8A02-40E4-9511-F2D329B8E4F7}"
+        "PackageCode" = "8:{C9916D0E-CD66-46EC-87A0-19E4F7916324}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"

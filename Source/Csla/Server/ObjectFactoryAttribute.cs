@@ -204,7 +204,6 @@ namespace Csla.Server
     /// The type of factory class or interface.
     /// </param>
     public ObjectFactoryAttribute(Type factoryType)
-
       : this(GetAssemblyQualifiedName(factoryType))
     { }
 
@@ -214,8 +213,10 @@ namespace Csla.Server
     /// <param name="factoryType">
     /// The type of factory class or interface.
     /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
     public ObjectFactoryAttribute(Type factoryType, string fetchMethod)
-
       : this(GetAssemblyQualifiedName(factoryType), fetchMethod)
     { }
 
@@ -232,10 +233,8 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod)
-
       : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod)
-    {
-    }
+    { }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -256,10 +255,8 @@ namespace Csla.Server
     /// Name of the method to call for a delete operation.
     /// </param>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
-
       : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod)
-    {
-    }
+    { }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -283,10 +280,8 @@ namespace Csla.Server
     /// Name of the method to call for a Execute operation.
     /// </param>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
-
       : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
-    {
-    }
+    { }
 
     /// <summary>
     /// Gets the short version of assembly qualified name.

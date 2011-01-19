@@ -95,7 +95,7 @@ try
     ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
-    $cslaAssembly = Get-ChildItem "$pathToBin\Server\Csla.dll" | Select-Object -First 1
+    $cslaAssembly = Get-ChildItem "$pathToBin\Client\Csla.dll" | Select-Object -First 1
     $productVersion = $cslaAssembly.VersionInfo.ProductVersion
     ChangeNuSpecVersion "$pathtoNuGetLib\$package.NuSpec" $productVersion
     

@@ -85,14 +85,12 @@ try
     ## --------------------------------------------
     Write-Host "Copy CSLA build outputs to NuGet Lib\<PlatForm><Version> folders..." -ForegroundColor Yellow
 
-    ## Silverlight
-    $includes = @("Csla.Xaml.dll*", "Csla.Xaml.resources*.dll", "Csla.Xaml.XML*")
-    CopyMaintainingSubDirectories "$pathToBin\Silverlight\" $includes "$pathtoNuGetLib\Lib\SL4.0" 
-    
     ## Windows Phone
     ## NOTE: According to NuGet team, Profiles aren't supported yet and SL4.0 is to be used for WP7
-    
-
+       ## Wp maps to Silverlight
+    $includes = @("Csla.Xaml.dll*", "Csla.Xaml.resources*.dll", "Csla.Xaml.XML*")
+    CopyMaintainingSubDirectories "$pathToBin\Wp\" $includes "$pathtoNuGetLib\Lib\SL4.0" 
+        
     ## Create NuGet package
     ## ----------------------
     ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document

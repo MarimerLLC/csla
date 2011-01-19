@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>CSLA .NET - Silverlight</id>
-    <version>4.0.1.0</version>
+    <version>4.1.0.0</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -14,7 +14,7 @@ Supports the creation of Silverlight applications.
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <dependencies>
-      <dependency id="CSLA .NET - Core" version="4.0.1.0" />
+      <dependency id="CSLA .NET - Core" version="4.1.0.0" />
     </dependencies>
   </metadata>
 </package>

@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !ANDROID
+//-----------------------------------------------------------------------
 // <copyright file="SerializationAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -18,3 +19,4 @@ namespace Csla.Serialization
   {
   }
 }
+#endif

@@ -74,8 +74,10 @@ namespace Csla.Reflection
     /// <param name="info">Serialization info.</param>
     /// <param name="context">Serialization context.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+#if !SILVERLIGHT && !ANDROID
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+#endif
     public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
     {
       base.GetObjectData(info, context);

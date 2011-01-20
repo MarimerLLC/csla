@@ -6,12 +6,8 @@
 // <summary>Creates, retrieves, updates or deletes a</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ServiceModel;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
-using System.Windows;
-using System.ComponentModel;
 
 namespace Csla
 {

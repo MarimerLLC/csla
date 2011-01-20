@@ -368,7 +368,9 @@ namespace Csla.Core
       // could override if needed
     }
 
+#if !ANDROID
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       foreach (T item in this)

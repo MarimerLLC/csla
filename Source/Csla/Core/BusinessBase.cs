@@ -1293,7 +1293,9 @@ namespace Csla.Core
       OnDeserializedHandler(new StreamingContext());
     }
 
+#if !ANDROID
     [OnDeserialized]
+#endif
     private void OnDeserializedHandler(StreamingContext context)
     {
       BusinessRules.SetTarget(this);
@@ -3293,7 +3295,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="state">Serialization state.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnCopyState(SerializationInfo state)
+    protected override void OnCopyState(Csla.Serialization.Mobile.SerializationInfo state)
     {
       OnGetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).CopyState(this.EditLevel + 1, false);
@@ -3307,7 +3309,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="state">Serialization state.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void OnUndoChanges(SerializationInfo state)
+    protected override void OnUndoChanges(Csla.Serialization.Mobile.SerializationInfo state)
     {
       OnSetState(state, StateMode.Undo);
       ((IUndoableObject)FieldManager).UndoChanges(this.EditLevel - 1, false);

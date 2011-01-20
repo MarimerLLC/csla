@@ -848,7 +848,9 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !ANDROID
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();

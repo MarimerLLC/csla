@@ -480,7 +480,9 @@ namespace Csla
       OnDeserializedHandler(new StreamingContext());
     }
 
+#if !ANDROID
     [OnDeserialized()]
+#endif
     private void OnDeserializedHandler(StreamingContext context)
     {
       if (_fieldManager != null)

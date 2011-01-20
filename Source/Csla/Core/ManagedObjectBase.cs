@@ -398,7 +398,9 @@ namespace Csla.Core
 
     #region OnDeserialized
 
+#if !ANDROID
     [System.Runtime.Serialization.OnDeserialized()]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       OnDeserialized(context);

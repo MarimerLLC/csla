@@ -13,7 +13,9 @@ using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
 using System.IO;
+#if !ANDROID
 using System.Runtime.Serialization;
+#endif
 
 namespace Csla.Core
 {

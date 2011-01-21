@@ -426,7 +426,7 @@ namespace Csla.Rules
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
-      var affectedProperties = RunRules(rules);
+      var affectedProperties = RunRules(rules, false);
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
@@ -470,16 +470,17 @@ namespace Csla.Rules
                   select r;
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
-      affectedProperties.AddRange(RunRules(rules));
+      affectedProperties.AddRange(RunRules(rules, cascade));
 
       if (cascade)
       {
         // get properties affected by all rules
         var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
         foreach (var item in rules)
-          foreach (var p in item.AffectedProperties)
-            if (!ReferenceEquals(property, p))
-              propertiesToRun.Add(p);
+          if (!item.IsAsync)
+            foreach (var p in item.AffectedProperties)
+              if (!ReferenceEquals(property, p))
+                propertiesToRun.Add(p);
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
           CheckRulesForProperty(item, false);
@@ -500,7 +501,7 @@ namespace Csla.Rules
       }
     }
 
-    private List<string> RunRules(IEnumerable<IBusinessRule> rules)
+    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade)
     {
       var affectedProperties = new List<string>();
       bool anyRuleBroken = false;
@@ -527,6 +528,15 @@ namespace Csla.Rules
                   {
                     BrokenRules.SetBrokenRule(result);
                   }
+
+                // run rules for AffectedProperties by this rule
+                var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+                foreach (var p in rule.AffectedProperties)
+                  if (!ReferenceEquals(rule.PrimaryProperty, p))
+                    propertiesToRun.Add(p);
+                // run rules for affected properties
+                foreach (var item in propertiesToRun.Distinct())
+                  CheckRulesForProperty(item, cascade);
 
                 // mark each property as not busy
                 foreach (var item in r.Rule.AffectedProperties)

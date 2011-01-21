@@ -114,6 +114,30 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+
+    [TestMethod]
+    public void TestAsyncRulesAndSyncRulesValid()
+    {
+      UnitTestContext context = GetContext();
+
+      var har = new AsyncRuleRoot();
+      context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerNumber));
+      context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerName));
+      context.Assert.IsFalse(har.IsValid, "IsValid 1");
+
+
+      har.ValidationComplete += (o, e) =>
+      {
+        context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
+        context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
+
+        context.Assert.IsTrue(har.IsValid, "IsValid 2");
+        context.Assert.Success();
+      };
+      har.CustomerNumber = "123456";
+
+      context.Complete();
+    }
 #if SILVERLIGHT
     /// <summary>
     /// This only works on Silverlight because when run through NUnit it is not running

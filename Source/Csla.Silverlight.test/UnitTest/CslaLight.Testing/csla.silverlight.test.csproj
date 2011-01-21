@@ -345,6 +345,9 @@
     <Compile Include="..\..\..\csla.test\Utilities\UtilitiesTestHelper.cs">
       <Link>Utilities\UtilitiesTestHelper.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\ValidationRules\AsyncRuleRoot.cs">
+      <Link>Validation\AsyncRuleRoot.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\ValidationRules\AsyncRuleTests.cs">
       <Link>Validation\AsyncRuleTests.cs</Link>
     </Compile>

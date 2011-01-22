@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
 using Csla.Core;
 using Csla.Rules;
@@ -81,7 +82,7 @@ namespace Csla.Test.ValidationRules
       {
         var cn = (string)context.InputPropertyValues[PrimaryProperty];
 
-        var bw = new Csla.Threading.BackgroundWorker();
+        var bw = new System.ComponentModel.BackgroundWorker();
 
         bw.RunWorkerCompleted += (o, e) =>
         {

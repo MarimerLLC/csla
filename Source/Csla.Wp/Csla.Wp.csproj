@@ -377,6 +377,9 @@
     <Compile Include="..\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
+      <Link>Threading\BackgroundWorker.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Threading\BusyLock.cs">
       <Link>Threading\BusyLock.cs</Link>
     </Compile>

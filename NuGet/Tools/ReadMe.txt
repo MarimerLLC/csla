@@ -1,1 +1,1 @@
-This is the NuGet v1 CTP 2 version "NuGet Console" download.
+This is the NuGet v1.1 "NuGet.exe Commandline" download.

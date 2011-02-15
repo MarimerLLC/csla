@@ -30,7 +30,7 @@ function ChangeNuSpecVersion ( $nuSpecFilePath, $version="0.0.0.0" )
         $idAttribute = $dependency.Attributes("id") | Select-Object -First 1
         if ($idAttribute -ne $null)
         {
-            if ($idAttribute.Value -eq "CSLA .NET - Core")
+            if ($idAttribute.Value -eq "CSLA-Core")
             {
                 $dependency.SetAttributeValue("version", $version)
             }

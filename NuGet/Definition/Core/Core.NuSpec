@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA .NET - Core</id>
+    <id>CSLA-Core</id>
+    <title>CSLA .NET - Core</title>
+    <tags>CSLA Business Core</tags>
     <version>4.1.0.0</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>

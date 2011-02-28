@@ -933,9 +933,8 @@ namespace Csla
       object result = null;
       if (CanReadProperty(propertyInfo, false))
       {
-        var info = FieldManager.GetFieldData(propertyInfo);
-        if (info != null)
-          result = info.Value;
+        // call ReadProperty (may be overloaded in actual class)
+        result = ReadProperty(propertyInfo);
       }
       else
       {

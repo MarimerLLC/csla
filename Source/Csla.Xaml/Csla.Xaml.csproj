@@ -51,6 +51,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationContextManager.cs" />
     <Compile Include="BrokenRulesSeverityConverter.cs" />
     <Compile Include="BusyAnimation.cs" />
     <Compile Include="CslaDataProvider.cs" />

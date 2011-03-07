@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
+#if !MONO
 using System;
 using System.Configuration;
 
@@ -158,7 +159,7 @@ namespace Csla.Data
       }
     }
 
-    #region  Reference counting
+#region  Reference counting
 
     private int _refCount;
 
@@ -194,7 +195,7 @@ namespace Csla.Data
 
     #endregion
 
-    #region  IDisposable
+#region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -210,3 +211,4 @@ namespace Csla.Data
 
   }
 }
+#endif

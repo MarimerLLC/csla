@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+
+#if !MONO
 using System.EnterpriseServices;
 
 // EnterpriseServices settings
@@ -12,3 +14,5 @@ using System.EnterpriseServices;
 [assembly: ApplicationName("CSLA .NET DataPortal")]
 [assembly: Description("CSLA .NET Serviced DataPortal")]
 [assembly: ApplicationAccessControl(false)]
+
+#endif

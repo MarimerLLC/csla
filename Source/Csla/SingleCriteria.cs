@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>A single-value criteria used to retrieve business</summary>
 //-----------------------------------------------------------------------
+#if !MONO
 using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
@@ -110,7 +111,6 @@ namespace Csla
     #endregion
   }
 
-  
   /// <summary>
   /// A single-value criteria used to retrieve business
   /// objects that only require one criteria value.
@@ -152,3 +152,4 @@ namespace Csla
 #endif
   }
 }
+#endif

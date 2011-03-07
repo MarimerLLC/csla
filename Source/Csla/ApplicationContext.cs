@@ -25,6 +25,7 @@ namespace Csla
 
     private static IContextManager _contextManager;
     private static Type _webManagerType;
+    private static Type _xamlManagerType;   
 
     /// <summary>
     /// Gets or sets the context manager responsible
@@ -41,6 +42,13 @@ namespace Csla
             _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
           if (_webManagerType != null)
             _contextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
+          else
+          {
+            if (_xamlManagerType == null)
+              _xamlManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
+            if (_xamlManagerType != null)
+              _contextManager = (IContextManager)Activator.CreateInstance(_xamlManagerType);
+          }
         }
         if (_contextManager == null || !_contextManager.IsValid)
           _contextManager = new ApplicationContextManager();
@@ -635,27 +643,12 @@ namespace Csla
 
       public IPrincipal GetUser()
       {
-        IPrincipal current;
-        if (System.Windows.Application.Current != null)
-        {
-          if (_principal == null)
-          {
-            if (ApplicationContext.AuthenticationType != "Windows")
-              _principal = new Csla.Security.UnauthenticatedPrincipal();
-            else
-              _principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-          }
-          current = _principal;
-        }
-        else
-          current = Thread.CurrentPrincipal;
+        IPrincipal current = Thread.CurrentPrincipal;
         return current;
       }
 
       public void SetUser(IPrincipal principal)
       {
-        if (System.Windows.Application.Current != null)
-          _principal = principal;
         Thread.CurrentPrincipal = principal;
       }
 

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
+#if !MONO
 using System;
 using System.Collections.Generic;
 
@@ -120,3 +121,4 @@ namespace Csla.Data
     }
   }
 }
+#endif

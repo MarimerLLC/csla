@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
+#if !MONO
 using System;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
@@ -120,3 +121,4 @@ namespace Csla.Server.Hosts
     #endregion
   }
 }
+#endif

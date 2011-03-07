@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
+#if !MONO
 using System;
 
 namespace Csla.DataPortalClient
@@ -124,3 +125,4 @@ namespace Csla.DataPortalClient
     }
   }
 }
+#endif

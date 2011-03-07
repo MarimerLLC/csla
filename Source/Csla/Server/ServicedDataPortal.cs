@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
+#if !MONO 
 using System;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
@@ -103,3 +104,4 @@ namespace Csla.Server
     }
   }
 }
+#endif

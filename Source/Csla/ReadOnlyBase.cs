@@ -480,7 +480,7 @@ namespace Csla
       OnDeserializedHandler(new StreamingContext());
     }
 
-#if !ANDROID
+#if !ANDROID && !IOS
     [OnDeserialized()]
 #endif
     private void OnDeserializedHandler(StreamingContext context)

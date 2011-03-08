@@ -59,7 +59,11 @@ namespace Csla.Core
     public bool IsReadOnly
     {
       get { return _isReadOnly; }
+#if !IOS
       protected set { _isReadOnly = value; }
+#else
+      set { _isReadOnly = value; }
+#endif
     }
 
     bool Core.IReadOnlyBindingList.IsReadOnly

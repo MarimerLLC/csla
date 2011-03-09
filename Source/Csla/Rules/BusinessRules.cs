@@ -858,7 +858,7 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !ANDROID && !IOS
+#if !IOS
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)

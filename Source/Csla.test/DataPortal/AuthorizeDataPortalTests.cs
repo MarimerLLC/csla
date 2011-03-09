@@ -11,9 +11,9 @@ using Csla.DataPortalClient;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 
-#if !NUNIT
+#if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
+#elif !ANDROID
 using NUnit.Framework;
 using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;

@@ -5,19 +5,18 @@
 // </copyright>
 // <summary>Android implementation of NotifyCollectionChangedEventHandler</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 
 namespace System.Collections.Specialized
 {
+  // Summary:
+  //     Represents the method that handles the System.Collections.Specialized.INotifyCollectionChanged.CollectionChanged
+  //     event.
+  //
+  // Parameters:
+  //   sender:
+  //     The object that raised the event.
+  //
+  //   e:
+  //     Information about the event.
   public delegate void NotifyCollectionChangedEventHandler(object sender, NotifyCollectionChangedEventArgs e);
 }

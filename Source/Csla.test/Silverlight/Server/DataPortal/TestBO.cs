@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#if SILVERLIGHT
+#if SILVERLIGHT && !ANDROID
 using Csla.Serialization;
 #else
 using System;

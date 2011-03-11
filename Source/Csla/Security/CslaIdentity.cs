@@ -45,7 +45,8 @@ namespace Csla.Security
     /// </summary>
     public CslaIdentityBase()
     {
-      _forceInit = !_forceInit;
+//      _forceInit = !_forceInit;
+      _forceInit = _forceInit && false;
     }
 
     /// <summary>

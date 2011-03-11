@@ -8,8 +8,7 @@
     <ProjectGuid>{F35F6026-DA97-4993-B9BC-DE935FDCDA23}</ProjectGuid>
     <ProjectTypeGuids>{E613F3A2-FE9C-494F-B74E-F63BCB86FEA6};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Csla.Ios</RootNamespace>
-    <AssemblyName>CslaIos</AssemblyName>
+    <RootNamespace>Csla</RootNamespace>
     <MtouchMinimumOS>3.0</MtouchMinimumOS>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SupportedDevices>IPhoneAndIPad</SupportedDevices>
@@ -18,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <OutputPath>..\..\bin\ios\debug</OutputPath>
     <DefineConstants>DEBUG, SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -26,17 +25,31 @@
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>True</MtouchDebug>
     <MtouchI18n />
+    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchUseThumb>false</MtouchUseThumb>
+    <MtouchUseSGen>false</MtouchUseSGen>
+    <AssemblyName>Csla</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <OutputPath>..\..\bin\ios\release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <MtouchDebug>False</MtouchDebug>
     <ConsolePause>false</ConsolePause>
     <MtouchLink>None</MtouchLink>
     <DefineConstants>SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
+    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchUseThumb>false</MtouchUseThumb>
+    <MtouchUseSGen>false</MtouchUseSGen>
+    <AssemblyName>Csla</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +62,11 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
+    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchUseThumb>false</MtouchUseThumb>
+    <MtouchUseSGen>false</MtouchUseSGen>
+    <AssemblyName>CslaIos</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -60,6 +78,11 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <DefineConstants>SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
+    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <MtouchUseArmv7>false</MtouchUseArmv7>
+    <MtouchUseThumb>false</MtouchUseThumb>
+    <MtouchUseSGen>false</MtouchUseSGen>
+    <AssemblyName>CslaIos</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -626,7 +649,12 @@
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="IPhone" />
+      <Properties InternalTargetFrameworkVersion="IPhone">
+        <Policies>
+          <TextStylePolicy FileWidth="120" TabWidth="2" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
+          <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+        </Policies>
+      </Properties>
     </MonoDevelop>
   </ProjectExtensions>
 </Project>

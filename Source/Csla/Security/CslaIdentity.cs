@@ -82,7 +82,7 @@ namespace Csla.Security
     /// Creates an instance of the class.
     /// </summary>
     /// <returns></returns>
-    public static CslaIdentity UnauthenticatedIdentity()
+    public static UnauthenticatedIdentity UnauthenticatedIdentity()
     {
       return new Csla.Security.UnauthenticatedIdentity();
     }
@@ -128,7 +128,11 @@ namespace Csla.Security
     public string AuthenticationType
     {
       get { return GetProperty<string>(AuthenticationTypeProperty); }
+#if IOS
+      set { LoadProperty<string>(AuthenticationTypeProperty, value); }
+#else
       protected set { LoadProperty<string>(AuthenticationTypeProperty, value); }
+#endif
     }
 
 
@@ -144,7 +148,11 @@ namespace Csla.Security
     public bool IsAuthenticated
     {
       get { return GetProperty<bool>(IsAuthenticatedProperty); }
+#if IOS
+      set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
+#else
       protected set { LoadProperty<bool>(IsAuthenticatedProperty, value); }
+#endif
     }
 
     /// <summary>
@@ -158,7 +166,11 @@ namespace Csla.Security
     public string Name
     {
       get { return GetProperty<string>(NameProperty); }
+#if IOS
+      set { LoadProperty<string>(NameProperty, value); }
+#else
       protected set { LoadProperty<string>(NameProperty, value); }
+#endif
     }
 
     #endregion

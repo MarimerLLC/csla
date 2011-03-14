@@ -21,13 +21,18 @@ namespace Csla.Security
   /// UnauthenticatedPrincipal class.
   /// </summary>
   [Serializable()]
-  public sealed class UnauthenticatedIdentity : CslaIdentity
+  public sealed class UnauthenticatedIdentity : CslaIdentityBase<UnauthenticatedIdentity>
   {
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public UnauthenticatedIdentity()
     {
+    }
+
+    protected override void Initialize()
+    {
+      base.Initialize ();
       IsAuthenticated = false;
       Name = string.Empty;
       AuthenticationType = string.Empty;

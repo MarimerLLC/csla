@@ -12,6 +12,9 @@
     <MtouchMinimumOS>3.0</MtouchMinimumOS>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SupportedDevices>IPhoneAndIPad</SupportedDevices>
+    <ReleaseVersion>4.2.0.0</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <AssemblyName>Csla</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,7 +32,6 @@
     <MtouchUseArmv7>false</MtouchUseArmv7>
     <MtouchUseThumb>false</MtouchUseThumb>
     <MtouchUseSGen>false</MtouchUseSGen>
-    <AssemblyName>Csla</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -47,7 +49,6 @@
     <MtouchUseArmv7>false</MtouchUseArmv7>
     <MtouchUseThumb>false</MtouchUseThumb>
     <MtouchUseSGen>false</MtouchUseSGen>
-    <AssemblyName>Csla</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -66,7 +67,6 @@
     <MtouchUseArmv7>false</MtouchUseArmv7>
     <MtouchUseThumb>false</MtouchUseThumb>
     <MtouchUseSGen>false</MtouchUseSGen>
-    <AssemblyName>Csla</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>
@@ -82,7 +82,6 @@
     <MtouchUseArmv7>false</MtouchUseArmv7>
     <MtouchUseThumb>false</MtouchUseThumb>
     <MtouchUseSGen>false</MtouchUseSGen>
-    <AssemblyName>Csla</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -589,9 +588,6 @@
     </Compile>
     <Compile Include="..\Csla.Silverlight\ReadOnlyBindingListBase.cs">
       <Link>ReadOnlyBindingListBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Security\CslaIdentity.partial.cs">
-      <Link>Security\CslaIdentity.partial.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\Security\PrincipalCache.cs">
       <Link>Security\PrincipalCache.cs</Link>

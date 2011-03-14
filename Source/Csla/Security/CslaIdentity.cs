@@ -23,9 +23,48 @@ namespace Csla.Security
   /// a .NET identity object for use with BusinessPrincipalBase.
   /// </summary>
   [Serializable]
-  public abstract partial class CslaIdentity : CslaIdentityBase<CslaIdentity>
+  public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>
   {
-    private static bool _forceInit;
+#if SILVERLIGHT
+    /// <summary>
+    /// Retrieves an instance of the identity
+    /// object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of object.
+    /// </typeparam>
+    /// <param name="completed">
+    /// Method called when the operation is
+    /// complete.
+    /// </param>
+    /// <param name="criteria">
+    /// Criteria object for the query.
+    /// </param>
+    public static void GetCslaIdentity<T>(EventHandler<DataPortalResult<T>> completed, object criteria)
+      where T : CslaIdentity
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      dp.FetchCompleted += completed;
+      dp.BeginFetch(criteria);
+    }
+#else
+    /// <summary>
+    /// Invokes the data portal to get an instance of
+    /// the identity object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of the CslaIdentity subclass to retrieve.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Object containing the user's credentials.
+    /// </param>
+    /// <returns></returns>
+    public static T GetCslaIdentity<T>(object criteria) 
+      where T : CslaIdentity
+    {
+      return DataPortal.Fetch<T>(criteria);
+    }
+#endif
   }
 
   /// <summary>
@@ -37,28 +76,6 @@ namespace Csla.Security
     ReadOnlyBase<T>, IIdentity, ICheckRoles
     where T : CslaIdentityBase<T>
   {
-#if SILVERLIGHT
-    private static bool _forceInit;
-
-    /// <summary>
-    /// Create an instance of the object.
-    /// </summary>
-    public CslaIdentityBase()
-    {
-//      _forceInit = !_forceInit;
-      _forceInit = _forceInit && false;
-    }
-
-    /// <summary>
-    /// Invoked when the object is deserialized.
-    /// </summary>
-    protected override void OnDeserialized(StreamingContext context)
-    {
-      _forceInit = _forceInit && false;
-      base.OnDeserialized(context);
-    }
-#endif
-
     #region UnauthenticatedIdentity
 
     /// <summary>

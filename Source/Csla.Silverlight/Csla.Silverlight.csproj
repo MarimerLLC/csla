@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
@@ -476,7 +476,6 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
-    <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\PrincipalCache.cs" />
     <Compile Include="Serialization\TypeExtensions.cs">
       <SubType>Code</SubType>

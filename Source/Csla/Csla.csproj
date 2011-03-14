@@ -186,7 +186,6 @@
     <Compile Include="Rules\RuleUri.cs" />
     <Compile Include="Rules\ValidationException.cs" />
     <Compile Include="Security\CslaIdentity.cs" />
-    <Compile Include="Security\CslaIdentity.partial.cs" />
     <Compile Include="Security\CslaPrincipal.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
     <Compile Include="Security\MembershipIdentity.cs" />

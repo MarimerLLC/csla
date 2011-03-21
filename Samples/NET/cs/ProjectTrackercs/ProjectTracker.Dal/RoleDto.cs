@@ -5,8 +5,10 @@ using System.Text;
 
 namespace ProjectTracker.Dal
 {
-  public interface IDalFactory
+  public class RoleDto
   {
-    T GetDal<T>();
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public byte[] LastChanged { get; set; }
   }
 }

@@ -53,6 +53,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Csla">
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -74,7 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.cs" />
+    <Compile Include="DalManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PTracker.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -83,13 +86,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.Config" />
     <EntityDeploy Include="PTracker.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>PTracker.Designer.cs</LastGenOutput>
     </EntityDeploy>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.Config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -107,6 +108,16 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
+      <Project>{677EFBD4-1565-4D5D-A022-C2A85078DB64}</Project>
+      <Name>ProjectTracker.Dal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTracker.Library\ProjectTracker.Library.csproj">
+      <Project>{366FD3E8-E0AA-40CF-99ED-BB2966E30C96}</Project>
+      <Name>ProjectTracker.Library</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

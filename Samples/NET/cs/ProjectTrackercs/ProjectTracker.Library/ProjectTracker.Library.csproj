@@ -105,16 +105,6 @@
     <None Include="Diagrams\Security.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.DalEf\ProjectTracker.DalEf.csproj">
-      <Project>{90EA85E8-B0F9-453E-A4C8-837939211C44}</Project>
-      <Name>ProjectTracker.DalEf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.DalLinq\ProjectTracker.DalLinq.csproj">
-      <Project>{472C9544-67A7-4C3A-9F5D-704889289AE9}</Project>
-      <Name>ProjectTracker.DalLinq</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -130,6 +120,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">
+      <Project>{677EFBD4-1565-4D5D-A022-C2A85078DB64}</Project>
+      <Name>ProjectTracker.Dal</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

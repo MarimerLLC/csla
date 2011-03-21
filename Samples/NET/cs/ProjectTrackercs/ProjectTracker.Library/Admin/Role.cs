@@ -98,7 +98,7 @@ namespace ProjectTracker.Library.Admin
 #if !SILVERLIGHT
     #region  Factory Methods
 
-    internal static Role GetRole(ProjectTracker.DalLinq.getRolesResult data)
+    internal static Role GetRole(object data)
     {
       return DataPortal.FetchChild<Role>(data);
     }
@@ -110,7 +110,7 @@ namespace ProjectTracker.Library.Admin
 
     #region  Data Access
 
-    private void Child_Fetch(ProjectTracker.DalLinq.getRolesResult data)
+    private void Child_Fetch(object data)
     {
       using (BypassPropertyChecks)
       {

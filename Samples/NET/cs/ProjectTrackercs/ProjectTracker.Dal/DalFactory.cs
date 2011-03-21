@@ -1,34 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Configuration;
 
 namespace ProjectTracker.Dal
 {
   public static class DalFactory
   {
-    private static IDalFactory _factory;
-    public static IDalFactory FactoryInstance
-    {
-      get
-      {
-        if (_factory == null)
-        {
-          var dalTypeName = System.Configuration.ConfigurationManager.AppSettings["DalTypeName"];
-          var dalType = Type.GetType(dalTypeName);
-          _factory = (IDalFactory)Activator.CreateInstance(dalType);
-        }
-        return _factory;
-      }
-      set
-      {
-        _factory = value;
-      }
-    }
+    private static Type _dalType;
 
-    public static T GetDal<T>()
+    public static IDalManager GetManager()
     {
-      return FactoryInstance.GetDal<T>();
+      if (_dalType == null)
+      {
+        var dalTypeName = ConfigurationManager.AppSettings["DalManagerType"];
+        if (!string.IsNullOrEmpty(dalTypeName))
+          _dalType = Type.GetType(dalTypeName);
+        else
+          throw new NullReferenceException("DalManagerType");
+        if (_dalType == null)
+          throw new ArgumentException(string.Format("Type {0} could not be found", dalTypeName));
+      }
+      return (IDalManager)Activator.CreateInstance(_dalType);
     }
   }
 }

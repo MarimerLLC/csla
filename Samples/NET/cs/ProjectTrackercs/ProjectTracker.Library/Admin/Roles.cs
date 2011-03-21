@@ -123,11 +123,6 @@ namespace ProjectTracker.Library
       private void DataPortal_Fetch()
       {
         this.RaiseListChangedEvents = false;
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-        {
-          foreach (var value in ctx.DataContext.getRoles())
-            this.Add(Role.GetRole(value));
-        }
         this.RaiseListChangedEvents = true;
       }
 
@@ -135,10 +130,6 @@ namespace ProjectTracker.Library
       protected override void DataPortal_Update()
       {
         this.RaiseListChangedEvents = false;
-        using (var ctx = ContextManager<ProjectTracker.DalLinq.PTrackerDataContext>.GetManager(ProjectTracker.DalLinq.Database.PTracker))
-        {
-          Child_Update();
-        }
         this.RaiseListChangedEvents = true;
       }
 

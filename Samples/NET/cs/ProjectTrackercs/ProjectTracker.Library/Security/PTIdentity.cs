@@ -6,9 +6,6 @@ using System.Linq;
 using System.Security.Principal;
 using Csla.Security;
 using Csla.Serialization;
-#if !SILVERLIGHT
-using ProjectTracker.DalLinq.Security;
-#endif
 
 namespace ProjectTracker.Library
 {

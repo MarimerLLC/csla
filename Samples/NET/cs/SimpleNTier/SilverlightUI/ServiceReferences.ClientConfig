@@ -8,9 +8,10 @@
       </basicHttpBinding>
     </bindings>
     <client>
-      <endpoint address="http://localhost:21647/SlPortal.svc"
-          binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IWcfPortal"
-          contract="WcfPortal.IWcfPortal" name="BasicHttpBinding_IWcfPortal" />
+      <endpoint name="BasicHttpBinding_IWcfPortal"
+                address="http://localhost:21647/SlPortal.svc"
+                binding="basicHttpBinding"
+                contract="WcfPortal.IWcfPortal" />
     </client>
   </system.serviceModel>
 </configuration>

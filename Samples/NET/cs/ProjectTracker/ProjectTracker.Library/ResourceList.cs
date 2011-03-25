@@ -14,16 +14,21 @@ namespace ProjectTracker.Library
       return new ResourceList();
     }
 
+    public static void GetResourceList(EventHandler<DataPortalResult<ResourceList>> callback)
+    {
+      DataPortal.BeginFetch<ResourceList>(callback);
+    }
+
 #if !SILVERLIGHT
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>();
     }
-#endif
 
-    public static void GetResourceList(EventHandler<DataPortalResult<ResourceList>> callback)
+    private void DataPortal_Fetch()
     {
-      DataPortal.BeginFetch<ResourceList>(callback);
+
     }
+#endif
   }
 }

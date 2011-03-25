@@ -10,8 +10,8 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ResourceGetter : ReadOnlyBase<ResourceGetter>
   {
-    public static PropertyInfo<Resource> ResourceProperty = RegisterProperty<Resource>(c => c.Resource);
-    public Resource Resource
+    public static PropertyInfo<ResourceEdit> ResourceProperty = RegisterProperty<ResourceEdit>(c => c.Resource);
+    public ResourceEdit Resource
     {
       get { return GetProperty(ResourceProperty); }
       private set { LoadProperty(ResourceProperty, value); }
@@ -26,12 +26,56 @@ namespace ProjectTracker.Library
 
     public static void CreateNewResource(EventHandler<DataPortalResult<ResourceGetter>> callback)
     {
-      DataPortal.BeginCreate<ResourceGetter>(callback);
+      DataPortal.BeginCreate<ResourceGetter>(new Criteria { ResourceId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
+      {
+        if (e.Error != null)
+          throw e.Error;
+        if (!RoleList.IsCached)
+          RoleList.SetCache(e.Object.RoleList);
+        callback(o, e);
+      });
     }
 
     public static void GetExistingResource(int resourceId, EventHandler<DataPortalResult<ResourceGetter>> callback)
     {
-      DataPortal.BeginFetch<ResourceGetter>(resourceId, callback);
+      DataPortal.BeginFetch<ResourceGetter>(new Criteria { ResourceId = resourceId, GetRoles = !RoleList.IsCached }, (o, e) =>
+      {
+        if (e.Error != null)
+          throw e.Error;
+        if (!RoleList.IsCached)
+          RoleList.SetCache(e.Object.RoleList);
+        callback(o, e);
+      });
+    }
+
+#if !SILVERLIGHT
+    private void DataPortal_Fetch(Criteria criteria)
+    {
+      if (criteria.ResourceId == -1)
+        Resource = ResourceEdit.NewResource();
+      else
+        Resource = ResourceEdit.GetResource(criteria.ResourceId);
+      if (criteria.GetRoles)
+        RoleList = RoleList.GetList();
+    }
+#endif
+
+    [Serializable]
+    public class Criteria : CriteriaBase<Criteria>
+    {
+      public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+      public int ResourceId
+      {
+        get { return ReadProperty(ResourceIdProperty); }
+        set { LoadProperty(ResourceIdProperty, value); }
+      }
+
+      public static readonly PropertyInfo<bool> GetRolesProperty = RegisterProperty<bool>(c => c.GetRoles);
+      public bool GetRoles
+      {
+        get { return ReadProperty(GetRolesProperty); }
+        set { LoadProperty(GetRolesProperty, value); }
+      }
     }
   }
 }

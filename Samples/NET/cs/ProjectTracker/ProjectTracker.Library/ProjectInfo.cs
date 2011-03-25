@@ -8,9 +8,9 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectInfo : ReadOnlyBase<ProjectInfo>
   {
-    public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
+    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     [Display(Name = "Project id")]
-    public Guid Id
+    public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { LoadProperty(IdProperty, value); }
@@ -28,5 +28,13 @@ namespace ProjectTracker.Library
     {
       return Name;
     }
+
+#if !SILVERLIGHT
+    private void Child_Fetch(ProjectTracker.Dal.ProjectDto item)
+    {
+      Id = item.Id;
+      Name = item.Name;
+    }
+#endif
   }
 }

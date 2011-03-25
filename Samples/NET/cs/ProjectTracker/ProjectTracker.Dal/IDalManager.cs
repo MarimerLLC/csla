@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectTracker.Dal
 {
-  public interface IDalManager
+  public interface IDalManager : IDisposable
   {
     T GetProvider<T>() where T : class;
   }

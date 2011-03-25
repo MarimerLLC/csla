@@ -77,32 +77,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admin\Role.cs" />
-    <Compile Include="Admin\Roles.cs" />
+    <Compile Include="Admin\RoleEdit.cs" />
+    <Compile Include="Admin\RoleEditList.cs" />
     <Compile Include="Assignment.cs" />
-    <Compile Include="Project.cs" />
+    <Compile Include="ProjectEdit.cs" />
     <Compile Include="ProjectCloser.cs" />
+    <Compile Include="ProjectExistsCommand.cs" />
     <Compile Include="ProjectGetter.cs" />
     <Compile Include="ProjectInfo.cs" />
     <Compile Include="ProjectList.cs" />
-    <Compile Include="ProjectResource.cs" />
+    <Compile Include="ProjectResourceEdit.cs" />
     <Compile Include="ProjectResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.cs" />
-    <Compile Include="ResourceAssignment.cs" />
+    <Compile Include="ResourceEdit.cs" />
+    <Compile Include="ResourceAssignmentEdit.cs" />
     <Compile Include="ResourceAssignments.cs" />
+    <Compile Include="ResourceExistsCommand.cs" />
     <Compile Include="ResourceGetter.cs" />
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceList.cs" />
     <Compile Include="RoleList.cs" />
     <Compile Include="Security\PTIdentity.cs" />
     <Compile Include="Security\PTPrincipal.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Diagrams\BaseClasses.cd" />
-    <None Include="Diagrams\EditableObjects.cd" />
-    <None Include="Diagrams\ReadOnlyObjects.cd" />
-    <None Include="Diagrams\Security.cd" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

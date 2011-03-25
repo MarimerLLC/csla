@@ -6,13 +6,13 @@ using Csla.Serialization;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectResources : BusinessListBase<ProjectResources, ProjectResource>
+  public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
     public void Assign(int resourceId)
     {
       if (!(Contains(resourceId)))
       {
-        ProjectResource resource = DataPortal.CreateChild<ProjectResource>(resourceId);
+        ProjectResourceEdit resource = DataPortal.CreateChild<ProjectResourceEdit>(resourceId);
         this.Add(resource);
       }
       else

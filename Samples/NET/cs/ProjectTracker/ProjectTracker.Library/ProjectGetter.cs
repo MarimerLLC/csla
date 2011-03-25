@@ -10,8 +10,8 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectGetter : ReadOnlyBase<ProjectGetter>
   {
-    public static PropertyInfo<Project> ProjectProperty = RegisterProperty<Project>(c => c.Project);
-    public Project Project
+    public static PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(c => c.Project);
+    public ProjectEdit Project
     {
       get { return GetProperty(ProjectProperty); }
       private set { LoadProperty(ProjectProperty, value); }
@@ -26,12 +26,56 @@ namespace ProjectTracker.Library
 
     public static void CreateNewProject(EventHandler<DataPortalResult<ProjectGetter>> callback)
     {
-      DataPortal.BeginCreate<ProjectGetter>(callback);
+      DataPortal.BeginCreate<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
+      {
+        if (e.Error != null)
+          throw e.Error;
+        if (!RoleList.IsCached)
+          RoleList.SetCache(e.Object.RoleList);
+        callback(o, e);
+      });
     }
 
-    public static void GetExistingProject(Guid projectId, EventHandler<DataPortalResult<ProjectGetter>> callback)
+    public static void GetExistingProject(int projectId, EventHandler<DataPortalResult<ProjectGetter>> callback)
     {
-      DataPortal.BeginFetch<ProjectGetter>(projectId, callback);
+      DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = projectId, GetRoles = !RoleList.IsCached }, (o, e) =>
+      {
+        if (e.Error != null)
+          throw e.Error;
+        if (!RoleList.IsCached)
+          RoleList.SetCache(e.Object.RoleList);
+        callback(o, e);
+      });
+    }
+
+#if !SILVERLIGHT
+    private void DataPortal_Fetch(Criteria criteria)
+    {
+      if (criteria.ProjectId == -1)
+        Project = ProjectEdit.NewProject();
+      else
+        Project = ProjectEdit.GetProject(criteria.ProjectId);
+      if (criteria.GetRoles)
+        RoleList = RoleList.GetList();
+    }
+#endif
+
+    [Serializable]
+    public class Criteria : CriteriaBase<Criteria>
+    {
+      public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
+      public int ProjectId
+      {
+        get { return ReadProperty(ProjectIdProperty); }
+        set { LoadProperty(ProjectIdProperty, value); }
+      }
+
+      public static readonly PropertyInfo<bool> GetRolesProperty = RegisterProperty<bool>(c => c.GetRoles);
+      public bool GetRoles
+      {
+        get { return ReadProperty(GetRolesProperty); }
+        set { LoadProperty(GetRolesProperty, value); }
+      }
     }
   }
 }

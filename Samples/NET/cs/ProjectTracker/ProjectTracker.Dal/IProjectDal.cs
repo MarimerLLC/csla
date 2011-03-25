@@ -8,6 +8,7 @@ namespace ProjectTracker.Dal
   public interface IProjectDal
   {
     List<ProjectDto> Fetch();
+    List<ProjectDto> Fetch(string nameFilter);
     ProjectDto Fetch(int id);
     void Insert(ProjectDto item);
     void Update(ProjectDto item);

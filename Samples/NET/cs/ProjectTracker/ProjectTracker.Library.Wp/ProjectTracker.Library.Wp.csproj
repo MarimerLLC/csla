@@ -51,20 +51,23 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ProjectTracker.Library\Admin\Role.cs">
-      <Link>Admin\Role.cs</Link>
+    <Compile Include="..\ProjectTracker.Library\Admin\RoleEdit.cs">
+      <Link>Admin\RoleEdit.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectTracker.Library\Admin\Roles.cs">
-      <Link>Admin\Roles.cs</Link>
+    <Compile Include="..\ProjectTracker.Library\Admin\RoleEditList.cs">
+      <Link>Admin\RoleEditList.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\Assignment.cs">
       <Link>Assignment.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectTracker.Library\Project.cs">
-      <Link>Project.cs</Link>
-    </Compile>
     <Compile Include="..\ProjectTracker.Library\ProjectCloser.cs">
       <Link>ProjectCloser.cs</Link>
+    </Compile>
+    <Compile Include="..\ProjectTracker.Library\ProjectEdit.cs">
+      <Link>ProjectEdit.cs</Link>
+    </Compile>
+    <Compile Include="..\ProjectTracker.Library\ProjectExistsCommand.cs">
+      <Link>ProjectExistsCommand.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ProjectGetter.cs">
       <Link>ProjectGetter.cs</Link>
@@ -75,20 +78,23 @@
     <Compile Include="..\ProjectTracker.Library\ProjectList.cs">
       <Link>ProjectList.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectTracker.Library\ProjectResource.cs">
-      <Link>ProjectResource.cs</Link>
+    <Compile Include="..\ProjectTracker.Library\ProjectResourceEdit.cs">
+      <Link>ProjectResourceEdit.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ProjectResources.cs">
       <Link>ProjectResources.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectTracker.Library\Resource.cs">
-      <Link>Resource.cs</Link>
-    </Compile>
-    <Compile Include="..\ProjectTracker.Library\ResourceAssignment.cs">
-      <Link>ResourceAssignment.cs</Link>
+    <Compile Include="..\ProjectTracker.Library\ResourceAssignmentEdit.cs">
+      <Link>ResourceAssignmentEdit.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ResourceAssignments.cs">
       <Link>ResourceAssignments.cs</Link>
+    </Compile>
+    <Compile Include="..\ProjectTracker.Library\ResourceEdit.cs">
+      <Link>ResourceEdit.cs</Link>
+    </Compile>
+    <Compile Include="..\ProjectTracker.Library\ResourceExistsCommand.cs">
+      <Link>ResourceExistsCommand.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ResourceGetter.cs">
       <Link>ResourceGetter.cs</Link>

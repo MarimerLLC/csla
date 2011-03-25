@@ -29,6 +29,11 @@ namespace ProjectTracker.Library
       {
         return DataPortal.Fetch<PTIdentity>(username);
       }
+
+      private void DataPortal_Fetch(UsernameCriteria criteria)
+      {
+
+      }
 #endif
     }
   }

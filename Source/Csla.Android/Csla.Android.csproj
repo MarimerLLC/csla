@@ -547,9 +547,6 @@
     <Compile Include="..\Csla.Silverlight\ReadOnlyBindingListBase.cs">
       <Link>ReadOnlyBindingListBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\Security\CslaIdentity.partial.cs">
-      <Link>Security\CslaIdentity.partial.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\Security\PrincipalCache.cs">
       <Link>Security\PrincipalCache.cs</Link>
     </Compile>

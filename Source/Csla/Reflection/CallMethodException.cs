@@ -74,7 +74,7 @@ namespace Csla.Reflection
     /// <param name="info">Serialization info.</param>
     /// <param name="context">Serialization context.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !SILVERLIGHT && !ANDROID
+#if !SILVERLIGHT && !__ANDROID__
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 #endif

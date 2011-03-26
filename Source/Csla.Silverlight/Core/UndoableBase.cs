@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
 using System.IO;
-#if !ANDROID && !IOS
+#if !__ANDROID__ && !IOS
 using System.Runtime.Serialization;
 #endif
 

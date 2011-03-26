@@ -20,7 +20,7 @@ namespace Csla.Testing.Business.EditableChildTests
 
     #region  Data Access
 
-#if ANDROID
+#if __ANDROID__
     public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed)
     {
       // fetch with no filter

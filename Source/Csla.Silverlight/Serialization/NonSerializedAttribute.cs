@@ -1,4 +1,4 @@
-﻿#if !ANDROID && !IOS
+﻿#if !__ANDROID__ && !IOS
 //-----------------------------------------------------------------------
 // <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

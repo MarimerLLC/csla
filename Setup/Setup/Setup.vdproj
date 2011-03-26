@@ -3054,7 +3054,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Csla, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Csla, Version=4.2.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_C6AE0F49AC0263407C545AC889043786"
@@ -3623,7 +3623,7 @@
                 {
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_46CDDF2665B145859839CEC3F467D5A3"
                     {
-                    "Name" = "8:4.1.0"
+                    "Name" = "8:4.2.0"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
@@ -3859,15 +3859,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
-        "ProductCode" = "8:{74924E6C-8A02-40E4-9511-F2D329B8E4F7}"
-        "PackageCode" = "8:{C9916D0E-CD66-46EC-87A0-19E4F7916324}"
+        "ProductCode" = "8:{92B68570-AE13-4B2E-A8CC-98DC98F3A899}"
+        "PackageCode" = "8:{5657ECC9-89D8-4D3B-9158-C49740106F43}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:4.1.0"
+        "ProductVersion" = "8:4.2.1031"
         "Manufacturer" = "8:Marimer LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://forums.lhotka.net/"

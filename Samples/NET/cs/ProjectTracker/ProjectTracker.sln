@@ -4,7 +4,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FAC3F50C-78A8-4F17-A4E3-B6BAE7BB612F}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
-		ProjectTrackercs.vsmdi = ProjectTrackercs.vsmdi
+		ProjectTracker.vsmdi = ProjectTracker.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Test.Library
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = ProjectTrackercs.vsmdi
+		CategoryFile = ProjectTracker.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET

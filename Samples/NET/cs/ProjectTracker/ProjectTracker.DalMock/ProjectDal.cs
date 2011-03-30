@@ -58,6 +58,14 @@ namespace ProjectTracker.DalMock
       return result;
     }
 
+    public bool Exists(int id)
+    {
+      var result = (from r in MockDb.Projects
+                    where r.Id == id
+                    select r.Id).Count() > 0;
+      return result;
+    }
+
     public void Insert(ProjectDto item)
     {
       item.Id = MockDb.Projects.Max(c => c.Id) + 1;
@@ -80,6 +88,8 @@ namespace ProjectTracker.DalMock
                   select r).FirstOrDefault();
       if (data == null)
         throw new DataNotFoundException("Project");
+      if (!MockDb.TimeStampEquals(data.LastChanged, item.LastChanged))
+        throw new ConcurrencyException("Project");
       data.Name = item.Name;
       data.Description = item.Description;
       data.Started = item.Started;

@@ -51,6 +51,7 @@
     <Compile Include="MockDbTypes\RoleData.cs" />
     <Compile Include="ProjectDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceDal.cs" />
     <Compile Include="RoleDal.cs" />
   </ItemGroup>
   <ItemGroup>

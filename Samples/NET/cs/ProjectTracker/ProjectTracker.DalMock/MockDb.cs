@@ -40,5 +40,18 @@ namespace ProjectTracker.DalMock
     {
       return System.Text.ASCIIEncoding.ASCII.GetBytes(DateTime.Now.Ticks.ToString());
     }
+
+    public static bool TimeStampEquals(byte[] stamp1, byte[] stamp2)
+    {
+      if (stamp1 != null && stamp2 != null)
+        if (stamp1.Length == stamp2.Length)
+        {
+          for (int i = 0; i < stamp1.Length; i++)
+            if (!stamp1[i].Equals(stamp2[i]))
+              return false;
+          return true;
+        }
+      return false;
+    }
   }
 }

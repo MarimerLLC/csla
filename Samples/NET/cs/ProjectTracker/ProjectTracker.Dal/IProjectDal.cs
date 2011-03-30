@@ -10,6 +10,7 @@ namespace ProjectTracker.Dal
     List<ProjectDto> Fetch();
     List<ProjectDto> Fetch(string nameFilter);
     ProjectDto Fetch(int id);
+    bool Exists(int id);
     void Insert(ProjectDto item);
     void Update(ProjectDto item);
     void Delete(int id);

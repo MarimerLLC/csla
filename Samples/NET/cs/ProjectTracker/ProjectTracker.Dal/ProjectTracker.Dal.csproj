@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssignmentDto.cs" />
+    <Compile Include="ConcurrencyException.cs" />
     <Compile Include="DalFactory.cs" />
     <Compile Include="DataNotFoundException.cs" />
     <Compile Include="IAssignmentDal.cs" />

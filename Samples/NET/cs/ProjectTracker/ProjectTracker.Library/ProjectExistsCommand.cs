@@ -17,16 +17,25 @@ namespace ProjectTracker.Library
       set { LoadProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(c => c.ProjectExists);
+    public static PropertyInfo<bool> ProjectExistsProperty = RegisterProperty<bool>(c => c.ProjectExists);
     public bool ProjectExists
     {
-      get { return ReadProperty(ResultProperty); }
-      private set { LoadProperty(ResultProperty, value); }
+      get { return ReadProperty(ProjectExistsProperty); }
+      private set { LoadProperty(ProjectExistsProperty, value); }
     }
 
     public ProjectExistsCommand(int id)
     {
       Id = id;
+    }
+
+    protected override void DataPortal_Execute()
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
+        ProjectExists = dal.Exists(Id);
+      }
     }
   }
 }

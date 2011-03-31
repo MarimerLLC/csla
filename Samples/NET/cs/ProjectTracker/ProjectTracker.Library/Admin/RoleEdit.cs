@@ -10,13 +10,6 @@ namespace ProjectTracker.Library.Admin
   [Serializable]
   public class RoleEdit : BusinessBase<RoleEdit>
   {
-    public static PropertyInfo<bool> IdSetProperty = RegisterProperty<bool>(c => c.IdSet);
-    private bool IdSet
-    {
-      get { return ReadProperty(IdSetProperty); }
-      set { LoadProperty(IdSetProperty, value); }
-    }
-
     public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
@@ -43,7 +36,6 @@ namespace ProjectTracker.Library.Admin
     {
       base.AddBusinessRules();
 
-      BusinessRules.AddRule(new NextId());
       BusinessRules.AddRule(new NoDuplicates { PrimaryProperty = IdProperty });
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "Administrator"));
@@ -66,21 +58,6 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-    private class NextId : Csla.Rules.BusinessRule
-    {
-      protected override void Execute(Csla.Rules.RuleContext context)
-      {
-        var target = (RoleEdit)context.Target;
-        if (!target.IdSet)
-        {
-          target.IdSet = true;
-          RoleEditList parent = (RoleEditList)target.Parent;
-          var max = parent.Max(c => c.Id);
-          target.Id = max + 1;
-        }
-      }
-    }
-
     internal static RoleEdit NewRole()
     {
       return DataPortal.CreateChild<RoleEdit>();
@@ -91,22 +68,65 @@ namespace ProjectTracker.Library.Admin
       return DataPortal.FetchChild<RoleEdit>(data);
     }
 
-    private void Child_Fetch(object data)
+    private void Child_Fetch(ProjectTracker.Dal.RoleDto data)
     {
+      using (BypassPropertyChecks)
+      {
+        Id = data.Id;
+        Name = data.Name;
+        TimeStamp = data.LastChanged;
+      }
     }
 
     private void Child_Insert()
     {
-    }
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
+        using (BypassPropertyChecks)
+        {
+          var item = new ProjectTracker.Dal.RoleDto
+          {
+            Name = this.Name
+          };
+          dal.Insert(item);
+          Id = item.Id;
+          TimeStamp = item.LastChanged;
+        }
+      }
+   }
 
     private void Child_Update()
     {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
+        using (BypassPropertyChecks)
+        {
+          var item = new ProjectTracker.Dal.RoleDto
+          {
+            Id = this.Id,
+            Name = this.Name,
+            LastChanged = this.TimeStamp
+          };
+          dal.Update(item);
+          Id = item.Id;
+          TimeStamp = item.LastChanged;
+        }
+      }
     }
 
     private void Child_DeleteSelf()
     {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
+        using (BypassPropertyChecks)
+        {
+          dal.Delete(this.Id);
+        }
+      }
     }
-
 #endif
   }
 }

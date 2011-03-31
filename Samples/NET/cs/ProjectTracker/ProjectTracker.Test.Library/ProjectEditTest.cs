@@ -11,6 +11,15 @@ namespace ProjectTracker.Test.Library
   [TestClass]
   public class ProjectEditTest
   {
+    [TestInitialize]
+    public void Setup()
+    {
+      var principal = new System.Security.Principal.GenericPrincipal(
+        new System.Security.Principal.GenericIdentity("Test"),
+        new string[] { "ProjectManager" });
+      Csla.ApplicationContext.User = principal;
+    }
+
     [TestMethod]
     public void GetProject()
     {
@@ -38,11 +47,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void InsertProject()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
@@ -59,11 +63,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void UpdateProject()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
@@ -86,11 +85,6 @@ namespace ProjectTracker.Test.Library
     [ExpectedException(typeof(ProjectTracker.Dal.ConcurrencyException))]
     public void UpdateProject_ConcurrencyFail()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
@@ -115,11 +109,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void ImmediateDeleteProject()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
@@ -133,11 +122,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void DeferredDeleteProject()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
@@ -154,11 +138,6 @@ namespace ProjectTracker.Test.Library
     [Ignore]
     public void StartEndCompare()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "Testing";

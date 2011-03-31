@@ -11,6 +11,15 @@ namespace ProjectTracker.Test.Library
   [TestClass]
   public class ResourceEditTest
   {
+    [TestInitialize]
+    public void Setup()
+    {
+      var principal = new System.Security.Principal.GenericPrincipal(
+        new System.Security.Principal.GenericIdentity("Test"),
+        new string[] { "ProjectManager" });
+      Csla.ApplicationContext.User = principal;
+    }
+
     [TestMethod]
     public void GetResource()
     {
@@ -38,11 +47,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void InsertResource()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ResourceEdit.NewResource();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
@@ -59,11 +63,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void UpdateResource()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ResourceEdit.NewResource();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
@@ -84,11 +83,6 @@ namespace ProjectTracker.Test.Library
     [ExpectedException(typeof(ProjectTracker.Dal.ConcurrencyException))]
     public void UpdateResource_ConcurrencyFail()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ResourceEdit.NewResource();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
@@ -113,11 +107,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void ImmediateDeleteResource()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ResourceEdit.NewResource();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
@@ -131,11 +120,6 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void DeferredDeleteResource()
     {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
       var obj = ResourceEdit.NewResource();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";

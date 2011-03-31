@@ -53,6 +53,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceEditTest.cs" />
     <Compile Include="ResourceListTest.cs" />
+    <Compile Include="RoleEditListTest.cs" />
     <Compile Include="RoleListTest.cs" />
   </ItemGroup>
   <ItemGroup>

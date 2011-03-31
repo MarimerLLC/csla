@@ -3,6 +3,7 @@ using Csla.Data;
 using Csla.Security;
 using System;
 using Csla.Serialization;
+using System.Collections.Generic;
 
 namespace ProjectTracker.Library
 {
@@ -112,14 +113,25 @@ namespace ProjectTracker.Library
 
       private void DataPortal_Fetch()
       {
-        this.RaiseListChangedEvents = false;
-        this.RaiseListChangedEvents = true;
+        var rlce = RaiseListChangedEvents;
+        RaiseListChangedEvents = false;
+        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+        {
+          var dal = ctx.GetProvider<ProjectTracker.Dal.IRoleDal>();
+          List<ProjectTracker.Dal.RoleDto> list = null;
+          list = dal.Fetch();
+          foreach (var item in list)
+            Add(DataPortal.FetchChild<RoleEdit>(item));
+        }
+        RaiseListChangedEvents = rlce;
       }
 
       [Transactional(TransactionalTypes.TransactionScope)]
       protected override void DataPortal_Update()
       {
         this.RaiseListChangedEvents = false;
+        using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+          Child_Update();
         this.RaiseListChangedEvents = true;
       }
 #endif

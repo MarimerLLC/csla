@@ -36,9 +36,12 @@ namespace ProjectTracker.DalMock
         };
     }
 
+    private static long _lastTimeStamp = 1;
+
     public static byte[] GetTimeStamp()
     {
-      return System.Text.ASCIIEncoding.ASCII.GetBytes(DateTime.Now.Ticks.ToString());
+      var stamp = System.Threading.Interlocked.Add(ref _lastTimeStamp, 1);
+      return System.Text.ASCIIEncoding.ASCII.GetBytes(stamp.ToString());
     }
 
     public static bool TimeStampEquals(byte[] stamp1, byte[] stamp2)

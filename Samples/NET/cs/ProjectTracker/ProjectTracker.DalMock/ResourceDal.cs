@@ -25,6 +25,7 @@ namespace ProjectTracker.DalMock
     public ResourceDto Fetch(int id)
     {
       var result = (from r in MockDb.Resources
+                    where r.Id == id
                     select new ResourceDto
                     {
                       Id = r.Id,

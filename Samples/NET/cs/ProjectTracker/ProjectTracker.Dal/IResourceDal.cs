@@ -9,6 +9,7 @@ namespace ProjectTracker.Dal
   {
     List<ResourceDto> Fetch();
     ResourceDto Fetch(int id);
+    bool Exists(int id);
     void Insert(ResourceDto item);
     void Update(ResourceDto item);
     void Delete(int id);

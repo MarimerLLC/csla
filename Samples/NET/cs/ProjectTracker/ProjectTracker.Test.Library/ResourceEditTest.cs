@@ -9,99 +9,97 @@ using System.Threading;
 namespace ProjectTracker.Test.Library
 {
   [TestClass]
-  public class ProjectEditTest
+  public class ResourceEditTest
   {
     [TestMethod]
-    public void GetProject()
+    public void GetResource()
     {
-      var obj = ProjectEdit.GetProject(1);
+      var obj = ResourceEdit.GetResource(1);
       Assert.IsNotNull(obj);
       Assert.AreEqual(1, obj.Id);
     }
 
     [TestMethod]
-    public void GetProjectAsync()
+    public void GetResourceAsync()
     {
       var sync = new AutoResetEvent(false);
-      ProjectEdit.GetProject(1, (o, e) =>
-        {
-          if (e.Error != null)
-            Assert.Fail(e.Error.Message);
-          var obj = e.Object;
-          Assert.IsNotNull(obj);
-          Assert.AreEqual(1, obj.Id);
-          sync.Set();
-        });
+      ResourceEdit.GetResource(1, (o, e) =>
+      {
+        if (e.Error != null)
+          Assert.Fail(e.Error.Message);
+        var obj = e.Object;
+        Assert.IsNotNull(obj);
+        Assert.AreEqual(1, obj.Id);
+        sync.Set();
+      });
       sync.WaitOne(1000);
     }
 
     [TestMethod]
-    public void InsertProject()
+    public void InsertResource()
     {
       var principal = new System.Security.Principal.GenericPrincipal(
         new System.Security.Principal.GenericIdentity("Test"),
         new string[] { "ProjectManager" });
       Csla.ApplicationContext.User = principal;
 
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "This is a test";
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
       obj = obj.Save();
       Assert.IsTrue(obj.Id > 0);
       Assert.IsFalse(obj.IsNew);
       Assert.IsFalse(obj.IsDirty);
       Assert.IsFalse(obj.IsSavable);
-      Assert.IsTrue(ProjectEdit.Exists(obj.Id));
+      Assert.IsTrue(ResourceEdit.Exists(obj.Id));
 
-      ProjectEdit.DeleteProject(obj.Id);
+      ResourceEdit.DeleteResource(obj.Id);
     }
 
     [TestMethod]
-    public void UpdateProject()
+    public void UpdateResource()
     {
       var principal = new System.Security.Principal.GenericPrincipal(
         new System.Security.Principal.GenericIdentity("Test"),
         new string[] { "ProjectManager" });
       Csla.ApplicationContext.User = principal;
 
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "This is a test";
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
       obj = obj.Save();
 
-      obj = ProjectEdit.GetProject(obj.Id);
-      obj.Name = "Test 2";
-      obj.Description = "More testing";
-      obj.Started = DateTime.Today.ToShortDateString();
-      obj.Ended = DateTime.Today.ToShortDateString();
+      obj = ResourceEdit.GetResource(obj.Id);
+      obj.FirstName = "Jonny";
+      obj.LastName = "Bekkum";
       obj = obj.Save();
       Assert.IsFalse(obj.IsNew);
       Assert.IsFalse(obj.IsDirty);
       Assert.IsFalse(obj.IsSavable);
 
-      ProjectEdit.DeleteProject(obj.Id);
+      ResourceEdit.DeleteResource(obj.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ProjectTracker.Dal.ConcurrencyException))]
-    public void UpdateProject_ConcurrencyFail()
+    public void UpdateResource_ConcurrencyFail()
     {
       var principal = new System.Security.Principal.GenericPrincipal(
         new System.Security.Principal.GenericIdentity("Test"),
         new string[] { "ProjectManager" });
       Csla.ApplicationContext.User = principal;
 
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "This is a test";
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
       obj = obj.Save();
 
       var obj2 = obj.Clone();
 
-      obj.Name = "Test 2";
+      obj.FirstName = "Jonny";
       obj = obj.Save();
 
-      obj2.Name = "Test 3";
+      obj2.FirstName = "Kevin";
       try
       {
         obj2 = obj2.Save();
@@ -113,68 +111,41 @@ namespace ProjectTracker.Test.Library
     }
 
     [TestMethod]
-    public void ImmediateDeleteProject()
+    public void ImmediateDeleteResource()
     {
       var principal = new System.Security.Principal.GenericPrincipal(
         new System.Security.Principal.GenericIdentity("Test"),
         new string[] { "ProjectManager" });
       Csla.ApplicationContext.User = principal;
 
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "This is a test";
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
       obj = obj.Save();
 
-      ProjectEdit.DeleteProject(obj.Id);
+      ResourceEdit.DeleteResource(obj.Id);
 
-      Assert.IsFalse(ProjectEdit.Exists(obj.Id));
+      Assert.IsFalse(ResourceEdit.Exists(obj.Id));
     }
 
     [TestMethod]
-    public void DeferredDeleteProject()
+    public void DeferredDeleteResource()
     {
       var principal = new System.Security.Principal.GenericPrincipal(
         new System.Security.Principal.GenericIdentity("Test"),
         new string[] { "ProjectManager" });
       Csla.ApplicationContext.User = principal;
 
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "This is a test";
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
       obj = obj.Save();
 
       obj.Delete();
       obj = obj.Save();
       Assert.IsTrue(obj.IsNew);
       Assert.IsTrue(obj.IsDirty);
-      Assert.IsFalse(ProjectEdit.Exists(obj.Id));
-    }
-
-    [TestMethod]
-    [Ignore]
-    public void StartEndCompare()
-    {
-      var principal = new System.Security.Principal.GenericPrincipal(
-        new System.Security.Principal.GenericIdentity("Test"),
-        new string[] { "ProjectManager" });
-      Csla.ApplicationContext.User = principal;
-
-      var obj = ProjectEdit.NewProject();
-      obj.Name = "Test";
-      obj.Description = "Testing";
-      Assert.IsTrue(obj.IsValid);
-
-      obj.Started = DateTime.Today.Add(new TimeSpan(10, 0, 0, 0)).ToShortDateString();
-      Assert.IsTrue(obj.IsValid);
-
-      obj.Started = string.Empty;
-      Assert.IsTrue(obj.IsValid);
-
-      obj.Ended = DateTime.Today.ToShortDateString();
-      Assert.IsFalse(obj.IsValid);
-
-      obj.Started = DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)).ToShortDateString();
-      Assert.IsTrue(obj.IsValid);
+      Assert.IsFalse(ResourceEdit.Exists(obj.Id));
     }
   }
 }

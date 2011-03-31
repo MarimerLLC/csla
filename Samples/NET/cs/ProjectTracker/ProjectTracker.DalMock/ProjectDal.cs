@@ -69,6 +69,7 @@ namespace ProjectTracker.DalMock
     public void Insert(ProjectDto item)
     {
       item.Id = MockDb.Projects.Max(c => c.Id) + 1;
+      item.LastChanged = MockDb.GetTimeStamp();
       var newItem = new ProjectData
       {
         Id = item.Id,
@@ -76,7 +77,7 @@ namespace ProjectTracker.DalMock
         Description = item.Description,
         Started = item.Started,
         Ended = item.Ended,
-        LastChanged = MockDb.GetTimeStamp()
+        LastChanged = item.LastChanged
       };
       MockDb.Projects.Add(newItem);
     }
@@ -90,11 +91,14 @@ namespace ProjectTracker.DalMock
         throw new DataNotFoundException("Project");
       if (!MockDb.TimeStampEquals(data.LastChanged, item.LastChanged))
         throw new ConcurrencyException("Project");
+      
+      item.LastChanged = MockDb.GetTimeStamp();
+
       data.Name = item.Name;
       data.Description = item.Description;
       data.Started = item.Started;
       data.Ended = item.Ended;
-      data.LastChanged = MockDb.GetTimeStamp();
+      data.LastChanged = item.LastChanged;
     }
 
     public void Delete(int id)

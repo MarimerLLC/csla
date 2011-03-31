@@ -28,5 +28,16 @@ namespace ProjectTracker.Library
       get { return ReadProperty(ResourceExistsProperty); }
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
+
+#if !SILVERLIGHT
+    protected override void DataPortal_Execute()
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
+        ResourceExists = dal.Exists(ResourceId);
+      }
+    }
+#endif
   }
 }

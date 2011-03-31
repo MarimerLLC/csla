@@ -10,11 +10,11 @@ namespace ProjectTracker.Library
   [Serializable]
   public class ProjectExistsCommand : CommandBase<ProjectExistsCommand>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-    private int Id
+    public static PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
+    private int ProjectId
     {
-      get { return ReadProperty(IdProperty); }
-      set { LoadProperty(IdProperty, value); }
+      get { return ReadProperty(ProjectIdProperty); }
+      set { LoadProperty(ProjectIdProperty, value); }
     }
 
     public static PropertyInfo<bool> ProjectExistsProperty = RegisterProperty<bool>(c => c.ProjectExists);
@@ -26,16 +26,18 @@ namespace ProjectTracker.Library
 
     public ProjectExistsCommand(int id)
     {
-      Id = id;
+      ProjectId = id;
     }
 
+#if !SILVERLIGHT
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
         var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
-        ProjectExists = dal.Exists(Id);
+        ProjectExists = dal.Exists(ProjectId);
       }
     }
+#endif
   }
 }

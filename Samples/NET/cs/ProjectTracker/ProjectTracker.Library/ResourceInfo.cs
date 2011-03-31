@@ -28,5 +28,13 @@ namespace ProjectTracker.Library
     {
       return Name;
     }
+
+#if !SILVERLIGHT
+    private void Child_Fetch(ProjectTracker.Dal.ResourceDto item)
+    {
+      Id = item.Id;
+      Name = string.Format("{1}, {0}", item.FirstName, item.LastName);
+    }
+#endif
   }
 }

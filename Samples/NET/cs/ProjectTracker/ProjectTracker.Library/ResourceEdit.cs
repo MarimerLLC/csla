@@ -141,7 +141,72 @@ namespace ProjectTracker.Library
 
     private void DataPortal_Fetch(int id)
     {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
+        var data = dal.Fetch(id);
+        using (BypassPropertyChecks)
+        {
+          Id = data.Id;
+          FirstName = data.FirstName;
+          LastName = data.LastName;
+          TimeStamp = data.LastChanged;
+        }
+      }
+    }
 
+    protected override void DataPortal_Insert()
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
+        using (BypassPropertyChecks)
+        {
+          var item = new ProjectTracker.Dal.ResourceDto
+          {
+            FirstName = this.FirstName,
+            LastName = this.LastName
+          };
+          dal.Insert(item);
+          Id = item.Id;
+          TimeStamp = item.LastChanged;
+        }
+      }
+    }
+
+    protected override void DataPortal_Update()
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
+        using (BypassPropertyChecks)
+        {
+          var item = new ProjectTracker.Dal.ResourceDto
+          {
+            Id = this.Id,
+            FirstName = this.FirstName,
+            LastName = this.LastName,
+            LastChanged = this.TimeStamp
+          };
+          dal.Update(item);
+          TimeStamp = item.LastChanged;
+        }
+      }
+    }
+
+    protected override void DataPortal_DeleteSelf()
+    {
+      using (BypassPropertyChecks)
+        DataPortal_Delete(this.Id);
+    }
+
+    private void DataPortal_Delete(int id)
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
+        dal.Delete(id);
+      }
     }
 #endif
   }

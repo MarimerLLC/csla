@@ -26,7 +26,7 @@ namespace ProjectTracker.Library
 
     public static void CreateNewProject(EventHandler<DataPortalResult<ProjectGetter>> callback)
     {
-      DataPortal.BeginCreate<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
+      DataPortal.BeginFetch<ProjectGetter>(new Criteria { ProjectId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
       {
         if (e.Error != null)
           throw e.Error;

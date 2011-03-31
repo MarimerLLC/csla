@@ -63,6 +63,7 @@ namespace ProjectTracker.Library
           LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
         return GetProperty(AssignmentsProperty);
       }
+      private set { LoadProperty(AssignmentsProperty, value); }
     }
 
     public override string ToString()

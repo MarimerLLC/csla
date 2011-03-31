@@ -49,9 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProjectEditTest.cs" />
+    <Compile Include="ProjectGetterTest.cs" />
     <Compile Include="ProjectListTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceEditTest.cs" />
+    <Compile Include="ResourceGetterTest.cs" />
     <Compile Include="ResourceListTest.cs" />
     <Compile Include="RoleEditListTest.cs" />
     <Compile Include="RoleListTest.cs" />

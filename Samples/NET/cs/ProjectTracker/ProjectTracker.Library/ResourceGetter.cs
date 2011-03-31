@@ -26,12 +26,13 @@ namespace ProjectTracker.Library
 
     public static void CreateNewResource(EventHandler<DataPortalResult<ResourceGetter>> callback)
     {
-      DataPortal.BeginCreate<ResourceGetter>(new Criteria { ResourceId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
+      DataPortal.BeginFetch<ResourceGetter>(new Criteria { ResourceId = -1, GetRoles = !RoleList.IsCached }, (o, e) =>
       {
-        if (e.Error != null)
-          throw e.Error;
-        if (!RoleList.IsCached)
-          RoleList.SetCache(e.Object.RoleList);
+        if (e.Error == null)
+        {
+          if (!RoleList.IsCached)
+            RoleList.SetCache(e.Object.RoleList);
+        }
         callback(o, e);
       });
     }

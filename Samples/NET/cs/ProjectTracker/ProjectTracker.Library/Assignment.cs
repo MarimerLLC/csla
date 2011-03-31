@@ -7,11 +7,6 @@ namespace ProjectTracker.Library
 {
   internal static class Assignment
   {
-    public static System.DateTime GetDefaultAssignedDate()
-    {
-      return System.DateTime.Today;
-    }
-
     /// <summary>
     /// Ensure the Role property value exists
     /// in RoleList

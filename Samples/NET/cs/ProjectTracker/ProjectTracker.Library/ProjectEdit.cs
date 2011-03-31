@@ -72,6 +72,7 @@ namespace ProjectTracker.Library
           LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
         return GetProperty(ResourcesProperty);
       }
+      private set { LoadProperty(ResourcesProperty, value); }
     }
 
     public override string ToString()
@@ -187,6 +188,7 @@ namespace ProjectTracker.Library
           else
             Ended = string.Empty;
           TimeStamp = data.LastChanged;
+          Resources = DataPortal.FetchChild<ProjectResources>(id);
         }
       }
     }
@@ -209,6 +211,7 @@ namespace ProjectTracker.Library
           Id = item.Id;
           TimeStamp = item.LastChanged;
         }
+        FieldManager.UpdateChildren(this);
       }
     }
 
@@ -231,6 +234,7 @@ namespace ProjectTracker.Library
           dal.Update(item);
           TimeStamp = item.LastChanged;
         }
+        FieldManager.UpdateChildren(this);
       }
     }
 
@@ -244,6 +248,8 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
+        Resources.Clear();
+        FieldManager.UpdateChildren(this);
         var dal = ctx.GetProvider<ProjectTracker.Dal.IProjectDal>();
         dal.Delete(id);
       }

@@ -45,5 +45,21 @@ namespace ProjectTracker.Library
                   select r).Count();
       return item > 0;
     }
+
+#if !SILVERLIGHT
+    private void Child_Fetch(int projectId)
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
+        var data = dal.FetchForProject(projectId);
+        var rlce = RaiseListChangedEvents;
+        RaiseListChangedEvents = false;
+        foreach (var item in data)
+          Add(DataPortal.FetchChild<ProjectResourceEdit>(item));
+        RaiseListChangedEvents = rlce;
+      }
+    }
+#endif
   }
 }

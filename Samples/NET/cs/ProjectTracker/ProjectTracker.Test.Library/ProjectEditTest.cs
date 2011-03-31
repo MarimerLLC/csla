@@ -135,25 +135,58 @@ namespace ProjectTracker.Test.Library
     }
 
     [TestMethod]
-    [Ignore]
-    public void StartEndCompare()
+    public void AddProjectResource()
     {
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
-      obj.Description = "Testing";
-      Assert.IsTrue(obj.IsValid);
+      obj.Description = "This is a test";
+      obj.Resources.Assign(1);
+      obj = obj.Save();
 
-      obj.Started = DateTime.Today.Add(new TimeSpan(10, 0, 0, 0)).ToShortDateString();
-      Assert.IsTrue(obj.IsValid);
+      obj = ProjectEdit.GetProject(obj.Id);
+      Assert.IsTrue(obj.Resources.Count > 0);
+      Assert.AreEqual(1, obj.Resources[0].ResourceId);
 
-      obj.Started = string.Empty;
-      Assert.IsTrue(obj.IsValid);
+      ProjectEdit.DeleteProject(obj.Id);
+    }
 
-      obj.Ended = DateTime.Today.ToShortDateString();
-      Assert.IsFalse(obj.IsValid);
+    [TestMethod]
+    public void UpdateProjectResource()
+    {
+      var obj = ProjectEdit.NewProject();
+      obj.Name = "Test";
+      obj.Description = "This is a test";
+      obj.Resources.Assign(1);
+      obj = obj.Save();
 
-      obj.Started = DateTime.Today.Subtract(new TimeSpan(10, 0, 0, 0)).ToShortDateString();
-      Assert.IsTrue(obj.IsValid);
+      obj = ProjectEdit.GetProject(obj.Id);
+      obj.Resources[0].Role = 2;
+      obj = obj.Save();
+
+      obj = ProjectEdit.GetProject(obj.Id);
+      Assert.IsTrue(obj.Resources.Count > 0);
+      Assert.AreEqual(1, obj.Resources[0].ResourceId);
+      Assert.AreEqual(2, obj.Resources[0].Role);
+
+      ProjectEdit.DeleteProject(obj.Id);
+    }
+
+    [TestMethod]
+    public void RemoveProjectResource()
+    {
+      var obj = ProjectEdit.NewProject();
+      obj.Name = "Test";
+      obj.Description = "This is a test";
+      obj.Resources.Assign(1);
+      obj = obj.Save();
+
+      obj.Resources.Remove(1);
+      obj = obj.Save();
+
+      obj = ProjectEdit.GetProject(obj.Id);
+      Assert.AreEqual(0, obj.Resources.Count);
+
+      ProjectEdit.DeleteProject(obj.Id);
     }
   }
 }

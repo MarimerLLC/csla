@@ -131,5 +131,60 @@ namespace ProjectTracker.Test.Library
       Assert.IsTrue(obj.IsDirty);
       Assert.IsFalse(ResourceEdit.Exists(obj.Id));
     }
+
+    [TestMethod]
+    public void AddResourceAssignment()
+    {
+      var obj = ResourceEdit.NewResource();
+      obj.FirstName = "Rocky";
+      obj.LastName = "Lhotka";
+      obj.Assignments.AssignTo(1);
+      obj = obj.Save();
+
+      obj = ResourceEdit.GetResource(obj.Id);
+      Assert.IsTrue(obj.Assignments.Count > 0);
+      Assert.AreEqual(1, obj.Assignments[0].ProjectId);
+
+      ProjectEdit.DeleteProject(obj.Id);
+    }
+
+    [TestMethod]
+    public void UpdateResourceAssignment()
+    {
+      var obj = ProjectEdit.NewProject();
+      obj.Name = "Test";
+      obj.Description = "This is a test";
+      obj.Resources.Assign(1);
+      obj = obj.Save();
+
+      obj = ProjectEdit.GetProject(obj.Id);
+      obj.Resources[0].Role = 2;
+      obj = obj.Save();
+
+      obj = ProjectEdit.GetProject(obj.Id);
+      Assert.IsTrue(obj.Resources.Count > 0);
+      Assert.AreEqual(1, obj.Resources[0].ResourceId);
+      Assert.AreEqual(2, obj.Resources[0].Role);
+
+      ProjectEdit.DeleteProject(obj.Id);
+    }
+
+    [TestMethod]
+    public void RemoveResourceAssignment()
+    {
+      var obj = ProjectEdit.NewProject();
+      obj.Name = "Test";
+      obj.Description = "This is a test";
+      obj.Resources.Assign(1);
+      obj = obj.Save();
+
+      obj.Resources.Remove(1);
+      obj = obj.Save();
+
+      obj = ProjectEdit.GetProject(obj.Id);
+      Assert.AreEqual(0, obj.Resources.Count);
+
+      ProjectEdit.DeleteProject(obj.Id);
+    }
   }
 }

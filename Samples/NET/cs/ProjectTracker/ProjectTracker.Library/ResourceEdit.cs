@@ -152,6 +152,7 @@ namespace ProjectTracker.Library
           FirstName = data.FirstName;
           LastName = data.LastName;
           TimeStamp = data.LastChanged;
+          Assignments = DataPortal.FetchChild<ResourceAssignments>(id);
         }
       }
     }
@@ -172,6 +173,7 @@ namespace ProjectTracker.Library
           Id = item.Id;
           TimeStamp = item.LastChanged;
         }
+        FieldManager.UpdateChildren(this);
       }
     }
 
@@ -192,6 +194,7 @@ namespace ProjectTracker.Library
           dal.Update(item);
           TimeStamp = item.LastChanged;
         }
+        FieldManager.UpdateChildren(this);
       }
     }
 
@@ -205,6 +208,8 @@ namespace ProjectTracker.Library
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
+        Assignments.Clear();
+        FieldManager.UpdateChildren(this);
         var dal = ctx.GetProvider<ProjectTracker.Dal.IResourceDal>();
         dal.Delete(id);
       }

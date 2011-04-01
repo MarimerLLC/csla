@@ -36,22 +36,18 @@ namespace ProjectTracker.Library
       set { SetProperty(NameProperty, value); }
     }
 
-    public static readonly PropertyInfo<SmartDate> StartedProperty = 
-      RegisterProperty<SmartDate>(c => c.Started,
-      new SmartDate(SmartDate.EmptyValue.MaxDate));
-    public string Started
+    public static readonly PropertyInfo<DateTime?> StartedProperty = RegisterProperty<DateTime?>(c => c.Started);
+    public DateTime? Started
     {
-      get { return GetPropertyConvert<SmartDate, string>(StartedProperty); }
-      set { SetPropertyConvert<SmartDate, string>(StartedProperty, value); }
+      get { return GetProperty(StartedProperty); }
+      set { SetProperty(StartedProperty, value); }
     }
 
-    public static readonly PropertyInfo<SmartDate> EndedProperty = 
-      RegisterProperty<SmartDate>(p => p.Ended, null, 
-      new SmartDate(SmartDate.EmptyValue.MaxDate));
-    public string Ended
+    public static readonly PropertyInfo<DateTime?> EndedProperty = RegisterProperty<DateTime?>(c => c.Ended);
+    public DateTime? Ended
     {
-      get { return GetPropertyConvert<SmartDate, string>(EndedProperty); }
-      set { SetPropertyConvert<SmartDate, string>(EndedProperty, value); }
+      get { return GetProperty(EndedProperty); }
+      set { SetProperty(EndedProperty, value); }
     }
 
     public static readonly PropertyInfo<string> DescriptionProperty = 
@@ -106,7 +102,7 @@ namespace ProjectTracker.Library
 
         var started = target.ReadProperty(StartedProperty);
         var ended = target.ReadProperty(EndedProperty);
-        if (started > ended)
+        if (started.HasValue && ended.HasValue && started > ended || !started.HasValue && ended.HasValue)
           context.AddErrorResult("Start date can't be after end date");
       }
     }
@@ -179,14 +175,8 @@ namespace ProjectTracker.Library
           Id = data.Id;
           Name = data.Name;
           Description = data.Description;
-          if (data.Started.HasValue)
-            LoadProperty(StartedProperty, data.Started);
-          else
-            Started = string.Empty;
-          if (data.Ended.HasValue)
-            LoadProperty(EndedProperty, data.Ended);
-          else
-            Ended = string.Empty;
+          Started = data.Started;
+          Ended = data.Ended;
           TimeStamp = data.LastChanged;
           Resources = DataPortal.FetchChild<ProjectResources>(id);
         }
@@ -204,8 +194,8 @@ namespace ProjectTracker.Library
           {
             Name = this.Name,
             Description = this.Description,
-            Started = ReadProperty(StartedProperty),
-            Ended = ReadProperty(EndedProperty)
+            Started = this.Started,
+            Ended = this.Ended
           };
           dal.Insert(item);
           Id = item.Id;
@@ -227,8 +217,8 @@ namespace ProjectTracker.Library
             Id = this.Id,
             Name = this.Name,
             Description = this.Description,
-            Started = ReadProperty(StartedProperty),
-            Ended = ReadProperty(EndedProperty),
+            Started = this.Started,
+            Ended = this.Ended,
             LastChanged = this.TimeStamp
           };
           dal.Update(item);

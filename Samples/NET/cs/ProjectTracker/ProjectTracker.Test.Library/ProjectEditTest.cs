@@ -71,8 +71,8 @@ namespace ProjectTracker.Test.Library
       obj = ProjectEdit.GetProject(obj.Id);
       obj.Name = "Test 2";
       obj.Description = "More testing";
-      obj.Started = DateTime.Today.ToShortDateString();
-      obj.Ended = DateTime.Today.ToShortDateString();
+      obj.Started = DateTime.Today;
+      obj.Ended = DateTime.Today;
       obj = obj.Save();
       Assert.IsFalse(obj.IsNew);
       Assert.IsFalse(obj.IsDirty);
@@ -132,6 +132,30 @@ namespace ProjectTracker.Test.Library
       Assert.IsTrue(obj.IsNew);
       Assert.IsTrue(obj.IsDirty);
       Assert.IsFalse(ProjectEdit.Exists(obj.Id));
+    }
+
+    [TestMethod]
+    public void StartEndDate()
+    {
+      var obj = ProjectEdit.NewProject();
+      obj.Name = "Test";
+      obj.Description = "This is a test";
+      Assert.IsTrue(obj.IsValid);
+
+      obj.Started = DateTime.Today.Subtract(new TimeSpan(1, 0, 0));
+      Assert.IsTrue(obj.IsValid);
+
+      obj.Started = null;
+      obj.Ended = DateTime.Today;
+      Assert.IsFalse(obj.IsValid);
+
+      obj.Started = DateTime.Today.Add(new TimeSpan(1, 0, 0));
+      obj.Ended = DateTime.Today;
+      Assert.IsFalse(obj.IsValid);
+
+      obj.Started = DateTime.Today;
+      obj.Ended = DateTime.Today;
+      Assert.IsTrue(obj.IsValid);
     }
 
     [TestMethod]

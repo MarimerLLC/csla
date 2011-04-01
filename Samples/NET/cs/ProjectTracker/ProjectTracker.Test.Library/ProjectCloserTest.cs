@@ -26,7 +26,7 @@ namespace ProjectTracker.Test.Library
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
-      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0)).ToShortDateString();
+      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0));
       obj = obj.Save();
 
       var result = ProjectCloser.CloseProject(obj.Id);
@@ -41,7 +41,7 @@ namespace ProjectTracker.Test.Library
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
-      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0)).ToShortDateString();
+      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0));
       obj = obj.Save();
 
       var sync = new AutoResetEvent(false);
@@ -64,8 +64,8 @@ namespace ProjectTracker.Test.Library
       var obj = ProjectEdit.NewProject();
       obj.Name = "Test";
       obj.Description = "This is a test";
-      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0)).ToShortDateString();
-      obj.Ended = DateTime.Today.ToShortDateString();
+      obj.Started = DateTime.Today.Subtract(new TimeSpan(5, 0, 0));
+      obj.Ended = DateTime.Today;
       obj = obj.Save();
 
       try

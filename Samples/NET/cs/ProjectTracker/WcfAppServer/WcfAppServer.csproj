@@ -55,6 +55,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\aspnetdb.mdf" />
+    <Content Include="App_Data\aspnetdb_log.ldf">
+      <DependentUpon>aspnetdb.mdf</DependentUpon>
+    </Content>
     <Content Include="App_Data\PTracker.mdf" />
     <Content Include="App_Data\PTracker_log.ldf">
       <DependentUpon>PTracker.mdf</DependentUpon>

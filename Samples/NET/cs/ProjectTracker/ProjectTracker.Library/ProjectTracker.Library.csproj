@@ -97,7 +97,6 @@
     <Compile Include="ResourceInfo.cs" />
     <Compile Include="ResourceList.cs" />
     <Compile Include="RoleList.cs" />
-    <Compile Include="Security\PTIdentity.cs" />
     <Compile Include="Security\PTPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>

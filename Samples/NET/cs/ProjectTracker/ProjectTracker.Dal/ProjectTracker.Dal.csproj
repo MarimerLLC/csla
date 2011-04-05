@@ -53,10 +53,12 @@
     <Compile Include="IProjectDal.cs" />
     <Compile Include="IResourceDal.cs" />
     <Compile Include="IRoleDal.cs" />
+    <Compile Include="IUserDal.cs" />
     <Compile Include="ProjectDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceDto.cs" />
     <Compile Include="RoleDto.cs" />
+    <Compile Include="UserDto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

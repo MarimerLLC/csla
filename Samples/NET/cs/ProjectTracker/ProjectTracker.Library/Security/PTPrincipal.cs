@@ -13,13 +13,14 @@ namespace ProjectTracker.Library
       public PTPrincipal()
       { }
 
-      public PTPrincipal(IIdentity identity)
+      protected PTPrincipal(IIdentity identity)
         : base(identity)
       { }
 
+#if SILVERLIGHT
       public static void BeginLogin(string username, string password)
       {
-        PTIdentity.GetPTIdentity(username, password, (o, e) =>
+        MembershipIdentity.GetMembershipIdentity<MembershipIdentity>(username, password, (o, e) =>
           {
             if (e.Error == null && e.Object != null)
               SetPrincipal(e.Object);
@@ -27,20 +28,15 @@ namespace ProjectTracker.Library
               Logout();
           });
       }
-
-#if !SILVERLIGHT
+#else
       public static bool Login(string username, string password)
       {
-        return SetPrincipal(PTIdentity.GetIdentity(username, password));
-      }
-
-      public static void LoadPrincipal(string username)
-      {
-        SetPrincipal(PTIdentity.GetIdentity(username));
+        var identity = MembershipIdentity.GetMembershipIdentity<MembershipIdentity>(username, password);
+        return SetPrincipal(identity);
       }
 #endif
 
-      private static bool SetPrincipal(PTIdentity identity)
+      private static bool SetPrincipal(IIdentity identity)
       {
         if (identity.IsAuthenticated)
         {

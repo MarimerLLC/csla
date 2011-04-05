@@ -50,10 +50,12 @@
     <Compile Include="MockDbTypes\ProjectData.cs" />
     <Compile Include="MockDbTypes\ResourceData.cs" />
     <Compile Include="MockDbTypes\RoleData.cs" />
+    <Compile Include="MockDbTypes\UserData.cs" />
     <Compile Include="ProjectDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceDal.cs" />
     <Compile Include="RoleDal.cs" />
+    <Compile Include="UserDal.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracker.Dal\ProjectTracker.Dal.csproj">

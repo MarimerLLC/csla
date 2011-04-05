@@ -58,6 +58,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Edit(int id)
     {
+      ViewData.Model = ProjectEdit.GetProject(id);
       return View();
     }
 
@@ -65,16 +66,15 @@ namespace Mvc3UI.Controllers
     // POST: /Project/Edit/5
 
     [HttpPost]
-    public ActionResult Edit(int id, FormCollection collection)
+    public ActionResult Edit(int id, ProjectEdit project)
     {
-      try
+      if (SaveObject(project, true))
       {
-        // TODO: Add update logic here
-
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new { id = project.Id });
       }
-      catch
+      else
       {
+        ViewData.Model = project;
         return View();
       }
     }
@@ -84,6 +84,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Delete(int id)
     {
+      ViewData.Model = ProjectEdit.GetProject(id);
       return View();
     }
 
@@ -95,12 +96,12 @@ namespace Mvc3UI.Controllers
     {
       try
       {
-        // TODO: Add delete logic here
-
+        ProjectEdit.DeleteProject(id);
         return RedirectToAction("Index");
       }
       catch
       {
+        ViewData.Model = ProjectEdit.GetProject(id);
         return View();
       }
     }

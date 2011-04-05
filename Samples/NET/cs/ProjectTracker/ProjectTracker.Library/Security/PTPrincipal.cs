@@ -20,7 +20,7 @@ namespace ProjectTracker.Library
 #if SILVERLIGHT
       public static void BeginLogin(string username, string password)
       {
-        MembershipIdentity.GetMembershipIdentity<MembershipIdentity>(username, password, (o, e) =>
+        PTIdentity.GetPTIdentity(username, password, (o, e) =>
           {
             if (e.Error == null && e.Object != null)
               SetPrincipal(e.Object);
@@ -31,7 +31,7 @@ namespace ProjectTracker.Library
 #else
       public static bool Login(string username, string password)
       {
-        var identity = MembershipIdentity.GetMembershipIdentity<MembershipIdentity>(username, password);
+        var identity = PTIdentity.GetPTIdentity(username, password);
         return SetPrincipal(identity);
       }
 #endif

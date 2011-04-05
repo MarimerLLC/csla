@@ -116,6 +116,9 @@
     <Compile Include="..\ProjectTracker.Library\RoleList.cs">
       <Link>RoleList.cs</Link>
     </Compile>
+    <Compile Include="..\ProjectTracker.Library\Security\PTIdentity.cs">
+      <Link>Security\PTIdentity.cs</Link>
+    </Compile>
     <Compile Include="..\ProjectTracker.Library\Security\PTPrincipal.cs">
       <Link>Security\PTPrincipal.cs</Link>
     </Compile>

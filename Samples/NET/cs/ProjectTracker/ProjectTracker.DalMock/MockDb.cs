@@ -12,6 +12,7 @@ namespace ProjectTracker.DalMock
     public static List<ResourceData> Resources { get; private set; }
     public static List<AssignmentData> Assignments { get; private set; }
     public static List<RoleData> Roles { get; private set; }
+    public static List<UserData> Users { get; private set; }
 
     static MockDb()
     {
@@ -34,6 +35,11 @@ namespace ProjectTracker.DalMock
           new RoleData { Id = 3, Name = "QA", LastChanged = GetTimeStamp() },
           new RoleData { Id = 4, Name = "Sponsor", LastChanged = GetTimeStamp() }
         };
+
+      Users = new List<UserData>
+      {
+        new UserData { Username = "rocky", Roles = new string[] { "ProjectManager" }}
+      };
     }
 
     private static long _lastTimeStamp = 1;

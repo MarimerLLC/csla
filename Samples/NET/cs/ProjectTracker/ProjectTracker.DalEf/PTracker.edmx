@@ -103,7 +103,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PTrackerModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="PTrackerEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="PTrackerEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Assignments" EntityType="PTrackerModel.Assignment" />
           <EntitySet Name="Projects" EntityType="PTrackerModel.Project" />
           <EntitySet Name="Resources" EntityType="PTrackerModel.Resource" />
@@ -207,7 +207,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="PTrackerModelStoreContainer" CdmEntityContainer="PTrackerEntities1">
+        <EntityContainerMapping StorageEntityContainer="PTrackerModelStoreContainer" CdmEntityContainer="PTrackerEntities">
           <EntitySetMapping Name="Assignments"><EntityTypeMapping TypeName="PTrackerModel.Assignment"><MappingFragment StoreEntitySet="Assignment">
             <ScalarProperty Name="ProjectId" ColumnName="ProjectId" />
             <ScalarProperty Name="ResourceId" ColumnName="ResourceId" />

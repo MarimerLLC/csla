@@ -12,7 +12,8 @@ namespace ProjectTracker.Library
   public class ProjectEdit : BusinessBase<ProjectEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
-    private byte[] TimeStamp
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }

@@ -1,10 +1,10 @@
 ﻿@model ProjectTracker.Library.ProjectEdit
 
 @{
-    ViewBag.Title = "Create Project";
+    ViewBag.Title = "Create project";
 }
 
-<h2>Create</h2>
+<h2>@ViewBag.Title</h2>
 
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
@@ -12,7 +12,7 @@
 @using (Html.BeginForm()) {
     @Html.ValidationSummary(true)
     <fieldset>
-        <legend>ProjectEdit</legend>
+        <legend>Project</legend>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)

@@ -1,14 +1,14 @@
 ﻿@model ProjectTracker.Library.ProjectEdit
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete project";
 }
 
-<h2>Delete</h2>
+<h2>@ViewBag.Title</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <fieldset>
-    <legend>ProjectEdit</legend>
+    <legend>Project</legend>
 
     <div class="display-label">Name</div>
     <div class="display-field">@Model.Name</div>
@@ -17,11 +17,10 @@
     <div class="display-field">@Model.Description</div>
 
     <div class="display-label">Started</div>
-    <div class="display-field">@String.Format("{0:g}", Model.Started)</div>
+    <div class="display-field">@String.Format("{0:d}", Model.Started)</div>
 
     <div class="display-label">Ended</div>
-    <div class="display-field">@String.Format("{0:g}", Model.Ended)</div>
-
+    <div class="display-field">@String.Format("{0:d}", Model.Ended)</div>
 </fieldset>
 @using (Html.BeginForm()) {
     <p>

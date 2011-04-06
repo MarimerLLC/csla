@@ -2,6 +2,7 @@ using Csla;
 using System.ComponentModel.DataAnnotations;
 using System;
 using Csla.Serialization;
+using System.ComponentModel;
 
 namespace ProjectTracker.Library
 {
@@ -9,7 +10,9 @@ namespace ProjectTracker.Library
   public class ProjectResourceEdit : BusinessBase<ProjectResourceEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
-    private byte[] TimeStamp
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
@@ -47,13 +50,13 @@ namespace ProjectTracker.Library
       get { return string.Format("{0}, {1}", LastName, FirstName); }
     }
 
-    public static readonly PropertyInfo<SmartDate> AssignedProperty =
-      RegisterProperty<SmartDate>(c => c.Assigned);
+    public static readonly PropertyInfo<DateTime> AssignedProperty =
+      RegisterProperty<DateTime>(c => c.Assigned);
     [Display(Name = "Date assigned")]
-    public string Assigned
+    public DateTime Assigned
     {
-      get { return GetPropertyConvert<SmartDate, string>(AssignedProperty); }
-      private set { LoadPropertyConvert<SmartDate, string>(AssignedProperty, value); }
+      get { return GetProperty(AssignedProperty); }
+      private set { LoadProperty(AssignedProperty, value); }
     }
 
     public static readonly PropertyInfo<int> RoleProperty = 
@@ -63,6 +66,17 @@ namespace ProjectTracker.Library
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
+    }
+
+    public string RoleName
+    {
+      get 
+      {
+        var result = "none";
+        if (RoleList.GetList().ContainsKey(Role))
+          result = RoleList.GetList().GetItemByKey(Role).Value;
+        return result;
+      }
     }
 
     public override string ToString()

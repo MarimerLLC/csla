@@ -64,6 +64,14 @@ namespace ProjectTracker.Library
           throw new NullReferenceException("No roles available; default role can not be returned");
       }
     }
+
+    public static RoleList GetList()
+    {
+      if (_list != null)
+        return _list;
+      else
+        return new RoleList();
+    }
 #else
     public static RoleList GetList()
     {

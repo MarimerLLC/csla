@@ -35,7 +35,7 @@ namespace ProjectTracker.Library.Security
           base.AuthenticationType = "Membership";
           base.Roles = new Csla.Core.MobileList<string>(data.Roles);
         }
-        catch (ProjectTracker.Dal.DataNotFoundException ex)
+        catch (ProjectTracker.Dal.DataNotFoundException)
         {
           base.Name = string.Empty;
           base.IsAuthenticated = false;

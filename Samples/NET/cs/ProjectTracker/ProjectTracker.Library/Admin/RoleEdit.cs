@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization;
+using System.ComponentModel;
 
 namespace ProjectTracker.Library.Admin
 {
@@ -26,6 +27,8 @@ namespace ProjectTracker.Library.Admin
     }
 
     public static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }

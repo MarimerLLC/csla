@@ -1,15 +1,18 @@
-﻿@model ProjectTracker.Library.ProjectResourceEdit
+﻿@model ProjectTracker.Library.ResourceAssignmentEdit
+
 @{
-  ViewBag.Title = "Edit resource assignment";
+    ViewBag.Title = "Edit assignment";
 }
+
 <h2>@ViewBag.Title</h2>
+
 <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
-@using (Html.BeginForm())
-{
-  @Html.ValidationSummary(true)
-  <fieldset>
-    <legend>Project Resource</legend>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>ResourceAssignmentEdit</legend>
 
     <div class="editor-label">
       @Html.LabelFor(model => model.Role)
@@ -17,11 +20,14 @@
     <div class="editor-field">
       @Html.DropDownListFor(model => model.Role, new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"))
     </div>
-    <p>
-      <input type="submit" value="Save" />
-    </p>
-  </fieldset>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
 }
+
 <div>
-  @Html.ActionLink("Back to List", "Index", new { id = ViewData["ProjectId"] })
+  @Html.ActionLink("Back to List", "Index", new { id = ViewData["ResourceId"] })
 </div>
+

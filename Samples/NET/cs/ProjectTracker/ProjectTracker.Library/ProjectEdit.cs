@@ -25,7 +25,7 @@ namespace ProjectTracker.Library
     public int Id
     {
       get { return GetProperty(IdProperty); }
-      set { LoadProperty(IdProperty, value); }
+      set { SetProperty(IdProperty, value); }
     }
 
     public static readonly PropertyInfo<string> NameProperty = 

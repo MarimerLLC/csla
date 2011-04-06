@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Serialization;
+using System.ComponentModel;
 
 namespace ProjectTracker.Library
 {
@@ -9,7 +10,9 @@ namespace ProjectTracker.Library
   public class ResourceAssignmentEdit : BusinessBase<ResourceAssignmentEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
-    private byte[] TimeStamp
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
@@ -44,6 +47,17 @@ namespace ProjectTracker.Library
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
+    }
+
+    public string RoleName
+    {
+      get
+      {
+        var result = "none";
+        if (RoleList.GetList().ContainsKey(Role))
+          result = RoleList.GetList().GetItemByKey(Role).Value;
+        return result;
+      }
     }
 
     public override string ToString()

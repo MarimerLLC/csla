@@ -5,6 +5,7 @@ using Csla;
 using Csla.Security;
 using Csla.Data;
 using Csla.Serialization;
+using System.ComponentModel;
 
 namespace ProjectTracker.Library
 {
@@ -12,7 +13,9 @@ namespace ProjectTracker.Library
   public class ResourceEdit : BusinessBase<ResourceEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
-    private byte[] TimeStamp
+    [Browsable(false)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public byte[] TimeStamp
     {
       get { return GetProperty(TimeStampProperty); }
       set { SetProperty(TimeStampProperty, value); }
@@ -22,7 +25,7 @@ namespace ProjectTracker.Library
     public int Id
     {
       get { return GetProperty(IdProperty); }
-      private set { SetProperty(IdProperty, value); }
+      set { SetProperty(IdProperty, value); }
     }
 
     public static readonly PropertyInfo<string> LastNameProperty = 

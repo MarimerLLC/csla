@@ -40,14 +40,14 @@ namespace Mvc3UI.Controllers
       {
         var project = ProjectEdit.GetProject(projectId);
         var resourceId = int.Parse(collection["ResourceId"]);
-        project.Resources.Assign(resourceId);
-        var model = project.Resources.Where(r => r.ResourceId == resourceId).First();
+        var model = project.Resources.Assign(resourceId);
         model.Role = int.Parse(collection["Role"]);
         project = project.Save();
         return RedirectToAction("Index", new { id = project.Id });
       }
-      catch
+      catch (Exception ex)
       {
+        ViewData.Add("Error", ex);
         ViewData.Add("ProjectId", projectId);
         ViewData.Model = new ProjectResourceEdit();
         return View();

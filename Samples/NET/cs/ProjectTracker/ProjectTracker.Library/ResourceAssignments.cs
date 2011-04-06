@@ -8,18 +8,23 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignmentEdit>
   {
-    public void AssignTo(int projectId)
+#if SILVERLIGHT
+    //TODO: add BeginAssignTo method
+#else
+    public ResourceAssignmentEdit AssignTo(int projectId)
     {
       if (!(Contains(projectId)))
       {
-        var project = DataPortal.CreateChild<ResourceAssignmentEdit>(projectId);
+        var project = ResourceAssignmentEditCreator.GetResourceAssignmentEditCreator(projectId).Result;
         this.Add(project);
+        return project;
       }
       else
       {
         throw new InvalidOperationException("Resource already assigned to project");
       }
     }
+#endif
 
     public void Remove(int projectId)
     {

@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "Assign resource";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+  if (ViewData["Error"] != null) {
+    var error = (Exception)ViewData["Error"];
+    <div class="error">
+      @error.Message
+    </div>
+    <br />
+  }
+  <fieldset>
+    <legend>Project Resource</legend>
+    <div class="editor-label">
+      Role
+    </div>
+    <div class="editor-field">
+      @Html.DropDownList("Role", new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"))
+    </div>
+
+    <div class="editor-label">
+      Resource
+    </div>
+    <div class="editor-field">
+      @Html.DropDownList("ResourceId", new SelectList(ProjectTracker.Library.ResourceList.GetResourceList(), "Id", "Name"))
+    </div>
+
+    <p>
+      <input type="submit" value="Create" />
+    </p>
+  </fieldset>
+}
+<div>
+  @Html.ActionLink("Back to List", "Index", new { id = ViewData["ProjectId"] })
+</div>
+

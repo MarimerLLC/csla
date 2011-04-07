@@ -32,7 +32,7 @@ function ChangeNuSpecVersion ( $nuSpecFilePath, $version="0.0.0.0" )
         {
             if ($idAttribute.Value -eq "CSLA-Core")
             {
-                $dependency.SetAttributeValue("version", $version)
+                $dependency.SetAttributeValue("version", "[$version]")
             }
         }
     }

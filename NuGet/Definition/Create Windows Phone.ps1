@@ -32,7 +32,7 @@ function ChangeNuSpecVersion ( $nuSpecFilePath, $version="0.0.0.0" )
         {
             if ($idAttribute.Value -eq "CSLA-Core")
             {
-                $dependency.SetAttributeValue("version", $version)
+                $dependency.SetAttributeValue("version", "[$version]")
             }
         }
     }
@@ -86,10 +86,8 @@ try
     Write-Host "Copy CSLA build outputs to NuGet Lib\<PlatForm><Version> folders..." -ForegroundColor Yellow
 
     ## Windows Phone
-    ## NOTE: According to NuGet team, Profiles aren't supported yet and SL4.0 is to be used for WP7
-       ## Wp maps to Silverlight
     $includes = @("Csla.Xaml.dll*", "Csla.Xaml.resources*.dll", "Csla.Xaml.XML*")
-    CopyMaintainingSubDirectories "$pathToBin\Wp\" $includes "$pathtoNuGetLib\Lib\SL4.0" 
+    CopyMaintainingSubDirectories "$pathToBin\Wp\" $includes "$pathtoNuGetLib\Lib\sl3-wp" 
         
     ## Create NuGet package
     ## ----------------------

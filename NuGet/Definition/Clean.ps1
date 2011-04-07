@@ -31,7 +31,7 @@ try
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
     Remove-Item "$pathToNuGetLib\Lib\NET4.0\*" -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item "$pathToNuGetLib\Lib\SL4.0\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item "$pathToNuGetLib\Lib\WP7.0\*" -Recurse -Force -ErrorAction SilentlyContinue ## According to NuGet team, Profiles aren't supported yet and SL4.0 is to be used for WP7
+    Remove-Item "$pathToNuGetLib\Lib\sl3-WP\*" -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item "$pathToNuGetLib\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
 
     Write-Host "Clean operation done." -ForegroundColor Green

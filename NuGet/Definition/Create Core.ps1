@@ -32,7 +32,7 @@ function ChangeNuSpecVersion ( $nuSpecFilePath, $version="0.0.0.0" )
         {
             if ($idAttribute.Value -eq "CSLA-Core")
             {
-                $dependency.SetAttributeValue("version", $version)
+                $dependency.SetAttributeValue("version", "[$version]" )
             }
         }
     }
@@ -94,7 +94,8 @@ try
     CopyMaintainingSubDirectories "$pathToBin\Silverlight\" $includes "$pathtoNuGetLib\Lib\SL4.0" 
     
     ## Windows Phone
-    ## NOTE: According to NuGet team, Profiles aren't supported yet and SL4.0 is to be used for WP7
+    $includes = @("Csla.dll*", "Csla.resources*.dll", "Csla.XML*")
+    CopyMaintainingSubDirectories "$pathToBin\Wp\" $includes "$pathtoNuGetLib\Lib\sl3-WP" 
     
 
     ## Create NuGet package

@@ -43,12 +43,14 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> RoleProperty = RegisterProperty<int>(c => c.Role);
+    [Display(Name = "Role assigned")]
     public int Role
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
     }
 
+    [Display(Name = "Role")]
     public string RoleName
     {
       get

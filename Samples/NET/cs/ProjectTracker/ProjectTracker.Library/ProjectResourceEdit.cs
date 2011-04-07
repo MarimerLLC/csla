@@ -45,6 +45,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(LastNameProperty, value); }
     }
 
+    [Display(Name = "Full name")]
     public string FullName
     {
       get { return string.Format("{0}, {1}", LastName, FirstName); }
@@ -68,6 +69,7 @@ namespace ProjectTracker.Library
       set { SetProperty(RoleProperty, value); }
     }
 
+    [Display(Name = "Role")]
     public string RoleName
     {
       get 

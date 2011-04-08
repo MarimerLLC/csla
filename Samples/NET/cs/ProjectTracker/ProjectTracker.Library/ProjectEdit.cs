@@ -81,6 +81,7 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
+      base.AddBusinessRules();
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartedProperty, AffectedProperties = { EndedProperty } });
       BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndedProperty, AffectedProperties = { StartedProperty } });
 

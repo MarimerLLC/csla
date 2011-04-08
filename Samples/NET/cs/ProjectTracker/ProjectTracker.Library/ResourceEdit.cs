@@ -76,6 +76,7 @@ namespace ProjectTracker.Library
 
     protected override void AddBusinessRules()
     {
+      base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, "ProjectManager"));
     }

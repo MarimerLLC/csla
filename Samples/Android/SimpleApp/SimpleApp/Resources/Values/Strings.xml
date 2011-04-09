@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="Hello">Hello World, Click Me!</string>
+  <string name="Save">Save</string>
+  <string name="ApplicationName">CSLA 4 Demo</string>
+  <color name="Blue">#000088</color>
+  <color name="Red">#FF0000</color>
+  <color name="Green">#00FF00</color>
+  <color name="Grey">#444444</color>
+</resources>

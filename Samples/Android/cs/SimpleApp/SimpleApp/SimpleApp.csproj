@@ -37,8 +37,8 @@
     <AndroidLinkMode>Full</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\Dependencies\Android\Csla.dll</HintPath>
+    <Reference Include="Csla">
+      <HintPath>..\..\..\..\Dependencies\Android\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />

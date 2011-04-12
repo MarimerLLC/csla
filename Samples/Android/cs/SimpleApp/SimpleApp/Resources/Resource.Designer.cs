@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MonoAndroidApplication1
+namespace SimpleApp
 {
 	
 	

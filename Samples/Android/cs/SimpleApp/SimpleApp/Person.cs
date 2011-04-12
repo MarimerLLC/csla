@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
+using System.ComponentModel.DataAnnotations;
 
-namespace MonoAndroidApplication1
+namespace SimpleApp
 {
   [Serializable]
   public class Person : BusinessBase<Person>
@@ -18,6 +19,7 @@ namespace MonoAndroidApplication1
     }
 
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    [Required]
     public string Name
     {
       get { return GetProperty(NameProperty); }

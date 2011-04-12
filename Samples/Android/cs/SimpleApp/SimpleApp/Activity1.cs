@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using Android.App;
 using Android.Content;
@@ -6,17 +7,13 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.ComponentModel;
 
-namespace MonoAndroidApplication1
+namespace SimpleApp
 {
   [Activity(Label = "CSLA 4 Demo", MainLauncher = true)]
   public class Activity1 : Activity
   {
-    bool Initialized;
-    BindingManager Bindings;
-    TextView ErrorText;
-    Person Model;
-
     protected override void OnCreate(Bundle bundle)
     {
       base.OnCreate(bundle);
@@ -26,6 +23,11 @@ namespace MonoAndroidApplication1
 
       Initialize();
     }
+
+    bool Initialized;
+    BindingManager Bindings;
+    TextView ErrorText;
+    Person Model;
 
     private void Initialize()
     {
@@ -37,7 +39,8 @@ namespace MonoAndroidApplication1
 
       ErrorText = FindViewById<TextView>(Resource.Id.ErrorText);
 
-      Button saveButton = FindViewById<Button>(Resource.Id.SaveButton);
+      Button saveButton = 
+        FindViewById<Button>(Resource.Id.SaveButton);
       saveButton.Click += saveButton_Click;
 
       Person.GetPerson(123, (o, e) =>
@@ -72,6 +75,14 @@ namespace MonoAndroidApplication1
           ErrorText.Text =
             string.Format("Save: {0}-{1}", ex.GetType().Name, ex.Message);
         }
+      }
+      else if (!Model.IsValid)
+      {
+        var error = Model.BrokenRulesCollection.Where(r => r.Severity == Csla.Rules.RuleSeverity.Error).FirstOrDefault();
+        if (error != null)
+          ErrorText.Text = error.Description;
+        else
+          ErrorText.Text = "Object is invalid";
       }
       else
       {

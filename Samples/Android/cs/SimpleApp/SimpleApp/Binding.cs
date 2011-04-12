@@ -11,7 +11,7 @@ using Android.Views;
 using Android.Widget;
 using System.ComponentModel;
 
-namespace MonoAndroidApplication1
+namespace SimpleApp
 {
   public class Binding : IDisposable
   {

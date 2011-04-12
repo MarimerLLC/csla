@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 
-namespace MonoAndroidApplication1
+namespace SimpleApp
 {
   public class BindingManager
   {

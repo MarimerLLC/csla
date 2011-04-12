@@ -10,7 +10,9 @@ using Csla.DataPortalClient;
 using Csla.Testing.Business.ReadOnlyTest;
 using System;
 using System.ComponentModel;
+#if !__ANDROID__
 using System.Windows.Controls;
+#endif
 using Csla.Testing.Business.Security;
 using UnitDriven;
 using Csla.Testing.Business.EditableRootListTests;
@@ -26,6 +28,7 @@ using TestSetup = NUnit.Framework.SetUpAttribute;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
 
+#if !__ANDROID__
 namespace cslalighttest.EditableRootListTests
 {
 #if TESTING
@@ -289,3 +292,4 @@ namespace cslalighttest.EditableRootListTests
     }
   }
 }
+#endif

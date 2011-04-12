@@ -1,7 +1,5 @@
 ﻿using System;
-#if !WINDOWS_PHONE
 using System.ComponentModel.DataAnnotations;
-#endif
 using Csla;
 using Csla.Rules.CommonRules;
 using Csla.Serialization;
@@ -19,11 +17,16 @@ namespace BusinessLibrary
       private set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(p => p.CustomerName);
+    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
+    public string LastName
+    {
+      get { return GetProperty(LastNameProperty); }
+      set { SetProperty(LastNameProperty, value); }
+    }
 
-#if !WINDOWS_PHONE
+    public static PropertyInfo<string> CustomerNameProperty = 
+      RegisterProperty<string>(p => p.CustomerName);
     [Display(Name = "Customer name")]
-#endif
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }

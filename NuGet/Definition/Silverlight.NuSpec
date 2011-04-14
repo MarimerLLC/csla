@@ -19,4 +19,14 @@ CSLA .NET is an application development framework that reduces the cost of build
       <dependency id="CSLA-Core" version="[4.1.0.0]" />
     </dependencies>
   </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <!-- > None -->
+    <!-- Silverlight 4.0 Client -->
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.resources.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.xml*" target="lib\SL4.0" />
+    <!-- Windows Phone 7 Client -->
+    <!-- > None -->
+  </files>
 </package>

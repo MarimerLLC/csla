@@ -20,4 +20,18 @@ Supports the creation of Class Library projects containing business domain class
     </summary>
     <language>en-US</language>
   </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <file src="..\..\Bin\Release\Client\**\Csla.dll*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Client\**\Csla.resources.dll*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Client\**\Csla.xml*" target="lib\NET4.0" />
+    <!-- Silverlight 4.0 Client -->
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\SL4.0" />
+    <!-- Windows Phone 7 Client -->
+    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\sl3-WP" />
+  </files>
 </package>

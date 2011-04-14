@@ -5,7 +5,7 @@ if ($package -eq $null)
     Write-Host "Clean a NuGet build output."
     Write-Host "============================"
     Write-Host "Usage: Clean.ps1 ""<NuGet Name>"""
-    Write-Host "E.g.: Clean.ps1 ""Core"""
+    Write-Host ">E.g.: Clean.ps1 ""Core"""
     return
 }
 
@@ -29,18 +29,19 @@ try
     ## NB - Cleanup destination folders
     ## --------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
-    Remove-Item "$pathToNuGetLib\Lib\NET4.0\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item "$pathToNuGetLib\Lib\SL4.0\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item "$pathToNuGetLib\Lib\sl3-WP\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item "$pathToNuGetLib\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
+    ##Remove-Item "$pathToNuGetLib\*" -Exclude *.NuSpec -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$basePath\*.NuPkg" -Recurse -Force -ErrorAction SilentlyContinue
 
     Write-Host "Clean operation done." -ForegroundColor Green
 }
 catch 
 {
-    Write-Host "An error ocurred" -ForegroundColor Red
-    Write-Host "================" -ForegroundColor Red
-    Write-Host "Details: $_.ToString()"
+    $baseException = $_.Exception.GetBaseException()
+    if ($_.Exception -ne $baseException)
+    {
+      Write-Host $baseException.Message -ForegroundColor Magenta
+    }
+    Write-Host $_.Exception.Message -ForegroundColor Magenta
     Pause
 } 
 finally 

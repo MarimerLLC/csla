@@ -1,3 +1,5 @@
+param($package) 
+
 function Pause ($Message="Press any key to continue...")
 {
     Write-Host -NoNewLine $Message
@@ -32,7 +34,7 @@ function ChangeNuSpecVersion ( $nuSpecFilePath, $version="0.0.0.0" )
         {
             if ($idAttribute.Value -eq "CSLA-Core")
             {
-                $dependency.SetAttributeValue("version", "[$version]")
+                $dependency.SetAttributeValue("version", "[$version]" )
             }
         }
     }
@@ -57,65 +59,72 @@ function CopyMaintainingSubDirectories( $basePath, $includes, $targetBasePath )
     }
 }
 
+if ($package -eq $null)
+{
+    Write-Host "Create a NuGet build output."
+    Write-Host "============================"
+    Write-Host "Usage: Create.ps1 ""<NuGet Package Name>"""
+    Write-Host ">E.g.: Create.ps1 ""Core"""
+    return
+}
+
 try 
 {
     ## Initialise
     ## ----------
-    ## (Always use relative paths)
-    $package = "Workflow"
     $configuration = "Release"
     $basePath = Get-Location
     $pathToBin = [System.IO.Path]::GetFullPath( "$basePath\..\..\Bin\$configuration" )
-    $pathToNuGetLib = [System.IO.Path]::GetFullPath( "$basePath\$package" )
     $pathToNuGetPackager = [System.IO.Path]::GetFullPath( "$basePath\..\Tools\NuGet.exe" )
-    $pathToNuGetPackageReleaseFolder = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
+    $pathToNuGetPackageOutput = [System.IO.Path]::GetFullPath( "$basePath\..\Packages" )
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
+    $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
 
-    Write-Host "Build NuGet packages for: $package" -ForegroundColor White
+    Write-Host "Build NuGet packages for: " -ForegroundColor White -NoNewLine
+    Write-Host $package -ForegroundColor Cyan
     Write-Host "=========================" -ForegroundColor White
 
-    ## Cleanup previous build outputs
-    ## ------------------------------
-    & ".\Clean.ps1" $package
-
-    ## Copy the build outputs and group per platform
-    ## --------------------------------------------
-    Write-Host "Copy CSLA build outputs to NuGet Lib\<PlatForm><Version> folders..." -ForegroundColor Yellow
-
-    ## .NET
-    $includes = @("Csla.Workflow.dll*", "Csla.Workflow.resources*.dll", "Csla.Workflow.XML*")
-    CopyMaintainingSubDirectories "$pathToBin\Server\" $includes "$pathtoNuGetLib\Lib\NET4.0" 
-    
-    ## Create NuGet package
-    ## ----------------------
+    ## Update Package Version
+    ## ----------------------    
     ## Before building NuGet package, extract CSLA Version number and update .NuSpec to automate versioning of .NuSpec document
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
     $cslaAssembly = Get-ChildItem "$pathToBin\Client\Csla.dll" | Select-Object -First 1
     $productVersion = $cslaAssembly.VersionInfo.ProductVersion
-    ChangeNuSpecVersion "$pathtoNuGetLib\$package.NuSpec" $productVersion
+    ChangeNuSpecVersion "$basePath\$package.NuSpec" $productVersion
     
-    ## Launch NuGet.exe
-    Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
-    & $pathToNuGetPackager pack "$pathtoNuGetLib\$package.NuSpec"
+    ## Launch NuGet.exe to build package
+    Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow -NoNewLine
+    & $pathToNuGetPackager pack "$basePath\$package.NuSpec"
+    
+    ## Publish package to Gallery using API Key
+    ## JH - TODO
 
-    ## Move NuGet package to Package Release folder
-    Move-Item "*.nupkg" -Destination $pathToNuGetPackageReleaseFolder -Force
+    ## Move NuGet package to Package Release folder"
+    Write-Host "Move package to ..\Packages folder..." -ForegroundColor Yellow
+    Move-Item "*.nupkg" -Destination $pathToNuGetPackageOutput -Force
+    
+    ## Cleanup after ourselves
+    ## JH - TODO
 
     Write-Host "Done." -ForegroundColor Green
 }
 catch 
 {
-    Write-Host "An error ocurred" -ForegroundColor Red
-    Write-Host "================" -ForegroundColor Red
-    Write-Host "Details: $_.ToString()"
+    $baseException = $_.Exception.GetBaseException()
+    if ($_.Exception -ne $baseException)
+    {
+      Write-Host $baseException.Message -ForegroundColor Magenta
+    }
+    Write-Host $_.Exception.Message -ForegroundColor Magenta
     Pause
 } 
 finally 
 {
     $host.UI.RawUI.BackgroundColor = $originalBackground
+    $host.UI.RawUI.ForegroundColor = $originalForeground
 }
 #Pause # For debugging purposes

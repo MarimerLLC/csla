@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-WindowsPhone</id>
+    <title>CSLA .NET - Windows Phone</title>
+    <tags>CSLA WP7 Windows Phone</tags>
+    <version>4.1.0.0</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of Windows Phone 7 (WP7) applications.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CSLA-Core" version="[4.1.0.0]" />
+    </dependencies>
+    <!--
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Net" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Servicemodel" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Windows" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Xml.Serialization" targetFramework="sl3-WP" />
+    </frameworkAssemblies>
+    -->
+  </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <!-- > None -->
+    <!-- Silverlight 4.0 Client -->
+    <!-- > None -->
+    <!-- Windows Phone 7 Client -->
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl3-WP" />
+  </files>
+</package>

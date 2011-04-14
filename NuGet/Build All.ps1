@@ -1,6 +1,6 @@
 ##
-##	Create Modular CSLA NuGet
-##  ==========================
+##	Create Modular CSLA NuGet based on UI Technology (Based on Discussions with Rocky & JH)
+##  =======================================================================================
 ##  
 ##  “CSLA .NET - Core” NuGet
 ##  •	Contents:
@@ -52,7 +52,6 @@
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 
-
 function Pause ($Message="Press any key to continue...")
 {
     Write-Host -NoNewLine $Message
@@ -72,25 +71,28 @@ try
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
     
-    Write-Host "Create all CLSA .NET NuGet packages" -ForegroundColor White
-    Write-Host "====================================" -ForegroundColor White
+    Write-Host "Build All CLSA .NET NuGet packages" -ForegroundColor White
+    Write-Host "==================================" -ForegroundColor White
     
-    ## NB - Cleanup destination folders
-    ## --------------------------------
+    ## NB - Cleanup destination package folder
+    ## ---------------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
     Remove-Item ".\Packages\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
     
-    ## Spawn off individual create processes...
+    ## Spawn off individual build processes...
     ## ---------------------------------------
     Set-Location "$originalLocation\Definition" ## Adjust current working directory since scripts are using relative paths
-    $packages | ForEach { & ".\Create $_.ps1" }
-    Write-Host "Create all done." -ForegroundColor Green
+    $packages | ForEach { & ".\Build.ps1" $_ }
+    Write-Host "Build All - Done." -ForegroundColor Green
 }
 catch 
 {
-    Write-Host "An error ocurred" -ForegroundColor Red
-    Write-Host "================" -ForegroundColor Red
-    Write-Host "Details: $_.ToString()"
+    $baseException = $_.Exception.GetBaseException()
+    if ($_.Exception -ne $baseException)
+    {
+      Write-Host $baseException.Message -ForegroundColor Magenta
+    }
+    Write-Host $_.Exception.Message -ForegroundColor Magenta
     Pause
 } 
 finally 

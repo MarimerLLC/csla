@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
-    <id>CSLA-Workflow</id>
-    <title>CSLA .NET - Workflow</title>
-    <tags>CSLA Workflow</tags>
+    <id>CSLA-ASP.NET</id>
+    <title>CSLA .NET - ASP.NET</title>
+    <tags>CSLA ASP.NET</tags>
     <version>4.1.0.0</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
@@ -11,7 +11,7 @@
     <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
-Supports the creation of Windows Workflow Foundation applications.
+Supports the creation of ASP.NET Web Forms applications, and is required for any ASP.NET hosted application model.
 
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
@@ -19,5 +19,18 @@ CSLA .NET is an application development framework that reduces the cost of build
     <dependencies>
       <dependency id="CSLA-Core" version="[4.1.0.0]" />
     </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Web" targetFramework="NET4.0-Full" />
+    </frameworkAssemblies>
   </metadata>
+  <files>
+    <!-- .NET 4.0 Server -->
+    <file src="..\..\Bin\Release\Server\**\Csla.Web.dll*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Web.resources.dll*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Web.xml*" target="lib\NET4.0" />
+    <!-- Silverlight 4.0 Client -->
+    <!-- > None -->
+    <!-- Windows Phone 7 Client -->
+    <!-- > None -->
+  </files>
 </package>

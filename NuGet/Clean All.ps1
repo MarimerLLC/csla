@@ -25,8 +25,8 @@ try
     Write-Host "Clean all CLSA .NET NuGet build outputs" -ForegroundColor White
     Write-Host "=======================================" -ForegroundColor White
     
-    ## NB - Cleanup destination folders
-    ## --------------------------------
+    ## NB - Cleanup destination package folder
+    ## ---------------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
     Remove-Item ".\Packages\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
     
@@ -38,9 +38,12 @@ try
 }
 catch 
 {
-    Write-Host "An error ocurred" -ForegroundColor Red
-    Write-Host "================" -ForegroundColor Red
-    Write-Host "Details: $_.ToString()"
+    $baseException = $_.Exception.GetBaseException()
+    if ($_.Exception -ne $baseException)
+    {
+      Write-Host $baseException.Message -ForegroundColor Magenta
+    }
+    Write-Host $_.Exception.Message -ForegroundColor Magenta
     Pause
 } 
 finally 

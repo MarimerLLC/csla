@@ -9,7 +9,7 @@ using Csla.Security;
 namespace ProjectTracker.Library.Security
 {
   [Serializable]
-  public class PTIdentity : CslaIdentity
+  public class PTIdentity : CslaIdentityBase<PTIdentity>
   {
     public static void GetPTIdentity(string username, string password, EventHandler<DataPortalResult<PTIdentity>> callback)
     {

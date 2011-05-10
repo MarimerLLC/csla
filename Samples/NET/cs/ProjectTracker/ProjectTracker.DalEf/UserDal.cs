@@ -14,7 +14,7 @@ namespace ProjectTracker.DalEf
       if (Membership.ValidateUser(username, password))
       {
         var result = new UserDto { Username = username };
-        result.Roles = Roles.GetRolesForUser(result.Username);
+        result.Roles = Roles.Provider.GetRolesForUser(result.Username);
         return result;
       }
       else

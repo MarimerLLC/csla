@@ -58,6 +58,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceDto.cs" />
     <Compile Include="RoleDto.cs" />
+    <Compile Include="TimeStampExtensions.cs" />
+    <Compile Include="UpdateFailureException.cs" />
     <Compile Include="UserDto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

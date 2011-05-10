@@ -78,7 +78,7 @@ namespace ProjectTracker.DalMock
       if (data == null)
         throw new DataNotFoundException("Assignment");
       if (!MockDb.TimeStampEquals(data.LastChanged, item.LastChanged))
-        throw new ConcurrencyException("Project");
+        throw new ConcurrencyException("Assignment");
       item.LastChanged = MockDb.GetTimeStamp();
       data.Assigned = item.Assigned;
       data.RoleId = item.RoleId;

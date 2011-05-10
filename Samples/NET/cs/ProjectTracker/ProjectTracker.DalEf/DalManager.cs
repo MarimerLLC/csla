@@ -24,7 +24,7 @@ namespace ProjectTracker.DalEf
 
     public DalManager()
     {
-      ConnectionManager = ObjectContextManager<PTrackerEntities>.GetManager("SqlDbEntities");
+      ConnectionManager = ObjectContextManager<PTrackerEntities>.GetManager("PTrackerEntities");
     }
 
     public void Dispose()

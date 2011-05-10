@@ -58,6 +58,7 @@
       <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -69,6 +70,7 @@
     </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -79,13 +81,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssignmentDal.cs" />
     <Compile Include="DalManager.cs" />
+    <Compile Include="ProjectDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PTracker.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PTracker.edmx</DependentUpon>
     </Compile>
+    <Compile Include="ResourceDal.cs" />
+    <Compile Include="RoleDal.cs" />
     <Compile Include="UserDal.cs" />
   </ItemGroup>
   <ItemGroup>

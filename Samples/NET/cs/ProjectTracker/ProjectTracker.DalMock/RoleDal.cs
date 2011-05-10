@@ -16,6 +16,16 @@ namespace ProjectTracker.DalMock
       return result.ToList();
     }
 
+    public RoleDto Fetch(int id)
+    {
+      var result = (from r in MockDb.Roles
+                    where r.Id == id
+                    select new RoleDto { Id = r.Id, Name = r.Name, LastChanged = r.LastChanged }).FirstOrDefault();
+      if (result == null)
+        throw new DataNotFoundException("Role");
+      return result;
+    }
+
     public void Insert(RoleDto item)
     {
       item.Id = MockDb.Roles.Max(c => c.Id) + 1;

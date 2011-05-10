@@ -81,7 +81,7 @@ namespace ProjectTracker.DalEf
                     select r).FirstOrDefault();
         if (data == null)
           throw new DataNotFoundException("Resource");
-        if (!data.LastChanged.Equals(item.LastChanged))
+        if (!data.LastChanged.Matches(item.LastChanged))
           throw new ConcurrencyException("Resource");
 
         data.FirstName = item.FirstName;

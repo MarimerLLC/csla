@@ -106,7 +106,7 @@ namespace ProjectTracker.DalEf
                     select r).FirstOrDefault();
         if (data == null)
           throw new DataNotFoundException("Project");
-        if (!data.LastChanged.Equals(item.LastChanged))
+        if (!data.LastChanged.Matches(item.LastChanged))
           throw new ConcurrencyException("Project");
 
         data.Name = item.Name;

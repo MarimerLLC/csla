@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using ProjectTracker.Library.Admin;
+
+namespace Mvc3UI.Controllers
+{
+  public class RoleController : Csla.Web.Mvc.Controller
+  {
+    //
+    // GET: /Role/
+
+    public ActionResult Index()
+    {
+      ViewData.Model = RoleEditList.GetRoles();
+      return View();
+    }
+
+    //
+    // GET: /Role/Create
+
+    public ActionResult Create()
+    {
+      ViewData.Model = RoleEdit.NewRoleEdit();
+      return View();
+    }
+
+    //
+    // POST: /Role/Create
+
+    [HttpPost]
+    public ActionResult Create(RoleEdit role)
+    {
+      try
+      {
+        RoleEditManager.SaveRoleEdit(role, false);
+        return RedirectToAction("Index");
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+      }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError("", ex.Message);
+      }
+      ViewData.Model = role;
+      return View();
+    }
+
+    //
+    // GET: /Role/Edit/5
+
+    public ActionResult Edit(int id)
+    {
+      ViewData.Model = RoleEditManager.GetRoleEdit(id);
+      return View();
+    }
+
+    //
+    // POST: /Role/Edit/5
+
+    [HttpPost]
+    public ActionResult Edit(int id, RoleEdit role)
+    {
+      LoadProperty(role, RoleEdit.IdProperty, id);
+      try
+      {
+        RoleEditManager.SaveRoleEdit(role, true);
+        return RedirectToAction("Index");
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+      }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError("", ex.Message);
+      }
+      // failure condition
+      ViewData.Model = role;
+      return View();
+    }
+
+    //
+    // GET: /Role/Delete/5
+
+    public ActionResult Delete(int id)
+    {
+      ViewData.Model = RoleEditManager.GetRoleEdit(id);
+      return View();
+    }
+
+    //
+    // POST: /Role/Delete/5
+
+    [HttpPost]
+    public ActionResult Delete(int id, RoleEdit role)
+    {
+      try
+      {
+        var list = RoleEditList.GetRoles();
+        var item = list.GetRoleById(id);
+        list.Remove(item);
+        list.Save();
+        return RedirectToAction("Index");
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+      }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError("", ex.Message);
+      }
+      // failure condition
+      LoadProperty(role, RoleEdit.IdProperty, id);
+      ViewData.Model = role;
+      return View();
+    }
+  }
+}

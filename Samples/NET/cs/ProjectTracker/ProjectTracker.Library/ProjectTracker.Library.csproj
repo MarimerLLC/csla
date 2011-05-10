@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Admin\RoleEdit.cs" />
     <Compile Include="Admin\RoleEditList.cs" />
+    <Compile Include="Admin\RoleEditManager.cs" />
     <Compile Include="Assignment.cs" />
     <Compile Include="ProjectEdit.cs" />
     <Compile Include="ProjectCloser.cs" />

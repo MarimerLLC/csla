@@ -11,6 +11,11 @@ namespace ProjectTracker.Library.Admin
   [Serializable]
   public class RoleEdit : BusinessBase<RoleEdit>
   {
+    public RoleEdit()
+    {
+      MarkAsChild();
+    }
+
     public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
@@ -61,11 +66,17 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
-    internal static RoleEdit NewRole()
+    public static RoleEdit NewRoleEdit()
     {
       return DataPortal.CreateChild<RoleEdit>();
     }
+
 #if !SILVERLIGHT
+    public static RoleEdit GetRole(int id)
+    {
+      return DataPortal.Fetch<RoleEdit>();
+    }
+    
     internal static RoleEdit GetRole(object data)
     {
       return DataPortal.FetchChild<RoleEdit>(data);
@@ -129,6 +140,11 @@ namespace ProjectTracker.Library.Admin
           dal.Delete(this.Id);
         }
       }
+    }
+
+    internal new void MarkOld()
+    {
+      base.MarkOld();
     }
 #endif
   }

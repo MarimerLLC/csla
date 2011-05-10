@@ -77,14 +77,14 @@ namespace ProjectTracker.Library
 #if SILVERLIGHT
       protected override void AddNewCore()
       {
-        var item = RoleEdit.NewRole();
+        var item = RoleEdit.NewRoleEdit();
         Add(item);
         OnAddedNew(item);
       }
 #else
       protected override RoleEdit AddNewCore()
       {
-        RoleEdit item = RoleEdit.NewRole();
+        RoleEdit item = RoleEdit.NewRoleEdit();
         Add(item);
         return item;
       }

@@ -20,6 +20,19 @@ namespace ProjectTracker.DalEf
       }
     }
 
+    public RoleDto Fetch(int id)
+    {
+      using (var ctx = ObjectContextManager<PTrackerEntities>.GetManager("PTrackerEntities"))
+      {
+        var result = (from r in ctx.ObjectContext.Roles
+                      where r.Id == id
+                      select new RoleDto { Id = r.Id, Name = r.Name, LastChanged = r.LastChanged }).FirstOrDefault();
+        if (result == null)
+          throw new DataNotFoundException("Role");
+        return result;
+      }
+    }
+
     public void Insert(RoleDto item)
     {
       using (var ctx = ObjectContextManager<PTrackerEntities>.GetManager("PTrackerEntities"))
@@ -44,7 +57,7 @@ namespace ProjectTracker.DalEf
                     select r).FirstOrDefault();
         if (data == null)
           throw new DataNotFoundException("Role");
-        if (!data.LastChanged.Equals(item.LastChanged))
+        if (!data.LastChanged.Matches(item.LastChanged))
           throw new ConcurrencyException("Role");
 
         data.Name = item.Name;
@@ -63,7 +76,10 @@ namespace ProjectTracker.DalEf
                     where r.Id == id
                     select r).FirstOrDefault();
         if (data != null)
+        {
           ctx.ObjectContext.Roles.DeleteObject(data);
+          ctx.ObjectContext.SaveChanges();
+        }
       }
     }
   }

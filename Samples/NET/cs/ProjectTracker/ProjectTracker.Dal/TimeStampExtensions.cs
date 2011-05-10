@@ -7,7 +7,7 @@ namespace ProjectTracker.Dal
 {
   public static class TimeStampExtensions
   {
-    public static bool Equals(this byte[] stamp1, byte[] stamp2)
+    public static bool Matches(this byte[] stamp1, byte[] stamp2)
     {
       if (stamp1 != null && stamp2 != null)
         if (stamp1.Length == stamp2.Length)

@@ -92,7 +92,7 @@ namespace ProjectTracker.DalEf
                     select r).FirstOrDefault();
         if (data == null)
           throw new DataNotFoundException("Assignment");
-        if (!data.LastChanged.Equals(item.LastChanged))
+        if (!data.LastChanged.Matches(item.LastChanged))
           throw new ConcurrencyException("Assignment");
         data.Assigned = item.Assigned;
         data.RoleId = item.RoleId;

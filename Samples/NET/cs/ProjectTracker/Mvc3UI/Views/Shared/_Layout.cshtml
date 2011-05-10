@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Csla.Web.Mvc
+@using ProjectTracker.Library
+<!DOCTYPE html>
 <html>
 <head>
     <title>@ViewBag.Title</title>
@@ -24,6 +26,7 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Projects", "Index", "Project")</li>
                     <li>@Html.ActionLink("Resources", "Index", "Resource")</li>
+                    <li>@Html.ActionLink("Roles", "Index", "Role")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
 

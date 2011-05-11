@@ -1,10 +1,13 @@
-﻿@model ProjectTracker.Library.ResourceEdit
+﻿@using Csla.Web.Mvc
+@using ProjectTracker.Library
+
+@model ProjectTracker.Library.ResourceEdit
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Resource details";
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Title</h2>
 
 <fieldset>
     <legend>Resource</legend>
@@ -28,14 +31,14 @@
 </thead>
 <tbody>
 @foreach (var item in Model.Assignments) { 
-  <tr><td>@item.ProjectName</td><td>@String.Format("{0:d}", item.Assigned)</td><td>@item.RoleName</td></tr>
+  <tr><td>@Html.ActionLink(item.ProjectName, "Details", "Project", new { id = item.ProjectId }, null)</td><td>@String.Format("{0:d}", item.Assigned)</td><td>@item.RoleName</td></tr>
 }
 </tbody></table>
 </div>
 <br />
 
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit), Html.ActionLink("Edit", "Edit", new { id = Model.Id }), "Edit") |
     @Html.ActionLink("Back to List", "Index")
 </p>
 

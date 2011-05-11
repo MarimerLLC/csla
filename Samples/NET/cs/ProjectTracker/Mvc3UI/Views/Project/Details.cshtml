@@ -1,4 +1,7 @@
-﻿@model ProjectTracker.Library.ProjectEdit
+﻿@using Csla.Web.Mvc
+@using ProjectTracker.Library
+
+@model ProjectTracker.Library.ProjectEdit
 
 @{
     ViewBag.Title = "Project details";
@@ -42,14 +45,14 @@
 </thead>
 <tbody>
 @foreach (var item in Model.Resources) { 
-  <tr><td>@item.FullName</td><td>@String.Format("{0:d}", item.Assigned)</td><td>@item.RoleName</td></tr>
+  <tr><td>@Html.ActionLink(item.FullName, "Details", "Resource", new { id = item.ResourceId }, null)</td><td>@String.Format("{0:d}", item.Assigned)</td><td>@item.RoleName</td></tr>
 }
 </tbody></table>
 </div>
 <br />
 
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectEdit), Html.ActionLink("Edit", "Edit", new { id = Model.Id }), "Edit") |
     @Html.ActionLink("Back to List", "Index")
 </p>
 

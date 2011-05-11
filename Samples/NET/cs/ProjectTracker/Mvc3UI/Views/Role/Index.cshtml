@@ -1,4 +1,7 @@
-﻿@model IEnumerable<ProjectTracker.Library.Admin.RoleEdit>
+﻿@using Csla.Web.Mvc
+@using ProjectTracker.Library.Admin
+
+@model IEnumerable<ProjectTracker.Library.Admin.RoleEdit>
 
 @{
     ViewBag.Title = "Role list";
@@ -7,7 +10,7 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Create Role", "Create")
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(RoleEditList), Html.ActionLink("Create Role", "Create"), string.Empty)
 </p>
 <table>
     <tr>
@@ -23,8 +26,9 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
+            @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditList), Html.ActionLink("Edit", "Edit", new { id = item.Id }), "Edit") |
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(RoleEditList), Html.ActionLink("Delete", "Delete", new { id = item.Id }), "Delete")
         </td>
     </tr>
 }

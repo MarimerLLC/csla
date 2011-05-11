@@ -1,4 +1,7 @@
-﻿@model IEnumerable<ProjectTracker.Library.ResourceInfo>
+﻿@using Csla.Web.Mvc
+@using ProjectTracker.Library
+
+@model IEnumerable<ProjectTracker.Library.ResourceInfo>
 
 @{
     ViewBag.Title = "Resources";
@@ -7,7 +10,7 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+   @Html.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ResourceEdit), Html.ActionLink("Create New", "Create"), string.Empty)
 </p>
 <table>
     <tr>
@@ -20,9 +23,9 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit), Html.ActionLink("Edit", "Edit", new { id = item.Id }), "Edit") |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ResourceEdit), Html.ActionLink("Delete", "Delete", new { id = item.Id }), "Delete")
         </td>
         <td>
             @item.Name

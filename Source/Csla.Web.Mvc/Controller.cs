@@ -63,8 +63,9 @@ namespace Csla.Web.Mvc
           ModelState.AddModelError("", ex.Message);
         return false;
       }
-      catch
+      catch (Exception ex)
       {
+        ModelState.AddModelError("", ex.Message);
         return false;
       }
     }

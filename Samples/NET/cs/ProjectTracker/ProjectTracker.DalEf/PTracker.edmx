@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="PTrackerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+    <Schema Namespace="PTrackerModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
         <EntityContainer Name="PTrackerModelStoreContainer">
           <EntitySet Name="Assignment" EntityType="PTrackerModel.Store.Assignment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Project" EntityType="PTrackerModel.Store.Project" store:Type="Tables" Schema="dbo" />
@@ -39,7 +39,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nchar" Nullable="false" MaxLength="100" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="Started" Type="date" />
           <Property Name="Ended" Type="date" />
           <Property Name="Description" Type="text" />
@@ -50,8 +50,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="LastName" Type="nchar" Nullable="false" MaxLength="50" />
-          <Property Name="FirstName" Type="nchar" Nullable="false" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="FirstName" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="LastChanged" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Role">
@@ -59,7 +59,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="nchar" Nullable="false" MaxLength="50" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="50" />
           <Property Name="LastChanged" Type="timestamp" Nullable="false" StoreGeneratedPattern="Computed" />
         </EntityType>
         <Association Name="FK_Assignment_Project">
@@ -98,8 +98,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="PTrackerModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">

@@ -43,14 +43,9 @@ namespace Mvc3UI.Controllers
     public ActionResult Create(ProjectEdit project)
     {
       if (SaveObject(project, false))
-      {
         return RedirectToAction("Index", new { id = project.Id });
-      }
       else
-      {
-        ViewData.Model = project;
         return View();
-      }
     }
 
     //
@@ -68,15 +63,11 @@ namespace Mvc3UI.Controllers
     [HttpPost]
     public ActionResult Edit(int id, ProjectEdit project)
     {
+      LoadProperty(project, ProjectEdit.IdProperty, id);
       if (SaveObject(project, true))
-      {
-        return RedirectToAction("Index", new { id = project.Id });
-      }
+        return RedirectToAction("Index");
       else
-      {
-        ViewData.Model = project;
         return View();
-      }
     }
 
     //

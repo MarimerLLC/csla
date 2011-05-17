@@ -27,7 +27,6 @@
         </td>
         <td>
             @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditList), Html.ActionLink("Edit", "Edit", new { id = item.Id }), "Edit") |
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(RoleEditList), Html.ActionLink("Delete", "Delete", new { id = item.Id }), "Delete")
         </td>
     </tr>

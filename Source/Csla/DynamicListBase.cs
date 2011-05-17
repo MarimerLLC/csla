@@ -165,14 +165,8 @@ namespace Csla
                 result.CopyState(tmp, false);
 
               SafeSetItem(index, result);
-#if SILVERLIGHT
-              //Because SL Data Grid does not support replace action.
-              // we have to artificially raise remove/insert events
               OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
               OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
-#else
-              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, result, item));
-#endif
             }
 #if SILVERLIGHT
             item.SaveComplete(result, null, null);

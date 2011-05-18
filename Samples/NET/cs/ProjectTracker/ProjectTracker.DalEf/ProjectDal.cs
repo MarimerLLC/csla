@@ -128,7 +128,10 @@ namespace ProjectTracker.DalEf
                     where r.Id == id
                     select r).FirstOrDefault();
         if (data != null)
+        {
           ctx.ObjectContext.Projects.DeleteObject(data);
+          ctx.ObjectContext.SaveChanges();
+        }
       }
     }
   }

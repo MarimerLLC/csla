@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web.Mvc;
 
 namespace Csla.Web.Mvc
 {
@@ -29,5 +30,37 @@ namespace Csla.Web.Mvc
     /// Gets or sets the Model object.
     /// </summary>
     public T ModelObject { get; set; }
+
+    /// <summary>
+    /// Saves the current Model object if the object
+    /// implements Csla.Core.ISavable.
+    /// </summary>
+    /// <param name="modelState">Controller's ModelState object.</param>
+    /// <returns>true if the save succeeds.</returns>
+    public virtual bool Save(ModelStateDictionary modelState, bool forceUpdate)
+    {
+      try
+      {
+        var savable = ModelObject as Csla.Core.ISavable;
+        if (savable == null)
+          throw new InvalidOperationException("Save");
+
+        ModelObject = (T)savable.Save(forceUpdate);
+        return true;
+      }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          modelState.AddModelError("", ex.BusinessException.Message);
+        else
+          modelState.AddModelError("", ex.Message);
+        return false;
+      }
+      catch (Exception ex)
+      {
+        modelState.AddModelError("", ex.Message);
+        return false;
+      }
+    }
   }
 }

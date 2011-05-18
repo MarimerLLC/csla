@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ProjectTracker.Library;
+using Mvc3UI.ViewModels;
 
 namespace Mvc3UI.Controllers
 {
@@ -21,18 +22,20 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Resource/Details/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(ResourceEdit))]
     public ActionResult Details(int id)
     {
-      ViewData.Model = ResourceEdit.GetResource(id);
+      ViewData.Model = new ResourceViewModel(id);
       return View();
     }
 
     //
     // GET: /Resource/Create
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ResourceEdit))]
     public ActionResult Create()
     {
-      ViewData.Model = ResourceEdit.NewResource();
+      ViewData.Model = new ResourceViewModel();
       return View();
     }
 
@@ -40,11 +43,11 @@ namespace Mvc3UI.Controllers
     // POST: /Resource/Create
 
     [HttpPost]
-    public ActionResult Create(ResourceEdit resource)
+    public ActionResult Create(ResourceViewModel resource)
     {
-      if (SaveObject(resource, false))
+      if (resource.Save(ModelState, false))
       {
-        return RedirectToAction("Index", new { id = resource.Id });
+        return RedirectToAction("Index", new { id = resource.ModelObject.Id });
       }
       else
       {
@@ -56,9 +59,10 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Resource/Edit/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit))]
     public ActionResult Edit(int id)
     {
-      ViewData.Model = ResourceEdit.GetResource(id);
+      ViewData.Model = new ResourceViewModel(id);
       return View();
     }
 
@@ -66,11 +70,11 @@ namespace Mvc3UI.Controllers
     // POST: /Resource/Edit/5
 
     [HttpPost]
-    public ActionResult Edit(int id, ResourceEdit resource)
+    public ActionResult Edit(int id, ResourceViewModel resource)
     {
-      if (SaveObject(resource, true))
+      if (resource.Save(ModelState, true))
       {
-        return RedirectToAction("Index", new { id = resource.Id });
+        return RedirectToAction("Index", new { id = resource.ModelObject.Id });
       }
       else
       {
@@ -82,9 +86,10 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Resource/Delete/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ResourceEdit))]
     public ActionResult Delete(int id)
     {
-      ViewData.Model = ResourceEdit.GetResource(id);
+      ViewData.Model = new ResourceViewModel(id);
       return View();
     }
 

@@ -1,4 +1,4 @@
-﻿@model ProjectTracker.Library.ResourceEdit
+﻿@model Mvc3UI.ViewModels.ResourceViewModel
 
 @{
     ViewBag.Title = "Edit resource";
@@ -14,23 +14,23 @@
     <fieldset>
         <legend>Resource</legend>
 
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.TimeStamp)
+        @Html.HiddenFor(model => model.ModelObject.Id)
+        @Html.HiddenFor(model => model.ModelObject.TimeStamp)
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.FirstName)
+            @Html.LabelFor(model => model.ModelObject.FirstName)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.FirstName)
-            @Html.ValidationMessageFor(model => model.FirstName)
+            @Html.EditorFor(model => model.ModelObject.FirstName)
+            @Html.ValidationMessageFor(model => model.ModelObject.FirstName)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.LastName)
+            @Html.LabelFor(model => model.ModelObject.LastName)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.LastName)
-            @Html.ValidationMessageFor(model => model.LastName)
+            @Html.EditorFor(model => model.ModelObject.LastName)
+            @Html.ValidationMessageFor(model => model.ModelObject.LastName)
         </div>
 
         <p>
@@ -54,7 +54,7 @@
           </tr>
         </thead>
         <tbody>
-          @foreach (var item in Model.Assignments)
+          @foreach (var item in Model.ModelObject.Assignments)
           { 
             <tr>
               <td>@item.ProjectName
@@ -67,7 +67,7 @@
           }
         </tbody>
       </table>
-      @Html.ActionLink("Edit assignments", "Index", "ResourceAssignment", new { id = Model.Id }, null)
+      @Html.ActionLink("Edit assignments", "Index", "ResourceAssignment", new { id = Model.ModelObject.Id }, null)
     </fieldset>
   </fieldset>
 }

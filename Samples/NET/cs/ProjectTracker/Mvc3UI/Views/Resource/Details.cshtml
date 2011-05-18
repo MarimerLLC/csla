@@ -1,7 +1,7 @@
 ﻿@using Csla.Web.Mvc
 @using ProjectTracker.Library
 
-@model ProjectTracker.Library.ResourceEdit
+@model Mvc3UI.ViewModels.ResourceViewModel
 
 @{
     ViewBag.Title = "Resource details";
@@ -13,13 +13,13 @@
     <legend>Resource</legend>
 
     <div class="display-label">FirstName</div>
-    <div class="display-field">@Model.FirstName</div>
+    <div class="display-field">@Model.ModelObject.FirstName</div>
 
     <div class="display-label">LastName</div>
-    <div class="display-field">@Model.LastName</div>
+    <div class="display-field">@Model.ModelObject.LastName</div>
 
     <div class="display-label">FullName</div>
-    <div class="display-field">@Model.FullName</div>
+    <div class="display-field">@Model.ModelObject.FullName</div>
 
 </fieldset>
 
@@ -30,7 +30,7 @@
   <tr><td>Project</td><td>Assigned</td><td>Role</td></tr>
 </thead>
 <tbody>
-@foreach (var item in Model.Assignments) { 
+@foreach (var item in Model.ModelObject.Assignments) { 
   <tr><td>@Html.ActionLink(item.ProjectName, "Details", "Project", new { id = item.ProjectId }, null)</td><td>@String.Format("{0:d}", item.Assigned)</td><td>@item.RoleName</td></tr>
 }
 </tbody></table>
@@ -38,7 +38,7 @@
 <br />
 
 <p>
-    @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit), Html.ActionLink("Edit", "Edit", new { id = Model.Id }), "Edit") |
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit), Html.ActionLink("Edit", "Edit", new { id = Model.ModelObject.Id }), "Edit") |
     @Html.ActionLink("Back to List", "Index")
 </p>
 

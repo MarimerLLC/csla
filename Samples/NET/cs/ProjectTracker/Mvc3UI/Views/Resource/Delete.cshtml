@@ -1,4 +1,4 @@
-﻿@model ProjectTracker.Library.ResourceEdit
+﻿@model Mvc3UI.ViewModels.ResourceViewModel
 
 @{
     ViewBag.Title = "Delete resource";
@@ -11,7 +11,7 @@
     <legend>Resource</legend>
 
     <div class="display-label">Name</div>
-    <div class="display-field">@Model.FullName</div>
+    <div class="display-field">@Model.ModelObject.FullName</div>
 
 </fieldset>
 @using (Html.BeginForm()) {

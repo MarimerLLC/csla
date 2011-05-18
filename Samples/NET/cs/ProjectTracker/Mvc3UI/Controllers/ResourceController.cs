@@ -43,6 +43,7 @@ namespace Mvc3UI.Controllers
     // POST: /Resource/Create
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ResourceEdit))]
     public ActionResult Create(ResourceViewModel resource)
     {
       if (resource.Save(ModelState, false))
@@ -70,6 +71,7 @@ namespace Mvc3UI.Controllers
     // POST: /Resource/Edit/5
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit))]
     public ActionResult Edit(int id, ResourceViewModel resource)
     {
       if (resource.Save(ModelState, true))
@@ -97,6 +99,7 @@ namespace Mvc3UI.Controllers
     // POST: /Resource/Delete/5
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ResourceEdit))]
     public ActionResult Delete(int id, FormCollection collection)
     {
       try

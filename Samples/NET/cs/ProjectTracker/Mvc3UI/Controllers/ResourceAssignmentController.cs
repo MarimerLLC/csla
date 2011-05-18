@@ -7,6 +7,7 @@ using ProjectTracker.Library;
 
 namespace Mvc3UI.Controllers
 {
+  [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ResourceEdit))]
   public class ResourceAssignmentController : Controller
   {
     //

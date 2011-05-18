@@ -53,6 +53,7 @@ namespace Mvc3UI.Controllers
     // POST: /Project/Create
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectEdit))]
     public ActionResult Create(ProjectEdit project)
     {
       if (SaveObject(project, false))
@@ -75,6 +76,7 @@ namespace Mvc3UI.Controllers
     // POST: /Project/Edit/5
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectEdit))]
     public ActionResult Edit(int id, ProjectEdit project)
     {
       LoadProperty(project, ProjectEdit.IdProperty, id);
@@ -98,6 +100,7 @@ namespace Mvc3UI.Controllers
     // POST: /Project/Delete/5
 
     [HttpPost]
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectEdit))]
     public ActionResult Delete(int id, FormCollection collection)
     {
       try

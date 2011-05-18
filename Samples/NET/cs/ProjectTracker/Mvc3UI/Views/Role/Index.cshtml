@@ -10,7 +10,8 @@
 <h2>@ViewBag.Title</h2>
 
 <p>
-    @Html.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(RoleEditList), Html.ActionLink("Create Role", "Create"), string.Empty)
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(RoleEditList), Html.ActionLink("Create Role", "Create"), string.Empty) |
+    @Html.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditList), Html.ActionLink("Edit all roles", "EditList"), string.Empty)
 </p>
 <table>
     <tr>

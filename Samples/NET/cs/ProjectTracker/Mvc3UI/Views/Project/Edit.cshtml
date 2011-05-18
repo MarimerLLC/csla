@@ -23,16 +23,20 @@
       @Html.LabelFor(model => model.Name)
     </div>
     <div class="editor-field">
-      @Html.EditorFor(model => model.Name)
+      @Html.HasPermission(Csla.Rules.AuthorizationActions.WriteProperty, Model, ProjectEdit.NameProperty, 
+                          Html.EditorFor(model => model.Name), 
+                          Html.DisplayFor(model => model.Name))
       @Html.ValidationMessageFor(model => model.Name)
     </div>
-    <div class="editor-label">
-      @Html.LabelFor(model => model.Description)
-    </div>
-    <div class="editor-field">
-      @Html.EditorFor(model => model.Description)
-      @Html.ValidationMessageFor(model => model.Description)
-    </div>
+    @if (((Csla.Security.IAuthorizeReadWrite)Model).CanWriteProperty(ProjectEdit.DescriptionProperty.Name)) {
+      <div class="editor-label">
+        @Html.LabelFor(model => model.Description)
+      </div>
+      <div class="editor-field">
+        @Html.EditorFor(model => model.Description)
+        @Html.ValidationMessageFor(model => model.Description)
+      </div>
+    }
     <div class="editor-label">
       @Html.LabelFor(model => model.Started)
     </div>

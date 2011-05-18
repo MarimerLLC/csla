@@ -7,8 +7,19 @@ using ProjectTracker.Library;
 
 namespace Mvc3UI.Controllers
 {
-  public class ProjectController : Csla.Web.Mvc.Controller
+  public class ProjectController : Csla.Web.Mvc.Controller, Csla.Web.Mvc.IModelCreator
   {
+    public object CreateModel(Type modelType)
+    {
+      // this CreateModel method is entirely optional, and
+      // exists to demonstrate how you implement the
+      // IModelCreator interface
+      if (modelType.Equals(typeof(ProjectEdit)))
+        return ProjectEdit.NewProject();
+      else
+        return Activator.CreateInstance(modelType);
+    }
+
     //
     // GET: /Project/
 
@@ -21,6 +32,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Project/Details/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.GetObject, typeof(ProjectEdit))]
     public ActionResult Details(int id)
     {
       ViewData.Model = ProjectEdit.GetProject(id);
@@ -30,6 +42,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Project/Create
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectEdit))]
     public ActionResult Create()
     {
       ViewData.Model = ProjectEdit.NewProject();
@@ -51,6 +64,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Project/Edit/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectEdit))]
     public ActionResult Edit(int id)
     {
       ViewData.Model = ProjectEdit.GetProject(id);
@@ -73,6 +87,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Project/Delete/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectEdit))]
     public ActionResult Delete(int id)
     {
       ViewData.Model = ProjectEdit.GetProject(id);

@@ -21,6 +21,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Role/Create
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(RoleEditList))]
     public ActionResult Create()
     {
       ViewData.Model = RoleEdit.NewRoleEdit();
@@ -56,6 +57,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Role/Edit/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(RoleEditList))]
     public ActionResult Edit(int id)
     {
       ViewData.Model = RoleEditManager.GetRoleEdit(id);
@@ -93,6 +95,7 @@ namespace Mvc3UI.Controllers
     //
     // GET: /Role/Delete/5
 
+    [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(RoleEditList))]
     public ActionResult Delete(int id)
     {
       ViewData.Model = RoleEditManager.GetRoleEdit(id);

@@ -18,3 +18,12 @@ folder).
 
 Use of the ProjectTracker.Dal.DalEf data access implementation requires
 SQL Server 2008 R2 - at least Express or Developer Edition.
+
+Pre-defined user accounts:
+User:        admin
+Password:    admin
+Description: User in the Admin role
+
+User:        manager
+Password:    manager
+Description: User in the ProjectManager role

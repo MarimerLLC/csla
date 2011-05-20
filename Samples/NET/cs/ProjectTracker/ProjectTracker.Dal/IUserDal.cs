@@ -8,5 +8,6 @@ namespace ProjectTracker.Dal
   public interface IUserDal
   {
     UserDto Fetch(string username, string password);
+    UserDto Fetch(string username);
   }
 }

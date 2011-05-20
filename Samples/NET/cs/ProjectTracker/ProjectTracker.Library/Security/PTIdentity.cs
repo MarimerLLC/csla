@@ -22,26 +22,62 @@ namespace ProjectTracker.Library.Security
       return DataPortal.Fetch<PTIdentity>(new UsernameCriteria(username, password));
     }
 
-    private void DataPortal_Fetch(UsernameCriteria criteria)
+    internal static PTIdentity GetPTIdentity(string username)
     {
+      return DataPortal.Fetch<PTIdentity>(username);
+    }
+
+    private void DataPortal_Fetch(string username)
+    {
+      ProjectTracker.Dal.UserDto data = null;
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
         var dal = ctx.GetProvider<ProjectTracker.Dal.IUserDal>();
         try
         {
-          var data = dal.Fetch(criteria.Username, criteria.Password);
-          base.Name = data.Username;
-          base.IsAuthenticated = true;
-          base.AuthenticationType = "Membership";
-          base.Roles = new Csla.Core.MobileList<string>(data.Roles);
+          data = dal.Fetch(username);
         }
         catch (ProjectTracker.Dal.DataNotFoundException)
         {
-          base.Name = string.Empty;
-          base.IsAuthenticated = false;
-          base.AuthenticationType = string.Empty;
-          base.Roles = new Csla.Core.MobileList<string>();
+          data = null;
         }
+        LoadUser(data);
+      }
+    }
+
+    private void DataPortal_Fetch(UsernameCriteria criteria)
+    {
+      ProjectTracker.Dal.UserDto data = null;
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IUserDal>();
+        try
+        {
+          data = dal.Fetch(criteria.Username, criteria.Password);
+        }
+        catch (ProjectTracker.Dal.DataNotFoundException)
+        {
+          data = null;
+        }
+        LoadUser(data);
+      }
+    }
+
+    private void LoadUser(ProjectTracker.Dal.UserDto data)
+    {
+      if (data != null)
+      {
+        base.Name = data.Username;
+        base.IsAuthenticated = true;
+        base.AuthenticationType = "Membership";
+        base.Roles = new Csla.Core.MobileList<string>(data.Roles);
+      }
+      else
+      {
+        base.Name = string.Empty;
+        base.IsAuthenticated = false;
+        base.AuthenticationType = string.Empty;
+        base.Roles = new Csla.Core.MobileList<string>();
       }
     }
 #endif

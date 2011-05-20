@@ -11,8 +11,6 @@ namespace Mvc3UI
       string username, string password)
     {
       bool result = PTPrincipal.Login(username, password);
-      HttpContext.Current.Session["CslaPrincipal"] =
-        Csla.ApplicationContext.User;
       return result;
     }
 

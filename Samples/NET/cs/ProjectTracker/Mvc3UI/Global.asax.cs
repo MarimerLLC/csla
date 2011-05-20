@@ -42,55 +42,17 @@ namespace Mvc3UI
       RegisterRoutes(RouteTable.Routes);
     }
 
-    //protected void Application_AuthenticateRequest(Object sender, EventArgs e)
-    //{
-    //  if (Csla.ApplicationContext.User != null && Csla.ApplicationContext.User.Identity.IsAuthenticated && Csla.ApplicationContext.User.Identity is FormsIdentity)
-    //  {
-    //    FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(Request.Cookies.Get(FormsAuthentication.FormsCookieName).Value);
-    //    FormsIdentity id = new FormsIdentity(ticket);
-    //    var principal = new GenericPrincipal(
-    //      new GenericIdentity(id.Name, id.Ticket.UserData), new string[] { "ProjectManager" });
-    //    Csla.ApplicationContext.User = principal;
-    //  }
-    //}
-
-    protected void Application_AcquireRequestState(
-      object sender, EventArgs e)
+    protected void Application_AuthenticateRequest(Object sender, EventArgs e)
     {
-      if (HttpContext.Current.Handler is IRequiresSessionState)
+      if (Csla.ApplicationContext.User != null && 
+          Csla.ApplicationContext.User.Identity.IsAuthenticated && 
+          Csla.ApplicationContext.User.Identity is FormsIdentity)
       {
-        if (Csla.ApplicationContext.AuthenticationType == "Windows")
-          return;
-
-        IPrincipal principal;
-        try
-        {
-          principal = (IPrincipal)HttpContext.Current.Session["CslaPrincipal"];
-        }
-        catch
-        {
-          principal = null;
-        }
-
-        if (principal == null)
-        {
-          if (User.Identity.IsAuthenticated && User.Identity is FormsIdentity)
-          {
-            // no principal in session, but ASP.NET token
-            // still valid - so sign out ASP.NET
-            FormsAuthentication.SignOut();
-            Response.Redirect(Request.Url.PathAndQuery);
-          }
-          // didn't get a principal from Session, so
-          // set it to an unauthenticted PTPrincipal
-          ProjectTracker.Library.Security.PTPrincipal.Logout();
-        }
-        else
-        {
-          // use the principal from Session
-          Csla.ApplicationContext.User = principal;
-        }
+        var ticket = FormsAuthentication.Decrypt(
+          Request.Cookies.Get(FormsAuthentication.FormsCookieName).Value);
+        FormsIdentity id = new FormsIdentity(ticket);
+        ProjectTracker.Library.Security.PTPrincipal.Load(id.Name);
       }
     }
-  }
+ }
 }

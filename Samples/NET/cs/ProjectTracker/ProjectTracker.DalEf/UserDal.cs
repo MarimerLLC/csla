@@ -13,13 +13,26 @@ namespace ProjectTracker.DalEf
     {
       if (Membership.ValidateUser(username, password))
       {
-        var result = new UserDto { Username = username };
-        result.Roles = Roles.Provider.GetRolesForUser(result.Username);
-        return result;
+        return Fetch(username);
       }
       else
       {
         throw new DataNotFoundException("User");
+      }
+    }
+
+    public UserDto Fetch(string username)
+    {
+      try
+      {
+        var user = Membership.GetUser(username);
+        var result = new UserDto { Username = user.UserName };
+        result.Roles = Roles.Provider.GetRolesForUser(result.Username);
+        return result;
+      }
+      catch (Exception ex)
+      {
+        throw new DataNotFoundException("User", ex);
       }
     }
   }

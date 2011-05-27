@@ -57,7 +57,7 @@ namespace ProjectTracker.Library
       Result = DataPortal.CreateChild<ProjectResourceEdit>(resourceId);
     }
 
-    private void DataPortal_Update(ProjectResourceCriteria criteria)
+    private void DataPortal_Fetch(ProjectResourceCriteria criteria)
     {
       Result = DataPortal.FetchChild<ProjectResourceEdit>(criteria.ProjectId, criteria.ResourceId);
     }

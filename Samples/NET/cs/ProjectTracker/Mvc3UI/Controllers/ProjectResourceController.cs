@@ -39,18 +39,18 @@ namespace Mvc3UI.Controllers
     {
       try
       {
-        var project = ProjectEdit.GetProject(projectId);
         var resourceId = int.Parse(collection["ResourceId"]);
-        var model = project.Resources.Assign(resourceId);
+        var model = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;
         model.Role = int.Parse(collection["Role"]);
-        project = project.Save();
-        return RedirectToAction("Index", new { id = project.Id });
+        model = ProjectResourceUpdater.Update(projectId, model);
+        return RedirectToAction("Index", new { id = projectId });
       }
       catch (Exception ex)
       {
         ViewData.Add("Error", ex);
         ViewData.Add("ProjectId", projectId);
-        ViewData.Model = new ProjectResourceEdit();
+        if (ViewData.Model == null)
+          ViewData.Model = new ProjectResourceEdit();
         return View();
       }
     }
@@ -60,9 +60,9 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Edit(int projectId, int resourceId)
     {
-      var project = ProjectEdit.GetProject(projectId);
-      ViewData.Add("ProjectId", project.Id);
-      ViewData.Model = project.Resources.Where(r => r.ResourceId == resourceId).First();
+      ViewData.Add("ProjectId", projectId);
+      var model = ProjectResourceEditCreator.GetProjectResourceEditCreator(projectId, resourceId).Result;
+      ViewData.Model = model;
       return View();
     }
 
@@ -72,18 +72,17 @@ namespace Mvc3UI.Controllers
     [HttpPost]
     public ActionResult Edit(int projectId, int resourceId, FormCollection collection)
     {
-      var project = ProjectEdit.GetProject(projectId);
-      var model = project.Resources.Where(r => r.ResourceId == resourceId).First();
+      var model = ProjectResourceEditCreator.GetProjectResourceEditCreator(projectId, resourceId).Result;
       try
       {
         model.Role = int.Parse(collection["Role"]);
-        project = project.Save();
-        return RedirectToAction("Index", new { id = project.Id });
+        model = ProjectResourceUpdater.Update(projectId, model);
+        return RedirectToAction("Index", new { id = projectId });
       }
       catch
       {
-        ViewData.Add("ProjectId", project.Id);
-        ViewData.Model = project.Resources.Where(r => r.ResourceId == resourceId).First();
+        ViewData.Add("ProjectId", projectId);
+        ViewData.Model = model;
         return View();
       }
     }

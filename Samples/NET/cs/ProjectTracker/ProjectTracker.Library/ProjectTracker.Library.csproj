@@ -80,7 +80,6 @@
     <Compile Include="Admin\RoleEdit.cs" />
     <Compile Include="Admin\RoleEditList.cs" />
     <Compile Include="Admin\RoleEditManager.cs" />
-    <Compile Include="Assignment.cs" />
     <Compile Include="ProjectEdit.cs" />
     <Compile Include="ProjectCloser.cs" />
     <Compile Include="ProjectExistsCommand.cs" />
@@ -90,6 +89,7 @@
     <Compile Include="ProjectResourceEdit.cs" />
     <Compile Include="ProjectResourceEditCreator.cs" />
     <Compile Include="ProjectResources.cs" />
+    <Compile Include="ProjectResourceUpdater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceAssignmentEditCreator.cs" />
     <Compile Include="ResourceEdit.cs" />

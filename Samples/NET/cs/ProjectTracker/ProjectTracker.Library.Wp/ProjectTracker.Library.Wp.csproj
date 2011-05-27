@@ -57,9 +57,6 @@
     <Compile Include="..\ProjectTracker.Library\Admin\RoleEditList.cs">
       <Link>Admin\RoleEditList.cs</Link>
     </Compile>
-    <Compile Include="..\ProjectTracker.Library\Assignment.cs">
-      <Link>Assignment.cs</Link>
-    </Compile>
     <Compile Include="..\ProjectTracker.Library\ProjectCloser.cs">
       <Link>ProjectCloser.cs</Link>
     </Compile>

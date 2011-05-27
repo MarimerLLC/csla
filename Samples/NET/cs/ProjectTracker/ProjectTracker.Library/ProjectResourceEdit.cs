@@ -90,7 +90,7 @@ namespace ProjectTracker.Library
     {
       base.AddBusinessRules();
 
-      BusinessRules.AddRule(new Assignment.ValidRole(RoleProperty));
+      BusinessRules.AddRule(new RoleList.ValidRole(RoleProperty));
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
@@ -114,6 +114,16 @@ namespace ProjectTracker.Library
       base.Child_Create();
     }
 
+    private void Child_Fetch(int projectId, int resourceId)
+    {
+      using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
+      {
+        var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
+        var data = dal.Fetch(projectId, resourceId);
+        Child_Fetch(data);
+      }
+    }
+
     private void Child_Fetch(ProjectTracker.Dal.AssignmentDto data)
     {
       using (BypassPropertyChecks)
@@ -131,8 +141,12 @@ namespace ProjectTracker.Library
         }
       }
     }
-
     private void Child_Insert(ProjectEdit project)
+    {
+      Child_Insert(project.Id);
+    }
+
+    private void Child_Insert(int projectId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
@@ -141,7 +155,7 @@ namespace ProjectTracker.Library
         {
           var item = new ProjectTracker.Dal.AssignmentDto
           {
-            ProjectId = project.Id,
+            ProjectId = projectId,
             ResourceId = this.ResourceId,
             Assigned = ReadProperty(AssignedProperty),
             RoleId = this.Role
@@ -154,12 +168,17 @@ namespace ProjectTracker.Library
 
     private void Child_Update(ProjectEdit project)
     {
+      Child_Update(project.Id);
+    }
+
+    private void Child_Update(int projectId)
+    {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())
       {
         var dal = ctx.GetProvider<ProjectTracker.Dal.IAssignmentDal>();
         using (BypassPropertyChecks)
         {
-          var item = dal.Fetch(project.Id, ResourceId);
+          var item = dal.Fetch(projectId, ResourceId);
           item.Assigned = ReadProperty(AssignedProperty);
           item.RoleId = Role;
           dal.Update(item);

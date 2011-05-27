@@ -17,21 +17,68 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResultProperty, value); }
     }
 
+    /// <summary>
+    /// Creates a new ProjectResourceEdit object.
+    /// </summary>
     public static void GetProjectResourceEditCreator(int resourceId, EventHandler<DataPortalResult<ProjectResourceEditCreator>> callback)
     {
       DataPortal.BeginFetch<ProjectResourceEditCreator>(resourceId, callback);
     }
 
+    /// <summary>
+    /// Gets an existing ProjectResourceEdit object.
+    /// </summary>
+    public static void GetProjectResourceEditCreator(int projectId, int resourceId, 
+      EventHandler<DataPortalResult<ProjectResourceEditCreator>> callback)
+    {
+      DataPortal.BeginFetch<ProjectResourceEditCreator>(
+        new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
+    }
+
 #if !SILVERLIGHT
+    /// <summary>
+    /// Creates a new ProjectResourceEdit object.
+    /// </summary>
     public static ProjectResourceEditCreator GetProjectResourceEditCreator(int resourceId)
     {
       return DataPortal.Fetch<ProjectResourceEditCreator>(resourceId);
+    }
+
+    /// <summary>
+    /// Gets an existing ProjectResourceEdit object.
+    /// </summary>
+    public static ProjectResourceEditCreator GetProjectResourceEditCreator(int projectId, int resourceId)
+    {
+      return DataPortal.Fetch<ProjectResourceEditCreator>(new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId });
     }
 
     private void DataPortal_Fetch(int resourceId)
     {
       Result = DataPortal.CreateChild<ProjectResourceEdit>(resourceId);
     }
+
+    private void DataPortal_Update(ProjectResourceCriteria criteria)
+    {
+      Result = DataPortal.FetchChild<ProjectResourceEdit>(criteria.ProjectId, criteria.ResourceId);
+    }
 #endif
+
+    [Serializable]
+    public class ProjectResourceCriteria : CriteriaBase<ProjectResourceCriteria>
+    {
+      public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
+      public int ProjectId
+      {
+        get { return ReadProperty(ProjectIdProperty); }
+        set { LoadProperty(ProjectIdProperty, value); }
+      }
+
+      public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+      public int ResourceId
+      {
+        get { return ReadProperty(ResourceIdProperty); }
+        set { LoadProperty(ResourceIdProperty, value); }
+      }
+    }
   }
 }

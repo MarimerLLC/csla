@@ -102,6 +102,7 @@
     <Compile Include="RoleList.cs" />
     <Compile Include="Security\PTIdentity.cs" />
     <Compile Include="Security\PTPrincipal.cs" />
+    <Compile Include="ValidRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

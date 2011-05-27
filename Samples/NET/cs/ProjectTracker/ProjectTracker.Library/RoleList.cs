@@ -40,7 +40,7 @@ namespace ProjectTracker.Library
       if (_list == null)
         DataPortal.BeginFetch<RoleList>((o, e) =>
         {
-          _list = e.Object;
+          SetCache(e.Object);
           callback(o, e);
         });
       else
@@ -76,8 +76,8 @@ namespace ProjectTracker.Library
 #else
     public static RoleList GetList()
     {
-      if (_list == null)
-        _list = DataPortal.Fetch<RoleList>();
+      if (!IsCached)
+        SetCache(DataPortal.Fetch<RoleList>());
       return _list;
     }
 
@@ -105,38 +105,5 @@ namespace ProjectTracker.Library
       RaiseListChangedEvents = rlce;
     }
 #endif
-
-    /// <summary>
-    /// Ensure the Role property value exists
-    /// in RoleList
-    /// </summary>
-    internal class ValidRole : BusinessRule
-    {
-      public ValidRole(Csla.Core.IPropertyInfo primaryProperty)
-        : base(primaryProperty)
-      {
-#if SILVERLIGHT
-        IsAsync = true;
-#endif
-        InputProperties = new System.Collections.Generic.List<Csla.Core.IPropertyInfo> { primaryProperty };
-      }
-
-      protected override void Execute(RuleContext context)
-      {
-#if SILVERLIGHT
-        int role = (int)context.InputPropertyValues[PrimaryProperty];
-        RoleList.GetList((o, e) =>
-          {
-            if (!e.Object.ContainsKey(role))
-              context.AddErrorResult("Role must be in RoleList");
-            context.Complete();
-          });
-#else
-        int role = (int)context.InputPropertyValues[PrimaryProperty];
-        if (!RoleList.GetList().ContainsKey(role))
-          context.AddErrorResult("Role must be in RoleList");
-#endif
-      }
-    }
   }
 }

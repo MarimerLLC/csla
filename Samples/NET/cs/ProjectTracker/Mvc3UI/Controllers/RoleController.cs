@@ -37,7 +37,7 @@ namespace Mvc3UI.Controllers
     {
       try
       {
-        RoleEditManager.SaveRoleEdit(role, false);
+        RoleEditManager.SaveRoleEdit(role);
         return RedirectToAction("Index");
       }
       catch (Csla.DataPortalException ex)
@@ -98,7 +98,7 @@ namespace Mvc3UI.Controllers
       LoadProperty(role, RoleEdit.IdProperty, id);
       try
       {
-        RoleEditManager.SaveRoleEdit(role, true);
+        RoleEditManager.SaveRoleEdit(role);
         return RedirectToAction("Index");
       }
       catch (Csla.DataPortalException ex)

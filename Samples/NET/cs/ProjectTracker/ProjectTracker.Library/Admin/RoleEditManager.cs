@@ -17,10 +17,8 @@ namespace ProjectTracker.Library.Admin
       return cmd.RoleEdit;
     }
 
-    public static RoleEdit SaveRoleEdit(RoleEdit role, bool forceUpdate)
+    public static RoleEdit SaveRoleEdit(RoleEdit role)
     {
-      if (forceUpdate)
-        role.MarkOld();
       var cmd = new RoleEditManager { RoleEdit = role };
       cmd = DataPortal.Execute<RoleEditManager>(cmd);
       return cmd.RoleEdit;
@@ -61,10 +59,11 @@ namespace ProjectTracker.Library.Admin
     private void SaveRoleEdit()
     {
       var list = RoleEditList.GetRoles();
-      if (RoleEdit.IsNew)
+      var item = list.GetRoleById(RoleEdit.Id);
+      if (item == null)
         list.Add(RoleEdit);
       else
-        list.GetRoleById(RoleEdit.Id).Name = RoleEdit.Name;
+        item.Name = RoleEdit.Name;
       list.Save();
     }
   }

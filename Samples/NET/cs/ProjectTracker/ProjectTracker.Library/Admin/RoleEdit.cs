@@ -141,11 +141,6 @@ namespace ProjectTracker.Library.Admin
         }
       }
     }
-
-    internal new void MarkOld()
-    {
-      base.MarkOld();
-    }
 #endif
   }
 }

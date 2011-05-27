@@ -71,7 +71,7 @@ namespace ProjectTracker.Library
     {
       base.AddBusinessRules();
 
-      BusinessRules.AddRule(new RoleList.ValidRole(RoleProperty));
+      BusinessRules.AddRule(new ValidRole(RoleProperty));
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }

@@ -119,6 +119,9 @@
     <Compile Include="..\ProjectTracker.Library\Security\PTPrincipal.cs">
       <Link>Security\PTPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\ProjectTracker.Library\ValidRole.cs">
+      <Link>ValidRole.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

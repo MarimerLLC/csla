@@ -66,7 +66,11 @@ namespace ProjectTracker.Library
     public int Role
     {
       get { return GetProperty(RoleProperty); }
-      set { SetProperty(RoleProperty, value); }
+      set 
+      { 
+        SetProperty(RoleProperty, value);
+        OnPropertyChanged("RoleName");
+      }
     }
 
     [Display(Name = "Role")]
@@ -90,9 +94,11 @@ namespace ProjectTracker.Library
     {
       base.AddBusinessRules();
 
-      BusinessRules.AddRule(new RoleList.ValidRole(RoleProperty));
+      BusinessRules.AddRule(new ValidRole(RoleProperty));
 
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
+      BusinessRules.AddRule(
+        new Csla.Rules.CommonRules.IsInRole(
+          Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
 
 #if !SILVERLIGHT

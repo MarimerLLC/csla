@@ -111,7 +111,10 @@ namespace ProjectTracker.DalEf
                     where r.ProjectId == projectId && r.ResourceId == resourceId
                     select r).FirstOrDefault();
         if (data != null)
+        {
           ctx.ObjectContext.Assignments.DeleteObject(data);
+          ctx.ObjectContext.SaveChanges();
+        }
       }
     }
   }

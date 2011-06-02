@@ -11,10 +11,6 @@
 
     <p>
       @Html.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectEdit), Html.ActionLink("Create New", "Create"), string.Empty)
-      @if (Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(ProjectEdit)))
-      { 
-        @Html.ActionLink("Create New", "Create")
-      }
     </p>
     <table>
         <tr>

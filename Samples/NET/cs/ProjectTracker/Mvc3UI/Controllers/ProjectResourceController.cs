@@ -28,6 +28,8 @@ namespace Mvc3UI.Controllers
     public ActionResult Create(int projectId)
     {
       ViewData.Add("ProjectId", projectId);
+      ViewData.Add("Roles", new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"));
+      ViewData.Add("Resources", new SelectList(ProjectTracker.Library.ResourceList.GetResourceList(), "Id", "Name"));
       return View();
     }
 
@@ -45,13 +47,18 @@ namespace Mvc3UI.Controllers
         model = ProjectResourceUpdater.Update(projectId, model);
         return RedirectToAction("Index", new { id = projectId });
       }
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+        return Create(projectId);
+      }
       catch (Exception ex)
       {
-        ViewData.Add("Error", ex);
-        ViewData.Add("ProjectId", projectId);
-        if (ViewData.Model == null)
-          ViewData.Model = new ProjectResourceEdit();
-        return View();
+        ModelState.AddModelError("", ex.Message);
+        return Create(projectId);
       }
     }
 
@@ -79,10 +86,21 @@ namespace Mvc3UI.Controllers
         model = ProjectResourceUpdater.Update(projectId, model);
         return RedirectToAction("Index", new { id = projectId });
       }
-      catch
+      catch (Csla.DataPortalException ex)
+      {
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+        ViewData.Add("ProjectId", projectId);
+        ViewData.Model = model;
+        return View();
+      }
+      catch (Exception ex)
       {
         ViewData.Add("ProjectId", projectId);
         ViewData.Model = model;
+        ModelState.AddModelError("", ex.Message);
         return View();
       }
     }
@@ -112,11 +130,18 @@ namespace Mvc3UI.Controllers
         project = project.Save();
         return RedirectToAction("Index", new { id = project.Id });
       }
-      catch
+      catch (Csla.DataPortalException ex)
       {
-        ViewData.Add("ProjectId", project.Id);
-        ViewData.Model = project.Resources.Where(r => r.ResourceId == resourceId).First();
-        return View();
+        if (ex.BusinessException != null)
+          ModelState.AddModelError("", ex.BusinessException.Message);
+        else
+          ModelState.AddModelError("", ex.Message);
+        return Delete(projectId, resourceId);
+      }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError("", ex.Message);
+        return Delete(projectId, resourceId);
       }
     }
   }

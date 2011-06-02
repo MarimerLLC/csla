@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Test.Library
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc3UI", "Mvc3UI\Mvc3UI.csproj", "{0EC2DADF-83E3-4EF2-82E4-F50929E5D4A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApplication1", "MvcApplication1\MvcApplication1.csproj", "{023CD31E-C613-4C87-AEF3-A33FB8B47F63}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ProjectTracker.vsmdi
@@ -130,6 +132,16 @@ Global
 		{0EC2DADF-83E3-4EF2-82E4-F50929E5D4A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EC2DADF-83E3-4EF2-82E4-F50929E5D4A5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0EC2DADF-83E3-4EF2-82E4-F50929E5D4A5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Release|.NET.ActiveCfg = Release|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{023CD31E-C613-4C87-AEF3-A33FB8B47F63}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

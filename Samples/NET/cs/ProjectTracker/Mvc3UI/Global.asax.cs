@@ -44,15 +44,12 @@ namespace Mvc3UI
 
     protected void Application_AuthenticateRequest(Object sender, EventArgs e)
     {
-      if (Csla.ApplicationContext.User != null && 
-          Csla.ApplicationContext.User.Identity.IsAuthenticated && 
+      if (Csla.ApplicationContext.User != null &&
+          Csla.ApplicationContext.User.Identity.IsAuthenticated &&
           Csla.ApplicationContext.User.Identity is FormsIdentity)
       {
-        var ticket = FormsAuthentication.Decrypt(
-          Request.Cookies.Get(FormsAuthentication.FormsCookieName).Value);
-        FormsIdentity id = new FormsIdentity(ticket);
-        ProjectTracker.Library.Security.PTPrincipal.Load(id.Name);
+        ProjectTracker.Library.Security.PTPrincipal.Load(Csla.ApplicationContext.User.Identity.Name);
       }
     }
- }
+  }
 }

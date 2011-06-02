@@ -108,9 +108,10 @@ namespace Mvc3UI.Controllers
         ProjectEdit.DeleteProject(id);
         return RedirectToAction("Index");
       }
-      catch
+      catch (Exception ex)
       {
         ViewData.Model = ProjectEdit.GetProject(id);
+        ModelState.AddModelError("", ex.Message);
         return View();
       }
     }

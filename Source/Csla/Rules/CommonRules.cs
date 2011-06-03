@@ -256,7 +256,7 @@ namespace Csla.Rules.CommonRules
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Min);
         var message = string.Format(Resources.MinValueRule, PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity});
       }
     }
   }
@@ -306,7 +306,7 @@ namespace Csla.Rules.CommonRules
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Max);
         var message = string.Format(Resources.MaxValueRule, PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity});
       }
     }
   }

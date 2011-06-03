@@ -398,7 +398,7 @@ namespace Csla.Rules
       var affectedProperties = CheckObjectRules();
       var properties = ((IManageProperties)Target).GetManagedProperties();
       foreach (var property in properties)
-        affectedProperties.AddRange(CheckRules(property));
+        affectedProperties.AddRange(CheckRules(property, RuleExecuteContext.CheckRules));
       RunningRules = false;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
@@ -426,7 +426,8 @@ namespace Csla.Rules
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
-      var affectedProperties = RunRules(rules, false);
+      // JB: Changed to cascade propertyrule to allow combined ObjectLevel and PropertLevel rules.
+      var affectedProperties = RunRules(rules, true, RuleExecuteContext.CheckObjectRules);  
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
@@ -437,13 +438,18 @@ namespace Csla.Rules
     /// Invokes all rules for a specific property of the business type.
     /// </summary>
     /// <param name="property">Property to check.</param>
+    /// <param name="executionContext">The execution context.</param>
     /// <returns>
     /// Returns a list of property names affected by the invoked rules.
     /// The PropertyChanged event should be raised for each affected
     /// property.
     /// </returns>
-    public List<string> CheckRules(Csla.Core.IPropertyInfo property)
+    /// <exception cref="System.ArgumentNullException">If property is null</exception>
+    public List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleExecuteContext executionContext = RuleExecuteContext.PropertyChanged)
     {
+      if (property == null) 
+        throw new ArgumentNullException("property");
+
       if (_suppressRuleChecking)
         return new List<string>();
 
@@ -451,7 +457,8 @@ namespace Csla.Rules
       RunningRules = true;
 
       var affectedProperties = new List<string>();
-      affectedProperties.AddRange(CheckRulesForProperty(property, true));
+      affectedProperties.AddRange(CheckRulesForProperty(property, true, executionContext));
+
 
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
@@ -462,7 +469,7 @@ namespace Csla.Rules
     /// <summary>
     /// Invokes all rules for a specific property.
     /// </summary>
-    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade)
+    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleExecuteContext executionContext)
     {
       var rules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
@@ -470,7 +477,7 @@ namespace Csla.Rules
                   select r;
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
-      affectedProperties.AddRange(RunRules(rules, cascade));
+      affectedProperties.AddRange(RunRules(rules, cascade, executionContext));
 
       if (cascade)
       {
@@ -478,12 +485,14 @@ namespace Csla.Rules
         var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
         foreach (var item in rules)
           if (!item.IsAsync)
+          {
             foreach (var p in item.AffectedProperties)
               if (!ReferenceEquals(property, p))
                 propertiesToRun.Add(p);
+          }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          CheckRulesForProperty(item, false);
+          CheckRulesForProperty(item, false, executionContext | RuleExecuteContext.Cascade);
       }
 
       return affectedProperties.Distinct().ToList();
@@ -501,7 +510,7 @@ namespace Csla.Rules
       }
     }
 
-    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade)
+    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleExecuteContext executionContext)
     {
       var affectedProperties = new List<string>();
       bool anyRuleBroken = false;
@@ -513,72 +522,67 @@ namespace Csla.Rules
         bool complete = false;
         // set up context
         var context = new RuleContext((r) =>
+        {
+          if (r.Rule.IsAsync)
           {
-            if (r.Rule.IsAsync)
-            {
-              lock (SyncRoot)
-              {
-                // update output values
-                if (r.OutputPropertyValues != null)
-                  foreach (var item in r.OutputPropertyValues)
-                    ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
-                // update broken rules list
-                if (r.Results != null)
-                  foreach (var result in r.Results)
-                  {
-                    BrokenRules.SetBrokenRule(result);
-                  }
-
-                // run rules for AffectedProperties by this rule
-                var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
-                foreach (var p in rule.AffectedProperties)
-                  if (!ReferenceEquals(rule.PrimaryProperty, p))
-                    propertiesToRun.Add(p);
-                // run rules for affected properties
-                foreach (var item in propertiesToRun.Distinct())
-                  CheckRulesForProperty(item, cascade);
-
-                // mark each property as not busy
-                foreach (var item in r.Rule.AffectedProperties)
-                {
-                  BusyProperties.Remove(item);
-                  _isBusy = BusyProperties.Count > 0;
-                  if (!BusyProperties.Contains(item))
-                    _target.RuleComplete(item);
-                }
-                if (!RunningRules && !RunningAsyncRules)
-                  _target.AllRulesComplete();
-              }
-            }
-            else  // Rule is Sync 
+            lock (SyncRoot)
             {
               // update output values
               if (r.OutputPropertyValues != null)
                 foreach (var item in r.OutputPropertyValues)
                   ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
               // update broken rules list
-              if (r.Results != null)
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+
+              // run rules on affected properties for this async rule
+              if (cascade)
+                foreach (var item in r.Rule.AffectedProperties.Distinct())
+                  if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
+                    CheckRulesForProperty(item, true, r.ExecuteContext | RuleExecuteContext.Cascade);
+
+              // mark each property as not busy
+              foreach (var item in r.Rule.AffectedProperties)
               {
-                foreach (var result in r.Results)
-                {
-                  BrokenRules.SetBrokenRule(result);
-                }
-                // is any rules here broken with severity Error
-                if (r.Results.Where(p => !p.Success && p.Severity == RuleSeverity.Error).Any())
-                  anyRuleBroken = true;
+                BusyProperties.Remove(item);
+                _isBusy = BusyProperties.Count > 0;
+                if (!BusyProperties.Contains(item))
+                  _target.RuleComplete(item);
               }
 
-              complete = true;
+              if (!RunningRules && !RunningAsyncRules)
+                _target.AllRulesComplete();
             }
-          });
+          }
+          else  // Rule is Sync 
+          {
+            // update output values
+            if (r.OutputPropertyValues != null)
+              foreach (var item in r.OutputPropertyValues)
+                ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
+            // update broken rules list
+            if (r.Results != null)
+            {
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+
+              // is any rules here broken with severity Error
+              if (r.Results.Where(p => !p.Success && p.Severity == RuleSeverity.Error).Any())
+                anyRuleBroken = true;
+            }
+
+            complete = true;
+          }
+        });
         context.Rule = rule;
+        if (rule.PrimaryProperty != null)
+          context.OriginPropertyName = rule.PrimaryProperty.Name;
+        context.ExecuteContext = executionContext;
         if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
           context.Target = _target;
 
         // get input properties
         if (rule.InputProperties != null)
         {
-          var target = _target as Core.IManageProperties;
+          var target = (Core.IManageProperties) _target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
             context.InputPropertyValues.Add(item, target.ReadProperty(item));
@@ -858,9 +862,7 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
     [System.Runtime.Serialization.OnDeserialized]
-#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();

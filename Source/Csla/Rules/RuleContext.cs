@@ -10,9 +10,40 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Core;
+using Csla.Properties;
+using Csla.Threading;
 
 namespace Csla.Rules
 {
+  /// <summary>
+  /// Flags enum to indicate the context for how the rule is invoked.
+  /// </summary>
+  [Flags]
+  public enum RuleExecuteContext
+  {
+    /// <summary>
+    /// Called from CheckRules
+    /// </summary>
+    CheckRules=1,
+    /// <summary>
+    /// Called from CheckObjectRules
+    /// </summary>
+    CheckObjectRules=2,
+    /// <summary>
+    /// Called from PropertyHasChanged event on BO
+    /// </summary>
+    PropertyChanged=4,
+    /// <summary>
+    /// Cascaded call from AffectedProperties
+    /// </summary>
+    Cascade=8,
+    /// <summary>
+    /// As a chained context 
+    /// </summary>
+    Chained=16
+  }
+
   /// <summary>
   /// Context information provided to a business rule
   /// when it is invoked.
@@ -24,26 +55,39 @@ namespace Csla.Rules
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public IBusinessRule Rule { get; internal set; }
+
     /// <summary>
     /// Gets a reference to the target business object.
     /// </summary>
     public object Target { get; internal set; }
+
     /// <summary>
     /// Gets a dictionary containing copies of property values from
     /// the target business object.
     /// </summary>
     public Dictionary<Csla.Core.IPropertyInfo, object> InputPropertyValues { get; internal set; }
+
+
+    private readonly LazySingelton<Dictionary<IPropertyInfo, object>> _outputPropertyValues;
     /// <summary>
     /// Gets a dictionary containing copies of property values that
     /// should be updated in the target object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues { get; private set; }
+    public Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues
+    {
+      get
+      {
+        if (!_outputPropertyValues.IsValueCreated) 
+          return null;
+        return _outputPropertyValues.Value;
+      }
+    }
+
     /// <summary>
     /// Gets a reference to the list of results being returned
     /// by this rule.
     /// </summary>
-
     private List<RuleResult> _results;
     /// <summary>
     /// Gets a list of RuleResult objects containing the
@@ -64,11 +108,93 @@ namespace Csla.Rules
       }
     }
 
-    private Action<RuleContext> _completeHandler;
+    private readonly Action<RuleContext> _completeHandler;
+
+    /// <summary>
+    /// Gets or sets the name of the origin property.
+    /// </summary>
+    /// <value>The name of the origin property.</value>
+    public string OriginPropertyName { get; internal set; }
+
+    /// <summary>
+    /// Gets the execution context.
+    /// </summary>
+    /// <value>The execution context.</value>
+    public RuleExecuteContext ExecuteContext { get; internal set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is chained context.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is chained context; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsChainedContext
+    {
+      get { return (ExecuteContext & RuleExecuteContext.Chained) > 0; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is cascade context; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsCascadeContext
+    {
+      get { return (ExecuteContext & RuleExecuteContext.Cascade) > 0; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is property changed context.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is property changed context; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsPropertyChangedContext
+    {
+      get { return (ExecuteContext & RuleExecuteContext.PropertyChanged) > 0; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is check rules context.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is check rules context; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsCheckRulesContext
+    {
+      get { return (ExecuteContext & RuleExecuteContext.CheckRules) > 0; }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is check object rules context.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance is check object rules context; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsCheckObjectRulesContext
+    {
+      get { return (ExecuteContext & RuleExecuteContext.CheckObjectRules) > 0; }
+    }
 
     internal RuleContext(Action<RuleContext> completeHandler)
     {
       _completeHandler = completeHandler;
+      _outputPropertyValues = new LazySingelton<Dictionary<IPropertyInfo, object>>();
+    }
+
+    internal RuleContext(Action<RuleContext> completeHandler, RuleExecuteContext executeContext)
+    {
+      _completeHandler = completeHandler;
+      _outputPropertyValues = new LazySingelton<Dictionary<IPropertyInfo, object>>();
+      ExecuteContext = executeContext;
+    }
+
+    internal RuleContext(Action<RuleContext> completeHandler, LazySingelton<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleExecuteContext executeContext)
+    {
+      _completeHandler = completeHandler;
+      _outputPropertyValues = outputPropertyValues;
+      ExecuteContext = executeContext;
     }
 
     /// <summary>
@@ -82,8 +208,30 @@ namespace Csla.Rules
       : this(completeHandler)
     {
       Rule = rule;
+      if (rule.PrimaryProperty != null)
+        OriginPropertyName = rule.PrimaryProperty.Name;
       Target = target;
       InputPropertyValues = inputPropertyValues;
+      ExecuteContext = RuleExecuteContext.PropertyChanged;
+    }
+
+    /// <summary>
+    /// Creates a RuleContext instance for testing.
+    /// </summary>
+    /// <param name="completeHandler">Callback for async rule.</param>
+    /// <param name="rule">Reference to the rule object.</param>
+    /// <param name="target">Target business object.</param>
+    /// <param name="inputPropertyValues">Input property values used by the rule.</param>
+    /// <param name="executeContext">The execution context.</param>
+    public RuleContext(Action<RuleContext> completeHandler, IBusinessRule rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues, RuleExecuteContext executeContext)
+      : this(completeHandler, executeContext)
+    {
+      Rule = rule;
+      if (rule.PrimaryProperty != null)
+        OriginPropertyName = rule.PrimaryProperty.Name;
+      Target = target;
+      InputPropertyValues = inputPropertyValues;
+      ExecuteContext = executeContext;
     }
 
     /// <summary>
@@ -99,12 +247,14 @@ namespace Csla.Rules
     /// </remarks>
     public RuleContext GetChainedContext(IBusinessRule rule)
     {
-      var result = new RuleContext(_completeHandler);
+      var result = new RuleContext(_completeHandler, _outputPropertyValues, ExecuteContext | RuleExecuteContext.Chained);
       result.Rule = rule;
-      if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
-        result.Target = Target;
+      result.OriginPropertyName = OriginPropertyName;
       result.InputPropertyValues = InputPropertyValues;
       result.Results = Results;
+
+      if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
+        result.Target = Target;
       return result;
     }
 
@@ -127,15 +277,17 @@ namespace Csla.Rules
     /// for the current property.</param>
     public void AddErrorResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { StopProcessing = stopProcessing });
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { StopProcessing = stopProcessing});
     }
 
     /// <summary>
     /// Add a Error severity result to the Results list.
+    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
     /// </summary>
     /// <param name="property">Property to which the result applies.</param>
     /// <param name="description">Human-readable description of
     /// why the rule failed.</param>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
     public void AddErrorResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
@@ -150,7 +302,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddWarningResult(string description)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning });
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning});
     }
 
     /// <summary>
@@ -162,20 +314,22 @@ namespace Csla.Rules
     /// for the current property.</param>
     public void AddWarningResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing });
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing});
     }
+
 
     /// <summary>
     /// Add a Warning severity result to the Results list.
+    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
     /// </summary>
     /// <param name="property">Property to which the result applies.</param>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
+    /// <param name="description">Human-readable description of  why the rule failed.</param>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>    
     public void AddWarningResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning });
+      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning});
     }
 
     /// <summary>
@@ -191,36 +345,34 @@ namespace Csla.Rules
     /// <summary>
     /// Add an Information severity result to the Results list.
     /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
-    /// <param name="stopProcessing">True if no further rules should be processed
-    /// for the current property.</param>
+    /// <param name="description">Human-readable description of why the rule failed.</param>
+    /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
     public void AddInformationResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing });
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing});
     }
 
     /// <summary>
     /// Add an Information severity result to the Results list.
+    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
     /// </summary>
     /// <param name="property">Property to which the result applies.</param>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
+    /// <param name="description">Human-readable description of why the rule failed.</param>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
     public void AddInformationResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information });
+      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information});
     }
 
     /// <summary>
     /// Add a Success severity result to the Results list.
     /// </summary>
-    /// <param name="stopProcessing">True if no further rules should be processed
-    /// for the current property.</param>
+    /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
     public void AddSuccessResult(bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing });
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing});
     }
 
     /// <summary>
@@ -230,9 +382,7 @@ namespace Csla.Rules
     /// <param name="value">New property value.</param>
     public void AddOutValue(object value)
     {
-      if (OutputPropertyValues == null)
-        OutputPropertyValues = new Dictionary<Core.IPropertyInfo, object>();
-      OutputPropertyValues.Add(Rule.PrimaryProperty, value);
+      _outputPropertyValues.Value.Add(Rule.PrimaryProperty, value);
     }
 
     /// <summary>
@@ -241,13 +391,12 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="property">Property to update.</param>
     /// <param name="value">New property value.</param>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
     public void AddOutValue(Csla.Core.IPropertyInfo property, object value)
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      if (OutputPropertyValues == null)
-        OutputPropertyValues = new Dictionary<Core.IPropertyInfo, object>();
-      OutputPropertyValues.Add(property, value);
+      _outputPropertyValues.Value.Add(property, value);
     }
 
     /// <summary>

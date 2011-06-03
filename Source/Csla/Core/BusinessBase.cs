@@ -335,6 +335,21 @@ namespace Csla.Core
           OnPropertyChanged(name);
     }
 
+    /// <summary>
+    /// Checks the object rules and notifies UI of properties that may have changed. 
+    /// </summary>
+    protected virtual void CheckObjectRules()
+    {
+      var propertyNames = BusinessRules.CheckObjectRules();
+      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
+      {
+        OnUnknownPropertyChanged();
+      }
+      else
+        foreach (var name in propertyNames)
+          OnPropertyChanged(name);
+    }
+
     private void PropertyHasChanged(string propertyName)
     {
       PropertyHasChanged(FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).First());

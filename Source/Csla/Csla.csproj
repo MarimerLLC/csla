@@ -322,6 +322,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Threading\BusyLock.cs" />
+    <Compile Include="LazySingelton.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />
     <Compile Include="Data\DataMap.cs" />
@@ -460,7 +461,7 @@
   </ItemGroup>
   <ItemGroup>
     <WebReferenceUrl Include="http://localhost:4804/WSPortalcs/Service.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
+      <UrlBehavior>Static</UrlBehavior>
       <RelPath>Web References\WebServiceHost\</RelPath>
       <UpdateFromURL>http://localhost:4804/WSPortalcs/Service.asmx</UpdateFromURL>
       <ServiceLocationURL>

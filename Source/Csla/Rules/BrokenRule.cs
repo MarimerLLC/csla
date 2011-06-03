@@ -33,6 +33,7 @@ namespace Csla.Rules
     private string _description;
     private string _property;
     private RuleSeverity _severity;
+    private string _originProperty;
 
     /// <summary>
     /// Gets a string representation for this object.
@@ -84,6 +85,16 @@ namespace Csla.Rules
       internal set { _severity = value; }
     }
 
+    /// <summary>
+    /// Gets or sets the origin property.
+    /// </summary>
+    /// <value>The origin property.</value>
+    public string OriginProperty
+    {
+      get { return _originProperty; }
+      internal set { _originProperty = value; }
+    }
+
     #region MobileObject overrides
 
     /// <summary>
@@ -102,6 +113,7 @@ namespace Csla.Rules
       info.AddValue("_description", _description);
       info.AddValue("_property", _property);
       info.AddValue("_severity", (int)_severity);
+      info.AddValue("_originProperty", _originProperty);
       
       base.OnGetState(info, mode);
     }
@@ -122,6 +134,7 @@ namespace Csla.Rules
       _description = info.GetValue<string>("_description");
       _property = info.GetValue<string>("_property");
       _severity = info.GetValue<RuleSeverity>("_severity");
+      _originProperty = info.GetValue<string>("_originProperty");
 
       base.OnSetState(info, mode);
     }

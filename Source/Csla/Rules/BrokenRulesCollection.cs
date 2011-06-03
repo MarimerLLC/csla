@@ -48,26 +48,33 @@ namespace Csla.Rules
       this.IsReadOnly = false;
       List<BrokenRule> brokenRules;
       if (property == null)
-        brokenRules = this.Where(c => c.Property == null).ToList();
+        brokenRules = this.Where(c => c.OriginProperty == null).ToList();
       else
-        brokenRules = this.Where(c => c.Property == property.Name).ToList();
+        brokenRules = this.Where(c => c.OriginProperty == property.Name).ToList();
+
       foreach (var item in brokenRules)
         Remove(item);
       RecalculateCounts();
       this.IsReadOnly = true;
     }
-
-    internal void SetBrokenRule(RuleResult result)
+    
+    internal void SetBrokenRules(List<RuleResult> results, string originPropertyName)
     {
       this.IsReadOnly = false;
-      var old = this.Where(c => c.RuleName == result.RuleName).ToList();
+
+      var rulenames = results.Select(p => p.RuleName).Distinct();
+      var old = this.Where(c => rulenames.Contains(c.RuleName) && c.OriginProperty == originPropertyName).ToList();
       foreach (var item in old)
         Remove(item);
-      if (!result.Success)
-        if (result.PrimaryProperty == null)
-          Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity });
-        else
-          Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity });
+
+      foreach (var result in results)
+      {
+        if (!result.Success)
+          if (result.PrimaryProperty == null)
+            Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity, OriginProperty = originPropertyName});
+          else
+            Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity, OriginProperty = originPropertyName});
+      }
       RecalculateCounts();
       this.IsReadOnly = true;
     }

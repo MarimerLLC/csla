@@ -187,6 +187,7 @@ namespace ProjectTracker.Library
           var item = dal.Fetch(projectId, ResourceId);
           item.Assigned = ReadProperty(AssignedProperty);
           item.RoleId = Role;
+          item.LastChanged = TimeStamp;
           dal.Update(item);
           TimeStamp = item.LastChanged;
         }

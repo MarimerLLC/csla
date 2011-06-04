@@ -67,7 +67,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Edit(int projectId, int resourceId)
     {
-      ViewData.Add("ProjectId", projectId);
+      ViewData.Add("Roles", new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"));
       var model = ProjectResourceEditCreator.GetProjectResourceEditCreator(projectId, resourceId).Result;
       ViewData.Model = model;
       return View();
@@ -92,15 +92,15 @@ namespace Mvc3UI.Controllers
           ModelState.AddModelError("", ex.BusinessException.Message);
         else
           ModelState.AddModelError("", ex.Message);
-        ViewData.Add("ProjectId", projectId);
+        ViewData.Add("Roles", new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"));
         ViewData.Model = model;
         return View();
       }
       catch (Exception ex)
       {
-        ViewData.Add("ProjectId", projectId);
-        ViewData.Model = model;
         ModelState.AddModelError("", ex.Message);
+        ViewData.Add("Roles", new SelectList(ProjectTracker.Library.RoleList.GetList(), "Key", "Value"));
+        ViewData.Model = model;
         return View();
       }
     }
@@ -110,9 +110,8 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Delete(int projectId, int resourceId)
     {
-      var project = ProjectEdit.GetProject(projectId);
-      ViewData.Add("ProjectId", project.Id);
-      ViewData.Model = project.Resources.Where(r => r.ResourceId == resourceId).First();
+      var model = ProjectResourceEditCreator.GetProjectResourceEditCreator(projectId, resourceId).Result;
+      ViewData.Model = model;
       return View();
     }
 

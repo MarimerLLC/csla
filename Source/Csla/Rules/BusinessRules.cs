@@ -395,7 +395,7 @@ namespace Csla.Rules
         return new List<string>();
 
       RunningRules = true;
-      var affectedProperties = CheckObjectRules();
+      var affectedProperties = CheckObjectRules(RuleExecuteContext.CheckRules, false); 
       var properties = ((IManageProperties)Target).GetManagedProperties();
       foreach (var property in properties)
         affectedProperties.AddRange(CheckRules(property, RuleExecuteContext.CheckRules));
@@ -416,6 +416,20 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
+      return CheckObjectRules(RuleExecuteContext.CheckObjectRules, true);
+    }
+
+    /// <summary>
+    /// Invokes all rules attached at the class level
+    /// of the business type.
+    /// </summary>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property.
+    /// </returns>
+    private List<string> CheckObjectRules(RuleExecuteContext executeContext, bool cascade)
+    {
       if (_suppressRuleChecking)
         return new List<string>();
 
@@ -426,8 +440,24 @@ namespace Csla.Rules
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
-      // JB: Changed to cascade propertyrule to allow combined ObjectLevel and PropertLevel rules.
-      var affectedProperties = RunRules(rules, true, RuleExecuteContext.CheckObjectRules);  
+      // Changed to cascade propertyrule to make async ObjectLevel rules rerun PropertLevel rules.
+      var affectedProperties = RunRules(rules, true, executeContext);
+
+      // rerun property level rules for affected properties 
+      if (cascade)
+      {
+        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        foreach (var item in rules)
+          if (!item.IsAsync)
+          {
+            foreach (var p in item.AffectedProperties)
+              propertiesToRun.Add(p);
+          }
+        // run rules for affected properties
+        foreach (var item in propertiesToRun.Distinct())
+          CheckRulesForProperty(item, false, executeContext | RuleExecuteContext.Cascade);
+      }
+
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
@@ -438,16 +468,20 @@ namespace Csla.Rules
     /// Invokes all rules for a specific property of the business type.
     /// </summary>
     /// <param name="property">Property to check.</param>
-    /// <param name="executionContext">The execution context.</param>
     /// <returns>
     /// Returns a list of property names affected by the invoked rules.
     /// The PropertyChanged event should be raised for each affected
     /// property.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
-    public List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleExecuteContext executionContext = RuleExecuteContext.PropertyChanged)
+    public List<string> CheckRules(Csla.Core.IPropertyInfo property)
     {
-      if (property == null) 
+      return CheckRules(property, RuleExecuteContext.PropertyChanged);
+    }
+
+    private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleExecuteContext executeionContext)
+    {
+      if (property == null)
         throw new ArgumentNullException("property");
 
       if (_suppressRuleChecking)
@@ -457,19 +491,21 @@ namespace Csla.Rules
       RunningRules = true;
 
       var affectedProperties = new List<string>();
-      affectedProperties.AddRange(CheckRulesForProperty(property, true, executionContext));
-
+      affectedProperties.AddRange(CheckRulesForProperty(property, true, ExecuteContext));
 
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
     }
-
     /// <summary>
     /// Invokes all rules for a specific property.
     /// </summary>
-    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleExecuteContext executionContext)
+    /// <param name="property">The property.</param>
+    /// <param name="cascade">if set to <c>true</c> [cascade].</param>
+    /// <param name="executeContext">The execute context.</param>
+    /// <returns></returns>
+    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleExecuteContext executeContext)
     {
       var rules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
@@ -477,7 +513,7 @@ namespace Csla.Rules
                   select r;
       var affectedProperties = new List<string> { property.Name };
       BrokenRules.ClearRules(property);
-      affectedProperties.AddRange(RunRules(rules, cascade, executionContext));
+      affectedProperties.AddRange(RunRules(rules, cascade, executeContext));
 
       if (cascade)
       {
@@ -492,7 +528,7 @@ namespace Csla.Rules
           }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          CheckRulesForProperty(item, false, executionContext | RuleExecuteContext.Cascade);
+          CheckRulesForProperty(item, false, executeContext | RuleExecuteContext.Cascade);
       }
 
       return affectedProperties.Distinct().ToList();
@@ -510,7 +546,14 @@ namespace Csla.Rules
       }
     }
 
-    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleExecuteContext executionContext)
+    /// <summary>
+    /// Runs the enumerable list of rules.
+    /// </summary>
+    /// <param name="rules">The rules.</param>
+    /// <param name="cascade">if set to <c>true</c> cascade.</param>
+    /// <param name="executeContext">The execution context.</param>
+    /// <returns></returns>
+    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleExecuteContext executeContext)
     {
       var affectedProperties = new List<string>();
       bool anyRuleBroken = false;
@@ -575,7 +618,7 @@ namespace Csla.Rules
         context.Rule = rule;
         if (rule.PrimaryProperty != null)
           context.OriginPropertyName = rule.PrimaryProperty.Name;
-        context.ExecuteContext = executionContext;
+        context.ExecuteContext = executeContext;
         if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
           context.Target = _target;
 
@@ -935,5 +978,11 @@ namespace Csla.Rules
 
     #endregion
 
+
+    /// <summary>
+    /// Gets or sets the execute context.
+    /// </summary>
+    /// <value>The execute context.</value>
+    public RuleExecuteContext ExecuteContext { get; internal set; }
   }
 }

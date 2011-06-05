@@ -15,7 +15,6 @@ namespace Csla
     private bool _isValueCreated;
 
 
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingelton&lt;T&gt;"/> class.
     /// Will use the default public constructor to create an instance of T (the vlaue)

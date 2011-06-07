@@ -24,7 +24,7 @@ namespace Mvc3UI.Controllers
     [Csla.Web.Mvc.HasPermission(Csla.Rules.AuthorizationActions.CreateObject, typeof(RoleEditList))]
     public ActionResult Create()
     {
-      ViewData.Model = RoleEdit.NewRoleEdit();
+      ViewData.Model = RoleEditManager.NewRoleEdit();
       return View();
     }
 

@@ -84,7 +84,7 @@ namespace ProjectTracker.Library
 #else
       protected override RoleEdit AddNewCore()
       {
-        RoleEdit item = RoleEdit.NewRoleEdit();
+        RoleEdit item = RoleEditManager.NewRoleEdit();
         Add(item);
         return item;
       }

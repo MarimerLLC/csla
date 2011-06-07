@@ -66,12 +66,12 @@ namespace ProjectTracker.Library.Admin
       }
     }
 
+#if SILVERLIGHT
     public static RoleEdit NewRoleEdit()
     {
       return DataPortal.CreateChild<RoleEdit>();
     }
-
-#if !SILVERLIGHT
+#else
     public static RoleEdit GetRole(int id)
     {
       return DataPortal.Fetch<RoleEdit>();

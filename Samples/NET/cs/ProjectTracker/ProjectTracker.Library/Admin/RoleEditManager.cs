@@ -10,6 +10,11 @@ namespace ProjectTracker.Library.Admin
   [Serializable]
   public class RoleEditManager : CommandBase<RoleEditManager>
   {
+    public static RoleEdit NewRoleEdit()
+    {
+      return DataPortal.CreateChild<RoleEdit>();
+    }
+
     public static RoleEdit GetRoleEdit(int id)
     {
       var cmd = new RoleEditManager { Id = id };

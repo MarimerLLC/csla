@@ -479,7 +479,7 @@ namespace Csla.Rules
       return CheckRules(property, RuleExecuteContext.PropertyChanged);
     }
 
-    private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleExecuteContext executeionContext)
+    private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleExecuteContext executeContext)
     {
       if (property == null)
         throw new ArgumentNullException("property");
@@ -491,7 +491,7 @@ namespace Csla.Rules
       RunningRules = true;
 
       var affectedProperties = new List<string>();
-      affectedProperties.AddRange(CheckRulesForProperty(property, true, ExecuteContext));
+      affectedProperties.AddRange(CheckRulesForProperty(property, true, executeContext));
 
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)

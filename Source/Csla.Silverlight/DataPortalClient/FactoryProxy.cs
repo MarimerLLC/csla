@@ -285,7 +285,7 @@ namespace Csla.DataPortalClient
     {
       _userState = userState;
       var handler = new CompletedHandler(OnExecuteCompleted);
-      MethodCaller.CallMethod(command, "DataPortal_Execute", handler);
+      MethodCaller.CallMethod(command, _attribute.ExecuteMethodName, handler);
     }
 
     private void OnExecuteCompleted(T result, Exception ex)

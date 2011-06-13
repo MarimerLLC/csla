@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Displays validation information for a business</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -32,16 +33,15 @@ namespace Csla.Xaml
   [TemplateVisualState(Name = "Error", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Warning", GroupName = "CommonStates")]
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
-  public class PropertyStatus : ContentControl,
-    INotifyPropertyChanged
+  public class PropertyStatus : ContentControl, INotifyPropertyChanged
   {
-    private bool _isReadOnly = false; 
+    private bool _isReadOnly = false;
     private FrameworkElement _lastImage;
     private Point _lastPosition;
     private Point _popupLastPosition;
     private Size _lastAppSize;
     private Size _lastPopupSize;
-    
+
     /// <summary>
     /// Gets or sets a value indicating whether this DependencyProperty field is read only.
     /// </summary>
@@ -68,18 +68,35 @@ namespace Csla.Xaml
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public PropertyStatus()
-      : base()
+    public PropertyStatus() : base()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
       IsTabStop = false;
 
+      // In WPF - Loaded fires when form is loaded even if control is not visible.
+      // but will only fire once when control gets visible in Silverlight
       Loaded += (o, e) =>
-        {
-          _loading = false;
-          UpdateState();
-        };
+      {
+        _loading = false;
+        UpdateState();
+      };
+#if !SILVERLIGHT
+      // IsVisibleChanged fires when control first gets visible in WPF 
+      // Does not exisit in Silverlight -  see Loaded event.
+      IsVisibleChanged += (o, e) =>
+      {
+        ClearState();
+        UpdateState();
+      };
+
+      // DataContextChanged is public in WPF but internal in SL. 
+      // 
+      DataContextChanged += (o, e) =>
+      {
+        SetSource(e.NewValue);
+      };
+#endif
     }
 
     /// <summary>
@@ -103,20 +120,20 @@ namespace Csla.Xaml
       "Property",
       typeof(object),
       typeof(PropertyStatus),
-      new PropertyMetadata(new object(), (o, e) => 
+      new PropertyMetadata(new object(), (o, e) =>
+      {
+        bool changed = true;
+        if (e.NewValue == null)
         {
-          bool changed = true;
-          if (e.NewValue == null)
-          {
-            if (e.OldValue == null)
-              changed = false;
-          }
-          else if (e.NewValue.Equals(e.OldValue))
-          {
+          if (e.OldValue == null)
             changed = false;
-          }
-          ((PropertyStatus)o).SetSource(changed);
-        }));
+        }
+        else if (e.NewValue.Equals(e.OldValue))
+        {
+          changed = false;
+        }
+        ((PropertyStatus)o).SetSource(changed);
+      }));
 
     /// <summary>
     /// Gets or sets the source business
@@ -126,11 +143,7 @@ namespace Csla.Xaml
     public object Property
     {
       get { return GetValue(PropertyProperty); }
-      set
-      {
-        SetValue(PropertyProperty, value);
-        SetSource(false);
-      }
+      set { SetValue(PropertyProperty, value); }
     }
 
     private object _source = null;
@@ -167,39 +180,75 @@ namespace Csla.Xaml
       }
     }
 
-    private object _oldDataContext;
-    private System.Windows.Data.BindingExpression _oldBinding;
+    private string _propertyName = string.Empty;
+    protected string PropertyName
+    {
+      get { return _propertyName; }
+      set { _propertyName = value; }
+    }
 
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
     protected virtual void SetSource(bool propertyValueChanged)
     {
-      var old = Source;
-      var binding = GetBindingExpression(PropertyProperty);
-      if (!ReferenceEquals(_oldBinding, binding) || !ReferenceEquals(_oldDataContext, this.DataContext) || !propertyValueChanged)
-      {
-        _oldDataContext = this.DataContext;
-        _oldBinding = binding;
-        if (binding != null)
-        {
-          if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-            BindingPath = binding.ParentBinding.Path.Path;
-          else
-            BindingPath = string.Empty;
-          Source = GetRealSource(binding.DataItem, BindingPath);
-          if (BindingPath.IndexOf('.') > 0)
-            BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
-        }
-        else
-        {
-          Source = null;
-          BindingPath = string.Empty;
-        }
+      if (_loading) return;
 
-        HandleSourceEvents(old, Source);
+      var binding = GetBindingExpression(PropertyProperty);
+      if (binding != null)
+      {
+        SetSource(binding.DataItem);
+      }
+    }
+
+
+    /// <summary>
+    /// Sets the source binding and updates status.
+    /// </summary>
+    protected virtual void SetSource(object dataItem)
+    {
+      if (_loading) return;
+
+      SetBindingValues();
+      var newSource = GetRealSource(dataItem, BindingPath);
+
+      if (!ReferenceEquals(Source, newSource))
+      {
+        DetachSource(Source);    // detach from this Source
+        Source = newSource;      // set new Source
+        AttachSource(Source);    // attach to new Source
+
+        var bb = Source as BusinessBase;
+        if (bb != null)
+        {
+          IsBusy = bb.IsPropertyBusy(PropertyName);
+        }
         UpdateState();
       }
+    }
+
+    /// <summary>
+    /// Sets the binding values for this instance.
+    /// </summary>
+    private void SetBindingValues()
+    {
+      var bindingPath = string.Empty;
+      var propertyName = string.Empty;
+
+      var binding = GetBindingExpression(PropertyProperty);
+      if (binding != null)
+      {
+        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
+          bindingPath = binding.ParentBinding.Path.Path;
+        else
+          bindingPath = string.Empty;
+        propertyName = (bindingPath.IndexOf('.') > 0)
+                           ? bindingPath.Substring(bindingPath.LastIndexOf('.') + 1)
+                           : bindingPath;
+      }
+
+      BindingPath = bindingPath;
+      PropertyName = propertyName;
     }
 
     /// <summary>
@@ -210,12 +259,15 @@ namespace Csla.Xaml
     /// <returns></returns>
     protected object GetRealSource(object source, string bindingPath)
     {
+      var firstProperty = string.Empty;
+      if (bindingPath.IndexOf('.') > 0)
+        firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+
       var icv = source as ICollectionView;
-      if (icv != null)
+      if (icv != null && firstProperty != "CurrentItem")
         source = icv.CurrentItem;
-      if (source != null && bindingPath.IndexOf('.') > 0)
+      if (source != null && !string.IsNullOrEmpty(firstProperty))
       {
-        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         return GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
@@ -234,7 +286,7 @@ namespace Csla.Xaml
         BusinessBase bb = Source as BusinessBase;
         if (bb != null)
         {
-          IsBusy = bb.IsPropertyBusy(BindingPath);
+          IsBusy = bb.IsPropertyBusy(PropertyName);
         }
       }
     }
@@ -247,6 +299,8 @@ namespace Csla.Xaml
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged -= source_BusyChanged;
+
+      ClearState();
     }
 
     private void AttachSource(object source)
@@ -257,22 +311,23 @@ namespace Csla.Xaml
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged += source_BusyChanged;
+
     }
 
     void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
+      if (e.PropertyName == PropertyName || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
     {
-      if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
+      if (e.PropertyName == PropertyName || string.IsNullOrEmpty(e.PropertyName))
       {
         bool busy = e.Busy;
         BusinessBase bb = Source as BusinessBase;
         if (bb != null)
-          busy = bb.IsPropertyBusy(BindingPath);
+          busy = bb.IsPropertyBusy(PropertyName);
 
         if (busy != IsBusy)
         {
@@ -283,6 +338,27 @@ namespace Csla.Xaml
     }
 
     #endregion
+
+#if SILVERLIGHT
+    #region MyDataContext Property
+    /// <summary>
+    /// Workaround for DataContextChanged event that is intenal in SL4 to catch when the DataContext is changed
+    /// http://msmvps.com/blogs/theproblemsolver/archive/2008/12/29/how-to-know-when-the-datacontext-changed-in-your-control.aspx
+    /// </summary>
+    public static readonly DependencyProperty MyDataContextProperty =
+    DependencyProperty.Register("MyDataContext",
+                                typeof(Object),
+                                typeof(PropertyStatus),
+                                new PropertyMetadata(MyDataContextPropertyChanged));
+
+    private static void MyDataContextPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      ((PropertyStatus)sender).SetSource(e.NewValue);
+    }
+
+
+    #endregion
+#endif
 
     #region BrokenRules property
 
@@ -370,7 +446,7 @@ namespace Csla.Xaml
 
     private bool _isValid = true;
     /// <summary>
-    /// Gets a value indicating whether the 
+    /// Gets a value indicating whether the
     /// property is valid.
     /// </summary>
     [Category("Property Status")]
@@ -463,7 +539,7 @@ namespace Csla.Xaml
         popup.Child.MouseLeave -= new MouseEventHandler(popup_MouseLeave);
         popup.Child.MouseLeave += new MouseEventHandler(popup_MouseLeave);
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
-
+ 
         popup.VerticalOffset = p.Y + size.Height;
         popup.HorizontalOffset = p.X + size.Width;
         _popupLastPosition = new Point();
@@ -473,7 +549,7 @@ namespace Csla.Xaml
         popup.IsOpen = true;
       }
 #else
-      if(popup != null && sender is UIElement)
+      if (popup != null && sender is UIElement)
       {
         popup.Placement = PlacementMode.Mouse;
         popup.PlacementTarget = (UIElement)sender;
@@ -482,7 +558,7 @@ namespace Csla.Xaml
       }
 #endif
     }
-    
+
     void popup_Loaded(object sender, RoutedEventArgs e)
     {
       (sender as Popup).Loaded -= popup_Loaded;
@@ -525,7 +601,8 @@ namespace Csla.Xaml
     protected virtual void UpdateState()
     {
       if (_loading) return;
-      if (Source == null || string.IsNullOrEmpty(BindingPath)) return;
+
+      if (Source == null || string.IsNullOrEmpty(PropertyName)) return;
 
       Popup popup = (Popup)FindChild(this, "popup");
       if (popup != null)
@@ -534,15 +611,15 @@ namespace Csla.Xaml
       var iarw = Source as Csla.Security.IAuthorizeReadWrite;
       if (iarw != null)
       {
-        CanWrite = iarw.CanWriteProperty(_bindingPath);
-        CanRead = iarw.CanReadProperty(_bindingPath);
+        CanWrite = iarw.CanWriteProperty(PropertyName);
+        CanRead = iarw.CanReadProperty(PropertyName);
       }
 
       BusinessBase businessObject = Source as BusinessBase;
       if (businessObject != null)
       {
         var allRules = (from r in businessObject.BrokenRulesCollection
-                        where r.Property == BindingPath
+                        where r.Property == PropertyName
                         select r).ToArray();
 
         var removeRules = (from r in BrokenRules
@@ -586,7 +663,22 @@ namespace Csla.Xaml
       GoToState(true);
     }
 
+    /// <summary>
+    /// Contains tha last status on this control
+    /// </summary>
     private string _lastState;
+
+    /// <summary>
+    /// Clears the state.
+    /// Must be called whenever the DataContext is updated (and new object is selected).
+    /// </summary>
+    protected virtual void ClearState()
+    {
+      _lastState = null;
+      _lastImage = null;
+    }
+
+
     /// <summary>
     /// Updates the status of the Property in UI
     /// </summary>
@@ -607,7 +699,7 @@ namespace Csla.Xaml
       else
         newState = RuleSeverity.ToString();
 
-      if (newState != _lastState)
+      if (newState != _lastState || _lastImage == null)
       {
         _lastState = newState;
         DisablePopup(_lastImage);

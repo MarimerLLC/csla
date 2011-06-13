@@ -144,7 +144,7 @@ namespace Csla.Xaml
       {
         _isBusy = value;
         OnPropertyChanged("IsBusy");
-        SetProperties();
+        OnSetProperties();
       }
     }
 
@@ -158,7 +158,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the Model
     /// can currently be saved.
     /// </summary>
-    public bool CanSave
+    public virtual bool CanSave
     {
       get
       {
@@ -180,7 +180,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the Model
     /// can currently be canceled.
     /// </summary>
-    public bool CanCancel
+    public virtual bool CanCancel
     {
       get
       {
@@ -203,7 +203,7 @@ namespace Csla.Xaml
     /// of the Model
     /// can currently be created.
     /// </summary>
-    public bool CanCreate
+    public virtual bool CanCreate
     {
       get
       {
@@ -225,7 +225,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the Model
     /// can currently be deleted.
     /// </summary>
-    public bool CanDelete
+    public virtual bool CanDelete
     {
       get
       {
@@ -248,7 +248,7 @@ namespace Csla.Xaml
     /// of the Model
     /// can currently be retrieved.
     /// </summary>
-    public bool CanFetch
+    public virtual bool CanFetch
     {
       get
       {
@@ -270,7 +270,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the Model
     /// can currently be removed.
     /// </summary>
-    public bool CanRemove
+    public virtual bool CanRemove
     {
       get
       {
@@ -292,7 +292,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the Model
     /// can currently be added.
     /// </summary>
-    public bool CanAddNew
+    public virtual bool CanAddNew
     {
       get
       {
@@ -391,7 +391,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the current
     /// user is authorized to create a Model.
     /// </summary>
-    public bool CanCreateObject
+    public virtual bool CanCreateObject
     {
       get { return _canCreateObject; }
       protected set
@@ -410,7 +410,7 @@ namespace Csla.Xaml
     /// Gets a value indicating whether the current
     /// user is authorized to retrieve a Model.
     /// </summary>
-    public bool CanGetObject
+    public virtual bool CanGetObject
     {
       get { return _canGetObject; }
       protected set
@@ -430,7 +430,7 @@ namespace Csla.Xaml
     /// user is authorized to save (insert or update
     /// a Model.
     /// </summary>
-    public bool CanEditObject
+    public virtual bool CanEditObject
     {
       get { return _canEditObject; }
       protected set
@@ -450,7 +450,7 @@ namespace Csla.Xaml
     /// user is authorized to delete
     /// a Model.
     /// </summary>
-    public bool CanDeleteObject
+    public virtual bool CanDeleteObject
     {
       get { return _canDeleteObject; }
       protected set
@@ -477,7 +477,7 @@ namespace Csla.Xaml
       CanDeleteObject = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, sourceType);
 
       // call SetProperties to set "instance" values 
-      SetProperties();
+      OnSetProperties();
     }
 
     #endregion
@@ -493,7 +493,7 @@ namespace Csla.Xaml
     /// <example>DoRefresh(BusinessList.GetList)</example>
     /// <example>DoRefresh(() => BusinessList.GetList())</example>
     /// <example>DoRefresh(() => BusinessList.GetList(id))</example>
-    protected void DoRefresh(Func<T> factoryMethod)
+    protected virtual void DoRefresh(Func<T> factoryMethod)
     {
       if (typeof(T) != null)
       {
@@ -552,7 +552,7 @@ namespace Csla.Xaml
     /// <example>BeginRefresh(BusinessList.BeginGetList)</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(handler))</example>
     /// <example>BeginRefresh(handler => BusinessList.BeginGetList(id, handler))</example>
-    protected void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
+    protected virtual void BeginRefresh(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
     {
       if (typeof(T) != null)
         try
@@ -815,7 +815,7 @@ namespace Csla.Xaml
         var ibl = ((IBindingList)Model);
         result = ibl.AddNew();
       }
-      SetProperties();
+      OnSetProperties();
       return result;
     }
 #endif
@@ -827,7 +827,7 @@ namespace Csla.Xaml
     protected virtual void DoRemove(object item)
     {
       ((System.Collections.IList)Model).Remove(item);
-      SetProperties();
+      OnSetProperties();
     }
 
     /// <summary>
@@ -907,9 +907,16 @@ namespace Csla.Xaml
           cc.CollectionChanged += Model_CollectionChanged;
       }
 
-      SetProperties();
+      OnSetProperties();
     }
 
+    /// <summary>
+    /// Override this method to hook into to logic of setting properties when model is changed or edited. 
+    /// </summary>
+    protected virtual void OnSetProperties()
+    {
+      SetProperties();
+    }
 
     private void Model_BusyChanged(object sender, BusyChangedEventArgs e)
     {
@@ -918,23 +925,23 @@ namespace Csla.Xaml
       if (e.PropertyName == string.Empty)
         IsBusy = e.Busy;
       else
-        SetProperties();
+        OnSetProperties();
     }
 
 
     private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      SetProperties();
+      OnSetProperties();
     }
 
     private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
     {
-      SetProperties();
+      OnSetProperties();
     }
 
     private void Model_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-      SetProperties();
+      OnSetProperties();
     }
 
     #endregion

@@ -13,6 +13,8 @@ using Csla.Properties;
 
 namespace Csla.Rules
 {
+
+
   /// <summary>
   /// Base class used to create business and validation
   /// rules.
@@ -72,6 +74,12 @@ namespace Csla.Rules
     public int Priority { get; set; }
 
     /// <summary>
+    /// Gets or sets the run in context.
+    /// </summary>
+    /// <value>The run in context.</value>
+    public RunModes RunMode { get; set; }
+
+    /// <summary>
     /// Creates an instance of the rule that applies
     /// to a business object as a whole.
     /// </summary>
@@ -89,6 +97,7 @@ namespace Csla.Rules
       AffectedProperties = new List<Core.IPropertyInfo>();
       PrimaryProperty = primaryProperty;
       this.RuleUri = new RuleUri(this, primaryProperty);
+      RunMode = RunModes.Default;
     }
 
     /// <summary>
@@ -133,7 +142,7 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Reads a property's managed field value.
+    /// Reads a property's field value.
     /// </summary>
     /// <param name="obj">
     /// Object on which to call the method. 
@@ -153,5 +162,6 @@ namespace Csla.Rules
     }
 
     #endregion
+
   }
 }

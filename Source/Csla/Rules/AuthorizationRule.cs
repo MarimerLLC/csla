@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Properties;
 
 namespace Csla.Rules
 {
@@ -94,6 +95,29 @@ namespace Csla.Rules
     AuthorizationActions IAuthorizationRule.Action
     {
       get { return Action; }
+    }
+
+    #endregion
+
+    #region Read Property
+    /// <summary>
+    /// Reads a property's field value.
+    /// </summary>
+    /// <param name="obj">
+    /// Object on which to call the method. 
+    /// </param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called.
+    /// </remarks>
+    protected object ReadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo)
+    {
+      var target = obj as Core.IManageProperties;
+      if (target != null)
+        return target.ReadProperty(propertyInfo);
+      else
+        throw new ArgumentException(Resources.IManagePropertiesRequiredException);
     }
 
     #endregion

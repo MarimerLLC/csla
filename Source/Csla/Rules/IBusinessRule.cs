@@ -5,10 +5,35 @@
 // </copyright>
 // <summary>Interface defining a business/validation</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 
 namespace Csla.Rules
 {
+  /// <summary>
+  /// Flags enum to define when rule is allowed or denied to run 
+  /// </summary>
+  [Flags]
+  public enum RunModes
+  {
+    /// <summary>
+    /// Default value, rule can run in any context
+    /// </summary>
+    Default=0,
+    /// <summary>
+    /// Deny rule from running in CheckRules 
+    /// </summary>
+    DenyCheckRules = 1,
+    /// <summary>
+    /// Deny rule from running as AffectedProperties from another rule.
+    /// </summary>
+    DenyAsAffectedProperty = 2,
+    /// <summary>
+    /// Deny rule from running on serverside portal
+    /// </summary>
+    DenyOnServerSidePortal = 4
+  }
+
   /// <summary>
   /// Interface defining a business/validation
   /// rule implementation.
@@ -56,5 +81,11 @@ namespace Csla.Rules
     /// from a background thread will cause major problems).
     /// </summary>
     bool ProvideTargetWhenAsync { get; }
+
+    /// <summary>
+    /// Gets the context in which the rule is allowed to execute.
+    /// </summary>
+    /// <value>The run in context.</value>
+    RunModes RunMode { get; }
   }
 }

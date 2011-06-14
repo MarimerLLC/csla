@@ -16,34 +16,31 @@ using Csla.Threading;
 
 namespace Csla.Rules
 {
-  /// <summary>
-  /// Flags enum to indicate the context for how the rule is invoked.
-  /// </summary>
+
   [Flags]
-  public enum RuleExecuteContext
+  public enum RuleContextModes
   {
+    /// <summary>
+    /// Default value, rule can run in any context
+    /// </summary>
+    Any = 247,
     /// <summary>
     /// Called from CheckRules
     /// </summary>
-    CheckRules=1,
+    CheckRules = 1,
     /// <summary>
     /// Called from CheckObjectRules
     /// </summary>
-    CheckObjectRules=2,
+    CheckObjectRules = 2,
     /// <summary>
-    /// Called from PropertyHasChanged event on BO
+    /// Called from PropertyHasChanged event on BO but not including cascade calls by AffectedProperties
     /// </summary>
-    PropertyChanged=4,
+    PropertyChanged = 4,
     /// <summary>
-    /// Cascaded call from AffectedProperties
+    /// Include cascaded calls by AffectedProperties
     /// </summary>
-    Cascade=8,
-    /// <summary>
-    /// As a chained context 
-    /// </summary>
-    Chained=16
+    AsAffectedPoperty = 8,
   }
-
   /// <summary>
   /// Context information provided to a business rule
   /// when it is invoked.
@@ -120,18 +117,7 @@ namespace Csla.Rules
     /// Gets the execution context.
     /// </summary>
     /// <value>The execution context.</value>
-    public RuleExecuteContext ExecuteContext { get; internal set; }
-
-    /// <summary>
-    /// Gets a value indicating whether this instance is chained context.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this instance is chained context; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsChainedContext
-    {
-      get { return (ExecuteContext & RuleExecuteContext.Chained) > 0; }
-    }
+    public RuleContextModes ExecuteContext { get; internal set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
@@ -139,9 +125,9 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is cascade context; otherwise, <c>false</c>.
     /// </value>
-    public bool IsCascadeContext
+    internal bool IsCascadeContext
     {
-      get { return (ExecuteContext & RuleExecuteContext.Cascade) > 0; }
+      get { return (ExecuteContext & RuleContextModes.AsAffectedPoperty) > 0; }
     }
 
     /// <summary>
@@ -150,9 +136,9 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is property changed context; otherwise, <c>false</c>.
     /// </value>
-    public bool IsPropertyChangedContext
+    internal bool IsPropertyChangedContext
     {
-      get { return (ExecuteContext & RuleExecuteContext.PropertyChanged) > 0; }
+      get { return (ExecuteContext & RuleContextModes.PropertyChanged) > 0; }
     }
 
     /// <summary>
@@ -161,9 +147,9 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is check rules context; otherwise, <c>false</c>.
     /// </value>
-    public bool IsCheckRulesContext
+    internal bool IsCheckRulesContext
     {
-      get { return (ExecuteContext & RuleExecuteContext.CheckRules) > 0; }
+      get { return (ExecuteContext & RuleContextModes.CheckRules) > 0; }
     }
 
     /// <summary>
@@ -174,7 +160,7 @@ namespace Csla.Rules
     /// </value>
     public bool IsCheckObjectRulesContext
     {
-      get { return (ExecuteContext & RuleExecuteContext.CheckObjectRules) > 0; }
+      get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }
 
     internal RuleContext(Action<RuleContext> completeHandler)
@@ -183,14 +169,14 @@ namespace Csla.Rules
       _outputPropertyValues = new LazySingelton<Dictionary<IPropertyInfo, object>>();
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, RuleExecuteContext executeContext)
+    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = new LazySingelton<Dictionary<IPropertyInfo, object>>();
       ExecuteContext = executeContext;
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, LazySingelton<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleExecuteContext executeContext)
+    internal RuleContext(Action<RuleContext> completeHandler, LazySingelton<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleContextModes executeContext)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
@@ -212,26 +198,7 @@ namespace Csla.Rules
         OriginPropertyName = rule.PrimaryProperty.Name;
       Target = target;
       InputPropertyValues = inputPropertyValues;
-      ExecuteContext = RuleExecuteContext.PropertyChanged;
-    }
-
-    /// <summary>
-    /// Creates a RuleContext instance for testing.
-    /// </summary>
-    /// <param name="completeHandler">Callback for async rule.</param>
-    /// <param name="rule">Reference to the rule object.</param>
-    /// <param name="target">Target business object.</param>
-    /// <param name="inputPropertyValues">Input property values used by the rule.</param>
-    /// <param name="executeContext">The execution context.</param>
-    public RuleContext(Action<RuleContext> completeHandler, IBusinessRule rule, object target, Dictionary<Csla.Core.IPropertyInfo, object> inputPropertyValues, RuleExecuteContext executeContext)
-      : this(completeHandler, executeContext)
-    {
-      Rule = rule;
-      if (rule.PrimaryProperty != null)
-        OriginPropertyName = rule.PrimaryProperty.Name;
-      Target = target;
-      InputPropertyValues = inputPropertyValues;
-      ExecuteContext = executeContext;
+      ExecuteContext = RuleContextModes.PropertyChanged;
     }
 
     /// <summary>
@@ -247,7 +214,7 @@ namespace Csla.Rules
     /// </remarks>
     public RuleContext GetChainedContext(IBusinessRule rule)
     {
-      var result = new RuleContext(_completeHandler, _outputPropertyValues, ExecuteContext | RuleExecuteContext.Chained);
+      var result = new RuleContext(_completeHandler, _outputPropertyValues, ExecuteContext);
       result.Rule = rule;
       result.OriginPropertyName = OriginPropertyName;
       result.InputPropertyValues = InputPropertyValues;

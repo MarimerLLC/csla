@@ -80,6 +80,8 @@ namespace Csla.Rules
         _typeRules = null;
         _typeAuthRules = null;
         _ruleSet = value == ApplicationContext.DefaultRuleSet ? null : value;
+        if (BrokenRules.Count > 0) 
+            BrokenRules.Clear();
       }
     }
 

@@ -12,7 +12,7 @@ namespace ProjectTracker.Library
   {
     public static void GetProjectList(EventHandler<DataPortalResult<ProjectList>> callback)
     {
-      DataPortal.BeginCreate<ProjectList>(callback);
+      DataPortal.BeginFetch<ProjectList>(callback);
     }
 
     public static void GetProjectList(string name, EventHandler<DataPortalResult<ProjectList>> callback)

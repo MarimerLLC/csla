@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mvc3UI", "Mvc3UI\Mvc3UI.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUI", "WpfUI\WpfUI.csproj", "{720FDE2C-0B06-434E-B7C4-798699CFE2D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightUI", "SilverlightUI\SilverlightUI.csproj", "{46B51800-9151-4C1C-AF91-0B6A0CE1B623}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ProjectTracker.vsmdi
@@ -164,6 +166,18 @@ Global
 		{720FDE2C-0B06-434E-B7C4-798699CFE2D6}.Release|Mixed Platforms.Build.0 = Release|x86
 		{720FDE2C-0B06-434E-B7C4-798699CFE2D6}.Release|x86.ActiveCfg = Release|x86
 		{720FDE2C-0B06-434E-B7C4-798699CFE2D6}.Release|x86.Build.0 = Release|x86
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|.NET.ActiveCfg = Release|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

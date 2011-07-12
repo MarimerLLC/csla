@@ -63,6 +63,8 @@
     <Content Include="App_Data\PTracker_log.ldf">
       <DependentUpon>PTracker.mdf</DependentUpon>
     </Content>
+    <Content Include="clientaccesspolicy.xml" />
+    <Content Include="SlPortal.svc" />
     <Content Include="WcfPortal.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

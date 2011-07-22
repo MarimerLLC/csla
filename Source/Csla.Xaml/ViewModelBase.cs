@@ -14,6 +14,7 @@ using System.Windows;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using Csla.Reflection;
+using Csla.Rules;
 using Csla.Security;
 using Csla.Core;
 using System.Collections;
@@ -164,7 +165,7 @@ namespace Csla.Xaml
       {
         return _canSave;
       }
-      private set
+      protected set
       {
         if (_canSave != value)
         {
@@ -186,7 +187,7 @@ namespace Csla.Xaml
       {
         return _canCancel;
       }
-      private set
+      protected set
       {
         if (_canCancel != value)
         {
@@ -209,7 +210,7 @@ namespace Csla.Xaml
       {
         return _canCreate;
       }
-      private set
+      protected set
       {
         if (_canCreate != value)
         {
@@ -231,7 +232,7 @@ namespace Csla.Xaml
       {
         return _canDelete;
       }
-      private set
+      protected set
       {
         if (_canDelete != value)
         {
@@ -254,7 +255,7 @@ namespace Csla.Xaml
       {
         return _canFetch;
       }
-      private set
+      protected set
       {
         if (_canFetch != value)
         {
@@ -276,7 +277,7 @@ namespace Csla.Xaml
       {
         return _canRemove;
       }
-      private set
+      protected set
       {
         if (_canRemove != value)
         {
@@ -298,7 +299,7 @@ namespace Csla.Xaml
       {
         return _canAddNew;
       }
-      private set
+      protected set
       {
         if (_canAddNew != value)
         {
@@ -320,10 +321,12 @@ namespace Csla.Xaml
       // Does Model instance implement ITrackStatus 
       if (targetObject != null)
       {
+        var canDeleteInstance = BusinessRules.HasPermission(AuthorizationActions.DeleteObject, targetObject);
+
         CanSave = CanEditObject && targetObject.IsSavable && !isObjectBusy;
         CanCancel = CanEditObject && targetObject.IsDirty && !isObjectBusy;
         CanCreate = CanCreateObject && !targetObject.IsDirty && !isObjectBusy;
-        CanDelete = CanDeleteObject && !isObjectBusy;
+        CanDelete = CanDeleteObject && !isObjectBusy && canDeleteInstance;
         CanFetch = CanGetObject && !targetObject.IsDirty && !isObjectBusy;
 
         // Set properties for List 

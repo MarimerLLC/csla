@@ -947,62 +947,84 @@ namespace Csla.Rules
     #region Get All Broken Rules (tree)
 
     /// <summary>
-    /// Gets all broken rules for an object graph.
+    /// Gets all nodes in tree thar have IsValid = false (and all parents) 
     /// </summary>
     /// <param name="root">The root.</param>
     /// <returns>BrukenRulesTree list</returns>
     public static BrokenRulesTree GetAllBrokenRules(object root)
     {
+      return GetAllBrokenRules(root, true);
+    }
+    /// <summary>
+    /// Gets all nodes in tree that have broken rules.
+    /// </summary>
+    /// <param name="root">The root.</param>
+    /// <param name="errorsOnly">if set to <c>true</c> will only return objects that gave IsValid = false.</param>
+    /// <returns></returns>
+    public static BrokenRulesTree GetAllBrokenRules(object root, bool errorsOnly)
+    {
       var list = new BrokenRulesTree();
       long counter = 1;
-      AddNodeToBrukenRules(ref list, ref counter, null, root);
+      long childBrokenRuleCount = 0;
+      AddNodeToBrukenRules(ref list, ref counter, null, root, errorsOnly, ref childBrokenRuleCount);
 
       return list;
     }
 
-    private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj)
+    private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
       // is this a single editable object 
       if (obj is Csla.Core.BusinessBase)
       {
         var nodeKey = counter++;
         var bo = (Csla.Core.BusinessBase)obj;
-        if (!bo.IsValid)
-        {
-          list.Add(new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj });
-        }
+        long myChildBrokenRuleCount = bo.BrokenRulesCollection.Count;
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj };
+        list.Add(node);
 
         // get managed child properties 
         foreach (var child in ((IManageProperties)bo).GetChildren())
         {
-          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child);
+          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }
 
-        //// is there registered private properties of RelationShipType child? 
-        //var props = fdm.GetRegisteredProperties();
-        //foreach (var propertyInfo in props)
-        //{
-        //  if (((propertyInfo.RelationshipType & RelationshipTypes.Child) > 0) &&
-        //      ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) > 0))
-        //  {
-        //    AddNodeToBrukenRules(ref list, obj, ((IManageProperties) obj).ReadProperty(propertyInfo));
-        //  }
-        //}
+        // remove node if it has no child with broken rules. 
+        if (!errorsOnly && myChildBrokenRuleCount == 0)
+        {
+          list.Remove(node);
+        }
+        if (errorsOnly && bo.IsValid)
+        {
+          list.Remove(node);
+        }
+        childBrokenRuleCount += myChildBrokenRuleCount;
       }
 
-        // or a list og EditableObject (both BindingList and ObservableCollection)
+      // or a list of EditableObject (both BindingList and ObservableCollection)
       else if (obj is IEditableCollection)
       {
         var nodeKey = counter++;
         var isValid = ((ITrackStatus)obj).IsValid;
-        if (isValid) return; // exit if object is valid 
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj };
+        long myChildBrokenRuleCount = 0;
 
-        list.Add(new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj });
+        list.Add(node);
 
-        foreach (object child in (IEnumerable)obj)
+        foreach (var child in (IEnumerable)obj)
         {
-          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child);
+          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }
+
+        // remove node if it has no child with broken rules. 
+        if (!errorsOnly && myChildBrokenRuleCount == 0)
+        {
+          list.Remove(node);
+        }
+        if (errorsOnly && isValid)
+        {
+          list.Remove(node);
+        }
+        childBrokenRuleCount += myChildBrokenRuleCount;
       }
       return;
     }

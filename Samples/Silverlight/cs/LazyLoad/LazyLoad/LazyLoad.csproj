@@ -60,11 +60,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\packages\CSLA-Core.4.1.0.1\Lib\SL4.0\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Xaml">
-      <HintPath>..\packages\CSLA-Silverlight.4.1.0.1\Lib\SL4.0\Csla.Xaml.dll</HintPath>
+    <Reference Include="Csla.Xaml, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\Dependencies\Sl\Csla.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.ComponentModel.DataAnnotations, Version=2.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
@@ -103,7 +103,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\DataSources\RootVM.datasource" />
   </ItemGroup>

@@ -70,6 +70,19 @@ namespace Csla.Test.BypassPropertyChecks
       }
     }
 
+    public void LoadIdByNestedPass(int id)
+    {
+      using (this.BypassPropertyChecks)
+      {
+        using (this.BypassPropertyChecks)
+        {
+          
+        }
+        // must still be in bypass property checks
+        Id = id;
+      }
+    }
+
     public void LoadId(int id)
     {
       Id = id;

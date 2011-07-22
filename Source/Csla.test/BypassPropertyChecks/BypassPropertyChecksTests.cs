@@ -46,6 +46,11 @@ namespace Csla.Test.BypassPropertyChecks
       context.Assert.AreEqual(false, propertyChangedFired);
       context.Assert.AreEqual(false, testObj.IsDirty);
 
+      testObj.LoadIdByNestedPass(3);
+      context.Assert.AreEqual(3, testObj.ReadIdByPass());
+      context.Assert.AreEqual(false, propertyChangedFired);
+      context.Assert.AreEqual(false, testObj.IsDirty);
+
       testObj.LoadId(2);
       context.Assert.AreEqual(true, propertyChangedFired);
       context.Assert.AreEqual(2, testObj.ReadId());

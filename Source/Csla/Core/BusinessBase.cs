@@ -3247,6 +3247,10 @@ namespace Csla.Core
     [NotUndoable]
     private bool _bypassPropertyChecks = false;
 
+    [NonSerialized] 
+    [NotUndoable] 
+    private BypassPropertyChecksObject _bypassPropertyChecksObject = null;
+
     /// <summary>
     /// By wrapping this property inside Using block
     /// you can set property values on current business object
@@ -3255,7 +3259,10 @@ namespace Csla.Core
     /// </summary>
     protected internal BypassPropertyChecksObject BypassPropertyChecks
     {
-      get { return new BypassPropertyChecksObject(this); }
+      get
+      {
+        return BypassPropertyChecksObject.GetManager(this);
+      }
     }
 
     /// <summary>
@@ -3268,12 +3275,14 @@ namespace Csla.Core
     protected internal class BypassPropertyChecksObject : IDisposable
     {
       private BusinessBase _businessObject;
-      private BypassPropertyChecksObject() { }
+      private static object _lock = new object();
+
       internal BypassPropertyChecksObject(BusinessBase businessObject)
       {
         _businessObject = businessObject;
         _businessObject._bypassPropertyChecks = true;
       }
+
       #region IDisposable Members
 
       /// <summary>
@@ -3291,11 +3300,60 @@ namespace Csla.Core
       /// <param name="dispose">Dispose flag.</param>
       protected void Dispose(bool dispose)
       {
-        _businessObject._bypassPropertyChecks = false;
-        _businessObject = null;
+        DeRef();
       }
 
+      /// <summary>
+      /// Gets the BypassPropertyChecks object.
+      /// </summary>
+      /// <param name="businessObject">The business object.</param>
+      /// <returns></returns>
+      public static BypassPropertyChecksObject GetManager(BusinessBase businessObject)
+      {
+        lock (_lock)
+        {
+          if (businessObject._bypassPropertyChecksObject == null)
+            businessObject._bypassPropertyChecksObject = new BypassPropertyChecksObject(businessObject);
 
+          businessObject._bypassPropertyChecksObject.AddRef();
+        }
+        return businessObject._bypassPropertyChecksObject;
+      }
+
+      #region  Reference counting
+
+      private int _refCount;
+
+      /// <summary>
+      /// Gets the current reference count for this
+      /// object.
+      /// </summary>
+      public int RefCount
+      {
+        get { return _refCount; }
+      }
+
+      private void AddRef()
+      {
+        _refCount += 1;
+      }
+
+      private void DeRef()
+      {
+
+        lock (_lock)
+        {
+          _refCount -= 1;
+          if (_refCount == 0)
+          {
+            _businessObject._bypassPropertyChecks = false;
+            _businessObject._bypassPropertyChecksObject = null;
+            _businessObject = null;
+          }
+        }
+      }
+
+      #endregion
       #endregion
     }
 

@@ -23,36 +23,56 @@ namespace Csla
   {
     #region Context Manager
 
+    private static IContextManager _webContextManager;
     private static IContextManager _contextManager;
     private static Type _webManagerType;
-    private static Type _xamlManagerType;   
+    private static Type _xamlManagerType;
+
+    static ApplicationContext()
+    {
+      _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
+      _xamlManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
+
+      if (_webManagerType != null)
+        WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
+      if (_xamlManagerType != null)
+        _contextManager = (IContextManager)Activator.CreateInstance(_xamlManagerType);
+      if (_contextManager == null)
+        _contextManager = new ApplicationContextManager();
+    }
 
     /// <summary>
-    /// Gets or sets the context manager responsible
+    /// Gets or sets the web context manager.
+    /// Will use default WebContextManager. 
+    /// Only need to set for non-default WebContextManager.
+    /// </summary>
+    /// <value>
+    /// The web context manager.
+    /// </value>
+    public static IContextManager WebContextManager
+    {
+      get { return _webContextManager; }
+      set { _webContextManager = value; }
+    }
+
+    /// <summary>
+    /// Gets the context manager responsible
     /// for storing user and context information for
     /// the application.
     /// </summary>
+    /// <remarks>
+    /// Ïf WebContextManager is not null and IsValid then WebContextManager is returned,
+    /// else default ContextManager is returned. 
+    /// This behaviour is to support background threads in web applications and return
+    /// to use WebContextManager when completed. 
+    /// </remarks>
     public static IContextManager ContextManager
     {
       get
       {
-        if (_contextManager == null)
-        {
-          if (_webManagerType == null)
-            _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
-          if (_webManagerType != null)
-            _contextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
-          else
-          {
-            if (_xamlManagerType == null)
-              _xamlManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
-            if (_xamlManagerType != null)
-              _contextManager = (IContextManager)Activator.CreateInstance(_xamlManagerType);
-          }
-        }
-        if (_contextManager == null || !_contextManager.IsValid)
-          _contextManager = new ApplicationContextManager();
-        return _contextManager;
+        if (WebContextManager != null && WebContextManager.IsValid)
+            return WebContextManager;
+        return  _contextManager;
       }
       set { _contextManager = value; }
     }
@@ -619,6 +639,7 @@ namespace Csla
       }
     }
 
+
     internal static void SetLogicalExecutionLocation(LogicalExecutionLocations location)
     {
       LocalContext["__logicalExecutionLocation"] = location;
@@ -633,8 +654,6 @@ namespace Csla
       private const string _localContextName = "Csla.LocalContext";
       private const string _clientContextName = "Csla.ClientContext";
       private const string _globalContextName = "Csla.GlobalContext";
-
-      private static IPrincipal _principal;
 
       public bool IsValid
       {

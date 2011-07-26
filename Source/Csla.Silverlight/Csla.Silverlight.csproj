@@ -273,6 +273,18 @@
     <Compile Include="..\Csla\Rules\IHostRules.cs">
       <Link>Rules\IHostRules.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\LookupRule.cs">
+      <Link>Rules\LookupRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\ObjectRule.cs">
+      <Link>Rules\ObjectRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\PropertyEditRule.cs">
+      <Link>Rules\PropertyEditRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\PropertyRule.cs">
+      <Link>Rules\PropertyRule.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\RuleUri.cs">
       <Link>Rules\RuleUri.cs</Link>
     </Compile>

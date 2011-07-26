@@ -25,7 +25,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets or sets the primary property affected by this rule.
     /// </summary>
-    public Csla.Core.IPropertyInfo PrimaryProperty 
+    public virtual Csla.Core.IPropertyInfo PrimaryProperty 
     {
       get { return _primaryProperty; }
       set
@@ -110,6 +110,28 @@ namespace Csla.Rules
     void IBusinessRule.Execute(RuleContext context)
     {
       Execute(context);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance can run in logical serverside data portal.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance can run in  in logical serverside data portal; otherwise, <c>false</c>.
+    /// </value>
+    public bool CanRunInCheckRules
+    {
+        get { return (RunMode & RunModes.DenyCheckRules) == 0; }
+        set
+        {
+            if (value && !CanRunInCheckRules)
+            {
+                RunMode = RunMode ^ RunModes.DenyCheckRules;
+            }
+            else if (!value && CanRunInCheckRules)
+            {
+                RunMode = RunMode | RunModes.DenyCheckRules;
+            }
+        }
     }
 
     #region Load/Read Property

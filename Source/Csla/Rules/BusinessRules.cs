@@ -80,8 +80,10 @@ namespace Csla.Rules
         _typeRules = null;
         _typeAuthRules = null;
         _ruleSet = value == ApplicationContext.DefaultRuleSet ? null : value;
-        if (BrokenRules.Count > 0) 
-            BrokenRules.Clear();
+        if (BrokenRules.Count > 0)
+        {
+          BrokenRules.ClearRules();
+        }
       }
     }
 
@@ -557,9 +559,23 @@ namespace Csla.Rules
               if (!ReferenceEquals(property, p))
                 propertiesToRun.Add(p);
           }
+
+        // add PrimaryProperty where property is in InputProperties
+        var input = from r in TypeRules.Rules
+                    where !ReferenceEquals(r.PrimaryProperty, property)
+                          && r.PrimaryProperty != null
+                          && r.InputProperties != null
+                          && r.InputProperties.Contains(property)
+                    select r.PrimaryProperty;
+
+        foreach (var p in input)
+        {
+            if (!ReferenceEquals(property, p))
+                propertiesToRun.Add(p);
+        }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty);
+          affectedProperties.AddRange(CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty));
       }
 
       return affectedProperties.Distinct().ToList();

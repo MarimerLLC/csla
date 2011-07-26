@@ -43,6 +43,13 @@ namespace Csla.Rules
       IsReadOnly = readOnly;
     }
 
+    internal void ClearRules()
+    {
+      IsReadOnly = false;
+      base.Clear();
+      IsReadOnly = true; 
+    }
+
     internal void ClearRules(Csla.Core.IPropertyInfo property)
     {
       this.IsReadOnly = false;

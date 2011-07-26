@@ -18,7 +18,7 @@ namespace Csla.Rules
 {
 
   [Flags]
-  public enum RuleContextModes
+  internal enum RuleContextModes
   {
     /// <summary>
     /// Default value, rule can run in any context
@@ -75,7 +75,7 @@ namespace Csla.Rules
     {
       get
       {
-        if (!_outputPropertyValues.IsValueCreated) 
+        if (!_outputPropertyValues.IsValueCreated)
           return null;
         return _outputPropertyValues.Value;
       }
@@ -91,7 +91,7 @@ namespace Csla.Rules
     /// results of the rule.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public List<RuleResult> Results 
+    public List<RuleResult> Results
     {
       get
       {
@@ -117,7 +117,7 @@ namespace Csla.Rules
     /// Gets the execution context.
     /// </summary>
     /// <value>The execution context.</value>
-    public RuleContextModes ExecuteContext { get; internal set; }
+    internal RuleContextModes ExecuteContext { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
@@ -158,7 +158,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is check object rules context; otherwise, <c>false</c>.
     /// </value>
-    public bool IsCheckObjectRulesContext
+    internal bool IsCheckObjectRulesContext
     {
       get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }
@@ -244,7 +244,7 @@ namespace Csla.Rules
     /// for the current property.</param>
     public void AddErrorResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { StopProcessing = stopProcessing});
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -269,7 +269,7 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public void AddWarningResult(string description)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning});
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning });
     }
 
     /// <summary>
@@ -281,7 +281,7 @@ namespace Csla.Rules
     /// for the current property.</param>
     public void AddWarningResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing});
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing });
     }
 
 
@@ -296,7 +296,7 @@ namespace Csla.Rules
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning});
+      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning });
     }
 
     /// <summary>
@@ -316,7 +316,7 @@ namespace Csla.Rules
     /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
     public void AddInformationResult(string description, bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing});
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing });
     }
 
     /// <summary>
@@ -330,7 +330,7 @@ namespace Csla.Rules
     {
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name);
-      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information});
+      Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information });
     }
 
     /// <summary>
@@ -339,7 +339,7 @@ namespace Csla.Rules
     /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
     public void AddSuccessResult(bool stopProcessing)
     {
-      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing});
+      Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing });
     }
 
     /// <summary>

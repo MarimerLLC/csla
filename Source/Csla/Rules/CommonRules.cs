@@ -17,29 +17,23 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// Base class used to create common rules.
   /// </summary>
-  public abstract class CommonBusinessRule : BusinessRule
+  public abstract class CommonBusinessRule : PropertyRule
   {
-    /// <summary>
-    /// Gets or sets the severity for this rule.
-    /// </summary>
-    public RuleSeverity Severity { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="primaryProperty">Primary property.</param>
-    public CommonBusinessRule(Csla.Core.IPropertyInfo primaryProperty)
-      : base(primaryProperty)
+    protected CommonBusinessRule(Csla.Core.IPropertyInfo primaryProperty)  : base(primaryProperty)
     {
-      Severity = RuleSeverity.Error;
     }
 
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
-    public CommonBusinessRule()
+    /// <param name="primaryProperty">Primary property.</param>
+    protected CommonBusinessRule() : base()
     {
-      Severity = RuleSeverity.Error;
     }
   }
 

@@ -45,6 +45,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
@@ -314,7 +315,9 @@
     <Compile Include="ValidationRules\HasRulesManager2.cs" />
     <Compile Include="ValidationRules\HasRulesManager2.partial.cs" />
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
+    <Compile Include="ValidationRules\RuleBaseClassesTests.cs" />
     <Compile Include="ValidationRules\RuleDescriptionTests.cs" />
+    <Compile Include="ValidationRules\RuleRoot.cs" />
     <Compile Include="ValidationRules\RuleTests.cs" />
     <Compile Include="ValidationRules\SeverityClasses.cs" />
     <Compile Include="ValidationRules\SeverityTests.cs" />

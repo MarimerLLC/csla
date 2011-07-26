@@ -197,6 +197,7 @@
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
     <Compile Include="RelationshipTypes.cs" />
     <Compile Include="Reflection\Reflect.cs" />
+    <Compile Include="Rules\LookupRule.cs" />
     <Compile Include="Rules\AuthorizationActions.cs" />
     <Compile Include="Rules\AuthorizationContext.cs" />
     <Compile Include="Rules\AuthorizationRule.cs" />
@@ -215,6 +216,9 @@
     <Compile Include="Rules\IAuthorizationRule.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
     <Compile Include="Rules\IHostRules.cs" />
+    <Compile Include="Rules\ObjectRule.cs" />
+    <Compile Include="Rules\PropertyEditRule.cs" />
+    <Compile Include="Rules\PropertyRule.cs" />
     <Compile Include="Rules\RuleContext.cs" />
     <Compile Include="Rules\RuleResult.cs" />
     <Compile Include="Rules\RuleUri.cs" />

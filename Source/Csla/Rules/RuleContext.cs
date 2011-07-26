@@ -125,7 +125,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is cascade context; otherwise, <c>false</c>.
     /// </value>
-    internal bool IsCascadeContext
+    public bool IsCascadeContext
     {
       get { return (ExecuteContext & RuleContextModes.AsAffectedPoperty) > 0; }
     }
@@ -136,7 +136,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is property changed context; otherwise, <c>false</c>.
     /// </value>
-    internal bool IsPropertyChangedContext
+    public bool IsPropertyChangedContext
     {
       get { return (ExecuteContext & RuleContextModes.PropertyChanged) > 0; }
     }
@@ -147,7 +147,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is check rules context; otherwise, <c>false</c>.
     /// </value>
-    internal bool IsCheckRulesContext
+    public bool IsCheckRulesContext
     {
       get { return (ExecuteContext & RuleContextModes.CheckRules) > 0; }
     }
@@ -158,7 +158,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance is check object rules context; otherwise, <c>false</c>.
     /// </value>
-    internal bool IsCheckObjectRulesContext
+    public bool IsCheckObjectRulesContext
     {
       get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }

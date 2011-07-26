@@ -36,7 +36,10 @@ namespace Csla.Web.Mvc
     /// implements Csla.Core.ISavable.
     /// </summary>
     /// <param name="modelState">Controller's ModelState object.</param>
-    /// <returns>true if the save succeeds.</returns>
+    /// <param name="forceUpdate">if set to <c>true</c> force update.</param>
+    /// <returns>
+    /// true if the save succeeds.
+    /// </returns>
     public virtual bool Save(ModelStateDictionary modelState, bool forceUpdate)
     {
       try

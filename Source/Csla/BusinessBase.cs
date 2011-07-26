@@ -530,5 +530,16 @@ namespace Csla
     }
 
     #endregion
+
+    #region Register Methods
+
+    protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
+    {
+      System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);
+
+      return RegisterMethod(typeof(T), reflectedMethodInfo.Name);
+    }
+
+    #endregion
   }
 }

@@ -317,7 +317,7 @@
     <Compile Include="ValidationRules\MaxLengthArgs.cs" />
     <Compile Include="ValidationRules\RuleBaseClassesTests.cs" />
     <Compile Include="ValidationRules\RuleDescriptionTests.cs" />
-    <Compile Include="ValidationRules\RuleRoot.cs" />
+    <Compile Include="ValidationRules\RuleBaseClassesRoot.cs" />
     <Compile Include="ValidationRules\RuleTests.cs" />
     <Compile Include="ValidationRules\SeverityClasses.cs" />
     <Compile Include="ValidationRules\SeverityTests.cs" />

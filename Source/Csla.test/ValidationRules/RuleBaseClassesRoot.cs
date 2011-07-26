@@ -10,7 +10,7 @@ using Csla.Threading;
 namespace Csla.Test.ValidationRules
 {
   [Serializable]
-  public class RuleRoot : BusinessBase<RuleRoot>
+  public class RuleBaseClassesRoot : BusinessBase<RuleBaseClassesRoot>
   {
     #region Properties
 
@@ -113,12 +113,12 @@ namespace Csla.Test.ValidationRules
 
     #region Factory Methods
 
-    public static RuleRoot NewEditableRoot(string ruleSet)
+    public static RuleBaseClassesRoot NewEditableRoot(string ruleSet)
     {
-      return Csla.DataPortal.Create<RuleRoot>(ruleSet);
+      return Csla.DataPortal.Create<RuleBaseClassesRoot>(ruleSet);
     }
 
-    private RuleRoot()
+    private RuleBaseClassesRoot()
     { /* Require use of factory methods */}
 
     #endregion
@@ -168,31 +168,31 @@ namespace Csla.Test.ValidationRules
     public ValidateRootObject()
       : base()
     {
-      AffectedProperties.Add(RuleRoot.NameProperty);
-      AffectedProperties.Add(RuleRoot.CountryProperty);
-      AffectedProperties.Add(RuleRoot.StateProperty);
+      AffectedProperties.Add(RuleBaseClassesRoot.NameProperty);
+      AffectedProperties.Add(RuleBaseClassesRoot.CountryProperty);
+      AffectedProperties.Add(RuleBaseClassesRoot.StateProperty);
     }
 
     protected override void Execute(RuleContext context)
     {
-      var customerId = (int)ReadProperty(context.Target, RuleRoot.CustomerIdProperty);
+      var customerId = (int)ReadProperty(context.Target, RuleBaseClassesRoot.CustomerIdProperty);
 
       switch (customerId)
       {
         case 4:
-          context.AddErrorResult(RuleRoot.NameProperty, "customer name required");
-          context.AddErrorResult(RuleRoot.CountryProperty, "country required");
-          context.AddErrorResult(RuleRoot.StateProperty, "state required");
+          context.AddErrorResult(RuleBaseClassesRoot.NameProperty, "customer name required");
+          context.AddErrorResult(RuleBaseClassesRoot.CountryProperty, "country required");
+          context.AddErrorResult(RuleBaseClassesRoot.StateProperty, "state required");
           break;
         case 5:
-          context.AddWarningResult(RuleRoot.NameProperty, "customer name required");
-          context.AddWarningResult(RuleRoot.CountryProperty, "country required");
-          context.AddWarningResult(RuleRoot.StateProperty, "state required");
+          context.AddWarningResult(RuleBaseClassesRoot.NameProperty, "customer name required");
+          context.AddWarningResult(RuleBaseClassesRoot.CountryProperty, "country required");
+          context.AddWarningResult(RuleBaseClassesRoot.StateProperty, "state required");
           break;
         case 6:
-          context.AddInformationResult(RuleRoot.NameProperty, "customer name required");
-          context.AddInformationResult(RuleRoot.CountryProperty, "country required");
-          context.AddInformationResult(RuleRoot.StateProperty, "state required");
+          context.AddInformationResult(RuleBaseClassesRoot.NameProperty, "customer name required");
+          context.AddInformationResult(RuleBaseClassesRoot.CountryProperty, "country required");
+          context.AddInformationResult(RuleBaseClassesRoot.StateProperty, "state required");
           break;
       }
 

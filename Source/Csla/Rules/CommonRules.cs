@@ -31,7 +31,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
-    /// <param name="primaryProperty">Primary property.</param>
     protected CommonBusinessRule() : base()
     {
     }

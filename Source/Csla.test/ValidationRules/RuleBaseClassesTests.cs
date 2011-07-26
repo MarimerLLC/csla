@@ -41,7 +41,7 @@ namespace Csla.Test.ValidationRules
     public void LookupRuleDefaultCanXYZValues()
     {
       
-      var rule = new LookupCustomer(RuleRoot.CustomerIdProperty, RuleRoot.NameProperty);
+      var rule = new LookupCustomer(RuleBaseClassesRoot.CustomerIdProperty, RuleBaseClassesRoot.NameProperty);
       Assert.IsTrue(rule.IsAsync);
       Assert.IsFalse(rule.CanRunOnServer);
       Assert.IsFalse(rule.CanRunInCheckRules);
@@ -52,7 +52,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public void PropertyRuleDefaultCanXYZVaules()
     {
-      var rule = new LessThan(RuleRoot.StartDateProperty, RuleRoot.EndDateProperty);
+      var rule = new LessThan(RuleBaseClassesRoot.StartDateProperty, RuleBaseClassesRoot.EndDateProperty);
       Assert.IsFalse(rule.IsAsync);
       Assert.IsTrue(rule.CanRunOnServer);
       Assert.IsTrue(rule.CanRunInCheckRules);
@@ -62,7 +62,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod()]
     public void PropertyEditRuleDefaultCanXYZVaules()
     {
-      var rule = new CalcSum(RuleRoot.NameProperty);
+      var rule = new CalcSum(RuleBaseClassesRoot.NameProperty);
       Assert.IsFalse(rule.IsAsync);
       Assert.IsFalse(rule.CanRunOnServer);
       Assert.IsTrue(rule.CanRunInCheckRules);
@@ -74,7 +74,7 @@ namespace Csla.Test.ValidationRules
     public void ObjectRuleThrowsExceptionIfPrimareyPropertyIsSet()
     {
       var rule = new ValidateRootObject();
-      rule.PrimaryProperty = RuleRoot.NameProperty;
+      rule.PrimaryProperty = RuleBaseClassesRoot.NameProperty;
     }
     /// <summary>
     ///A test for NewEditableRoot
@@ -85,22 +85,22 @@ namespace Csla.Test.ValidationRules
       // StartDate less than 
       string ruleSet = "Date";
       string err1, err2;
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
       actual.StartDate = "today";
       actual.EndDate = "yesterday";
 
-      err1 = ((IDataErrorInfo)actual)[RuleRoot.StartDateProperty.Name];
-      err2 = ((IDataErrorInfo)actual)[RuleRoot.EndDateProperty.Name];
+      err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.StartDateProperty.Name];
+      err2 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.EndDateProperty.Name];
 
       Assert.IsFalse(actual.IsSelfValid);   // object has broken rule 
       Assert.IsTrue(err1.Length > 1);       // both fields have error message
       Assert.IsTrue(err2.Length > 1);
 
       actual.EndDate = "tomorrow";
-      err1 = ((IDataErrorInfo)actual)[RuleRoot.StartDateProperty.Name];
-      err2 = ((IDataErrorInfo)actual)[RuleRoot.EndDateProperty.Name];
+      err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.StartDateProperty.Name];
+      err2 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.EndDateProperty.Name];
 
       Assert.IsTrue(actual.IsSelfValid);     // object has no broken rules
       Assert.AreEqual(string.Empty, err1);   // both fields are now OK
@@ -111,7 +111,7 @@ namespace Csla.Test.ValidationRules
     public void AsyncLookupDoNotRunServerSide()
     {
       string ruleSet = "Lookup";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       // rule did not run on serverside (DAL) and no value is explicitly set 
       Assert.AreEqual(string.Empty, actual.Name);
@@ -121,7 +121,7 @@ namespace Csla.Test.ValidationRules
     public void AsyncLookupCustomerSetsCustomerName()
     {
       string ruleSet = "Lookup";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       var waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
       actual.ValidationComplete += (o, e) => waitHandle.Set();
@@ -143,8 +143,8 @@ namespace Csla.Test.ValidationRules
       // test that Name has broken rule on new object
       string ruleSet = "LookupAndNameRequired";
       string err1;
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
-      err1 = ((IDataErrorInfo)actual)[RuleRoot.NameProperty.Name];
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
+      err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.NameProperty.Name];
 
 
       Assert.AreEqual(string.Empty, actual.Name);  // name is not set 
@@ -161,8 +161,8 @@ namespace Csla.Test.ValidationRules
       // that runs when CustomerId is set.
       string ruleSet = "LookupAndNameRequired";
       string err1;
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
-      err1 = ((IDataErrorInfo)actual)[RuleRoot.NameProperty.Name];
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
+      err1 = ((IDataErrorInfo)actual)[RuleBaseClassesRoot.NameProperty.Name];
 
       Assert.IsFalse(actual.IsSelfValid);   // is broken before we set customerid
 
@@ -179,7 +179,7 @@ namespace Csla.Test.ValidationRules
     public void NewObjectWithObjectRulesIsValid()
     {
       string ruleSet = "Object";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
       Assert.IsTrue(actual.IsSelfValid);
     }
 
@@ -187,7 +187,7 @@ namespace Csla.Test.ValidationRules
     public void NewObjectWithObjectRulesHas3ErrorForCustomerId4()
     {
       string ruleSet = "Object";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       actual.CustomerId = 4;
       Assert.IsFalse(actual.IsValid);
@@ -198,7 +198,7 @@ namespace Csla.Test.ValidationRules
     public void NewObjectWithObjectRulesHas3WarningsForCustomerId5()
     {
       string ruleSet = "Object";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       actual.CustomerId = 5;
       Assert.IsTrue(actual.IsValid);
@@ -209,7 +209,7 @@ namespace Csla.Test.ValidationRules
     public void NewObjectWithObjectRulesHas3InfosForCustomerId6()
     {
       string ruleSet = "Object";
-      var actual = RuleRoot.NewEditableRoot(ruleSet);
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
 
       actual.CustomerId = 6;
       Assert.IsTrue(actual.IsValid);

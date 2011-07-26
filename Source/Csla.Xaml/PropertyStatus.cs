@@ -181,6 +181,13 @@ namespace Csla.Xaml
     }
 
     private string _propertyName = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the name of the property.
+    /// </summary>
+    /// <value>
+    /// The name of the property.
+    /// </value>
     protected string PropertyName
     {
       get { return _propertyName; }

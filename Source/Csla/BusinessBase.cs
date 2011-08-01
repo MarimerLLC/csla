@@ -533,6 +533,11 @@ namespace Csla
 
     #region Register Methods
 
+    /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodLambdaExpression">The method lambda expression.</param>
+    /// <returns></returns>
     protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
     {
       System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);

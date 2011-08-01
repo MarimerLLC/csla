@@ -18,6 +18,11 @@ namespace Csla.Rules
     /// when one of the input properties is changed or CheckRules is called.
     /// These rules will NOT execute on the server. side of the DataPortal.
     /// </summary>
+    /// <remarks>
+    /// This class should also be used for LookupRules in a web environment
+    /// where rules typically run on postback and in CheckRules after all 
+    /// properties has been set.
+    /// </remarks>
     /// <param name="propertyInfo">The property info.</param>
     protected PropertyEditRule(IPropertyInfo propertyInfo)
       : base(propertyInfo)

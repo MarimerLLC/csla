@@ -3,7 +3,7 @@
 namespace Csla.Rules
 {
   /// <summary>
-  /// Base class for an Async Lookup rule (by default has IsAsync = true) 
+  /// Base class for an Async Lookup rule (IsAsync = true as default) 
   /// that will only run on the client side of DataPortal when a property 
   /// has been edited by a user.
   /// </summary>

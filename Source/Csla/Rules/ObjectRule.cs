@@ -14,17 +14,10 @@ namespace Csla.Rules
   public abstract class ObjectRule : BusinessRule
   {
     /// <summary>
-    /// Gets or sets the severity for this rule.
-    /// </summary>
-    public RuleSeverity Severity { get; set; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ObjectRule"/> class.
     /// </summary>
     protected ObjectRule()
-    {
-      Severity = RuleSeverity.Error;
-    }
+    { }
 
     /// <summary>
     /// Gets or sets the primary property affected by this rule.

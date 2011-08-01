@@ -12,10 +12,31 @@ namespace Csla.Rules
   /// </summary>
   public abstract class PropertyRule : BusinessRule
   {
+
+
     /// <summary>
-    /// Gets or sets the severity for this rule.
+    /// Gets the error message.
     /// </summary>
-    public RuleSeverity Severity { get; set; }
+    protected virtual string Message
+    {
+      get { return MessageDelegate.Invoke(); }
+    }
+
+    /// <summary>
+    /// Gets or sets the error message function for this rule.
+    /// </summary>    
+    public Func<string> MessageDelegate { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether this instance has message delegate.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance has message delegate; otherwise, <c>false</c>.
+    /// </value>
+    protected bool HasMessageDelegate
+    {
+      get { return MessageDelegate != null; }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
@@ -23,7 +44,6 @@ namespace Csla.Rules
     protected PropertyRule()
       : base()
     {
-      Severity = RuleSeverity.Error;
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;
       CanRunInCheckRules = true;
@@ -33,10 +53,8 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     /// <param name="propertyInfo">The property info.</param>
-    protected PropertyRule(IPropertyInfo propertyInfo)
-      : base(propertyInfo)
+    protected PropertyRule(IPropertyInfo propertyInfo) : base(propertyInfo)
     {
-      Severity = RuleSeverity.Error;
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;
       CanRunInCheckRules = true;

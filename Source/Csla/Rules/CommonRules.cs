@@ -19,6 +19,10 @@ namespace Csla.Rules.CommonRules
   /// </summary>
   public abstract class CommonBusinessRule : PropertyRule
   {
+    /// <summary>
+    /// Gets or sets the severity for this rule.
+    /// </summary>
+    public RuleSeverity Severity { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -26,13 +30,15 @@ namespace Csla.Rules.CommonRules
     /// <param name="primaryProperty">Primary property.</param>
     protected CommonBusinessRule(Csla.Core.IPropertyInfo primaryProperty)  : base(primaryProperty)
     {
+      Severity = RuleSeverity.Error;
     }
 
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
-    protected CommonBusinessRule() : base()
+    protected CommonBusinessRule()
     {
+      Severity = RuleSeverity.Error;
     }
   }
 
@@ -110,6 +116,29 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public Required(Csla.Core.IPropertyInfo primaryProperty, Func<string> messageDelegate )
+      : this(primaryProperty)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.StringRequiredRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
@@ -117,12 +146,12 @@ namespace Csla.Rules.CommonRules
     {
       var value = context.InputPropertyValues[PrimaryProperty];
 #if WINDOWS_PHONE
-      if (value == null || string.IsNullOrEmpty(value.ToString()))
+            if (value == null || string.IsNullOrEmpty(value.ToString()))
 #else
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
 #endif
       {
-        var message = string.Format(Resources.StringRequiredRule, PrimaryProperty.FriendlyName);
+        var message = string.Format(Message, PrimaryProperty.FriendlyName);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
@@ -152,6 +181,30 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="max">Max length value.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public MaxLength(Csla.Core.IPropertyInfo primaryProperty, int max, Func<string> messageDelegate)
+      : this(primaryProperty, max)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.StringMaxLengthRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
@@ -160,7 +213,7 @@ namespace Csla.Rules.CommonRules
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length > Max)
       {
-        var message = string.Format(Resources.StringMaxLengthRule, PrimaryProperty.FriendlyName, Max);
+        var message = string.Format(Message, PrimaryProperty.FriendlyName, Max);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
@@ -190,6 +243,30 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="min">Min length value.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public MinLength(Csla.Core.IPropertyInfo primaryProperty, int min, Func<string> messageDelegate)
+      : this(primaryProperty, min)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.StringMinLengthRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
@@ -198,7 +275,7 @@ namespace Csla.Rules.CommonRules
       var value = context.InputPropertyValues[PrimaryProperty];
       if (value != null && value.ToString().Length < Min)
       {
-        var message = string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min);
+        var message = string.Format(Message, PrimaryProperty.FriendlyName, Min);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
@@ -224,7 +301,7 @@ namespace Csla.Rules.CommonRules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
-    /// <param name="min">Min length value.</param>
+    /// <param name="min">Min value.</param>
     public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min) 
       : base(primaryProperty) 
     {
@@ -234,12 +311,36 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="min">Min value.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min, Func<string> messageDelegate)
+      : this(primaryProperty, min)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.MinValueRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      T value = (T)context.InputPropertyValues[PrimaryProperty];
+      var value = (T)context.InputPropertyValues[PrimaryProperty];
       int result = value.CompareTo(Min);
       if (result <= -1)
       {
@@ -248,8 +349,8 @@ namespace Csla.Rules.CommonRules
           outValue = Min.ToString();
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Min);
-        var message = string.Format(Resources.MinValueRule, PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity});
+        var message = string.Format(Message, PrimaryProperty.FriendlyName, outValue);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
   }
@@ -284,12 +385,36 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="max">Max value.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public MaxValue(Csla.Core.IPropertyInfo primaryProperty, T max, Func<string> messageDelegate)
+      : this(primaryProperty, max)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.MaxValueRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      T value = (T)context.InputPropertyValues[PrimaryProperty];
+      var value = (T)context.InputPropertyValues[PrimaryProperty];
       int result = value.CompareTo(Max);
       if (result >= 1)
       {
@@ -298,8 +423,8 @@ namespace Csla.Rules.CommonRules
           outValue = Max.ToString();
         else
           outValue = string.Format(string.Format("{{0:{0}}}", Format), Max);
-        var message = string.Format(Resources.MaxValueRule, PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity});
+        var message = string.Format(Message, PrimaryProperty.FriendlyName, outValue);
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
   }
@@ -367,14 +492,38 @@ namespace Csla.Rules.CommonRules
     }
 
     /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property to which the rule applies.</param>
+    /// <param name="expression">Regular expression.</param>
+    /// <param name="messageDelegate">The localizable message.</param>
+    public RegExMatch(Csla.Core.IPropertyInfo primaryProperty, string expression, Func<string> messageDelegate)
+      : this(primaryProperty, expression)
+    {
+      MessageDelegate = messageDelegate;
+    }
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value></value>
+    protected override string Message
+    {
+      get
+      {
+        return HasMessageDelegate ? base.Message : Csla.Properties.Resources.RegExMatchRule;
+      }
+    }
+
+    /// <summary>
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
-      bool ruleSatisfied = false;
-      Regex expression = new Regex(Expression);
+      bool ruleSatisfied;
+      var expression = new Regex(Expression);
 
       if (value == null && NullOption == NullResultOptions.ConvertToEmptyString)
         value = string.Empty;
@@ -394,7 +543,7 @@ namespace Csla.Rules.CommonRules
 
       if (!ruleSatisfied)
       {
-        var message = string.Format(Resources.RegExMatchRule, PrimaryProperty.FriendlyName);
+        var message = string.Format(Message, PrimaryProperty.FriendlyName);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
     }
@@ -410,10 +559,36 @@ namespace Csla.Rules.CommonRules
   /// </remarks>
   public class InfoMessage : BusinessRule
   {
+    private string _messageText;
+
     /// <summary>
     /// Gets the default description used by this rule.
     /// </summary>
-    public string MessageText { get; protected set; }
+    public string MessageText
+    {
+      get
+      {
+        if (_messageDelegate != null)
+          return _messageDelegate.Invoke();
+        return _messageText;
+      }
+      protected set { _messageText = value; }
+    }
+
+    private Func<string> _messageDelegate;
+
+    /// <summary>
+    /// Gets or sets the localizable message function.
+    /// This will override the MessageText if set.
+    /// </summary>
+    /// <value>
+    /// The localizable message.
+    /// </value>
+    public Func<string> MessageDelegate
+    {
+      get { return _messageDelegate; }
+      set { _messageDelegate = value; }
+    }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -436,6 +611,16 @@ namespace Csla.Rules.CommonRules
       MessageText = messageText;
     }
 
+    /// <summary>
+    /// Creates an instance of the rule.
+    /// </summary>
+    /// <param name="primaryProperty">Property for message.</param>
+    /// <param name="messageDelegate">Message text function.</param>
+    public InfoMessage(Csla.Core.IPropertyInfo primaryProperty, Func<string> messageDelegate)
+      : this(primaryProperty)
+    {
+      MessageDelegate = messageDelegate;
+    }
     /// <summary>
     /// Rule implementation.
     /// </summary>

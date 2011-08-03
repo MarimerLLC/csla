@@ -267,20 +267,17 @@
     <Compile Include="..\Csla\Rules\BusinessRules.cs">
       <Link>Rules\BusinessRules.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\BusinessRulesExtensions.cs">
+      <Link>Rules\BusinessRulesExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\IAuthorizationRule.cs">
       <Link>Rules\IAuthorizationRule.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\IHostRules.cs">
       <Link>Rules\IHostRules.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Rules\LookupRule.cs">
-      <Link>Rules\LookupRule.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\Rules\ObjectRule.cs">
       <Link>Rules\ObjectRule.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Rules\PropertyEditRule.cs">
-      <Link>Rules\PropertyEditRule.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\PropertyRule.cs">
       <Link>Rules\PropertyRule.cs</Link>

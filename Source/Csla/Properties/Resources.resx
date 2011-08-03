@@ -422,4 +422,7 @@
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
   </data>
+  <data name="ObjectRulesCannotSetPrimaryProperty" xml:space="preserve">
+    <value>Object rule can not have PrimaryPropery.</value>
+  </data>
 </root>

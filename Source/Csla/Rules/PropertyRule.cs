@@ -1,25 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Core;
 
 namespace Csla.Rules
 {
   /// <summary>
   /// Base class for a property rule 
-  /// These rules will run without any restrictions.
   /// </summary>
   public abstract class PropertyRule : BusinessRule
   {
-
-
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    protected virtual string Message
+    public string MessageText
     {
       get { return MessageDelegate.Invoke(); }
+      set { MessageDelegate = () => value; }
     }
 
     /// <summary>
@@ -36,6 +31,11 @@ namespace Csla.Rules
     protected bool HasMessageDelegate
     {
       get { return MessageDelegate != null; }
+    }
+
+    protected virtual string GetMessage()
+    {
+      return MessageText;
     }
 
     /// <summary>
@@ -100,6 +100,28 @@ namespace Csla.Rules
         else if (!value && CanRunOnServer)
         {
           RunMode = RunMode | RunModes.DenyOnServerSidePortal;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this instance can run in logical serverside data portal.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this instance can run in  in logical serverside data portal; otherwise, <c>false</c>.
+    /// </value>
+    public bool CanRunInCheckRules
+    {
+      get { return (RunMode & RunModes.DenyCheckRules) == 0; }
+      set
+      {
+        if (value && !CanRunInCheckRules)
+        {
+          RunMode = RunMode ^ RunModes.DenyCheckRules;
+        }
+        else if (!value && CanRunInCheckRules)
+        {
+          RunMode = RunMode | RunModes.DenyCheckRules;
         }
       }
     }

@@ -215,5 +215,27 @@ namespace Csla.Test.ValidationRules
       Assert.IsTrue(actual.IsValid);
       Assert.AreEqual(3, actual.BrokenRulesCollection.Where(p => p.Severity == RuleSeverity.Information).Count());
     }
+
+
+    [TestMethod()]
+    public void MessageDelegateAndResources()
+    {
+      string ruleSet = "Required";
+      var actual = RuleBaseClassesRoot.NewEditableRoot(ruleSet);
+      var culture = Thread.CurrentThread.CurrentCulture;
+
+      Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+      actual.Name = "xyz";
+      actual.Name = "";
+      Assert.AreEqual("Name required", actual.BrokenRulesCollection[0].Description);
+      Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("nb-NO");
+      Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("nb-NO");
+      actual.Name = "xyz";
+      actual.Name = "";
+      Assert.AreEqual("Name påkrevd", actual.BrokenRulesCollection[0].Description);
+      Thread.CurrentThread.CurrentCulture = culture;
+      Thread.CurrentThread.CurrentUICulture = culture;
+    }
   }
 }

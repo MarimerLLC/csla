@@ -107,6 +107,11 @@ namespace Csla.Test.ValidationRules
 
       BusinessRules.RuleSet = "Object";
       BusinessRules.AddRule(new ValidateRootObject());
+
+
+      BusinessRules.RuleSet = "Required";
+      BusinessRules.AddRule(new Required(NameProperty, () => Csla.Properties.Resources.StringRequiredRule));
+
     }
 
     #endregion
@@ -135,7 +140,7 @@ namespace Csla.Test.ValidationRules
   /// <summary>
   /// CalcSum rule will set primary property to the sum of all.
   /// </summary>
-  public class CalcSum : Csla.Rules.PropertyEditRule
+  public class CalcSum : Csla.Rules.PropertyRule
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalcSum"/> class.
@@ -150,6 +155,8 @@ namespace Csla.Test.ValidationRules
         InputProperties = new List<IPropertyInfo>();
       }
       InputProperties.AddRange(inputProperties);
+
+      CanRunOnServer = false;
     }
 
     protected override void Execute(RuleContext context)
@@ -236,7 +243,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class LookupCustomer : LookupRule
+  public class LookupCustomer : PropertyRule
   {
     public IPropertyInfo NameProperty { get; set; }
     public LookupCustomer(IPropertyInfo primaryProperty, IPropertyInfo nameProperty)
@@ -245,6 +252,11 @@ namespace Csla.Test.ValidationRules
       NameProperty = nameProperty;
       InputProperties = new List<IPropertyInfo>() { primaryProperty };
       AffectedProperties.Add(NameProperty);
+
+      CanRunOnServer = false;
+      CanRunInCheckRules = false;
+      CanRunAsAffectedProperty = false;
+      IsAsync = true; 
     }
 
     protected override void Execute(RuleContext context)

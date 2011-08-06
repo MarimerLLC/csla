@@ -36,10 +36,10 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this instance can run in logical serverside data portal.
+    /// Gets or sets a value indicating whether this instance can run when CheckRules is called on BO.
     /// </summary>
     /// <value>
-    /// 	<c>true</c> if this instance can run in  in logical serverside data portal; otherwise, <c>false</c>.
+    /// 	<c>true</c> if this instance can run when CheckRules is called; otherwise, <c>false</c>.
     /// </value>
     public bool CanRunInCheckRules
     {

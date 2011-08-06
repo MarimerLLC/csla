@@ -9,7 +9,7 @@ namespace Csla.Rules
   public abstract class PropertyRule : BusinessRule
   {
     /// <summary>
-    /// Gets the error message.
+    /// Gets or sets the error message (constant).
     /// </summary>
     public string MessageText
     {
@@ -19,6 +19,7 @@ namespace Csla.Rules
 
     /// <summary>
     /// Gets or sets the error message function for this rule.
+    /// Use this for localizable messages from a resource file. 
     /// </summary>    
     public Func<string> MessageDelegate { get; set; }
 
@@ -86,7 +87,7 @@ namespace Csla.Rules
     /// Gets or sets a value indicating whether this instance can run in logical serverside data portal.
     /// </summary>
     /// <value>
-    /// 	<c>true</c> if this instance can run in  in logical serverside data portal; otherwise, <c>false</c>.
+    /// 	<c>true</c> if this instance can run logical serverside data portal; otherwise, <c>false</c>.
     /// </value>
     public bool CanRunOnServer
     {
@@ -105,10 +106,10 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether this instance can run in logical serverside data portal.
+    /// Gets or sets a value indicating whether this instance can run when CheckRules is called on BO.
     /// </summary>
     /// <value>
-    /// 	<c>true</c> if this instance can run in  in logical serverside data portal; otherwise, <c>false</c>.
+    /// 	<c>true</c> if this instance can run when CheckRules is called; otherwise, <c>false</c>.
     /// </value>
     public bool CanRunInCheckRules
     {

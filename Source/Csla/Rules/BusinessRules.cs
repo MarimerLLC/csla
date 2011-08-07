@@ -518,16 +518,18 @@ namespace Csla.Rules
       // default then just return true
       if (rule.RunMode == RunModes.Default) return true;
 
+      bool canRun = true;
+
       if ((contextMode & RuleContextModes.AsAffectedPoperty) > 0)
-        return (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
+        canRun = canRun & (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
       if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
-        return ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
+        canRun = canRun & ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
-        return (rule.RunMode & RunModes.DenyCheckRules) == 0;
+        canRun = canRun &  (rule.RunMode & RunModes.DenyCheckRules) == 0;
 
-      return true;
+      return canRun;
     }
 
     /// <summary>

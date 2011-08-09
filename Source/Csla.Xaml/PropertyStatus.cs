@@ -68,7 +68,8 @@ namespace Csla.Xaml
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public PropertyStatus() : base()
+    public PropertyStatus()
+      : base()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
@@ -85,16 +86,19 @@ namespace Csla.Xaml
       // IsVisibleChanged fires when control first gets visible in WPF 
       // Does not exisit in Silverlight -  see Loaded event.
       IsVisibleChanged += (o, e) =>
-      {
-        ClearState();
-        UpdateState();
-      };
+                              {
+                                // update status if we are not loading 
+                                // and control is visible
+                                if (!_loading && IsVisible)
+                                {
+                                  UpdateState();
+                                }
+                              };
 
       // DataContextChanged is public in WPF but internal in SL. 
-      // 
       DataContextChanged += (o, e) =>
       {
-        SetSource(e.NewValue);
+        if (!_loading) SetSource(e.NewValue);
       };
 #endif
     }
@@ -199,8 +203,6 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void SetSource(bool propertyValueChanged)
     {
-      if (_loading) return;
-
       var binding = GetBindingExpression(PropertyProperty);
       if (binding != null)
       {
@@ -214,8 +216,6 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void SetSource(object dataItem)
     {
-      if (_loading) return;
-
       SetBindingValues();
       var newSource = GetRealSource(dataItem, BindingPath);
 
@@ -282,20 +282,6 @@ namespace Csla.Xaml
       }
       else
         return source;
-    }
-
-    private void HandleSourceEvents(object old, object source)
-    {
-      if (!ReferenceEquals(old, source))
-      {
-        DetachSource(old);
-        AttachSource(source);
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
-        {
-          IsBusy = bb.IsPropertyBusy(PropertyName);
-        }
-      }
     }
 
     private void DetachSource(object source)

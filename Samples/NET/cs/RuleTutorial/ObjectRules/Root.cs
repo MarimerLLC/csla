@@ -1,0 +1,113 @@
+﻿using System;
+using System.Collections.Generic;
+using Csla;
+using Csla.Core;
+using Csla.Rules;
+
+namespace ObjectRules
+{
+  [Serializable]
+  public class Root : BusinessBase<Root>
+  {
+    #region Business Methods
+
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
+    public int Num1
+    {
+      get { return GetProperty(Num1Property); }
+      set { SetProperty(Num1Property, value); }
+    }
+
+
+    public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
+    public int Num2
+    {
+      get { return GetProperty(Num2Property); }
+      set { SetProperty(Num2Property, value); }
+    }
+
+    #endregion
+
+    #region Validation Rules
+
+
+    /// <summary>
+    /// Override the PropertyHasChanged method to add CheckObject rules '
+    /// whenever one of the properties have been changed. 
+    /// </summary>
+    /// <param name="property">The property.</param>
+    protected override void PropertyHasChanged(Csla.Core.IPropertyInfo property)
+    {
+      base.PropertyHasChanged(property);
+      //BusinessRules.CheckObjectRules();
+    }
+
+    public void CheckAllRules()
+    {
+      CheckObjectRules();
+    }
+
+    protected override void AddBusinessRules()
+    {
+      // call base class implementation to add data annotation rules to BusinessRules 
+      base.AddBusinessRules();
+
+      // get all registered properties 
+      var props = this.FieldManager.GetRegisteredProperties();
+
+      // add authorization rules - send all properties to the ObjectRule so they are availble for AddZYZResult 
+      BusinessRules.AddRule(new ValidateRoot(props));
+    }
+
+    #endregion
+
+    #region Factory Methods
+
+    public static Root NewEditableRoot()
+    {
+      return DataPortal.Create<Root>();
+    }
+
+
+    #endregion
+
+    protected override void DataPortal_Create()
+    {
+      base.DataPortal_Create();
+    }
+
+
+    /// <summary>
+    /// ObjectRules may be used to integrate with an external rule engine. 
+    /// </summary>
+    public class ValidateRoot : Csla.Rules.ObjectRule
+    {
+      public ValidateRoot(IEnumerable<IPropertyInfo> fields)
+      {
+         AffectedProperties.AddRange(fields);
+      }
+
+      protected override void Execute(RuleContext context)
+      {
+        var bo = (Csla.Core.BusinessBase) context.Target;
+        var name = (string) ReadProperty(context.Target, Root.NameProperty);
+
+        if (string.IsNullOrEmpty(name))
+          context.AddErrorResult(NameProperty, "Name is required.");
+        else if (name.Length > 50)
+          context.AddErrorResult(NameProperty, "Name cannot be longer then 50 chars.");
+
+        var num1 = (int) ReadProperty(context.Target, Root.Num1Property);
+        if (num1 < 5)
+          context.AddErrorResult(Root.Num1Property, "Num1 must be larger than or equal to 5");
+      }
+    }
+  }
+}

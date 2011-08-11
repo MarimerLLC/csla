@@ -1,0 +1,52 @@
+﻿using System.Collections.Generic;
+using AsyncLookupRule.Commands;
+using Csla.Core;
+using Csla.Rules;
+
+namespace AsyncLookupRule.Rules
+{
+  /// <summary>
+  /// An async lookup rule, typically used in rich clients to do (sync) data access 
+  /// on a background thread and so keep the UI responsive. 
+  /// </summary>
+  public class AsyncLookupCustomer : PropertyRule
+  {
+    private IPropertyInfo NameProperty { get; set; }
+
+    public AsyncLookupCustomer(IPropertyInfo primaryProperty, IPropertyInfo nameProperty)
+      : base(primaryProperty)
+    {
+      NameProperty = nameProperty;
+
+      if (InputProperties == null)
+        InputProperties = new List<IPropertyInfo>() { PrimaryProperty };
+      AffectedProperties.Add(nameProperty);
+
+      IsAsync = true;
+      // setting all to false will only allow the rule to run when the property is set - typically by the user from the UI.
+      CanRunAsAffectedProperty = false;
+      CanRunInCheckRules = false;
+      CanRunOnServer = false;
+    }
+
+    protected override void Execute(RuleContext context)
+    {
+      var id = (int) context.InputPropertyValues[PrimaryProperty];
+
+      // uses the async methods in DataPortal to perform data access on a background thread. 
+      LookupCustomerCommand.BeginExecute(id, (o,e) =>
+                                               {
+                                                 if (e.Error != null)
+                                                 {
+                                                   context.AddErrorResult(e.Error.ToString());
+                                                 }
+                                                 else
+                                                 {
+                                                   context.AddOutValue(NameProperty, e.Object.Name);
+                                                 }
+
+                                                 context.Complete();
+                                               });
+    }
+  }
+}

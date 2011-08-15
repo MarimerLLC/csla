@@ -21,16 +21,16 @@ namespace Csla.Rules
       where T: Csla.Core.BusinessBase
     {
       var rule = new CommonRules.Lambda(primaryProperty, (o) =>
-                                                           {
-                                                             var target = (T) o.Target;
-                                                             using (target.BypassPropertyChecks)
-                                                             {
-                                                               if (!ruleHandler.Invoke(target))
-                                                               {
-                                                                 o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, message) {Severity = severity});
-                                                               }
-                                                             }
-                                                           });
+      {
+        var target = (T) o.Target;
+        using (target.BypassPropertyChecks)
+        {
+          if (!ruleHandler.Invoke(target))
+          {
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) {Severity = severity});
+          }
+        }
+      });
       businessRules.AddRule(rule);
     }
 
@@ -67,7 +67,7 @@ namespace Csla.Rules
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, message) { Severity = severity });
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) { Severity = severity });
           }
         }
       });
@@ -101,16 +101,16 @@ namespace Csla.Rules
       where T: Csla.Core.BusinessBase
     {
       var rule = new CommonRules.Lambda(primaryProperty, (o) =>
-                                                           {
-                                                             var target = (T) o.Target;
-                                                             using (target.BypassPropertyChecks)
-                                                             {
-                                                               if (!ruleHandler.Invoke(target))
-                                                               {
-                                                                 o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke()) { Severity = severity });
-                                                               }
-                                                             }
-                                                           });
+      {
+        var target = (T) o.Target;
+        using (target.BypassPropertyChecks)
+        {
+          if (!ruleHandler.Invoke(target))
+          {
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke()) { Severity = severity });
+          }
+        }
+      });
       businessRules.AddRule(rule);
     }
 

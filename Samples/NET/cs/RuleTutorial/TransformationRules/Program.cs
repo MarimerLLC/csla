@@ -12,8 +12,9 @@ namespace TransformationRules
     {
       var root = Root.NewEditableRoot();
 
-      root.Name = "rocky lhotka";
-      Console.WriteLine("set value: \"{0}\" and actual is \"{1}\"", "rocky lhotka", root.Name);
+      root.Name = "RoCkY        lHoTkA";
+      Console.WriteLine("set value: \"{0}\" and actual is \"{1}\"", "RoCkY        lHoTkA", root.Name);
+      Console.WriteLine();
       Console.WriteLine("About to set Num1,  old value: {0}", root.Num1);
       root.Num1 = 8;
       Console.WriteLine("Num1 set to: {0} and Sum is {1}", root.Num1, root.Sum);

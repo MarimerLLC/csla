@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using Csla;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
+using GatewayRules.Rules;
 
-namespace AuthzReadWriteProperty
+namespace GatewayRules
 {
   [Serializable]
   public class Root : BusinessBase<Root>
@@ -21,7 +18,14 @@ namespace AuthzReadWriteProperty
       set { SetProperty(NameProperty, value); }
     }
 
-    public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1, "Num1", 9);
+    public static readonly PropertyInfo<string> NoteProperty = RegisterProperty<string>(c => c.Note);
+    public string Note
+    {
+        get { return GetProperty(NoteProperty); }
+        set { SetProperty(NoteProperty, value); }
+    }
+
+    public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
     public int Num1
     {
       get { return GetProperty(Num1Property); }
@@ -46,11 +50,15 @@ namespace AuthzReadWriteProperty
       base.AddBusinessRules();
 
       // add authorization rules 
-      BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, NameProperty, "nobody"));
-      BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, Num1Property, "nobody"));
-      BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, Num2Property, "nobody"));
-      BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, Num1Property, "nobody"));
-      BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, Num2Property, "nobody"));
+      BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, NoteProperty, "nobody"));
+
+      // required only when user can write to field
+      BusinessRules.AddRule(new CanWrite(NoteProperty, new Required(NoteProperty)));
+
+      // different rules for Name whether object is New or Existing. 
+      BusinessRules.AddRule(new IsNew(NameProperty, new Required(NameProperty)));
+      BusinessRules.AddRule(new IsNotNew(NameProperty, new MaxLength(NameProperty, 50)));
+
     }
 
     #endregion
@@ -65,6 +73,8 @@ namespace AuthzReadWriteProperty
 
     #endregion
 
+    #region Data Access
+
     protected override void DataPortal_Create()
     {
       using (BypassPropertyChecks)
@@ -76,6 +86,6 @@ namespace AuthzReadWriteProperty
       base.DataPortal_Create();
     }
 
-
+    #endregion
   }
 }

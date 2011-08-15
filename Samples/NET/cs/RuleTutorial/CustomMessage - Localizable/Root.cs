@@ -61,11 +61,13 @@ namespace CustomMessageLocalizable
 
     #endregion
 
+    #region Data Access
+
     protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
     }
 
-
+    #endregion
   }
 }

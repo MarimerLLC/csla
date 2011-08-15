@@ -42,7 +42,7 @@ namespace CustomMessage
 
       // add authorization rules - use MessageText to set a custom constant string message
       BusinessRules.AddRule(new Required(NameProperty){MessageText = "Customer must have name"});
-      BusinessRules.AddRule(new MaxLength(NameProperty, 50){Priority = 1, MessageText = "Name cannot be longer than {1} chars"});
+      BusinessRules.AddRule(new MaxLength(NameProperty, 50){Priority = 1, MessageText = "{0} cannot be longer than {1} chars"});
       BusinessRules.AddRule(new MinValue<int>(Num1Property, 5) { MessageText = "Num1 must be larger than or equal to {1}" });
       
     }

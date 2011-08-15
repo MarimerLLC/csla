@@ -8,6 +8,7 @@ using Csla.Rules;
 using Csla.Rules.CommonRules;
 using CustomAuthzRules.Rules;
 using System.ComponentModel.DataAnnotations;
+using StopIfNotCanWrite = CustomAuthzRules.Rules.StopIfNotCanWrite;
 
 namespace AuthzReadWriteProperty
 {
@@ -82,11 +83,13 @@ namespace AuthzReadWriteProperty
 
     #endregion
 
+    #region Data Access
+
     protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
     }
 
-
+    #endregion
   }
 }

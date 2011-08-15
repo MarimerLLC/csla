@@ -9,6 +9,8 @@ namespace AuthzMethod
   [Serializable]
   public class Root : BusinessBase<Root>
   {
+    #region Business Methods
+
     // use snippet cslamet to add methods with authorization to BusinessBase or ReadOnlyBase objects
     public static MethodInfo DoCalcMethod = RegisterMethod(c => c.DoCalc());
     public void DoCalc()
@@ -18,6 +20,8 @@ namespace AuthzMethod
 
       // implementation of method goes here  
     }
+
+    #endregion
 
     #region Business Rules
 

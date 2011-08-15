@@ -3,6 +3,9 @@ using CompareFieldsRules.Rules;
 using Csla;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
+using GreaterThan = CompareFieldsRules.Rules.GreaterThan;
+using GreaterThanOrEqual = CompareFieldsRules.Rules.GreaterThanOrEqual;
+using LessThan = CompareFieldsRules.Rules.LessThan;
 
 namespace CompareFieldsRules
 {

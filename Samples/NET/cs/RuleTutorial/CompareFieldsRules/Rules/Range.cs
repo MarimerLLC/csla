@@ -55,7 +55,7 @@ namespace CompareFieldsRules.Rules
     public Range(IPropertyInfo primaryProperty, IComparable min, IComparable max, string message)
       : this(primaryProperty, min, max)
     {
-      message = message;
+      MessageText = message;
     }
 
     /// <summary>

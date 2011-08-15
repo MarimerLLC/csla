@@ -65,6 +65,8 @@ namespace AuthzReadWriteProperty
 
     #endregion
 
+    #region Data Access
+
     protected override void DataPortal_Create()
     {
       using (BypassPropertyChecks)
@@ -76,6 +78,6 @@ namespace AuthzReadWriteProperty
       base.DataPortal_Create();
     }
 
-
+    #endregion
   }
 }

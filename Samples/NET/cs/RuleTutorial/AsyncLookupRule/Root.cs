@@ -69,7 +69,5 @@ namespace AsyncLookupRule
       // this calls BusinessRules.CheckRules
       base.DataPortal_Create();
     }
-
-
   }
 }

@@ -66,24 +66,6 @@ namespace ObjectRules
       BusinessRules.AddRule(new ValidateRoot(props));
     }
 
-    #endregion
-
-    #region Factory Methods
-
-    public static Root NewEditableRoot()
-    {
-      return DataPortal.Create<Root>();
-    }
-
-
-    #endregion
-
-    protected override void DataPortal_Create()
-    {
-      base.DataPortal_Create();
-    }
-
-
     /// <summary>
     /// ObjectRules may be used to integrate with an external rule engine. 
     /// </summary>
@@ -91,7 +73,7 @@ namespace ObjectRules
     {
       public ValidateRoot(IEnumerable<IPropertyInfo> fields)
       {
-         AffectedProperties.AddRange(fields);
+        AffectedProperties.AddRange(fields);
       }
 
       protected override void Execute(RuleContext context)
@@ -109,5 +91,26 @@ namespace ObjectRules
           context.AddErrorResult(Root.Num1Property, "Num1 must be larger than or equal to 5");
       }
     }
+
+    #endregion
+
+    #region Factory Methods
+
+    public static Root NewEditableRoot()
+    {
+      return DataPortal.Create<Root>();
+    }
+
+
+    #endregion
+
+    #region Data Access
+
+    protected override void DataPortal_Create()
+    {
+      base.DataPortal_Create();
+    }
+
+    #endregion
   }
 }

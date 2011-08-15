@@ -37,6 +37,12 @@ namespace ShortCircuitingRules
       set { SetProperty(Num2Property, value); }
     }
 
+    public static readonly PropertyInfo<string> NoteProperty = RegisterProperty<string>(c => c.Note);
+    public string Note
+    {
+      get { return GetProperty(NoteProperty); }
+      set { SetProperty(NoteProperty, value); }
+    }
     #endregion
 
     #region Validation Rules
@@ -49,18 +55,23 @@ namespace ShortCircuitingRules
       // add authorization rules 
       // Required as DataAnnotationRuleon Name property
       // add maxlength with higher priority so it will not execute if Required is already broken.
-      // NOTE: BusinessRules.ProcessThroughPriority is default 0 meaning that all rules at Priority lower or equal to 0 is always run (unless StopProcessing is called explicitly)
+      // NOTE: BusinessRules.ProcessThroughPriority is default 0 meaning that all rules at Priority lower or equal to 0 is always run, unless StopProcessing is called explicitly.
       BusinessRules.AddRule(new MaxLength(NameProperty, 50) { Priority = 1 });  
       BusinessRules.AddRule(new MinValue<int>(Num2Property, 5));
+      BusinessRules.AddRule(new Required(NoteProperty));
 
 
       // ShortCircuit (ie do not run rules) for these properties when object has IsNew = false
       // DataAnnotation rules is always added with priority -1 so by giving ShortCircuiting rules a priority of -1 
       // you can also block DataAnootation rules from being executed. 
-      // The same may also be done with StopINotCanWrite to prevent validation of fields that the user is not aloowed to edit. 
+      // The same may also be done with StopINotCanWrite to prevent validation of fields that the user is not allowed to edit. 
       BusinessRules.AddRule(new StopIfIsNotNew(NameProperty) {Priority = -1});
       BusinessRules.AddRule(new StopIfIsNotNew(Num2Property) {Priority = -1});
       BusinessRules.AddRule(new StopIfIsNotNew(Num1Property) {Priority = -1});
+
+      // only validates Note when user is allowed to edit field.
+      BusinessRules.AddRule(new StopIfNotCanWrite(NoteProperty) {Priority = -1});
+
     }
 
     #endregion
@@ -79,6 +90,7 @@ namespace ShortCircuitingRules
 
     #endregion
 
+    #region Data Access
     protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
@@ -88,6 +100,6 @@ namespace ShortCircuitingRules
     {
       BusinessRules.CheckRules();
     }
-
+    #endregion
   }
 }

@@ -50,15 +50,9 @@ namespace LambdaRules
       // call base class implementation to add data annotation rules to BusinessRules 
       base.AddBusinessRules();
 
-
-      // Lambd rule extensions are generic in order to give intellisense and strong typed lambda expression.
-      // The lambda expression must return false when rule is broken. 
-      BusinessRules.AddRule<Root>(NameProperty, o => !string.IsNullOrEmpty(o.Name), "Name is required");
-      BusinessRules.AddRule<Root>(Num1Property, o => o.Num1 > 3, "Num1 must be larger than 3");
-      BusinessRules.AddRule<Root>(Num2Property, o => o.Num2 > o.Num1, () => Resources.Num2LargerThanNum1, RuleSeverity.Warning);
-
-      // Add dependency to recheck ruled for Num2 when Num1 is changed 
-      BusinessRules.AddRule(new Dependency(Num1Property, Num2Property));   
+      BusinessRules.AddRule<Root>(Num1Property, o => o.Num1 > 3, "{0} must be larger than 3");
+      BusinessRules.AddRule<Root>(Num2Property, o => o.Num2 > Num1, () => Resources.Num2LargerThanNum1, RuleSeverity.Warning);
+      BusinessRules.AddRule(new Dependency(Num1Property, Num2Property));
     }
 
     #endregion

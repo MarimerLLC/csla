@@ -36,6 +36,11 @@ namespace TransformationRules.Rules
       var r = new Regex(@" +");
       newValue = r.Replace(newValue, @" ");
       context.AddOutValue(newValue);
+
+      if (context.IsCheckRulesContext)
+        Console.WriteLine(".... Rule {0} running from CheckRules", this.GetType().Name);
+      else
+        Console.WriteLine(".... Rule {0} running from {1} was changed", this.GetType().Name, this.PrimaryProperty.Name);
     }
   }
 }

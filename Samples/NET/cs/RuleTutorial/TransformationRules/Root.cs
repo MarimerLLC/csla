@@ -48,6 +48,8 @@ namespace TransformationRules
       base.AddBusinessRules();
 
       BusinessRules.AddRule(new ToUpper(NameProperty));
+      BusinessRules.AddRule(new CollapseSpace(NameProperty));
+
       BusinessRules.AddRule(new CalcSum(SumProperty, Num1Property, Num2Property));
     }
 
@@ -63,6 +65,8 @@ namespace TransformationRules
 
     #endregion
 
+    #region Data Access
+
     protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
@@ -70,6 +74,6 @@ namespace TransformationRules
       Console.WriteLine("DataPortal_Create finished");
     }
 
-
+    #endregion
   }
 }

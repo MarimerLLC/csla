@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Method</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla Method with Authorization.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslamet</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>MethodName</ID>
+          <ToolTip>Replace with methodname.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared $MethodName$Method As MethodInfo = RegisterMethod(Function(c) c.$MethodName$())
+Public Sub $MethodName$()
+  ' Check Authorization, trows UserNotAuthorizedException if not authorized
+  CanExecuteMethod($MethodName$Method, True)
+  
+  ' implementation goes here 
+End Sub]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

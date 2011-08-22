@@ -1,19 +1,41 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Root.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   The root.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
+using System.ComponentModel.DataAnnotations;
+
 using Csla;
 using Csla.Rules.CommonRules;
-using System.ComponentModel.DataAnnotations;
+
 using ShortCircuitingRules.Rules;
+
 using StopIfIsNotNew = ShortCircuitingRules.Rules.StopIfIsNotNew;
 
 namespace ShortCircuitingRules
 {
+  /// <summary>
+  /// The root.
+  /// </summary>
   [Serializable]
   public class Root : BusinessBase<Root>
   {
     #region Business Methods
 
+    /// <summary>
+    /// The name property.
+    /// </summary>
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
 
+    /// <summary>
+    /// Gets or sets Name.
+    /// </summary>
     [Required]
     public string Name
     {
@@ -21,23 +43,43 @@ namespace ShortCircuitingRules
       set { SetProperty(NameProperty, value); }
     }
 
+    /// <summary>
+    /// The num 1 property.
+    /// </summary>
     [Range(0, 50)] 
     public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
+
+    /// <summary>
+    /// Gets or sets Num1.
+    /// </summary>
     public int Num1
     {
       get { return GetProperty(Num1Property); }
       set { SetProperty(Num1Property, value); }
     }
 
-
+    /// <summary>
+    /// The num 2 property.
+    /// </summary>
     public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
+
+    /// <summary>
+    /// Gets or sets Num2.
+    /// </summary>
     public int Num2
     {
       get { return GetProperty(Num2Property); }
       set { SetProperty(Num2Property, value); }
     }
 
+    /// <summary>
+    /// The note property.
+    /// </summary>
     public static readonly PropertyInfo<string> NoteProperty = RegisterProperty<string>(c => c.Note);
+
+    /// <summary>
+    /// Gets or sets Note.
+    /// </summary>
     public string Note
     {
       get { return GetProperty(NoteProperty); }
@@ -47,6 +89,9 @@ namespace ShortCircuitingRules
 
     #region Validation Rules
 
+    /// <summary>
+    /// The add business rules.
+    /// </summary>
     protected override void AddBusinessRules()
     {
       // call base class implementation to add data annotation rules to BusinessRules 
@@ -78,11 +123,21 @@ namespace ShortCircuitingRules
 
     #region Factory Methods
 
+    /// <summary>
+    /// The new editable root.
+    /// </summary>
+    /// <returns>
+    /// </returns>
     public static Root NewEditableRoot()
     {
       return DataPortal.Create<Root>();
     }
 
+    /// <summary>
+    /// The get editable root.
+    /// </summary>
+    /// <returns>
+    /// </returns>
     public static Root GetEditableRoot()
     {
       return DataPortal.Fetch<Root>(null);
@@ -91,15 +146,26 @@ namespace ShortCircuitingRules
     #endregion
 
     #region Data Access
+
+    /// <summary>
+    /// The data portal_ create.
+    /// </summary>
     protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
     }
 
+    /// <summary>
+    /// The data portal_ fetch.
+    /// </summary>
+    /// <param name="criteria">
+    /// The criteria.
+    /// </param>
     protected void DataPortal_Fetch(object criteria)
     {
       BusinessRules.CheckRules();
     }
+
     #endregion
   }
 }

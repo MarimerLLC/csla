@@ -1,8 +1,19 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CollapseSpace.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Removes leading, trailing and duplicate spaces.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Csla.Core;
 using Csla.Rules;
 
@@ -16,7 +27,9 @@ namespace TransformationRules.Rules
     /// <summary>
     /// Initializes a new instance of the <see cref="CollapseSpace"/> class.
     /// </summary>
-    /// <param name="primaryProperty">The primary property.</param>
+    /// <param name="primaryProperty">
+    /// The primary property.
+    /// </param>
     public CollapseSpace(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
@@ -26,7 +39,9 @@ namespace TransformationRules.Rules
     /// <summary>
     /// Business or validation rule implementation.
     /// </summary>
-    /// <param name="context">Rule context object.</param>
+    /// <param name="context">
+    /// Rule context object.
+    /// </param>
     protected override void Execute(RuleContext context)
     {
       var value = (string)context.InputPropertyValues[PrimaryProperty];

@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Decription", "_Decription", "{BCA62CC6-2B83-4EDF-8C20-0D2582AEB747}"
 	ProjectSection(SolutionItems) = preProject
 		RuleTutorial.rtf = RuleTutorial.rtf
+		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.03 AuthzReadWriteProperty", "AuthzReadWriteProperty\1.03 AuthzReadWriteProperty.csproj", "{46FBD105-74D4-4810-B6E5-201949374A94}"

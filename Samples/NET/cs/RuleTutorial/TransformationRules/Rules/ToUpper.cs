@@ -1,12 +1,32 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ToUpper.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   The to upper.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
 using System.Collections.Generic;
+
 using Csla.Core;
 using Csla.Rules;
 
 namespace TransformationRules.Rules
 {
+  /// <summary>
+  /// The to upper.
+  /// </summary>
   public class ToUpper : Csla.Rules.BusinessRule
   {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ToUpper"/> class.
+    /// </summary>
+    /// <param name="primaryProperty">
+    /// The primary property.
+    /// </param>
     public ToUpper(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
@@ -14,6 +34,12 @@ namespace TransformationRules.Rules
       AffectedProperties.Add(primaryProperty);
     }
 
+    /// <summary>
+    /// The execute.
+    /// </summary>
+    /// <param name="context">
+    /// The context.
+    /// </param>
     protected override void Execute(RuleContext context)
     {
       var value = (string) context.InputPropertyValues[PrimaryProperty];

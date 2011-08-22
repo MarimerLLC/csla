@@ -1,6 +1,18 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GreaterThan.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Validates that primary property is greater than compareToProperty
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
 using System.Collections.Generic;
+
 using CompareFieldsRules.Properties;
+
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
@@ -13,13 +25,20 @@ namespace CompareFieldsRules.Rules
   /// </summary>
   public class GreaterThan : CommonBusinessRule
   {
+    /// <summary>
+    /// Gets or sets CompareTo.
+    /// </summary>
     private IPropertyInfo CompareTo { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GreaterThan"/> class.
     /// </summary>
-    /// <param name="primaryProperty">The primary property.</param>
-    /// <param name="compareToProperty">The compare to property.</param>
+    /// <param name="primaryProperty">
+    /// The primary property.
+    /// </param>
+    /// <param name="compareToProperty">
+    /// The compare to property.
+    /// </param>
     public GreaterThan(IPropertyInfo primaryProperty, IPropertyInfo compareToProperty)
       : base(primaryProperty)
     {
@@ -30,7 +49,9 @@ namespace CompareFieldsRules.Rules
     /// <summary>
     /// Gets the message.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>
+    /// The get message.
+    /// </returns>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? base.GetMessage() : Resources.GreaterThanRule;
@@ -39,7 +60,9 @@ namespace CompareFieldsRules.Rules
     /// <summary>
     /// Does the check for primary propert less than compareTo property
     /// </summary>
-    /// <param name="context">Rule context object.</param>
+    /// <param name="context">
+    /// Rule context object.
+    /// </param>
     protected override void Execute(RuleContext context)
     {
       var value1 = (IComparable)context.InputPropertyValues[PrimaryProperty];

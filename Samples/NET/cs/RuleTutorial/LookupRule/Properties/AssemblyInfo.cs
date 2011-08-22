@@ -1,4 +1,14 @@
-﻿using System.Reflection;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -23,12 +33,10 @@ using System.Runtime.InteropServices;
 [assembly: Guid("d1ab3a93-93b3-4a6e-9930-c25c3cff1d9a")]
 
 // Version information for an assembly consists of the following four values:
-//
 //      Major Version
 //      Minor Version 
 //      Build Number
 //      Revision
-//
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]

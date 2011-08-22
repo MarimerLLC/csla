@@ -1,20 +1,44 @@
-﻿using Csla.Rules;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StopIfNotCanWrite.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Shorcircuits rule processing if user is not allowed to edit this field.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using Csla.Rules;
 
 namespace ShortCircuitingRules.Rules
 {
+  using Csla.Core;
+
   /// <summary>
-  ///  Short circuit rule processing for this property if user is not allowed to edit field.
+  /// Shorcircuits rule processing if user is not allowed to edit this field.
   /// </summary>
   public class StopIfNotCanWrite : BusinessRule
   {
-    public StopIfNotCanWrite(Csla.Core.IPropertyInfo primaryProperty)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StopIfNotCanWrite"/> class.
+    /// </summary>
+    /// <param name="primaryProperty">
+    /// The primary property.
+    /// </param>
+    public StopIfNotCanWrite(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     { }
 
-    protected override void Execute(Csla.Rules.RuleContext context)
+    /// <summary>
+    /// The execute.
+    /// </summary>
+    /// <param name="context">
+    /// The context.
+    /// </param>
+    protected override void Execute(RuleContext context)
     {
       var target = (Csla.Core.BusinessBase)context.Target;
-      
+
       // Short circuit rule processing for this property if user is not allowed to edit field.
       if (!target.CanWriteProperty(PrimaryProperty))
       {

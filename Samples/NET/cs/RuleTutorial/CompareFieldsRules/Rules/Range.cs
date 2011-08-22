@@ -1,6 +1,18 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Range.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved.<br>Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Business rule for check a value is between a minimum and a maximum.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+using System;
 using System.Collections.Generic;
+
 using CompareFieldsRules.Properties;
+
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
@@ -30,11 +42,18 @@ namespace CompareFieldsRules.Rules
     public string Format { get; set; }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Range"/> class. 
     /// Creates an instance of the rule.
     /// </summary>
-    /// <param name="primaryProperty">Property to which the rule applies.</param>
-    /// <param name="min">Min value.</param>
-    /// <param name="max">Max value.</param>
+    /// <param name="primaryProperty">
+    /// Property to which the rule applies.
+    /// </param>
+    /// <param name="min">
+    /// Min value.
+    /// </param>
+    /// <param name="max">
+    /// Max value.
+    /// </param>
     public Range(IPropertyInfo primaryProperty, IComparable min, IComparable max)
       : base(primaryProperty)
     {
@@ -46,12 +65,21 @@ namespace CompareFieldsRules.Rules
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Range"/> class. 
     /// Creates an instance of the rule.
     /// </summary>
-    /// <param name="primaryProperty">Property to which the rule applies.</param>
-    /// <param name="min">Min value.</param>
-    /// <param name="max">Max value.</param>
-    /// <param name="message">The message.</param>
+    /// <param name="primaryProperty">
+    /// Property to which the rule applies.
+    /// </param>
+    /// <param name="min">
+    /// Min value.
+    /// </param>
+    /// <param name="max">
+    /// Max value.
+    /// </param>
+    /// <param name="message">
+    /// The message.
+    /// </param>
     public Range(IPropertyInfo primaryProperty, IComparable min, IComparable max, string message)
       : this(primaryProperty, min, max)
     {
@@ -59,12 +87,21 @@ namespace CompareFieldsRules.Rules
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Range"/> class. 
     /// Creates an instance of the rule.
     /// </summary>
-    /// <param name="primaryProperty">Property to which the rule applies.</param>
-    /// <param name="min">Min value.</param>
-    /// <param name="max">Max value.</param>
-    /// <param name="messageDelegate">The message delegate.</param>
+    /// <param name="primaryProperty">
+    /// Property to which the rule applies.
+    /// </param>
+    /// <param name="min">
+    /// Min value.
+    /// </param>
+    /// <param name="max">
+    /// Max value.
+    /// </param>
+    /// <param name="messageDelegate">
+    /// The message delegate.
+    /// </param>
     public Range(IPropertyInfo primaryProperty, IComparable min, IComparable max, Func<string> messageDelegate)
       : this(primaryProperty, min, max)
     {
@@ -74,7 +111,11 @@ namespace CompareFieldsRules.Rules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
+    /// <value>
+    /// </value>
+    /// <returns>
+    /// The get message.
+    /// </returns>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? base.MessageText : Resources.RangeRule;
@@ -83,7 +124,9 @@ namespace CompareFieldsRules.Rules
     /// <summary>
     /// Rule implementation.
     /// </summary>
-    /// <param name="context">Rule context.</param>
+    /// <param name="context">
+    /// Rule context.
+    /// </param>
     protected override void Execute(RuleContext context)
     {
       var value = (IComparable)context.InputPropertyValues[PrimaryProperty];

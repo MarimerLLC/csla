@@ -627,10 +627,11 @@ namespace Csla.Rules
               BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
 
               // run rules on affected properties for this async rule
+              var affected = new List<string>();
               if (cascade)
                 foreach (var item in r.Rule.AffectedProperties.Distinct())
                   if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
-                    CheckRulesForProperty(item, true, r.ExecuteContext | RuleContextModes.AsAffectedPoperty);
+                    affected.AddRange(CheckRulesForProperty(item, false, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
 
               // mark each property as not busy
               foreach (var item in r.Rule.AffectedProperties)
@@ -639,6 +640,13 @@ namespace Csla.Rules
                 _isBusy = BusyProperties.Count > 0;
                 if (!BusyProperties.Contains(item))
                   _target.RuleComplete(item);
+              }
+
+              foreach (var property in affected.Distinct())
+              {
+                // property is not in AffectedProperties (already signalled to UI)
+                if (!r.Rule.AffectedProperties.Where(p => p.Name == property).Any()) 
+                  _target.RuleComplete(property);
               }
 
               if (!RunningRules && !RunningAsyncRules)

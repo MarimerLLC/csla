@@ -1069,6 +1069,11 @@ namespace Csla.Core
       OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
     }
 
+    void IHostRules.RuleComplete(string property)
+    {
+      OnPropertyChanged(property);
+    }
+
     void Rules.IHostRules.AllRulesComplete()
     {
       OnValidationComplete();

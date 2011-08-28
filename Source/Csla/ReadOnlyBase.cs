@@ -164,7 +164,10 @@ namespace Csla
     void IHostRules.RuleStart(IPropertyInfo property)
     { }
 
-    void Rules.IHostRules.RuleComplete(IPropertyInfo property)
+    void IHostRules.RuleComplete(IPropertyInfo property)
+    { }
+
+    void IHostRules.RuleComplete(string property)
     { }
 
     void Rules.IHostRules.AllRulesComplete()

@@ -29,6 +29,11 @@ namespace Csla.Rules
     /// <param name="property">Property for rule.</param>
     void RuleComplete(Csla.Core.IPropertyInfo property);
     /// <summary>
+    /// Indicates that a rule has finished processing.
+    /// </summary>
+    /// <param name="property">Property for rule.</param>
+    void RuleComplete(string property);
+    /// <summary>
     /// Indicates that all rules have finished processing.
     /// </summary>
     void AllRulesComplete();

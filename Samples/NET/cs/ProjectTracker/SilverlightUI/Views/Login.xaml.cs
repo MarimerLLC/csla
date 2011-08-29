@@ -12,9 +12,9 @@ using System.Windows.Shapes;
 
 namespace SilverlightUI.Views
 {
-  public partial class ResourceList : UserControl
+  public partial class Login : UserControl
   {
-    public ResourceList()
+    public Login()
     {
       InitializeComponent();
     }

@@ -4,9 +4,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300" d:DesignWidth="400">
-    
-    <Grid x:Name="LayoutRoot" Background="White">
-
-    </Grid>
+    d:DesignHeight="300" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" xmlns:my="clr-namespace:SilverlightUI.ViewModels" Loaded="UserControl_Loaded">
+  <UserControl.Resources>
+    <CollectionViewSource x:Key="resourceListViewSource" d:DesignSource="{d:DesignInstance my:ResourceList, CreateList=True}" />
+    <CollectionViewSource x:Key="resourceListModelViewSource" Source="{Binding Path=Model, Source={StaticResource resourceListViewSource}}" />
+  </UserControl.Resources>
+  <Grid x:Name="LayoutRoot" DataContext="{StaticResource resourceListModelViewSource}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="Project list" FontSize="14" Foreground="Cornsilk" />
+    <ListBox Grid.Row="1" ItemsSource="{Binding}" Name="modelListBox"/>
+  </Grid>
 </UserControl>

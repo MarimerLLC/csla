@@ -4,12 +4,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" xmlns:my="clr-namespace:Bxf;assembly=Bxf" 
+    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
     d:DesignHeight="300" d:DesignWidth="400">
   <UserControl.Resources>
     <CollectionViewSource x:Key="statusViewSource" d:DesignSource="{d:DesignInstance my:Status, CreateList=True}" />
   </UserControl.Resources>
   <Grid>
     <StackPanel Orientation="Horizontal" DataContext="{StaticResource statusViewSource}">
+      <csla:BusyAnimation Margin="5" Height="20" Width="20" IsRunning="{Binding Path=IsBusy}" HorizontalAlignment="Left" VerticalAlignment="Top" />
       <TextBlock Margin="5" Text="Busy: " FontWeight="Bold" />
       <TextBlock Margin="5" Text="{Binding Path=IsBusy}"/>
       <TextBlock Margin="5" Text="OK: " FontWeight="Bold" />

@@ -47,12 +47,20 @@ namespace ProjectTracker.Library.Security
         PTPrincipal principal = new PTPrincipal(identity);
         Csla.ApplicationContext.User = principal;
       }
+      OnNewUser();
       return identity.IsAuthenticated;
     }
 
     public static void Logout()
     {
       Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+    }
+
+    public static event Action NewUser;
+    private static void OnNewUser()
+    {
+      if (NewUser != null)
+        NewUser();
     }
   }
 }

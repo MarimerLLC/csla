@@ -51,6 +51,9 @@ namespace SilverlightUI
           case "Menu":
             MenuContent = view.ViewInstance;
             break;
+          case "User":
+            UserContent = view.ViewInstance;
+            break;
           case "Error":
             _errorClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
             ErrorContent = view.ViewInstance;
@@ -68,17 +71,29 @@ namespace SilverlightUI
         }
       };
 
-
       Shell.Instance.ShowView(
-        typeof(Views.MainMenu).AssemblyQualifiedName,
-        null, null, "Menu");
+        typeof(Views.UserDisplay).AssemblyQualifiedName,
+        "userViewSource",
+        new ViewModels.User(),
+        "User");
+
+      ShowMenu();
 
       Shell.Instance.ShowStatus(new Status { Text = "Ready" });
     }
 
+    public static void ShowMenu()
+    {
+      Shell.Instance.ShowView(
+        typeof(Views.MainMenu).AssemblyQualifiedName,
+        "mainMenuViewSource",
+        new ViewModels.MainMenu(),
+        "Menu");
+    }
+
     void CloseTimer_Tick(object sender, EventArgs e)
     {
-      if (DateTime.Now > _statusClose)
+      if (DateTime.Now > _statusClose && !AppBusy)
       {
         _statusClose = DateTime.MaxValue;
         Shell.Instance.ShowView(null, "", null, "Status");
@@ -116,6 +131,13 @@ namespace SilverlightUI
     {
       get { return _errorContent; }
       set { _errorContent = value; OnPropertyChanged("ErrorContent"); }
+    }
+
+    private UserControl _userContent;
+    public UserControl UserContent
+    {
+      get { return _userContent; }
+      set { _userContent = value; OnPropertyChanged("UserContent"); }
     }
 
     private bool _appBusy;

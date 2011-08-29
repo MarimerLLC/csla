@@ -249,6 +249,7 @@ namespace Csla.Rules
       private set { _runningRules = value; }
     }
 
+    [NonSerialized]
     private bool _isBusy;
 
     /// <summary>

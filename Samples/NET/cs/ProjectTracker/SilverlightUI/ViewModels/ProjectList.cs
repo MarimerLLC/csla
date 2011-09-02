@@ -12,9 +12,9 @@ namespace SilverlightUI.ViewModels
       BeginRefresh(ProjectTracker.Library.ProjectList.GetProjectList);
     }
 
-    protected override void OnRefreshed()
+    protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
     {
-      base.OnRefreshed();
+      base.OnModelChanged(oldValue, newValue);
       OnPropertyChanged("ItemList");
     }
 
@@ -39,80 +39,80 @@ namespace SilverlightUI.ViewModels
     {
       Bxf.Shell.Instance.ShowView(
         typeof(Views.ProjectEdit).AssemblyQualifiedName,
-        "projectEditViewSource",
-        new ProjectEdit(),
-        "Main");
-    }
-  }
-
-  public class ProjectInfo : ViewModelLocal<ProjectTracker.Library.ProjectInfo>
-  {
-    public ProjectInfo(ProjectTracker.Library.ProjectInfo info)
-    {
-      Model = info;
-    }
-
-    public bool CanEdit
-    {
-      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)); }
-    }
-
-    public new bool CanRemove
-    {
-      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)); }
-    }
-
-    public void DisplayItem()
-    {
-      Bxf.Shell.Instance.ShowView(
-        typeof(Views.ProjectDisplay).AssemblyQualifiedName,
-        "projectDisplayViewSource",
-        new ProjectDisplay(Model),
+        "projectGetterViewSource",
+        new ProjectGetter(),
         "Main");
     }
 
-    public void EditItem()
+    public class ProjectInfo : ViewModelLocal<ProjectTracker.Library.ProjectInfo>
     {
-      Bxf.Shell.Instance.ShowView(
-        typeof(Views.ProjectEdit).AssemblyQualifiedName,
-        "projectEditViewSource",
-        new ProjectEdit(Model),
-        "Main");
-    }
+      public ProjectInfo(ProjectTracker.Library.ProjectInfo info)
+      {
+        Model = info;
+      }
 
-    public void RemoveItem()
-    {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Getting item to delete..." });
-      ProjectTracker.Library.ProjectEdit.GetProject(Model.Id, (o, e) =>
-        {
-          if (e.Error != null)
+      public bool CanEdit
+      {
+        get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)); }
+      }
+
+      public new bool CanRemove
+      {
+        get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)); }
+      }
+
+      public void DisplayItem()
+      {
+        Bxf.Shell.Instance.ShowView(
+          typeof(Views.ProjectDisplay).AssemblyQualifiedName,
+          "projectDisplayViewSource",
+          new ProjectDisplay(Model),
+          "Main");
+      }
+
+      public void EditItem()
+      {
+        Bxf.Shell.Instance.ShowView(
+          typeof(Views.ProjectEdit).AssemblyQualifiedName,
+          "projectGetterViewSource",
+          new ProjectGetter(Model),
+          "Main");
+      }
+
+      public void RemoveItem()
+      {
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Getting item to delete..." });
+        ProjectTracker.Library.ProjectEdit.GetProject(Model.Id, (o, e) =>
           {
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-          }
-          else
-          {
-            e.Object.Delete();
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
-            e.Object.BeginSave((s, a) =>
-              {
-                if (a.Error != null)
+            if (e.Error != null)
+            {
+              Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
+              Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+            }
+            else
+            {
+              e.Object.Delete();
+              Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
+              e.Object.BeginSave((s, a) =>
                 {
-                  Bxf.Shell.Instance.ShowError(a.Error.Message, "Failed to delete item");
-                  Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-                }
-                else
-                {
-                  Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-                  Bxf.Shell.Instance.ShowView(
-                    typeof(Views.ProjectList).AssemblyQualifiedName,
-                    "projectListViewSource",
-                    new ProjectList(),
-                    "Main");
-                }
-              });
-          }
-        });
+                  if (a.Error != null)
+                  {
+                    Bxf.Shell.Instance.ShowError(a.Error.Message, "Failed to delete item");
+                    Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+                  }
+                  else
+                  {
+                    Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
+                    Bxf.Shell.Instance.ShowView(
+                      typeof(Views.ProjectList).AssemblyQualifiedName,
+                      "projectListViewSource",
+                      new ProjectList(),
+                      "Main");
+                  }
+                });
+            }
+          });
+      }
     }
   }
 }

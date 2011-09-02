@@ -37,7 +37,7 @@ namespace SilverlightUI.ViewModels
       if (menuItem.IsAuthorized)
         menuItem.Method();
       else
-        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "You are not authorized to perform this action" });
+        Bxf.Shell.Instance.ShowError("You are not authorized to perform this action", "Authorization error");
     }
 
     public void ShowProjectList()

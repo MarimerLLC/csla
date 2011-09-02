@@ -4,6 +4,10 @@ using Csla;
 
 namespace SilverlightUI.ViewModels
 {
+  /// <summary>
+  /// Base viewmodel type for use with model types that are
+  /// loaded from the app server (root business types).
+  /// </summary>
   public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>
   {
     public ViewModel()

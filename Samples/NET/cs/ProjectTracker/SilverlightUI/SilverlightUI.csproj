@@ -97,12 +97,14 @@
     <Compile Include="ViewModels\ProjectDisplay.cs" />
     <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
+    <Compile Include="ViewModels\ProjectResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
     <Compile Include="ViewModels\RoleListEdit.cs" />
     <Compile Include="ViewModels\User.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocal.cs" />
     <Compile Include="ViewModels\ViewModelEdit.cs" />
+    <Compile Include="ViewModels\ViewModelLocalEdit.cs" />
     <Compile Include="Views\ErrorDisplay.xaml.cs">
       <DependentUpon>ErrorDisplay.xaml</DependentUpon>
     </Compile>
@@ -120,6 +122,9 @@
     </Compile>
     <Compile Include="Views\ProjectList.xaml.cs">
       <DependentUpon>ProjectList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectResourceEdit.xaml.cs">
+      <DependentUpon>ProjectResourceEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
@@ -167,6 +172,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ProjectResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ResourceList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -189,7 +198,7 @@
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.Login.datasource" />
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.MainMenu.datasource" />
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.ProjectDisplay.datasource" />
-    <None Include="Properties\DataSources\SilverlightUI.ViewModels.ProjectEdit.datasource" />
+    <None Include="Properties\DataSources\SilverlightUI.ViewModels.ProjectGetter.datasource" />
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.ProjectList.datasource" />
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.ResourceList.datasource" />
     <None Include="Properties\DataSources\SilverlightUI.ViewModels.RoleListEdit.datasource" />

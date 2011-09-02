@@ -89,6 +89,7 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, StartedProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, EndedProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, DescriptionProperty, "ProjectManager"));
+      BusinessRules.AddRule(new NoDuplicateResource { PrimaryProperty = ResourcesProperty });
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -97,6 +98,33 @@ namespace ProjectTracker.Library
       Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
+    }
+
+    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
+    {
+      if (e.ChildObject is ProjectResources)
+      {
+        BusinessRules.CheckRules(ResourcesProperty);
+        OnPropertyChanged(ResourcesProperty);
+      }
+      base.OnChildChanged(e);
+    }
+
+    private class NoDuplicateResource : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (ProjectEdit)context.Target;
+        foreach (var item in target.Resources)
+        {
+          var count = target.Resources.Count(r => r.ResourceId == item.ResourceId);
+          if (count > 1)
+          {
+            context.AddErrorResult("Duplicate resources not allowed");
+            return;
+          }
+        }
+      }
     }
 
     private class StartDateGTEndDate : Csla.Rules.BusinessRule

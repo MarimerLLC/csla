@@ -86,11 +86,17 @@
     <Compile Include="..\ProjectTracker.Library\ProjectResourceEdit.cs">
       <Link>ProjectResourceEdit.cs</Link>
     </Compile>
+    <Compile Include="..\ProjectTracker.Library\ProjectResourceEditCreator.cs">
+      <Link>ProjectResourceEditCreator.cs</Link>
+    </Compile>
     <Compile Include="..\ProjectTracker.Library\ProjectResources.cs">
       <Link>ProjectResources.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ResourceAssignmentEdit.cs">
       <Link>ResourceAssignmentEdit.cs</Link>
+    </Compile>
+    <Compile Include="..\ProjectTracker.Library\ResourceAssignmentEditCreator.cs">
+      <Link>ResourceAssignmentEditCreator.cs</Link>
     </Compile>
     <Compile Include="..\ProjectTracker.Library\ResourceAssignments.cs">
       <Link>ResourceAssignments.cs</Link>

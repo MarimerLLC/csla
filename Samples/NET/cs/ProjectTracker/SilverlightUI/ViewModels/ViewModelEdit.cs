@@ -2,7 +2,12 @@
 
 namespace SilverlightUI.ViewModels
 {
+  /// <summary>
+  /// Base viewmodel type for use with editable model types that are
+  /// loaded from the app server (editable root business types).
+  /// </summary>
   public class ViewModelEdit<T> : ViewModel<T>
+    where T : Csla.Core.ITrackStatus
   {
     public void Cancel()
     {
@@ -11,8 +16,18 @@ namespace SilverlightUI.ViewModels
 
     public void Save()
     {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
-      base.BeginSave();
+      if (Model != null)
+      {
+        if (Model.IsSavable)
+        {
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+          base.BeginSave();
+        }
+        else
+        {
+          Bxf.Shell.Instance.ShowError("Object can not be saved", "Save error");
+        }
+      }
     }
 
     protected override void OnSaved()

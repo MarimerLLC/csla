@@ -8,9 +8,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignmentEdit>
   {
-#if SILVERLIGHT
-    //TODO: add BeginAssignTo method
-#else
+#if !SILVERLIGHT
     public ResourceAssignmentEdit AssignTo(int projectId)
     {
       if (!(Contains(projectId)))

@@ -79,6 +79,7 @@ namespace ProjectTracker.Library
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, "ProjectManager"));
+      BusinessRules.AddRule(new NoDuplicateProject { PrimaryProperty = AssignmentsProperty });
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -87,6 +88,33 @@ namespace ProjectTracker.Library
       Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
+    }
+
+    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
+    {
+      if (e.ChildObject is ResourceAssignments)
+      {
+        BusinessRules.CheckRules(AssignmentsProperty);
+        OnPropertyChanged(AssignmentsProperty);
+      }
+      base.OnChildChanged(e);
+    }
+
+    private class NoDuplicateProject : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (ResourceEdit)context.Target;
+        foreach (var item in target.Assignments)
+        {
+          var count = target.Assignments.Count(r => r.ProjectId == item.ProjectId);
+          if (count > 1)
+          {
+            context.AddErrorResult("Duplicate projects not allowed");
+            return;
+          }
+        }
+      }
     }
 
     public static void GetResource(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)

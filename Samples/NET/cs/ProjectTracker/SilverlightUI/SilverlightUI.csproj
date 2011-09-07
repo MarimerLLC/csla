@@ -98,6 +98,9 @@
     <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
     <Compile Include="ViewModels\ProjectResourceEdit.cs" />
+    <Compile Include="ViewModels\ResourceAssignmentEdit.cs" />
+    <Compile Include="ViewModels\ResourceDisplay.cs" />
+    <Compile Include="ViewModels\ResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
     <Compile Include="ViewModels\RoleListEdit.cs" />
     <Compile Include="ViewModels\User.cs" />
@@ -126,6 +129,15 @@
     <Compile Include="Views\ProjectResourceEdit.xaml.cs">
       <DependentUpon>ProjectResourceEdit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResourceAssignmentEdit.xaml.cs">
+      <DependentUpon>ResourceAssignmentEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceDisplay.xaml.cs">
+      <DependentUpon>ResourceDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceEdit.xaml.cs">
+      <DependentUpon>ResourceEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
     </Compile>
@@ -138,6 +150,7 @@
     <Compile Include="Views\UserDisplay.xaml.cs">
       <DependentUpon>UserDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Xaml\NullVisibilityConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -173,6 +186,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProjectResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceAssignmentEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

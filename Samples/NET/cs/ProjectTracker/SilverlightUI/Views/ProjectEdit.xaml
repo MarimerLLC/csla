@@ -81,7 +81,8 @@
                         Content="{Binding Path=ChildEditContent}"/>
       </Grid>
     </Border>
-    <StackPanel Orientation="Horizontal" Grid.Row="3" DataContext="{Binding Source={StaticResource projectEditViewSource}}">
+    <StackPanel Orientation="Horizontal" Grid.Row="3" DataContext="{Binding Source={StaticResource projectEditViewSource}}"
+                Visibility="{Binding Path=ChildEditContent, Converter={StaticResource NullVisibilityConverterI}}">
       <Button Content="Save" Name="SaveButton" Margin="3" IsEnabled="{Binding Path=CanSave}"/>
       <Button Content="Cancel" Name="CancelButton" Margin="3" IsEnabled="{Binding Path=CanCancel}"/>
       <bxf:TriggerAction TargetControl="{Binding ElementName=SaveButton}"

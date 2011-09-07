@@ -17,7 +17,7 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <TextBlock Grid.Row="0" Text="Project list" FontSize="14" Foreground="Cornsilk" />
+    <TextBlock Grid.Row="0" Text="Resource list" FontSize="14" Foreground="Cornsilk" />
     <ListBox Grid.Row="1" ItemsSource="{Binding Source={StaticResource projectListItemListViewSource}}" Name="modelListBox">
       <ListBox.ItemTemplate>
         <DataTemplate>

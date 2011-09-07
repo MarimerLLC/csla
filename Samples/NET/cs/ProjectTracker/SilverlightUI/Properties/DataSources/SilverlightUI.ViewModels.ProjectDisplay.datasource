@@ -8,7 +8,7 @@
 <GenericObjectDataSource DisplayName="ProjectDisplay" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
    <Children>
       <GenericObjectDataSource DisplayName="Model" Version="1.0">
-         <TypeInfo>ProjectTracker.Library.ProjectInfo, ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+         <TypeInfo>ProjectTracker.Library.ProjectEdit, ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
          <TypeUISetting>
             <PropertyUISettings>
                <PropertyUISetting Name="ProjectDisplay.Model">
@@ -32,8 +32,25 @@
                      </ControlSetting>
                   </ControlSettings>
                </PropertyUISetting>
+               <PropertyUISetting Name="Ended">
+                  <ControlSettings>
+                     <ControlSetting ArtifactName="Microsoft:System.Windows:Silverlight">
+                        <BindableControlInfo Name="TextBlock" Type="System.Windows.Controls.TextBlock" AssemblyName="System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e" AssemblyCodeBase="c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\System.Windows.dll" />
+                     </ControlSetting>
+                  </ControlSettings>
+               </PropertyUISetting>
+               <PropertyUISetting Name="Started">
+                  <ControlSettings>
+                     <ControlSetting ArtifactName="Microsoft:System.Windows:Silverlight">
+                        <BindableControlInfo Name="TextBlock" Type="System.Windows.Controls.TextBlock" AssemblyName="System.Windows, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e" AssemblyCodeBase="c:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\Silverlight\v4.0\System.Windows.dll" />
+                     </ControlSetting>
+                  </ControlSettings>
+               </PropertyUISetting>
             </PropertyUISettings>
          </TypeUISetting>
+      </GenericObjectDataSource>
+      <GenericObjectDataSource DisplayName="Resources" Version="1.0">
+         <TypeInfo>ProjectTracker.Library.ProjectResourceEdit, ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
       </GenericObjectDataSource>
    </Children>
    <TypeInfo>SilverlightUI.ViewModels.ProjectDisplay, SilverlightUI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>

@@ -65,7 +65,7 @@ namespace SilverlightUI.ViewModels
         Bxf.Shell.Instance.ShowView(
           typeof(Views.ResourceDisplay).AssemblyQualifiedName,
           "resourceDisplayViewSource",
-          new ResourceDisplay(Model),
+          new ResourceDisplay(Model.Id),
           "Main");
       }
 

@@ -2,11 +2,29 @@
 
 namespace SilverlightUI.ViewModels
 {
-  public class ResourceDisplay : ViewModelLocal<ProjectTracker.Library.ResourceInfo>
+  public class ResourceDisplay : ViewModel<ProjectTracker.Library.ResourceGetter>
   {
-    public ResourceDisplay(ProjectTracker.Library.ResourceInfo info)
+    public ResourceDisplay(int id)
     {
-      Model = info;
+      ManageObjectLifetime = false;
+      BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.GetExistingResource(id, callback));
+    }
+
+    private ProjectTracker.Library.ResourceAssignmentEdit _assignment;
+    public ProjectTracker.Library.ResourceAssignmentEdit SelectedAssignment
+    {
+      get { return _assignment; }
+      set { _assignment = value; OnPropertyChanged("SelectedAssignment"); }
+    }
+
+    public void ShowProject()
+    {
+      if (SelectedAssignment != null)
+        Bxf.Shell.Instance.ShowView(
+          typeof(Views.ProjectDisplay).AssemblyQualifiedName,
+          "projectDisplayViewSource",
+          new ProjectDisplay(SelectedAssignment.ProjectId),
+          "Main");
     }
   }
 }

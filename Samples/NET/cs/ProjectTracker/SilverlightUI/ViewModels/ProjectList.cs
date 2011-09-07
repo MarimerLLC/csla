@@ -66,7 +66,7 @@ namespace SilverlightUI.ViewModels
         Bxf.Shell.Instance.ShowView(
           typeof(Views.ProjectDisplay).AssemblyQualifiedName,
           "projectDisplayViewSource",
-          new ProjectDisplay(Model),
+          new ProjectDisplay(Model.Id),
           "Main");
       }
 

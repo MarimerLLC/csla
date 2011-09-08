@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" xmlns:my="clr-namespace:WpfUI.ViewModels">
   <UserControl.Resources>
-    <CollectionViewSource x:Key="errorViewSource" d:DesignSource="{d:DesignInstance my:ErrorViewModel, CreateList=True}" />
+    <CollectionViewSource x:Key="errorViewSource" d:DesignSource="{d:DesignInstance my:Error, CreateList=True}" />
   </UserControl.Resources>
   <Grid DataContext="{StaticResource errorViewSource}">
     <Grid.Background>

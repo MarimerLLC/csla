@@ -47,6 +47,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -65,25 +67,66 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ViewModels\Error.cs" />
+    <Compile Include="ViewModels\Login.cs" />
     <Compile Include="ViewModels\MainMenu.cs" />
+    <Compile Include="ViewModels\ProjectDisplay.cs" />
+    <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
+    <Compile Include="ViewModels\ProjectResourceEdit.cs" />
+    <Compile Include="ViewModels\ResourceAssignmentEdit.cs" />
+    <Compile Include="ViewModels\ResourceDisplay.cs" />
+    <Compile Include="ViewModels\ResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
+    <Compile Include="ViewModels\RoleListEdit.cs" />
+    <Compile Include="ViewModels\User.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelEdit.cs" />
+    <Compile Include="ViewModels\ViewModelLocal.cs" />
+    <Compile Include="ViewModels\ViewModelLocalEdit.cs" />
     <Compile Include="Views\ErrorDisplay.xaml.cs">
       <DependentUpon>ErrorDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ProjectDisplay.xaml.cs">
+      <DependentUpon>ProjectDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectEdit.xaml.cs">
+      <DependentUpon>ProjectEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProjectList.xaml.cs">
       <DependentUpon>ProjectList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectResourceEdit.xaml.cs">
+      <DependentUpon>ProjectResourceEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceAssignmentEdit.xaml.cs">
+      <DependentUpon>ResourceAssignmentEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceDisplay.xaml.cs">
+      <DependentUpon>ResourceDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceEdit.xaml.cs">
+      <DependentUpon>ResourceEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\RoleListEdit.xaml.cs">
+      <DependentUpon>RoleListEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StatusDisplay.xaml.cs">
       <DependentUpon>StatusDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\UserDisplay.xaml.cs">
+      <DependentUpon>UserDisplay.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Xaml\NullVisibilityConverter.cs" />
+    <Compile Include="Xaml\PasswordBinder.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -101,7 +144,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -109,11 +164,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ProjectResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceAssignmentEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ResourceList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\RoleListEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\StatusDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -138,9 +217,27 @@
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Properties\DataSources\Bxf.Status.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.Error.datasource" />
     <None Include="Properties\DataSources\WpfUI.ViewModels.ErrorViewModel.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.Login.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.MainMenu+MenuItem.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.MainMenu.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectDisplay.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectGetter+ProjectEdit+ProjectResourceDisplay.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectGetter+ProjectEdit.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectGetter.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectList+ProjectInfo.datasource" />
     <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectList.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ProjectResourceEdit.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceAssignmentEdit.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceDisplay.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceGetter+ResourceEdit+AssignmentDisplay.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceGetter+ResourceEdit.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceGetter.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceList+ResourceInfo.datasource" />
     <None Include="Properties\DataSources\WpfUI.ViewModels.ResourceList.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.RoleListEdit.datasource" />
+    <None Include="Properties\DataSources\WpfUI.ViewModels.User.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

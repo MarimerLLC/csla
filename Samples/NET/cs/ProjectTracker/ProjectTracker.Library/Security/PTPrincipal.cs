@@ -15,7 +15,6 @@ namespace ProjectTracker.Library.Security
       : base(identity)
     { }
 
-#if SILVERLIGHT
     public static void BeginLogin(string username, string password)
     {
       PTIdentity.GetPTIdentity(username, password, (o, e) =>
@@ -26,7 +25,8 @@ namespace ProjectTracker.Library.Security
             Logout();
         });
     }
-#else
+
+#if !SILVERLIGHT
     public static bool Login(string username, string password)
     {
       var identity = PTIdentity.GetPTIdentity(username, password);

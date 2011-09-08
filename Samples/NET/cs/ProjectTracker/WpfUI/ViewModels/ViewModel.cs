@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Bxf;
+using Csla;
 
 namespace WpfUI.ViewModels
 {
+  /// <summary>
+  /// Base viewmodel type for use with model types that are
+  /// loaded from the app server (root business types).
+  /// </summary>
   public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>
   {
     public ViewModel()
@@ -28,8 +30,6 @@ namespace WpfUI.ViewModels
       {
         if (be.BusinessException != null)
           message = be.BusinessException.Message;
-        else if (be.InnerException != null)
-          message = be.InnerException.Message;
         else
           message = be.Message;
       }

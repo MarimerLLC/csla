@@ -24,52 +24,52 @@ namespace SilverlightUI
 
       var presenter = (IPresenter)Bxf.Shell.Instance;
       presenter.OnShowError += (message, title) =>
-      {
-        Shell.Instance.ShowView(
-          typeof(Views.ErrorDisplay).AssemblyQualifiedName,
-          "errorViewSource",
-          new ViewModels.Error { ErrorContent = message },
-          "Error");
-      };
+        {
+          Shell.Instance.ShowView(
+            typeof(Views.ErrorDisplay).AssemblyQualifiedName,
+            "errorViewSource",
+            new ViewModels.Error { ErrorContent = message },
+            "Error");
+        };
 
       presenter.OnShowStatus += (status) =>
-      {
-        Shell.Instance.ShowView(
-          typeof(Views.StatusDisplay).AssemblyQualifiedName,
-          "statusViewSource",
-          status,
-          "Status");
-      };
+        {
+          Shell.Instance.ShowView(
+            typeof(Views.StatusDisplay).AssemblyQualifiedName,
+            "statusViewSource",
+            status,
+            "Status");
+        };
 
       presenter.OnShowView += (view, region) =>
-      {
-        switch (region)
         {
-          case "Main":
-            MainContent = view.ViewInstance;
-            break;
-          case "Menu":
-            MenuContent = view.ViewInstance;
-            break;
-          case "User":
-            UserContent = view.ViewInstance;
-            break;
-          case "Error":
-            _errorClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
-            ErrorContent = view.ViewInstance;
-            break;
-          case "Status":
-            _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
-            if (view.Model != null)
-              AppBusy = ((Bxf.Status)view.Model).IsBusy;
-            else
-              AppBusy = false;
-            StatusContent = view.ViewInstance;
-            break;
-          default:
-            break;
-        }
-      };
+          switch (region)
+          {
+            case "Main":
+              MainContent = view.ViewInstance;
+              break;
+            case "Menu":
+              MenuContent = view.ViewInstance;
+              break;
+            case "User":
+              UserContent = view.ViewInstance;
+              break;
+            case "Error":
+              _errorClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
+              ErrorContent = view.ViewInstance;
+              break;
+            case "Status":
+              _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
+              if (view.Model != null)
+                AppBusy = ((Bxf.Status)view.Model).IsBusy;
+              else
+                AppBusy = false;
+              StatusContent = view.ViewInstance;
+              break;
+            default:
+              break;
+          }
+        };
 
       Shell.Instance.ShowView(
         typeof(Views.UserDisplay).AssemblyQualifiedName,

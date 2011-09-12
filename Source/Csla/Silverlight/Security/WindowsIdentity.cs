@@ -68,8 +68,13 @@ namespace Csla.Silverlight.Security
     protected void PopulateWindowsIdentity()
     {
       string DomainDelimiter = "\\";
-      System.Security.Principal.IdentityReferenceCollection groups = System.Security.Principal.WindowsIdentity.GetCurrent().Groups;
       MobileList<string> roles = new MobileList<string>();
+      string identityName = string.Empty;
+
+      var currentUser = System.Security.Principal.WindowsIdentity.GetCurrent();
+      
+#if !MONO
+      System.Security.Principal.IdentityReferenceCollection groups = System.Security.Principal.WindowsIdentity.GetCurrent().Groups;
       foreach (System.Security.Principal.IdentityReference item in groups)
       {
         System.Security.Principal.NTAccount account = (System.Security.Principal.NTAccount)item.Translate(typeof(System.Security.Principal.NTAccount));
@@ -82,7 +87,10 @@ namespace Csla.Silverlight.Security
           roles.Add(account.Value);
         }
       }
-      string identityName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+#endif
+      
+      if (currentUser != null) 
+        identityName = currentUser.Name;
       if (identityName.Contains(DomainDelimiter))
       {
         identityName = identityName.Substring(identityName.LastIndexOf(DomainDelimiter) + 1);

@@ -21,7 +21,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if SILVERLIGHT
+#if SILVERLIGHT || WINRT
       return new Csla.Serialization.Mobile.MobileFormatter();
 #else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)

@@ -6,8 +6,9 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 using System;
+#if !WINRT
 using System.Security.Permissions;
-
+#endif
 #if SILVERLIGHT
 using Csla.Serialization;
 #endif

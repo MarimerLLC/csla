@@ -9,7 +9,9 @@ using System;
 using System.Threading;
 using System.Security.Principal;
 using System.Collections.Generic;
+#if !WINRT
 using System.Configuration;
+#endif
 using Csla.Core;
 
 namespace Csla

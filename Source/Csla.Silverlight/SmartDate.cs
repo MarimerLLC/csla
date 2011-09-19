@@ -25,7 +25,11 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public struct SmartDate : Csla.Core.ISmartField,
-    IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
+    IComparable,
+#if !WINRT
+    IConvertible, 
+#endif
+    IFormattable, Csla.Serialization.Mobile.IMobileObject
   {
 
     private DateTime _date;
@@ -1236,6 +1240,7 @@ namespace Csla
 
     #endregion
 
+#if !WINRT
     #region  IConvertible
 
     System.TypeCode IConvertible.GetTypeCode()
@@ -1332,6 +1337,7 @@ namespace Csla
     }
 
     #endregion
+#endif
 
     #region IFormattable Members
 

@@ -48,7 +48,7 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !WINRT
 #if SILVERLIGHT
     ,INotifyDataErrorInfo
 #else
@@ -3409,7 +3409,7 @@ namespace Csla.Core
 
     #endregion
 
-#if !WINDOWS_PHONE
+#if !WINDOWS_PHONE && !WINRT
     #region INotifyDataErrorInfo
 
     /// <summary>

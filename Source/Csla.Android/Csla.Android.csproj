@@ -77,11 +77,9 @@
     <Compile Include="..\Csla.Wp\DataAnnotations\ValidationResult.cs">
       <Link>DataAnnotations\ValidationResult.cs</Link>
     </Compile>
-    <Compile Include="Collections\INotifyCollectionChanged.cs" />
-    <Compile Include="Collections\NotifyCollectionChangedAction.cs" />
-    <Compile Include="Collections\NotifyCollectionChangedEventArgs.cs" />
-    <Compile Include="Collections\NotifyCollectionChangedEventHandler.cs" />
-    <Compile Include="Collections\ObservableCollection.cs" />
+    <Compile Include="..\Csla\Rules\PropertyRule.cs">
+      <Link>Rules\PropertyRule.cs</Link>
+    </Compile>
     <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web References\WcfPortal\Reference.cs">

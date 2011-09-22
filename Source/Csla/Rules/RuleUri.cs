@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Csla.Rules
 {
@@ -44,7 +45,8 @@ namespace Csla.Rules
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
     public RuleUri(IBusinessRule rule, Csla.Core.IPropertyInfo property)
-      : this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
+      : this(GetTypeName(rule), ((property == null) ? "(object)" : property.Name))
+      //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
     { }
 
     /// <summary>
@@ -170,6 +172,43 @@ namespace Csla.Rules
           }
         }
         return result;
+      }
+    }
+
+    private static string GetTypeName(IBusinessRule rule)
+    {
+      var type = rule.GetType();
+      return GetTypeName(type);
+    }
+
+    /// <summary>
+    /// Gets the name of the type. 
+    /// Recursive processing of generic constraints and parameters.
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <returns></returns>
+    private static string GetTypeName(Type type)
+    {
+      if (!type.IsGenericType)
+      {
+        return type.FullName;
+      }
+      else // generic type
+      {
+        var sb = new StringBuilder();
+        if (!string.IsNullOrEmpty(type.Namespace)) 
+          sb.Append(type.Namespace + ".");
+        sb.Append(type.Name.Replace("`1", ""));
+        foreach (var t in type.GetGenericArguments())
+        {
+          sb.Append("-");
+          if (t.IsGenericType) 
+            sb.Append(GetTypeName(t));
+          else 
+            sb.Append(t.FullName);
+          sb.Append("-");
+        }
+        return sb.ToString();
       }
     }
   }

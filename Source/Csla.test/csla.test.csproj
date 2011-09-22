@@ -319,6 +319,7 @@
     <Compile Include="ValidationRules\RuleDescriptionTests.cs" />
     <Compile Include="ValidationRules\RuleBaseClassesRoot.cs" />
     <Compile Include="ValidationRules\RuleTests.cs" />
+    <Compile Include="ValidationRules\RuleURITests.cs" />
     <Compile Include="ValidationRules\SeverityClasses.cs" />
     <Compile Include="ValidationRules\SeverityTests.cs" />
     <Compile Include="ValidationRules\ShortCircuitClasses.cs" />

@@ -554,6 +554,7 @@
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\Csla\Resources\favicon.ico">
@@ -567,6 +568,9 @@
     <None Include="..\Csla\CslaKey.snk">
       <Link>CslaKey.snk</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v1.0\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

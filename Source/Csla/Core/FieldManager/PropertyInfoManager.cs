@@ -75,11 +75,23 @@ namespace Csla.Core.FieldManager
         if (list.IsLocked)
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
 
-        if (list.Count(pi => pi.Name == info.Name) > 0)
+        // This is the semantic code for RegisterProperty
+        //if (list.Any(pi => pi.Name == info.Name))
+        //  throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
+        //list.Add(info);
+        //list.Sort();
+
+        // Optimized code
+        // BinarySearch uses the same comparer as list.Sort() to find the item in a sorted list.
+        // If not found then returns the negative index for item in sorted list (to insert). 
+        // This allows us to insert the item right away with no need for explicit Sort on the list.
+        var index = list.BinarySearch(info);
+        // if found then throw DuplicateNotAllowed
+        if (index >= 0)
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
 
-        list.Add(info);
-        list.Sort();
+        // insert info at correct sorted index
+        list.Insert(~index, info);
       }
       return info;
     }

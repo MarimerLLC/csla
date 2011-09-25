@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios", "Csla.Ios\Csla.Ios.csproj", "{F35F6026-DA97-4993-B9BC-DE935FDCDA23}"
 EndProject
 Global
@@ -35,7 +35,7 @@ Global
 		$3.scope = text/x-csharp
 		$0.StandardHeader = $4
 		$4.Text = 
-		$4.inheritsSet = Apache2License
+		$4.IncludeInNewFiles = True
 		version = 4.2.0
 		outputpath = ..\bin
 	EndGlobalSection

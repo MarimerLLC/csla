@@ -27,21 +27,21 @@ namespace Csla.Test.LazySingelton
     [TestMethod]
     public void LazySingeltonDefaultConstructorCreatesObject()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>();
+      var lazy = new LazySingleton<Dictionary<string, object>>();
       Assert.IsNotNull(lazy, "new LazySingelton can not be null.");
     }
 
     [TestMethod]
     public void LazySingeltonConstructorWithOverloadConstructorCreatesObject()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>(() => new Dictionary<string, object>());
+      var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
       Assert.IsNotNull(lazy, "new LazySingelton can not be null.");
     }
 
     [TestMethod]
     public void IsValueCreatedWithDefaultConstructorIsFalseTest()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>();
+      var lazy = new LazySingleton<Dictionary<string, object>>();
       Assert.IsFalse(lazy.IsValueCreated, "IsValueCreated must be false by default.");
     }
 
@@ -49,14 +49,14 @@ namespace Csla.Test.LazySingelton
     [TestMethod]
     public void IsValueCreatedWithOverloadConstructorIsFalseTest()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>(() => new Dictionary<string, object>());
+      var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
       Assert.IsFalse(lazy.IsValueCreated, "IsValueCreated must be false by default.");
     }
 
     [TestMethod]
     public void ValueIsLazyCreatesValueTest()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>();
+      var lazy = new LazySingleton<Dictionary<string, object>>();
       var value = lazy.Value;
       Assert.IsNotNull(lazy.Value, "Value must not be null.");
       Assert.IsTrue(lazy.IsValueCreated);
@@ -66,7 +66,7 @@ namespace Csla.Test.LazySingelton
     [TestMethod]
     public void ValueIsLazyWithOverloadConstructorCreatesValueTest()
     {
-      var lazy = new LazySingelton<Dictionary<string, object>>(() => new Dictionary<string, object>());
+      var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
       var value = lazy.Value;
       Assert.IsNotNull(lazy.Value, "Value must not be null.");
       Assert.IsTrue(lazy.IsValueCreated);

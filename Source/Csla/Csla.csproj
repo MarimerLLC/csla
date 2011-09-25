@@ -325,7 +325,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Threading\BusyLock.cs" />
-    <Compile Include="LazySingelton.cs" />
+    <Compile Include="LazySingleton.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />
     <Compile Include="Data\DataMap.cs" />

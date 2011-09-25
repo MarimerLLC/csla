@@ -7,7 +7,7 @@ namespace Csla
   /// An alternative to <see cref="Lazy&lt;T&gt;"/> that works on .NET, Silverlight and Windows Phone
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public sealed class LazySingelton<T> where T : class
+  public sealed class LazySingleton<T> where T : class
   {
     private readonly object _syncRoot = new object();
     private T _value;
@@ -16,18 +16,18 @@ namespace Csla
 
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LazySingelton&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
     /// Will use the default public constructor to create an instance of T (the vlaue)
     /// </summary>
-    public LazySingelton()
+    public LazySingleton()
       : this(() => (T)Csla.Reflection.MethodCaller.CreateInstance(typeof(T))) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="LazySingelton&lt;T&gt;"/> class.
+    /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
     /// Will call the supplied delegate to create an instance of T (the value)
     /// </summary>
     /// <param name="delegate">The @delegate.</param>
-    public LazySingelton(Func<T> @delegate)
+    public LazySingleton(Func<T> @delegate)
     {
       _delegate = @delegate;
     }

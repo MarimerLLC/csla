@@ -536,8 +536,8 @@
     <Compile Include="..\Csla.Silverlight\ICloneable.cs">
       <Link>ICloneable.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\LazySingelton.cs">
-      <Link>LazySingelton.cs</Link>
+    <Compile Include="..\Csla\LazySingleton.cs">
+      <Link>LazySingleton.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\NotUndoableAttribute.cs">
       <Link>NotUndoableAttribute.cs</Link>

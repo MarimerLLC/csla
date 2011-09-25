@@ -194,8 +194,8 @@
     <Compile Include="..\Csla\DynamicListBase.cs">
       <Link>DynamicListBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\LazySingelton.cs">
-      <Link>LazySingelton.cs</Link>
+    <Compile Include="..\Csla\LazySingleton.cs">
+      <Link>LazySingleton.cs</Link>
     </Compile>
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>

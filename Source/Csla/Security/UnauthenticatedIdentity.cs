@@ -30,6 +30,9 @@ namespace Csla.Security
     {
     }
 
+    /// <summary>
+    /// Initialize the object.
+    /// </summary>
     protected override void Initialize()
     {
       base.Initialize ();

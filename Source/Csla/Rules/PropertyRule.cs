@@ -34,6 +34,10 @@ namespace Csla.Rules
       get { return MessageDelegate != null; }
     }
 
+    /// <summary>
+    /// Gets the error message text.
+    /// </summary>
+    /// <returns></returns>
     protected virtual string GetMessage()
     {
       return MessageText;

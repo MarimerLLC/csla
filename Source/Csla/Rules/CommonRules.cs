@@ -194,6 +194,7 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="message">The message.</param>
+    /// <param name="max">Max length value.</param>
     public MaxLength(Csla.Core.IPropertyInfo primaryProperty, int max, string message)
       : this(primaryProperty, max)
     {
@@ -264,6 +265,7 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="message">The message.</param>
+    /// <param name="min">The minimum length.</param>
     public MinLength(Csla.Core.IPropertyInfo primaryProperty, int min, string message)
       : this(primaryProperty, min)
     {

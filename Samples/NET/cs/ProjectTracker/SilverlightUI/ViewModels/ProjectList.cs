@@ -81,36 +81,23 @@ namespace SilverlightUI.ViewModels
 
       public void RemoveItem()
       {
-        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Getting item to delete..." });
-        ProjectTracker.Library.ProjectEdit.GetProject(Model.Id, (o, e) =>
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
+        ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
           {
-            if (e.Error != null)
-            {
-              Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
-              Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-            }
-            else
-            {
-              e.Object.Delete();
-              Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
-              e.Object.BeginSave((s, a) =>
-                {
-                  if (a.Error != null)
-                  {
-                    Bxf.Shell.Instance.ShowError(a.Error.Message, "Failed to delete item");
-                    Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-                  }
-                  else
-                  {
-                    Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-                    Bxf.Shell.Instance.ShowView(
-                      typeof(Views.ProjectList).AssemblyQualifiedName,
-                      "projectListViewSource",
-                      new ProjectList(),
-                      "Main");
-                  }
-                });
-            }
+              if (e.Error != null)
+              {
+                Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
+                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+              }
+              else
+              {
+                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
+                Bxf.Shell.Instance.ShowView(
+                  typeof(Views.ProjectList).AssemblyQualifiedName,
+                  "projectListViewSource",
+                  new ProjectList(),
+                  "Main");
+              }
           });
       }
     }

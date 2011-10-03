@@ -168,6 +168,11 @@ namespace ProjectTracker.Library
       });
     }
 
+    public static void DeleteProject(int id, EventHandler<DataPortalResult<ProjectEdit>> callback)
+    {
+      DataPortal.BeginDelete<ProjectEdit>(id, callback);
+    }
+
 #if !SILVERLIGHT
     public static ProjectEdit NewProject()
     {

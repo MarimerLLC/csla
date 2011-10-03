@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUI", "WpfUI\WpfUI.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightUI", "SilverlightUI\SilverlightUI.csproj", "{46B51800-9151-4C1C-AF91-0B6A0CE1B623}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUI.Test", "WpfUI.Test\WpfUI.Test.csproj", "{F660E01A-C273-4B7C-9F85-9CA444E53745}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ProjectTracker.vsmdi
@@ -178,6 +180,18 @@ Global
 		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{46B51800-9151-4C1C-AF91-0B6A0CE1B623}.Release|x86.ActiveCfg = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|.NET.ActiveCfg = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

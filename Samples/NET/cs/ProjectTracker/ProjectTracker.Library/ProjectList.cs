@@ -19,7 +19,6 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginCreate<ProjectList>(name, callback);
     }
-
 #if !SILVERLIGHT
     public static ProjectList GetProjectList()
     {

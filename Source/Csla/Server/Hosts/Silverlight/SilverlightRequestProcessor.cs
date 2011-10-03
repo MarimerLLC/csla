@@ -71,6 +71,9 @@ namespace Csla.Server.Hosts.Silverlight
             string.Format(Csla.Properties.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
 
         SetContext(request);
+
+        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Create));
+
         object o = null;
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)
@@ -136,6 +139,9 @@ namespace Csla.Server.Hosts.Silverlight
           throw new InvalidOperationException(
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
         SetContext(request);
+
+        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Fetch));
+
         object o = null;
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)
@@ -199,6 +205,9 @@ namespace Csla.Server.Hosts.Silverlight
         if (factoryInfo == null)
         {
           SetContext(request);
+
+          new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, obj, DataPortalOperations.Update));
+
           o = Csla.DataPortal.Update(obj);
         }
         else
@@ -207,6 +216,9 @@ namespace Csla.Server.Hosts.Silverlight
             throw new InvalidOperationException(Resources.UpdateMethodNameNotSpecified);
 
           SetContext(request);
+
+          new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, obj, DataPortalOperations.Update));
+
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
           o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.UpdateMethodName, obj);
         }
@@ -252,6 +264,8 @@ namespace Csla.Server.Hosts.Silverlight
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
 
         SetContext(request);
+
+        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Delete));
 
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)

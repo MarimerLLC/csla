@@ -100,7 +100,7 @@ namespace Csla.Server
             {
                 SetContext(context);
 
-                Authorize(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
+                AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
 
                 DataPortalResult result;
 
@@ -168,7 +168,7 @@ namespace Csla.Server
             {
                 SetContext(context);
 
-                Authorize(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
+                AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
 
                 DataPortalResult result;
 
@@ -233,7 +233,7 @@ namespace Csla.Server
             {
                 SetContext(context);
 
-                Authorize(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
+                AuthorizeRequest(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
 
                 DataPortalResult result;
                 DataPortalMethodInfo method;
@@ -337,7 +337,7 @@ namespace Csla.Server
             {
                 SetContext(context);
 
-                Authorize(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
+                AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
 
                 DataPortalResult result;
 
@@ -472,7 +472,12 @@ namespace Csla.Server
             set { _authorizer = value; }
         }
 
-        private static void Authorize(AuthorizeRequest clientRequest)
+        internal void Authorize(AuthorizeRequest clientRequest)
+        {
+          AuthorizeRequest(clientRequest);
+        }
+
+        private static void AuthorizeRequest(AuthorizeRequest clientRequest)
         {
             _authorizer.Authorize(clientRequest);
         }

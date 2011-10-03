@@ -80,7 +80,7 @@ namespace Csla.Web.Security
       {
         LoadProperty(identity, MembershipIdentity.IsAuthenticatedProperty, true);
         LoadProperty(identity, MembershipIdentity.NameProperty, criteria.Name);
-        var roles = new MobileList<string>(System.Web.Security.Roles.GetRolesForUser(criteria.Name));
+        var roles = new MobileList<string>(Roles.Provider.GetRolesForUser(criteria.Name));
         LoadProperty(identity, MembershipIdentity.RolesProperty, roles);
         identity.LoadCustomData();
       }

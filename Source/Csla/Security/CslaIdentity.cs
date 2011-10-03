@@ -20,7 +20,7 @@ namespace Csla.Security
 {
   /// <summary>
   /// Provides a base class to simplify creation of
-  /// a .NET identity object for use with BusinessPrincipalBase.
+  /// a .NET identity object for use with CslaPrincipal.
   /// </summary>
   [Serializable]
   public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>
@@ -69,7 +69,7 @@ namespace Csla.Security
 
   /// <summary>
   /// Provides a base class to simplify creation of
-  /// a .NET identity object for use with BusinessPrincipalBase.
+  /// a .NET identity object for use with CslaPrincipal.
   /// </summary>
   [Serializable]
   public abstract class CslaIdentityBase<T> :

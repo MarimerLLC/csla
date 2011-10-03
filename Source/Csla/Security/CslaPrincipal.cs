@@ -66,7 +66,7 @@ namespace Csla.Security
     /// <param name="mode">Serialization mode.</param>
     protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
     {
-      info.AddValue("BusinessPrincipalBase.Identity", MobileFormatter.Serialize(_identity));
+      info.AddValue("CslaPrincipal.Identity", MobileFormatter.Serialize(_identity));
       base.OnGetState(info, mode);
     }
 
@@ -79,7 +79,7 @@ namespace Csla.Security
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, Csla.Core.StateMode mode)
     {
       base.OnSetState(info, mode);
-      _identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue<byte[]>("BusinessPrincipalBase.Identity"));
+      _identity = (IIdentity)MobileFormatter.Deserialize(info.GetValue<byte[]>("CslaPrincipal.Identity"));
     }
   }
 }

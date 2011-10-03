@@ -224,7 +224,7 @@ namespace Csla
     /// file with the key value "CslaAuthentication". The value
     /// "Windows" indicates CSLA .NET should use Windows integrated
     /// (or AD) security. Any other value indicates the use of
-    /// custom security derived from BusinessPrincipalBase.
+    /// custom security derived from CslaPrincipal.
     /// </remarks>
     public static string AuthenticationType
     {

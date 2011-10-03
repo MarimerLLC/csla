@@ -57,11 +57,10 @@ namespace Csla.Web.Mvc
     /// <returns>Bound CSLA collection object</returns>
     private object BindCslaCollection(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      object model = bindingContext.Model;
-      if (model == null)
-        model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
+      if (bindingContext.Model == null)
+        bindingContext.ModelMetadata.Model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
 
-      var collection = (IList)model;
+      var collection = (IList)bindingContext.Model;
       for (int currIdx = 0; currIdx < collection.Count; currIdx++)
       {
         string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);

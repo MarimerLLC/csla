@@ -60,5 +60,16 @@ namespace Mvc3UI.Controllers
       // If we got this far, something failed, redisplay form
       return View(model);
     }
+
+    // **************************************
+    // URL: /Account/LogOff
+    // **************************************
+
+    public ActionResult LogOff()
+    {
+      ProjectTracker.Library.Security.PTPrincipal.Logout();
+      FormsService.SignOut();
+      return RedirectToAction("Index", "Home");
+    }
   }
 }

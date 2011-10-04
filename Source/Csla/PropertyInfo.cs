@@ -156,11 +156,7 @@ namespace Csla
     {
       get
       {
-#if WINDOWS_PHONE
-        return !string.IsNullOrEmpty(_friendlyName) ? _friendlyName : _name;
-#else
         return !string.IsNullOrWhiteSpace(_friendlyName) ? _friendlyName : _name;
-#endif
       }
     }
 

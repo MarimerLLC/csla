@@ -154,11 +154,7 @@ namespace Csla.Rules.CommonRules
     protected override void Execute(RuleContext context)
     {
       var value = context.InputPropertyValues[PrimaryProperty];
-#if WINDOWS_PHONE
-            if (value == null || string.IsNullOrEmpty(value.ToString()))
-#else
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
-#endif
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });

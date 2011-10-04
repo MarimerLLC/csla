@@ -47,11 +47,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
     {
-#if WINDOWS_PHONE
-      if (string.IsNullOrEmpty(friendlyName))
-#else
-      if(string.IsNullOrWhiteSpace(friendlyName))
-#endif
+      if (string.IsNullOrWhiteSpace(friendlyName))
         friendlyName = GetFriendlyNameFromAttributes(containingType, name);
       
       return new Csla.PropertyInfo<T>(name, friendlyName);
@@ -72,11 +68,7 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
-#if WINDOWS_PHONE
-      if (string.IsNullOrEmpty(friendlyName))
-#else
       if(string.IsNullOrWhiteSpace(friendlyName))
-#endif
         friendlyName = GetFriendlyNameFromAttributes(containingType, name);
 
       return new Csla.PropertyInfo<T>(name, friendlyName, relationship);
@@ -98,11 +90,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
-#if WINDOWS_PHONE
-      if (string.IsNullOrEmpty(friendlyName))
-#else
       if(string.IsNullOrWhiteSpace(friendlyName))
-#endif
         friendlyName = GetFriendlyNameFromAttributes(containingType, name);
 
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue);
@@ -126,11 +114,7 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
     {
-#if WINDOWS_PHONE
-      if (string.IsNullOrEmpty(friendlyName))
-#else
       if(string.IsNullOrWhiteSpace(friendlyName))
-#endif
         friendlyName = GetFriendlyNameFromAttributes(containingType, name);
 
       return new Csla.PropertyInfo<T>(name, friendlyName, defaultValue, relationship);

@@ -393,7 +393,6 @@ namespace Csla
       return new LinqObservableCollection<C>(source, queryResult);
     }
 
-#if !WINDOWS_PHONE
     /// <summary>
     /// Gets a LinqObservableCollection that is a live view
     /// of the original list based on the query result.
@@ -404,6 +403,5 @@ namespace Csla
       var output = sourceEnum.Where<C>(expr.Compile());
       return new LinqObservableCollection<C>(source, output.ToList());
     }
-#endif
   }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ddd33c2c-44bd-477e-bf6c-9333d9d10df2" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.ObjectModel.ObservableCollection`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>false</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:2114/WcfPortal.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="3b8f2263-d0d6-4d64-bfa9-4d5764656d57" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="445ea6dd-015c-4927-ab76-7eeae27119ab" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="WcfPortal.disco" MetadataType="Disco" ID="7fbd72dc-b14b-4963-94c9-7bf2ab93e9ec" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?disco" />
+    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="c62df9c3-bf71-4b2e-a11c-04ad25585725" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="9cf70021-934f-483c-a070-52e41634d77e" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="88586b5f-2633-44bb-aea6-1aad8106afdf" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

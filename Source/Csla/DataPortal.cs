@@ -814,15 +814,39 @@ namespace Csla
     /// <typeparam name="T">
     /// Type of business object to create.
     /// </typeparam>
+    public static T CreateChild<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return (T)(portal.Create(typeof(T)));
+    }
+
+    /// <summary>
+    /// Creates and initializes a new
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
     /// <param name="parameters">
     /// Parameters passed to child create method.
     /// </param>
     public static T CreateChild<T>(params object[] parameters)
     {
-
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       return (T)(portal.Create(typeof(T), parameters));
+    }
 
+    /// <summary>
+    /// Creates and loads an existing
+    /// child business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to retrieve.
+    /// </typeparam>
+    public static T FetchChild<T>()
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      return (T)(portal.Fetch(typeof(T)));
     }
 
     /// <summary>
@@ -837,10 +861,21 @@ namespace Csla
     /// </param>
     public static T FetchChild<T>(params object[] parameters)
     {
-
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       return (T)(portal.Fetch(typeof(T), parameters));
+    }
 
+    /// <summary>
+    /// Inserts, updates or deletes an existing
+    /// child business object.
+    /// </summary>
+    /// <param name="child">
+    /// Business object to update.
+    /// </param>
+    public static void UpdateChild(object child)
+    {
+      Server.ChildDataPortal portal = new Server.ChildDataPortal();
+      portal.Update(child);
     }
 
     /// <summary>
@@ -855,10 +890,8 @@ namespace Csla
     /// </param>
     public static void UpdateChild(object child, params object[] parameters)
     {
-
       Server.ChildDataPortal portal = new Server.ChildDataPortal();
       portal.Update(child, parameters);
-
     }
 
     #endregion

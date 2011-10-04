@@ -56,6 +56,18 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
+    public object CallMethodIfImplemented(string method)
+    {
+      return MethodCaller.CallMethodIfImplemented(this.Instance, method);
+    }
+
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method
+    /// if that method is implemented on the target object.
+    /// </summary>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>

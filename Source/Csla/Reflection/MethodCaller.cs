@@ -77,9 +77,19 @@ namespace Csla.Reflection
       return mh;
     }
 
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method)
+    {
+      return GetCachedMethod(obj, method, false, null);
+    }
+
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object[] parameters)
     {
-      var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(parameters));
+      return GetCachedMethod(obj, method, true, parameters);
+    }
+
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    {
+      var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(hasParameters, parameters));
       DynamicMethodHandle mh = null;
       if (!_methodCache.TryGetValue(key, out mh))
       {
@@ -87,7 +97,7 @@ namespace Csla.Reflection
         {
           if (!_methodCache.TryGetValue(key, out mh))
           {
-            var info = GetMethod(obj.GetType(), method, parameters);
+            var info = GetMethod(obj.GetType(), method, hasParameters, parameters);
             mh = new DynamicMethodHandle(info, parameters);
             _methodCache.Add(key, mh);
           }
@@ -351,22 +361,42 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
+    public static object CallMethodIfImplemented(object obj, string method)
+    {
+      return CallMethodIfImplemented(obj, method, false, null);
+    }
+
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method
+    /// if that method is implemented on the target object.
+    /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
     public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
     {
+      return CallMethodIfImplemented(obj, method, true, parameters);
+    }
+
+    private static object CallMethodIfImplemented(object obj, string method, bool hasParameters, params object[] parameters)
+    {
 #if WINDOWS_PHONE
       System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, parameters);
       if (info != null)
-        return CallMethod(obj, info, parameters);
+        return CallMethod(obj, info, hasParameters, parameters);
       else
         return null;
 #else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
         return null;
-      return CallMethod(obj, mh, parameters);
+      return CallMethod(obj, mh, hasParameters, parameters);
 #endif
     }
 
@@ -399,22 +429,43 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
+    public static object CallMethod(object obj, string method)
+    {
+      return CallMethod(obj, method, false, null);
+    }
+
+    /// <summary>
+    /// Uses reflection to dynamically invoke a method,
+    /// throwing an exception if it is not
+    /// implemented on the target object.
+    /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
     public static object CallMethod(object obj, string method, params object[] parameters)
     {
+      return CallMethod(obj, method, true, parameters);
+    }
+
+    private static object CallMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    {
 #if WINDOWS_PHONE
-      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, parameters);
+      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, hasParameters, parameters);
       if (info == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
 
-      return CallMethod(obj, info, parameters);
+      return CallMethod(obj, info, hasParameters, parameters);
 #else
-      var mh = GetCachedMethod(obj, method, parameters);
+      var mh = GetCachedMethod(obj, method, hasParameters, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
-      return CallMethod(obj, mh, parameters);
+      return CallMethod(obj, mh, hasParameters, parameters);
 #endif
     }
 
@@ -433,6 +484,11 @@ namespace Csla.Reflection
     /// Parameters to pass to method.
     /// </param>
     public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
+    {
+      return CallMethod(obj, info, true, parameters);
+    }
+
+    private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object[] parameters)
     {
 #if WINDOWS_PHONE
       var infoParams = info.GetParameters();
@@ -479,26 +535,12 @@ namespace Csla.Reflection
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(info.Name + " " + Resources.MethodNotImplemented);
-      return CallMethod(obj, mh, parameters);
+      return CallMethod(obj, mh, hasParameters, parameters);
 #endif
     }
 
 #if !WINDOWS_PHONE
-    /// <summary>
-    /// Uses reflection to dynamically invoke a method,
-    /// throwing an exception if it is not implemented
-    /// on the target object.
-    /// </summary>
-    /// <param name="obj">
-    /// Object containing method.
-    /// </param>
-    /// <param name="methodHandle">
-    /// MethodHandle for the method.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters to pass to method.
-    /// </param>
-    private static object CallMethod(object obj, DynamicMethodHandle methodHandle, params object[] parameters)
+    private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
     {
       object result = null;
       var method = methodHandle.DynamicMethod;
@@ -521,12 +563,12 @@ namespace Csla.Reflection
           object[] paramList = new object[pCount];
           for (var pos = 0; pos <= pCount - 2; pos++)
             paramList[pos] = parameters[pos];
-          paramList[paramList.Length - 1] = null;
+          paramList[paramList.Length - 1] = hasParameters && inParams.Length == 0 ? inParams : null;
 
           // use new array
           inParams = paramList;
         }
-        else if ((inCount == pCount && !inParams[inCount - 1].GetType().IsArray) || inCount > pCount)
+        else if ((inCount == pCount && inParams[inCount - 1] != null && !inParams[inCount - 1].GetType().IsArray) || inCount > pCount)
         {
           // 1 or more params go in the param array
           // copy extras into an array
@@ -577,13 +619,37 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
+    public static System.Reflection.MethodInfo GetMethod(Type objectType, string method)
+    {
+      return GetMethod(objectType, method, true, false, null);
+    }
+
+    /// <summary>
+    /// Uses reflection to locate a matching method
+    /// on the target object.
+    /// </summary>
+    /// <param name="objectType">
+    /// Type of object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
     public static System.Reflection.MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
     {
+      return GetMethod(objectType, method, true, parameters);
+    }
 
+    private static System.Reflection.MethodInfo GetMethod(Type objectType, string method, bool hasParameters, params object[] parameters)
+    {
       System.Reflection.MethodInfo result = null;
 
       object[] inParams = null;
-      if (parameters == null)
+      if (!hasParameters)
+        inParams = new object[] { };
+      else if (parameters == null)
         inParams = new object[] { null };
       else
         inParams = parameters;
@@ -592,7 +658,7 @@ namespace Csla.Reflection
 
       // first see if there's a matching method
       // where all params match types
-      result = FindMethod(objectType, method, GetParameterTypes(inParams));
+      result = FindMethod(objectType, method, GetParameterTypes(hasParameters, inParams));
 
       if (result == null)
       {
@@ -770,11 +836,28 @@ namespace Csla.Reflection
     /// Returns an array of Type objects corresponding
     /// to the type of parameters provided.
     /// </summary>
+    public static Type[] GetParameterTypes()
+    {
+      return GetParameterTypes(false, null);
+    }
+
+    /// <summary>
+    /// Returns an array of Type objects corresponding
+    /// to the type of parameters provided.
+    /// </summary>
     /// <param name="parameters">
     /// Parameter values.
     /// </param>
     public static Type[] GetParameterTypes(object[] parameters)
     {
+      return GetParameterTypes(true, parameters);
+    }
+
+    private static Type[] GetParameterTypes(bool hasParameters, object[] parameters)
+    {
+      if (!hasParameters)
+        return new Type[] { };
+
       List<Type> result = new List<Type>();
 
       if (parameters == null)

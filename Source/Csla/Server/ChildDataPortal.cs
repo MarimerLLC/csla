@@ -22,10 +22,24 @@ namespace Csla.Server
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
+    public object Create(System.Type objectType)
+    {
+      return Create(objectType, false);
+    }
+
+    /// <summary>
+    /// Create a new business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
     public object Create(System.Type objectType, params object[] parameters)
+    {
+      return Create(objectType, true, parameters);
+    }
+
+    private object Create(System.Type objectType, bool hasParameters, params object[] parameters)
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
@@ -52,8 +66,11 @@ namespace Csla.Server
         }
 
 
-        // tell the business object to fetch its data
-        obj.CallMethod("Child_Create", parameters);
+        // tell the business object to create its data
+        if (hasParameters)
+          obj.CallMethod("Child_Create", parameters);
+        else
+          obj.CallMethod("Child_Create");
 
         if (target != null)
           target.Child_OnDataPortalInvokeComplete(eventArgs);
@@ -92,10 +109,24 @@ namespace Csla.Server
     /// Get an existing business object.
     /// </summary>
     /// <param name="objectType">Type of business object to retrieve.</param>
+    public object Fetch(Type objectType)
+    {
+      return Fetch(objectType, false, null);
+    }
+
+    /// <summary>
+    /// Get an existing business object.
+    /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
     public object Fetch(Type objectType, params object[] parameters)
+    {
+      return Fetch(objectType, true, parameters);
+    }
+
+    private object Fetch(Type objectType, bool hasParameters, params object[] parameters)
     {
 
       LateBoundObject obj = null;
@@ -123,7 +154,10 @@ namespace Csla.Server
         }
 
         // tell the business object to fetch its data
-        obj.CallMethod("Child_Fetch", parameters);
+        if (hasParameters)
+          obj.CallMethod("Child_Fetch", parameters);
+        else
+          obj.CallMethod("Child_Fetch");
 
         if (target != null)
           target.Child_OnDataPortalInvokeComplete(eventArgs);
@@ -162,10 +196,24 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
+    public void Update(object obj)
+    {
+      Update(obj, false, null);
+    }
+
+    /// <summary>
+    /// Update a business object.
+    /// </summary>
+    /// <param name="obj">Business object to update.</param>
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
     public void Update(object obj, params object[] parameters)
+    {
+      Update(obj, true, parameters);
+    }
+
+    private void Update(object obj, bool hasParameters, params object[] parameters)
     {
       if (obj == null)
         return;
@@ -229,7 +277,10 @@ namespace Csla.Server
         else if (obj is Core.ICommandObject)
         {
           // tell the object to update itself
-          lb.CallMethod("Child_Execute", parameters);
+          if (hasParameters)
+            lb.CallMethod("Child_Execute", parameters);
+          else
+            lb.CallMethod("Child_Execute");
           operation = DataPortalOperations.Execute;
 
         }
@@ -238,7 +289,10 @@ namespace Csla.Server
           // this is an updatable collection or some other
           // non-BusinessBase type of object
           // tell the object to update itself
-          lb.CallMethod("Child_Update", parameters);
+          if (hasParameters)
+            lb.CallMethod("Child_Update", parameters);
+          else
+            lb.CallMethod("Child_Update");
           if (target != null)
             target.MarkOld();
           else

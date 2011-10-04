@@ -616,9 +616,6 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    /// <param name="parameters">
-    /// Parameters to pass to method.
-    /// </param>
     public static System.Reflection.MethodInfo GetMethod(Type objectType, string method)
     {
       return GetMethod(objectType, method, true, false, null);

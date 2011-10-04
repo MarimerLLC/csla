@@ -101,7 +101,11 @@ namespace Csla.Core.FieldManager
       {
         lock (_consolidatedLists)
         {
-          if (!_consolidatedLists.TryGetValue(type, out result))
+          if (_consolidatedLists.ContainsKey(type))
+          {
+            result = _consolidatedLists[type];
+          }
+          else
           {
             result = CreateConsolidatedList(type);
             _consolidatedLists.Add(type, result);

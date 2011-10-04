@@ -21,6 +21,7 @@ namespace Csla.Reflection
   /// </summary>
   public static class MethodCaller
   {
+#if !WINRT
     private const BindingFlags allLevelFlags 
       = BindingFlags.FlattenHierarchy 
       | BindingFlags.Instance 
@@ -51,6 +52,7 @@ namespace Csla.Reflection
       BindingFlags.NonPublic |
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
+#endif
 
 #if !WINDOWS_PHONE
     #region Dynamic Method Cache
@@ -193,8 +195,10 @@ namespace Csla.Reflection
 
     #endregion
 
+#if !WINRT
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+#endif
 
 #if !WINDOWS_PHONE
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
@@ -942,6 +946,7 @@ namespace Csla.Reflection
       return result;
     }
 
+#if !WINRT
     /// <summary>
     /// Returns information about the specified
     /// method.
@@ -963,6 +968,20 @@ namespace Csla.Reflection
 
       return info;
     }
+#else
+    /// <summary>
+    /// Returns information about the specified
+    /// method.
+    /// </summary>
+    /// <param name="objType">Type of object.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="flags">Flag values.</param>
+    public static System.Reflection.MethodInfo FindMethod(Type objType, string method)
+    {
+      var info = objType.GetMethod(method);
+      return info;
+    }
+#endif
 
 #if WINDOWS_PHONE
     private static object[] GetExtrasArray(int count, Type arrayType)

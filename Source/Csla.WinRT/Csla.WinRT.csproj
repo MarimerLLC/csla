@@ -8,8 +8,8 @@
     <ProjectGuid>{24C13E06-70A8-46C2-8351-987AF0780F78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Csla.WinRT</RootNamespace>
-    <AssemblyName>Csla.WinRT</AssemblyName>
+    <RootNamespace>Csla</RootNamespace>
+    <AssemblyName>Csla</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -22,7 +22,7 @@
     <DefineConstants>TRACE;DEBUG;WINRT;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.WinRT.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE;WINRT;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\WinRT\Csla.WinRT.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -436,6 +436,9 @@
     <Compile Include="..\Csla\Reflection\MethodCacheKey.cs">
       <Link>Reflection\MethodCacheKey.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Reflection\MethodCaller.cs">
+      <Link>Reflection\MethodCaller.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\RelationshipTypes.cs">
       <Link>RelationshipTypes.cs</Link>
     </Compile>
@@ -551,7 +554,7 @@
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\MethodCaller.cs" />
+    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>

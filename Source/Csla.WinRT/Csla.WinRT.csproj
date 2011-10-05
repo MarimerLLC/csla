@@ -142,9 +142,6 @@
     <Compile Include="..\Csla.Silverlight\DataPortalClient\ProxyFactory.cs">
       <Link>DataPortalClient\ProxyFactory.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\WcfProxy.cs">
-      <Link>DataPortalClient\WcfProxy.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\DataPortalEventArgs.cs">
       <Link>DataPortalEventArgs.cs</Link>
     </Compile>
@@ -553,6 +550,7 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
+    <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">

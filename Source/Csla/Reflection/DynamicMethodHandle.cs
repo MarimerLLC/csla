@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 #if !WINDOWS_PHONE
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Csla.Reflection
@@ -40,9 +41,15 @@ namespace Csla.Reflection
           inParams = parameters;
         }
         var pCount = infoParams.Length;
+#if WINRT
+        if (pCount > 0 &&
+           ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+           (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
+#else
         if (pCount > 0 &&
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
            (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+#endif
         {
           this.HasFinalArrayParam = true;
           this.MethodParamsLength = pCount;

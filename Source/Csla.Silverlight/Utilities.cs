@@ -15,6 +15,7 @@ using System.Xml;
 using System.Runtime.Serialization;
 using System.IO;
 using Csla.Serialization.Mobile;
+using Csla.Reflection;
 
 namespace Csla
 {
@@ -102,9 +103,14 @@ namespace Csla
         result = listType.GetElementType();
       else
       {
+#if WINRT
+        DefaultMemberAttribute indexer =
+          (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
+#else
         DefaultMemberAttribute indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
+#endif
         if (indexer != null)
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |

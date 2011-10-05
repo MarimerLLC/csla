@@ -501,6 +501,7 @@ namespace Csla
 
     #endregion
 
+#if !WINRT
     #region DBValue
 
     /// <summary>
@@ -532,6 +533,7 @@ namespace Csla
     }
 
     #endregion
+#endif
 
     #region Empty Dates
 

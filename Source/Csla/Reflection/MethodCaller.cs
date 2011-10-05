@@ -21,7 +21,6 @@ namespace Csla.Reflection
   /// </summary>
   public static class MethodCaller
   {
-#if !WINRT
     private const BindingFlags allLevelFlags 
       = BindingFlags.FlattenHierarchy 
       | BindingFlags.Instance 
@@ -52,7 +51,6 @@ namespace Csla.Reflection
       BindingFlags.NonPublic |
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
-#endif
 
 #if !WINDOWS_PHONE
     #region Dynamic Method Cache
@@ -205,10 +203,8 @@ namespace Csla.Reflection
 
     #endregion
 
-#if !WINRT
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-#endif
 
 #if !WINDOWS_PHONE
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();

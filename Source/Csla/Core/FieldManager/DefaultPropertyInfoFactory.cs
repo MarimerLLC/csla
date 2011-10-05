@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Csla;
+using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {

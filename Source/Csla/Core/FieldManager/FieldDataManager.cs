@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Csla.Serialization;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
+using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {
@@ -126,7 +127,11 @@ namespace Csla.Core.FieldManager
       do
       {
         hierarchy.Add(current);
+#if WINRT
+        current = current.BaseType();
+#else
         current = current.BaseType;
+#endif
       } while (current != null && !current.Equals(typeof(BusinessBase)));
 
       // walk from top to bottom to build consolidated list

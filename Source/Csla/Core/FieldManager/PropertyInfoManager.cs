@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Csla.Properties;
 using System.Linq;
+using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {
@@ -73,7 +74,11 @@ namespace Csla.Core.FieldManager
       lock (list)
       {
         if (list.IsLocked)
+#if WINRT
+          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name()));
+#else
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
+#endif
 
         // This is the semantic code for RegisterProperty
         //if (list.Any(pi => pi.Name == info.Name))

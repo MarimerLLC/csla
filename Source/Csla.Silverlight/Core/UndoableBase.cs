@@ -244,7 +244,12 @@ namespace Csla.Core
 
     private static bool NotUndoableField(FieldInfo field)
     {
+#if WINRT
+      var attr = field.GetCustomAttribute(typeof(NotUndoableAttribute));
+      return (attr != null);
+#else
       return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
+#endif
     }
 
     private static string GetFieldName(FieldInfo field)

@@ -25,7 +25,11 @@ namespace Csla.Reflection
       _hashKey = typeName.GetHashCode();
       _hashKey = _hashKey ^ methodName.GetHashCode();
       foreach (Type item in paramTypes)
+#if WINRT
+        _hashKey = _hashKey ^ item.Name().GetHashCode();
+#else
         _hashKey = _hashKey ^ item.Name.GetHashCode();
+#endif
     }
 
     public override bool Equals(object obj)

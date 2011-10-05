@@ -97,6 +97,14 @@ namespace System.ComponentModel
 
   public class DoWorkEventArgs : EventArgs
   {
+    public DoWorkEventArgs()
+    { }
+
+    public DoWorkEventArgs(object argument)
+    {
+      Argument = argument;
+    }
+
     public object Argument { get; set; }
     public bool Cancel { get; set; }
     public object Result { get; set; }
@@ -106,7 +114,18 @@ namespace System.ComponentModel
 
   public class RunWorkerCompletedEventArgs : EventArgs
   {
+    public RunWorkerCompletedEventArgs()
+    { }
+
+    public RunWorkerCompletedEventArgs(object result, Exception error, bool cancelled)
+    {
+      Result = result;
+      Error = error;
+      Cancelled = cancelled;
+    }
+
     public Exception Error { get; set; }
     public object Result { get; set; }
+    public bool Cancelled { get; set; }
   }
 }

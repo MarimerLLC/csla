@@ -9,6 +9,9 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
+#if WINRT
+using Windows.ApplicationModel.Resources.Core;
+#endif
 
 namespace Csla.Threading
 {
@@ -41,7 +44,9 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
     /// </summary>
+#if !WINRT
     [Description("Event handler to be run on a different thread when the operation begins."), Category("Asynchronous")]
+#endif
     public event DoWorkEventHandler DoWork
     {
       add
@@ -57,7 +62,9 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when the background operation has completed, has been canceled, or has raised an exception.
     /// </summary>
+#if !WINRT
     [Description("Raised when the worker has completed (either through success, failure or cancellation)."), Category("Asynchronous")]
+#endif
     public event RunWorkerCompletedEventHandler RunWorkerCompleted
     {
       add
@@ -74,7 +81,9 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.ReportProgress"/> is called.
     /// </summary>
+#if !WINRT
     [Description("Occurs when ReportProgress is called.).")]
+#endif
     public event ProgressChangedEventHandler ProgressChanged
     {
       add
@@ -173,8 +182,13 @@ namespace Csla.Threading
       public System.Security.Principal.IPrincipal Principal { get; private set; }
       public Csla.Core.ContextDictionary ClientContext { get; private set; }
       public Csla.Core.ContextDictionary GlobalContext { get; private set; }
+#if WINRT
+      public string CurrentUICulture { get; private set; }
+      public string CurrentCulture { get; private set; }
+#else
       public CultureInfo CurrentUICulture { get; private set; }
       public CultureInfo CurrentCulture { get; private set; }
+#endif
 
       public WorkerAsyncRequest(object argument)
       {
@@ -182,8 +196,15 @@ namespace Csla.Threading
         this.Principal = Csla.ApplicationContext.User;
         this.ClientContext = Csla.ApplicationContext.ClientContext;
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
+#if WINRT
+        //var region = ResourceManager.Current.DefaultContext.HomeRegion;
+        var language = ResourceManager.Current.DefaultContext.Language;
+        this.CurrentUICulture = language;
+        this.CurrentCulture = language;
+#else
         this.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
         this.CurrentCulture = Thread.CurrentThread.CurrentCulture;
+#endif
       }
     }
 
@@ -210,8 +231,13 @@ namespace Csla.Threading
     {
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
+#if WINRT
+      ResourceManager.Current.DefaultContext.Language = request.CurrentUICulture;
+      ResourceManager.Current.DefaultContext.Language = request.CurrentCulture;
+#else
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
+#endif
     }
 
     #endregion

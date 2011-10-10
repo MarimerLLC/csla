@@ -15,6 +15,8 @@ namespace WpfUI.ViewModels
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
     {
       base.OnModelChanged(oldValue, newValue);
+      if (newValue != null)
+        newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
       OnPropertyChanged("ItemList");
     }
 
@@ -26,7 +28,7 @@ namespace WpfUI.ViewModels
           return null;
         else
           return new ObservableCollection<ProjectInfo>(
-            Model.Select(r => new ProjectInfo(r)));
+            Model.Select(r => new ProjectInfo(r, this)));
       }
     }
 
@@ -46,8 +48,11 @@ namespace WpfUI.ViewModels
 
     public class ProjectInfo : ViewModelLocal<ProjectTracker.Library.ProjectInfo>
     {
-      public ProjectInfo(ProjectTracker.Library.ProjectInfo info)
+      public ProjectList Parent { get; private set; }
+
+      public ProjectInfo(ProjectTracker.Library.ProjectInfo info, ProjectList parent)
       {
+        Parent = parent;
         Model = info;
       }
 
@@ -91,12 +96,13 @@ namespace WpfUI.ViewModels
           }
           else
           {
+            Parent.Model.RemoveChild(Model.Id);
             Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-            Bxf.Shell.Instance.ShowView(
-              typeof(Views.ProjectList).AssemblyQualifiedName,
-              "projectListViewSource",
-              new ProjectList(),
-              "Main");
+            //Bxf.Shell.Instance.ShowView(
+            //  typeof(Views.ProjectList).AssemblyQualifiedName,
+            //  "projectListViewSource",
+            //  new ProjectList(),
+            //  "Main");
           }
         });
       }

@@ -10,6 +10,28 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectList : ReadOnlyListBase<ProjectList, ProjectInfo>
   {
+    public void RemoveChild(int projectId)
+    {
+      var iro = IsReadOnly;
+      IsReadOnly = false;
+      try
+      {
+        var item = this.Where(r => r.Id == projectId).FirstOrDefault();
+        if (item != null)
+        {
+          var index = this.IndexOf(item);
+          Remove(item);
+          //var e =
+          //  new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Remove, item, index);
+          //OnCollectionChanged(e);
+        }
+      }
+      finally
+      {
+        IsReadOnly = iro;
+      }
+    }
+
     public static void GetProjectList(EventHandler<DataPortalResult<ProjectList>> callback)
     {
       DataPortal.BeginFetch<ProjectList>(callback);

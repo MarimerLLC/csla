@@ -147,38 +147,6 @@ namespace WpfUI.ViewModels
           Model.Parent.RemoveChild(Model);
         }
       }
-
-      ///// <summary>
-      ///// Manages adding or editing of a ProjectResourceEdit object
-      ///// </summary>
-      //public class ProjectResourceEdit : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
-      //{
-      //  public ProjectResourceEdit(ProjectEdit parent)
-      //  {
-      //    Parent = parent;
-      //    Model = new ProjectTracker.Library.ProjectResourceEdit();
-      //  }
-
-      //  public ProjectResourceEdit(ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit projectResource)
-      //  {
-      //    Parent = parent;
-      //    Model = projectResource;
-      //  }
-
-      //  public ProjectEdit Parent { get; private set; }
-
-      //  public void Save()
-      //  {
-      //    Model.ApplyEdit();
-      //    Parent.CommitAddResource(Model);
-      //  }
-
-      //  public void Cancel()
-      //  {
-      //    Model.CancelEdit();
-      //    Parent.CancelAddResource();
-      //  }
-      //}
     }
   }
 }

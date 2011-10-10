@@ -38,7 +38,8 @@ namespace ProjectTracker.DalMock
 
       Users = new List<UserData>
       {
-        new UserData { Username = "testuser", Password = "testuser", Roles = new string[] { "ProjectManager" }}
+        new UserData { Username = "manager", Password = "manager", Roles = new string[] { "ProjectManager" }},
+        new UserData { Username = "admin", Password = "admin", Roles = new string[] { "Admin" }}
       };
     }
 

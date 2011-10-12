@@ -21,9 +21,6 @@ namespace ProjectTracker.Library
         {
           var index = this.IndexOf(item);
           Remove(item);
-          //var e =
-          //  new System.Collections.Specialized.NotifyCollectionChangedEventArgs(System.Collections.Specialized.NotifyCollectionChangedAction.Remove, item, index);
-          //OnCollectionChanged(e);
         }
       }
       finally

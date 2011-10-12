@@ -14,6 +14,8 @@ namespace WpfUI.ViewModels
     protected override void OnModelChanged(ProjectTracker.Library.ResourceList oldValue, ProjectTracker.Library.ResourceList newValue)
     {
       base.OnModelChanged(oldValue, newValue);
+      if (newValue != null)
+        newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
       OnPropertyChanged("ItemList");
     }
 
@@ -25,7 +27,7 @@ namespace WpfUI.ViewModels
           return null;
         else
           return new ObservableCollection<ResourceInfo>(
-            Model.Select(r => new ResourceInfo(r)));
+            Model.Select(r => new ResourceInfo(r, this)));
       }
     }
 
@@ -45,8 +47,11 @@ namespace WpfUI.ViewModels
 
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ResourceInfo>
     {
-      public ResourceInfo(ProjectTracker.Library.ResourceInfo info)
+      public ResourceList Parent { get; private set; }
+
+      public ResourceInfo(ProjectTracker.Library.ResourceInfo info, ResourceList parent)
       {
+        Parent = parent;
         Model = info;
       }
 
@@ -101,12 +106,8 @@ namespace WpfUI.ViewModels
               }
               else
               {
+                Parent.Model.RemoveChild(Model.Id);
                 Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-                Bxf.Shell.Instance.ShowView(
-                  typeof(Views.ResourceList).AssemblyQualifiedName,
-                  "resourceListViewSource",
-                  new ResourceList(),
-                  "Main");
               }
             });
           }

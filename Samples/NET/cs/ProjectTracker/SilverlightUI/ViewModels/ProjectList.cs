@@ -15,6 +15,8 @@ namespace SilverlightUI.ViewModels
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)
     {
       base.OnModelChanged(oldValue, newValue);
+      if (newValue != null)
+        newValue.CollectionChanged += (sender, args) => OnPropertyChanged("ItemList");
       OnPropertyChanged("ItemList");
     }
 
@@ -26,7 +28,7 @@ namespace SilverlightUI.ViewModels
           return null;
         else
           return new ObservableCollection<ProjectInfo>(
-            Model.Select(r => new ProjectInfo(r)));
+            Model.Select(r => new ProjectInfo(r, this)));
       }
     }
 
@@ -46,8 +48,11 @@ namespace SilverlightUI.ViewModels
 
     public class ProjectInfo : ViewModelLocal<ProjectTracker.Library.ProjectInfo>
     {
-      public ProjectInfo(ProjectTracker.Library.ProjectInfo info)
+      public ProjectList Parent { get; private set; }
+
+      public ProjectInfo(ProjectTracker.Library.ProjectInfo info, ProjectList parent)
       {
+        Parent = parent;
         Model = info;
       }
 
@@ -83,22 +88,18 @@ namespace SilverlightUI.ViewModels
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
         ProjectTracker.Library.ProjectEdit.DeleteProject(Model.Id, (o, e) =>
+        {
+          if (e.Error != null)
           {
-              if (e.Error != null)
-              {
-                Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
-                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
-              }
-              else
-              {
-                Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-                Bxf.Shell.Instance.ShowView(
-                  typeof(Views.ProjectList).AssemblyQualifiedName,
-                  "projectListViewSource",
-                  new ProjectList(),
-                  "Main");
-              }
-          });
+            Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+          }
+          else
+          {
+            Parent.Model.RemoveChild(Model.Id);
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
+          }
+        });
       }
     }
   }

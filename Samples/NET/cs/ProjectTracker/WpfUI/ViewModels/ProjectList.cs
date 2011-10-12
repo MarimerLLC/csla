@@ -98,11 +98,6 @@ namespace WpfUI.ViewModels
           {
             Parent.Model.RemoveChild(Model.Id);
             Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
-            //Bxf.Shell.Instance.ShowView(
-            //  typeof(Views.ProjectList).AssemblyQualifiedName,
-            //  "projectListViewSource",
-            //  new ProjectList(),
-            //  "Main");
           }
         });
       }

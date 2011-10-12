@@ -10,6 +10,25 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceList : ReadOnlyListBase<ResourceList, ResourceInfo>
   {
+    public void RemoveChild(int resourceId)
+    {
+      var iro = IsReadOnly;
+      IsReadOnly = false;
+      try
+      {
+        var item = this.Where(r => r.Id == resourceId).FirstOrDefault();
+        if (item != null)
+        {
+          var index = this.IndexOf(item);
+          Remove(item);
+        }
+      }
+      finally
+      {
+        IsReadOnly = iro;
+      }
+    }
+
     public static ResourceList EmptyList()
     {
       return new ResourceList();

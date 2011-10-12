@@ -1,0 +1,796 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Practices.Prism.MefExtensions</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.DefaultPrismServiceRegistrar">
+            <summary>
+             DefaultPrismServiceRegistrationAgent allows the Prism required types to be registered if necessary.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.DefaultPrismServiceRegistrar.RegisterRequiredPrismServicesIfMissing(System.ComponentModel.Composition.Hosting.AggregateCatalog)">
+             <summary>
+             Registers the required Prism types that are not already registered in the <see cref="T:System.ComponentModel.Composition.Hosting.AggregateCatalog"/>.
+             </summary>
+            <param name="aggregateCatalog">The <see cref="T:System.ComponentModel.Composition.Hosting.AggregateCatalog"/> to register the required types in, if they are not already registered.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.DefaultPrismServiceRegistrar.GetDefaultComposablePartCatalog">
+            <summary>
+            Returns an <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog"/> for the current assembly
+            </summary>
+            <remarks>
+            Due to the security restrictions in Silverlight, you cannot call
+            <code>Assembly.GetAssembly(typeof(MefBootstrapper))</code>
+            So, we are forced to use <code> Assembly.GetCallingAssembly()</code> instead.
+            To ensure that the calling assembly is this one, the call is in this
+            private helper method.
+            </remarks>
+            <returns>
+            Returns an <see cref="T:System.ComponentModel.Composition.Hosting.AssemblyCatalog"/> for the current assembly
+            </returns>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Events.MefEventAggregator">
+            <summary>
+            Exports the EventAggregator using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper">
+            <summary>
+            Base class that provides a basic bootstrapping sequence that registers most of the Composite Application Library assets in a MEF <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/>.
+            </summary>
+            <remarks>
+            This class must be overriden to provide application specific configuration.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.Run(System.Boolean)">
+            <summary>
+            Run the bootstrapper process.
+            </summary>
+            <param name="runWithDefaultConfiguration">If <see langword="true"/>, registers default 
+            Composite Application Library services in the container. This is the default behavior.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.CreateAggregateCatalog">
+            <summary>
+            Configures the <see cref="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog"/> used by MEF.
+            </summary>
+            <remarks>
+            The base implementation returns a new AggregateCatalog.
+            </remarks>
+            <returns>An <see cref="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog"/> to be used by the bootstrapper.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.ConfigureAggregateCatalog">
+            <summary>
+            Configures the <see cref="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog"/> used by MEF.
+            </summary>
+            <remarks>
+            The base implementation does nothing.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.CreateContainer">
+            <summary>
+            Creates the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/> that will be used as the default container.
+            </summary>
+            <returns>A new instance of <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/>.</returns>
+            <remarks>
+            The base implementation registers a default MEF catalog of exports of key Prism types.
+            Exporting your own types will replace these defaults.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.ConfigureContainer">
+            <summary>
+            Configures the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/>. 
+            May be overwritten in a derived class to add specific type mappings required by the application.
+            </summary>
+            <remarks>
+            The base implementation registers all the types direct instantiated by the bootstrapper with the container.
+            If the method is overwritten, the new implementation should call the base class version.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.RegisterDefaultTypesIfMissing">
+            <summary>
+            Helper method for configuring the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/>. 
+            Registers defaults for all the types necessary for Prism to work, if they are not already registered.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.RegisterBootstrapperProvidedTypes">
+            <summary>
+            Helper method for configuring the <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/>. 
+            Registers all the types direct instantiated by the bootstrapper with the container.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.ConfigureServiceLocator">
+            <summary>
+            Configures the LocatorProvider for the <see cref="T:Microsoft.Practices.ServiceLocation.ServiceLocator"/>.
+            </summary>
+            <remarks>
+            The base implementation also sets the ServiceLocator provider singleton.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.InitializeShell">
+            <summary>
+            Initializes the shell.
+            </summary>
+            <remarks>
+            The base implementation ensures the shell is composed in the container.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.InitializeModules">
+            <summary>
+            Initializes the modules. May be overwritten in a derived class to use a custom Modules Catalog
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog">
+            <summary>
+            Gets or sets the default <see cref="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog"/> for the application.
+            </summary>
+            <value>The default <see cref="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.AggregateCatalog"/> instance.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.Container">
+            <summary>
+            Gets or sets the default <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/> for the application.
+            </summary>
+            <value>The default <see cref="T:System.ComponentModel.Composition.Hosting.CompositionContainer"/> instance.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter">
+            <summary>
+            Provides service location utilizing the Managed Extensibility Framework container.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.#ctor(System.ComponentModel.Composition.Hosting.CompositionContainer)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter"/> class.
+            </summary>
+            <param name="compositionContainer">The MEF composition container.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.DoGetAllInstances(System.Type)">
+            <summary>
+            Resolves the instance of the requested service.
+            </summary>
+            <param name="serviceType">Type of instance requested.</param>
+            <returns>The requested service instance.</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.DoGetInstance(System.Type,System.String)">
+            <summary>
+            Resolves all the instances of the requested service.
+            </summary>
+            <param name="serviceType">Type of service requested.</param>
+            <param name="key">Name of registered service you want. May be null.</param>
+            <returns>Sequence of service instance objects.</returns>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection">
+            <summary>
+            Holds a collection of composable part catalogs keyed by module info.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection.Add(Microsoft.Practices.Prism.Modularity.ModuleInfo,System.ComponentModel.Composition.Primitives.ComposablePartCatalog)">
+            <summary>
+            Adds the specified catalog using the module info as a key.
+            </summary>
+            <param name="moduleInfo">The module info.</param>
+            <param name="catalog">The catalog.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection.Get(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Gets the catalog for the specified module info.
+            </summary>
+            <param name="moduleInfo">The module info.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection.TryGet(Microsoft.Practices.Prism.Modularity.ModuleInfo,System.ComponentModel.Composition.Primitives.ComposablePartCatalog@)">
+            <summary>
+            Tries to ge the catalog for the specified module info.
+            </summary>
+            <param name="moduleInfo">The module info.</param>
+            <param name="catalog">The catalog.</param>
+            <returns>true if found; otherwise false;</returns>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection.Remove(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Removes the catalgo for the specified module info.
+            </summary>
+            <param name="moduleInfo">The module info.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection.Clear">
+            <summary>
+            Clears the collection of catalogs.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.IModuleExport">
+            <summary>
+            Describe the Managed Extensibility Framework export of an IModule.
+            </summary>
+            <remarks>
+            This interface is used when importing classes exported with the ModuleExportAttribute.
+            This interface and the ModuleExport class properties should match.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.IModuleExport.ModuleName">
+            <summary>
+            Gets the name of the module.
+            </summary>
+            <value>The name of the module.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.IModuleExport.ModuleType">
+            <summary>
+            Gets the type of the module.
+            </summary>
+            <value>The type of the module.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.IModuleExport.InitializationMode">
+            <summary>
+            Gets when the module should have Initialize() called.
+            </summary>
+            <value>The initialization mode.</value>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.IModuleExport.DependsOnModuleNames">
+            <summary>
+            Gets the names of modules this module depends upon.
+            </summary>
+            <value>An array of module names.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleInitializer">
+            <summary>
+            Exports the ModuleInitializer using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleInitializer.#ctor(Microsoft.Practices.ServiceLocation.IServiceLocator,Microsoft.Practices.Prism.Logging.ILoggerFacade,Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection,System.ComponentModel.Composition.Hosting.AggregateCatalog)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleInitializer"/> class.
+            </summary>
+            <param name="serviceLocator">The container that will be used to resolve the modules by specifying its type.</param>
+            <param name="loggerFacade">The logger to use.</param>
+            <param name="downloadedPartCatalogs">The downloaded part catalogs.</param>
+            <param name="aggregateCatalog">The aggregate catalog.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleInitializer.CreateModule(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Uses the container to resolve a new <see cref="T:Microsoft.Practices.Prism.Modularity.IModule"/> by specifying its <see cref="T:System.Type"/>.
+            </summary>
+            <param name="moduleInfo">The module to create.</param>
+            <returns>
+            A new instance of the module specified by <paramref name="moduleInfo"/>.
+            </returns>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleInitializer.ImportedModules">
+            <summary>
+            Import the available modules from the MEF container
+            </summary>
+            <remarks>
+            Due to Silverlight/MEF restrictions this must be public.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager">
+            <summary>    
+            Component responsible for coordinating the modules' type loading and module initialization process. 
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+            <summary>
+            Component responsible for coordinating the modules' type loading and module initialization process. 
+            </summary>
+             <remarks>
+            This extends the MefModuleManager for Silverlight to provide a MEF-based XAP type loader.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.#ctor(Microsoft.Practices.Prism.Modularity.IModuleInitializer,Microsoft.Practices.Prism.Modularity.IModuleCatalog,Microsoft.Practices.Prism.Logging.ILoggerFacade)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager"/> class.
+            </summary>
+            <param name="moduleInitializer">Service used for initialization of modules.</param>
+            <param name="moduleCatalog">Catalog that enumerates the modules to be loaded and initialized.</param>
+            <param name="loggerFacade">Logger used during the load and initialization of modules.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.OnImportsSatisfied">
+            <summary>
+            Called when a part's imports have been satisfied and it is safe to use.
+            </summary>
+            <remarks>
+            Whenever the MEF container loads new types that cause ImportedModules to be recomposed, this is called.
+            This method ensures that as the MEF container discovered new modules, the ModuleCatalog is updated.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.ModuleNeedsRetrieval(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Checks if the module needs to be retrieved before it's initialized.
+            </summary>
+            <param name="moduleInfo">Module that is being checked if needs retrieval.</param>
+            <returns>True if the module needs to be retrieved.  Otherwise, false.</returns>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.ImportedModules">
+            <summary>
+            Gets or sets the modules to be imported.
+            </summary>
+            <remarks>Import the available modules from the MEF container.
+            Due to Silverlight/MEF restrictions this must be public.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.MefXapModuleTypeLoader">
+            <summary>
+            Get or sets the imported XAP module type loader
+            </summary>
+            <value>The mef xap module type loader.</value>
+            <remarks>
+            MEF requires this be public in Silverlight applications.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.ModuleTypeLoaders">
+            <summary>
+            Returns the list of registered <see cref="T:Microsoft.Practices.Prism.Modularity.IModuleTypeLoader"/> instances that will be used to load the types of modules.
+            </summary>
+            <value>A collection of module type loaders.</value>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute">
+            <summary>
+            An attribute that is applied to describe the Managed Extensibility Framework export of an IModule.
+            </summary>    
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute"/> class.
+            </summary>
+            <param name="moduleType">The concrete type of the module being exported. Not typeof(IModule).</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.#ctor(System.String,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute"/> class.
+            </summary>
+            <param name="moduleName">The contract name of the module.</param>
+            <param name="moduleType">The concrete type of the module being exported. Not typeof(IModule).</param>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.ModuleName">
+            <summary>
+            Gets the contract name of the module.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.ModuleType">
+            <summary>
+            Gets concrete type of the module being exported. Not typeof(IModule).
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.InitializationMode">
+            <summary>
+            Gets or sets when the module should have Initialize() called.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Modularity.ModuleExportAttribute.DependsOnModuleNames">
+            <summary>
+            Gets or sets the contract names of modules this module depends upon.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.PrismDefaultsCatalog">
+            <summary>
+             A very simple custom <see href="ComposablePartCatalog" /> that takes an enumeration 
+             of parts and returns them when requested.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.PrismDefaultsCatalog.#ctor(System.Collections.Generic.IEnumerable{System.ComponentModel.Composition.Primitives.ComposablePartDefinition})">
+            <summary>
+             Creates a PrismDefaultsCatalog that will return the provided parts when requested.
+            </summary>
+            <param name="parts">Parts to add to the catalog</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the parts parameter is null.</exception>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.PrismDefaultsCatalog.Parts">
+            <summary>
+            Gets the parts contained in the catalog.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.BootstrapperSequenceCompleted">
+            <summary>
+              Looks up a localized string similar to Bootstrapper sequence completed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringCatalogForMEF">
+            <summary>
+              Looks up a localized string similar to Configuring catalog for MEF.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringDefaultRegionBehaviors">
+            <summary>
+              Looks up a localized string similar to Configuring default region behaviors.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringMefContainer">
+            <summary>
+              Looks up a localized string similar to Configuring MEF container.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringModuleCatalog">
+            <summary>
+              Looks up a localized string similar to Configuring module catalog..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringRegionAdapters">
+            <summary>
+              Looks up a localized string similar to Configuring region adapters.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.ConfiguringServiceLocatorSingleton">
+            <summary>
+              Looks up a localized string similar to Configuring ServiceLocator singleton.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.CreatingCatalogForMEF">
+            <summary>
+              Looks up a localized string similar to Creating catalog for MEF.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.CreatingMefContainer">
+            <summary>
+              Looks up a localized string similar to Creating Mef container.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.CreatingModuleCatalog">
+            <summary>
+              Looks up a localized string similar to Creating module catalog..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.CreatingShell">
+            <summary>
+              Looks up a localized string similar to Creating shell.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.FailedToGetType">
+            <summary>
+              Looks up a localized string similar to Unable to locate the module with type &apos;{0}&apos; among the exported modules. Make sure the module name in the module catalog matches that specified on ModuleExportAttribute for the module type..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.InitializingModules">
+            <summary>
+              Looks up a localized string similar to Initializing modules.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.InitializingShell">
+            <summary>
+              Looks up a localized string similar to Initializing shell.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.LoggerWasCreatedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Logger was created successfully..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.NullCompositionContainerException">
+            <summary>
+              Looks up a localized string similar to The CompositionContainer is required and cannot be null..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.NullLoggerFacadeException">
+            <summary>
+              Looks up a localized string similar to The ILoggerFacade is required and cannot be null..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.NullModuleCatalogException">
+            <summary>
+              Looks up a localized string similar to The IModuleCatalog is required and cannot be null in order to initialize the modules..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.RegisteringFrameworkExceptionTypes">
+            <summary>
+              Looks up a localized string similar to Registering Framework Exception Types.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.SettingTheRegionManager">
+            <summary>
+              Looks up a localized string similar to Setting the RegionManager..
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.MefExtensions.Properties.Resources.UpdatingRegions">
+            <summary>
+              Looks up a localized string similar to Updating Regions..
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefAutoPopulateRegionBehavior">
+            <summary>
+            Exports the AutoPopulateRegionBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefAutoPopulateRegionBehavior.#ctor(Microsoft.Practices.Prism.Regions.IRegionViewRegistry)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefAutoPopulateRegionBehavior"/> class.
+            </summary>
+            <param name="regionViewRegistry"><see cref="T:Microsoft.Practices.Prism.Regions.IRegionViewRegistry"/> that the behavior will monitor for views to populate the region.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefBindRegionContextToDependencyObjectBehavior">
+            <summary>
+            Exports the BindRegionContextToDependencyObjectBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefDelayedRegionCreationBehavior">
+            <summary>
+            Exports the DelayedRegionCreationBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefDelayedRegionCreationBehavior.#ctor(Microsoft.Practices.Prism.Regions.RegionAdapterMappings)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefDelayedRegionCreationBehavior"/> class.
+            </summary>
+            <param name="regionAdapterMappings">The region adapter mappings, that are used to find the correct adapter for
+            a given controltype. The controltype is determined by the <see name="TargetElement"/> value.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefRegionActiveAwareBehavior">
+            <summary>
+            Exports the RegionActiveAwareBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefRegionManagerRegistrationBehavior">
+            <summary>
+            Exports the RegionManagerRegistrationBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefRegionMemberLifetimeBehavior">
+            <summary>
+            Exports the AutoPopulateRegionBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefRegionMemberLifetimeBehavior.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefAutoPopulateRegionBehavior"/> class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefSelectorItemsSourceSyncBehavior">
+            <summary>
+            Exports the SelectorItemsSourceSyncBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.Behaviors.MefSyncRegionContextWithHostBehavior">
+            <summary>
+            Exports the SyncRegionContextWithHostBehavior using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefContentControlRegionAdapter">
+            <summary>
+            Exports the ContentControlRegionAdapter using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the <see cref="M:Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.ConfigureContainer"/> to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefContentControlRegionAdapter.#ctor(Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefContentControlRegionAdapter"/> class.
+            </summary>
+            <param name="regionBehaviorFactory">The region behavior factory.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefItemsControlRegionAdapter">
+            <summary>
+            Exports the ItemsControlRegionAdapter using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefItemsControlRegionAdapter.#ctor(Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefItemsControlRegionAdapter"/> class.
+            </summary>
+            <param name="regionBehaviorFactory">The factory used to create the region behaviors to attach to the created regions.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionAdapterMappings">
+            <summary>
+            Exports the RegionAdapterMappings using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionBehaviorFactory">
+            <summary>
+            Exports the RegionBehaviorFactory using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionBehaviorFactory.#ctor(Microsoft.Practices.ServiceLocation.IServiceLocator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionBehaviorFactory"/> class.
+            </summary>
+            <param name="serviceLocator"><see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> used to create the instance of the behavior from its <see cref="T:System.Type"/>.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionManager">
+            <summary>
+            Exports the RegionManager using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationContentLoader">
+            <summary>
+            Exports the LocatorNavigationTargetHandler using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationContentLoader.#ctor(Microsoft.Practices.ServiceLocation.IServiceLocator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationContentLoader"/> class.
+            </summary>
+            <param name="serviceLocator"><see cref="T:Microsoft.Practices.ServiceLocation.IServiceLocator"/> used to create the instance of the view from its <see cref="T:System.Type"/>.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationJournal">
+            <summary>
+            Exports the MefRegionNavigationJournal using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationJournalEntry">
+            <summary>
+            Exports the RegionNavigationJournalEntry using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationService">
+            <summary>
+            Exports the MefRegionNavigationService using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationService.#ctor(Microsoft.Practices.ServiceLocation.IServiceLocator,Microsoft.Practices.Prism.Regions.IRegionNavigationContentLoader,Microsoft.Practices.Prism.Regions.IRegionNavigationJournal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionNavigationService"/> class.
+            </summary>
+            <param name="serviceLocator">The service locator.</param>
+            <param name="navigationContentLoader">The navigation content loader.</param>
+            <param name="journal">The navigation journal.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionViewRegistry">
+            <summary>
+            Exports the RegionViewRegistry using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionViewRegistry.#ctor(Microsoft.Practices.ServiceLocation.IServiceLocator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionViewRegistry"/> class.
+            </summary>
+            <param name="serviceLocator">The service locator.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefSelectorRegionAdapter">
+            <summary>
+            Exports the SelectorRegionAdapter using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefSelectorRegionAdapter.#ctor(Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefSelectorRegionAdapter"/> class.
+            </summary>
+            <param name="regionBehaviorFactory">The factory used to create the region behaviors to attach to the created regions.</param>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader">
+            <summary>
+            Provides a XAP type loader using the MEF DeploymentCatalog.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.#ctor(Microsoft.Practices.Prism.MefExtensions.Modularity.DownloadedPartCatalogCollection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader"/> class.
+            </summary>
+            <param name="downloadedPartCatalogs">The downloaded part catalog collection.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.CanLoadModuleType(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Evaluates the <see cref="P:Microsoft.Practices.Prism.Modularity.ModuleInfo.Ref"/> property to see if the current typeloader will be able to retrieve the <paramref name="moduleInfo"/>.
+            Returns true if the <see cref="P:Microsoft.Practices.Prism.Modularity.ModuleInfo.Ref"/> property is a URI, because this indicates that the file is a downloadable file. 
+            </summary>
+            <param name="moduleInfo">Module that should have it's type loaded.</param>
+            <returns>
+            	<see langword="true"/> if the current typeloader is able to retrieve the module, otherwise <see langword="false"/>.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.LoadModuleType(Microsoft.Practices.Prism.Modularity.ModuleInfo)">
+            <summary>
+            Retrieves the <paramref name="moduleInfo"/>.
+            </summary>
+            <param name="moduleInfo">Module that should have it's type loaded.</param>
+        </member>
+        <member name="E:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.ModuleDownloadProgressChanged">
+            <summary>
+            Raised repeatedly to provide progress as modules are loaded in the background.
+            </summary>
+        </member>
+        <member name="E:Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.LoadModuleCompleted">
+            <summary>
+            Raised when a module is loaded or fails to load.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefTabControlRegionAdapter">
+            <summary>
+            Exports the ItemsControlRegionAdapter using the Managed Extensibility Framework (MEF).
+            </summary>
+            <remarks>
+            This allows the MefBootstrapper to provide this class as a default implementation.
+            If another implementation is found, this export will not be used.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.MefExtensions.Regions.MefTabControlRegionAdapter.#ctor(Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Practices.Prism.MefExtensions.Regions.MefItemsControlRegionAdapter"/> class.
+            </summary>
+            <param name="regionBehaviorFactory">The factory used to create the region behaviors to attach to the created regions.</param>
+        </member>
+    </members>
+</doc>

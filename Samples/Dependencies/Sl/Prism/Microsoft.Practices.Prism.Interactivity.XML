@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Practices.Prism.Interactivity</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Confirmation">
+            <summary>
+            Represents an interaction request used for confirmations.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification">
+            <summary>
+            Represents an interaction request used for notifications.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification.Title">
+            <summary>
+            Gets or sets the title to use for the notification.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification.Content">
+            <summary>
+            Gets or sets the content of the notification.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Confirmation.Confirmed">
+            <summary>
+            Gets or sets a value indicating that the confirmation is confirmed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest">
+            <summary>
+            Represents a request from user interaction.
+            </summary>
+            <remarks>
+            View models can expose interaction request objects through properties and raise them when user interaction
+            is required so views associated with the view models can materialize the user interaction using an appropriate
+            mechanism.
+            </remarks>
+        </member>
+        <member name="E:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest.Raised">
+            <summary>
+            Fired when the interaction is needed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequest`1">
+            <summary>
+            Implementation of the <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest"/> interface.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequest`1.Raise(`0)">
+            <summary>
+            Fires the Raised event.
+            </summary>
+            <param name="context">The context for the interaction request.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequest`1.Raise(`0,System.Action{`0})">
+            <summary>
+            Fires the Raised event.
+            </summary>
+            <param name="context">The context for the interaction request.</param>
+            <param name="callback">The callback to execute when the interaction is completed.</param>
+        </member>
+        <member name="E:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequest`1.Raised">
+            <summary>
+            Fired when interaction is needed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs">
+            <summary>
+            Event args for the <see cref="E:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest.Raised"/> event.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs.#ctor(Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification,System.Action)">
+            <summary>
+            Constructs a new instance of <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs"/>
+            </summary>
+            <param name="context"></param>
+            <param name="callback"></param>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs.Context">
+            <summary>
+            Gets the context for a requested interaction.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs.Callback">
+            <summary>
+            Gets the callback to execute when an interaction is completed.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestTrigger">
+            <summary>
+            Custom event trigger for using with <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest"/> objects.
+            </summary>
+            <remarks>
+            The standard <see cref="T:System.Windows.Interactivity.EventTrigger"/> class can be used instead, as long as the 'Raised' event 
+            name is specified.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestTrigger.GetEventName">
+            <summary>
+            Specifies the name of the Event this EventTriggerBase is listening for.
+            </summary>
+            <returns>This implementation always returns the Raised event name for ease of connection with <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest"/>.</returns>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.ConfirmationChildWindow">
+            <summary>
+             A basic confirmation child window that can host content and provides OK and Cancel buttons.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Prism.Interactivity.InteractionRequest.ConfirmationChildWindow.ConfirmationTemplateProperty">
+            <summary>
+             The content template to use when showing <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Confirmation"/> data.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.ConfirmationChildWindow.#ctor">
+            <summary>
+            Creates a new instance of ConfirmationChildWindow.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.ConfirmationChildWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.ConfirmationChildWindow.ConfirmationTemplate">
+            <summary>
+             The content template to use when showing <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Confirmation"/> data.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow">
+            <summary>
+             The notification <see cref="T:System.Windows.Controls.ChildWindow"/> to use when displaying <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification"/> messages.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow.NotificationTemplateProperty">
+            <summary>
+             The <see cref="T:System.Windows.DataTemplate"/> to apply when displaying <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification"/> data.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow"/>
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.NotificationChildWindow.NotificationTemplate">
+            <summary>
+             The <see cref="T:System.Windows.DataTemplate"/> to apply when displaying <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification"/> data.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction">
+            <summary>
+            Concrete class that pops up a specified child window or a default child window configured with a data template.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowActionBase">
+            <summary>
+            Base class for trigger actions that handle an interaction request by popping up a child window.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowActionBase.Invoke(System.Object)">
+            <summary>
+            Displays the child window and collects results for <see cref="T:Microsoft.Practices.Prism.Interactivity.InteractionRequest.IInteractionRequest"/>.
+            </summary>
+            <param name="parameter">The parameter to the action. If the action does not require a parameter, the parameter may be set to a null reference.</param>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowActionBase.GetChildWindow(Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification)">
+            <summary>
+            Returns the child window to display as part of the trigger action.
+            </summary>
+            <param name="notification">The notification to display in the child window.</param>
+            <returns></returns>
+        </member>
+        <member name="F:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction.ChildWindowProperty">
+            <summary>
+            The child window to display as part of the popup.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction.ContentTemplateProperty">
+            <summary>
+            The <see cref="T:System.Windows.DataTemplate"/> to apply to the popup content.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction.GetChildWindow(Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification)">
+            <summary>
+            Returns the child window to display as part of the trigger action.
+            </summary>
+            <param name="notification">The notification to display in the child window.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction.ChildWindow">
+            <summary>
+            Gets or sets the child window to pop up.
+            </summary>
+            <remarks>
+            If not specified, a default child window is used instead.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction.ContentTemplate">
+            <summary>
+            Gets or sets the content template for a default child window.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Practices.Prism.Interactivity.UpdateTextBindingOnPropertyChanged">
+            <summary>
+            Custom behavior that updates the source of a binding on a text box as the text changes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.UpdateTextBindingOnPropertyChanged.OnAttached">
+            <summary>
+            Called after the behavior is attached to an AssociatedObject.
+            </summary>
+            <remarks>
+            Override this to hook up functionality to the AssociatedObject.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Practices.Prism.Interactivity.UpdateTextBindingOnPropertyChanged.OnDetaching">
+            <summary>
+            Called when the behavior is being detached from its AssociatedObject, but before it has actually occurred.
+            </summary>
+            <remarks>
+            Override this to unhook functionality from the AssociatedObject.
+            </remarks>
+        </member>
+    </members>
+</doc>

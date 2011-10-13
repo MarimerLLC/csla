@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SilverlightUI", "Silverligh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUI.Test", "WpfUI.Test\WpfUI.Test.csproj", "{F660E01A-C273-4B7C-9F85-9CA444E53745}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpUI", "WpUI\WpUI.csproj", "{BB418D15-BC52-43CE-9847-42D436222D81}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ProjectTracker.vsmdi
@@ -192,6 +194,22 @@ Global
 		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F660E01A-C273-4B7C-9F85-9CA444E53745}.Release|x86.ActiveCfg = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|.NET.ActiveCfg = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Mixed Platforms.Deploy.0 = Release|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

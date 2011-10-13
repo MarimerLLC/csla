@@ -134,6 +134,11 @@ namespace ProjectTracker.Library
       });
     }
 
+    public static void DeleteResource(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)
+    {
+      DataPortal.BeginDelete<ResourceEdit>(id, callback);
+    }
+
 #if SILVERLIGHT
     public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
     {

@@ -54,6 +54,7 @@ namespace ProjectTracker.Library.Security
     public static void Logout()
     {
       Csla.ApplicationContext.User = new UnauthenticatedPrincipal();
+      OnNewUser();
     }
 
     public static event Action NewUser;

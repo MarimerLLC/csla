@@ -520,7 +520,11 @@ namespace Csla
       /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
       /// NetDataContractSerializer</see> provided as part of WCF.
       /// </summary>
-      NetDataContractSerializer
+      NetDataContractSerializer,
+      /// <summary>
+      /// Use the CSLA .NET MobileFormatter
+      /// </summary>
+      MobileFormatter
     }
 
     /// <summary>

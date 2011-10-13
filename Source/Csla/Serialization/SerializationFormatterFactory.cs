@@ -26,8 +26,10 @@ namespace Csla.Serialization
 #else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)
         return new BinaryFormatterWrapper();
-      else
+      else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.NetDataContractSerializer)
         return new NetDataContractSerializerWrapper();
+      else
+        return new Csla.Serialization.Mobile.MobileFormatter();
 #endif
     }
   }

@@ -16,6 +16,8 @@ using Csla.Reflection;
 using Csla.Core;
 using Csla.Rules;
 using System.Collections.ObjectModel;
+using System.Reflection;
+using System.Windows.Data;
 
 namespace Csla.Xaml
 {
@@ -25,6 +27,7 @@ namespace Csla.Xaml
   public class PropertyInfo : FrameworkElement, INotifyPropertyChanged
   {
     private bool _loading = true;
+    private const string _dependencyPropertySuffix = "Property";
 
     /// <summary>
     /// Creates an instance of the object.
@@ -74,6 +77,23 @@ namespace Csla.Xaml
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
+    }
+
+    #endregion
+
+    #region MyDataContext Property
+    /// <summary>
+    /// Used to monitor for changes in the binding path.
+    /// </summary>
+    public static readonly DependencyProperty MyDataContextProperty =
+    DependencyProperty.Register("MyDataContext",
+                                typeof(Object),
+                                typeof(PropertyInfo),
+                                new PropertyMetadata(MyDataContextPropertyChanged));
+
+    private static void MyDataContextPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      ((PropertyInfo)sender).SetSource(true);
     }
 
     #endregion
@@ -152,39 +172,111 @@ namespace Csla.Xaml
       }
     }
 
-    private object _oldDataContext;
-    private System.Windows.Data.BindingExpression _oldBinding;
+    //private object _oldDataContext;
+    //private System.Windows.Data.BindingExpression _oldBinding;
+
+    /// <summary>
+    /// Checks a binding expression to see if it is a relative source binding used in a control template.
+    /// </summary>
+    /// <param name="sourceBinding">The binding expression to parse.</param>
+    /// <returns>If the source binding is a relative source binding, this method 
+    /// finds the proper dependency property on the parent control and returns
+    /// the binding expression for that property.</returns>
+    protected virtual BindingExpression ParseRelativeBinding(BindingExpression sourceBinding)
+    {
+      if (sourceBinding != null
+        && sourceBinding.ParentBinding.RelativeSource != null
+        && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
+        && sourceBinding.DataItem is FrameworkElement)
+      {
+        var control = (FrameworkElement)sourceBinding.DataItem;
+        var path = sourceBinding.ParentBinding.Path.Path;
+        
+        var fi = control.GetType().GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
+        DependencyProperty mappedDP = (DependencyProperty)fi.GetValue(control.GetType());
+
+        return control.GetBindingExpression(mappedDP);
+      }
+
+      return sourceBinding;
+    }
 
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
     protected virtual void SetSource(bool propertyValueChanged)
     {
-      var old = Source;
       var binding = GetBindingExpression(PropertyProperty);
-      if (!ReferenceEquals(_oldBinding, binding) || !ReferenceEquals(_oldDataContext, this.DataContext) || !propertyValueChanged)
+      if (binding != null)
       {
-        _oldDataContext = this.DataContext;
-        _oldBinding = binding;
-        if (binding != null)
-        {
-          if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-            BindingPath = binding.ParentBinding.Path.Path;
-          else
-            BindingPath = string.Empty;
-          Source = GetRealSource(binding.DataItem, BindingPath);
-          if (BindingPath.IndexOf('.') > 0)
-            BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
-        }
-        else
-        {
-          Source = null;
-          BindingPath = string.Empty;
-        }
-
-        HandleSourceEvents(old, Source);
-        UpdateState();
+        SetSource(binding.DataItem);
       }
+    }
+
+    /// <summary>
+    /// Sets the source binding and updates status.
+    /// </summary>
+    protected virtual void SetSource(object dataItem)
+    {
+      SetBindingValues(GetBindingExpression(PropertyProperty));
+      var newSource = GetRealSource(dataItem, BindingPath);
+
+      // Check to see if PropertyInfo is inside a control template
+      ClearValue(MyDataContextProperty);
+      if (newSource != null && newSource is FrameworkElement)
+      {
+        var data = ((FrameworkElement)newSource).DataContext;
+        SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
+
+        newSource = GetRealSource(data, BindingPath);
+
+        if (newSource != null)
+        {
+          Binding b = new Binding();
+          b.Source = newSource;
+          if (BindingPath.IndexOf('.') > 0)
+          {
+            var path = GetRelativePath(newSource, BindingPath);
+            if (path != null)
+              b.Path = path;
+          }
+          if (b.Path != null
+              && !string.IsNullOrEmpty(b.Path.Path)
+              && b.Path.Path != BindingPath.Substring(BindingPath.LastIndexOf('.') + 1))
+            SetBinding(MyDataContextProperty, b);
+        }
+      }
+
+      if (BindingPath.IndexOf('.') > 0)
+        BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
+      
+      if (!ReferenceEquals(Source, newSource))
+      {
+        var old = Source;
+        Source = newSource;        
+
+        HandleSourceEvents(old, Source);        
+      }
+
+      UpdateState();
+    }
+
+    /// <summary>
+    /// Sets the binding values for this instance.
+    /// </summary>
+    private void SetBindingValues(BindingExpression binding)
+    {
+      var bindingPath = string.Empty;
+
+      if (binding != null)
+      {
+        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
+          bindingPath = binding.ParentBinding.Path.Path;
+        else
+          bindingPath = string.Empty;
+      }
+
+      BindingPath = bindingPath;
     }
 
     /// <summary>
@@ -202,12 +294,45 @@ namespace Csla.Xaml
       {
         var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
-        return GetRealSource(
+        if (p != null)
+        {
+         var rs = GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
           bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+
+          if (rs != null)
+            return rs;
+        }
       }
-      else
-        return source;
+        
+      return source;
+    }
+
+    /// <summary>
+    /// Gets the part of the binding path relevant to the given source.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="bindingPath">The binding path.</param>
+    /// <returns></returns>
+    protected PropertyPath GetRelativePath(object source, string bindingPath)
+    {
+      if (source != null)
+      {
+        if (bindingPath.IndexOf('.') > 0)
+        {
+          var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+          var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
+
+          if (p != null)
+            return new PropertyPath(firstProperty);
+          else
+            return GetRelativePath(source, bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+        }
+        else
+          return new PropertyPath(bindingPath);
+      }
+
+      return null;
     }
 
     private void HandleSourceEvents(object old, object source)

@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:background="@color/Blue"
+              android:background="@color/blue"
               android:padding="10px"
     >
   <Button
@@ -31,14 +31,14 @@
     android:id="@+id/StatusText"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/Green"
-    android:background="@color/Grey"
+    android:textColor="@color/green"
+    android:background="@color/grey"
     />
   <TextView
     android:id="@+id/ErrorText"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/Red"
-    android:background="@color/Grey"
+    android:textColor="@color/red"
+    android:background="@color/grey"
     />
 </LinearLayout>

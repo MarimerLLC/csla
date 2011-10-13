@@ -72,7 +72,7 @@ namespace Csla.Core
       DetermineTypes();
     }
 
-    #if !SILVERLIGHT
+#if !SILVERLIGHT
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
@@ -82,7 +82,7 @@ namespace Csla.Core
         System.Runtime.Serialization.StreamingContext context)
       : base(info, context)
     {
-
+      DetermineTypes();
     }
 #endif
 

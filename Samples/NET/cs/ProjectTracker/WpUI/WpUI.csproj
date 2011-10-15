@@ -80,7 +80,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\NavigationShell.cs" />
     <Compile Include="ViewModels\ProjectDetail.cs" />
+    <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
+    <Compile Include="ViewModels\ResourceDetail.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
     <Compile Include="ViewModels\User.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
@@ -185,8 +187,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="PanoramaBackground.png" />
-    <Content Include="Images\appbar_check.png" />
-    <Content Include="Images\appbar_close.png" />
+    <Content Include="Images\appbar.save.rest.png" />
+    <Content Include="Images\appbar.edit.rest.png" />
+    <Content Include="Images\appbar.delete.rest.png" />
+    <Content Include="Images\appbar.check.rest.png" />
+    <Content Include="Images\appbar.close.rest.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

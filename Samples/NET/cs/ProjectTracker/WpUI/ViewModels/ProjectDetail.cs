@@ -1,4 +1,5 @@
-﻿
+﻿using System.Collections.ObjectModel;
+
 namespace WpUI.ViewModels
 {
   public class ProjectDetail : ViewModel<ProjectTracker.Library.ProjectGetter>
@@ -11,21 +12,62 @@ namespace WpUI.ViewModels
       BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
     }
 
-    private ProjectTracker.Library.ProjectResourceEdit _resource;
-    public ProjectTracker.Library.ProjectResourceEdit SelectedResource
+    protected override void OnModelChanged(ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)
     {
-      get { return _resource; }
-      set { _resource = value; OnPropertyChanged("SelectedResource"); }
+      base.OnModelChanged(oldValue, newValue);
+      OnPropertyChanged("Resources");
     }
 
-    public void ShowResource()
+    public ObservableCollection<ResourceInfo> Resources
     {
-      //if (SelectedResource != null)
-      //  Bxf.Shell.Instance.ShowView(
-      //    typeof(Views.ResourceDisplay).AssemblyQualifiedName,
-      //    "resourceDisplayViewSource",
-      //    new ResourceDisplay(SelectedResource.ResourceId),
-      //    "Main");
+      get 
+      {
+        var result = new ObservableCollection<ResourceInfo>();
+        if (Model != null)
+          foreach (var item in Model.Project.Resources)
+            result.Add(new ResourceInfo(item));
+        return result;
+      }
+    }
+
+    internal void Delete()
+    {
+      Model.Project.Delete();
+      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
+      Model.Project.BeginSave((o, e) =>
+        {
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+          if (e.Error != null)
+            Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
+          else
+            Bxf.Shell.Instance.ShowView(null, "Dialog");
+        });
+    }
+
+    internal void Edit()
+    {
+      Bxf.Shell.Instance.ShowView(
+        "/ProjectEdit.xaml?id=" + Model.Project.Id, null, null, "Dialog");
+    }
+
+    internal void Close()
+    {
+      Bxf.Shell.Instance.ShowView(null, "Dialog");
+    }
+
+    public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
+    {
+      public ResourceInfo(ProjectTracker.Library.ProjectResourceEdit model)
+      {
+        ManageObjectLifetime = false;
+        Model = model;
+      }
+
+      public void ShowResource()
+      {
+        Bxf.Shell.Instance.ShowView(
+          "/ResourceDetails.xaml?id=" + Model.ResourceId, null, null, "Dialog");
+      }
     }
   }
 }

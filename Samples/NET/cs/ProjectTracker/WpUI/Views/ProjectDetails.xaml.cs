@@ -19,5 +19,29 @@ namespace WpUI.Views
     {
       InitializeComponent();
     }
+
+    private void EditButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
+      if (!viewmodel.CanEditObject)
+        Bxf.Shell.Instance.ShowError("Can't edit", "Authorization");
+      else
+        viewmodel.Edit();
+    }
+
+    private void DeleteButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
+      if (!viewmodel.CanEditObject)
+        Bxf.Shell.Instance.ShowError("Can't delete", "Authorization");
+      else if (MessageBox.Show("Delete item?", "Project", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+        viewmodel.Delete();
+    }
+
+    private void CloseButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
+      viewmodel.Close();
+    }
   }
 }

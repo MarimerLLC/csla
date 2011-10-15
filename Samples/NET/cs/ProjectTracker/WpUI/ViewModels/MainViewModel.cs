@@ -127,8 +127,10 @@ namespace WpUI
       object viewmodel = null;
       if (viewName.Contains("/Login.xaml"))
         viewmodel = new ViewModels.Login();
-      else if (viewName.Contains("/ProjectDetails.xaml"))
+      else if (viewName.Contains("/ProjectDetails.xaml") || viewName.Contains("/ProjectEdit.xaml"))
         viewmodel = new ViewModels.ProjectDetail(queryString);
+      else if (viewName.Contains("/ResourceDetails.xaml") || viewName.Contains("/ResourceEdit.xaml"))
+        viewmodel = new ViewModels.ResourceDetail(queryString);
       ((Control)e.Content).DataContext = viewmodel;
     }
 

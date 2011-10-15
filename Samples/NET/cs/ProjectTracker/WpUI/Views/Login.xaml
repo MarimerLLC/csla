@@ -48,9 +48,9 @@
 
   <phone:PhoneApplicationPage.ApplicationBar>
     <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
-      <shell:ApplicationBarIconButton IconUri="/Images/appbar_check.png" Text="Login"
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.check.rest.png" Text="Login"
                                       Click="LoginButton_Click"/>
-      <shell:ApplicationBarIconButton IconUri="/Images/appbar_close.png" Text="Cancel"
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.close.rest.png" Text="Cancel"
                                       Click="CancelButton_Click"/>
       <!--<shell:ApplicationBar.MenuItems>
         <shell:ApplicationBarMenuItem Text="MenuItem 1"/>

@@ -7,7 +7,8 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -42,12 +43,18 @@
       <!--Pivot item two-->
       <controls:PivotItem Header="resources">
         <Grid>
-          <ListBox ItemsSource="{Binding Path=Model.Project.Resources}">
+          <ListBox ItemsSource="{Binding Path=Resources}">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Path=FullName}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource PhoneTextLargeStyle}"/>
+                <Grid>
+                  <TextBlock Text="{Binding Path=Model.FullName}"
+                             Name="NameTextBlock"
+                             Margin="0 10 0 0"
+                             Style="{StaticResource PhoneTextLargeStyle}"/>
+                  <bxf:TriggerAction TargetControl="{Binding ElementName=NameTextBlock}"
+                                     TriggerEvent="Tap"
+                                     MethodName="ShowResource"/>
+                </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
@@ -55,4 +62,17 @@
       </controls:PivotItem>
     </controls:Pivot>
   </Grid>
-</phone:PhoneApplicationPage>
+
+  <phone:PhoneApplicationPage.ApplicationBar>
+    <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.edit.rest.png" 
+                                      Text="Login"
+                                      Click="EditButton_Click"/>
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.delete.rest.png" 
+                                      Text="Delete"
+                                      Click="DeleteButton_Click"/>
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.close.rest.png" 
+                                      Text="Close"
+                                      Click="CloseButton_Click"/>
+    </shell:ApplicationBar>
+  </phone:PhoneApplicationPage.ApplicationBar></phone:PhoneApplicationPage>

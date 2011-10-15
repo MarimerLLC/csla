@@ -19,5 +19,17 @@ namespace WpUI.Views
     {
       InitializeComponent();
     }
+
+    private void SaveButton_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void CloseButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = this.DataContext as ViewModels.ProjectEdit;
+      if (viewmodel != null)
+        viewmodel.Close();
+    }
   }
 }

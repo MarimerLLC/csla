@@ -377,6 +377,10 @@ namespace Csla.Rules
     /// <param name="element">Property or method to check.</param>
     public bool CachePermissionResult(AuthorizationActions action, Csla.Core.IMemberInfo element)
     {
+      // cannot cache result when suppressRuleChecking as HasPermission is then short circuited to return true.
+      if (_suppressRuleChecking)
+        return false;
+
       bool result = true;
       var rule =
         TypeAuthRules.Rules.

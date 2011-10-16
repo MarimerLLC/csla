@@ -379,6 +379,16 @@ namespace Csla.Threading
       _myWorker.ReportProgress(percentProgress);
     }
 
+    /// <summary>
+    /// Calls report progress on the background worker.
+    /// </summary>
+    /// <param name="percentProgress">The percent progress.</param>
+    /// <param name="userState">User state object.</param>
+    public void ReportProgress(int percentProgress, object userState)
+    {
+      _myWorker.ReportProgress(percentProgress, userState);
+    }
+
     #endregion
   }
 }

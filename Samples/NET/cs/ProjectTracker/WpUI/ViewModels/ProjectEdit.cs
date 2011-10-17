@@ -4,10 +4,48 @@
   {
     public ProjectEdit(string queryString)
     {
-      var p = queryString.Split('=');
-      var projectId = int.Parse(p[1]);
-      ManageObjectLifetime = false;
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
+      if (string.IsNullOrEmpty(queryString))
+      {
+        BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.CreateNewProject(callback));
+      }
+      else
+      {
+        var p = queryString.Split('=');
+        var projectId = int.Parse(p[1]);
+        ManageObjectLifetime = false;
+        BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
+      }
+    }
+
+    public bool CanSaveProject
+    {
+      get 
+      {
+        if (Model != null)
+          return Model.Project.IsSavable;
+        else
+          return false;
+      }
+    }
+
+    internal void Save()
+    {
+      if (CanSaveProject)
+      {
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        Model.Project.BeginSave((o, e) =>
+          {
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+            if (e.Error != null)
+              Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
+            else
+              Bxf.Shell.Instance.ShowView(null, "Dialog");
+          });
+      }
+      else
+      {
+        Bxf.Shell.Instance.ShowError("Save not allowed", "Authorization");
+      }
     }
 
     internal void Close()

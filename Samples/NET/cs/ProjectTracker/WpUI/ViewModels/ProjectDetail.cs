@@ -6,10 +6,17 @@ namespace WpUI.ViewModels
   {
     public ProjectDetail(string queryString)
     {
-      var p = queryString.Split('=');
-      var projectId = int.Parse(p[1]);
-      ManageObjectLifetime = false;
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
+      if (string.IsNullOrEmpty(queryString))
+      {
+        BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.CreateNewProject(callback));
+      }
+      else
+      { 
+        var p = queryString.Split('=');
+        var projectId = int.Parse(p[1]);
+        ManageObjectLifetime = false;
+        BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
+      }
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)

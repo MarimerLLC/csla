@@ -10,7 +10,7 @@
     xmlns:my="clr-namespace:WpUI"
     xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
     xmlns:bxfc="clr-namespace:Bxf.Converters;assembly=Bxf"
-    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800" 
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728" 
     d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -38,6 +38,13 @@
     <ContentControl Content="{Binding Path=StatusContent}"
                     HorizontalContentAlignment="Left"
                     Grid.Row="1"/>
-    <Canvas Opacity=".2" Background="Gray" Visibility="{Binding Path=AppBusy, Converter={StaticResource VisibilityConverter}}"/>
   </Grid>
+
+  <phone:PhoneApplicationPage.ApplicationBar>
+    <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.login.rest.png" 
+                                      Text="Login"
+                                      Click="LoginButton_Click"/>
+    </shell:ApplicationBar>
+  </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

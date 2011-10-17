@@ -33,5 +33,11 @@ namespace WpUI
         App.ViewModel.LoadData();
       }
     }
+
+    private void LoginButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (MainViewModel)this.DataContext;
+      viewmodel.LoginOut();
+    }
   }
 }

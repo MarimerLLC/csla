@@ -127,11 +127,24 @@ namespace WpUI
       object viewmodel = null;
       if (viewName.Contains("/Login.xaml"))
         viewmodel = new ViewModels.Login();
-      else if (viewName.Contains("/ProjectDetails.xaml") || viewName.Contains("/ProjectEdit.xaml"))
+      else if (viewName.Contains("/ProjectDetails.xaml"))
         viewmodel = new ViewModels.ProjectDetail(queryString);
+      else if (viewName.Contains("/ProjectEdit.xaml"))
+        viewmodel = new ViewModels.ProjectEdit(queryString);
       else if (viewName.Contains("/ResourceDetails.xaml") || viewName.Contains("/ResourceEdit.xaml"))
         viewmodel = new ViewModels.ResourceDetail(queryString);
       ((Control)e.Content).DataContext = viewmodel;
+    }
+
+    public void LoginOut()
+    {
+      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+        ProjectTracker.Library.Security.PTPrincipal.Logout();
+      Bxf.Shell.Instance.ShowView(
+        "/Login.xaml",
+        "loginViewSource",
+        new ViewModels.Login(),
+        "Dialog");
     }
 
     private ObservableCollection<PanoramaItem> _mainViews;
@@ -174,8 +187,8 @@ namespace WpUI
       {
         Shell.Instance.ShowView(
           typeof(Views.Welcome).AssemblyQualifiedName,
-          "userViewSource",
-          new ViewModels.User(),
+          "welcomeViewSource",
+          new ViewModels.Welcome(),
           "main:welcome");
 
         Bxf.Shell.Instance.ShowView(

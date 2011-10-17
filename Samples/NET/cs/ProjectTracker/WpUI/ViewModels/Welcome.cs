@@ -2,9 +2,9 @@
 
 namespace WpUI.ViewModels
 {
-  public class User : INotifyPropertyChanged
+  public class Welcome : INotifyPropertyChanged
   {
-    public User()
+    public Welcome()
     {
       ProjectTracker.Library.Security.PTPrincipal.NewUser += () =>
       {

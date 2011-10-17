@@ -22,14 +22,14 @@ namespace WpUI.Views
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
-
+      var viewmodel = (ViewModels.ProjectEdit)this.DataContext;
+      viewmodel.Save();
     }
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
-      var viewmodel = this.DataContext as ViewModels.ProjectEdit;
-      if (viewmodel != null)
-        viewmodel.Close();
+      var viewmodel = (ViewModels.ProjectEdit)this.DataContext;
+      viewmodel.Close();
     }
   }
 }

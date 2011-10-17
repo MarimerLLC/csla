@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using Csla.Xaml;
@@ -27,7 +28,8 @@ namespace InventoryDemo.ViewModels
         {
           var vm = (ProductListViewModel)o;
           var view = new ProductEdit();
-          ((CollectionViewSource)view.Resources["productEditViewModelViewSource"]).Source = new List<object> { new ViewModels.ProductEditViewModel(item.Id) };
+          ((CollectionViewSource)view.Resources["productEditViewModelViewSource"]).Source = 
+            new List<object> { new ViewModels.ProductEditViewModel(item.Id, vm) };
           vm.EditView = view;
         }
       }));
@@ -51,6 +53,13 @@ namespace InventoryDemo.ViewModels
     {
       get { return (ProductEdit)GetValue(EditViewProperty); }
       set { SetValue(EditViewProperty, value); }
+    }
+
+    public void UpdateItem(InvLib.ProductEdit product)
+    {
+      var item = Model.Where(r => r.Id == product.Id).FirstOrDefault();
+      if (item != null)
+        item.UpdateItem(product);
     }
   }
 }

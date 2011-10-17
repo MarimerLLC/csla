@@ -40,8 +40,9 @@
     <Reference Include="Csla.Web">
       <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Web.Mvc">
-      <HintPath>..\..\..\..\Dependencies\Net\Mvc3\Csla.Web.Mvc.dll</HintPath>
+    <Reference Include="Csla.Web.Mvc, Version=4.2.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />

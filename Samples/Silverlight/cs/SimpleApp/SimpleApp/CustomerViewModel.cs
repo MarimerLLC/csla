@@ -2,6 +2,7 @@
 using Csla.Xaml;
 using System.Windows;
 using Csla;
+using System.ComponentModel;
 
 namespace SimpleApp
 {
@@ -9,7 +10,8 @@ namespace SimpleApp
   {
     public CustomerViewModel()
     {
-      BeginRefresh("BeginNewCustomer", DataPortal.ProxyModes.LocalOnly);
+      if (!DesignerProperties.IsInDesignTool)
+        BeginRefresh("BeginNewCustomer", DataPortal.ProxyModes.LocalOnly);
     }
 
     public CustomerViewModel(int id)

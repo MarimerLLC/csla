@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace CslaMvvmSl.ViewModels
 {
@@ -46,6 +47,9 @@ namespace CslaMvvmSl.ViewModels
               MainContent.RemoveAt(0);
           }
         };
+
+      if (!DesignerProperties.IsInDesignTool)
+        ListPersons();
     }
 
     public static readonly DependencyProperty MainContentProperty =

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Library
 {

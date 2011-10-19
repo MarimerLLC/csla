@@ -15,9 +15,15 @@
     xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
     shell:SystemTray.IsVisible="True">
   <phone:PhoneApplicationPage.Resources>
-    <my:CustomerViewModel x:Key="viewmodel"/>
-    <my:VisibilityConverter x:Key="VisibilityConverter" />
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="./Themes/CslaSampleResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>    
+      <my:CustomerViewModel x:Key="viewmodel"/>
+      <my:VisibilityConverter x:Key="VisibilityConverter" />
+    </ResourceDictionary>
   </phone:PhoneApplicationPage.Resources>
+  
   <!--LayoutRoot contains the root grid where all other page content is placed-->
   <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{Binding Source={StaticResource viewmodel}}">
     <Grid.RowDefinitions>
@@ -25,23 +31,33 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
+    <Image Grid.RowSpan="2" Source="Background.png" Stretch="UniformToFill" Opacity="0.1" />
+
+    <ProgressBar IsIndeterminate="True" VerticalAlignment="Top" Margin="0,10,0,0"
+                 Visibility="{Binding Path=IsBusy, Converter={StaticResource VisibilityConverter}}" />
+
     <!--TitlePanel contains the name of the application and page title-->
-    <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="24,24,0,12">
+    <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="10,24,0,12">
       <TextBlock x:Name="ApplicationTitle" Text="SIMPLE APPLICATION" Style="{StaticResource PhoneTextNormalStyle}"/>
-      <TextBlock x:Name="PageTitle" Text="edit" Margin="-3,-8,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+      <TextBlock x:Name="PageTitle" Text="customer" Margin="0,-8,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
     </StackPanel>
 
     <!--ContentPanel - place additional content here-->
     <Grid x:Name="ContentGrid" Grid.Row="1">
-      <StackPanel  DataContext="{Binding Path=Model}">
-        <TextBlock Text="Name"/>
-        <TextBox Text="{Binding Path=Name, Mode=TwoWay}"/>
-        <TextBlock Text="Status"/>
-        <TextBox Text="{Binding Path=Status, Mode=OneWay}" IsReadOnly="True"/>
-        <Button Content="Save" Name="SaveButton" IsEnabled="{Binding Path=CanSave}" DataContext="{Binding Source={StaticResource viewmodel}}"/>
+      <StackPanel DataContext="{Binding Path=Model}">
+        <TextBlock Text="Name" Style="{StaticResource LabelTextStyle}" />
+        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Margin="0,0,0,15"/>
+
+        <TextBlock Text="STATUS" Style="{StaticResource LabelTextStyle}" />
+        <TextBlock Style="{StaticResource LabelTextStyle}" 
+    				       Foreground="GreenYellow" 
+                   Text="{Binding Status, FallbackValue='Status Text'}" 
+                   FontFamily="Segoe WP SemiBold" 
+                   FontSize="30" />
+
+        <Button Content="Save" Name="SaveButton" IsEnabled="{Binding Path=CanSave}" DataContext="{Binding Source={StaticResource viewmodel}}" Margin="0,15,0,15"/>
         <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save" DataContext="{Binding Source={StaticResource viewmodel}}"/>
       </StackPanel>
-      <Canvas Opacity=".5" Background="Red" Visibility="{Binding Path=IsBusy, Converter={StaticResource VisibilityConverter}}"/>
     </Grid>
   </Grid>
 

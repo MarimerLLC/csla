@@ -3,110 +3,123 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              xmlns:l="clr-namespace:InvLib;assembly=InvLib"
-             Loaded="UserControl_Loaded"
-             FontSize="16" Foreground="White">
+             xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk" 
+             Loaded="UserControl_Loaded">
   <UserControl.Resources>
-    <csla:CslaDataProvider x:Key="CustomerList"
-                           ObjectType="InvLib.CustomerList,InvLib"
-                           FactoryMethod="GetCustomerList"
-                           IsInitialLoadEnabled="True" />
-    <csla:ErrorDialog x:Key="CustomerListError"
-                      Source="{StaticResource CustomerList}" ShowExceptionDetail="True" />
-    <DataTemplate x:Key="CustomerItem">
-      <StackPanel>
-        <TextBlock Text="{Binding Path=Name}"
-                   Tag="{Binding Path=Id}" />
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="Lat/Long=" FontSize="12" Foreground="Gray"/>
-          <TextBlock Text="{Binding Path=Location}" FontSize="12" Foreground="Gray"/>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="Order count=" FontSize="12" Foreground="Gray"/>
-          <TextBlock Text="{Binding Path=OrderCount}" FontSize="12" Foreground="Gray"/>
-        </StackPanel>
-      </StackPanel>
-    </DataTemplate>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="./Themes/CslaSampleResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <csla:CslaDataProvider x:Key="CustomerList"
+                             ObjectType="InvLib.CustomerList,InvLib"
+                             FactoryMethod="GetCustomerList"
+                             IsInitialLoadEnabled="True" />
+
+      <csla:ErrorDialog x:Key="CustomerListError" Source="{StaticResource CustomerList}" ShowExceptionDetail="True" />
+
+      <DataTemplate x:Key="CustomerItem">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+
+          <TextBlock Grid.ColumnSpan="2" Text="{Binding Path=Name}" Tag="{Binding Path=Id}" 
+                       Style="{StaticResource LabelTextStyle}" Foreground="{StaticResource DarkNeutralBrush}" Margin="0" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Path=OrderCount, StringFormat='{}{0} orders'}" Style="{StaticResource DetailLabelTextStyle}" />
+          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Location, StringFormat='{}Location: {0}'}" Style="{StaticResource DetailLabelTextStyle}" />
+
+        </Grid>
+      </DataTemplate>
+
+      <DataTemplate x:Key="ViewCustomer">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MinWidth="150" />
+            <ColumnDefinition />
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="ID" Style="{StaticResource LabelTextStyle}" />
+          <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=OneWay}" Style="{StaticResource LabelTextStyle}" />
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="Name" Style="{StaticResource LabelTextStyle}" />
+          <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Name,Mode=OneWay}" Name="NameTextBox" IsReadOnly="True"/>
+
+          <TextBlock Grid.Row="2" Grid.Column="0" Text="Location" Style="{StaticResource LabelTextStyle}" />
+          <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Location,Mode=OneWay}" Name="LocationTextBox" IsReadOnly="True" />
+
+          <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="orders" Style="{StaticResource SubHeadingTextStyle}" Margin="10,15,0,0" />
+          <sdk:DataGrid Grid.Row="4" Grid.ColumnSpan="2" 
+                        AutoGenerateColumns="False" 
+                        ItemsSource="{Binding Path=Orders}"
+                        RowDetailsVisibilityMode="VisibleWhenSelected" 
+                        RowBackground="{x:Null}" 
+                        BorderBrush="{x:Null}" 
+                        HorizontalGridLinesBrush="{x:Null}" 
+                        VerticalGridLinesBrush="{x:Null}" 
+                        GridLinesVisibility="None" 
+                        Background="White"
+                        Foreground="{StaticResource DarkColorBrush}"
+                        ColumnHeaderHeight="35"
+                        ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                        RowStyle="{StaticResource DataGridRowStyle}"
+                        CellStyle="{StaticResource DataGridCellStyle}">
+            <sdk:DataGrid.Columns>
+              <sdk:DataGridTextColumn x:Name="idColumn" Binding="{Binding Id}" Header="ID" Width="Auto" />
+              <sdk:DataGridTextColumn x:Name="nameColumn" Binding="{Binding OrderDate, StringFormat='{}{0:d}'}" Header="ORDER DATE" Width="*" />
+              <sdk:DataGridTextColumn x:Name="amountColumn" Binding="{Binding Amount, StringFormat='{}{0:c}'}" Header="AMOUNT" Width="Auto" />
+            </sdk:DataGrid.Columns>
+          </sdk:DataGrid>
+        </Grid>
+      </DataTemplate>
+    </ResourceDictionary>
   </UserControl.Resources>
-  
-  <Grid x:Name="LayoutRoot">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
 
-    <StackPanel Orientation="Horizontal" Grid.Row="0">
-      <csla:BusyAnimation Width="40" Height="40"
-                          Name="BusyAnimation"
-                          Foreground="Wheat"
-                          IsRunning="{Binding Source={StaticResource CustomerList},Path=IsBusy}" />
-    </StackPanel>
-    <Grid Grid.Row="1" DataContext="{Binding Source={StaticResource CustomerList},Path=Data}">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
+  <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource CustomerList}, Path=Data}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="2*" />
+    </Grid.ColumnDefinitions>
 
-      <!--area headers-->
-      <TextBlock Text="Customer List" Margin="0 0 0 5" Grid.Row="0"  Grid.Column="0" />
-      <TextBlock Text="Customer Detail" Margin="10 0 0 5" Grid.Row="0" Grid.Column="1" />
+    <Border Grid.ColumnSpan="2" Background="White" Opacity="0.4" />
 
-      <!--list-->
-      <ScrollViewer Grid.Row="2" Grid.Column="0">
-        <ListBox ItemsSource="{Binding}"
-                 ItemTemplate="{StaticResource CustomerItem}"
-                 Background="Azure" Margin="0 0 0 5" Width="200"
-                 SelectionChanged="ListBox_SelectionChanged"/>
-      </ScrollViewer>
+    <Border Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-      <!--detail area-->
-      <StackPanel Name="ContentArea" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Margin="10 0 0 0">
-        <StackPanel.Resources>
+    <ListBox Margin="0" 
+             ItemsSource="{Binding}" 
+             Name="modelListBox" 
+             Background="Transparent"
+             BorderBrush="Transparent"
+             BorderThickness="0"
+             ItemTemplate="{StaticResource CustomerItem}" 
+             SelectionChanged="ListBox_SelectionChanged"
+             ItemContainerStyle="{StaticResource ListBoxItemStyle}" />
 
-          <!--data template to display product information-->
-          <DataTemplate x:Key="ViewCustomer">
-            <Grid>
-              <StackPanel>
-                <StackPanel.Resources>
-                  <DataTemplate x:Key="order">
-                    <StackPanel Orientation="Horizontal">
-                      <TextBlock Text="Order " />
-                      <TextBlock Text="{Binding Path=Id}" />
-                      <TextBlock Text="; Ordered " />
-                      <TextBlock Text="{Binding Path=OrderDate}" />
-                      <TextBlock Text="; Amount $" />
-                      <TextBlock Text="{Binding Path=Amount}" />
-                    </StackPanel>
-                  </DataTemplate>
-                </StackPanel.Resources>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                  <TextBlock Text="Id" Width="100" />
-                  <TextBlock Text="{Binding Path=Id,Mode=OneWay}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                  <TextBlock Text="Name" Width="100" />
-                  <TextBox Text="{Binding Path=Name,Mode=OneWay}" Width="200" Name="NameTextBox" IsReadOnly="True"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                  <TextBlock Text="Location" Width="100" />
-                  <TextBox Text="{Binding Path=Location,Mode=OneWay}" Width="200" Name="LocationTextBox" IsReadOnly="True" />
-                </StackPanel>
-                <TextBlock Text="Orders" />
-                <ListBox ItemsSource="{Binding Path=Orders}"
-                         ItemTemplate="{StaticResource order}"
-                         Background="Azure"/>
-              </StackPanel>
-            </Grid>
-          </DataTemplate>
-        </StackPanel.Resources>
-        
-        <!--placeholder for view or edit display-->
-        <ContentControl Name="ViewEditContent"/>
-      </StackPanel>
-    </Grid>
+    <!--detail area-->
+    <ContentControl Name="ViewEditContent" 
+                    Grid.Column="1" Margin="10"
+                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" />
+
+    <csla:BusyAnimation Width="40" Height="40"
+                        Grid.Column="1"
+                        Name="BusyAnimation"
+                        Foreground="{StaticResource DarkColorBrush}"
+                        VerticalAlignment="Center" HorizontalAlignment="Center"
+                        IsRunning="{Binding Source={StaticResource CustomerList}, Path=IsBusy}" />
+
   </Grid>
 </UserControl>

@@ -76,7 +76,7 @@ namespace InventoryDemo
             MessageBox.Show(ex.Error.ToString(), "Data error", MessageBoxButton.OK);
           else
           {
-            this.ViewEditContent.ContentTemplate = ContentArea.Resources["ViewCustomer"] as DataTemplate;
+            this.ViewEditContent.ContentTemplate = this.Resources["ViewCustomer"] as DataTemplate;
             this.ViewEditContent.Content = ex.Object;
           }
           BusyAnimation.IsRunning = false;

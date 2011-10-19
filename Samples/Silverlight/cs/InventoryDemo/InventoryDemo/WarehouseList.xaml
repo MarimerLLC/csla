@@ -3,48 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
              xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              xmlns:l="clr-namespace:InvLib;assembly=InvLib"
-             Loaded="UserControl_Loaded"
-             FontSize="16" Foreground="White">
+             Loaded="UserControl_Loaded">
   <UserControl.Resources>
-    <csla:CslaDataProvider x:Key="WarehouseList"
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="./Themes/CslaSampleResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <csla:CslaDataProvider x:Key="WarehouseList"
                            ObjectType="InvLib.WarehouseList,InvLib"
                            FactoryMethod="GetWarehouseList"
                            IsInitialLoadEnabled="True" />
-    <csla:ErrorDialog x:Key="WarehouseListError"
-                      Source="{StaticResource WarehouseList}" />
-    <DataTemplate x:Key="WarehouseItem">
-      <StackPanel>
-        <TextBlock Text="{Binding Path=Name}"
-                   Tag="{Binding Path=Id}" />
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="Lat/Long=" FontSize="12" Foreground="Gray"/>
-          <TextBlock Text="{Binding Path=Location}" FontSize="12" Foreground="Gray"/>
-        </StackPanel>
-      </StackPanel>
-    </DataTemplate>
+      <csla:ErrorDialog x:Key="WarehouseListError" Source="{StaticResource WarehouseList}" />
+
+      <DataTemplate x:Key="WarehouseItem">
+        <Grid>
+          <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+          </Grid.RowDefinitions>
+
+          <TextBlock Text="{Binding Path=Name}" Tag="{Binding Path=Id}" 
+                     Style="{StaticResource LabelTextStyle}" Foreground="{StaticResource DarkNeutralBrush}" Margin="0" />
+
+          <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Path=Location, StringFormat='{}Location: {0}'}" Style="{StaticResource DetailLabelTextStyle}" />
+
+        </Grid>
+      </DataTemplate>
+
+    </ResourceDictionary>
   </UserControl.Resources>
-  <Grid x:Name="LayoutRoot">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
-    <StackPanel Orientation="Horizontal" Grid.Row="0">
-      <csla:BusyAnimation Width="40" Height="40"
-                          Foreground="Wheat"
-                          IsRunning="{Binding Source={StaticResource WarehouseList},Path=IsBusy}" />
-    </StackPanel>
-    <Grid Grid.Row="1" DataContext="{Binding Source={StaticResource WarehouseList},Path=Data}">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="*" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
-      <TextBlock Text="Warehouse List" Margin="0 0 0 5" Grid.Row="0"/>
-      <ScrollViewer Grid.Row="1">
-        <ListBox ItemsSource="{Binding}"
-                 ItemTemplate="{StaticResource WarehouseItem}"
-                 Background="Azure" Margin="0 0 0 5" Width="200" />
-      </ScrollViewer>
-    </Grid>
+
+  <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource WarehouseList},Path=Data}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="2*" />
+    </Grid.ColumnDefinitions>
+
+    <Border Grid.ColumnSpan="2" Background="White" Opacity="0.4" />
+
+    <Border Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+    <ListBox Margin="0" 
+             ItemsSource="{Binding}" 
+             Name="modelListBox" 
+             Background="Transparent"
+             BorderBrush="Transparent"
+             BorderThickness="0"
+             ItemTemplate="{StaticResource WarehouseItem}"
+             ItemContainerStyle="{StaticResource ListBoxItemStyle}" />
+
+    <csla:BusyAnimation Grid.Column="1"
+                        Width="40" Height="40"
+                        Foreground="{StaticResource DarkColorBrush}"
+                        IsRunning="{Binding Source={StaticResource WarehouseList},Path=IsBusy}" />
+
   </Grid>
 </UserControl>

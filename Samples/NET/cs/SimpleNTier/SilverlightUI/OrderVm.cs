@@ -21,6 +21,6 @@ namespace SilverlightUI
     public override void AddNew(object sender, ExecuteEventArgs e)
     {
       Model.LineItems.AddNew();
-    }
+    }   
   }
 }

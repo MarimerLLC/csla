@@ -46,7 +46,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.1.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+    <Reference Include="Csla">
       <HintPath>..\..\..\..\Dependencies\Sl\Csla.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />

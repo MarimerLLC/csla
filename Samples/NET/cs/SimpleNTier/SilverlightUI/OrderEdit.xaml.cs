@@ -21,7 +21,7 @@ namespace SilverlightUI
 
     private void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
-
+      
       // Do not load your data at design time.
       // if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
       // {

@@ -20,10 +20,10 @@
 
   <!--LayoutRoot is the root grid where all page content is placed-->
   <Grid x:Name="LayoutRoot" Background="Transparent" DataContext="{StaticResource viewmodel}">
+    <Image Source="Background.png" Stretch="UniformToFill" Opacity="0.1" />
     <Grid x:Name="ContentPanel" Margin="12,17,0,28" VerticalAlignment="Top">
-      <controls:Pivot Name="x" Title="ORDER ENTRY DEMO" ItemsSource="{Binding Path=Panels}">
-      </controls:Pivot>
-
+      <controls:Pivot Name="x" Title="ORDER ENTRY DEMO" ItemsSource="{Binding Path=Panels}" />
     </Grid>
   </Grid>
+  
 </phone:PhoneApplicationPage>

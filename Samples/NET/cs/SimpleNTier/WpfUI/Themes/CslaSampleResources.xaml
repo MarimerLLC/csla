@@ -215,7 +215,6 @@
           <Border x:Name="MouseOverBorder" BorderThickness="1" BorderBrush="Transparent">
             <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}" BorderThickness="0" IsTabStop="False"/>
           </Border>
-          <TextBlock Text="{Binding ElementName=pi, Path=IsValid}" HorizontalAlignment="Right" />
         </Grid>
       </Border>
       <Border x:Name="DisabledVisualElement" Background="#A5F7F7F7" BorderBrush="#A5F7F7F7" BorderThickness="{TemplateBinding BorderThickness}" Opacity="0" IsHitTestVisible="False"/>

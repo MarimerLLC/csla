@@ -42,16 +42,8 @@
         <TextBox Text="{Binding Model.Id, Mode=OneWay}" IsReadOnly="True" Margin="0,0,0,15" />
 
         <TextBlock Text="Customer Name" />
-        <!--<csla:PropertyInfo x:Name="NameInfo" Property="{Binding Model.CustomerName}"/>-->
-        <Grid>
-          <!--<Border Margin="11,0,11,7" Height="5" Background="Red" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Visibility="{Binding IsValid, Converter={StaticResource Visibility}, ElementName=NameInfo, FallbackValue=Collapsed}" />-->
-          <TextBox Text="{Binding Model.CustomerName, Mode=TwoWay, ValidatesOnNotifyDataErrors=False}" Style="{StaticResource PhoneTextBoxStyle}" />
-        </Grid>
-        <!--<Border Margin="11,-8,11,0" Padding="0,5,10,5" HorizontalAlignment="Left" Background="Red" 
-                Visibility="{Binding IsValid, Converter={StaticResource Visibility}, ElementName=NameInfo, FallbackValue=Collapsed}">
-          <TextBlock Text="{Binding RuleDescription, ElementName=NameInfo}" Foreground="White"/>
-        </Border>-->
-
+        <TextBox Text="{Binding Model.CustomerName, Mode=TwoWay, ValidatesOnNotifyDataErrors=False}" />
+        
         <Button Content="Save" x:Name="SaveButton" IsEnabled="{Binding CanSave}" />
         <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save"/>
 

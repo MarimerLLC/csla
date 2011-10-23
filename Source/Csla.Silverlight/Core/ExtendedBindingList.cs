@@ -6,6 +6,11 @@
 // <summary>Extends BindingList of T by adding extra</summary>
 //-----------------------------------------------------------------------
 using System;
+#if WINRT
+using inpc = Windows.UI.Xaml.Data;
+#else
+using inpc = System.ComponentModel;
+#endif
 using System.ComponentModel;
 using Csla.Serialization;
 using System.Collections.Generic;
@@ -163,9 +168,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      inpc.INotifyPropertyChanged c = item as inpc.INotifyPropertyChanged;
       if (c != null)
-        c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+        c.PropertyChanged += Child_PropertyChanged;
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
@@ -187,9 +192,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      inpc.INotifyPropertyChanged c = item as inpc.INotifyPropertyChanged;
       if (c != null)
-        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+        c.PropertyChanged -= Child_PropertyChanged;
 
       //INotifyCollectionChanged col = item as INotifyCollectionChanged;
       //if (col != null)
@@ -368,7 +373,7 @@ namespace Csla.Core
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
     private void RaiseChildChanged(
-      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+      object childObject, inpc.PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -380,7 +385,7 @@ namespace Csla.Core
     /// a ChildChanged event.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void Child_PropertyChanged(object sender, inpc.PropertyChangedEventArgs e)
     {
       RaiseChildChanged(sender, e, null);
     }

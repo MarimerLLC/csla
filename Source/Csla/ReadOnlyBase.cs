@@ -1163,7 +1163,7 @@ namespace Csla
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();
-      var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
       var method = t.GetMethods(flags).Where(c => c.Name == "LoadProperty" && c.IsGenericMethod).FirstOrDefault();
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };

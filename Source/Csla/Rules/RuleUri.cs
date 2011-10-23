@@ -199,7 +199,12 @@ namespace Csla.Rules
         var sb = new StringBuilder();
         if (!string.IsNullOrEmpty(type.Namespace)) 
           sb.Append(type.Namespace + ".");
-        sb.Append(type.Name.Replace("`1", ""));
+#if WINRT
+        var typeName = type.Name();
+#else
+        var typeName = type.Name;
+#endif
+        sb.Append(typeName.Replace("`1", ""));
         foreach (var t in type.GetGenericArguments())
         {
           sb.Append("-");

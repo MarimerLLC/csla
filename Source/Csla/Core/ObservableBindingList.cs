@@ -6,6 +6,11 @@
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
 using System;
+#if WINRT
+using inpc = Windows.UI.Xaml.Data;
+#else
+using inpc = System.ComponentModel;
+#endif
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
@@ -311,7 +316,7 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      inpc.INotifyPropertyChanged c = item as inpc.INotifyPropertyChanged;
       if (c != null)
         c.PropertyChanged += Child_PropertyChanged;
 
@@ -340,9 +345,9 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
+      inpc.INotifyPropertyChanged c = item as inpc.INotifyPropertyChanged;
       if (c != null)
-        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+        c.PropertyChanged -= Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if(list!=null)
@@ -430,7 +435,7 @@ namespace Csla.Core
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
     private void RaiseChildChanged(
-      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+      object childObject, inpc.PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -444,7 +449,7 @@ namespace Csla.Core
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void Child_PropertyChanged(object sender, inpc.PropertyChangedEventArgs e)
     {
       RaiseChildChanged(sender, e, null);
     }

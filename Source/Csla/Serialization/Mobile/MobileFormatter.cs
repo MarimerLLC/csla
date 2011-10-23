@@ -179,7 +179,11 @@ namespace Csla.Serialization.Mobile
         if (mobile == null)
           throw new InvalidOperationException(
             string.Format(Resources.MustImplementIMobileObject,
+#if WINRT
+            thisType.Name()));
+#else
             thisType.Name));
+#endif
 
         if (!_serializationReferences.TryGetValue(mobile, out info))
         {

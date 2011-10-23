@@ -56,7 +56,11 @@ namespace Csla.Reflection
         throw new NotSupportedException(Resources.ConstructorsWithParametersNotSupported);
 
       Expression body = Expression.New(constructor);
+#if WINRT
+      if (constructor.DeclaringType.IsValueType())
+#else
       if (constructor.DeclaringType.IsValueType)
+#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -98,7 +102,11 @@ namespace Csla.Reflection
            Expression.Return(target, nullRef),
           Expression.Label(target, nullRef));
       }
+#if WINRT
+      else if (method.ReturnType.IsValueType())
+#else
       else if (method.ReturnType.IsValueType)
+#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -123,7 +131,11 @@ namespace Csla.Reflection
         Expression.Convert(target, property.DeclaringType),
         property);
 
+#if WINRT
+      if (property.PropertyType.IsValueType())
+#else
       if (property.PropertyType.IsValueType)
+#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -169,7 +181,11 @@ namespace Csla.Reflection
         Expression.Convert(target, field.DeclaringType),
         field);
 
+#if WINRT
+      if (field.FieldType.IsValueType())
+#else
       if (field.FieldType.IsValueType)
+#endif
       {
         body = Expression.Convert(body, typeof(object));
       }

@@ -12,6 +12,7 @@ using Csla.Serialization;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
+using System.Reflection;
 
 namespace Csla.Core.FieldManager
 {
@@ -924,9 +925,9 @@ namespace Csla.Core.FieldManager
     {
 #if SILVERLIGHT
       var attr =
-        System.Reflection.BindingFlags.Static |
-        System.Reflection.BindingFlags.Public |
-        System.Reflection.BindingFlags.DeclaredOnly;
+        BindingFlags.Static |
+        BindingFlags.Public |
+        BindingFlags.DeclaredOnly;
 #else
       var attr =
         System.Reflection.BindingFlags.Static |
@@ -940,7 +941,11 @@ namespace Csla.Core.FieldManager
         var fields = t.GetFields(attr);
         if (fields.Length > 0)
           fields[0].GetValue(null);
+#if WINRT
+        t = t.BaseType();
+#else
         t = t.BaseType;
+#endif
       }
     }
 

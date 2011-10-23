@@ -704,9 +704,14 @@ namespace Csla.Rules.CommonRules
     private void Initialize(Action<RuleContext> rule)
     {
       Rule = rule;
+#if WINRT
+      var methodName = Guid.NewGuid().ToString();
+#else
+      var methodName = Rule.Method.ToString();
+#endif
       base.RuleUri.AddQueryParameter(
         "r", 
-        Convert.ToBase64String(Encoding.Unicode.GetBytes(Rule.Method.ToString())));
+        Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
     }
 
     private Action<RuleContext> Rule { get; set; }

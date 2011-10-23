@@ -193,8 +193,13 @@ namespace Csla
         return tmp;
       }
 
+#if WINRT
+      if ((desiredType.IsPrimitive() || desiredType.Equals(typeof(decimal))) &&
+          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#else
       if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#endif
         value = 0;
 
 

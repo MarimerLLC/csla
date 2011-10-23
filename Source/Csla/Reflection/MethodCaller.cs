@@ -6,6 +6,7 @@
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
@@ -119,7 +120,11 @@ namespace Csla.Reflection
         {
           if (!_ctorCache.TryGetValue(objectType, out result))
           {
+#if WINRT
+            ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, new Type[] { }, null);
+#else
             ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+#endif
             if (info == null)
               throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture,
@@ -156,7 +161,21 @@ namespace Csla.Reflection
 #else
         fullTypeName = typeName;
 #endif
-      return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+#if WINRT
+      if (throwOnError)
+        return Type.GetType(fullTypeName);
+      else
+        try
+        {
+          return Type.GetType(fullTypeName);
+        }
+        catch
+        {
+          return null;
+        }
+#else
+        return Type.GetType(fullTypeName, throwOnError, ignoreCase);
+#endif
     }
 
     /// <summary>
@@ -703,7 +722,11 @@ namespace Csla.Reflection
                   break;
                 }
               }
+#if WINRT
+              if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)
+#else
               if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
+#endif
               {
                 // last param is a param array
                 if (parameterCount == pCount && parameters[pCount - 1].GetType().Equals(infoParams[pCount - 1].ParameterType))
@@ -730,7 +753,11 @@ namespace Csla.Reflection
         }
         if (result != null)
           break;
+#if WINRT
+        currentType = currentType.BaseType();
+#else
         currentType = currentType.BaseType;
+#endif
       } while (currentType != null);
 
       
@@ -764,7 +791,11 @@ namespace Csla.Reflection
           break; // match found
         }
 
+#if WINRT
+        objectType = objectType.BaseType();
+#else
         objectType = objectType.BaseType;
+#endif
       } while (objectType != null);
 
       return info;
@@ -800,7 +831,11 @@ namespace Csla.Reflection
           var pCount = infoParams.Length;
           if (pCount > 0 &&
              ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
+#if WINRT
+             (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
+#else
              (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
+#endif
           {
             // last param is a param array or only param is an array
             if (parameterCount >= pCount - 1)
@@ -817,7 +852,11 @@ namespace Csla.Reflection
             break;
           }
         }
+#if WINRT
+        currentType = currentType.BaseType();
+#else
         currentType = currentType.BaseType;
+#endif
       } while (currentType != null);
 
       return result;
@@ -1052,7 +1091,7 @@ namespace Csla.Reflection
     /// <param name="objType">Type of object.</param>
     /// <param name="method">Name of the method.</param>
     /// <param name="flags">Flag values.</param>
-    public static System.Reflection.MethodInfo FindMethod(Type objType, string method)
+    public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
     {
       var info = objType.GetMethod(method);
       return info;

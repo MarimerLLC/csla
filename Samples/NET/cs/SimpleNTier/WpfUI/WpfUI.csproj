@@ -86,10 +86,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MyDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="OrderEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,9 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindowPresenter.cs" />
-    <Compile Include="MyDialog.xaml.cs">
-      <DependentUpon>MyDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="OrderEdit.xaml.cs">
       <DependentUpon>OrderEdit.xaml</DependentUpon>
     </Compile>

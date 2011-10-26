@@ -79,13 +79,11 @@
       <Border Grid.Row="4" Grid.ColumnSpan="2" Background="#FFE0E0E0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
       <StackPanel Grid.Row="4" x:Name="stackPanel1" DataContext="{Binding CurrentItem}" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1">
-        <Button Content="test command" x:Name="TestButton" Margin="3" Style="{StaticResource CslaButtonStyle}" />
         <Button Content="cancel" x:Name="CancelButton" IsEnabled="{Binding CanCancel}" Margin="3" Style="{StaticResource CslaButtonStyle}" />
         <Button Content="save" x:Name="SaveButton" IsEnabled="{Binding CanSave}" Margin="3" Style="{StaticResource CslaButtonStyle}" />
 
         <csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save"/>
         <csla:TriggerAction TargetControl="{Binding ElementName=CancelButton}" MethodName="Cancel"/>
-        <csla:TriggerAction TargetControl="{Binding ElementName=TestButton}" MethodName="Testing" DataContext="{Binding CurrentItem}" />
       </StackPanel>
 
       <StackPanel Grid.Row="4" Orientation="Horizontal">

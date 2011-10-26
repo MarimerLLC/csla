@@ -11,22 +11,14 @@ namespace WpfUI
     public OrderVm()
     {
       //DoRefresh(BusinessLibrary.Order.NewOrder);
-      DoRefresh(() => BusinessLibrary.Order.GetOrder(441));
+      //DoRefresh(() => BusinessLibrary.Order.GetOrder(441));
+      //BeginRefresh(BusinessLibrary.Order.NewOrder);
+      BeginRefresh(callback => BusinessLibrary.Order.GetOrder(441, callback));
     }
 
     protected override void OnError(Exception error)
     {
       Bxf.Shell.Instance.ShowError(error.Message, "Error");
     }
-
-    public void Testing()
-    {
-      var tmp = new LineItemVm { Model = Model.LineItems };
-    }
-  }
-
-  public class LineItemVm : ViewModel<BusinessLibrary.LineItems>
-  {
-
   }
 }

@@ -60,7 +60,6 @@ namespace SilverlightUI.ViewModels
       {
         Parent = parent;
         Model = resource;
-        Model.Assignments.CollectionChanged += (o, e) => OnPropertyChanged("AssignmentList");
       }
 
       public ResourceGetter Parent { get; private set; }
@@ -75,6 +74,7 @@ namespace SilverlightUI.ViewModels
       protected override void OnModelChanged(ProjectTracker.Library.ResourceEdit oldValue, ProjectTracker.Library.ResourceEdit newValue)
       {
         base.OnModelChanged(oldValue, newValue);
+        Model.Assignments.CollectionChanged += (o, e) => OnPropertyChanged("AssignmentList");
         OnPropertyChanged("AssignmentList");
       }
 
@@ -96,7 +96,6 @@ namespace SilverlightUI.ViewModels
       {
         ChildEditContent = null;
         Model.Assignments.Add(assignment);
-        OnPropertyChanged("AssignmentList");
       }
 
       public void EditAssignment(ProjectTracker.Library.ResourceAssignmentEdit assignment)
@@ -107,7 +106,6 @@ namespace SilverlightUI.ViewModels
       public void CommitEditAssignment(ProjectTracker.Library.ResourceAssignmentEdit ResourceResource)
       {
         ChildEditContent = null;
-        OnPropertyChanged("AssignmentList");
       }
 
       private void ShowAssignmentEdit(ResourceAssignmentEdit viewmodel)

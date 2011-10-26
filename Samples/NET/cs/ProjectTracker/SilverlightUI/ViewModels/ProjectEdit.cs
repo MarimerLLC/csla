@@ -51,6 +51,8 @@ namespace SilverlightUI.ViewModels
       }
     }
 
+    // ...
+
     /// <summary>
     /// Manages adding or editing of a ProjectEdit object
     /// </summary>
@@ -60,7 +62,6 @@ namespace SilverlightUI.ViewModels
       {
         Parent = parent;
         Model = project;
-        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged("ProjectResourceList");
       }
 
       public ProjectGetter Parent { get; private set; }
@@ -75,6 +76,7 @@ namespace SilverlightUI.ViewModels
       protected override void OnModelChanged(ProjectTracker.Library.ProjectEdit oldValue, ProjectTracker.Library.ProjectEdit newValue)
       {
         base.OnModelChanged(oldValue, newValue);
+        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged("ProjectResourceList");
         OnPropertyChanged("ProjectResourceList");
       }
 
@@ -96,7 +98,6 @@ namespace SilverlightUI.ViewModels
       {
         ChildEditContent = null;
         Model.Resources.Add(projectResource);
-        OnPropertyChanged("ProjectResourceList");
       }
 
       public void EditResource(ProjectTracker.Library.ProjectResourceEdit projectResource)
@@ -107,7 +108,6 @@ namespace SilverlightUI.ViewModels
       public void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit projectResource)
       {
         ChildEditContent = null;
-        OnPropertyChanged("ProjectResourceList");
       }
 
       private void ShowResourceEdit(ProjectResourceEdit viewmodel)
@@ -118,7 +118,7 @@ namespace SilverlightUI.ViewModels
         ChildEditContent = ctl;
       }
 
-      public void CancelAddResource()
+      public void CancelAddEditResource()
       {
         ChildEditContent = null;
       }

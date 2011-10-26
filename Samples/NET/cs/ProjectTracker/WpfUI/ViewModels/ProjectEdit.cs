@@ -60,7 +60,6 @@ namespace WpfUI.ViewModels
       {
         Parent = parent;
         Model = project;
-        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged("ProjectResourceList");
       }
 
       public ProjectGetter Parent { get; private set; }
@@ -75,6 +74,7 @@ namespace WpfUI.ViewModels
       protected override void OnModelChanged(ProjectTracker.Library.ProjectEdit oldValue, ProjectTracker.Library.ProjectEdit newValue)
       {
         base.OnModelChanged(oldValue, newValue);
+        Model.Resources.CollectionChanged += (o, e) => OnPropertyChanged("ProjectResourceList");
         OnPropertyChanged("ProjectResourceList");
       }
 
@@ -96,7 +96,6 @@ namespace WpfUI.ViewModels
       {
         ChildEditContent = null;
         Model.Resources.Add(projectResource);
-        OnPropertyChanged("ProjectResourceList");
       }
 
       public void EditResource(ProjectTracker.Library.ProjectResourceEdit projectResource)
@@ -107,7 +106,6 @@ namespace WpfUI.ViewModels
       public void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit projectResource)
       {
         ChildEditContent = null;
-        OnPropertyChanged("ProjectResourceList");
       }
 
       private void ShowResourceEdit(ProjectResourceEdit viewmodel)

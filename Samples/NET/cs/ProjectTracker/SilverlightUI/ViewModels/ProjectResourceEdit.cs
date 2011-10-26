@@ -84,7 +84,7 @@ namespace SilverlightUI.ViewModels
     {
       if (Model != null)
         Model.CancelEdit();
-      Parent.CancelAddResource();
+      Parent.CancelAddEditResource();
     }
   }
 }

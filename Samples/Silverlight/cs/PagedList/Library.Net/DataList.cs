@@ -42,16 +42,12 @@ namespace Library
 
     public static void GetFirstPage(EventHandler<DataPortalResult<DataList>> callback)
     {
-      var dp = new DataPortal<DataList>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch(new PagedCriteria(0, 10, true));
+      DataPortal.BeginFetch<DataList>(new PagedCriteria(0, 10, true), callback);
     }
 
     public static void GetPage(int page, EventHandler<DataPortalResult<DataList>> callback)
     {
-      var dp = new DataPortal<DataList>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch(new PagedCriteria(page, 10));
+      DataPortal.BeginFetch<DataList>(new PagedCriteria(page, 10, false), callback);
     }
 
     #region MobileFormatter

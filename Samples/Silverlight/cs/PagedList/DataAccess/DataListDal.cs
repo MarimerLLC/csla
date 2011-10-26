@@ -22,6 +22,7 @@ namespace DataAccess
       foreach (var item in list)
         result.Add(item);
       MarkOld(result);
+      System.Threading.Thread.Sleep(500);
       return result;
     }
   }

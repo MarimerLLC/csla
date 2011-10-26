@@ -14,8 +14,8 @@
   <Grid x:Name="LayoutRoot" Background="White" DataContext="{StaticResource mainViewModelModelViewSource}">
     <StackPanel>
       <StackPanel Orientation="Horizontal" DataContext="{Binding Source={StaticResource mainViewModelViewSource}, Path=CurrentItem}" Margin="5">
-        <Button Name="NextButton" Content="Next" IsEnabled="{Binding Path=AutoLoad, Converter={StaticResource IsNotConverter}}" />
-        <Xaml:TriggerAction TargetControl="{Binding ElementName=NextButton}" TriggerEvent="Click" MethodName="NextPage" />
+        <Button Name="NextButton" 
+                Content="Next" IsEnabled="{Binding Path=AutoLoad, Converter={StaticResource IsNotConverter}}" />
       </StackPanel>
       <StackPanel Orientation="Horizontal" Margin="5">
         <CheckBox IsChecked="{Binding Path=CanSave, Source={StaticResource mainViewModelViewSource}}" IsEnabled="False" Content="CanSave" />

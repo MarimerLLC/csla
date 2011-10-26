@@ -9,7 +9,7 @@ namespace PagedList
     public MainViewModel()
     {
       // set to true for automatic paged loading, false to use the Next button
-      AutoLoad = false;
+      AutoLoad = true;
 
       if (AutoLoad)
         BeginRefresh("GetListPaged");

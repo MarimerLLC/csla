@@ -23,14 +23,14 @@
         <Grid>
           <StackPanel>
             <TextBlock Text="Name"/>
-            <TextBox Text="{Binding Path=Model.Project.Name}"/>
+            <TextBox Text="{Binding Path=Model.Project.Name, Mode=TwoWay}" Name="NameTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
             <TextBlock Text="Started"/>
-            <TextBox Text="{Binding Path=Model.Project.Started, StringFormat=\{0:d\}}"/>
+            <TextBox Text="{Binding Path=Model.Project.Started, StringFormat=\{0:d\}, Mode=TwoWay}" Name="StartedTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
             <TextBlock Text="Ended"/>
-            <TextBox Text="{Binding Path=Model.Project.Ended, StringFormat=\{0:d\}}"/>
+            <TextBox Text="{Binding Path=Model.Project.Ended, StringFormat=\{0:d\}, Mode=TwoWay}" Name="EndedTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
             <TextBlock Text="Description"/>
-            <TextBox Text="{Binding Path=Model.Project.Description}"
-                     TextWrapping="Wrap"/>
+            <TextBox Text="{Binding Path=Model.Project.Description, Mode=TwoWay}"
+                     TextWrapping="Wrap" Name="DescriptionTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
           </StackPanel>
         </Grid>
       </controls:PivotItem>

@@ -25,7 +25,7 @@ namespace WpUI.ViewModels
       if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
         UserName = Csla.ApplicationContext.User.Identity.Name;
       else
-        UserName = "log in";
+        UserName = "guest";
     }
 
     private string _userName;

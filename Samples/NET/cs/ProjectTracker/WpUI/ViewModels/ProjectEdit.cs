@@ -44,7 +44,10 @@
       }
       else
       {
-        Bxf.Shell.Instance.ShowError("Save not allowed", "Authorization");
+        if (Model.Project.IsValid)
+          Bxf.Shell.Instance.ShowError("Not authorized", "Save");
+        else
+          Bxf.Shell.Instance.ShowError("Invalid data", "Save");
       }
     }
 

@@ -19,25 +19,17 @@
                  TextWrapping="Wrap"
                  Style="{StaticResource PhoneTextExtraLargeStyle}"
                  Margin="5"/>
-      <TextBlock Text="sample application" 
+      <TextBlock Text="Created using CSLA .NET" 
                  TextWrapping="Wrap"
-                 Style="{StaticResource PhoneTextExtraLargeStyle}"
-                 Margin="5"/>
-      <StackPanel Orientation="Horizontal" Margin="5 30 5 5">
-        <TextBlock Text="Created using " 
-                   TextWrapping="Wrap"
-                   Style="{StaticResource PhoneTextNormalStyle}"/>
-        <HyperlinkButton Content="CSLA .NET" NavigateUri="http://www.lhotka.net/cslanet/"
-                         HorizontalAlignment="Left"/>
-      </StackPanel>
+                 Margin="5 15 5 5"
+                 Style="{StaticResource PhoneTextLargeStyle}"/>
       <StackPanel Orientation="Horizontal" Margin="5 15 5 5">
-        <TextBlock Text="Welcome " 
+        <TextBlock Text="Welcome" 
+                   HorizontalAlignment="Left"
                    Style="{StaticResource PhoneTextNormalStyle}"/>
-        <HyperlinkButton Content="{Binding Path=UserName}"
-                         Name="LoginButton"
-                         HorizontalAlignment="Left"/>
-        <bxf:TriggerAction TargetControl="{Binding ElementName=LoginButton}"
-                           MethodName="LoginOut"/>
+        <TextBlock Text="{Binding Path=UserName}" 
+                   HorizontalAlignment="Left"
+                   Style="{StaticResource PhoneTextNormalStyle}"/>
       </StackPanel>
     </StackPanel>
   </Grid>

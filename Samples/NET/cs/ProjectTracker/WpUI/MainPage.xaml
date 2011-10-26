@@ -45,6 +45,9 @@
       <shell:ApplicationBarIconButton IconUri="/Images/appbar.login.rest.png" 
                                       Text="Login"
                                       Click="LoginButton_Click"/>
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.refresh.rest.png" 
+                                      Text="Refresh"
+                                      Click="RefreshButton_Click"/>
     </shell:ApplicationBar>
   </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

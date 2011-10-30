@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{744F0DA9-E086-459A-8AFE-9E1C4FDC71B7}</ProjectGuid>
+    <ProjectGuid>{CCBAC7D2-6F79-4431-A597-4F983A962F48}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TransformationRules</RootNamespace>
-    <AssemblyName>TransformationRules</AssemblyName>
+    <RootNamespace>RuleSubclass</RootNamespace>
+    <AssemblyName>RuleSubclass</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -48,11 +48,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Root.cs" />
-    <Compile Include="Rules\CalcSum.cs" />
-    <Compile Include="Rules\CollapseSpace.cs" />
-    <Compile Include="Rules\ToLower.cs" />
-    <Compile Include="Rules\ToUpper.cs" />
+    <Compile Include="Rules\RequiredWhenCanWrite.cs" />
+    <Compile Include="Rules\RequiredWhenIsNotNew.cs" />
+    <Compile Include="Rules\RequiredWhenNew.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

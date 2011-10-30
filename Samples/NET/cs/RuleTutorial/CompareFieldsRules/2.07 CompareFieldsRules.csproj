@@ -58,7 +58,6 @@
     <Compile Include="Rules\GreaterThanOrEqual.cs" />
     <Compile Include="Rules\LessThan.cs" />
     <Compile Include="Rules\LessThanOrEqual.cs" />
-    <Compile Include="Rules\Range.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

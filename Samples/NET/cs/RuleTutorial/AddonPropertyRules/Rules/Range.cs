@@ -10,14 +10,12 @@
 
 using System;
 using System.Collections.Generic;
-
-using CompareFieldsRules.Properties;
-
+using AddonPropertyRules.Properties;
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
 
-namespace CompareFieldsRules.Rules
+namespace AddonPropertyRules.Rules
 {
 
   /// <summary>

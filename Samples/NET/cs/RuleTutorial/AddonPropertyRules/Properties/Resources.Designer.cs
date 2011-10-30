@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CompareFieldsRules.Properties {
+namespace AddonPropertyRules.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace CompareFieldsRules.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("CompareFieldsRules.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AddonPropertyRules.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,11 @@ namespace CompareFieldsRules.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} must be greater than or equal to {1}.
+        ///   Looks up a localized string similar to {0} must be between {1} and {2}.
         /// </summary>
-        internal static string GreaterThanOrEqualRule {
+        internal static string RangeRule {
             get {
-                return ResourceManager.GetString("GreaterThanOrEqualRule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} must be greater than {1}.
-        /// </summary>
-        internal static string GreaterThanRule {
-            get {
-                return ResourceManager.GetString("GreaterThanRule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} must be less than or equal to {1}.
-        /// </summary>
-        internal static string LessThanOrEqualRule {
-            get {
-                return ResourceManager.GetString("LessThanOrEqualRule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} must be less than {1} .
-        /// </summary>
-        internal static string LessThanRule {
-            get {
-                return ResourceManager.GetString("LessThanRule", resourceCulture);
+                return ResourceManager.GetString("RangeRule", resourceCulture);
             }
         }
     }

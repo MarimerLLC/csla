@@ -51,9 +51,9 @@ namespace LookupRule.Rules
       AffectedProperties.Add(nameProperty);
 
       IsAsync = false;
-      CanRunAsAffectedProperty = false;
-      CanRunInCheckRules = true;
-      CanRunOnServer = false;
+      CanRunAsAffectedProperty = false;   // only run when this property is changed 
+      CanRunInCheckRules = true;          // when true will also run in CheckRules
+      CanRunOnServer = false;             // when true will also run on logical serverside (Data Access)
     }
 
     /// <summary>

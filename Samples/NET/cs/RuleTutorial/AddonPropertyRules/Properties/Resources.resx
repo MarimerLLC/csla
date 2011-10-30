@@ -117,16 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="GreaterThanOrEqualRule" xml:space="preserve">
-    <value>{0} must be greater than or equal to {1}</value>
-  </data>
-  <data name="GreaterThanRule" xml:space="preserve">
-    <value>{0} must be greater than {1}</value>
-  </data>
-  <data name="LessThanOrEqualRule" xml:space="preserve">
-    <value>{0} must be less than or equal to {1}</value>
-  </data>
-  <data name="LessThanRule" xml:space="preserve">
-    <value>{0} must be less than {1} </value>
+  <data name="RangeRule" xml:space="preserve">
+    <value>{0} must be between {1} and {2}</value>
   </data>
 </root>

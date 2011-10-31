@@ -55,10 +55,10 @@ namespace Csla.Core
     INotifyChildChanged,
     ISerializationNotification
 #if !WINRT
-#if SILVERLIGHT 
+#if SILVERLIGHT && !__ANDROID__
     ,INotifyDataErrorInfo
 #else
-    , IDataErrorInfo
+, IDataErrorInfo
 #endif
 #endif
   {
@@ -1278,7 +1278,7 @@ namespace Csla.Core
 
     #endregion
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT || __ANDROID__
     #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -3415,7 +3415,7 @@ namespace Csla.Core
 
     #endregion
 
-#if !WINRT
+#if !WINRT && !__ANDROID__
     #region INotifyDataErrorInfo
 
     /// <summary>

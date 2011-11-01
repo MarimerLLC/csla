@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -98,9 +99,7 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Loads a property's managed field with the 
-    /// supplied value calling PropertyHasChanged 
-    /// if the value does change.
+    /// Loads a property's managed field with the supplied value.
     /// </summary>
     /// <typeparam name="P">
     /// Type of the property.
@@ -128,6 +127,27 @@ namespace Csla.Server
     }
 
     /// <summary>
+    /// Loads a property's managed field with the supplied value.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object newValue)
+    {
+      var target = obj as Core.IManageProperties;
+      if (target != null)
+        target.LoadProperty(propertyInfo, newValue);
+      else
+        throw new ArgumentException(Resources.IManagePropertiesRequiredException);
+    }
+
+    /// <summary>
     /// Reads a property's managed field value.
     /// </summary>
     /// <typeparam name="P"></typeparam>
@@ -142,6 +162,24 @@ namespace Csla.Server
     protected P ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
     {
       var target = obj as Core.IManageProperties;
+      if (target != null)
+        return target.ReadProperty(propertyInfo);
+      else
+        throw new ArgumentException(Resources.IManagePropertiesRequiredException);
+    }
+
+    /// <summary>
+    /// Reads a property's managed field value.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// No authorization checks occur when this method is called.
+    /// </remarks>
+    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
+    {
+      var target = obj as IManageProperties;
       if (target != null)
         return target.ReadProperty(propertyInfo);
       else

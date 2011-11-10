@@ -796,7 +796,7 @@ namespace Csla.Xaml
         var iobl = ((IObservableBindingList)Model);
         iobl.AddNew();
       }
-      SetProperties();
+      OnSetProperties();
     }
 #else
     /// <summary>

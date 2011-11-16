@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Bxf;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using System.Collections.ObjectModel;
 using Microsoft.Phone.Controls;
 using System.Windows.Navigation;
 using WpUI.ViewModels;
@@ -21,10 +19,10 @@ namespace WpUI
 
     public MainViewModel()
     {
+      DesignMode = System.ComponentModel.DesignerProperties.GetIsInDesignMode(this);
       _presenter = this;
 
-      DesignMode = System.ComponentModel.DesignerProperties.GetIsInDesignMode(this);
-
+      // set up timer to close status display
       _closeTimer.Tick += new EventHandler(CloseTimer_Tick);
       _closeTimer.Interval = new TimeSpan(1000);
       if (!DesignMode)
@@ -56,55 +54,65 @@ namespace WpUI
       presenter.OnShowView += (view, region) =>
         {
           var nav = Application.Current.RootVisual as PhoneApplicationFrame;
-
-          if (region.StartsWith("main:") && MainViews != null)
+          if (nav == null)
+            return;
+          switch (region)
           {
-            var item = MainViews.Where(r => r.Header.ToString() == region.Substring(5)).FirstOrDefault();
-            if (item == null)
-              throw new InvalidOperationException(region);
-            item.Content = view.ViewInstance;
-          }
-          else
-          {
-            switch (region)
-            {
-              case "Dialog":
-                // Dialog region means showing a full page
-                // instead of the panorama
-                if (view != null && !string.IsNullOrEmpty(view.ViewName))
-                {
-                  // navigate to new page
-                  nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
-                }
+            case "Dialog":
+              // Dialog region means showing a full page
+              // instead of the panorama
+              if (view != null && !string.IsNullOrEmpty(view.ViewName))
+              {
+                // navigate to new page
+                nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
+              }
+              else
+              {
+                // navigate back, or to main page
+                if (nav.CanGoBack)
+                  nav.GoBack();
                 else
-                {
-                  // navigate back, or to main page
-                  if (nav.CanGoBack)
-                    nav.GoBack();
-                  else
-                    nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
-                }
-                break;
-              case "Status":
-                _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
-                if (view.Model != null)
-                  AppBusy = ((Bxf.Status)view.Model).IsBusy;
-                else
-                  AppBusy = false;
-                StatusContent = view.ViewInstance;
-                break;
-              default:
-                break;
-            }
+                  nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+              }
+              break;
+            case "Status":
+              _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
+              if (view.Model != null)
+                AppBusy = ((Bxf.Status)view.Model).IsBusy;
+              else
+                AppBusy = false;
+              StatusContent = view.ViewInstance;
+              break;
+            default:
+              break;
           }
         };
 
-      LoadData();
-
-      Shell.Instance.ShowStatus(new Status { Text = "Ready" });
-
+      Shell.Instance.ShowStatus(new Status { Text = "Initializing..." });
+      MainPageViewModel = new ViewModels.MainPageViewModel();
     }
 
+    /// <summary>
+    /// Initialize viewmodel objects for each view.
+    /// </summary>
+    private void InitializeViewModel(string viewName, string queryString, Control control)
+    {
+      object viewmodel = null;
+      if (viewName.Contains("/Login.xaml"))
+        viewmodel = new ViewModels.Login();
+      else if (viewName.Contains("/ProjectDetails.xaml"))
+        viewmodel = new ViewModels.ProjectDetail(queryString);
+      else if (viewName.Contains("/ProjectEdit.xaml"))
+        viewmodel = new ViewModels.ProjectEdit(queryString);
+      else if (viewName.Contains("/ResourceDetails.xaml") || viewName.Contains("/ResourceEdit.xaml"))
+        viewmodel = new ViewModels.ResourceDetail(queryString);
+      control.DataContext = viewmodel;
+    }
+
+    /// <summary>
+    /// Handle navigated event, ensuring the new view
+    /// is properly initialized with a viewmodel.
+    /// </summary>
     public void Navigated(object sender, NavigationEventArgs e)
     {
       if (e.Content == null)
@@ -124,16 +132,7 @@ namespace WpUI
       }
 
       // setup viewmodel for pages
-      object viewmodel = null;
-      if (viewName.Contains("/Login.xaml"))
-        viewmodel = new ViewModels.Login();
-      else if (viewName.Contains("/ProjectDetails.xaml"))
-        viewmodel = new ViewModels.ProjectDetail(queryString);
-      else if (viewName.Contains("/ProjectEdit.xaml"))
-        viewmodel = new ViewModels.ProjectEdit(queryString);
-      else if (viewName.Contains("/ResourceDetails.xaml") || viewName.Contains("/ResourceEdit.xaml"))
-        viewmodel = new ViewModels.ResourceDetail(queryString);
-      ((Control)e.Content).DataContext = viewmodel;
+      InitializeViewModel(viewName, queryString, (Control)e.Content);
     }
 
     public void LoginOut()
@@ -147,65 +146,18 @@ namespace WpUI
         "Dialog");
     }
 
-    private ObservableCollection<PanoramaItem> _mainViews;
-    public ObservableCollection<PanoramaItem> MainViews
+    private MainPageViewModel _mainPageViewModel;
+    public MainPageViewModel MainPageViewModel
     {
-      get { return _mainViews; }
-      set 
-      {
-        _mainViews = value;
-        OnPropertyChanged("MainViews");
-      }
+      get { return _mainPageViewModel; }
+      set { _mainPageViewModel = value; OnPropertyChanged("MainPageViewModel"); }
     }
 
     public static void ReloadMainView()
     {
-      _presenter.IsDataLoaded = false;
-      _presenter.LoadData();
+      _presenter.MainPageViewModel.ReloadMainView();
     }
 
-    public bool IsDataLoaded { get; private set; }
-
-    public void LoadData()
-    {
-      if (IsDataLoaded)
-      {
-        while (MainViews.Count > 1)
-          MainViews.RemoveAt(MainViews.Count - 1);
-      }
-      else
-      {
-        MainViews = new ObservableCollection<PanoramaItem>
-        {
-          new PanoramaItem { Header = "welcome" },
-        };
-      }
-      MainViews.Add(new PanoramaItem { Header = "projects" });
-      MainViews.Add(new PanoramaItem { Header = "resources" });
-
-      if (!IsDataLoaded)
-      {
-        Shell.Instance.ShowView(
-          typeof(Views.Welcome).AssemblyQualifiedName,
-          "welcomeViewSource",
-          new ViewModels.Welcome(),
-          "main:welcome");
-
-        Bxf.Shell.Instance.ShowView(
-          typeof(Views.ProjectList).AssemblyQualifiedName,
-          "projectListViewSource",
-          new ProjectList(),
-          "main:projects");
-
-        Bxf.Shell.Instance.ShowView(
-          typeof(Views.ResourceList).AssemblyQualifiedName,
-          "resourceListViewSource",
-          new ResourceList(),
-          "main:resources");
-
-        IsDataLoaded = true;
-      }
-    }
 
     void CloseTimer_Tick(object sender, EventArgs e)
     {
@@ -249,6 +201,16 @@ namespace WpUI
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public bool IsDataLoaded 
+    {
+      get { return MainPageViewModel.IsDataLoaded; } 
+    }
+
+    internal void LoadData()
+    {
+      MainPageViewModel.LoadData();
     }
   }
 }

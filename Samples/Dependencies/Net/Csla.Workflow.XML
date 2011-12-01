@@ -1,0 +1,314 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Csla.Workflow</name>
+    </assembly>
+    <members>
+        <member name="T:Csla.Workflow.WorkflowManager">
+            <summary>
+            Manages execution of a WF workflow.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.#ctor(System.Workflow.Runtime.WorkflowRuntime)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="workflowRuntime">
+            A workflow runtime instance to use
+            for all operations.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.String)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.Type)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.String,System.Boolean)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.Type,System.Boolean)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.String,System.Collections.Generic.Dictionary{System.String,System.Object},System.Boolean)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.Type,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ExecuteWorkflow(System.Type,System.Collections.Generic.Dictionary{System.String,System.Object},System.Boolean)">
+            <summary>
+            Synchronously executes a workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ResumeWorkflow">
+            <summary>
+            Resumes synchronous execution of
+            the workflow.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ResumeWorkflow(System.Boolean)">
+            <summary>
+            Resumes synchronous execution of
+            the workflow.
+            </summary>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ResumeWorkflow(System.Guid)">
+            <summary>
+            Resumes synchronous execution of
+            a workflow.
+            </summary>
+            <param name="instanceId">
+            Id of the workflow instance to resume.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.ResumeWorkflow(System.Guid,System.Boolean)">
+            <summary>
+            Resumes synchronous execution of
+            a workflow.
+            </summary>
+            <param name="instanceId">
+            Id of the workflow instance to resume.
+            </param>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.InitializeRuntime">
+            <summary>
+            Initializes the workflow runtime.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginWorkflow(System.String)">
+            <summary>
+            Asynchronously starts executing workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginWorkflow(System.Type)">
+            <summary>
+            Asynchronously starts executing workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginWorkflow(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Asynchronously starts executing workflow.
+            </summary>
+            <param name="typeName">
+            Assembly qualified type name of the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginWorkflow(System.Type,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Asynchronously starts executing workflow.
+            </summary>
+            <param name="workflowType">
+            Type object referencing the workflow.
+            </param>
+            <param name="parameters">
+            Name/value list of parameters to be passed
+            to the workflow instance.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginResumeWorkflow(System.Guid)">
+            <summary>
+            Loads a workflow from persisted storage
+            and resumes asynchronous execution of
+            that workflow.
+            </summary>
+            <param name="instanceId">
+            Id of the workflow instance to load and resume.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.BeginResumeWorkflow">
+            <summary>
+            Resumes asynchronous execution of
+            the current workflow.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.WaitForEnd">
+            <summary>
+            Waits for the workflow to complete
+            or terminate.
+            </summary>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.WaitForEnd(System.Boolean)">
+            <summary>
+            Waits for the workflow to complete
+            or terminate.
+            </summary>
+            <param name="disposeRuntime">
+            Value indicating whether to dispose
+            the WF runtime when workflow
+            completes.
+            </param>
+        </member>
+        <member name="M:Csla.Workflow.WorkflowManager.DisposeRuntime">
+            <summary>
+            Diposes the workflow runtime.
+            </summary>
+        </member>
+        <member name="P:Csla.Workflow.WorkflowManager.Error">
+            <summary>
+            Gets the error exception returned
+            from the workflow if the
+            workflow terminated abnormally.
+            </summary>
+        </member>
+        <member name="P:Csla.Workflow.WorkflowManager.Status">
+            <summary>
+            Gets the current status of the workflow.
+            </summary>
+        </member>
+        <member name="P:Csla.Workflow.WorkflowManager.WorkflowInstance">
+            <summary>
+            Gets the workflow instance being
+            executed.
+            </summary>
+        </member>
+        <member name="P:Csla.Workflow.WorkflowManager.RuntimeInstance">
+            <summary>
+            Gets the workflow runtime instance
+            that is executing the workflow.
+            </summary>
+        </member>
+        <member name="T:Csla.Workflow.WorkflowStatus">
+            <summary>
+            Status of the workflow.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Initializing">
+            <summary>
+            Workflow is being initialized.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Executing">
+            <summary>
+            Workflow is currently executing.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Completed">
+            <summary>
+            Workflow has completed normally.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Idled">
+            <summary>
+            Workflow has been idled.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Terminated">
+            <summary>
+            Workflow has terminated abnormally.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Aborted">
+            <summary>
+            Workflow was aborted.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Suspended">
+            <summary>
+            Workflow has been suspended.
+            </summary>
+        </member>
+    </members>
+</doc>

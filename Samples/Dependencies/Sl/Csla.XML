@@ -1140,6 +1140,99 @@
             to the .NET Segments property.
             </returns>
         </member>
+        <member name="T:Csla.Rules.BusinessRulesExtensions">
+            <summary>
+            Rule extensions for creating rules with a fluent coding style.
+            </summary>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.String,Csla.Rules.RuleSeverity)">
+            <summary>
+            Adds a lambda rule with fluent coding style
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="message">The message.</param>
+            <param name="severity">The rule severity.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Adds a lambda rule with fluent coding style
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,System.String,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.String,Csla.Rules.RuleSeverity)">
+            <summary>
+            Adds a lambda rule with fluent coding style to the RuleSet
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="ruleSet">The RuleSet.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="message">The message.</param>
+            <param name="severity">The rule severity.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,System.String,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Adds a lambda rule with fluent coding style to the RuleSet
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="ruleSet">The RuleSet.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.Func{System.String},Csla.Rules.RuleSeverity)">
+            <summary>
+            Adds a lambda rule with fluent coding style
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="messageDelegate">The message delegate.</param>
+            <param name="severity">The rule severity.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.Func{System.String})">
+            <summary>
+            Adds a lambda rule with fluent coding style
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="messageDelegate">The message delegate.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,System.String,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.Func{System.String},Csla.Rules.RuleSeverity)">
+            <summary>
+            Adds a lambda rule with fluent coding style to the RuleSet
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="ruleSet">The RuleSet.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="messageDelegate">The message delegate.</param>
+            <param name="severity">The rule severity.</param>
+        </member>
+        <member name="M:Csla.Rules.BusinessRulesExtensions.AddRule``1(Csla.Rules.BusinessRules,System.String,Csla.Core.IPropertyInfo,System.Func{``0,System.Boolean},System.Func{System.String})">
+            <summary>
+            Adds a lambda rule with fluent coding style to the RuleSet
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="businessRules">The business rules.</param>
+            <param name="ruleSet">The RuleSet.</param>
+            <param name="primaryProperty">The primary property.</param>
+            <param name="ruleHandler">The rule handler.</param>
+            <param name="messageDelegate">The message delegate.</param>
+        </member>
         <member name="T:Csla.Core.ErrorEventArgs">
             <summary>
             Event arguments for an unhandled async
@@ -2169,6 +2262,31 @@
             or affected property relationship.
             </remarks>
         </member>
+        <member name="T:Csla.Rules.ObjectRule">
+            <summary>
+            Base class for object level rules.
+            </summary>
+        </member>
+        <member name="M:Csla.Rules.ObjectRule.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.Rules.ObjectRule"/> class.
+            </summary>
+        </member>
+        <member name="P:Csla.Rules.ObjectRule.PrimaryProperty">
+            <summary>
+            Gets or sets the primary property affected by this rule.
+            Will always return null.
+            Will throw ArgumentException if set to anything but null.
+            </summary>
+        </member>
+        <member name="P:Csla.Rules.ObjectRule.CanRunInCheckRules">
+            <summary>
+            Gets or sets a value indicating whether this instance can run when CheckRules is called on BO.
+            </summary>
+            <value>
+            	<c>true</c> if this instance can run when CheckRules is called; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="T:Csla.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -2834,39 +2952,6 @@
             Clears the cache.
             </summary>
         </member>
-        <member name="T:Csla.LazySingleton`1">
-            <summary>
-            An alternative to Lazy&lt;T&gt; that works on .NET, Silverlight and Windows Phone
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Csla.LazySingleton`1.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Csla.LazySingleton`1"/> class.
-            Will use the default public constructor to create an instance of T (the vlaue)
-            </summary>
-        </member>
-        <member name="M:Csla.LazySingleton`1.#ctor(System.Func{`0})">
-            <summary>
-            Initializes a new instance of the <see cref="T:Csla.LazySingleton`1"/> class.
-            Will call the supplied delegate to create an instance of T (the value)
-            </summary>
-            <param name="delegate">The @delegate.</param>
-        </member>
-        <member name="P:Csla.LazySingleton`1.IsValueCreated">
-            <summary>
-            Gets a value indicating whether this instance is initilized and contains a value.
-            </summary>
-            <value>
-            	<c>true</c> if this instance is value created; otherwise, <c>false</c>.
-            </value>
-        </member>
-        <member name="P:Csla.LazySingleton`1.Value">
-            <summary>
-            Gets the instance.
-            </summary>
-            <value>The instance.</value>
-        </member>
         <member name="T:Csla.ReadOnlyListBase`2">
             <summary>
             This is the base class from which readonly collections
@@ -3464,6 +3549,39 @@
             you must provide a criteria value
             parameter.
             </summary>
+        </member>
+        <member name="T:Csla.LazySingleton`1">
+            <summary>
+            An alternative to Lazy&lt;T&gt; that works on .NET, Silverlight and Windows Phone
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Csla.LazySingleton`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.LazySingleton`1"/> class.
+            Will use the default public constructor to create an instance of T (the vlaue)
+            </summary>
+        </member>
+        <member name="M:Csla.LazySingleton`1.#ctor(System.Func{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.LazySingleton`1"/> class.
+            Will call the supplied delegate to create an instance of T (the value)
+            </summary>
+            <param name="delegate">The @delegate.</param>
+        </member>
+        <member name="P:Csla.LazySingleton`1.IsValueCreated">
+            <summary>
+            Gets a value indicating whether this instance is initilized and contains a value.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is value created; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Csla.LazySingleton`1.Value">
+            <summary>
+            Gets the instance.
+            </summary>
+            <value>The instance.</value>
         </member>
         <member name="T:Csla.Core.StateMode">
             <summary>
@@ -4134,69 +4252,6 @@
             <summary>
             Gets the current edit level of the object.
             </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RegularExpressionAttribute">
-            <summary>
-            Specifies that a data field value must
-            match the specified regular expression.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationAttribute">
-            <summary>
-            Base class used to create validation attributes.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.GetValidationResult(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Checks whether the specified value is valid with respect to the current
-            validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessage">
-            <summary>
-            Gets or sets an error message to associated with a validation control if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceName">
-            <summary>
-            Gets or sets the error resource name in order to look up the error message
-            text from a resource if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceType">
-            <summary>
-            Gets or sets the resource type to use for message look-up if validation fails.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.#ctor(System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
         </member>
         <member name="T:Csla.DataPortalException">
             <summary>
@@ -5330,6 +5385,159 @@
             action.
             </summary>
         </member>
+        <member name="T:Csla.DataPortalClient.SynchronizedWcfProxy`1">
+            <summary>
+            Implements a data portal proxy object that only
+            allows one call at a time.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginCreate">
+            <summary>
+            Starts a create operation.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginCreate(System.Object)">
+            <summary>
+            Starts a create operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginCreate(System.Object,System.Object)">
+            <summary>
+            Starts a create operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+            <param name="userState">User state object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginFetch">
+            <summary>
+            Starts a fetch operation.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginFetch(System.Object)">
+            <summary>
+            Starts a fetch operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginFetch(System.Object,System.Object)">
+            <summary>
+            Starts a fetch operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+            <param name="userState">User state object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginUpdate(System.Object)">
+            <summary>
+            Starts an update operation.
+            </summary>
+            <param name="criteria">Object to update</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginUpdate(System.Object,System.Object)">
+            <summary>
+            Starts an update operation.
+            </summary>
+            <param name="criteria">Object to update</param>
+            <param name="userState">User state object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginDelete(System.Object)">
+            <summary>
+            Starts a delete operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginDelete(System.Object,System.Object)">
+            <summary>
+            Starts a delete operation.
+            </summary>
+            <param name="criteria">Criteria object</param>
+            <param name="userState">User state object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginExecute(`0)">
+            <summary>
+            Starts an execute operation.
+            </summary>
+            <param name="command">Object to execute</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.BeginExecute(`0,System.Object)">
+            <summary>
+            Starts an execute operation.
+            </summary>
+            <param name="command">Object to execute</param>
+            <param name="userState">User state object</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.OnCreateCompleted(System.Object,Csla.DataPortalResult{`0})">
+            <summary>
+            Raise the CreateCompleted event
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Args</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.OnFetchCompleted(System.Object,Csla.DataPortalResult{`0})">
+            <summary>
+            Raise the FetchCompleted event
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Args</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.OnUpdateCompleted(System.Object,Csla.DataPortalResult{`0})">
+            <summary>
+            Raise the UpdateCompleted event
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Args</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.OnDeleteCompleted(System.Object,Csla.DataPortalResult{`0})">
+            <summary>
+            Raise the DeleteCompleted event
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Args</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.SynchronizedWcfProxy`1.OnExecuteCompleted(System.Object,Csla.DataPortalResult{`0})">
+            <summary>
+            Raise the ExecuteCompleted event
+            </summary>
+            <param name="sender">Sender</param>
+            <param name="e">Args</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.SynchronizedWcfProxy`1.GlobalContext">
+            <summary>
+            Gets the global context returned by the async
+            operation.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.SynchronizedWcfProxy`1.CreateCompleted">
+            <summary>
+            Raised when a create operation is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.SynchronizedWcfProxy`1.FetchCompleted">
+            <summary>
+            Raised when a fetch operation is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.SynchronizedWcfProxy`1.UpdateCompleted">
+            <summary>
+            Raised when an update operation is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.SynchronizedWcfProxy`1.DeleteCompleted">
+            <summary>
+            Raised when a delete operation is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.SynchronizedWcfProxy`1.ExecuteCompleted">
+            <summary>
+            Raised when an execute operation is complete.
+            </summary>
+        </member>
         <member name="T:Csla.Reflection.MethodCaller">
             <summary>
             Provides methods to dynamically find and call methods.
@@ -5817,249 +6025,6 @@
             <value>The value of the field.</value>
             <returns>The value of the field.</returns>
         </member>
-        <member name="T:Csla.DataPortalClient.WcfProxy">
-            <summary>
-            Data portal client-side proxy used to communicate
-            with a CSLA .NET for Windows server-side
-            data portal.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultBinding">
-            <summary>
-            Gets or sets the default binding used to initialize
-            future instances of WcfProxy.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultUrl">
-            <summary>
-            Gets or sets the default URL address
-            for the data portal server.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultEndPoint">
-            <summary>
-            Gets or sets the default WCF endpoint
-            name for the data portal server.
-            </summary>
-        </member>
-        <member name="T:Csla.DataPortalClient.WcfProxy`1">
-            <summary>
-            Data portal client-side proxy used to communicate
-            with a CSLA .NET for Windows server-side
-            data portal.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.#ctor">
-            <summary>
-            Creates an instance of the object, initializing
-            it to use the DefaultUrl and DefaultBinding
-            values.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.GetProxy">
-            <summary>
-            Gets an instance of the WcfPortalClient object
-            for use in communicating with the server.
-            </summary>
-            <remarks>
-            If both DataPortalUrl and Binding are non-null then
-            those values are used to initialize the proxy, otherwise
-            the proxy is initialized using values from the
-            system.serviceModel element in the Silverlight
-            client-side config file.
-            </remarks>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnCreateCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the CreateCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate">
-            <summary>
-            Begins an asynchronous server call to create an
-            instance of a business object.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate(System.Object)">
-            <summary>
-            Begins an asynchronous server call to create an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate(System.Object,System.Object)">
-            <summary>
-            Begins an asynchronous server call to create an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the FetchCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch">
-            <summary>
-            Begins an asynchronous server call to retrieve an
-            instance of a business object.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch(System.Object)">
-            <summary>
-            Begins an asynchronous server call to retrieve an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch(System.Object,System.Object)">
-            <summary>
-            Begins an asynchronous server call to retrieve an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnUpdateCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the UpdateCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginUpdate(System.Object)">
-            <summary>
-            Begins an asynchronous server call to update an
-            instance of a business object.
-            </summary>
-            <param name="obj">Object to update.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginUpdate(System.Object,System.Object)">
-            <summary>
-            Begins an asynchronous server call to update an
-            instance of a business object.
-            </summary>
-            <param name="obj">Object to update.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnDeleteCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the DeleteCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginDelete(System.Object)">
-            <summary>
-            Begins an asynchronous server call to delete an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginDelete(System.Object,System.Object)">
-            <summary>
-            Begins an asynchronous server call to delete an
-            instance of a business object.
-            </summary>
-            <param name="criteria">Criteria object.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnExecuteCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the ExecuteCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginExecute(`0)">
-            <summary>
-            Begins an asynchronous server call to execute a
-            command object.
-            </summary>
-            <param name="command">Object to execute.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginExecute(`0,System.Object)">
-            <summary>
-            Begins an asynchronous server call to execute a
-            command object.
-            </summary>
-            <param name="command">Object to execute.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertRequest(Csla.WcfPortal.UpdateRequest)">
-            <summary>
-            Override this method to manipulate the message
-            request data sent to the server.
-            </summary>
-            <param name="request">Update request data.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertRequest(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            Override this method to manipulate the message
-            request data sent to the server.
-            </summary>
-            <param name="request">Criteria request data.</param>
-        </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertResponse(Csla.WcfPortal.WcfResponse)">
-            <summary>
-            Override this method to manipulate the message
-            request data returned from the server.
-            </summary>
-            <param name="response">Response data.</param>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy`1.Binding">
-            <summary>
-            Gets the binding object used by this proxy instance.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy`1.DataPortalUrl">
-            <summary>
-            Gets the URL address for the data portal server
-            used by this proxy instance.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy`1.EndPoint">
-            <summary>
-            Gets the WCF endpoint name for the data portal
-            server used by this proxy instance.
-            </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.WcfProxy`1.GlobalContext">
-            <summary>
-            Gets the GlobalContext dictionary returned from the
-            server upon completion of the data portal call.
-            </summary>
-        </member>
-        <member name="E:Csla.DataPortalClient.WcfProxy`1.CreateCompleted">
-            <summary>
-            Event raised when the asynchronous BeginCreate() call
-            is complete.
-            </summary>
-        </member>
-        <member name="E:Csla.DataPortalClient.WcfProxy`1.FetchCompleted">
-            <summary>
-            Event raised when the asynchronous BeginFetch() call
-            is complete.
-            </summary>
-        </member>
-        <member name="E:Csla.DataPortalClient.WcfProxy`1.UpdateCompleted">
-            <summary>
-            Event raised when the asynchronous BeginUpdate() call
-            is complete.
-            </summary>
-        </member>
-        <member name="E:Csla.DataPortalClient.WcfProxy`1.DeleteCompleted">
-            <summary>
-            Event raised when the asynchronous BeginDelete() call
-            is complete.
-            </summary>
-        </member>
-        <member name="E:Csla.DataPortalClient.WcfProxy`1.ExecuteCompleted">
-            <summary>
-            Event raised when the asynchronous BeginExecute() call
-            is complete.
-            </summary>
-        </member>
         <member name="T:Csla.Utilities">
             <summary>
             Contains utility methods used by the
@@ -6214,6 +6179,36 @@
             <summary>
             Sets a value into a property.
             </summary>
+        </member>
+        <member name="T:Csla.Reflection.DynamicCtorDelegate">
+            <summary>
+            Delegate for a dynamic constructor method.
+            </summary>
+        </member>
+        <member name="T:Csla.Reflection.DynamicMethodDelegate">
+            <summary>
+            Delegate for a dynamic method.
+            </summary>
+            <param name="target">
+            Object containg method to invoke.
+            </param>
+            <param name="args">
+            Parameters passed to method.
+            </param>
+        </member>
+        <member name="T:Csla.Reflection.DynamicMemberGetDelegate">
+            <summary>
+            Delegate for getting a value.
+            </summary>
+            <param name="target">Target object.</param>
+            <returns></returns>
+        </member>
+        <member name="T:Csla.Reflection.DynamicMemberSetDelegate">
+            <summary>
+            Delegate for setting a value.
+            </summary>
+            <param name="target">Target object.</param>
+            <param name="arg">Argument value.</param>
         </member>
         <member name="T:Csla.Threading.Semaphore">
             <summary>
@@ -6482,6 +6477,68 @@
             an async operation.
             </summary>
         </member>
+        <member name="T:Csla.Core.ISavable">
+            <summary>
+            Specifies that the object can save
+            itself.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.ISavable.BeginSave">
+            <summary>
+            Saves the object to the database asynchronously. The saved event will contain
+            the new object when the save operation completes.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.ISavable.BeginSave(System.Object)">
+            <summary>
+            Saves the object to the database asynchronously. The saved event will contain
+            the new object when the save operation completes.
+            </summary>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.Core.ISavable.SaveComplete(System.Object,System.Exception,System.Object)">
+            <summary>
+            INTERNAL CSLA .NET USE ONLY.
+            </summary>
+            <param name="newObject">
+            The new object returned as a result of the save.
+            </param>
+            <param name="error">Exception returned from operation.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="E:Csla.Core.ISavable.Saved">
+            <summary>
+            Event raised when an object has been saved.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.AddedNewEventArgs`1">
+            <summary>
+            Object containing information about a
+            newly added object.
+            </summary>
+            <typeparam name="T">
+            Type of the object that was added.
+            </typeparam>
+        </member>
+        <member name="M:Csla.Core.AddedNewEventArgs`1.#ctor">
+            <summary>
+            Creates a new instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.AddedNewEventArgs`1.#ctor(`0)">
+            <summary>
+            Creates a new instance of the object.
+            </summary>
+            <param name="newObject">
+            The newly added object.
+            </param>
+        </member>
+        <member name="P:Csla.Core.AddedNewEventArgs`1.NewObject">
+            <summary>
+            Gets a reference to the newly added
+            object.
+            </summary>
+        </member>
         <member name="T:Csla.DataPortalClient.ChildDataPortal`1">
             <summary>
             Invoke data portal methods on child
@@ -6521,40 +6578,6 @@
             <param name="sender">Object raising the event.</param>
             <param name="e">EventArgs object.</param>
         </member>
-        <member name="T:Csla.Core.ISavable">
-            <summary>
-            Specifies that the object can save
-            itself.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.ISavable.BeginSave">
-            <summary>
-            Saves the object to the database asynchronously. The saved event will contain
-            the new object when the save operation completes.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.ISavable.BeginSave(System.Object)">
-            <summary>
-            Saves the object to the database asynchronously. The saved event will contain
-            the new object when the save operation completes.
-            </summary>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="M:Csla.Core.ISavable.SaveComplete(System.Object,System.Exception,System.Object)">
-            <summary>
-            INTERNAL CSLA .NET USE ONLY.
-            </summary>
-            <param name="newObject">
-            The new object returned as a result of the save.
-            </param>
-            <param name="error">Exception returned from operation.</param>
-            <param name="userState">User state object.</param>
-        </member>
-        <member name="E:Csla.Core.ISavable.Saved">
-            <summary>
-            Event raised when an object has been saved.
-            </summary>
-        </member>
         <member name="T:Csla.Core.ContextDictionary">
             <summary>
             Defines a counterpart to the .NET HybridDictionary
@@ -6567,34 +6590,6 @@
             dictionary contains a matching key value.
             </summary>
             <param name="key">Key value.</param>
-        </member>
-        <member name="T:Csla.Core.AddedNewEventArgs`1">
-            <summary>
-            Object containing information about a
-            newly added object.
-            </summary>
-            <typeparam name="T">
-            Type of the object that was added.
-            </typeparam>
-        </member>
-        <member name="M:Csla.Core.AddedNewEventArgs`1.#ctor">
-            <summary>
-            Creates a new instance of the object.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.AddedNewEventArgs`1.#ctor(`0)">
-            <summary>
-            Creates a new instance of the object.
-            </summary>
-            <param name="newObject">
-            The newly added object.
-            </param>
-        </member>
-        <member name="P:Csla.Core.AddedNewEventArgs`1.NewObject">
-            <summary>
-            Gets a reference to the newly added
-            object.
-            </summary>
         </member>
         <member name="F:Csla.Rules.RuleContextModes.Any">
             <summary>
@@ -7371,6 +7366,12 @@
             Holds a list of broken rules tree list 
             </summary>
         </member>
+        <member name="T:Csla.Serialization.SerializableAttribute">
+            <summary>
+            Indicates that an object may be
+            serialized by the MobileFormatter.
+            </summary>
+        </member>
         <member name="T:Csla.Core.ISmartField">
             <summary>
             Defines members required for smart
@@ -7682,24 +7683,6 @@
             <typeparam name="T5">Type of argument</typeparam>
             <param name="arg5">Argument to method.</param>
         </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RequiredAttribute">
-            <summary>
-            Specifies that a data field value is required.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.#ctor">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
         <member name="T:Csla.Core.RemovingItemEventArgs">
             <summary>
             Contains event data for the RemovingItem
@@ -7784,216 +7767,6 @@
             <param name="criteria">
             Criteria object for the query.
             </param>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfPortal">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.#ctor">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.Create(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.CreateAsync(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.CreateAsync(Csla.WcfPortal.CriteriaRequest,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.Fetch(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.FetchAsync(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.FetchAsync(Csla.WcfPortal.CriteriaRequest,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.Update(Csla.WcfPortal.UpdateRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.UpdateAsync(Csla.WcfPortal.UpdateRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.UpdateAsync(Csla.WcfPortal.UpdateRequest,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.Delete(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.DeleteAsync(Csla.WcfPortal.CriteriaRequest)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.DeleteAsync(Csla.WcfPortal.CriteriaRequest,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortal.CancelAsync(System.Object)">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfPortal.CreateCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfPortal.FetchCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfPortal.UpdateCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfPortal.DeleteCompleted">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.CriteriaRequest">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientContext">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientCulture">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientUICulture">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.CriteriaData">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.GlobalContext">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.Principal">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.TypeName">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.UpdateRequest">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientContext">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientCulture">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientUICulture">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.GlobalContext">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ObjectData">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.Principal">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfErrorInfo">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.ExceptionTypeName">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.InnerError">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.Message">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.Source">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.StackTrace">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.TargetSiteName">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfResponse">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.ErrorData">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.GlobalContext">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.ObjectData">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.CreateCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.CreateCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.CreateCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.FetchCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.FetchCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.FetchCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.UpdateCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.UpdateCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.DeleteCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WcfPortal.DeleteCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WcfPortal.DeleteCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationContext">
-            <summary>
-            Validation context information.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationContext.#ctor(System.Object,System.Object,System.Collections.Generic.IDictionary{System.Object,System.Object})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="instance">Object to validate.</param>
-            <param name="serviceProvider">Ignored.</param>
-            <param name="items">Collection of name/value pairs.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.DisplayName">
-            <summary>
-            Gets or sets the display name of the member
-            to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.MemberName">
-            <summary>
-            Gets or sets the name of the member to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectInstance">
-            <summary>
-            Gets the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectType">
-            <summary>
-            Gets the type of the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.Items">
-            <summary>
-            Gets the dictionary of items that is associated with this context.
-            </summary>
         </member>
         <member name="T:Csla.NotUndoableAttribute">
             <summary>
@@ -8430,6 +8203,249 @@
             Gets the member name value.
             </summary>
         </member>
+        <member name="T:Csla.DataPortalClient.WcfProxy">
+            <summary>
+            Data portal client-side proxy used to communicate
+            with a CSLA .NET for Windows server-side
+            data portal.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultBinding">
+            <summary>
+            Gets or sets the default binding used to initialize
+            future instances of WcfProxy.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultUrl">
+            <summary>
+            Gets or sets the default URL address
+            for the data portal server.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultEndPoint">
+            <summary>
+            Gets or sets the default WCF endpoint
+            name for the data portal server.
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalClient.WcfProxy`1">
+            <summary>
+            Data portal client-side proxy used to communicate
+            with a CSLA .NET for Windows server-side
+            data portal.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.#ctor">
+            <summary>
+            Creates an instance of the object, initializing
+            it to use the DefaultUrl and DefaultBinding
+            values.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.GetProxy">
+            <summary>
+            Gets an instance of the WcfPortalClient object
+            for use in communicating with the server.
+            </summary>
+            <remarks>
+            If both DataPortalUrl and Binding are non-null then
+            those values are used to initialize the proxy, otherwise
+            the proxy is initialized using values from the
+            system.serviceModel element in the Silverlight
+            client-side config file.
+            </remarks>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnCreateCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the CreateCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate">
+            <summary>
+            Begins an asynchronous server call to create an
+            instance of a business object.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate(System.Object)">
+            <summary>
+            Begins an asynchronous server call to create an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginCreate(System.Object,System.Object)">
+            <summary>
+            Begins an asynchronous server call to create an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the FetchCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch">
+            <summary>
+            Begins an asynchronous server call to retrieve an
+            instance of a business object.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch(System.Object)">
+            <summary>
+            Begins an asynchronous server call to retrieve an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginFetch(System.Object,System.Object)">
+            <summary>
+            Begins an asynchronous server call to retrieve an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnUpdateCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the UpdateCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginUpdate(System.Object)">
+            <summary>
+            Begins an asynchronous server call to update an
+            instance of a business object.
+            </summary>
+            <param name="obj">Object to update.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginUpdate(System.Object,System.Object)">
+            <summary>
+            Begins an asynchronous server call to update an
+            instance of a business object.
+            </summary>
+            <param name="obj">Object to update.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnDeleteCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the DeleteCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginDelete(System.Object)">
+            <summary>
+            Begins an asynchronous server call to delete an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginDelete(System.Object,System.Object)">
+            <summary>
+            Begins an asynchronous server call to delete an
+            instance of a business object.
+            </summary>
+            <param name="criteria">Criteria object.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.OnExecuteCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the ExecuteCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginExecute(`0)">
+            <summary>
+            Begins an asynchronous server call to execute a
+            command object.
+            </summary>
+            <param name="command">Object to execute.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.BeginExecute(`0,System.Object)">
+            <summary>
+            Begins an asynchronous server call to execute a
+            command object.
+            </summary>
+            <param name="command">Object to execute.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertRequest(Csla.WcfPortal.UpdateRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Update request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertRequest(Csla.WcfPortal.CriteriaRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Criteria request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy`1.ConvertResponse(Csla.WcfPortal.WcfResponse)">
+            <summary>
+            Override this method to manipulate the message
+            request data returned from the server.
+            </summary>
+            <param name="response">Response data.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy`1.Binding">
+            <summary>
+            Gets the binding object used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy`1.DataPortalUrl">
+            <summary>
+            Gets the URL address for the data portal server
+            used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy`1.EndPoint">
+            <summary>
+            Gets the WCF endpoint name for the data portal
+            server used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy`1.GlobalContext">
+            <summary>
+            Gets the GlobalContext dictionary returned from the
+            server upon completion of the data portal call.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.WcfProxy`1.CreateCompleted">
+            <summary>
+            Event raised when the asynchronous BeginCreate() call
+            is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.WcfProxy`1.FetchCompleted">
+            <summary>
+            Event raised when the asynchronous BeginFetch() call
+            is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.WcfProxy`1.UpdateCompleted">
+            <summary>
+            Event raised when the asynchronous BeginUpdate() call
+            is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.WcfProxy`1.DeleteCompleted">
+            <summary>
+            Event raised when the asynchronous BeginDelete() call
+            is complete.
+            </summary>
+        </member>
+        <member name="E:Csla.DataPortalClient.WcfProxy`1.ExecuteCompleted">
+            <summary>
+            Event raised when the asynchronous BeginExecute() call
+            is complete.
+            </summary>
+        </member>
         <member name="T:Csla.Silverlight.Security.WindowsIdentity">
             <summary>
             Base class to simplify the retrieval of Windows identity
@@ -8809,252 +8825,6 @@
         <member name="E:Csla.DataPortal`1.ExecuteCompleted">
             <summary>
             Event raised when an execute operation completes.
-            </summary>
-        </member>
-        <member name="T:Csla.ApplicationContext">
-            <summary>
-            Provides consistent context information between the client
-            and server DataPortal objects. 
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.DefaultRuleSet">
-            <summary>
-            The default RuleSet name 
-            </summary>
-        </member>
-        <member name="M:Csla.ApplicationContext.Clear">
-            <summary>
-            Clears all context collections.
-            </summary>
-        </member>
-        <member name="M:Csla.ApplicationContext.SetLogicalExecutionLocation(Csla.ApplicationContext.LogicalExecutionLocations)">
-            <summary>
-            Set logical execution location
-            </summary>
-            <param name="location">Location to set context to</param>
-        </member>
-        <member name="P:Csla.ApplicationContext.User">
-            <summary>
-            Get or set the current <see cref="T:System.Security.Principal.IPrincipal"/>
-            object representing the user's identity.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.LocalContextSync">
-            <summary>
-            Gets a reference to the sync root used
-            when manipulating the LocalContext object.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.LocalContext">
-            <summary>
-            Returns the application-specific context data that
-            is local to the current AppDomain.
-            </summary>
-            <remarks>
-            <para>
-            The return value is a Dictionary of string, object. If one does
-            not already exist, and empty one is created and returned.
-            </para><para>
-            Note that data in this context is NOT transferred to and from
-            the client and server.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.ClientContextSync">
-            <summary>
-            Gets the sync root object used to
-            synchronize access to the ClientContext object.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.GlobalContextSync">
-            <summary>
-            Gets the sync root object used to
-            synchronize access to the GlobalContext object.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.ClientContext">
-            <summary>
-            Returns the application-specific context data provided
-            by the client.
-            </summary>
-            <remarks>
-            <para>
-            The return value is a Dictionary. If one does
-            not already exist, and empty one is created and returned.
-            </para><para>
-            Note that data in this context is transferred from
-            the client to the server. No data is transferred from
-            the server to the client.
-            </para><para>
-            This property is thread safe in a Windows client
-            setting and on an application server. It is not guaranteed
-            to be thread safe within the context of an ASP.NET
-            client setting (i.e. in your ASP.NET UI).
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.GlobalContext">
-            <summary>
-            Returns the application-specific context data shared
-            on both client and server.
-            </summary>
-            <remarks>
-            <para>
-            The return value is a Dictionary. If one does
-            not already exist, and empty one is created and returned.
-            </para><para>
-            Note that data in this context is transferred to and from
-            the client and server. Any objects or data in this context
-            will be transferred bi-directionally across the network.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.AuthenticationType">
-            <summary>
-            Returns the authentication type being used by the
-            CSLA .NET framework.
-            </summary>
-            <value></value>
-            <returns></returns>
-            <remarks>
-            This value is read from the application configuration
-            file with the key value "CslaAuthentication". The value
-            "Windows" indicates CSLA .NET should use Windows integrated
-            (or AD) security. Any other value indicates the use of
-            custom security derived from CslaPrincipal.
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.DataPortalProxy">
-            <summary>
-            Returns the channel or network protocol
-            for the DataPortal server.
-            </summary>
-            <value>Fully qualified assembly/type name of the proxy class.</value>
-            <returns></returns>
-            <remarks>
-            <para>
-            This value is read from the application configuration
-            file with the key value "CslaDataPortalProxy". 
-            </para><para>
-            The proxy class must implement Csla.Server.IDataPortalServer.
-            </para><para>
-            The value "Local" is a shortcut to running the DataPortal
-            "server" in the client process.
-            </para><para>
-            Other built-in values include:
-            <list>
-            <item>
-            <term>Csla,Csla.DataPortalClient.RemotingProxy</term>
-            <description>Use .NET Remoting to communicate with the server</description>
-            </item>
-            <item>
-            <term>Csla,Csla.DataPortalClient.EnterpriseServicesProxy</term>
-            <description>Use Enterprise Services (DCOM) to communicate with the server</description>
-            </item>
-            <item>
-            <term>Csla,Csla.DataPortalClient.WebServicesProxy</term>
-            <description>Use Web Services (asmx) to communicate with the server</description>
-            </item>
-            </list>
-            Each proxy type does require that the DataPortal server be hosted using the appropriate
-            technology. For instance, Web Services and Remoting should be hosted in IIS, while
-            Enterprise Services must be hosted in COM+.
-            </para>
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.IsInRoleProvider">
-            <summary>
-            Gets a qualified name for a method that implements
-            the IsInRole() behavior used for authorization.
-            </summary>
-            <returns>
-            Returns a value in the form
-            "Namespace.Class, Assembly, MethodName".
-            </returns>
-            <remarks>
-            The default is to use a simple IsInRole() call against
-            the current principal. If another method is supplied
-            it must conform to the IsInRoleProvider delegate.
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.PropertyChangedMode">
-            <summary>
-            Gets or sets a value specifying how CSLA .NET should
-            raise PropertyChanged events.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.ExecutionLocation">
-            <summary>
-            Returns a value indicating whether the application code
-            is currently executing on the client or server.
-            </summary>
-        </member>
-        <member name="P:Csla.ApplicationContext.RuleSet">
-            <summary>
-            Gets or sets the RuleSet name to use for static HasPermission calls.
-            </summary>
-            <value>The rule set.</value>
-        </member>
-        <member name="P:Csla.ApplicationContext.LogicalExecutionLocation">
-            <summary>
-            Return Logical Execution Location - Client or Server
-            This is applicable to Local mode as well
-            </summary>
-        </member>
-        <member name="T:Csla.ApplicationContext.ExecutionLocations">
-            <summary>
-            Enum representing the locations code can execute.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Client">
-            <summary>
-            The code is executing on the .NET client.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Server">
-            <summary>
-            The code is executing on the application server.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Silverlight">
-            <summary>
-            The code is executing on the Silverlight client.
-            </summary>
-        </member>
-        <member name="T:Csla.ApplicationContext.PropertyChangedModes">
-            <summary>
-            Enum representing the way in which CSLA .NET
-            should raise PropertyChanged events.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.PropertyChangedModes.Windows">
-            <summary>
-            Raise PropertyChanged events as required
-            by Windows Forms data binding.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.PropertyChangedModes.Xaml">
-            <summary>
-            Raise PropertyChanged events as required
-            by XAML data binding in WPF.
-            </summary>
-        </member>
-        <member name="T:Csla.ApplicationContext.LogicalExecutionLocations">
-            <summary>
-            Enum representing the logical execution location
-            The setting is set to server when server is execting
-            a CRUD opertion, otherwise the setting is always client
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.LogicalExecutionLocations.Client">
-            <summary>
-            The code is executing on the client.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.LogicalExecutionLocations.Server">
-            <summary>
-            The code is executing on the server.  This inlcudes
-            Local mode execution
             </summary>
         </member>
         <member name="T:Csla.BusinessListBase`2">
@@ -9471,6 +9241,252 @@
             <remarks>
             This value will be Nothing for root objects.
             </remarks>
+        </member>
+        <member name="T:Csla.ApplicationContext">
+            <summary>
+            Provides consistent context information between the client
+            and server DataPortal objects. 
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.DefaultRuleSet">
+            <summary>
+            The default RuleSet name 
+            </summary>
+        </member>
+        <member name="M:Csla.ApplicationContext.Clear">
+            <summary>
+            Clears all context collections.
+            </summary>
+        </member>
+        <member name="M:Csla.ApplicationContext.SetLogicalExecutionLocation(Csla.ApplicationContext.LogicalExecutionLocations)">
+            <summary>
+            Set logical execution location
+            </summary>
+            <param name="location">Location to set context to</param>
+        </member>
+        <member name="P:Csla.ApplicationContext.User">
+            <summary>
+            Get or set the current <see cref="T:System.Security.Principal.IPrincipal"/>
+            object representing the user's identity.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.LocalContextSync">
+            <summary>
+            Gets a reference to the sync root used
+            when manipulating the LocalContext object.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.LocalContext">
+            <summary>
+            Returns the application-specific context data that
+            is local to the current AppDomain.
+            </summary>
+            <remarks>
+            <para>
+            The return value is a Dictionary of string, object. If one does
+            not already exist, and empty one is created and returned.
+            </para><para>
+            Note that data in this context is NOT transferred to and from
+            the client and server.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.ClientContextSync">
+            <summary>
+            Gets the sync root object used to
+            synchronize access to the ClientContext object.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.GlobalContextSync">
+            <summary>
+            Gets the sync root object used to
+            synchronize access to the GlobalContext object.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.ClientContext">
+            <summary>
+            Returns the application-specific context data provided
+            by the client.
+            </summary>
+            <remarks>
+            <para>
+            The return value is a Dictionary. If one does
+            not already exist, and empty one is created and returned.
+            </para><para>
+            Note that data in this context is transferred from
+            the client to the server. No data is transferred from
+            the server to the client.
+            </para><para>
+            This property is thread safe in a Windows client
+            setting and on an application server. It is not guaranteed
+            to be thread safe within the context of an ASP.NET
+            client setting (i.e. in your ASP.NET UI).
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.GlobalContext">
+            <summary>
+            Returns the application-specific context data shared
+            on both client and server.
+            </summary>
+            <remarks>
+            <para>
+            The return value is a Dictionary. If one does
+            not already exist, and empty one is created and returned.
+            </para><para>
+            Note that data in this context is transferred to and from
+            the client and server. Any objects or data in this context
+            will be transferred bi-directionally across the network.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.AuthenticationType">
+            <summary>
+            Returns the authentication type being used by the
+            CSLA .NET framework.
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks>
+            This value is read from the application configuration
+            file with the key value "CslaAuthentication". The value
+            "Windows" indicates CSLA .NET should use Windows integrated
+            (or AD) security. Any other value indicates the use of
+            custom security derived from CslaPrincipal.
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.DataPortalProxy">
+            <summary>
+            Returns the channel or network protocol
+            for the DataPortal server.
+            </summary>
+            <value>Fully qualified assembly/type name of the proxy class.</value>
+            <returns></returns>
+            <remarks>
+            <para>
+            This value is read from the application configuration
+            file with the key value "CslaDataPortalProxy". 
+            </para><para>
+            The proxy class must implement Csla.Server.IDataPortalServer.
+            </para><para>
+            The value "Local" is a shortcut to running the DataPortal
+            "server" in the client process.
+            </para><para>
+            Other built-in values include:
+            <list>
+            <item>
+            <term>Csla,Csla.DataPortalClient.RemotingProxy</term>
+            <description>Use .NET Remoting to communicate with the server</description>
+            </item>
+            <item>
+            <term>Csla,Csla.DataPortalClient.EnterpriseServicesProxy</term>
+            <description>Use Enterprise Services (DCOM) to communicate with the server</description>
+            </item>
+            <item>
+            <term>Csla,Csla.DataPortalClient.WebServicesProxy</term>
+            <description>Use Web Services (asmx) to communicate with the server</description>
+            </item>
+            </list>
+            Each proxy type does require that the DataPortal server be hosted using the appropriate
+            technology. For instance, Web Services and Remoting should be hosted in IIS, while
+            Enterprise Services must be hosted in COM+.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.IsInRoleProvider">
+            <summary>
+            Gets a qualified name for a method that implements
+            the IsInRole() behavior used for authorization.
+            </summary>
+            <returns>
+            Returns a value in the form
+            "Namespace.Class, Assembly, MethodName".
+            </returns>
+            <remarks>
+            The default is to use a simple IsInRole() call against
+            the current principal. If another method is supplied
+            it must conform to the IsInRoleProvider delegate.
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.PropertyChangedMode">
+            <summary>
+            Gets or sets a value specifying how CSLA .NET should
+            raise PropertyChanged events.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.ExecutionLocation">
+            <summary>
+            Returns a value indicating whether the application code
+            is currently executing on the client or server.
+            </summary>
+        </member>
+        <member name="P:Csla.ApplicationContext.RuleSet">
+            <summary>
+            Gets or sets the RuleSet name to use for static HasPermission calls.
+            </summary>
+            <value>The rule set.</value>
+        </member>
+        <member name="P:Csla.ApplicationContext.LogicalExecutionLocation">
+            <summary>
+            Return Logical Execution Location - Client or Server
+            This is applicable to Local mode as well
+            </summary>
+        </member>
+        <member name="T:Csla.ApplicationContext.ExecutionLocations">
+            <summary>
+            Enum representing the locations code can execute.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.Client">
+            <summary>
+            The code is executing on the .NET client.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.Server">
+            <summary>
+            The code is executing on the application server.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.Silverlight">
+            <summary>
+            The code is executing on the Silverlight client.
+            </summary>
+        </member>
+        <member name="T:Csla.ApplicationContext.PropertyChangedModes">
+            <summary>
+            Enum representing the way in which CSLA .NET
+            should raise PropertyChanged events.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.PropertyChangedModes.Windows">
+            <summary>
+            Raise PropertyChanged events as required
+            by Windows Forms data binding.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.PropertyChangedModes.Xaml">
+            <summary>
+            Raise PropertyChanged events as required
+            by XAML data binding in WPF.
+            </summary>
+        </member>
+        <member name="T:Csla.ApplicationContext.LogicalExecutionLocations">
+            <summary>
+            Enum representing the logical execution location
+            The setting is set to server when server is execting
+            a CRUD opertion, otherwise the setting is always client
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.LogicalExecutionLocations.Client">
+            <summary>
+            The code is executing on the client.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.LogicalExecutionLocations.Server">
+            <summary>
+            The code is executing on the server.  This inlcudes
+            Local mode execution
+            </summary>
         </member>
         <member name="T:Csla.Server.ObjectFactoryAttribute">
             <summary>
@@ -10361,72 +10377,6 @@
             </summary>
             <param name="context">Rule context.</param>
         </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationResult">
-            <summary>
-            Results of a validation operation.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-            <param name="memberNames">The collection of member names that indicate
-            which fields have validation errors.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.ErrorMessage">
-            <summary>
-            Gets the error message for the validation.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.MemberNames">
-            <summary>
-            Gets the collection of member names that indicate which
-            fields have validation errors.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RangeAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Type,System.String,System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="type">Type of object to test.</param>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
         <member name="T:Csla.Threading.BusyLock">
             <summary>
             Implementation of a lock that waits while
@@ -10639,111 +10589,6 @@
             creates PropertyInfo objects.
             </summary>
         </member>
-        <member name="T:System.ComponentModel.DataAnnotations.DisplayAttribute">
-            <summary>
-            Defines a user-friendly display name for the property.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.GetName">
-            <summary>
-            Gets the Name property value.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.#ctor(System.Boolean,System.String)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="AutoGenerateField">AutoGenerateField value.</param>
-            <param name="Name">Friendly name.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Name">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Description">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.AutoGenerateField">
-            <summary>
-            Gets or sets a value indicating whether to
-            autogenerate the field.
-            </summary>
-        </member>
-        <member name="T:Csla.Core.ObjectCloner">
-            <summary>
-            This class provides an implementation of a deep
-            clone of a complete object graph. Objects are
-            copied at the field level.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.ObjectCloner.Clone(System.Object)">
-            <summary>
-            Clones an object.
-            </summary>
-            <param name="obj">The object to clone.</param>
-            <remarks>
-            <para>The object to be cloned must be serializable.</para>
-            <para>The serialization is performed using the formatter
-            specified in the application's configuration file
-            using the CslaSerializationFormatter key.</para>
-            <para>The default is to use the BinaryFormatter.
-            </para>. You may also choose to use the 
-            NetDataContractSerializer provided as part of WCF.
-            </remarks>
-        </member>
-        <member name="T:Csla.Core.IEditableBusinessObject">
-            <summary>
-            Defines the common methods required by all
-            editable CSLA single objects.
-            </summary>
-            <remarks>
-            It is strongly recommended that the implementations
-            of the methods in this interface be made Private
-            so as to not clutter up the native interface of
-            the collection objects.
-            </remarks>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.DeleteChild">
-            <summary>
-            Called by a parent object to mark the child
-            for deferred deletion.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.SetParent(Csla.Core.IParent)">
-            <summary>
-            Used by BusinessListBase as a child object is 
-            created to tell the child object about its
-            parent.
-            </summary>
-            <param name="parent">A reference to the parent collection object.</param>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.Delete">
-            <summary>
-            Marks the object for deletion. The object will be deleted as part of the
-            next save operation.
-            </summary>
-        </member>
-        <member name="P:Csla.Core.IEditableBusinessObject.EditLevelAdded">
-            <summary>
-            For internal use only!!
-            </summary>
-            <remarks>
-            Altering this value will almost certainly
-            break your code. This property is for use
-            by the parent collection only!
-            </remarks>
-        </member>
-        <member name="T:Csla.BusinessBindingListBase`2">
-            <summary>
-            This is the base class from which most business collections
-            or lists will be derived.
-            </summary>
-            <typeparam name="T">Type of the business object being defined.</typeparam>
-            <typeparam name="C">Type of the child objects contained in the list.</typeparam>
-        </member>
         <member name="T:Csla.Core.BusinessBase">
             <summary>
             This is the non-generic base class from which most
@@ -10868,6 +10713,48 @@
             <summary>
             Returns the current edit level of the object.
             </summary>
+        </member>
+        <member name="T:Csla.Core.IEditableBusinessObject">
+            <summary>
+            Defines the common methods required by all
+            editable CSLA single objects.
+            </summary>
+            <remarks>
+            It is strongly recommended that the implementations
+            of the methods in this interface be made Private
+            so as to not clutter up the native interface of
+            the collection objects.
+            </remarks>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.DeleteChild">
+            <summary>
+            Called by a parent object to mark the child
+            for deferred deletion.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.SetParent(Csla.Core.IParent)">
+            <summary>
+            Used by BusinessListBase as a child object is 
+            created to tell the child object about its
+            parent.
+            </summary>
+            <param name="parent">A reference to the parent collection object.</param>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.Delete">
+            <summary>
+            Marks the object for deletion. The object will be deleted as part of the
+            next save operation.
+            </summary>
+        </member>
+        <member name="P:Csla.Core.IEditableBusinessObject.EditLevelAdded">
+            <summary>
+            For internal use only!!
+            </summary>
+            <remarks>
+            Altering this value will almost certainly
+            break your code. This property is for use
+            by the parent collection only!
+            </remarks>
         </member>
         <member name="M:Csla.Core.BusinessBase.#ctor">
             <summary>
@@ -12139,6 +12026,26 @@
             Accept object state.
             </summary>
         </member>
+        <member name="M:Csla.Core.BusinessBase.OnErrorsChanged(System.ComponentModel.DataErrorsChangedEventArgs)">
+            <summary>
+            Raises the ErrorsChanged event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.OnPropertyChanged(System.String)">
+            <summary>
+            Call this method to raise the PropertyChanged event
+            for a specific property.
+            </summary>
+            <param name="propertyName">Name of the property that
+            is being changed.</param>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.OnUnknownPropertyChanged">
+            <summary>
+            Call this method to raise the PropertyChanged event
+            for all object properties.
+            </summary>
+        </member>
         <member name="M:Csla.Core.BusinessBase.Csla#Core#ICheckRules#SuppressRuleChecking">
             <summary>
             Sets value indicating no rule methods will be invoked.
@@ -12382,6 +12289,11 @@
             and checking user rights.
             </summary>
         </member>
+        <member name="E:Csla.Core.BusinessBase.ErrorsChanged">
+            <summary>
+            Event raised when error information has changed.
+            </summary>
+        </member>
         <member name="T:Csla.Core.BusinessBase.BypassPropertyChecksObject">
             <summary>
             Class that allows setting of property values on 
@@ -12413,6 +12325,36 @@
             Gets the current reference count for this
             object.
             </summary>
+        </member>
+        <member name="T:Csla.Core.ObjectCloner">
+            <summary>
+            This class provides an implementation of a deep
+            clone of a complete object graph. Objects are
+            copied at the field level.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.ObjectCloner.Clone(System.Object)">
+            <summary>
+            Clones an object.
+            </summary>
+            <param name="obj">The object to clone.</param>
+            <remarks>
+            <para>The object to be cloned must be serializable.</para>
+            <para>The serialization is performed using the formatter
+            specified in the application's configuration file
+            using the CslaSerializationFormatter key.</para>
+            <para>The default is to use the BinaryFormatter.
+            </para>. You may also choose to use the 
+            NetDataContractSerializer provided as part of WCF.
+            </remarks>
+        </member>
+        <member name="T:Csla.BusinessBindingListBase`2">
+            <summary>
+            This is the base class from which most business collections
+            or lists will be derived.
+            </summary>
+            <typeparam name="T">Type of the business object being defined.</typeparam>
+            <typeparam name="C">Type of the child objects contained in the list.</typeparam>
         </member>
         <member name="T:Csla.Security.NoAccessBehavior">
             <summary>
@@ -12477,6 +12419,54 @@
             <summary>
             Gets or sets a value indicating whether the rules have been
             initialized.
+            </summary>
+        </member>
+        <member name="T:Csla.Data.DataServiceContextManager`1">
+            <summary>
+            Provides an automated way to reuse 
+            an ADO.NET Data Services context object within 
+            the context of a single data portal operation.
+            </summary>
+            <typeparam name="C">
+            Type of context object to use.
+            </typeparam>
+        </member>
+        <member name="M:Csla.Data.DataServiceContextManager`1.GetManager(System.Uri)">
+            <summary>
+            Gets the DataServiceContext object for the 
+            specified URI.
+            </summary>
+            <param name="path">
+            URI to the server-side services.
+            </param>
+        </member>
+        <member name="M:Csla.Data.DataServiceContextManager`1.GetEntities``1">
+            <summary>
+            Gets a list of the entities of the
+            specified type from the context.
+            </summary>
+            <typeparam name="T">
+            Type of entity.
+            </typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.DataServiceContextManager`1.GetEntity``1(System.String,System.Object)">
+            <summary>
+            Gets a list of the entities by key.
+            </summary>
+            <typeparam name="T">
+            Type of entity.
+            </typeparam>
+            <param name="keyPropertyName">
+            Name of the key property.
+            </param>
+            <param name="keyPropertyValue">
+            Key value to match.
+            </param>
+        </member>
+        <member name="P:Csla.Data.DataServiceContextManager`1.DataServiceContext">
+            <summary>
+            Gets the DataServiceContext object.
             </summary>
         </member>
         <member name="T:Csla.CommandBase`1">
@@ -12645,26 +12635,6 @@
             <param name="relationship">Relationship with
             referenced object.</param>
             <returns></returns>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.StringLengthAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.#ctor(System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="stringMaxLength">Maximum string length allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
         </member>
         <member name="T:Csla.Serialization.TypeExtensions">
             <summary>
@@ -13068,6 +13038,142 @@
         <member name="E:Csla.BusinessBase`1.Saved">
             <summary>
             Event raised when an object has been saved.
+            </summary>
+        </member>
+        <member name="T:Csla.Threading.BackgroundWorker">
+            <summary>
+            A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, GlobalContext, CurrentCulture 
+            and CurrentUICulture to the background thread.
+            </summary>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.Threading.BackgroundWorker"/> class.
+            </summary>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.CancelAsync">
+            <summary>
+            Request cancelation of async operation.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+             <see cref="P:System.ComponentModel.BackgroundWorker.WorkerSupportsCancellation"/> is false.
+            </exception>
+            <PermissionSet>
+             <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/>
+            </PermissionSet>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.RunWorkerAsync">
+            <summary>
+            Starts execution of a background operation.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+             <see cref="P:System.ComponentModel.BackgroundWorker.IsBusy"/> is true.
+            </exception>
+            <PermissionSet>
+             <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/>
+            </PermissionSet>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.RunWorkerAsync(System.Object)">
+            <summary>
+            Starts execution of a background operation.
+            </summary>
+            <param name="argument">A parameter for use by the background operation to be executed in the <see cref="E:System.ComponentModel.BackgroundWorker.DoWork"/> event handler.</param>
+            <exception cref="T:System.InvalidOperationException">
+             <see cref="P:System.ComponentModel.BackgroundWorker.IsBusy"/> is true.
+            </exception>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.InternalDoWork(System.Object,System.ComponentModel.DoWorkEventArgs)">
+            <summary>
+            Run the internal DoWork
+            - set the thread context
+            - run the background workers doWork events
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.InternalRunWorkerCompleted(System.Object,System.ComponentModel.RunWorkerCompletedEventArgs)">
+             <summary>
+             Executes when the async operation is completed.
+            
+             Set the global context and then call the RunWorkerCompleted
+             </summary>
+             <param name="sender">The sender.</param>
+             <param name="e">The <see cref="T:System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.InternalProgressChanged(System.Object,System.ComponentModel.ProgressChangedEventArgs)">
+            <summary>
+            Raises the <see cref="E:System.ComponentModel.BackgroundWorker.ProgressChanged"/> event.
+            </summary>
+            <param name="sender">The sender.</param>
+            <param name="e">The <see cref="T:System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:System.ComponentModel.BackgroundWorker.WorkerReportsProgress"/> property is set to false.
+            </exception>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.ReportProgress(System.Int32)">
+            <summary>
+            Calls report progress on the underlying background worker.
+            </summary>
+            <param name="percentProgress">The percentage, from 0 to 100, of the background operation that is complete.</param>
+        </member>
+        <member name="M:Csla.Threading.BackgroundWorker.ReportProgress(System.Int32,System.Object)">
+            <summary>
+            Calls report progress on the background worker.
+            </summary>
+            <param name="percentProgress">The percent progress.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="E:Csla.Threading.BackgroundWorker.DoWork">
+            <summary>
+            Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
+            </summary>
+        </member>
+        <member name="E:Csla.Threading.BackgroundWorker.RunWorkerCompleted">
+            <summary>
+            Occurs when the background operation has completed, has been canceled, or has raised an exception.
+            </summary>
+        </member>
+        <member name="E:Csla.Threading.BackgroundWorker.ProgressChanged">
+            <summary>
+            Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.ReportProgress"/> is called.
+            </summary>
+        </member>
+        <member name="P:Csla.Threading.BackgroundWorker.IsBusy">
+            <summary>
+            Gets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation.
+            </summary>
+            <value></value>
+            <returns>true, if the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:Csla.Threading.BackgroundWorker.WorkerReportsProgress">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> can report progress updates.
+            </summary>
+            <value></value>
+            <returns>true if the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports progress updates; otherwise false. The default is false.
+            </returns>
+        </member>
+        <member name="P:Csla.Threading.BackgroundWorker.WorkerSupportsCancellation">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports asynchronous cancellation.
+            </summary>
+            <value></value>
+            <returns>true if the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports cancellation; otherwise false. The default is false.
+            </returns>
+        </member>
+        <member name="P:Csla.Threading.BackgroundWorker.CancellationPending">
+            <summary>
+            Gets a value indicating whether the application has requested cancellation of a background operation.
+            </summary>
+            <value></value>
+            <returns>true if the application has requested cancellation of a background operation; otherwise, false. The default is false.
+            </returns>
+        </member>
+        <member name="P:Csla.Threading.BackgroundWorker.GlobalContext">
+            <summary>
+            Gets a reference to the global context returned from
+            the background thread and/or server.
             </summary>
         </member>
         <member name="T:Csla.Serialization.Mobile.MobileFormatter">
@@ -13514,6 +13620,12 @@
             <param name="type">The type.</param>
             <param name="name">The name of the property.</param>
             <returns>Returns the display name or the property name.</returns>
+        </member>
+        <member name="T:Csla.Serialization.NonSerializedAttribute">
+            <summary>
+            Indicates that a field should not be
+            serialized by the MobileFormatter.
+            </summary>
         </member>
         <member name="T:Csla.Core.SavedEventArgs">
             <summary>

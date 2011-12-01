@@ -4,7 +4,7 @@
     <id>CSLA-WPF</id>
     <title>CSLA .NET - WPF</title>
     <tags>CSLA WPF UI</tags>
-    <version>4.1.0.0</version>
+    <version>4.2.0.1103</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -17,7 +17,7 @@ CSLA .NET is an application development framework that reduces the cost of build
     </description>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.1.0.0]" />
+      <dependency id="CSLA-Core" version="[4.2.0.1103]" />
     </dependencies>
   </metadata>
   <files>

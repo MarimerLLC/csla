@@ -4,7 +4,7 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.1.0.0</version>
+    <version>4.2.0.1103</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -30,8 +30,8 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\SL4.0" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\SL4.0" />
     <!-- Windows Phone 7 Client -->
-    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\sl3-WP" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\sl3-WP" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\WP7.1" />
   </files>
 </package>

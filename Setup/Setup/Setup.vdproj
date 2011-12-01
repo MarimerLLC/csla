@@ -273,6 +273,54 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_9225EB81A4877A673742BB03E6D1A5C3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_63E492016502670DA01436DEE9968671"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_43152AE67FBD813D6C2E60D9EDB250D9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
+        "OwnerKey" = "8:_E90A2DA98B165752FA13BD45C6982160"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_509EB08DEFD1481A96E65A3F1EF28E43"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -597,54 +645,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_9225EB81A4877A673742BB03E6D1A5C3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_63E492016502670DA01436DEE9968671"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_43152AE67FBD813D6C2E60D9EDB250D9"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "OwnerKey" = "8:_E90A2DA98B165752FA13BD45C6982160"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A916394FFF5F40198DDB490A7570FD9F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -885,12 +885,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CCE1D3DBAE797E0C0AE7386F46AEB5AC"
-        "OwnerKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_CDC6406FFF5C49599932EDBE93B2BAD0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1120,24 +1114,6 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_10EC4A0821D1C14497CF5C3DA6C46CA2"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_52C3DA7CC6C74CFE9FED624A007923F3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F9257FE41C3B4175AB93CA78E0C3FDC6"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1145,6 +1121,18 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_F4E7E4934BD248E890811D57DE0801ED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_10EC4A0821D1C14497CF5C3DA6C46CA2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1204,7 +1192,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
+        "OwnerKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1247,6 +1235,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_5D877D9FDD80405D89218C155BEB09C9"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_52C3DA7CC6C74CFE9FED624A007923F3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2043,6 +2037,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4EF739A72C4CBBC862096E21ED54B99E"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.Xml, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_4EF739A72C4CBBC862096E21ED54B99E"
+                    {
+                    "Name" = "8:System.Xml.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.Xml.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_471AF3E477A7410C9358F1B78785358D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_53F5FFCBBD45412F97212CC6BD3D77E0"
@@ -2909,37 +2934,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A81D42BF403B80E207C9D99F07F68573"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Xml, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_A81D42BF403B80E207C9D99F07F68573"
-                    {
-                    "Name" = "8:System.Xml.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Xml.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_471AF3E477A7410C9358F1B78785358D"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A916394FFF5F40198DDB490A7570FD9F"
@@ -4369,7 +4363,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
         "ProductCode" = "8:{A64F68DF-F69E-4B5E-9B25-E41878A3B6FA}"
-        "PackageCode" = "8:{101FC85F-660B-4237-AA26-6AA65B11278A}"
+        "PackageCode" = "8:{5714667E-D1A8-48A8-B354-F822C6DF262B}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"
@@ -4663,8 +4657,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:WARNING: This software is Copyright (c) Marimer LLC and is protected by copyright law and international treaties. Unauthorized duplication or distribution of this program, or any portion of it, may result in severe civil or criminal penalties, and will be prosecuted to the maximum extent possible under the law."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -4676,8 +4670,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -4770,7 +4764,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:Thank you for installing CSLA .NET."
+                            "Value" = "8:Thank you for installing [ProductName] [ProductVersion]."
                             "DefaultValue" = "8:#1258"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -4883,8 +4877,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:WARNING: This software is Copyright (c) Marimer LLC and is protected by copyright law and international treaties. Unauthorized duplication or distribution of this program, or any portion of it, may result in severe civil or criminal penalties, and will be prosecuted to the maximum extent possible under the law."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -4896,8 +4890,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install [ProductName] [ProductVersion] on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }

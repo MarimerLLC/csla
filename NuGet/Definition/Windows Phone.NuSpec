@@ -4,7 +4,7 @@
     <id>CSLA-WindowsPhone</id>
     <title>CSLA .NET - Windows Phone</title>
     <tags>CSLA WP7 Windows Phone</tags>
-    <version>4.1.0.0</version>
+    <version>4.2.0.1103</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -17,16 +17,16 @@ CSLA .NET is an application development framework that reduces the cost of build
     </description>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.1.0.0]" />
+      <dependency id="CSLA-Core" version="[4.2.0.1103]" />
     </dependencies>
     <!--
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Net" targetFramework="sl3-WP" />
-      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="sl3-WP" />
-      <frameworkAssembly assemblyName="System.Servicemodel" targetFramework="sl3-WP" />
-      <frameworkAssembly assemblyName="System.Windows" targetFramework="sl3-WP" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="sl3-WP" />
-      <frameworkAssembly assemblyName="System.Xml.Serialization" targetFramework="sl3-WP" />
+      <frameworkAssembly assemblyName="System.Net" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Servicemodel" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Windows" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Xml.Serialization" targetFramework="WP7.1" />
     </frameworkAssemblies>
     -->
   </metadata>
@@ -36,8 +36,8 @@ CSLA .NET is an application development framework that reduces the cost of build
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\sl3-WP" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\sl3-WP" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl3-WP" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\WP7.1" />
   </files>
 </package>

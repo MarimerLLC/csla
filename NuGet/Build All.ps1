@@ -36,7 +36,7 @@
 ##  
 ##  “CSLA .NET - Windows Phone” NuGet
 ##  •	Contents:
-##      o	Csla.Xaml.dll (WP) – which is the Silverlight Csla.dll right? Or is this different in upcoming CSLA 4.1?
+##      o	Csla.Xaml.dll (WP)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##

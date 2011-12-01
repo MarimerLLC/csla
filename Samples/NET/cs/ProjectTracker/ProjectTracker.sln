@@ -200,6 +200,7 @@ Global
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|Mixed Platforms.Deploy.0 = Debug|Any CPU
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|.NET.ActiveCfg = Release|Any CPU
 		{BB418D15-BC52-43CE-9847-42D436222D81}.Release|Any CPU.ActiveCfg = Release|Any CPU

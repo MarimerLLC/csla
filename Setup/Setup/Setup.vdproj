@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00F885D34F554D389448DAB747FC7A2B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_06BB78467E36A563D7F6EC8DE78BFCA6"
         "OwnerKey" = "8:_646A4086B5B449EBB6AC9A123537BF2B"
         "MsmSig" = "8:_UNDEFINED"
@@ -71,6 +77,12 @@
         {
         "MsmKey" = "8:_100B76262DC0FDDF26C4082482F34202"
         "OwnerKey" = "8:_646A4086B5B449EBB6AC9A123537BF2B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_10EC4A0821D1C14497CF5C3DA6C46CA2"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -502,6 +514,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9225EB81A4877A673742BB03E6D1A5C3"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9225EB81A4877A673742BB03E6D1A5C3"
         "OwnerKey" = "8:_63E492016502670DA01436DEE9968671"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -581,6 +599,12 @@
         {
         "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
         "OwnerKey" = "8:_9225EB81A4877A673742BB03E6D1A5C3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -951,6 +975,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DCEB8B1A52FE4AF38CA9CE6B35A7505A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E43D4B99B71F4181AB48A1F29B474B68"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -965,6 +995,18 @@
         {
         "MsmKey" = "8:_E90A2DA98B165752FA13BD45C6982160"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E90A2DA98B165752FA13BD45C6982160"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1001,6 +1043,12 @@
         {
         "MsmKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
         "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1067,6 +1115,24 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_AF818D84976146CBBBBC8AFE0FD4BBE5"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_10EC4A0821D1C14497CF5C3DA6C46CA2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_52C3DA7CC6C74CFE9FED624A007923F3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1432,6 +1498,37 @@
             "TargetName" = "8:System.Web.WebPages.xml"
             "Tag" = "8:"
             "Folder" = "8:_A32A2AF21C514058B96A5F33698E1FF5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_10EC4A0821D1C14497CF5C3DA6C46CA2"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Mono.Android, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_10EC4A0821D1C14497CF5C3DA6C46CA2"
+                    {
+                    "Name" = "8:Mono.Android.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Mono.Android.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5E027D8376DE40EAA5A2B8071A501B18"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4148,6 +4245,17 @@
                                                 {
                                                 }
                                             }
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_5E027D8376DE40EAA5A2B8071A501B18"
+                                            {
+                                            "Name" = "8:Android"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_26FF223C24BE496C9BDB3B074EE11DF4"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_5F07CF2739154ABAAF12E783953EAAB5"
                                             {
                                             "Name" = "8:Client"
@@ -4203,6 +4311,17 @@
                                                 {
                                                 }
                                             }
+                                            "{9EF0B969-E518-4E46-987F-47570745A589}:_7201E029E6CD47ED8322A9A76E051774"
+                                            {
+                                            "Name" = "8:Android"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "Property" = "8:_96FEA47CD2BF480987D34936233B5010"
+                                                "Folders"
+                                                {
+                                                }
+                                            }
                                             "{9EF0B969-E518-4E46-987F-47570745A589}:_A32A2AF21C514058B96A5F33698E1FF5"
                                             {
                                             "Name" = "8:Server"
@@ -4250,7 +4369,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
         "ProductCode" = "8:{A64F68DF-F69E-4B5E-9B25-E41878A3B6FA}"
-        "PackageCode" = "8:{C92C2166-C35C-4B33-AC84-9EF320D1DDF3}"
+        "PackageCode" = "8:{101FC85F-660B-4237-AA26-6AA65B11278A}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"
@@ -4870,6 +4989,34 @@
         }
         "ProjectOutput"
         {
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_00F885D34F554D389448DAB747FC7A2B"
+            {
+            "SourcePath" = "8:..\\..\\Bin\\Release\\Android\\Csla.XML"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5E027D8376DE40EAA5A2B8071A501B18"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|Any CPU"
+            "OutputGroupCanonicalName" = "8:Documentation"
+            "OutputProjectGuid" = "8:{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_07CC7B124AB04E3DAF26C295C79CB2A6"
             {
             "SourcePath" = "8:..\\..\\Bin\\Debug\\Wp\\Csla.XML"
@@ -5066,6 +5213,34 @@
                 {
                 }
             }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_357D9FC2B348401A8748F39D855127F4"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7201E029E6CD47ED8322A9A76E051774"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Debug|Any CPU"
+            "OutputGroupCanonicalName" = "8:Symbols"
+            "OutputProjectGuid" = "8:{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_37FC1BB2D0624EAAA535ADD7D63D9166"
             {
             "SourcePath" = "8:..\\..\\Bin\\Release\\Wp\\Csla.XML"
@@ -5145,6 +5320,34 @@
             "OutputConfiguration" = "8:Debug|Any CPU"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{E9198340-CC6F-4D4F-8A0E-BAFA9A29C8F9}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_52C3DA7CC6C74CFE9FED624A007923F3"
+            {
+            "SourcePath" = "8:..\\..\\Source\\Csla.Android\\obj\\Debug\\Csla.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7201E029E6CD47ED8322A9A76E051774"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Debug|Any CPU"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -5845,6 +6048,62 @@
             "OutputConfiguration" = "8:Debug|Any CPU"
             "OutputGroupCanonicalName" = "8:Documentation"
             "OutputProjectGuid" = "8:{604B4707-4F80-4671-A956-A66CC8DC8917}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DCEB8B1A52FE4AF38CA9CE6B35A7505A"
+            {
+            "SourcePath" = "8:..\\..\\Bin\\Release\\Android\\Csla.XML"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_7201E029E6CD47ED8322A9A76E051774"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Documentation"
+            "OutputProjectGuid" = "8:{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_EAA8ABDCDE8B4A859C35794477FCDF21"
+            {
+            "SourcePath" = "8:..\\..\\Source\\Csla.Android\\obj\\Release\\Csla.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_5E027D8376DE40EAA5A2B8071A501B18"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|Any CPU"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

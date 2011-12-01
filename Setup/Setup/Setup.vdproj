@@ -207,12 +207,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3CCCC9036EF345F8818790787D033C91"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_3E93A94EA60C4794985F2E44C6B88EAB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -291,12 +285,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_57F01D02E88D41F980DB0B017877E712"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_5A802082BD774B8F83356E64ACAD1F2B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -323,6 +311,12 @@
         {
         "MsmKey" = "8:_63E492016502670DA01436DEE9968671"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_63E492016502670DA01436DEE9968671"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -592,6 +586,18 @@
         "Entry"
         {
         "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
+        "OwnerKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A81D42BF403B80E207C9D99F07F68573"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -833,6 +839,12 @@
         {
         "MsmKey" = "8:_CCE1D3DBAE797E0C0AE7386F46AEB5AC"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CCE1D3DBAE797E0C0AE7386F46AEB5AC"
+        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1765,26 +1777,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3CCCC9036EF345F8818790787D033C91"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\AddAsyncFactoryMethods.snippet"
-            "TargetName" = "8:AddAsyncFactoryMethods.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_972D72B1F0724346BB8305A95D329FD3"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3E93A94EA60C4794985F2E44C6B88EAB"
             {
             "SourcePath" = "8:..\\..\\Support\\Snippets\\vb\\DefineACslaChildProperty.snippet"
@@ -2000,26 +1992,6 @@
             {
             "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\DefineACslaReadonlyPropertyWithConversion.snippet"
             "TargetName" = "8:DefineACslaReadonlyPropertyWithConversion.snippet"
-            "Tag" = "8:"
-            "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_57F01D02E88D41F980DB0B017877E712"
-            {
-            "SourcePath" = "8:..\\..\\Support\\Snippets\\cs\\AddAsyncFactoryMethods.snippet"
-            "TargetName" = "8:AddAsyncFactoryMethods.snippet"
             "Tag" = "8:"
             "Folder" = "8:_F9E3D65AEF644DC08F2C08E95E6D3635"
             "Condition" = "8:"
@@ -4277,15 +4249,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
-        "ProductCode" = "8:{09F8951E-306E-458E-8EF0-CA10ADECBB30}"
-        "PackageCode" = "8:{DAF99CA0-7E69-4681-B44B-6FB9701410F7}"
+        "ProductCode" = "8:{A64F68DF-F69E-4B5E-9B25-E41878A3B6FA}"
+        "PackageCode" = "8:{C92C2166-C35C-4B33-AC84-9EF320D1DDF3}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:4.2.1102"
+        "ProductVersion" = "8:4.2.1103"
         "Manufacturer" = "8:Marimer LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://forums.lhotka.net/"

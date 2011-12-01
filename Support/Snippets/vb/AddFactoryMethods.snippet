@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
   <CodeSnippet Format="1.0.0">
     <Header>
@@ -36,25 +36,29 @@
           <Function />
         </Literal>
       </Declarations>
-      <Code Language="VB" Delimiter="$"><![CDATA[#Region " Factory Methods "
+      <Code Language="VB" Delimiter="$"><![CDATA[Public Shared Sub New$ClassName$(callback As EventHandler(Of DataPortalResult(Of $ClassName$)))
+  DataPortal.BeginCreate(Of $ClassName$)(callback)
+End Sub
 
-Public Shared Function New() As $ClassName$
+Public Shared Sub Get$ClassName$($IdName$ As $IdType$, callback As EventHandler(Of DataPortalResult(Of $ClassName$)))
+  DataPortal.BeginFetch(Of $ClassName$)($IdName$, callback)
+End Sub
+
+#If Not SILVERLIGHT
+
+Public Shared Function New$ClassName$() As $ClassName$
   Return DataPortal.Create(Of $ClassName$)()
 End Function
 
-Public Shared Function Get(ByVal $IdName$ As $IdType$) As $ClassName$
+Public Shared Function Get$ClassName$(ByVal $IdName$ As $IdType$) As $ClassName$
   Return DataPortal.Fetch(Of $ClassName$)($IdName$)
 End Function
 
-Public Shared Sub Delete(ByVal $IdName$ As $IdType$)
+Public Shared Sub Delete$ClassName$(ByVal $IdName$ As $IdType$)
   DataPortal.Delete(Of $ClassName$)($IdName$)
 End Sub
 
-Private Sub New()
-  ' Require use of factory methods
-End Sub
-
-#End Region]]></Code>
+#End if]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

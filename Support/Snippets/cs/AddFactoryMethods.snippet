@@ -28,8 +28,17 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp">
-  <![CDATA[#region Factory Methods
+  <![CDATA[public static void New$ClassName$(EventHandler<DataPortalResult<$ClassName$>> callback)
+{
+  DataPortal.BeginCreate<$ClassName$>(callback);
+}
 
+public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResult<$ClassName$>> callback)
+{
+  DataPortal.BeginFetch<$ClassName$>($IdName$, callback);
+}
+
+#if !SILVERLIGHT
 public static $ClassName$ New$ClassName$()
 {
   return DataPortal.Create<$ClassName$>();
@@ -45,10 +54,7 @@ public static void Delete$ClassName$($IdType$ $IdName$)
   DataPortal.Delete<$ClassName$>($IdName$);
 }
 
-private $ClassName$()
-{  /* Require use of factory methods */ }
-
-#endregion]]></Code>
+#endif]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

@@ -280,18 +280,6 @@
         "Entry"
         {
         "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
-        "OwnerKey" = "8:_F1F77DCDD92B60DF3B79EC07E2AFDE73"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
-        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4EF739A72C4CBBC862096E21ED54B99E"
         "OwnerKey" = "8:_EAA8ABDCDE8B4A859C35794477FCDF21"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -371,12 +359,6 @@
         {
         "MsmKey" = "8:_63E492016502670DA01436DEE9968671"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_63E492016502670DA01436DEE9968671"
-        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -863,12 +845,6 @@
         {
         "MsmKey" = "8:_CCE1D3DBAE797E0C0AE7386F46AEB5AC"
         "OwnerKey" = "8:_9A9655E5FAB54E838EE1C231C9C90939"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_CCE1D3DBAE797E0C0AE7386F46AEB5AC"
-        "OwnerKey" = "8:_A005E500BEFC028626D41F81718B894D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -3371,7 +3347,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Csla, Version=4.2.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Csla, Version=4.2.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_C6AE0F49AC0263407C545AC889043786"
@@ -4362,15 +4338,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CSLA .NET"
-        "ProductCode" = "8:{A64F68DF-F69E-4B5E-9B25-E41878A3B6FA}"
-        "PackageCode" = "8:{5714667E-D1A8-48A8-B354-F822C6DF262B}"
+        "ProductCode" = "8:{1628D2F5-8C1E-4A8C-A8B3-956172D7D83D}"
+        "PackageCode" = "8:{EF4AB04C-12B5-43D1-9938-139CCA08D96A}"
         "UpgradeCode" = "8:{35002F4A-6A68-4BD5-B5AB-DCF437A15203}"
         "AspNetVersion" = "8:4.0.30128.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:4.2.1103"
+        "ProductVersion" = "8:4.2.1"
         "Manufacturer" = "8:Marimer LLC"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://forums.lhotka.net/"

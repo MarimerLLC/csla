@@ -243,6 +243,7 @@
     <Compile Include="Authorization\TestIdentity.cs" />
     <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
+    <Compile Include="Serialization\BinaryReaderWriterTestClass.cs" />
     <Compile Include="Serialization\DCRoot.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />

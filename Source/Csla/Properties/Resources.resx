@@ -425,4 +425,10 @@
   <data name="ObjectRulesCannotSetPrimaryProperty" xml:space="preserve">
     <value>Object rule can not have PrimaryPropery.</value>
   </data>
+  <data name="UnandledKNownTypeException" xml:space="preserve">
+    <value>Unhandled CSLA Known type was found</value>
+  </data>
+  <data name="BinaryWriterObjectSerializationException" xml:space="preserve">
+    <value>Serialization of type object is not supported.</value>
+  </data>
 </root>

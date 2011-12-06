@@ -392,7 +392,7 @@ namespace Csla.Test.ValidationRules
 #if WINDOWS_PHONE
       context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/null:InvalidOperationException", root.GetBrokenRules()[0].Description);
 #else
-      context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/null:Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
+      context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/(object):Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
 #endif
       context.Assert.Success();
       context.Complete();

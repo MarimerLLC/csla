@@ -44,48 +44,10 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(Stream serializationStream, object graph)
     {
-      XmlWriter writer = GetXmlWriter(serializationStream);
-      Serialize(writer, graph);
-      writer.Flush();
+    	ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter();
+			writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
-    /// <summary>
-    /// Serialize an object graph into XML.
-    /// </summary>
-    /// <param name="textWriter">
-    /// TextWriter to which the serialized data
-    /// will be written.
-    /// </param>
-    /// <param name="graph">
-    /// Root object of the object graph
-    /// to serialize.
-    /// </param>
-    public void Serialize(TextWriter textWriter, object graph)
-    {
-      XmlWriter writer = XmlWriter.Create(textWriter);
-      Serialize(writer, graph);
-      writer.Flush();
-    }
-
-    /// <summary>
-    /// Serialize an object graph into XML.
-    /// </summary>
-    /// <param name="writer">
-    /// XmlWriter to which the serialized data
-    /// will be written.
-    /// </param>
-    /// <param name="graph">
-    /// Root object of the object graph
-    /// to serialize.
-    /// </param>
-    public void Serialize(XmlWriter writer, object graph)
-    {
-      List<SerializationInfo> serialized = SerializeAsDTO(graph);
-
-      DataContractSerializer dc = GetDataContractSerializer();
-
-      dc.WriteObject(writer, serialized);
-    }
 
     /// <summary>
     /// Serialize an object graph into DTO.
@@ -145,12 +107,6 @@ namespace Csla.Serialization.Mobile
       }
     }
 
-    private DataContractSerializer GetDataContractSerializer()
-    {
-      return new DataContractSerializer(
-        typeof(List<SerializationInfo>),
-        new Type[] { typeof(List<int>), typeof(byte[]), typeof(DateTimeOffset) });
-    }
 
     /// <summary>
     /// Serializes an object into a SerializationInfo object.
@@ -249,40 +205,11 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(Stream serializationStream)
     {
-      XmlReader reader = GetXmlReader(serializationStream);
-      return Deserialize(reader);
+    	ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+    	var data = reader.Read(serializationStream);
+    	return DeserializeAsDTO(data);
     }
 
-    /// <summary>
-    /// Deserialize an object from XML.
-    /// </summary>
-    /// <param name="textReader">
-    /// TextReader containing the serialized XML
-    /// data.
-    /// </param>
-    /// <returns></returns>
-    public object Deserialize(TextReader textReader)
-    {
-      XmlReader reader = XmlReader.Create(textReader);
-      return Deserialize(reader);
-    }
-
-    /// <summary>
-    /// Deserialize an object from XML.
-    /// </summary>
-    /// <param name="reader">
-    /// XmlReader containing the serialized XML
-    /// data.
-    /// </param>
-    /// <returns></returns>
-    public object Deserialize(XmlReader reader)
-    {
-      DataContractSerializer dc = GetDataContractSerializer();
-
-      List<SerializationInfo> deserialized = dc.ReadObject(reader) as List<SerializationInfo>;
-      return Deserialize(deserialized);
-
-    }
 
     /// <summary>
     /// Deserialize an object from DTO graph.
@@ -408,7 +335,7 @@ namespace Csla.Serialization.Mobile
     }
 
     /// <summary>
-    /// Serilizes an object from a DTO graph
+    /// Serializes an object from a DTO graph
     /// </summary>
     /// <param name="serialized">DTO Graph to deserialize</param>
     /// <returns>Deserialized object</returns>
@@ -458,80 +385,5 @@ namespace Csla.Serialization.Mobile
     }
     #endregion
 
-    #region XmlReader/XmlWriter
-
-#if SILVERLIGHT
-    private static bool _useBinaryXml = true;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to use
-    /// binary XML for serialization. Defaults to true.
-    /// </summary>
-    public static bool UseBinaryXml
-    {
-      get { return _useBinaryXml; }
-      set { _useBinaryXml = value; }
-    }
-#else
-    private static bool _useBinaryXml;
-    private static bool _useBinaryXmlSet;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to use
-    /// binary XML for serialization. Defaults to true.
-    /// </summary>
-    public static bool UseBinaryXml
-    {
-      get 
-      {
-        if (!_useBinaryXmlSet)
-        {
-          string tmp = System.Configuration.ConfigurationManager.AppSettings["CslaUseBinaryXml"];
-          if (string.IsNullOrEmpty(tmp))
-            _useBinaryXml = true;
-          else
-            _useBinaryXml = bool.Parse(tmp);
-          _useBinaryXmlSet = true;
-        }
-        return _useBinaryXml; 
-      }
-      set 
-      { 
-        _useBinaryXml = value;
-        _useBinaryXmlSet = true;
-      }
-    }
-#endif
-
-
-    /// <summary>
-    /// Gets a new XmlWriter object.
-    /// </summary>
-    /// <param name="stream">The stream to which you
-    /// want to write.</param>
-    /// <returns></returns>
-    public static XmlWriter GetXmlWriter(Stream stream)
-    {
-      if (UseBinaryXml)
-        return XmlDictionaryWriter.CreateBinaryWriter(stream);
-      else
-        return XmlWriter.Create(stream);
-    }
-
-    /// <summary>
-    /// Gets a new XmlReader object.
-    /// </summary>
-    /// <param name="stream">The stream from which you
-    /// want to read.</param>
-    /// <returns></returns>
-    public static XmlReader GetXmlReader(Stream stream)
-    {
-      if (UseBinaryXml)
-        return XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max);
-      else
-        return XmlReader.Create(stream);
-    }
-
-    #endregion
   }
 }

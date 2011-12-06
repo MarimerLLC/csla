@@ -11,6 +11,7 @@ using System.IO;
 using Csla;
 using Csla.Core;
 using Csla.Serialization.Mobile;
+using Csla.Test.Serialization;
 using UnitDriven;
 
 #if NUNIT
@@ -75,28 +76,28 @@ namespace cslalighttest.Serialization
     /// Same test as above only uses one of the mobile formatter overloads to verify that
     /// using a TextReader/Writer works as well.
     /// </summary>
-    [TestMethod]
-    public void SerializeWithTextWriter()
-    {
-      UnitTestContext context = GetContext();
+		//[TestMethod]
+		//public void SerializeWithTextWriter()
+		//{
+		//  UnitTestContext context = GetContext();
 
-      MobileFormatter formatter = new MobileFormatter();
-      StringBuilder sb = new StringBuilder();
-      SingleCriteria<SerializationTests, string> expected = new SingleCriteria<SerializationTests, string>("success");
-      SingleCriteria<SerializationTests, string> actual = null;
+		//  MobileFormatter formatter = new MobileFormatter();
+		//  StringBuilder sb = new StringBuilder();
+		//  SingleCriteria<SerializationTests, string> expected = new SingleCriteria<SerializationTests, string>("success");
+		//  SingleCriteria<SerializationTests, string> actual = null;
 
-      using (TextWriter tw = new StringWriter(sb))
-        formatter.Serialize(tw, expected);
+		//  using (TextWriter tw = new StringWriter(sb))
+		//    formatter.Serialize(tw, expected);
       
-      string buffer = sb.ToString();
+		//  string buffer = sb.ToString();
 
-      using(TextReader tr = new StringReader(buffer))
-        actual = (SingleCriteria<SerializationTests, string>)formatter.Deserialize(tr);
+		//  using(TextReader tr = new StringReader(buffer))
+		//    actual = (SingleCriteria<SerializationTests, string>)formatter.Deserialize(tr);
 
-      context.Assert.AreEqual(expected.Value, actual.Value);
-      context.Assert.Success();
-      context.Complete();
-    }
+		//  context.Assert.AreEqual(expected.Value, actual.Value);
+		//  context.Assert.Success();
+		//  context.Complete();
+		//}
 
     [TestMethod]
     public void BusinessObjectWithoutChildList()
@@ -556,5 +557,119 @@ namespace cslalighttest.Serialization
       context.Assert.Success();
       context.Complete();
     }
+
+		[TestMethod()]
+		public void TestSerializationCslaBinaryReaderWriterList()
+		{
+			UnitTestContext context = GetContext();
+
+			var test = new BinaryReaderWriterTestClassList();
+			BinaryReaderWriterTestClassList result;
+			test.Setup();
+			var serialized = MobileFormatter.SerializeToDTO(test);
+			CslaBinaryWriter writer = new CslaBinaryWriter();
+			byte[] data;
+			using (var stream = new MemoryStream())
+			{
+				writer.Write(stream, serialized);
+				data = stream.ToArray();
+			}
+
+			CslaBinaryReader reader = new CslaBinaryReader();
+			using (var stream = new MemoryStream(data))
+			{
+				var deserialized = reader.Read(stream);
+				result = (BinaryReaderWriterTestClassList)MobileFormatter.DeserializeFromDTO(deserialized);
+			}
+
+			context.Assert.AreEqual(test.Count, result.Count);
+			for (int i = 0; i < test.Count; i++)
+			{
+				context.Assert.AreEqual(test[i].CharTest, result[i].CharTest);
+				context.Assert.AreEqual(test[i].DateTimeOffsetTest, result[i].DateTimeOffsetTest);
+				context.Assert.AreEqual(test[i].DateTimeTest, result[i].DateTimeTest);
+				context.Assert.AreEqual(test[i].DecimalTest, result[i].DecimalTest);
+				context.Assert.AreEqual(test[i].DoubleTest, result[i].DoubleTest);
+				context.Assert.AreEqual(test[i].EnumTest, result[i].EnumTest);
+				context.Assert.AreEqual(test[i].GuidTest, result[i].GuidTest);
+				context.Assert.AreEqual(test[i].Int16Test, result[i].Int16Test);
+				context.Assert.AreEqual(test[i].Int32Test, result[i].Int32Test);
+				context.Assert.AreEqual(test[i].Int64Test, result[i].Int64Test);
+				context.Assert.AreEqual(test[i].SByteTest, result[i].SByteTest);
+				context.Assert.AreEqual(test[i].SingleTest, result[i].SingleTest);
+				context.Assert.AreEqual(test[i].StringTest, result[i].StringTest);
+				context.Assert.AreEqual(test[i].TimeSpanTest, result[i].TimeSpanTest);
+				context.Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
+				context.Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
+				context.Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
+				context.Assert.AreEqual(test[i].NullableButSetInt, result[i].NullableButSetInt);
+				context.Assert.IsNull(test[i].NullableInt);
+				context.Assert.IsNull(result[i].NullableInt);
+			}
+			context.Assert.Success();
+			context.Complete();
+		}
+
+
+		[TestMethod()]
+		public void TestSerializationCslaBinaryReaderWriter()
+		{
+			UnitTestContext context = GetContext();
+
+			var test = new BinaryReaderWriterTestClass();
+			BinaryReaderWriterTestClass result;
+			test.Setup();
+			var serialized = MobileFormatter.SerializeToDTO(test);
+			CslaBinaryWriter writer = new CslaBinaryWriter();
+			byte[] data;
+			using (var stream = new MemoryStream())
+			{
+				writer.Write(stream, serialized);
+				data = stream.ToArray();
+			}
+
+			CslaBinaryReader reader = new CslaBinaryReader();
+			using (var stream = new MemoryStream(data))
+			{
+				var deserialized = reader.Read(stream);
+				result = (BinaryReaderWriterTestClass)MobileFormatter.DeserializeFromDTO(deserialized);
+			}
+			context.Assert.AreEqual(test.BoolTest, result.BoolTest);
+			context.Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+			for (int i = 0; i < test.ByteArrayTest.Length; i++)
+			{
+				context.Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+			}
+
+			context.Assert.AreEqual(test.ByteTest, result.ByteTest);
+			context.Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+			for (int i = 0; i < test.CharArrayTest.Length; i++)
+			{
+				context.Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+			}
+
+			context.Assert.AreEqual(test.CharTest, result.CharTest);
+			context.Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+			context.Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+			context.Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+			context.Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+			context.Assert.AreEqual(test.EnumTest, result.EnumTest);
+			context.Assert.AreEqual(test.GuidTest, result.GuidTest);
+			context.Assert.AreEqual(test.Int16Test, result.Int16Test);
+			context.Assert.AreEqual(test.Int32Test, result.Int32Test);
+			context.Assert.AreEqual(test.Int64Test, result.Int64Test);
+			context.Assert.AreEqual(test.SByteTest, result.SByteTest);
+			context.Assert.AreEqual(test.SingleTest, result.SingleTest);
+			context.Assert.AreEqual(test.StringTest, result.StringTest);
+			context.Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+			context.Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+			context.Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+			context.Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+			context.Assert.AreEqual(test.NullableButSetInt, result.NullableButSetInt);
+			context.Assert.IsNull(test.NullableInt);
+			context.Assert.IsNull(result.NullableInt);
+			context.Assert.Success();
+			context.Complete();
+		}
   }
 }

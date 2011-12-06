@@ -231,6 +231,9 @@
     <Compile Include="..\..\..\csla.test\PropertyGetSet\PropertyGetSetTests.cs">
       <Link>PropertyGetSet\PropertyGetSetTests.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Serialization\BinaryReaderWriterTestClass.cs">
+      <Link>Serialization\BinaryReaderWriterTestClass.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\Silverlight\ApplicationContext\ClientContextTests.cs">
       <Link>ApplicationContext\ClientContextTests.cs</Link>
     </Compile>

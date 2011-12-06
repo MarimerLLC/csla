@@ -22,6 +22,8 @@ using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.Serialization.Mobile;
+using System.IO;
 #endif 
 
 namespace Csla.Test.Serialization
@@ -201,7 +203,107 @@ namespace Csla.Test.Serialization
 
       context.Complete();
     }
-    
+
+		[TestMethod()]
+		public void TestSerializationCslaBinaryReaderWriterList()
+		{
+			var test = new BinaryReaderWriterTestClassList();
+			BinaryReaderWriterTestClassList result;
+			test.Setup();
+			var serialized = MobileFormatter.SerializeToDTO(test);
+			CslaBinaryWriter writer = new CslaBinaryWriter();
+			byte[] data;
+			using (var stream = new MemoryStream())
+			{
+				writer.Write(stream, serialized);
+				data = stream.ToArray();
+			}
+
+			CslaBinaryReader reader = new CslaBinaryReader();
+			using (var stream = new MemoryStream(data))
+			{
+				var deserialized = reader.Read(stream);
+				result = (BinaryReaderWriterTestClassList)MobileFormatter.DeserializeFromDTO(deserialized);
+			}
+
+			Assert.AreEqual(test.Count, result.Count);
+			for (int i = 0; i < test.Count; i++)
+			{
+				Assert.AreEqual(test[i].CharTest, result[i].CharTest);
+				Assert.AreEqual(test[i].DateTimeOffsetTest, result[i].DateTimeOffsetTest);
+				Assert.AreEqual(test[i].DateTimeTest, result[i].DateTimeTest);
+				Assert.AreEqual(test[i].DecimalTest, result[i].DecimalTest);
+				Assert.AreEqual(test[i].DoubleTest, result[i].DoubleTest);
+				Assert.AreEqual(test[i].EnumTest, result[i].EnumTest);
+				Assert.AreEqual(test[i].GuidTest, result[i].GuidTest);
+				Assert.AreEqual(test[i].Int16Test, result[i].Int16Test);
+				Assert.AreEqual(test[i].Int32Test, result[i].Int32Test);
+				Assert.AreEqual(test[i].Int64Test, result[i].Int64Test);
+				Assert.AreEqual(test[i].SByteTest, result[i].SByteTest);
+				Assert.AreEqual(test[i].SingleTest, result[i].SingleTest);
+				Assert.AreEqual(test[i].StringTest, result[i].StringTest);
+				Assert.AreEqual(test[i].TimeSpanTest, result[i].TimeSpanTest);
+				Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
+				Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
+				Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
+			}
+		}
+
+
+  	[TestMethod()]
+		public void TestSerializationCslaBinaryReaderWriter()
+		{
+			var test = new BinaryReaderWriterTestClass();
+			BinaryReaderWriterTestClass result;
+			test.Setup();
+			var serialized = MobileFormatter.SerializeToDTO(test);
+			CslaBinaryWriter writer = new CslaBinaryWriter();
+			byte[] data;
+			using (var stream = new MemoryStream())
+			{
+				writer.Write(stream, serialized);
+				data = stream.ToArray();
+			}
+			
+			CslaBinaryReader reader = new CslaBinaryReader();
+			using (var stream = new MemoryStream(data))
+			{
+				var deserialized = reader.Read(stream);
+				result = (BinaryReaderWriterTestClass)MobileFormatter.DeserializeFromDTO(deserialized);
+			}
+			Assert.AreEqual(test.BoolTest, result.BoolTest);
+			Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+			for (int i = 0; i < test.ByteArrayTest.Length; i++)
+			{
+				Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+			}
+			
+			Assert.AreEqual(test.ByteTest, result.ByteTest);
+			Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+			for (int i = 0; i < test.CharArrayTest.Length; i++)
+			{
+				Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+			}
+
+			Assert.AreEqual(test.CharTest, result.CharTest);
+			Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+			Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+			Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+			Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+			Assert.AreEqual(test.EnumTest, result.EnumTest);
+			Assert.AreEqual(test.GuidTest, result.GuidTest);
+			Assert.AreEqual(test.Int16Test, result.Int16Test);
+			Assert.AreEqual(test.Int32Test, result.Int32Test);
+			Assert.AreEqual(test.Int64Test, result.Int64Test);
+			Assert.AreEqual(test.SByteTest, result.SByteTest);
+			Assert.AreEqual(test.SingleTest, result.SingleTest);
+			Assert.AreEqual(test.StringTest, result.StringTest);
+			Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+			Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+			Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+			Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+		}
+
     [TestMethod()]
     public void TestAuthorizationRulesAfterSerialization()
     {
@@ -317,6 +419,8 @@ namespace Csla.Test.Serialization
 
       Assert.AreEqual(123, root.Data, "Data should be 123");
     }
+
+
 
     [TestMethod]
     public void AsyncLoadManagerSerializationTest()

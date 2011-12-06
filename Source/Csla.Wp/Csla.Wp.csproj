@@ -260,6 +260,42 @@
     <Compile Include="..\Csla\Security\CslaPrincipal.cs">
       <Link>Security\CslaPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaKnownTypes.cs">
+      <Link>Serialization\Mobile\CslaKnownTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaNonClosingBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaNonClosingBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaReaderWriterFactory.cs">
+      <Link>Serialization\Mobile\CslaReaderWriterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlReader.cs">
+      <Link>Serialization\Mobile\CslaXmlReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\DictionaryCheckResult.cs">
+      <Link>Serialization\Mobile\DictionaryCheckResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaReader.cs">
+      <Link>Serialization\Mobile\ICslaReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
+      <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>

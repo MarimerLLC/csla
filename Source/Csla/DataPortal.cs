@@ -300,27 +300,64 @@ namespace Csla
         if (factoryInfo != null)
         {
           var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
-          var bbase = obj as Core.BusinessBase;
-          if (bbase != null && bbase.IsDeleted)
-          {
-            if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
-              throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                "delete",
-                objectType.Name));
-            if (factoryType != null)
-              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, new object[] { obj });
-          }
-          else
+
+          if (obj is Core.ICommandObject)
           {
             if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
               throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                "save",
+                "execute",
                 objectType.Name));
             if (factoryType != null)
-              if (obj is Core.ICommandObject)
-                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
+          }
+          else
+          {
+            var bbase = obj as Core.BusinessBase;
+            if (bbase != null)
+            {
+              if (bbase.IsDeleted)
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
+                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                            "delete",
+                                                                            objectType.Name));
+                if (factoryType != null)
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName,
+                                                                      new object[] {obj});
+              }
+                // must check the same authorization rules as for DataPortal_XYZ methods 
+              else if (bbase.IsNew)
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
+                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                            "create",
+                                                                            objectType.Name));
+                if (factoryType != null)
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
+                                                                    new object[] {obj});
+              }
               else
-                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, new object[] { obj });
+              {
+                if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                            "save",
+                                                                            objectType.Name));
+                if (factoryType != null)
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
+                                                                    new object[] {obj});
+              }
+            }
+            else
+            {
+              if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
+                throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                          "save",
+                                                                          objectType.Name));
+
+              if (factoryType != null)
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
+                                                                      new object[] {obj});
+            }
           }
           if (method == null)
             method = new DataPortalMethodInfo();

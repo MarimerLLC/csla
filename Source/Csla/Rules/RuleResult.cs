@@ -71,6 +71,7 @@ namespace Csla.Rules
       RuleName = ruleName;
       PrimaryProperty = property;
       Success = true;
+      Severity = RuleSeverity.Success;
     }
 
     /// <summary>
@@ -88,8 +89,7 @@ namespace Csla.Rules
       PrimaryProperty = property;
       Description = description;
       Success = string.IsNullOrEmpty(description);
-      if (!Success)
-        Severity = RuleSeverity.Error;
+      Severity = Success ? RuleSeverity.Success : RuleSeverity.Error;
     }
   }
 }

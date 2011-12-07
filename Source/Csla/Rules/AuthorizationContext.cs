@@ -38,5 +38,25 @@ namespace Csla.Rules
     /// action.
     /// </summary>
     public bool HasPermission { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizationContext"/> class.
+    /// </summary>
+    public AuthorizationContext()
+    {
+    }
+
+    /// <summary>
+    /// Creates a AuthorizationContext instance for unit testing.
+    /// </summary>
+    /// <param name="rule">The rule.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="targetType">Type of the target.</param>
+    public AuthorizationContext(IAuthorizationRule rule, object target, Type targetType)
+    {
+      Rule = rule;
+      Target = target;
+      TargetType = targetType;
+    }
   }
 }

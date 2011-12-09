@@ -22,5 +22,12 @@ namespace Csla
     /// Gets any resulting error information.
     /// </summary>
     Exception Error { get; }
+    /// <summary>
+    /// Gets the user state, pass through object
+    /// </summary>
+    /// <value>
+    /// The user state.
+    /// </value>
+    object UserState { get; }
   }
 }

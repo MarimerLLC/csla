@@ -67,6 +67,11 @@ namespace Csla
       get { return this.Error; }
     }
 
+    object IDataPortalResult.UserState
+    {
+      get { return this.UserState; }
+    }
+
     #endregion
   }
 }

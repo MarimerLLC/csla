@@ -754,17 +754,27 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if SILVERLIGHT
-      metadataType = _target.GetType();
-#else
+#if !SILVERLIGHT
+      // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
-      if (classAttList.Length > 0)
+      if (classAttList.Length > 0) 
+      {
         metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
-      else
-        metadataType = _target.GetType();
+        AddDataAnnotationsFromType(metadataType);
+      }
 #endif
 
       // attributes on class
+      metadataType = _target.GetType();
+      AddDataAnnotationsFromType(metadataType);
+    }
+
+    /// <summary>
+    /// Adds data annotation validation rules from the given type.
+    /// </summary>
+    /// <param name="metadataType">Type of the metadata.</param>
+    private void AddDataAnnotationsFromType(Type metadataType)
+    {
       var attList = metadataType.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
       foreach (var att in attList)
         AddRule(new CommonRules.DataAnnotation(null, (System.ComponentModel.DataAnnotations.ValidationAttribute)att));

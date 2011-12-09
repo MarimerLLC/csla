@@ -6,6 +6,7 @@
 // <summary>This is the base class from which command </summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Csla.Server;
 using Csla.Properties;
@@ -45,7 +46,7 @@ namespace Csla
   [Serializable]
   public abstract class CommandBase<T> : ManagedObjectBase, 
       ICommandObject, ICloneable,
-      Csla.Server.IDataPortalTarget
+      Csla.Server.IDataPortalTarget, Csla.Core.IManageProperties
     where T : CommandBase<T>
   {
     #region Constructors
@@ -340,6 +341,60 @@ namespace Csla
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship));
+    }
+
+    #endregion
+
+    #region IManageProperties Members
+
+    bool IManageProperties.HasManagedProperties
+    {
+      get { return (FieldManager != null && FieldManager.HasFields); }
+    }
+
+    List<IPropertyInfo> IManageProperties.GetManagedProperties()
+    {
+      return FieldManager.GetRegisteredProperties();
+    }
+
+    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    {
+      return ReadProperty(propertyInfo);
+    }
+
+    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return ReadProperty<P>(propertyInfo);
+    }
+
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      FieldManager.SetFieldData(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      LoadProperty<P>(propertyInfo, newValue);
+    }
+
+    List<object> IManageProperties.GetChildren()
+    {
+      return FieldManager.GetChildren();
+    }
+
+    bool IManageProperties.FieldExists(Core.IPropertyInfo property)
+    {
+      return FieldManager.FieldExists(property);
     }
 
     #endregion

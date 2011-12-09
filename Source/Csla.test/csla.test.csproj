@@ -135,6 +135,8 @@
     <Compile Include="ChildChanged\SingleRoot.cs" />
     <Compile Include="ChildrenByInterface\ChildInterfaceTests.cs" />
     <Compile Include="Basic\CollectionTests.cs" />
+    <Compile Include="CommandBase\CommandBaseTest.cs" />
+    <Compile Include="CommandBase\CommandObject.cs" />
     <Compile Include="CslaDataProvider\CslaDataProviderTests.cs" />
     <Compile Include="CslaDataProvider\Customer.cs" />
     <Compile Include="CslaDataProvider\ProviderList.cs" />

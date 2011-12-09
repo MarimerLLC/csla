@@ -179,7 +179,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected object ReadProperty(IPropertyInfo propertyInfo)
+    protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {

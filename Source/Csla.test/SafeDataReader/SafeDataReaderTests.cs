@@ -7,7 +7,9 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Threading;
 using Csla.Test.DataBinding;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,6 +31,13 @@ namespace Csla.Test.SafeDataReader
     [TestClass()]
     public class SafeDataReaderTests
     {
+      [TestInitialize]
+      public void Initialize()
+      {
+        Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+        Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
+      }
+
         //pull from ConfigurationManager
       private static string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["Csla.Test.Properties.Settings.DataPortalTestDatabaseConnectionString"].ConnectionString;
 

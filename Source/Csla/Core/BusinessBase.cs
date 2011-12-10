@@ -1064,6 +1064,10 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Gets the registered rules. Only for unit testing and not visible to code. 
+    /// </summary>
+    /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected BusinessRuleManager GetRegisteredRules()
     {

@@ -431,4 +431,8 @@
   <data name="BinaryWriterObjectSerializationException" xml:space="preserve">
     <value>Serialization of type object is not supported.</value>
   </data>
+  <data name="PropertyNotInAffectedPropertiesException" xml:space="preserve">
+    <value>Property {0} must be added to AffectedProperties. </value>
+    <comment>RuleContext</comment>
+  </data>
 </root>

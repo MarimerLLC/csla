@@ -258,7 +258,7 @@ namespace Csla.Rules
     public void AddErrorResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
-        throw new ArgumentOutOfRangeException(property.Name);
+        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description));
     }
 
@@ -295,7 +295,7 @@ namespace Csla.Rules
     public void AddWarningResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
-        throw new ArgumentOutOfRangeException(property.Name);
+        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Warning });
     }
 
@@ -329,7 +329,7 @@ namespace Csla.Rules
     public void AddInformationResult(Csla.Core.IPropertyInfo property, string description)
     {
       if (!Rule.AffectedProperties.Contains(property))
-        throw new ArgumentOutOfRangeException(property.Name);
+        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description) { Severity = RuleSeverity.Information });
     }
 
@@ -362,7 +362,7 @@ namespace Csla.Rules
     public void AddOutValue(Csla.Core.IPropertyInfo property, object value)
     {
       if (!Rule.AffectedProperties.Contains(property))
-        throw new ArgumentOutOfRangeException(property.Name);
+        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       _outputPropertyValues.Value.Add(property, value);
     }
 

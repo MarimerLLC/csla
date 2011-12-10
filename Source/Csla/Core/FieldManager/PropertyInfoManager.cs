@@ -13,6 +13,19 @@ using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {
+
+
+  /// <summary>
+  /// Compare to propertyinfo x with y for sorting
+  /// </summary>
+  internal class PropertyComparer : Comparer<IPropertyInfo>
+  {
+    public override int Compare(IPropertyInfo x, IPropertyInfo y)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare(x.Name, y.Name);
+    }
+  }
+
   internal static class PropertyInfoManager
   {
     private static object _cacheLock = new object();
@@ -90,7 +103,7 @@ namespace Csla.Core.FieldManager
         // BinarySearch uses the same comparer as list.Sort() to find the item in a sorted list.
         // If not found then returns the negative index for item in sorted list (to insert). 
         // This allows us to insert the item right away with no need for explicit Sort on the list.
-        var index = list.BinarySearch(info);
+        var index = list.BinarySearch(info, new PropertyComparer());
         // if found then throw DuplicateNotAllowed
         if (index >= 0)
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
@@ -100,6 +113,8 @@ namespace Csla.Core.FieldManager
       }
       return info;
     }
+
+
 
     /// <summary>
     /// Returns a copy of the property list for

@@ -1064,6 +1064,12 @@ namespace Csla.Core
       }
     }
 
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected BusinessRuleManager GetRegisteredRules()
+    {
+      return BusinessRules.TypeRules;
+    }
+
     void IHostRules.RuleStart(IPropertyInfo property)
     {
       OnBusyChanged(new BusyChangedEventArgs(property.Name, true));

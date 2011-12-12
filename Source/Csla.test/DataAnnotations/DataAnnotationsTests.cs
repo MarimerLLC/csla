@@ -116,6 +116,7 @@ namespace Csla.Test.DataAnnotations
 
       context.Complete();
     }
+#if !SILVERLIGHT
 
     [TestMethod]
     public void MultipleMetaRules()
@@ -128,7 +129,9 @@ namespace Csla.Test.DataAnnotations
       Assert.AreEqual(3, typeRules.Rules.Where(p => p.PrimaryProperty == MultipleMeta.AmountProperty).Count());
       Assert.AreEqual(2, typeRules.Rules.Where(p => p.PrimaryProperty == MultipleMeta.QuantityProperty).Count());
     }
-  }
+#endif
+	}
+
 
   [Serializable]
   public class Single : BusinessBase<Single>
@@ -230,8 +233,8 @@ namespace Csla.Test.DataAnnotations
       public System.Int32 Quantity { get; set; }
 
   }
-
-  /// <summary>
+#if !SILVERLIGHT
+	  /// <summary>
   /// Non-Generate code that can be modified
   /// </summary>
   [MetadataType(typeof(MultipleMetaDataClass))]
@@ -242,4 +245,6 @@ namespace Csla.Test.DataAnnotations
       return base.GetRegisteredRules();
     }
   }
+#endif
+
 }

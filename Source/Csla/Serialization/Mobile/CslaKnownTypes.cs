@@ -109,6 +109,11 @@ namespace Csla.Serialization.Mobile
 		/// Key that corresponds to internally used string.  On the receiving end this
 		/// value will be replaces with the actual string
 		/// </summary>
-		StringDictionaryKey = 24
+		StringDictionaryKey = 24,
+		/// <summary>
+		/// SmartDate type
+		/// </summary>
+		SmartDate
+
 	}
 }

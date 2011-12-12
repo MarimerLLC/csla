@@ -246,6 +246,18 @@ namespace Csla.Test.Serialization
 				Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
 				Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
 				Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
+
+				Assert.AreEqual(test[i].EmptySmartDateTest, result[i].EmptySmartDateTest);
+				Assert.AreEqual(test[i].EmptySmartDateTest.FormatString, result[i].EmptySmartDateTest.FormatString);
+				Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
+				Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
+				Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
+												
+				Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
+				Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
+				Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
+				Assert.AreEqual(test[i].FilledSmartDateTest.IsEmpty, result[i].FilledSmartDateTest.IsEmpty);
+				Assert.AreEqual(test[i].FilledSmartDateTest.Date, result[i].FilledSmartDateTest.Date);
 			}
 		}
 
@@ -302,6 +314,18 @@ namespace Csla.Test.Serialization
 			Assert.AreEqual(test.UInt16Test, result.UInt16Test);
 			Assert.AreEqual(test.UInt32Test, result.UInt32Test);
 			Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+
+			Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+			Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+			Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+			Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+			Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+
+			Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+			Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+			Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+			Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+			Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
 		}
 
     [TestMethod()]

@@ -138,6 +138,18 @@ namespace Csla.Serialization.Mobile
 					writer.Write(oneInt);
 				}
 			}
+			else if (target is SmartDate)
+			{
+				Write(CslaKnownTypes.SmartDate, writer);
+				SmartDate smartDate = (SmartDate)target;
+				writer.Write(smartDate.IsEmpty);
+				writer.Write(smartDate.FormatString);
+				writer.Write(smartDate.EmptyIsMin);
+				if (!smartDate.IsEmpty)
+				{
+					writer.Write(smartDate.Date.Ticks);
+				}
+			}
 			else
 			{
 				var typeCode = Type.GetTypeCode(target.GetType());

@@ -605,6 +605,18 @@ namespace cslalighttest.Serialization
 				context.Assert.AreEqual(test[i].NullableButSetInt, result[i].NullableButSetInt);
 				context.Assert.IsNull(test[i].NullableInt);
 				context.Assert.IsNull(result[i].NullableInt);
+
+				context.Assert.AreEqual(test[i].EmptySmartDateTest, result[i].EmptySmartDateTest);
+				context.Assert.AreEqual(test[i].EmptySmartDateTest.FormatString, result[i].EmptySmartDateTest.FormatString);
+				context.Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
+				context.Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
+				context.Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
+				context.Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
+				context.Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
+				context.Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
+				context.Assert.AreEqual(test[i].FilledSmartDateTest.IsEmpty, result[i].FilledSmartDateTest.IsEmpty);
+				context.Assert.AreEqual(test[i].FilledSmartDateTest.Date, result[i].FilledSmartDateTest.Date);
+
 			}
 			context.Assert.Success();
 			context.Complete();
@@ -668,6 +680,19 @@ namespace cslalighttest.Serialization
 			context.Assert.AreEqual(test.NullableButSetInt, result.NullableButSetInt);
 			context.Assert.IsNull(test.NullableInt);
 			context.Assert.IsNull(result.NullableInt);
+
+			context.Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+			context.Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+			context.Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+			context.Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+			context.Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+
+			context.Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+			context.Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+			context.Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+			context.Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+			context.Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+
 			context.Assert.Success();
 			context.Complete();
 		}

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Serialization;
+using Csla.Core;
+using Csla;
 
 namespace Csla.Test.Serialization
 {
@@ -71,6 +73,8 @@ namespace Csla.Test.Serialization
 			this.EnumTest = RandomEnum.Value1;
 			this.NullableInt = null;
 			this.NullableButSetInt = 22;
+			this.EmptySmartDateTest = new Csla.SmartDate(false);
+			this.FilledSmartDateTest = new Csla.SmartDate(new DateTime(2001, 1, 1), true) { FormatString = "yyyy/MM/dd"};
 		}
 
 		public static readonly PropertyInfo<RandomEnum> EnumTestProperty = RegisterProperty<RandomEnum>(c => c.EnumTest);
@@ -302,6 +306,26 @@ namespace Csla.Test.Serialization
 		{
 			get { return GetProperty(NullableButSetIntProperty); }
 			set { SetProperty(NullableButSetIntProperty, value); }
+		}
+
+		public static readonly PropertyInfo<Csla.SmartDate> EmptySmartDateTestProperty = RegisterProperty<Csla.SmartDate>(c => c.EmptySmartDateTest);
+		/// <Summary>
+		/// Gets or sets the EmptySmartDateTest value.
+		/// </Summary>
+		public Csla.SmartDate EmptySmartDateTest
+		{
+			get { return GetProperty(EmptySmartDateTestProperty); }
+			set { SetProperty(EmptySmartDateTestProperty, value); }
+		}
+
+		public static readonly PropertyInfo<Csla.SmartDate> FilledSmartDateTestProperty = RegisterProperty<Csla.SmartDate>(c => c.FilledSmartDateTest);
+		/// <Summary>
+		/// Gets or sets the EmptySmartDateTest value.
+		/// </Summary>
+		public Csla.SmartDate FilledSmartDateTest
+		{
+			get { return GetProperty(FilledSmartDateTestProperty); }
+			set { SetProperty(FilledSmartDateTestProperty, value); }
 		}
 	}
 }

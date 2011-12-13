@@ -110,10 +110,5 @@ namespace Csla.Serialization.Mobile
 		/// value will be replaces with the actual string
 		/// </summary>
 		StringDictionaryKey = 24,
-		/// <summary>
-		/// SmartDate type
-		/// </summary>
-		SmartDate
-
 	}
 }

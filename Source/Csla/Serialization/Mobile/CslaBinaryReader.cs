@@ -137,21 +137,6 @@ namespace Csla.Serialization.Mobile
 					return systemString;
 				case CslaKnownTypes.StringDictionaryKey:
 					return keywordsDictionary[reader.ReadInt32()];
-				case CslaKnownTypes.SmartDate:
-					bool isEmpty = reader.ReadBoolean();
-					string formatString = reader.ReadString();
-					bool emptyIsMin = reader.ReadBoolean();
-					DateTime dateTime = emptyIsMin ? DateTime.MinValue : DateTime.MaxValue;
-					if (!isEmpty)
-					{
-						dateTime = new DateTime(reader.ReadInt64());
-					}
-					if (isEmpty)
-					{
-						return new SmartDate(emptyIsMin) { FormatString = formatString };
-					}
-					return new SmartDate(dateTime, emptyIsMin) { FormatString = formatString };
-
 				default:
 					throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
 			}

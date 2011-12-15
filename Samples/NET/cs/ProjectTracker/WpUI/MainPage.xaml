@@ -36,8 +36,8 @@
       </controls:Panorama.Background>
     </controls:Panorama>
     <ContentControl Content="{Binding Path=StatusContent}"
-                    HorizontalContentAlignment="Left"
-                    Grid.Row="1"/>
+                    VerticalContentAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"/>
   </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>

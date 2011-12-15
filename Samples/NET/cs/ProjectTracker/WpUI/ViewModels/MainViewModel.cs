@@ -10,23 +10,16 @@ using WpUI.ViewModels;
 
 namespace WpUI
 {
-  public class MainViewModel : DependencyObject, INotifyPropertyChanged
+  public class MainViewModel : DependencyObject, INotifyPropertyChanged, IShowStatus
   {
-    DispatcherTimer _closeTimer = new DispatcherTimer();
-    DateTime _statusClose = DateTime.MaxValue;
-
     private static MainViewModel _presenter;
+    private Control _currentView;
+    private IShowStatus _currentViewModel;
 
     public MainViewModel()
     {
       DesignMode = System.ComponentModel.DesignerProperties.GetIsInDesignMode(this);
       _presenter = this;
-
-      // set up timer to close status display
-      _closeTimer.Tick += new EventHandler(CloseTimer_Tick);
-      _closeTimer.Interval = new TimeSpan(1000);
-      if (!DesignMode)
-        _closeTimer.Start();
 
       // use shell that understands WP7 navigation model
       Bxf.Shell.Instance = new ViewModels.NavigationShell();
@@ -44,11 +37,18 @@ namespace WpUI
 
       presenter.OnShowStatus += (status) =>
         {
-          Shell.Instance.ShowView(
-            typeof(Views.StatusDisplay).AssemblyQualifiedName,
-            "statusViewSource",
-            status,
-            "Status");
+          if (string.IsNullOrWhiteSpace(status.Text))
+          {
+            StatusContent = null;
+            if (_currentViewModel != null)
+              _currentViewModel.ShowStatus(status);
+          }
+          else
+          {
+            StatusContent = new Views.StatusDisplay { DataContext = status };
+            if (_currentViewModel != null)
+              _currentViewModel.ShowStatus(status);
+          }
         };
 
       presenter.OnShowView += (view, region) =>
@@ -56,6 +56,7 @@ namespace WpUI
           var nav = Application.Current.RootVisual as PhoneApplicationFrame;
           if (nav == null)
             return;
+
           switch (region)
           {
             case "Dialog":
@@ -75,21 +76,13 @@ namespace WpUI
                   nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
               }
               break;
-            case "Status":
-              _statusClose = DateTime.Now.Add(new TimeSpan(0, 0, 5));
-              if (view.Model != null)
-                AppBusy = ((Bxf.Status)view.Model).IsBusy;
-              else
-                AppBusy = false;
-              StatusContent = view.ViewInstance;
-              break;
             default:
               break;
           }
         };
 
-      Shell.Instance.ShowStatus(new Status { Text = "Initializing..." });
       MainPageViewModel = new ViewModels.MainPageViewModel();
+      _currentViewModel = null;
     }
 
     /// <summary>
@@ -106,6 +99,7 @@ namespace WpUI
         viewmodel = new ViewModels.ProjectEdit(queryString);
       else if (viewName.Contains("/ResourceDetails.xaml") || viewName.Contains("/ResourceEdit.xaml"))
         viewmodel = new ViewModels.ResourceDetail(queryString);
+      _currentViewModel = viewmodel as IShowStatus;
       control.DataContext = viewmodel;
     }
 
@@ -115,12 +109,18 @@ namespace WpUI
     /// </summary>
     public void Navigated(object sender, NavigationEventArgs e)
     {
+      _currentViewModel = null;
       if (e.Content == null)
         return;
 
+      _currentView = (Control)e.Content;
+
       var viewName = e.Uri.OriginalString;
       if (viewName.Contains("/MainPage.xaml"))
+      {
+        _presenter.MainPageViewModel.ReloadMainView();
         return;
+      }
 
       // get query parameter
       string queryString = null;
@@ -132,7 +132,7 @@ namespace WpUI
       }
 
       // setup viewmodel for pages
-      InitializeViewModel(viewName, queryString, (Control)e.Content);
+      InitializeViewModel(viewName, queryString, _currentView);
     }
 
     public void LoginOut()
@@ -156,30 +156,6 @@ namespace WpUI
     public static void ReloadMainView()
     {
       _presenter.MainPageViewModel.ReloadMainView();
-    }
-
-
-    void CloseTimer_Tick(object sender, EventArgs e)
-    {
-      if (DateTime.Now > _statusClose && !AppBusy)
-      {
-        _statusClose = DateTime.MaxValue;
-        Shell.Instance.ShowView(null, "", null, "Status");
-      }
-    }
-
-    private UserControl _statusContent;
-    public UserControl StatusContent
-    {
-      get { return _statusContent; }
-      set { _statusContent = value; OnPropertyChanged("StatusContent"); }
-    }
-
-    private UserControl _userContent;
-    public UserControl UserContent
-    {
-      get { return _userContent; }
-      set { _userContent = value; OnPropertyChanged("UserContent"); }
     }
 
     private bool _appBusy;
@@ -211,6 +187,18 @@ namespace WpUI
     internal void LoadData()
     {
       MainPageViewModel.LoadData();
+    }
+
+    private Views.StatusDisplay _statusDisplay;
+    public Views.StatusDisplay StatusContent
+    {
+      get { return _statusDisplay; }
+      set { _statusDisplay = value; OnPropertyChanged("StatusContent"); }
+    }
+
+    public void ShowStatus(Status status)
+    {
+      StatusContent = new Views.StatusDisplay { DataContext = status };
     }
   }
 }

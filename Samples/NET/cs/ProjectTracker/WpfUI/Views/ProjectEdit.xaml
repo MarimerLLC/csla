@@ -37,7 +37,7 @@
       <TextBlock Text="Name:" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
       <TextBox Grid.Column="1" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="3" 
                Name="nameTextBox" 
-               Text="{Binding Path=Model.Name, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" VerticalAlignment="Center" Width="120" />
+               Text="{Binding Path=Model.Name, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true, ValidatesOnDataErrors=True}" VerticalAlignment="Center" Width="120" />
       <TextBlock Text="Started:" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />
       <DatePicker Grid.Column="1" Grid.Row="2" Height="23" HorizontalAlignment="Left" Margin="3" Name="startedDatePicker" SelectedDate="{Binding Path=Model.Started, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" VerticalAlignment="Center" Width="120" />
       <TextBlock Text="Ended:" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" Margin="3" VerticalAlignment="Center" />

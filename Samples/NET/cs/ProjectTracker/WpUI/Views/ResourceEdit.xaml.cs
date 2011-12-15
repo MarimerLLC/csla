@@ -19,5 +19,22 @@ namespace WpUI.Views
     {
       InitializeComponent();
     }
+
+    private void SaveButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (ViewModels.ResourceEdit)this.DataContext;
+
+      // because app bar doesn't finalize binding, copy all values manually
+      var project = viewmodel.Model.Resource;
+      project.FirstName = FirstNameTextBox.Text;
+      project.LastName = LastNameTextBox.Text;
+
+      viewmodel.Save();
+    }
+
+    private void CloseButton_Click(object sender, EventArgs e)
+    {
+
+    }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Linq;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Microsoft.Phone.Controls;
 using Bxf;
@@ -16,7 +17,7 @@ namespace WpUI.ViewModels
 
     public void ReloadMainView()
     {
-      IsDataLoaded = false;
+      //IsDataLoaded = false;
       LoadData();
     }
 
@@ -24,30 +25,27 @@ namespace WpUI.ViewModels
 
     public void LoadData()
     {
-      if (IsDataLoaded)
+      if (!IsDataLoaded)
       {
-        while (MainViews.Count > 1)
-          MainViews.RemoveAt(MainViews.Count - 1);
-      }
-      else
-      {
-        MainViews = new ObservableCollection<PanoramaItem>();
+        MainViews = new ObservableCollection<PanoramaItem>
+        {
+          new PanoramaItem { Header = "welcome", Content = new Views.Welcome() },
+          new PanoramaItem { Header = "projects", Content = new Views.ProjectList() },
+          new PanoramaItem { Header = "resources", Content = new Views.ResourceList() }
+        };
       }
 
-      var welcomeView = new Views.Welcome();
-      ((CollectionViewSource)welcomeView.Resources["welcomeViewSource"]).Source = 
+      var welcomeView = (Views.Welcome)MainViews.First(r => r.Content is Views.Welcome).Content;
+      ((CollectionViewSource)welcomeView.Resources["welcomeViewSource"]).Source =
         new List<object> { new ViewModels.Welcome() };
-      MainViews.Add(new PanoramaItem { Header = "welcome", Content = welcomeView });
 
-      var projectView = new Views.ProjectList();
+      var projectView = (Views.ProjectList)MainViews.First(r => r.Content is Views.ProjectList).Content;
       ((CollectionViewSource)projectView.Resources["projectListViewSource"]).Source =
         new List<object> { new ViewModels.ProjectList() };
-      MainViews.Add(new PanoramaItem { Header = "projects", Content = projectView });
 
-      var resourceView = new Views.ResourceList();
-      ((CollectionViewSource)resourceView.Resources["resourceListViewSource"]).Source = 
+      var resourceView = (Views.ResourceList)MainViews.First(r => r.Content is Views.ResourceList).Content;
+      ((CollectionViewSource)resourceView.Resources["resourceListViewSource"]).Source =
         new List<object> { new ViewModels.ResourceList() };
-      MainViews.Add(new PanoramaItem { Header = "resources", Content = resourceView });
 
       IsDataLoaded = true;
     }

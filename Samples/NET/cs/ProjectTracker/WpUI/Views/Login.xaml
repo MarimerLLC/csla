@@ -44,6 +44,9 @@
                    Password="{Binding Path=Password, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
       </StackPanel>
     </Grid>
+    <ContentControl Content="{Binding Path=StatusContent}"
+                      VerticalContentAlignment="Stretch"
+                      HorizontalContentAlignment="Stretch"/>
   </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using Bxf;
 
 namespace WpUI.ViewModels
 {
-  public class Login : INotifyPropertyChanged
+  public class Login : INotifyPropertyChanged, IShowStatus
   {
     private string _username = "manager";
     public string Username
@@ -36,6 +37,18 @@ namespace WpUI.ViewModels
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private Views.StatusDisplay _statusDisplay;
+    public Views.StatusDisplay StatusContent
+    {
+      get { return _statusDisplay; }
+      set { _statusDisplay = value; OnPropertyChanged("StatusContent"); }
+    }
+
+    public void ShowStatus(Status status)
+    {
+      StatusContent = new Views.StatusDisplay { DataContext = status };
     }
   }
 }

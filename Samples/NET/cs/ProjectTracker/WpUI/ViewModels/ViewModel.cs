@@ -4,11 +4,16 @@ using Csla;
 
 namespace WpUI.ViewModels
 {
+  public interface IShowStatus
+  {
+    void ShowStatus(Bxf.Status status);
+  }
+
   /// <summary>
   /// Base viewmodel type for use with model types that are
   /// loaded from the app server (root business types).
   /// </summary>
-  public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>
+  public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus
   {
     public ViewModel()
     {
@@ -17,13 +22,13 @@ namespace WpUI.ViewModels
 
     protected override void OnRefreshed()
     {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = true });
+      Bxf.Shell.Instance.ShowStatus(new Status());
       base.OnRefreshed();
     }
 
     protected override void OnError(Exception error)
     {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = false });
+      Bxf.Shell.Instance.ShowStatus(new Status());
       string message = null;
       var be = error as Csla.DataPortalException;
       if (be != null)
@@ -40,6 +45,21 @@ namespace WpUI.ViewModels
 
       Bxf.Shell.Instance.ShowError(message, "Error");
       base.OnError(error);
+    }
+
+    private Views.StatusDisplay _statusDisplay;
+    public Views.StatusDisplay StatusContent
+    {
+      get { return _statusDisplay; }
+      set { _statusDisplay = value; OnPropertyChanged("StatusContent"); }
+    }
+
+    public void ShowStatus(Status status)
+    {
+      if (string.IsNullOrWhiteSpace(status.Text))
+        StatusContent = null;
+      else
+        StatusContent = new Views.StatusDisplay { DataContext = status };
     }
   }
 }

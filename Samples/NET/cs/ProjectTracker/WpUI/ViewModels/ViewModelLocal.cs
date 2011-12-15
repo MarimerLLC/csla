@@ -1,4 +1,5 @@
 ﻿using System;
+using Bxf;
 
 namespace WpUI.ViewModels
 {
@@ -8,8 +9,21 @@ namespace WpUI.ViewModels
   /// types, or a viewmodel created from an already-loaded
   /// object).
   /// </summary>
-  public class ViewModelLocal<T> : Csla.Xaml.ViewModelBase<T>
+  public class ViewModelLocal<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus
   {
+    private Views.StatusDisplay _statusDisplay;
+    public Views.StatusDisplay StatusContent
+    {
+      get { return _statusDisplay; }
+      set { _statusDisplay = value; OnPropertyChanged("StatusContent"); }
+    }
 
+    public void ShowStatus(Status status)
+    {
+      if (string.IsNullOrWhiteSpace(status.Text))
+        StatusContent = null;
+      else
+        StatusContent = new Views.StatusDisplay { DataContext = status };
+    }
   }
 }

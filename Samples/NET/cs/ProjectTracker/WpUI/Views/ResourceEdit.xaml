@@ -4,30 +4,57 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
+    mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
   <!--LayoutRoot is the root grid where all page content is placed-->
   <Grid x:Name="LayoutRoot" Background="Transparent">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+    <!--Pivot Control-->
+    <controls:Pivot Title="PROJECT TRACKER">
+      <!--Pivot item one-->
+      <controls:PivotItem Header="project">
+        <Grid>
+          <StackPanel>
+            <TextBlock Text="First name"/>
+            <TextBox Text="{Binding Path=Model.Resource.FirstName, Mode=TwoWay}" Name="FirstNameTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
+            <TextBlock Text="Last name"/>
+            <TextBox Text="{Binding Path=Model.Resource.LastName, Mode=TwoWay}" Name="LastNameTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
+          </StackPanel>
+        </Grid>
+      </controls:PivotItem>
 
-    <!--TitlePanel contains the name of the application and page title-->
-    <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-      <TextBlock x:Name="ApplicationTitle" Text="PROJECT TRACKER" Style="{StaticResource PhoneTextNormalStyle}"/>
-      <TextBlock x:Name="PageTitle" Text="resource" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-    </StackPanel>
-
-    <!--ContentPanel - place additional content here-->
-    <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0"></Grid>
+      <!--Pivot item two-->
+      <controls:PivotItem Header="resources">
+        <Grid>
+          <ListBox ItemsSource="{Binding Path=Model.Project.Resources}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Path=FullName}"
+                           Margin="0 10 0 0"
+                           Style="{StaticResource PhoneTextLargeStyle}"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </controls:PivotItem>
+    </controls:Pivot>
   </Grid>
 
+  <phone:PhoneApplicationPage.ApplicationBar>
+    <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.save.rest.png" 
+                                      Text="Save"
+                                      Click="SaveButton_Click"/>
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.close.rest.png" 
+                                      Text="Close"
+                                      Click="CloseButton_Click"/>
+    </shell:ApplicationBar>
+  </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

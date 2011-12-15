@@ -90,6 +90,7 @@
     <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
     <Compile Include="ViewModels\ResourceDetail.cs" />
+    <Compile Include="ViewModels\ResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
     <Compile Include="ViewModels\Welcome.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />

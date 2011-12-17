@@ -8,20 +8,21 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
-  <UserControl.Resources>
-    <CollectionViewSource x:Key="statusViewSource"/>
-  </UserControl.Resources>
   <Grid x:Name="LayoutRoot">
     <Canvas Background="SkyBlue" Opacity=".5"/>
-    <StackPanel HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                DataContext="{StaticResource statusViewSource}">
-      <TextBlock Margin="5" Text="Status: " FontWeight="Bold" />
-      <TextBlock Margin="5" Text="{Binding Path=Text}" TextWrapping="Wrap"/>
-      <TextBlock Margin="5" Text="Busy: " FontWeight="Bold" />
-      <TextBlock Margin="5" Text="{Binding Path=IsBusy}"/>
-      <TextBlock Margin="5" Text="OK: " FontWeight="Bold" />
-      <TextBlock Margin="5" Text="{Binding Path=IsOk}"/>
+    <StackPanel HorizontalAlignment="Stretch"
+                VerticalAlignment="Center" Margin="25">
+      <TextBlock Text="{Binding Path=Text}" 
+                 HorizontalAlignment="Center"
+                 Margin="5" 
+                 TextWrapping="Wrap"
+                 FontWeight="Bold"/>
+      <StackPanel.Background>
+        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+          <GradientStop Color="Black" Offset="0" />
+          <GradientStop Color="White" Offset="1" />
+        </LinearGradientBrush>
+      </StackPanel.Background>
     </StackPanel>
   </Grid>
 </UserControl>

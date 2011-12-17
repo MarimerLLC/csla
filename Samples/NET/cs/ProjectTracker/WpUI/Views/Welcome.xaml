@@ -9,11 +9,7 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
-  <UserControl.Resources>
-    <CollectionViewSource x:Key="welcomeViewSource"/>
-  </UserControl.Resources>
-
-  <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource welcomeViewSource}}">
+  <Grid x:Name="LayoutRoot">
     <StackPanel>
       <TextBlock Text="Project Tracker" 
                  TextWrapping="Wrap"
@@ -24,12 +20,11 @@
                  Margin="5 15 5 5"
                  Style="{StaticResource PhoneTextLargeStyle}"/>
       <StackPanel Orientation="Horizontal" Margin="5 15 5 5">
-        <TextBlock Text="Welcome" 
-                   HorizontalAlignment="Left"
-                   Style="{StaticResource PhoneTextNormalStyle}"/>
-        <TextBlock Text="{Binding Path=UserName}" 
-                   HorizontalAlignment="Left"
-                   Style="{StaticResource PhoneTextNormalStyle}"/>
+        <TextBlock HorizontalAlignment="Left"
+                   Style="{StaticResource PhoneTextNormalStyle}">
+          <Run Text="Welcome "/>
+          <Run Text="{Binding Path=UserName}"/>
+        </TextBlock>
       </StackPanel>
     </StackPanel>
   </Grid>

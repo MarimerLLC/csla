@@ -51,6 +51,10 @@
         </Grid>
       </controls:PivotItem>
     </controls:Pivot>
+    <ContentControl Content="{Binding Path=StatusContent}"
+                    Grid.RowSpan="2"
+                    VerticalContentAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"/>
   </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>

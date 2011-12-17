@@ -4,11 +4,6 @@ using Csla;
 
 namespace WpUI.ViewModels
 {
-  public interface IShowStatus
-  {
-    void ShowStatus(Bxf.Status status);
-  }
-
   /// <summary>
   /// Base viewmodel type for use with model types that are
   /// loaded from the app server (root business types).
@@ -17,18 +12,23 @@ namespace WpUI.ViewModels
   {
     public ViewModel()
     {
-      Bxf.Shell.Instance.ShowStatus(new Status { IsBusy = true, Text = "Loading..." });
+      var s = new Status { IsBusy = true, Text = "Loading..." };
+      App.ViewModel.ShowStatus(s);
+
+      // also directly set the status on this viewmodel, because it
+      // can't be the current viewmodel yet while this ctor is running
+      ShowStatus(s);
     }
 
     protected override void OnRefreshed()
     {
-      Bxf.Shell.Instance.ShowStatus(new Status());
+      App.ViewModel.ShowStatus(new Status());
       base.OnRefreshed();
     }
 
     protected override void OnError(Exception error)
     {
-      Bxf.Shell.Instance.ShowStatus(new Status());
+      App.ViewModel.ShowStatus(new Status());
       string message = null;
       var be = error as Csla.DataPortalException;
       if (be != null)
@@ -43,7 +43,7 @@ namespace WpUI.ViewModels
       else
         message = error.Message;
 
-      Bxf.Shell.Instance.ShowError(message, "Error");
+      App.ViewModel.ShowError(message, "Error");
       base.OnError(error);
     }
 
@@ -56,10 +56,10 @@ namespace WpUI.ViewModels
 
     public void ShowStatus(Status status)
     {
-      if (string.IsNullOrWhiteSpace(status.Text))
-        StatusContent = null;
-      else
+      if (status.IsBusy)
         StatusContent = new Views.StatusDisplay { DataContext = status };
+      else
+        StatusContent = null;
     }
   }
 }

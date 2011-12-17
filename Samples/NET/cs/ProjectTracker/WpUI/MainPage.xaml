@@ -30,7 +30,7 @@
     <controls:Panorama Title="project tracker"
                        Name="panorama"
                        Grid.Row="0"
-                       ItemsSource="{Binding Path=MainPageViewModel.MainViews}">
+                       ItemsSource="{Binding Path=MainViews}">
       <controls:Panorama.Background>
         <ImageBrush ImageSource="PanoramaBackground.png"/>
       </controls:Panorama.Background>

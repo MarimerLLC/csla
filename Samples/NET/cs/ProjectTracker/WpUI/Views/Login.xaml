@@ -45,8 +45,9 @@
       </StackPanel>
     </Grid>
     <ContentControl Content="{Binding Path=StatusContent}"
-                      VerticalContentAlignment="Stretch"
-                      HorizontalContentAlignment="Stretch"/>
+                    Grid.RowSpan="2"
+                    VerticalContentAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"/>
   </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>

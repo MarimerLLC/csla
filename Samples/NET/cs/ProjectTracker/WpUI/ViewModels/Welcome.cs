@@ -10,11 +10,11 @@ namespace WpUI.ViewModels
       {
         SetUsername();
         if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
-          Bxf.Shell.Instance.ShowStatus(
+          App.ViewModel.ShowStatus(
             new Bxf.Status { Text = "Welcome " + Csla.ApplicationContext.User.Identity.Name });
         else
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Welcome guest user" });
-        MainViewModel.ReloadMainView();
+          App.ViewModel.ShowStatus(new Bxf.Status { Text = "Welcome guest user" });
+        App.ViewModel.ReloadMainView();
       };
 
       SetUsername();
@@ -33,17 +33,6 @@ namespace WpUI.ViewModels
     {
       get { return _userName; }
       set { _userName = value; OnPropertyChanged("UserName"); }
-    }
-
-    public void LoginOut()
-    {
-      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
-        ProjectTracker.Library.Security.PTPrincipal.Logout();
-      Bxf.Shell.Instance.ShowView(
-        "/Login.xaml",
-        "loginViewSource",
-        new ViewModels.Login(),
-        "Dialog");
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

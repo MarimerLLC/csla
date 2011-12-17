@@ -20,10 +20,10 @@ namespace WpUI.ViewModels
 
     public void ShowStatus(Status status)
     {
-      if (string.IsNullOrWhiteSpace(status.Text))
-        StatusContent = null;
-      else
+      if (status.IsBusy)
         StatusContent = new Views.StatusDisplay { DataContext = status };
+      else
+        StatusContent = null;
     }
   }
 }

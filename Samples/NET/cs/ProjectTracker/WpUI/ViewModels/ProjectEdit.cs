@@ -32,28 +32,28 @@
     {
       if (CanSaveProject)
       {
-        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
         Model.Project.BeginSave((o, e) =>
           {
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+            App.ViewModel.ShowStatus(new Bxf.Status());
             if (e.Error != null)
-              Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
+              App.ViewModel.ShowError(e.Error.Message, "Data error");
             else
-              Bxf.Shell.Instance.ShowView(null, "Dialog");
+              App.ViewModel.ShowView(null);
           });
       }
       else
       {
         if (Model.Project.IsValid)
-          Bxf.Shell.Instance.ShowError("Not authorized", "Save");
+          App.ViewModel.ShowError("Not authorized", "Save");
         else
-          Bxf.Shell.Instance.ShowError("Invalid data", "Save");
+          App.ViewModel.ShowError("Invalid data", "Save");
       }
     }
 
     internal void Close()
     {
-      Bxf.Shell.Instance.ShowView(null, "Dialog");
+      App.ViewModel.ShowView(null);
     }
   }
 }

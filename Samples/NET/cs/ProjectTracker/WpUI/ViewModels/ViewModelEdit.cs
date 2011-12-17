@@ -20,19 +20,19 @@ namespace WpUI.ViewModels
       {
         if (Model.IsSavable)
         {
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+          App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
           base.BeginSave();
         }
         else
         {
-          Bxf.Shell.Instance.ShowError("Object can not be saved", "Save error");
+          App.ViewModel.ShowError("Object can not be saved", "Save error");
         }
       }
     }
 
     protected override void OnSaved()
     {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = true, Text = "Saved..." });
+      App.ViewModel.ShowStatus(new Bxf.Status { IsOk = true, Text = "Saved..." });
       base.OnSaved();
     }
   }

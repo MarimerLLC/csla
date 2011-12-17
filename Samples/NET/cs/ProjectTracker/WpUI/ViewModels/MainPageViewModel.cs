@@ -8,16 +8,10 @@ using System.Collections.Generic;
 
 namespace WpUI.ViewModels
 {
-  public class MainPageViewModel : INotifyPropertyChanged
+  public class MainPageViewModel : INotifyPropertyChanged, IShowStatus
   {
-    public MainPageViewModel()
-    {
-      LoadData();
-    }
-
     public void ReloadMainView()
     {
-      //IsDataLoaded = false;
       LoadData();
     }
 
@@ -36,8 +30,7 @@ namespace WpUI.ViewModels
       }
 
       var welcomeView = (Views.Welcome)MainViews.First(r => r.Content is Views.Welcome).Content;
-      ((CollectionViewSource)welcomeView.Resources["welcomeViewSource"]).Source =
-        new List<object> { new ViewModels.Welcome() };
+      welcomeView.DataContext = new ViewModels.Welcome();
 
       var projectView = (Views.ProjectList)MainViews.First(r => r.Content is Views.ProjectList).Content;
       ((CollectionViewSource)projectView.Resources["projectListViewSource"]).Source =
@@ -66,6 +59,21 @@ namespace WpUI.ViewModels
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private Views.StatusDisplay _statusDisplay;
+    public Views.StatusDisplay StatusContent
+    {
+      get { return _statusDisplay; }
+      set { _statusDisplay = value; OnPropertyChanged("StatusContent"); }
+    }
+
+    public void ShowStatus(Status status)
+    {
+      if (status.IsBusy)
+        StatusContent = new Views.StatusDisplay { DataContext = status };
+      else
+        StatusContent = null;
     }
   }
 }

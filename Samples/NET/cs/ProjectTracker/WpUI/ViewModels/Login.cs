@@ -22,14 +22,14 @@ namespace WpUI.ViewModels
 
     public void LoginUser()
     {
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
+      App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
       ProjectTracker.Library.Security.PTPrincipal.BeginLogin(Username, Password);
-      Bxf.Shell.Instance.ShowView(null, "Dialog");
+      App.ViewModel.ShowView(null);
     }
 
     public void Cancel()
     {
-      Bxf.Shell.Instance.ShowView(null, "Dialog");
+      App.ViewModel.ShowView(null);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -48,7 +48,10 @@ namespace WpUI.ViewModels
 
     public void ShowStatus(Status status)
     {
-      StatusContent = new Views.StatusDisplay { DataContext = status };
+      if (status.IsBusy)
+        StatusContent = new Views.StatusDisplay { DataContext = status };
+      else
+        StatusContent = null;
     }
   }
 }

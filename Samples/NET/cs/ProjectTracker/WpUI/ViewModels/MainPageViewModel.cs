@@ -10,37 +10,62 @@ namespace WpUI.ViewModels
 {
   public class MainPageViewModel : INotifyPropertyChanged, IShowStatus
   {
+    public MainPageViewModel()
+    {
+      IsDataLoaded = false;
+    }
+
     public void ReloadMainView()
     {
       LoadData();
     }
 
-    public bool IsDataLoaded { get; private set; }
+    public bool IsDataLoaded 
+    {
+      get
+      {
+        return !ProjectsChanged && !ResourcesChanged;
+      }
+      private set
+      {
+        IsFirstLoad = !value;
+        ProjectsChanged = !value;
+        ResourcesChanged = !value;
+      }
+    }
+
+    public bool IsFirstLoad { get; private set; }
+    public bool ProjectsChanged { get; set; }
+    public bool ResourcesChanged { get; set; }
 
     public void LoadData()
     {
-      if (!IsDataLoaded)
+      if (IsFirstLoad)
       {
+        IsFirstLoad = false;
         MainViews = new ObservableCollection<PanoramaItem>
         {
           new PanoramaItem { Header = "welcome", Content = new Views.Welcome() },
           new PanoramaItem { Header = "projects", Content = new Views.ProjectList() },
           new PanoramaItem { Header = "resources", Content = new Views.ResourceList() }
         };
+        var welcomeView = (Views.Welcome)MainViews.First(r => r.Content is Views.Welcome).Content;
+        welcomeView.DataContext = new ViewModels.Welcome();
       }
 
-      var welcomeView = (Views.Welcome)MainViews.First(r => r.Content is Views.Welcome).Content;
-      welcomeView.DataContext = new ViewModels.Welcome();
+      if (ProjectsChanged)
+      {
+        ProjectsChanged = false;
+        var projectView = (Views.ProjectList)MainViews.First(r => r.Content is Views.ProjectList).Content;
+        projectView.DataContext = new List<object> { new ViewModels.ProjectList() };
+      }
 
-      var projectView = (Views.ProjectList)MainViews.First(r => r.Content is Views.ProjectList).Content;
-      ((CollectionViewSource)projectView.Resources["projectListViewSource"]).Source =
-        new List<object> { new ViewModels.ProjectList() };
-
-      var resourceView = (Views.ResourceList)MainViews.First(r => r.Content is Views.ResourceList).Content;
-      ((CollectionViewSource)resourceView.Resources["resourceListViewSource"]).Source =
-        new List<object> { new ViewModels.ResourceList() };
-
-      IsDataLoaded = true;
+      if (ResourcesChanged)
+      {
+        ResourcesChanged = false;
+        var resourceView = (Views.ResourceList)MainViews.First(r => r.Content is Views.ResourceList).Content;
+        resourceView.DataContext = new List<object> { new ViewModels.ResourceList() };
+      }
     }
 
     private ObservableCollection<PanoramaItem> _mainViews;

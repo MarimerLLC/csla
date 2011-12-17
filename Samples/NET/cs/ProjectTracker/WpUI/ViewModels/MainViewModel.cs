@@ -132,6 +132,11 @@ namespace WpUI
       Bxf.Shell.Instance.ShowView(viewName, null, null, null);
     }
 
+    public void Back()
+    {
+      ShowView(null);
+    }
+
     public void ShowStatus(Bxf.Status status)
     {
       Bxf.Shell.Instance.ShowStatus(status);

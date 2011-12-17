@@ -33,13 +33,14 @@
       if (CanSaveResource)
       {
         App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        App.ViewModel.MainPageViewModel.ResourcesChanged = true;
         Model.Resource.BeginSave((o, e) =>
         {
           App.ViewModel.ShowStatus(new Bxf.Status());
           if (e.Error != null)
             App.ViewModel.ShowError(e.Error.Message, "Data error");
           else
-            App.ViewModel.ShowView(null);
+            App.ViewModel.Back();
         });
       }
       else
@@ -53,7 +54,7 @@
 
     internal void Close()
     {
-      App.ViewModel.ShowView(null);
+      App.ViewModel.Back();
     }
   }
 }

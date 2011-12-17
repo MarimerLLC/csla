@@ -10,12 +10,13 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
   <UserControl.Resources>
-    <CollectionViewSource x:Key="resourceListViewSource" />
-    <CollectionViewSource x:Key="resourceListItemListViewSource" 
-                          Source="{Binding Path=ItemList, Source={StaticResource resourceListViewSource}}" />
   </UserControl.Resources>
-  <Grid x:Name="LayoutRoot" Margin="0,0,-12,0" 
-        DataContext="{Binding Source={StaticResource resourceListViewSource}}">
+  <Grid x:Name="LayoutRoot" Margin="0,0,-12,0">
+    <Grid.Resources>
+      <CollectionViewSource x:Key="resourceListViewSource" Source="{Binding}" />
+      <CollectionViewSource x:Key="resourceListItemListViewSource" 
+                          Source="{Binding Path=ItemList, Source={StaticResource resourceListViewSource}}" />
+    </Grid.Resources>
     <Grid.RowDefinitions>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>

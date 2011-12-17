@@ -28,18 +28,19 @@
       }
     }
 
-    internal void Save()
+    public void Save()
     {
       if (CanSaveProject)
       {
         App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        App.ViewModel.MainPageViewModel.ProjectsChanged = true;
         Model.Project.BeginSave((o, e) =>
           {
             App.ViewModel.ShowStatus(new Bxf.Status());
             if (e.Error != null)
               App.ViewModel.ShowError(e.Error.Message, "Data error");
             else
-              App.ViewModel.ShowView(null);
+              App.ViewModel.Back();
           });
       }
       else
@@ -51,9 +52,9 @@
       }
     }
 
-    internal void Close()
+    public void Close()
     {
-      App.ViewModel.ShowView(null);
+      App.ViewModel.Back();
     }
   }
 }

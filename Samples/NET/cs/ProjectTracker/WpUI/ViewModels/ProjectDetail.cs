@@ -40,7 +40,7 @@ namespace WpUI.ViewModels
           if (e.Error != null)
             App.ViewModel.ShowError(e.Error.Message, "Project delete");
           else
-            App.ViewModel.ShowView(null);
+            App.ViewModel.Back();
         });
     }
 
@@ -51,7 +51,7 @@ namespace WpUI.ViewModels
 
     public void Close()
     {
-      App.ViewModel.ShowView(null);
+      App.ViewModel.Back();
     }
 
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>

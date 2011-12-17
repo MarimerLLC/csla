@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -38,15 +39,27 @@
       <!--Pivot item two-->
       <controls:PivotItem Header="resources">
         <Grid>
-          <ListBox ItemsSource="{Binding Path=Model.Project.Resources}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <ListBox ItemsSource="{Binding Path=Model.Project.Resources}"
+                    Grid.Row="0">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <TextBlock Text="{Binding Path=FullName}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource PhoneTextLargeStyle}"/>
+                            Margin="0 10 0 0"
+                            Style="{StaticResource PhoneTextLargeStyle}"/>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
+          <Button Content="Add new"
+                  Name="AddNewButton"
+                  Grid.Row="1"
+                  HorizontalAlignment="Left"
+                  Margin="5"/>
+          <bxf:TriggerAction TargetControl="{Binding ElementName=AddNewButton}"
+                             MethodName="AddNewResource"/>
         </Grid>
       </controls:PivotItem>
     </controls:Pivot>

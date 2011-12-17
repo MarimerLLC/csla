@@ -9,12 +9,11 @@
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     d:DesignHeight="480" d:DesignWidth="480">
-  <UserControl.Resources>
-    <CollectionViewSource x:Key="projectListViewSource" />
-    <CollectionViewSource x:Key="projectListItemListViewSource" Source="{Binding Path=ItemList, Source={StaticResource projectListViewSource}}" />
-  </UserControl.Resources>
-  <Grid x:Name="LayoutRoot" Margin="0,0,-12,0" 
-        DataContext="{Binding Source={StaticResource projectListViewSource}}">
+  <Grid x:Name="LayoutRoot" Margin="0,0,-12,0">
+    <Grid.Resources>
+      <CollectionViewSource x:Key="projectListViewSource" Source="{Binding}" />
+      <CollectionViewSource x:Key="projectListItemListViewSource" Source="{Binding Path=ItemList, Source={StaticResource projectListViewSource}}" />
+    </Grid.Resources>
     <Grid.RowDefinitions>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>

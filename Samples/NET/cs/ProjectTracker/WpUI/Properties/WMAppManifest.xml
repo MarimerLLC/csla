@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2009/deployment" AppPlatformVersion="7.1">
-  <App xmlns="" ProductID="{c045c91c-f478-4f34-bbe0-a0c496e37f95}" Title="Project Tracker" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal"  Author="Rockford Lhotka" Description="Project Tracker sample application" Publisher="Marimer LLC">
+  <App xmlns="" ProductID="{c045c91c-f478-4f34-bbe0-a0c496e37f95}" Title="Project Tracker" RuntimeType="Silverlight" Version="1.0.0.0" 
+       Genre="apps.normal"  Author="Rockford Lhotka" Description="Project Tracker sample application" Publisher="Marimer LLC">
     <IconPath IsRelative="true" IsResource="false">ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_GAMERSERVICES"/>
@@ -27,7 +28,7 @@
         <TemplateType5>
           <BackgroundImageURI IsRelative="true" IsResource="false">Background.png</BackgroundImageURI>
           <Count>0</Count>
-          <Title>WpUI</Title>
+          <Title>Project Tracker</Title>
         </TemplateType5>
       </PrimaryToken>
     </Tokens>

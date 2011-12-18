@@ -110,6 +110,21 @@
     <Compile Include="..\Csla\Rules\PropertyRule.cs">
       <Link>Rules\PropertyRule.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaReader.cs">
+      <Link>Serialization\Mobile\ICslaReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
+      <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaReaderWriterFactory.cs">
+      <Link>Serialization\Mobile\CslaReaderWriterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryWriter.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">

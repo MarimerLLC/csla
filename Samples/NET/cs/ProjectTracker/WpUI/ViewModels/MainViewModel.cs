@@ -67,7 +67,7 @@ namespace WpUI
           {
             // navigate back, or to main page
             if (nav.CanGoBack)
-              nav.GoBack();
+              nav.GoBack(); 
             else
               nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
           }
@@ -77,27 +77,62 @@ namespace WpUI
     /// <summary>
     /// Initialize viewmodel objects for each view.
     /// </summary>
-    private void InitializeViewModel(string viewName, string queryString, Control control)
+    private void InitializeViewModel(Control control, string queryString, NavigationMode navigationMode)
     {
       object viewmodel = null;
-      if (viewName.Contains("/MainPage.xaml"))
+      if (control is WpUI.MainPage)
       {
         viewmodel = App.ViewModel.MainPageViewModel;
         App.ViewModel.MainPageViewModel.ReloadMainView();
       }
-      else if (viewName.Contains("/Login.xaml"))
-        viewmodel = new ViewModels.Login();
-      else if (viewName.Contains("/ProjectDetails.xaml"))
-        viewmodel = new ViewModels.ProjectDetail(queryString);
-      else if (viewName.Contains("/ProjectEdit.xaml"))
-        viewmodel = new ViewModels.ProjectEdit(queryString);
-      else if (viewName.Contains("/ResourceDetails.xaml"))
-        viewmodel = new ViewModels.ResourceDetail(queryString);
-      else if (viewName.Contains("/ResourceEdit.xaml"))
-        viewmodel = new ViewModels.ResourceEdit(queryString);
 
+      else if (control is Views.Login)
+      {
+        viewmodel = new ViewModels.Login();
+      }
+
+      else if (control is Views.ProjectDetails)
+      {
+        if (navigationMode == NavigationMode.Back && !App.ViewModel.MainPageViewModel.ProjectsChanged)
+          viewmodel = control.DataContext;
+        else
+          viewmodel = new ViewModels.ProjectDetail(queryString);
+      }
+
+      else if (control is Views.ProjectEdit)
+      {
+        if (navigationMode == NavigationMode.Back)
+          viewmodel = control.DataContext;
+        else
+          viewmodel = new ViewModels.ProjectEdit(queryString);
+      }
+
+      else if (control is Views.ProjectResourceEdit)
+      {
+        viewmodel = new ViewModels.ProjectResourceEdit(queryString);
+      }
+
+      else if (control is Views.ResourceDetails)
+      {
+        if (navigationMode == NavigationMode.Back && !App.ViewModel.MainPageViewModel.ResourcesChanged)
+          viewmodel = control.DataContext;
+        else
+          viewmodel = new ViewModels.ResourceDetail(queryString);
+      }
+
+      else if (control is Views.ResourceEdit)
+      {
+        if (navigationMode == NavigationMode.Back)
+          viewmodel = control.DataContext;
+        else
+          viewmodel = new ViewModels.ResourceEdit(queryString);
+      }
+
+      // update current view
       _currentViewModel = viewmodel as IShowStatus;
-      control.DataContext = viewmodel;
+      // set view datacontext if necessary
+      if (!ReferenceEquals(control.DataContext, viewmodel))
+        control.DataContext = viewmodel;
     }
 
     /// <summary>
@@ -122,9 +157,9 @@ namespace WpUI
         queryString = viewName.Substring(param + 1);
         viewName = viewName.Substring(0, param);
       }
-
+      
       // setup viewmodel for pages
-      InitializeViewModel(viewName, queryString, _currentView);
+      InitializeViewModel(_currentView, queryString, e.NavigationMode);
     }
 
     public void ShowView(string viewName)

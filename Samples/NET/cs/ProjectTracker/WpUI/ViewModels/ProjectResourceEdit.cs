@@ -13,7 +13,10 @@ namespace WpUI.ViewModels
 {
   public class ProjectResourceEdit : ViewModelLocalEdit<ProjectTracker.Library.ProjectResourceEdit>
   {
+    public ProjectResourceEdit(string querystring)
+    {
 
+    }
 
     public class ResourceItem
     {

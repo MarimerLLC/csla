@@ -43,13 +43,19 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
           </Grid.RowDefinitions>
-          <ListBox ItemsSource="{Binding Path=Model.Project.Resources}"
+          <ListBox ItemsSource="{Binding Path=Resources}"
                     Grid.Row="0">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <TextBlock Text="{Binding Path=FullName}"
-                            Margin="0 10 0 0"
-                            Style="{StaticResource PhoneTextLargeStyle}"/>
+                <Grid>
+                  <TextBlock Text="{Binding Path=Model.FullName}"
+                             Name="NameTextBlock"
+                             Margin="0 10 0 0"
+                             Style="{StaticResource PhoneTextLargeStyle}"/>
+                  <bxf:TriggerAction TargetControl="{Binding ElementName=NameTextBlock}"
+                                       TriggerEvent="Tap"
+                                       MethodName="EditResource"/>
+                </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>

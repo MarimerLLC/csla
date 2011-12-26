@@ -119,6 +119,19 @@ namespace Csla.Rules
     /// <value>The execution context.</value>
     internal RuleContextModes ExecuteContext { get; set; }
 
+
+    /// <summary>
+    /// Executes the inner rule from the outer rules context. 
+    /// Creates a chained context and if CanRunRule will execute the inner rule.  
+    /// </summary>
+    /// <param name="innerRule">The inner rule.</param>
+    public void ExecuteRule(IBusinessRule innerRule)
+    {
+      var chainedContext = GetChainedContext(innerRule);
+      if (BusinessRules.CanRunRule(innerRule, chainedContext.ExecuteContext))
+            innerRule.Execute(chainedContext);
+    }
+
     /// <summary>
     /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
     /// </summary>

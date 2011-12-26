@@ -518,7 +518,7 @@ namespace Csla.Rules
     /// <returns>
     /// 	<c>true</c> if this instance [can run rule] the specified context mode; otherwise, <c>false</c>.
     /// </returns>
-    static bool CanRunRule(IBusinessRule rule, RuleContextModes contextMode)
+    internal static bool CanRunRule(IBusinessRule rule, RuleContextModes contextMode)
     {
       // default then just return true
       if (rule.RunMode == RunModes.Default) return true;

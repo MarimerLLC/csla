@@ -48,7 +48,7 @@ namespace Csla.Core
                 // make sure we process only our variables
                 if (field.DeclaringType == type)
                 {
-                    // see if this field is marked as not undoable
+                    // see if this field is marked as not undoable 
                     if (!NotUndoableField(field))
                     {
                         // the field is undoable, so it needs to be processed.
@@ -61,7 +61,8 @@ namespace Csla.Core
 
         private static bool NotUndoableField(FieldInfo field)
         {
-            return Attribute.IsDefined(field, typeof(NotUndoableAttribute));
+            // see if this field is marked as not undoable or IsInitOnly (ie: readonly property)
+            return field.IsInitOnly || Attribute.IsDefined(field, typeof(NotUndoableAttribute));
         }
 
     }

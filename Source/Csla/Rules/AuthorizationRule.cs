@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla;
 using Csla.Properties;
 
 namespace Csla.Rules
@@ -21,6 +22,7 @@ namespace Csla.Rules
   {
     private Csla.Core.IMemberInfo _element;
     private AuthorizationActions _action;
+    private System.Lazy<bool> _cacheResult = new Lazy<bool>();
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -53,9 +55,15 @@ namespace Csla.Rules
     /// of this rule can be cached at the business
     /// object level.
     /// </summary>
-    public virtual bool CacheResult
-    { 
-      get { return true; }
+    public bool CacheResult
+    {
+      get { return _cacheResult.Value; }
+      set
+      {
+        if (_cacheResult.IsValueCreated)
+          throw new ArgumentException(string.Format(Resources.PropertySetNotAllowedWhenRead, "CacheResult"), "CacheResult");
+        _cacheResult = new Lazy<bool>(() => value);
+      }
     }
 
     /// <summary>

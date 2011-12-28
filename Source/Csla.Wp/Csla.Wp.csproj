@@ -194,9 +194,6 @@
     <Compile Include="..\Csla\DynamicListBase.cs">
       <Link>DynamicListBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\LazySingleton.cs">
-      <Link>LazySingleton.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
     </Compile>
@@ -610,6 +607,7 @@
     <Compile Include="DataAnnotations\ValidationAttribute.cs" />
     <Compile Include="DataAnnotations\ValidationContext.cs" />
     <Compile Include="DataAnnotations\ValidationResult.cs" />
+    <Compile Include="Lazy.cs" />
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">

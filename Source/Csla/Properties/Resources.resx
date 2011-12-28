@@ -435,4 +435,7 @@
     <value>Property {0} must be added to AffectedProperties. </value>
     <comment>RuleContext</comment>
   </data>
+  <data name="PropertySetNotAllowedWhenRead" xml:space="preserve">
+    <value>{0} cannot be changed after it has been read/used.</value>
+  </data>
 </root>

@@ -195,7 +195,6 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
-    <Compile Include="LazySingelton\LazySingeltonTest.cs" />
     <Compile Include="Linq\LinqObservableCollectionTest.cs" />
     <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
     <Compile Include="LogicalExecutionLocation\LogicalExecutionLocationTests.cs" />

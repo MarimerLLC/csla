@@ -22,9 +22,12 @@ namespace Csla.Rules
   public abstract class BusinessRule : IBusinessRule
   {
     private Csla.Core.IPropertyInfo _primaryProperty;
+    private System.Lazy<bool> _isAsync = new Lazy<bool>();
+
     /// <summary>
     /// Gets or sets the primary property affected by this rule.
     /// </summary>
+    // Property is virtual so an ObjctRul can guard itself to check that PrimaryProperty 
     public virtual Csla.Core.IPropertyInfo PrimaryProperty 
     {
       get { return _primaryProperty; }
@@ -51,7 +54,16 @@ namespace Csla.Rules
     /// Gets a value indicating whether the rule will run
     /// on a background thread.
     /// </summary>
-    public virtual bool IsAsync { get; protected set; }
+    public bool IsAsync
+    {
+      get { return _isAsync.Value; }
+      set
+      {
+        if (_isAsync.IsValueCreated)
+          throw new ArgumentException(string.Format(Resources.PropertySetNotAllowedWhenRead, "IsAsync"));
+        _isAsync = new Lazy<bool>(() => value);
+      }
+    }
     /// <summary>
     /// Gets a value indicating that the Target property should
     /// be set even for an async rule (note that using Target
@@ -95,6 +107,7 @@ namespace Csla.Rules
     protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
     {
       AffectedProperties = new List<Core.IPropertyInfo>();
+      InputProperties = new List<Core.IPropertyInfo>();
       PrimaryProperty = primaryProperty;
       this.RuleUri = new RuleUri(this, primaryProperty);
       RunMode = RunModes.Default;

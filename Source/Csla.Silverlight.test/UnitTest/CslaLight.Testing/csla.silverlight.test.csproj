@@ -189,9 +189,6 @@
     <Compile Include="..\..\..\csla.test\DataPortal\DpRoot.cs">
       <Link>DataPortal\DpRoot.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Csla.test\LazySingelton\LazySingeltonTest.cs">
-      <Link>LazySingelton\LazySingeltonTest.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\Csla.test\Linq\LinqObservableCollectionTest.cs">
       <Link>Linq\LinqObservableCollectionTest.cs</Link>
     </Compile>

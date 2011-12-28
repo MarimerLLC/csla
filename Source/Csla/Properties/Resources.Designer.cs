@@ -808,6 +808,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} cannot be changed after it has been read/used..
+        /// </summary>
+        public static string PropertySetNotAllowedWhenRead {
+            get {
+                return ResourceManager.GetString("PropertySetNotAllowedWhenRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} does not match regular expression.
         /// </summary>
         public static string RegExMatchRule {

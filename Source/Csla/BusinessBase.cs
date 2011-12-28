@@ -292,7 +292,7 @@ namespace Csla
     /// </remarks>
     public void BeginSave(bool forceUpdate)
     {
-      this.BeginSave(false, null);
+      this.BeginSave(forceUpdate, null);
     }
 
     /// <summary>

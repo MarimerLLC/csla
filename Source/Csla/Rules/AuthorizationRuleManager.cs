@@ -77,7 +77,7 @@ namespace Csla.Rules
             try
             {
               // invoke method to add auth roles
-              var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+              var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
               System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
               if (method != null)
                 method.Invoke(null, null);

@@ -7,28 +7,61 @@
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
+    shell:SystemTray.IsVisible="True" xmlns:my="clr-namespace:WpUI.Xaml">
+  <phone:PhoneApplicationPage.Resources>
+    <my:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+    <my:BoolVisibilityConverter x:Key="BoolVisibilityConverterInv" Invert="True" />
+  </phone:PhoneApplicationPage.Resources>
+  <!--LayoutRoot is the root grid where all page content is placed-->
+  <Grid x:Name="LayoutRoot" Background="Transparent">
+    <!--Pivot Control-->
+    <controls:Pivot Title="PROJECT TRACKER">
+      <!--Pivot item one-->
+      <controls:PivotItem Header="resource"
+                          Visibility="{Binding Path=ShowResourceList, Converter={StaticResource BoolVisibilityConverter}}">
+        <Grid>
+          <ListBox ItemsSource="{Binding Path=Resources}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <TextBlock Text="{Binding Path=FullName}" 
+                             Name="NameTextBox"
+                             Style="{StaticResource PhoneTextLargeStyle}" />
+                  <bxf:TriggerAction TargetControl="{Binding ElementName=NameTextBox}"
+                                     TriggerEvent="Tap"
+                                     MethodName="SelectResource"/>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </Grid>
+      </controls:PivotItem>
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <!--Pivot Control-->
-        <controls:Pivot Title="PROJECT TRACKER">
-            <!--Pivot item one-->
-            <controls:PivotItem Header="resource">
-                <Grid/>
-            </controls:PivotItem>
-
-            <!--Pivot item two-->
-            <controls:PivotItem Header="assignment">
-                <Grid/>
-            </controls:PivotItem>
-        </controls:Pivot>
-    </Grid>
+      <!--Pivot item two-->
+      <controls:PivotItem Header="assignment"
+                          Visibility="{Binding Path=ShowResourceList, Converter={StaticResource BoolVisibilityConverterInv}}">
+        <Grid>
+          <StackPanel>
+            <TextBlock Text="Name"/>
+            <TextBlock Text="{Binding Path=Model.FullName}"
+                       Style="{StaticResource PhoneTextLargeStyle}"/>
+            <TextBlock Text="Assigned"/>
+            <TextBlock Text="{Binding Path=Model.Assigned}"
+                       Style="{StaticResource PhoneTextLargeStyle}"/>
+            <TextBlock Text="Role"/>
+            <TextBlock Text="{Binding Path=Model.RoleName}"
+                       Style="{StaticResource PhoneTextLargeStyle}"/>
+          </StackPanel>
+        </Grid>
+      </controls:PivotItem>
+    </controls:Pivot>
+  </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>
     <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">

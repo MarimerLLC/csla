@@ -32,7 +32,7 @@ namespace WpUI.ViewModels
         var result = new ObservableCollection<ResourceInfo>();
         if (Model != null)
           foreach (var item in Model.Project.Resources)
-            result.Add(new ResourceInfo(item));
+            result.Add(new ResourceInfo(this, item));
         return result;
       }
     }
@@ -52,42 +52,64 @@ namespace WpUI.ViewModels
     {
       if (CanSaveProject)
       {
-        App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
         App.ViewModel.MainPageViewModel.ProjectsChanged = true;
         Model.Project.BeginSave((o, e) =>
           {
-            App.ViewModel.ShowStatus(new Bxf.Status());
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
             if (e.Error != null)
-              App.ViewModel.ShowError(e.Error.Message, "Data error");
+              Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
             else
-              App.ViewModel.Back();
+              Bxf.Shell.Instance.ShowView(null, null);
           });
       }
       else
       {
         if (Model.Project.IsValid)
-          App.ViewModel.ShowError("Not authorized", "Save");
+          Bxf.Shell.Instance.ShowError("Not authorized", "Save");
         else
-          App.ViewModel.ShowError("Invalid data", "Save");
+          Bxf.Shell.Instance.ShowError("Invalid data", "Save");
       }
     }
 
     public void Close()
     {
-      App.ViewModel.Back();
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public void AddNewResource()
     {
-      App.ViewModel.ShowView("/ProjectResourceEdit.xaml?mode=new");
+      Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
+        new ProjectResourceEdit(this), null);
     }
 
+    internal void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit item)
+    {
+      Bxf.Shell.Instance.ShowView(null, null);
+    }
 
+    internal void CommitAddResource(ProjectTracker.Library.ProjectResourceEdit item)
+    {
+      Model.Project.Resources.Add(item);
+      Model.Project.Resources.ApplyEdit();
+      Bxf.Shell.Instance.ShowView(null, null);
+    }
+
+    internal void CancelAddEditResource()
+    {
+      Bxf.Shell.Instance.ShowView(null, null);
+    }
+
+    /// <summary>
+    /// Child viewmodel
+    /// </summary>
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
     {
-      public ResourceInfo(ProjectTracker.Library.ProjectResourceEdit model)
+      public ProjectEdit Parent { get; private set; }
+
+      public ResourceInfo(ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit model)
       {
-        ManageObjectLifetime = false;
+        Parent = parent;
         Model = model;
       }
 
@@ -98,7 +120,8 @@ namespace WpUI.ViewModels
 
       public void EditResource()
       {
-        App.ViewModel.ShowView("/ProjectResourceEdit.xaml?id=" + Model.ResourceId);
+        Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
+          new ProjectResourceEdit(Parent, Model), null);
       }
     }
   }

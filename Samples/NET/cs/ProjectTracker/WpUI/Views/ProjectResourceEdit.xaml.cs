@@ -22,12 +22,14 @@ namespace WpUI.Views
 
     private void AcceptButton_Click(object sender, EventArgs e)
     {
-
+      var context = (ViewModels.ProjectResourceEdit)DataContext;
+      context.Save();
     }
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
-
+      var context = (ViewModels.ProjectResourceEdit)DataContext;
+      context.Cancel();
     }
   }
 }

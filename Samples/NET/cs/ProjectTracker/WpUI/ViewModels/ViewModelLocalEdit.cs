@@ -16,19 +16,19 @@ namespace WpUI.ViewModels
 
     public void Save()
     {
-      App.ViewModel.ShowStatus(new Status { IsBusy = true, Text = "Saving..." });
+      Bxf.Shell.Instance.ShowStatus(new Status { IsBusy = true, Text = "Saving..." });
       base.BeginSave();
     }
 
     protected override void OnSaved()
     {
-      App.ViewModel.ShowStatus(new Status { IsOk = true, Text = "Saved..." });
+      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = true, Text = "Saved..." });
       base.OnSaved();
     }
 
     protected override void OnError(Exception error)
     {
-      App.ViewModel.ShowStatus(new Status { IsOk = false });
+      Bxf.Shell.Instance.ShowStatus(new Status { IsOk = false });
       string message = null;
       var be = error as Csla.DataPortalException;
       if (be != null)
@@ -43,7 +43,7 @@ namespace WpUI.ViewModels
       else
         message = error.Message;
 
-      App.ViewModel.ShowError(message, "Error");
+      Bxf.Shell.Instance.ShowError(message, "Error");
       base.OnError(error);
     }
   }

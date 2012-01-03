@@ -9,7 +9,7 @@ namespace WpUI.ViewModels
   /// types, or a viewmodel created from an already-loaded
   /// object).
   /// </summary>
-  public class ViewModelLocal<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus
+  public class ViewModelLocal<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus, IViewModel
   {
     private Views.StatusDisplay _statusDisplay;
     public Views.StatusDisplay StatusContent
@@ -24,6 +24,18 @@ namespace WpUI.ViewModels
         StatusContent = new Views.StatusDisplay { DataContext = status };
       else
         StatusContent = null;
+    }
+
+    public virtual void Initialize()
+    {
+    }
+
+    public virtual void NavigatingTo()
+    {
+    }
+
+    public virtual void NavigatedAway()
+    {
     }
   }
 }

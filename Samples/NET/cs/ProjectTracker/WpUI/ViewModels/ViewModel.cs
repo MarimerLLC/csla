@@ -8,12 +8,12 @@ namespace WpUI.ViewModels
   /// Base viewmodel type for use with model types that are
   /// loaded from the app server (root business types).
   /// </summary>
-  public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus
+  public class ViewModel<T> : Csla.Xaml.ViewModelBase<T>, IShowStatus, IViewModel
   {
     public ViewModel()
     {
       var s = new Status { IsBusy = true, Text = "Loading..." };
-      App.ViewModel.ShowStatus(s);
+      Bxf.Shell.Instance.ShowStatus(s);
 
       // also directly set the status on this viewmodel, because it
       // can't be the current viewmodel yet while this ctor is running
@@ -22,13 +22,13 @@ namespace WpUI.ViewModels
 
     protected override void OnRefreshed()
     {
-      App.ViewModel.ShowStatus(new Status());
+      Bxf.Shell.Instance.ShowStatus(new Status());
       base.OnRefreshed();
     }
 
     protected override void OnError(Exception error)
     {
-      App.ViewModel.ShowStatus(new Status());
+      Bxf.Shell.Instance.ShowStatus(new Status());
       string message = null;
       var be = error as Csla.DataPortalException;
       if (be != null)
@@ -43,7 +43,7 @@ namespace WpUI.ViewModels
       else
         message = error.Message;
 
-      App.ViewModel.ShowError(message, "Error");
+      Bxf.Shell.Instance.ShowError(message, "Error");
       base.OnError(error);
     }
 
@@ -60,6 +60,18 @@ namespace WpUI.ViewModels
         StatusContent = new Views.StatusDisplay { DataContext = status };
       else
         StatusContent = null;
+    }
+
+    public virtual void Initialize()
+    {
+    }
+
+    public virtual void NavigatingTo()
+    {
+    }
+
+    public virtual void NavigatedAway()
+    {
     }
   }
 }

@@ -40,14 +40,14 @@ namespace WpUI.ViewModels
 
     public void AddItem()
     {
-      App.ViewModel.ShowView("/ResourceEdit.xaml");
+      Bxf.Shell.Instance.ShowView("/ResourceEdit.xaml", null, null, null);
     }
 
     public void ShowDetail(object sender, Bxf.Xaml.ExecuteEventArgs e)
     {
       var item = ((FrameworkElement)e.TriggerSource).DataContext as ResourceInfo;
       if (item != null)
-        App.ViewModel.ShowView("/ResourceDetails.xaml?id=" + item.Model.Id);
+        Bxf.Shell.Instance.ShowView("/ResourceDetails.xaml?id=" + item.Model.Id, null, null, null);
     }
 
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ResourceInfo>
@@ -72,28 +72,28 @@ namespace WpUI.ViewModels
 
       public void DisplayItem()
       {
-        App.ViewModel.ShowView("/ResourceDisplay.xaml?id=" + Model.Id);
+        Bxf.Shell.Instance.ShowView("/ResourceDisplay.xaml?id=" + Model.Id, null, null, null);
       }
 
       public void EditItem()
       {
-        App.ViewModel.ShowView("/ResourceEdit.xaml?id=" + Model.Id);
+        Bxf.Shell.Instance.ShowView("/ResourceEdit.xaml?id=" + Model.Id, null, null, null);
       }
 
       public void RemoveItem()
       {
-        App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting item..." });
         ProjectTracker.Library.ResourceEdit.DeleteResource(Model.Id, (o, e) =>
         {
           if (e.Error != null)
           {
-            App.ViewModel.ShowError(e.Error.Message, "Failed to delete item");
-            App.ViewModel.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
+            Bxf.Shell.Instance.ShowError(e.Error.Message, "Failed to delete item");
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsOk = false, Text = "Item NOT deleted" });
           }
           else
           {
             Parent.Model.RemoveChild(Model.Id);
-            App.ViewModel.ShowStatus(new Bxf.Status { Text = "Item deleted" });
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Item deleted" });
           }
         });
       }

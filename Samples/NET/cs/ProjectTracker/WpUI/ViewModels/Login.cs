@@ -22,14 +22,14 @@ namespace WpUI.ViewModels
 
     public void LoginUser()
     {
-      App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
+      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
       ProjectTracker.Library.Security.PTPrincipal.BeginLogin(Username, Password);
-      App.ViewModel.Back();
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public void Cancel()
     {
-      App.ViewModel.Back();
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

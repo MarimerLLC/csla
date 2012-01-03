@@ -32,29 +32,29 @@
     {
       if (CanSaveResource)
       {
-        App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
         App.ViewModel.MainPageViewModel.ResourcesChanged = true;
         Model.Resource.BeginSave((o, e) =>
         {
-          App.ViewModel.ShowStatus(new Bxf.Status());
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
           if (e.Error != null)
-            App.ViewModel.ShowError(e.Error.Message, "Data error");
+            Bxf.Shell.Instance.ShowError(e.Error.Message, "Data error");
           else
-            App.ViewModel.Back();
+            Bxf.Shell.Instance.ShowView(null, null);
         });
       }
       else
       {
         if (Model.Resource.IsValid)
-          App.ViewModel.ShowError("Not authorized", "Save");
+          Bxf.Shell.Instance.ShowError("Not authorized", "Save");
         else
-          App.ViewModel.ShowError("Invalid data", "Save");
+          Bxf.Shell.Instance.ShowError("Invalid data", "Save");
       }
     }
 
     internal void Close()
     {
-      App.ViewModel.Back();
+      Bxf.Shell.Instance.ShowView(null, null);
     }
   }
 }

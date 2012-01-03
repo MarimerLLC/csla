@@ -58,18 +58,18 @@ namespace WpUI
           if (nav == null)
             return;
 
-          if (view != null && !string.IsNullOrEmpty(view.ViewName))
-          {
-            // navigate to new page
-            nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
-          }
-          else
+          if (view == null || string.IsNullOrEmpty(view.ViewName))
           {
             // navigate back, or to main page
             if (nav.CanGoBack)
-              nav.GoBack(); 
+              nav.GoBack();
             else
               nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+          }
+          else
+          {
+            // navigate to new page
+            nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
           }
         };
     }
@@ -79,6 +79,10 @@ namespace WpUI
     /// </summary>
     private void InitializeViewModel(Control control, string queryString, NavigationMode navigationMode)
     {
+      var oldVm = _currentViewModel as IViewModel;
+      if (oldVm != null)
+        oldVm.NavigatedAway();
+
       object viewmodel = null;
       if (control is WpUI.MainPage)
       {
@@ -109,7 +113,7 @@ namespace WpUI
 
       else if (control is Views.ProjectResourceEdit)
       {
-        viewmodel = new ViewModels.ProjectResourceEdit(queryString);
+        viewmodel = ((NavigationShell)Bxf.Shell.Instance).PendingView.Model;
       }
 
       else if (control is Views.ResourceDetails)
@@ -130,6 +134,15 @@ namespace WpUI
 
       // update current view
       _currentViewModel = viewmodel as IShowStatus;
+      var newVm = _currentViewModel as IViewModel;
+      // indicate navigation
+      if (newVm != null)
+      {
+        if (!ReferenceEquals(oldVm, newVm))
+          newVm.Initialize();
+        newVm.NavigatingTo();
+      }
+
       // set view datacontext if necessary
       if (!ReferenceEquals(control.DataContext, viewmodel))
         control.DataContext = viewmodel;
@@ -187,7 +200,7 @@ namespace WpUI
     {
       if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
         ProjectTracker.Library.Security.PTPrincipal.Logout();
-      App.ViewModel.ShowView("/Login.xaml");
+      Bxf.Shell.Instance.ShowView("/Login.xaml", null, null, null);
     }
 
     private MainPageViewModel _mainPageViewModel;

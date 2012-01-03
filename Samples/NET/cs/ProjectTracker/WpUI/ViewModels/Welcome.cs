@@ -10,10 +10,10 @@ namespace WpUI.ViewModels
       {
         SetUsername();
         if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
-          App.ViewModel.ShowStatus(
+          Bxf.Shell.Instance.ShowStatus(
             new Bxf.Status { Text = "Welcome " + Csla.ApplicationContext.User.Identity.Name });
         else
-          App.ViewModel.ShowStatus(new Bxf.Status { Text = "Welcome guest user" });
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Welcome guest user" });
         App.ViewModel.ReloadMainView();
       };
 

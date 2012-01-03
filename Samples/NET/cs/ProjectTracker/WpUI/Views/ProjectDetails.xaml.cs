@@ -24,7 +24,7 @@ namespace WpUI.Views
     {
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
       if (!viewmodel.CanEditObject)
-        App.ViewModel.ShowError("Can't edit", "Authorization");
+        Bxf.Shell.Instance.ShowError("Can't edit", "Authorization");
       else
         viewmodel.Edit();
     }
@@ -33,7 +33,7 @@ namespace WpUI.Views
     {
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
       if (!viewmodel.CanEditObject)
-        App.ViewModel.ShowError("Can't delete", "Authorization");
+        Bxf.Shell.Instance.ShowError("Can't delete", "Authorization");
       else if (MessageBox.Show("Delete item?", "Project", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
         viewmodel.Delete();
     }

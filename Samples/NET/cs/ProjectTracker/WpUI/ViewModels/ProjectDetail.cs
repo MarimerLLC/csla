@@ -33,25 +33,25 @@ namespace WpUI.ViewModels
     public void Delete()
     {
       Model.Project.Delete();
-      App.ViewModel.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
+      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
       Model.Project.BeginSave((o, e) =>
         {
-          App.ViewModel.ShowStatus(new Bxf.Status());
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
           if (e.Error != null)
-            App.ViewModel.ShowError(e.Error.Message, "Project delete");
+            Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
           else
-            App.ViewModel.Back();
+            Bxf.Shell.Instance.ShowView(null, null);
         });
     }
 
     public void Edit()
     {
-      App.ViewModel.ShowView("/ProjectEdit.xaml?id=" + Model.Project.Id);
+      Bxf.Shell.Instance.ShowView("/ProjectEdit.xaml?id=" + Model.Project.Id, null, null, null);
     }
 
     public void Close()
     {
-      App.ViewModel.Back();
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
@@ -64,7 +64,7 @@ namespace WpUI.ViewModels
 
       public void ShowResource()
       {
-        App.ViewModel.ShowView("/ResourceDetails.xaml?id=" + Model.ResourceId);
+        Bxf.Shell.Instance.ShowView("/ResourceDetails.xaml?id=" + Model.ResourceId, null, null, null);
       }
     }
   }

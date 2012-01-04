@@ -18,20 +18,18 @@
   <!--LayoutRoot is the root grid where all page content is placed-->
   <Grid x:Name="LayoutRoot" Background="Transparent">
     <!--Pivot Control-->
-    <controls:Pivot Title="PROJECT TRACKER (Assign to project)" Name="Pivot">
+    <controls:Pivot Title="PROJECT TRACKER (Assign to project)" Name="Pivot"
+                    SelectedIndex="{Binding Path=DisplayIndex, Mode=TwoWay}">
       <!--Pivot item one-->
       <controls:PivotItem Header="project">
         <Grid>
-          <ListBox ItemsSource="{Binding Path=Resources}">
+          <ListBox ItemsSource="{Binding Path=Projects}"
+                   SelectedItem="{Binding Path=SelectedProject, Mode=TwoWay}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid>
-                  <TextBlock Text="{Binding Path=FullName}" 
-                             Name="NameTextBox"
+                  <TextBlock Text="{Binding Path=ProjectName}" 
                              Style="{StaticResource PhoneTextLargeStyle}" />
-                  <bxf:TriggerAction TargetControl="{Binding ElementName=NameTextBox}"
-                                     TriggerEvent="Tap"
-                                     MethodName="SelectResource"/>
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
@@ -67,6 +65,9 @@
       <shell:ApplicationBarIconButton IconUri="/Images/appbar.check.rest.png" 
                                       Text="Accept"
                                       Click="AcceptButton_Click"/>
+      <shell:ApplicationBarIconButton IconUri="/Images/appbar.delete.rest.png" 
+                                      Text="Remove"
+                                      Click="RemoveButton_Click"/>
       <shell:ApplicationBarIconButton IconUri="/Images/appbar.close.rest.png" 
                                       Text="Cancel"
                                       Click="CancelButton_Click"/>

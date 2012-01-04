@@ -23,13 +23,17 @@ namespace WpUI
 
     private void LoginButton_Click(object sender, EventArgs e)
     {
-      var viewmodel = (MainViewModel)App.ViewModel;
-      viewmodel.LoginOut();
+      App.ViewModel.LoginOut();
     }
 
     private void RefreshButton_Click(object sender, EventArgs e)
     {
       App.ViewModel.ReloadMainView();
+    }
+
+    private void RolesButton_Click(object sender, EventArgs e)
+    {
+      App.ViewModel.ViewRoles();
     }
   }
 }

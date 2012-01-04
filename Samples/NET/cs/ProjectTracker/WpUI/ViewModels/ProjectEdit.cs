@@ -56,7 +56,11 @@ namespace WpUI.ViewModels
 
     public void Save()
     {
-      if (CanSaveProject)
+      if (!Model.Project.IsDirty)
+      {
+        Bxf.Shell.Instance.ShowView(null, null);
+      }
+      else if (CanSaveProject)
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
         App.ViewModel.MainPageViewModel.ProjectsChanged = true;
@@ -88,22 +92,6 @@ namespace WpUI.ViewModels
       Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
         new ProjectResourceEdit(Model.Project), null);
     }
-
-    //internal void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit item)
-    //{
-    //  Bxf.Shell.Instance.ShowView(null, null);
-    //}
-
-    //internal void CommitAddResource(ProjectTracker.Library.ProjectResourceEdit item)
-    //{
-    //  Model.Project.Resources.Add(item);
-    //  Bxf.Shell.Instance.ShowView(null, null);
-    //}
-
-    //internal void CancelAddEditResource()
-    //{
-    //  Bxf.Shell.Instance.ShowView(null, null);
-    //}
 
     /// <summary>
     /// Child viewmodel

@@ -28,7 +28,6 @@
               <DataTemplate>
                 <Grid>
                   <TextBlock Text="{Binding Path=FullName}" 
-                             Name="NameTextBox"
                              Style="{StaticResource PhoneTextLargeStyle}" />
                 </Grid>
               </DataTemplate>

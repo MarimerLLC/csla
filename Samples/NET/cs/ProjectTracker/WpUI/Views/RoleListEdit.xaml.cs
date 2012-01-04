@@ -19,5 +19,14 @@ namespace WpUI.Views
     {
       InitializeComponent();
     }
+
+    private void SaveButton_Click(object sender, EventArgs e)
+    {
+      var viewmodel = (ViewModels.RoleListEdit)this.DataContext;
+
+      // copy lostfocus-based view values to model
+      
+      viewmodel.Save();
+    }
   }
 }

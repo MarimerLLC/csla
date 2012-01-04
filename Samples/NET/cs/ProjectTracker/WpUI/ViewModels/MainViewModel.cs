@@ -111,11 +111,6 @@ namespace WpUI
           viewmodel = new ViewModels.ProjectEdit(queryString);
       }
 
-      else if (control is Views.ProjectResourceEdit)
-      {
-        viewmodel = ((NavigationShell)Bxf.Shell.Instance).PendingView.Model;
-      }
-
       else if (control is Views.ResourceDetails)
       {
         if (navigationMode == NavigationMode.Back && !App.ViewModel.MainPageViewModel.ResourcesChanged)
@@ -130,6 +125,20 @@ namespace WpUI
           viewmodel = control.DataContext;
         else
           viewmodel = new ViewModels.ResourceEdit(queryString);
+      }
+
+      else if (control is Views.RoleListEdit)
+      {
+        if (navigationMode == NavigationMode.Back)
+          viewmodel = control.DataContext;
+        else
+          viewmodel = new ViewModels.RoleListEdit();
+      }
+
+      else
+      {
+        // navigating to child view, so use pending view to get viewmodel
+        viewmodel = ((NavigationShell)Bxf.Shell.Instance).PendingView.Model;
       }
 
       // update current view
@@ -235,6 +244,11 @@ namespace WpUI
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void ViewRoles()
+    {
+      Bxf.Shell.Instance.ShowView("/RoleListEdit.xaml", null, null, null);
     }
   }
 }

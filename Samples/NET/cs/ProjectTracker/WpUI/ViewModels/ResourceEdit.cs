@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+
 namespace WpUI.ViewModels
 {
   public class ResourceEdit : ViewModel<ProjectTracker.Library.ResourceGetter>
@@ -37,7 +38,7 @@ namespace WpUI.ViewModels
         var result = new ObservableCollection<AssignmentInfo>();
         if (Model != null)
           foreach (var item in Model.Resource.Assignments)
-            result.Add(new AssignmentInfo(this, item));
+            result.Add(new AssignmentInfo(Model.Resource, item));
         return result;
       }
     }
@@ -53,9 +54,13 @@ namespace WpUI.ViewModels
       }
     }
 
-    internal void Save()
+    public void Save()
     {
-      if (CanSaveResource)
+      if (!Model.Resource.IsDirty)
+      {
+        Bxf.Shell.Instance.ShowView(null, null);
+      }
+      else if (CanSaveResource)
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Saving..." });
         App.ViewModel.MainPageViewModel.ResourcesChanged = true;
@@ -77,26 +82,15 @@ namespace WpUI.ViewModels
       }
     }
 
-    internal void Close()
+    public void Close()
     {
       Bxf.Shell.Instance.ShowView(null, null);
     }
 
-    internal void CommitEditAssignment(ProjectTracker.Library.ResourceAssignmentEdit item)
+    public void AddNewAssignment()
     {
-      Bxf.Shell.Instance.ShowView(null, null);
-    }
-
-    internal void CommitAddAssignment(ProjectTracker.Library.ResourceAssignmentEdit item)
-    {
-      Model.Resource.Assignments.Add(item);
-      Model.Resource.Assignments.ApplyEdit();
-      Bxf.Shell.Instance.ShowView(null, null);
-    }
-
-    internal void CancelAddEditAssignment()
-    {
-      throw new System.NotImplementedException();
+      Bxf.Shell.Instance.ShowView("/ResourceAssignmentEdit.xaml", null,
+        new ResourceAssignmentEdit(Model.Resource), null);
     }
 
     /// <summary>
@@ -104,18 +98,28 @@ namespace WpUI.ViewModels
     /// </summary>
     public class AssignmentInfo : ViewModelLocal<ProjectTracker.Library.ResourceAssignmentEdit>
     {
-      public ResourceEdit Parent { get; private set; }
+      public ProjectTracker.Library.ResourceEdit ParentResource { get; private set; }
 
-      public AssignmentInfo(ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit model)
+      public AssignmentInfo(ProjectTracker.Library.ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit model)
       {
-        Parent = parent;
+        ParentResource = parent;
         Model = model;
+      }
+
+      public string ProjectName
+      {
+        get { return Model.ProjectName; }
+      }
+
+      public string RoleName
+      {
+        get { return Model.RoleName; }
       }
 
       public void EditAssignment()
       {
         Bxf.Shell.Instance.ShowView("/ResourceAssignmentEdit.xaml", null, 
-          new ResourceAssignmentEdit(Parent, Model), null);
+          new ResourceAssignmentEdit(ParentResource, Model), null);
       }
     }
   }

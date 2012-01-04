@@ -18,6 +18,12 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Resources");
     }
 
+    public override void NavigatingTo()
+    {
+      if (App.ViewModel.MainPageViewModel.ProjectsChanged)
+        OnPropertyChanged("Resources");
+    }
+
     public ObservableCollection<ResourceInfo> Resources
     {
       get 

@@ -40,13 +40,17 @@
   </Grid>
 
   <phone:PhoneApplicationPage.ApplicationBar>
-    <shell:ApplicationBar IsVisible="True" IsMenuEnabled="False">
+    <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
       <shell:ApplicationBarIconButton IconUri="/Images/appbar.login.rest.png" 
                                       Text="Login"
                                       Click="LoginButton_Click"/>
       <shell:ApplicationBarIconButton IconUri="/Images/appbar.refresh.rest.png" 
                                       Text="Refresh"
                                       Click="RefreshButton_Click"/>
+      <shell:ApplicationBar.MenuItems>
+        <shell:ApplicationBarMenuItem Text="Roles"
+                                      Click="RolesButton_Click"/>
+      </shell:ApplicationBar.MenuItems>
     </shell:ApplicationBar>
   </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

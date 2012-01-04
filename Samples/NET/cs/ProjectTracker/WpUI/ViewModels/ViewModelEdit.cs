@@ -25,7 +25,14 @@ namespace WpUI.ViewModels
         }
         else
         {
-          Bxf.Shell.Instance.ShowError("Object can not be saved", "Save error");
+          if (!Model.IsDirty)
+            Bxf.Shell.Instance.ShowError("No changes to save", "Save error");
+          else if (!Model.IsValid)
+            Bxf.Shell.Instance.ShowError("Invalid data", "Save error");
+          else if (!Model.IsBusy)
+            Bxf.Shell.Instance.ShowError("Still running rules", "Save error");
+          else 
+            Bxf.Shell.Instance.ShowError("Not authorized", "Save error");
         }
       }
     }

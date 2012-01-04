@@ -13,29 +13,27 @@ using Microsoft.Phone.Controls;
 
 namespace WpUI.Views
 {
-  public partial class ResourceEdit : PhoneApplicationPage
+  public partial class RoleEdit : PhoneApplicationPage
   {
-    public ResourceEdit()
+    public RoleEdit()
     {
       InitializeComponent();
     }
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
-      var viewmodel = (ViewModels.ResourceEdit)this.DataContext;
+      var viewmodel = (ViewModels.RoleEdit)this.DataContext;
 
       // copy lostfocus-based view values to model
-      var project = viewmodel.Model.Resource;
-      project.FirstName = FirstNameTextBox.Text;
-      project.LastName = LastNameTextBox.Text;
+      viewmodel.Model.Name = NameTextBox.Text;
 
       viewmodel.Save();
     }
 
-    private void CloseButton_Click(object sender, EventArgs e)
+    private void RemoveButton_Click(object sender, EventArgs e)
     {
-      var viewmodel = (ViewModels.ResourceEdit)this.DataContext;
-      viewmodel.Close();
+      var viewmodel = (ViewModels.RoleEdit)this.DataContext;
+      viewmodel.Remove();
     }
   }
 }

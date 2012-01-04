@@ -1,27 +1,17 @@
-﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace WpUI.ViewModels
 {
   public class ResourceAssignmentEdit : ViewModelLocalEdit<ProjectTracker.Library.ResourceAssignmentEdit>
   {
-    public ResourceEdit Parent { get; private set; }
+    public ProjectTracker.Library.ResourceEdit ParentResource { get; private set; }
     public bool EditMode { get; private set; }
 
-    public ResourceAssignmentEdit(ResourceEdit parent)
+    public ResourceAssignmentEdit(ProjectTracker.Library.ResourceEdit parent)
     {
       ManageObjectLifetime = true;
       EditMode = false;
-      Parent = parent;
+      ParentResource = parent;
       ProjectTracker.Library.ProjectList.GetProjectList((o, e) =>
       {
         if (e.Error != null)
@@ -36,17 +26,18 @@ namespace WpUI.ViewModels
       });
     }
 
-    public ResourceAssignmentEdit(ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit item)
+    public ResourceAssignmentEdit(ProjectTracker.Library.ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit item)
     {
       ManageObjectLifetime = true;
       EditMode = true;
-      Parent = parent;
+      ParentResource = parent;
       Model = item;
     }
 
     public void CreateResourceAssignment()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Creating new assignment..." });
+      DisplayIndex = 1;
       ProjectTracker.Library.ResourceAssignmentEditCreator.GetResourceAssignmentEditCreator(SelectedProject.Id, (o, e) =>
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
@@ -55,6 +46,13 @@ namespace WpUI.ViewModels
         else
           Model = e.Object.Result;
       });
+    }
+
+    private int _panel;
+    public int DisplayIndex
+    {
+      get { return _panel; }
+      set { _panel = value; OnPropertyChanged("DisplayIndex"); }
     }
 
     private ObservableCollection<ProjectInfo> _projects;
@@ -68,8 +66,8 @@ namespace WpUI.ViewModels
       }
     }
 
-    private ProjectTracker.Library.ProjectInfo _selectedProject;
-    public ProjectTracker.Library.ProjectInfo SelectedProject
+    private ProjectInfo _selectedProject;
+    public ProjectInfo SelectedProject
     {
       get { return _selectedProject; }
       set
@@ -88,20 +86,35 @@ namespace WpUI.ViewModels
     public new void Save()
     {
       if (Model != null)
+      {
         Model.ApplyEdit();
-      if (EditMode)
-        Parent.CommitEditAssignment(Model);
-      else
-        Parent.CommitAddAssignment(Model);
-      Model = null;
+        if (!EditMode)
+          ParentResource.Assignments.Add(Model);
+        Model = null;
+      }
+      Bxf.Shell.Instance.ShowView(null, null);
+    }
+
+    public void Remove()
+    {
+      if (Model != null)
+      {
+        Model.ApplyEdit();
+        if (EditMode)
+          ParentResource.Assignments.Remove(Model);
+        Model = null;
+        Bxf.Shell.Instance.ShowView(null, null);
+      }
     }
 
     public new void Cancel()
     {
       if (Model != null)
+      {
         Model.CancelEdit();
-      Parent.CancelAddEditAssignment();
-      Model = null;
+        Model = null;
+      }
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public override void NavigatedAway()
@@ -113,17 +126,14 @@ namespace WpUI.ViewModels
     {
       public ProjectInfo(ProjectTracker.Library.ProjectInfo item, ResourceAssignmentEdit parent)
       {
+        Id = item.Id;
         ProjectName = item.Name;
         Parent = parent;
       }
 
+      public int Id { get; private set; }
       public ResourceAssignmentEdit Parent { get; private set; }
       public string ProjectName { get; set; }
-
-      public void SelectProject()
-      {
-        Bxf.Shell.Instance.ShowError("Hi", "");        
-      }
     }
   }
 }

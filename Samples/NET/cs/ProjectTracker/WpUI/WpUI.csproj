@@ -96,6 +96,8 @@
     <Compile Include="ViewModels\ResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
     <Compile Include="ViewModels\ProjectResourceEdit.cs" />
+    <Compile Include="ViewModels\RoleEdit.cs" />
+    <Compile Include="ViewModels\RoleListEdit.cs" />
     <Compile Include="ViewModels\Welcome.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelEdit.cs" />
@@ -127,6 +129,9 @@
     </Compile>
     <Compile Include="Views\ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RoleEdit.xaml.cs">
+      <DependentUpon>RoleEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RoleListEdit.xaml.cs">
       <DependentUpon>RoleListEdit.xaml</DependentUpon>
@@ -182,6 +187,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ResourceList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RoleEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -22,7 +22,13 @@ namespace WpUI.ViewModels
     protected override void OnModelChanged(ProjectTracker.Library.ResourceGetter oldValue, ProjectTracker.Library.ResourceGetter newValue)
     {
       base.OnModelChanged(oldValue, newValue);
-      OnPropertyChanged("Resources");
+      OnPropertyChanged("Assignments");
+    }
+
+    public override void NavigatingTo()
+    {
+      if (App.ViewModel.MainPageViewModel.ResourcesChanged)
+        OnPropertyChanged("Assignments");
     }
 
     public ObservableCollection<AssignmentInfo> Assignments

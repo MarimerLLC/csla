@@ -24,7 +24,7 @@ namespace WpUI.Views
     {
       var viewmodel = (ViewModels.ResourceEdit)this.DataContext;
 
-      // because app bar doesn't finalize binding, copy all values manually
+      // copy lostfocus-based view values to model
       var project = viewmodel.Model.Resource;
       project.FirstName = FirstNameTextBox.Text;
       project.LastName = LastNameTextBox.Text;

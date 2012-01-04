@@ -62,16 +62,10 @@ namespace WpUI.ViewModels
         StatusContent = null;
     }
 
-    public virtual void Initialize()
-    {
-    }
-
     public virtual void NavigatingTo()
-    {
-    }
+    { }
 
     public virtual void NavigatedAway()
-    {
-    }
+    { }
   }
 }

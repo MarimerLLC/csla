@@ -41,6 +41,7 @@
       </ListBox.ItemTemplate>
     </ListBox>
     <StackPanel Orientation="Horizontal" 
+                DataContext="{Binding Source={StaticResource resourceListViewSource}}"
                 Grid.Row="1">
       <Button Content="Add new" Name="AddButton" FontSize="16"
               Margin="3" IsEnabled="{Binding Path=CanAdd}"

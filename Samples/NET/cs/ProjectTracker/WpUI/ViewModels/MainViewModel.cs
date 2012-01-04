@@ -137,11 +137,7 @@ namespace WpUI
       var newVm = _currentViewModel as IViewModel;
       // indicate navigation
       if (newVm != null)
-      {
-        if (!ReferenceEquals(oldVm, newVm))
-          newVm.Initialize();
         newVm.NavigatingTo();
-      }
 
       // set view datacontext if necessary
       if (!ReferenceEquals(control.DataContext, viewmodel))

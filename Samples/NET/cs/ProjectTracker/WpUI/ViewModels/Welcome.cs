@@ -9,12 +9,7 @@ namespace WpUI.ViewModels
       ProjectTracker.Library.Security.PTPrincipal.NewUser += () =>
       {
         SetUsername();
-        if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
-          Bxf.Shell.Instance.ShowStatus(
-            new Bxf.Status { Text = "Welcome " + Csla.ApplicationContext.User.Identity.Name });
-        else
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { Text = "Welcome guest user" });
-        App.ViewModel.ReloadMainView();
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
       };
 
       SetUsername();
@@ -26,6 +21,8 @@ namespace WpUI.ViewModels
         UserName = Csla.ApplicationContext.User.Identity.Name;
       else
         UserName = "guest";
+
+      App.ViewModel.ReloadMainView();
     }
 
     private string _userName;

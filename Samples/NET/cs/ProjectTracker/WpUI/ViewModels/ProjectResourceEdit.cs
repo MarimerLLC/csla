@@ -1,28 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace WpUI.ViewModels
 {
   public class ProjectResourceEdit : ViewModelLocalEdit<ProjectTracker.Library.ProjectResourceEdit>
   {
-    public ProjectEdit Parent { get; private set; }
+    public ProjectTracker.Library.ProjectEdit ParentProject { get; private set; }
     public bool EditMode { get; private set; }
 
-    public ProjectResourceEdit(ProjectEdit parent)
+    public ProjectResourceEdit(ProjectTracker.Library.ProjectEdit parent)
     {
       ManageObjectLifetime = true;
       EditMode = false;
-      Parent = parent;
+      ParentProject = parent;
       ProjectTracker.Library.ResourceList.GetResourceList((o, e) =>
       {
         if (e.Error != null)
@@ -37,24 +26,18 @@ namespace WpUI.ViewModels
       });
     }
 
-    public ProjectResourceEdit(ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit item)
+    public ProjectResourceEdit(ProjectTracker.Library.ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit item)
     {
       ManageObjectLifetime = true;
       EditMode = true;
-      Parent = parent;
+      ParentProject = parent;
       Model = item;
-    }
-
-    private bool _showResourceList;
-    public bool ShowResourceList
-    {
-      get { return _showResourceList; }
-      set { _showResourceList = value; OnPropertyChanged("ShowResourceList"); }
     }
 
     public void CreateProjectResource()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Creating new resource..." });
+      DisplayIndex = 1;
       ProjectTracker.Library.ProjectResourceEditCreator.GetProjectResourceEditCreator(SelectedResource.Id, (o, e) =>
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
@@ -65,6 +48,13 @@ namespace WpUI.ViewModels
       });
     }
 
+    private int _panel;
+    public int DisplayIndex
+    {
+      get { return _panel; }
+      set { _panel = value; OnPropertyChanged("DisplayIndex"); }
+    }
+
     private ObservableCollection<ResourceInfo> _resources;
     public ObservableCollection<ResourceInfo> Resources
     {
@@ -73,12 +63,11 @@ namespace WpUI.ViewModels
       { 
         _resources = value; 
         OnPropertyChanged("Resources");
-        ShowResourceList = (Resources != null);
       }
     }
 
-    private ProjectTracker.Library.ResourceInfo _selectedResource;
-    public ProjectTracker.Library.ResourceInfo SelectedResource
+    private ResourceInfo _selectedResource;
+    public ResourceInfo SelectedResource
     {
       get { return _selectedResource; }
       set
@@ -89,23 +78,43 @@ namespace WpUI.ViewModels
       }
     }
 
-    public void Save()
+    public ProjectTracker.Library.RoleList RoleList
     {
-      if (Model != null)
-        Model.ApplyEdit();
-      if (!EditMode)
-        Parent.CommitEditResource(Model);
-      else
-        Parent.CommitAddResource(Model);
-      Model = null;
+      get { return ProjectTracker.Library.RoleList.GetList(); }
     }
 
-    public void Cancel()
+    public new void Save()
     {
       if (Model != null)
+      {
+        Model.ApplyEdit();
+        if (!EditMode)
+          ParentProject.Resources.Add(Model);
+        Model = null;
+      }
+      Bxf.Shell.Instance.ShowView(null, null);
+    }
+
+    public void Remove()
+    {
+      if (Model != null)
+      {
+        Model.ApplyEdit();
+        if (EditMode)
+          ParentProject.Resources.Remove(Model);
+        Model = null;
+        Bxf.Shell.Instance.ShowView(null, null);
+      }
+    }
+
+    public new void Cancel()
+    {
+      if (Model != null)
+      {
         Model.CancelEdit();
-      Parent.CancelAddEditResource();
-      Model = null;
+        Model = null;
+      }
+      Bxf.Shell.Instance.ShowView(null, null);
     }
 
     public override void NavigatedAway()
@@ -117,17 +126,14 @@ namespace WpUI.ViewModels
     {
       public ResourceInfo(ProjectTracker.Library.ResourceInfo item, ProjectResourceEdit parent)
       {
+        Id = item.Id;
         FullName = item.Name;
         Parent = parent;
       }
 
+      public int Id { get; private set; }
       public ProjectResourceEdit Parent { get; private set; }
       public string FullName { get; set; }
-
-      public void SelectResource()
-      {
-        Bxf.Shell.Instance.ShowError("Hi", "");        
-      }
     }
   }
 }

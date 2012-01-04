@@ -17,6 +17,8 @@ namespace WpUI.ViewModels
 
     public void ReloadMainView()
     {
+      ProjectsChanged = true;
+      ResourcesChanged = true;
       LoadData();
     }
 

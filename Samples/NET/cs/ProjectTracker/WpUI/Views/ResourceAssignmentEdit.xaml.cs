@@ -13,11 +13,18 @@ using Microsoft.Phone.Controls;
 
 namespace WpUI.Views
 {
-  public partial class ProjectResourceEdit : PhoneApplicationPage
+  public partial class ResourceAssignmentEdit : PhoneApplicationPage
   {
-    public ProjectResourceEdit()
+    public ResourceAssignmentEdit()
     {
       InitializeComponent();
+    }
+
+    private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+    {
+      var context = (ViewModels.ProjectResourceEdit)DataContext;
+      if (context.EditMode)
+        Pivot.Items.RemoveAt(0);
     }
 
     private void AcceptButton_Click(object sender, EventArgs e)
@@ -33,19 +40,6 @@ namespace WpUI.Views
     {
       var context = (ViewModels.ProjectResourceEdit)DataContext;
       context.Cancel();
-    }
-
-    private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
-    {
-      var context = (ViewModels.ProjectResourceEdit)DataContext;
-      if (context.EditMode)
-        Pivot.Items.RemoveAt(0);
-    }
-
-    private void RemoveButton_Click(object sender, EventArgs e)
-    {
-      var context = (ViewModels.ProjectResourceEdit)DataContext;
-      context.Remove();
     }
   }
 }

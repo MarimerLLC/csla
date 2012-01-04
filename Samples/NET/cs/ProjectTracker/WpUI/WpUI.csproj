@@ -91,6 +91,7 @@
     <Compile Include="ViewModels\ProjectDetail.cs" />
     <Compile Include="ViewModels\ProjectEdit.cs" />
     <Compile Include="ViewModels\ProjectList.cs" />
+    <Compile Include="ViewModels\ResourceAssignmentEdit.cs" />
     <Compile Include="ViewModels\ResourceDetail.cs" />
     <Compile Include="ViewModels\ResourceEdit.cs" />
     <Compile Include="ViewModels\ResourceList.cs" />
@@ -114,6 +115,9 @@
     </Compile>
     <Compile Include="Views\ProjectResourceEdit.xaml.cs">
       <DependentUpon>ProjectResourceEdit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResourceAssignmentEdit.xaml.cs">
+      <DependentUpon>ResourceAssignmentEdit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResourceDetails.xaml.cs">
       <DependentUpon>ResourceDetails.xaml</DependentUpon>
@@ -162,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProjectResourceEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceAssignmentEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

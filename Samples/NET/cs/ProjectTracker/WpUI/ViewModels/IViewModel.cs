@@ -2,7 +2,6 @@
 {
   public interface IViewModel
   {
-    void Initialize();
     void NavigatingTo();
     void NavigatedAway();
   }

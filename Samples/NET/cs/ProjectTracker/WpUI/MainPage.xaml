@@ -11,7 +11,6 @@
     xmlns:bxf="clr-namespace:Bxf.Xaml;assembly=Bxf"
     xmlns:bxfc="clr-namespace:Bxf.Converters;assembly=Bxf"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="728" 
-    d:DataContext="{d:DesignData SampleData/MainViewModelSampleData.xaml}"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -31,9 +30,9 @@
                        Name="panorama"
                        Grid.Row="0"
                        ItemsSource="{Binding Path=MainViews}">
-      <controls:Panorama.Background>
+      <!--<controls:Panorama.Background>
         <ImageBrush ImageSource="PanoramaBackground.png"/>
-      </controls:Panorama.Background>
+      </controls:Panorama.Background>-->
     </controls:Panorama>
     <ContentControl Content="{Binding Path=StatusContent}"
                     VerticalContentAlignment="Stretch"

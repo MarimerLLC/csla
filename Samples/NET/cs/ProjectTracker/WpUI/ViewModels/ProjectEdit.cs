@@ -25,6 +25,12 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Resources");
     }
 
+    public override void NavigatingTo()
+    {
+      if (App.ViewModel.MainPageViewModel.ResourcesChanged || Model != null && Model.Project != null && Model.Project.IsDirty)
+        OnPropertyChanged("Resources");
+    }
+
     public ObservableCollection<ResourceInfo> Resources
     {
       get
@@ -32,7 +38,7 @@ namespace WpUI.ViewModels
         var result = new ObservableCollection<ResourceInfo>();
         if (Model != null)
           foreach (var item in Model.Project.Resources)
-            result.Add(new ResourceInfo(this, item));
+            result.Add(new ResourceInfo(Model.Project, item));
         return result;
       }
     }
@@ -80,36 +86,35 @@ namespace WpUI.ViewModels
     public void AddNewResource()
     {
       Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
-        new ProjectResourceEdit(this), null);
+        new ProjectResourceEdit(Model.Project), null);
     }
 
-    internal void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit item)
-    {
-      Bxf.Shell.Instance.ShowView(null, null);
-    }
+    //internal void CommitEditResource(ProjectTracker.Library.ProjectResourceEdit item)
+    //{
+    //  Bxf.Shell.Instance.ShowView(null, null);
+    //}
 
-    internal void CommitAddResource(ProjectTracker.Library.ProjectResourceEdit item)
-    {
-      Model.Project.Resources.Add(item);
-      Model.Project.Resources.ApplyEdit();
-      Bxf.Shell.Instance.ShowView(null, null);
-    }
+    //internal void CommitAddResource(ProjectTracker.Library.ProjectResourceEdit item)
+    //{
+    //  Model.Project.Resources.Add(item);
+    //  Bxf.Shell.Instance.ShowView(null, null);
+    //}
 
-    internal void CancelAddEditResource()
-    {
-      Bxf.Shell.Instance.ShowView(null, null);
-    }
+    //internal void CancelAddEditResource()
+    //{
+    //  Bxf.Shell.Instance.ShowView(null, null);
+    //}
 
     /// <summary>
     /// Child viewmodel
     /// </summary>
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
     {
-      public ProjectEdit Parent { get; private set; }
+      public ProjectTracker.Library.ProjectEdit ParentProject { get; private set; }
 
-      public ResourceInfo(ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit model)
+      public ResourceInfo(ProjectTracker.Library.ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit model)
       {
-        Parent = parent;
+        ParentProject = parent;
         Model = model;
       }
 
@@ -118,10 +123,15 @@ namespace WpUI.ViewModels
         get { return Model.FirstName + " " + Model.LastName; }
       }
 
+      public string RoleName
+      {
+        get { return Model.RoleName; }
+      }
+
       public void EditResource()
       {
         Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
-          new ProjectResourceEdit(Parent, Model), null);
+          new ProjectResourceEdit(ParentProject, Model), null);
       }
     }
   }

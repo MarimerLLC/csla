@@ -8,7 +8,10 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    d:DesignHeight="480" d:DesignWidth="480">
+    d:DesignHeight="480" d:DesignWidth="480" xmlns:my="clr-namespace:WpUI.Xaml">
+  <UserControl.Resources>
+    <my:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
+  </UserControl.Resources>
   <Grid x:Name="LayoutRoot" Margin="0,0,-12,0">
     <Grid.Resources>
       <CollectionViewSource x:Key="projectListViewSource" Source="{Binding}" />
@@ -38,6 +41,7 @@
       </ListBox.ItemTemplate>
     </ListBox>
     <StackPanel Orientation="Horizontal" 
+                DataContext="{Binding Source={StaticResource projectListViewSource}}"
                 Grid.Row="1">
       <Button Content="Add new" Name="AddButton" FontSize="16"
               Margin="3" IsEnabled="{Binding Path=CanAdd}"

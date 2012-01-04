@@ -62,6 +62,11 @@ namespace WpUI.ViewModels
         Model = model;
       }
 
+      public string RoleName
+      {
+        get { return Model.RoleName; }
+      }
+
       public void ShowResource()
       {
         Bxf.Shell.Instance.ShowView("/ResourceDetails.xaml?id=" + Model.ResourceId, null, null, null);

@@ -107,7 +107,7 @@ namespace Csla.Rules
     protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
     {
       AffectedProperties = new List<Core.IPropertyInfo>();
-      InputProperties = new List<Core.IPropertyInfo>();
+      //InputProperties = new List<Core.IPropertyInfo>();
       PrimaryProperty = primaryProperty;
       this.RuleUri = new RuleUri(this, primaryProperty);
       RunMode = RunModes.Default;

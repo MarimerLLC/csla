@@ -444,6 +444,25 @@ namespace Csla.Test.SmartDate
       obj.TextDate = string.Format("{0:g}", now);
       Assert.AreEqual(string.Format("{0:g}", now), obj.TextDate, "Should be today");
     }
+
+
+    [TestMethod]
+    public void CustomParserReturnsDateTime()
+    {
+      Csla.SmartDate.CustomParser = (s) =>
+                                      {
+                                        if (s == "test") return DateTime.Now;
+                                        return null;
+                                      };
+
+      // uses custom parser
+      var date = new Csla.SmartDate("test");
+      Assert.AreEqual(DateTime.Now.Date, date.Date.Date);
+
+      // uses buildin parser
+      var date2 = new Csla.SmartDate("t");
+      Assert.AreEqual(DateTime.Now.Date, date.Date.Date);
+    }
   }
 
   [Serializable]

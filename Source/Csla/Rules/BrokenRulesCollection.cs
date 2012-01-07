@@ -30,6 +30,9 @@ namespace Csla.Rules
     private int _warnCount;
     private int _infoCount;
 
+    private object _syncRoot = new object();
+
+
     /// <summary>
     /// Creates a read-write instance
     /// of the collection.
@@ -52,38 +55,58 @@ namespace Csla.Rules
 
     internal void ClearRules(Csla.Core.IPropertyInfo property)
     {
-      this.IsReadOnly = false;
-      List<BrokenRule> brokenRules;
-      if (property == null)
-        brokenRules = this.Where(c => c.OriginProperty == null).ToList();
-      else
-        brokenRules = this.Where(c => c.OriginProperty == property.Name).ToList();
+      lock (_syncRoot)
+      {
+        this.IsReadOnly = false;
+        List<BrokenRule> brokenRules;
+        if (property == null)
+          brokenRules = this.Where(c => c.OriginProperty == null).ToList();
+        else
+          brokenRules = this.Where(c => c.OriginProperty == property.Name).ToList();
 
-      foreach (var item in brokenRules)
-        Remove(item);
-      RecalculateCounts();
-      this.IsReadOnly = true;
+        foreach (var item in brokenRules)
+          Remove(item);
+        RecalculateCounts();
+        this.IsReadOnly = true;
+      }
     }
     
     internal void SetBrokenRules(List<RuleResult> results, string originPropertyName)
     {
-      this.IsReadOnly = false;
-
-      var rulenames = results.Select(p => p.RuleName).Distinct();
-      var old = this.Where(c => rulenames.Contains(c.RuleName) && c.OriginProperty == originPropertyName).ToList();
-      foreach (var item in old)
-        Remove(item);
-
-      foreach (var result in results)
+      lock (_syncRoot)
       {
-        if (!result.Success)
-          if (result.PrimaryProperty == null)
-            Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = null, Severity = result.Severity, OriginProperty = originPropertyName});
-          else
-            Add(new BrokenRule { RuleName = result.RuleName, Description = result.Description, Property = result.PrimaryProperty.Name, Severity = result.Severity, OriginProperty = originPropertyName});
+        this.IsReadOnly = false;
+
+        var rulenames = results.Select(p => p.RuleName).Distinct();
+        var old = this.Where(c => rulenames.Contains(c.RuleName) && c.OriginProperty == originPropertyName).ToList();
+        foreach (var item in old)
+          Remove(item);
+
+        foreach (var result in results)
+        {
+          if (!result.Success)
+            if (result.PrimaryProperty == null)
+              Add(new BrokenRule
+                    {
+                      RuleName = result.RuleName,
+                      Description = result.Description,
+                      Property = null,
+                      Severity = result.Severity,
+                      OriginProperty = originPropertyName
+                    });
+            else
+              Add(new BrokenRule
+                    {
+                      RuleName = result.RuleName,
+                      Description = result.Description,
+                      Property = result.PrimaryProperty.Name,
+                      Severity = result.Severity,
+                      OriginProperty = originPropertyName
+                    });
+        }
+        RecalculateCounts();
+        this.IsReadOnly = true;
       }
-      RecalculateCounts();
-      this.IsReadOnly = true;
     }
 
     private void RecalculateCounts()

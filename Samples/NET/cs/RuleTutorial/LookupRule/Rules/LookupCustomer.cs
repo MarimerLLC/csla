@@ -47,7 +47,8 @@ namespace LookupRule.Rules
       NameProperty = nameProperty;
 
       if (InputProperties == null)
-        InputProperties = new List<IPropertyInfo>() { PrimaryProperty };
+        InputProperties = new List<IPropertyInfo>();
+      InputProperties.Add(primaryProperty);
       AffectedProperties.Add(nameProperty);
 
       IsAsync = false;

@@ -17,7 +17,18 @@ namespace BusinessRuleDemo
       : base(action, element)
     {
       CountryField = countryField;
-      Cacheresult = false;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether [cache result].
+    /// </summary>
+    /// <value><c>true</c> if [cache result]; otherwise, <c>false</c>.</value>
+    public override bool CacheResult
+    {
+      get
+      {
+        return false;
+      }
     }
 
     protected override void Execute(AuthorizationContext context)

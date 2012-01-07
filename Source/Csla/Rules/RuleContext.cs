@@ -65,7 +65,7 @@ namespace Csla.Rules
     public Dictionary<Csla.Core.IPropertyInfo, object> InputPropertyValues { get; internal set; }
 
 
-    private readonly Lazy<Dictionary<IPropertyInfo, object>> _outputPropertyValues;
+    private readonly LazySingleton<Dictionary<IPropertyInfo, object>> _outputPropertyValues;
     /// <summary>
     /// Gets a dictionary containing copies of property values that
     /// should be updated in the target object.
@@ -129,7 +129,7 @@ namespace Csla.Rules
     {
       var chainedContext = GetChainedContext(innerRule);
       if (BusinessRules.CanRunRule(innerRule, chainedContext.ExecuteContext))
-            innerRule.Execute(chainedContext);
+        innerRule.Execute(chainedContext);
     }
 
     /// <summary>
@@ -179,15 +179,17 @@ namespace Csla.Rules
     internal RuleContext(Action<RuleContext> completeHandler)
     {
       _completeHandler = completeHandler;
-      _outputPropertyValues = new Lazy<Dictionary<IPropertyInfo, object>>(() => new Dictionary<IPropertyInfo, object>());
+      _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)
+    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext)
     {
+      _completeHandler = completeHandler;
+      _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
       ExecuteContext = executeContext;
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, Lazy<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleContextModes executeContext)
+    internal RuleContext(Action<RuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleContextModes executeContext)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;

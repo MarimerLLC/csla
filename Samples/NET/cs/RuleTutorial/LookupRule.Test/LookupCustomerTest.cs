@@ -14,70 +14,88 @@ namespace LooukupRule.Test
   ///This is a test class for LookupCustomerTest and is intended
   ///to contain all LookupCustomerTest Unit Tests
   ///</summary>
-  [TestClass()]
-  public class LookupCustomerTest : BusinessRuleTest
+
+  public class LookupCustomerTest 
   {
-    private Root _myBO;
-
-    [TestInitialize]
-    public void InitTests()
+    [TestClass()]
+    public class TheCtor : BusinessRuleTest
     {
-      _myBO = new Root();
-      var rule = new LookupCustomer(Root.CustomerIdProperty, Root.NameProperty);
-      InitializeTest(rule, _myBO);
+      private Root _myBO;
+
+      [TestInitialize]
+      public void InitTests()
+      {
+        _myBO = new Root();
+        var rule = new LookupCustomer(Root.CustomerIdProperty, Root.NameProperty);
+        InitializeTest(rule, _myBO);
+      }
+
+      [TestMethod]
+      public void IsSync()
+      {
+        Assert.IsFalse(Rule.IsAsync);
+      }
+
+      [TestMethod]
+      public void HasPrimaryProperty()
+      {
+        Assert.IsNotNull(Rule.PrimaryProperty);
+        Assert.AreEqual(Root.CustomerIdProperty, Rule.PrimaryProperty);
+      }
+
+
+      [TestMethod]
+      public void HasInputProperties()
+      {
+        Assert.IsTrue(Rule.InputProperties.Contains(Root.CustomerIdProperty));
+      }
+
+      [TestMethod]
+      public void HasAffectedProperties()
+      {
+        Assert.IsTrue(Rule.AffectedProperties.Contains(Root.NameProperty));
+      }
     }
 
-    [TestMethod]
-    public void Rule_MustBeSync()
+
+    [TestClass()]
+    public class TheExecuteMethod : BusinessRuleTest
     {
-      Assert.IsFalse(Rule.IsAsync);
+      private Root _myBO;
+
+      [TestInitialize]
+      public void InitTests()
+      {
+        _myBO = new Root();
+        var rule = new LookupCustomer(Root.CustomerIdProperty, Root.NameProperty);
+        InitializeTest(rule, _myBO);
+      }
+
+      [TestMethod]
+      public void SetsOutputProperty1()
+      {
+        // load values into BO
+        LoadProperty(_myBO, Root.CustomerIdProperty, 21164);
+
+        ExecuteRule(); // will add values into InputPropertyValues in RuleContext
+
+        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
+        Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
+      }
+
+      [TestMethod]
+      public void SetsOutputProperty2()
+      {
+        // run rule with supplied InputProperties 
+        ExecuteRule(new Dictionary<IPropertyInfo, object>() {{Root.CustomerIdProperty, 21164}});
+
+        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
+        Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
+
+        // in the samme manner I  could also test for
+        //Assert.IsTrue(
+        //    RuleContext.Results.Any(p => p.PrimaryProperty == Root.NameProperty && p.Severity == RuleSeverity.Error));
+      }
     }
-
-    [TestMethod]
-    public void Rule_MustHaveCustomerIdAsPrimaryProperty()
-    {
-      Assert.IsNotNull(Rule.PrimaryProperty);
-      Assert.AreEqual(Root.CustomerIdProperty, Rule.PrimaryProperty);
-    }
-
-
-    [TestMethod]
-    public void Rule_MustHaveInputProperties_CustomerNumber()
-    {
-      Assert.IsTrue(Rule.InputProperties.Contains(Root.CustomerIdProperty));
-    }
-
-    [TestMethod]
-    public void Rule_MustHaveAffectedProperties_Name()
-    {
-      Assert.IsTrue(Rule.AffectedProperties.Contains(Root.NameProperty));
-    }
-
-    [TestMethod]
-    public void Execute_MustSetOutputProperty()
-    {
-      // load values into BO
-      LoadProperty(_myBO, Root.CustomerIdProperty, 21164);
-
-      ExecuteRule();   // will add values into InputPropertyValues in RuleContext
-
-      Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
-      Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
-    }
-
-    [TestMethod]
-    public void Execute_MustSetOutputProperty2()
-    {
-      // run rule with supplied InputProperties 
-      ExecuteRule(new Dictionary<IPropertyInfo, object>() { { Root.CustomerIdProperty, 21164 } });
-
-      Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
-      Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
-
-      // in the samme manner I  could also test for
-      //Assert.IsTrue(
-      //    RuleContext.Results.Any(p => p.PrimaryProperty == Root.NameProperty && p.Severity == RuleSeverity.Error));
-    }
-
   }
 }

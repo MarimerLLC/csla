@@ -38,6 +38,9 @@ namespace Csla
     private string _format;
     private static string _defaultFormat;
 
+    [NonSerialized, NotUndoable]
+    private static Func<string, DateTime?> _customParser;
+
     #region EmptyValue enum
 
     /// <summary>
@@ -570,6 +573,21 @@ namespace Csla
     #region Conversion Functions
 
     /// <summary>
+    /// Gets or sets the custom parser.
+    /// 
+    /// The CustomParser is called first in TryStringToDate to allow custom parsing.
+    /// The parser method must return null if unable to parse and allow SmartDate to try default parsing. 
+    /// </summary>
+    /// <value>
+    /// The custom parser.
+    /// </value>
+    public static Func<string, DateTime?> CustomParser
+    {
+      get { return _customParser; }
+      set { _customParser = value; }
+    }
+
+    /// <summary>
     /// Converts a string value into a SmartDate.
     /// </summary>
     /// <param name="value">String containing the date value.</param>
@@ -688,50 +706,54 @@ namespace Csla
 
     private static bool TryStringToDate(string value, EmptyValue emptyValue, ref DateTime result)
     {
-      DateTime tmp;
-      if (String.IsNullOrEmpty(value))
+      // call custom parser if set...
+      if (_customParser != null)
       {
-        if (emptyValue == EmptyValue.MinDate)
+        var tmpValue = _customParser.Invoke(value);
+        // i f custom parser returned a value then parsing succeeded
+        if (tmpValue.HasValue)
         {
-          result = DateTime.MinValue;
-          return true;
-        }
-        else
-        {
-          result = DateTime.MaxValue;
+          result = tmpValue.Value;
           return true;
         }
       }
-      else if (DateTime.TryParse(value, out tmp))
+
+      DateTime tmp;
+      if (String.IsNullOrEmpty(value))
+      {
+        result = emptyValue == EmptyValue.MinDate ? DateTime.MinValue : DateTime.MaxValue;
+        return true;
+      }
+      if (DateTime.TryParse(value, out tmp))
       {
         result = tmp;
         return true;
       }
-      else
+      
+
+      string ldate = value.Trim().ToLower();
+      if (ldate == Resources.SmartDateT ||
+          ldate == Resources.SmartDateToday ||
+          ldate == ".")
       {
-        string ldate = value.Trim().ToLower();
-        if (ldate == Resources.SmartDateT ||
-            ldate == Resources.SmartDateToday ||
-            ldate == ".")
-        {
-          result = DateTime.Now;
-          return true;
-        }
-        if (ldate == Resources.SmartDateY ||
-            ldate == Resources.SmartDateYesterday ||
-            ldate == "-")
-        {
-          result = DateTime.Now.AddDays(-1);
-          return true;
-        }
-        if (ldate == Resources.SmartDateTom ||
-            ldate == Resources.SmartDateTomorrow ||
-            ldate == "+")
-        {
-          result = DateTime.Now.AddDays(1);
-          return true;
-        }
+        result = DateTime.Now;
+        return true;
       }
+      if (ldate == Resources.SmartDateY ||
+          ldate == Resources.SmartDateYesterday ||
+          ldate == "-")
+      {
+        result = DateTime.Now.AddDays(-1);
+        return true;
+      }
+      if (ldate == Resources.SmartDateTom ||
+          ldate == Resources.SmartDateTomorrow ||
+          ldate == "+")
+      {
+        result = DateTime.Now.AddDays(1);
+        return true;
+      }
+
       return false;
     }
 

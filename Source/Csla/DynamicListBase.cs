@@ -151,6 +151,9 @@ namespace Csla
         {
           if (handleBusy)
             MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
+
+          // update index - this may have changed under the duration of async call 
+          index = IndexOf(item);
           if (e.Error == null)
           {
             T result = e.Object;

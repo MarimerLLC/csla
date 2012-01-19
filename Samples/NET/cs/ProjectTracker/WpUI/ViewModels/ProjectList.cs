@@ -43,13 +43,6 @@ namespace WpUI.ViewModels
       Bxf.Shell.Instance.ShowView("/ProjectEdit.xaml", null, null, null);
     }
 
-    public void ShowDetail(object sender, Bxf.Xaml.ExecuteEventArgs e)
-    {
-      var item = ((FrameworkElement)e.TriggerSource).DataContext as ProjectInfo;
-      if (item != null)
-        Bxf.Shell.Instance.ShowView("/ProjectDetails.xaml?id=" + item.Model.Id, null, null, null);
-    }
-
     public class ProjectInfo : ViewModelLocal<ProjectTracker.Library.ProjectInfo>
     {
       public ProjectList Parent { get; private set; }
@@ -72,7 +65,7 @@ namespace WpUI.ViewModels
 
       public void DisplayItem()
       {
-        Bxf.Shell.Instance.ShowView("/ProjectDisplay.xaml?id=" + Model.Id, null, null, null);
+        Bxf.Shell.Instance.ShowView("/ProjectDetails.xaml?id=" + Model.Id, null, null, null);
       }
 
       public void EditItem()

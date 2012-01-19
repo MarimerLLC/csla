@@ -3,6 +3,7 @@
   public interface IViewModel
   {
     void NavigatingTo();
+    void NavigatingBackTo();
     void NavigatedAway();
   }
 }

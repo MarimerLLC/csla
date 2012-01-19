@@ -29,6 +29,9 @@ namespace WpUI.ViewModels
     public virtual void NavigatingTo()
     { }
 
+    public virtual void NavigatingBackTo()
+    { }
+
     public virtual void NavigatedAway()
     { }
   }

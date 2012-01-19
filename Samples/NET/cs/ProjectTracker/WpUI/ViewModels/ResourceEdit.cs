@@ -25,10 +25,9 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Assignments");
     }
 
-    public override void NavigatingTo()
+    public override void NavigatingBackTo()
     {
-      if (App.ViewModel.MainPageViewModel.ProjectsChanged || Model != null && Model.Resource != null && Model.Resource.IsDirty)
-        OnPropertyChanged("Assignments");
+      OnPropertyChanged("Assignments");
     }
 
     public ObservableCollection<AssignmentInfo> Assignments

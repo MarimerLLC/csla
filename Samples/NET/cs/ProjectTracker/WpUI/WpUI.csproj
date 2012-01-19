@@ -98,6 +98,7 @@
     <Compile Include="ViewModels\ProjectResourceEdit.cs" />
     <Compile Include="ViewModels\RoleEdit.cs" />
     <Compile Include="ViewModels\RoleListEdit.cs" />
+    <Compile Include="ViewModels\ViewModelFactory.cs" />
     <Compile Include="ViewModels\Welcome.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="ViewModels\ViewModelEdit.cs" />

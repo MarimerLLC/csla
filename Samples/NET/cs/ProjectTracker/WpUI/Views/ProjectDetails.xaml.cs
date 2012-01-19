@@ -22,6 +22,7 @@ namespace WpUI.Views
 
     private void EditButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
       if (!viewmodel.CanEditObject)
         Bxf.Shell.Instance.ShowError("Can't edit", "Authorization");
@@ -31,6 +32,7 @@ namespace WpUI.Views
 
     private void DeleteButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
       if (!viewmodel.CanEditObject)
         Bxf.Shell.Instance.ShowError("Can't delete", "Authorization");
@@ -40,6 +42,7 @@ namespace WpUI.Views
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
       viewmodel.Close();
     }

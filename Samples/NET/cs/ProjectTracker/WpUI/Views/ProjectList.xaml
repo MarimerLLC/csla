@@ -34,8 +34,11 @@
                        Style="{StaticResource PhoneTextExtraLargeStyle}"/>
             <bxf:TriggerAction TargetControl="{Binding ElementName=Item}"
                                TriggerEvent="Tap"
+                               MethodName="DisplayItem"/>
+            <!--<bxf:TriggerAction TargetControl="{Binding ElementName=Item}"
+                               TriggerEvent="Tap"
                                DataContext="{Binding Source={StaticResource projectListViewSource}}"
-                               MethodName="ShowDetail"/>
+                               MethodName="ShowDetail"/>-->
           </StackPanel>
         </DataTemplate>
       </ListBox.ItemTemplate>

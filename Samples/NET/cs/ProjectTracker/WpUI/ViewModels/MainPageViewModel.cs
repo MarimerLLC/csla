@@ -8,11 +8,21 @@ using System.Collections.Generic;
 
 namespace WpUI.ViewModels
 {
-  public class MainPageViewModel : INotifyPropertyChanged, IShowStatus
+  public class MainPageViewModel : INotifyPropertyChanged, IShowStatus, IViewModel
   {
-    public MainPageViewModel()
+    public void NavigatingTo()
     {
       IsDataLoaded = false;
+      LoadData();
+    }
+
+    public void NavigatingBackTo()
+    {
+      LoadData();
+    }
+
+    public void NavigatedAway()
+    {
     }
 
     public void ReloadMainView()
@@ -20,6 +30,18 @@ namespace WpUI.ViewModels
       ProjectsChanged = true;
       ResourcesChanged = true;
       LoadData();
+    }
+
+    public void LoginOut()
+    {
+      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+        ProjectTracker.Library.Security.PTPrincipal.Logout();
+      Bxf.Shell.Instance.ShowView("/Login.xaml", null, null, null);
+    }
+
+    public void ViewRoles()
+    {
+      Bxf.Shell.Instance.ShowView("/RoleListEdit.xaml", null, null, null);
     }
 
     public bool IsDataLoaded 

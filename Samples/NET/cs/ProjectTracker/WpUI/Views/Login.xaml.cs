@@ -22,6 +22,7 @@ namespace WpUI.Views
 
     private void LoginButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = this.DataContext as ViewModels.Login;
       if (viewmodel != null)
       {
@@ -35,6 +36,7 @@ namespace WpUI.Views
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = this.DataContext as ViewModels.Login;
       if (viewmodel != null)
         viewmodel.Cancel();

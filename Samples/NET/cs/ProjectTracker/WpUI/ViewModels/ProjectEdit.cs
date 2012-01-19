@@ -25,10 +25,9 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Resources");
     }
 
-    public override void NavigatingTo()
+    public override void NavigatingBackTo()
     {
-      if (App.ViewModel.MainPageViewModel.ResourcesChanged || Model != null && Model.Project != null && Model.Project.IsDirty)
-        OnPropertyChanged("Resources");
+      OnPropertyChanged("Resources");
     }
 
     public ObservableCollection<ResourceInfo> Resources

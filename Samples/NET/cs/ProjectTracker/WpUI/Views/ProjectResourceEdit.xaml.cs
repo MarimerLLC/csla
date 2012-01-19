@@ -20,8 +20,16 @@ namespace WpUI.Views
       InitializeComponent();
     }
 
+    private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+    {
+      var context = (ViewModels.ProjectResourceEdit)DataContext;
+      if (context.EditMode)
+        Pivot.Items.RemoveAt(0);
+    }
+
     private void AcceptButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ProjectResourceEdit)DataContext;
 
       // copy lostfocus-based view values to model
@@ -31,19 +39,14 @@ namespace WpUI.Views
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ProjectResourceEdit)DataContext;
       context.Cancel();
     }
 
-    private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
-    {
-      var context = (ViewModels.ProjectResourceEdit)DataContext;
-      if (context.EditMode)
-        Pivot.Items.RemoveAt(0);
-    }
-
     private void RemoveButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ProjectResourceEdit)DataContext;
       context.Remove();
     }

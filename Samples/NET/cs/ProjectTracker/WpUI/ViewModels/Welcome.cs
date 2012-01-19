@@ -22,7 +22,7 @@ namespace WpUI.ViewModels
       else
         UserName = "guest";
 
-      App.ViewModel.ReloadMainView();
+      App.ViewModel.MainPageViewModel.ReloadMainView();
     }
 
     private string _userName;

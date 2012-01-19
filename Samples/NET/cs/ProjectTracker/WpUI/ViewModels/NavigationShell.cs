@@ -5,7 +5,7 @@ namespace WpUI.ViewModels
 {
   public class NavigationShell : Bxf.Shell
   {
-    public Bxf.IView PendingView { get; private set; }
+    public Bxf.IView PendingView { get; set; }
 
     public NavigationShell()
     {

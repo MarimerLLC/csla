@@ -119,7 +119,11 @@ namespace WpUI.ViewModels
 
     public override void NavigatedAway()
     {
-      Cancel();
+      if (Model != null)
+      {
+        Model.CancelEdit();
+        Model = null;
+      }
     }
 
     public class ProjectInfo

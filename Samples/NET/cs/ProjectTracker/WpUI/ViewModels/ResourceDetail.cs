@@ -4,19 +4,16 @@ namespace WpUI.ViewModels
 {
   public class ResourceDetail : ViewModel<ProjectTracker.Library.ResourceGetter>
   {
+    private int _resourceId;
+
     public ResourceDetail(string queryString)
     {
-      if (string.IsNullOrEmpty(queryString))
-      {
-        BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.CreateNewResource(callback));
-      }
-      else
-      {
-        var p = queryString.Split('=');
-        var resourceId = int.Parse(p[1]);
-        ManageObjectLifetime = false;
-        BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.GetExistingResource(resourceId, callback));
-      }
+      ManageObjectLifetime = false;
+
+      var p = queryString.Split('=');
+      _resourceId = int.Parse(p[1]);
+
+      BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.GetExistingResource(_resourceId, callback));
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ResourceGetter oldValue, ProjectTracker.Library.ResourceGetter newValue)
@@ -25,10 +22,13 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Assignments");
     }
 
-    public override void NavigatingTo()
+    public override void NavigatingBackTo()
     {
       if (App.ViewModel.MainPageViewModel.ResourcesChanged)
-        OnPropertyChanged("Assignments");
+      {
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Reloading..." });
+        BeginRefresh(callback => ProjectTracker.Library.ResourceGetter.GetExistingResource(_resourceId, callback));
+      }
     }
 
     public ObservableCollection<AssignmentInfo> Assignments

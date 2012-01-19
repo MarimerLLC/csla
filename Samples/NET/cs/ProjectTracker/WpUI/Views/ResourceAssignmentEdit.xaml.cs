@@ -29,6 +29,7 @@ namespace WpUI.Views
 
     private void AcceptButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ResourceAssignmentEdit)DataContext;
 
       // copy lostfocus-based view values to model
@@ -38,12 +39,14 @@ namespace WpUI.Views
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ResourceAssignmentEdit)DataContext;
       context.Cancel();
     }
 
     private void RemoveButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ResourceAssignmentEdit)DataContext;
       context.Remove();
     }

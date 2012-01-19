@@ -4,12 +4,16 @@ namespace WpUI.ViewModels
 {
   public class ProjectDetail : ViewModel<ProjectTracker.Library.ProjectGetter>
   {
+    private int _projectId;
+
     public ProjectDetail(string queryString)
     {
-      var p = queryString.Split('=');
-      var projectId = int.Parse(p[1]);
       ManageObjectLifetime = false;
-      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(projectId, callback));
+
+      var p = queryString.Split('=');
+      _projectId = int.Parse(p[1]);
+
+      BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(_projectId, callback));
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)
@@ -18,10 +22,13 @@ namespace WpUI.ViewModels
       OnPropertyChanged("Resources");
     }
 
-    public override void NavigatingTo()
+    public override void NavigatingBackTo()
     {
       if (App.ViewModel.MainPageViewModel.ProjectsChanged)
-        OnPropertyChanged("Resources");
+      {
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Reloading..." });
+        BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(_projectId, callback));
+      }
     }
 
     public ObservableCollection<ResourceInfo> Resources

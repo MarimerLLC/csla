@@ -22,6 +22,7 @@ namespace WpUI.Views
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectEdit)this.DataContext;
 
       // copy lostfocus-based view values to model
@@ -38,6 +39,7 @@ namespace WpUI.Views
 
     private void CloseButton_Click(object sender, EventArgs e)
     {
+      if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectEdit)this.DataContext;
       viewmodel.Close();
     }

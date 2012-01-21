@@ -43,23 +43,43 @@ namespace WpUI.ViewModels
       }
     }
 
-    public void Delete()
+    public bool CanEdit
     {
-      Model.Project.Delete();
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
-      Model.Project.BeginSave((o, e) =>
-        {
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
-          if (e.Error != null)
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
-          else
-            Bxf.Shell.Instance.ShowView(null, null);
-        });
+      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)); }
     }
 
     public void Edit()
     {
-      Bxf.Shell.Instance.ShowView("/ProjectEdit.xaml?id=" + Model.Project.Id, null, null, null);
+      if (CanEdit)
+        Bxf.Shell.Instance.ShowView("/ProjectEdit.xaml?id=" + Model.Project.Id, null, null, null);
+      else
+        Bxf.Shell.Instance.ShowError("Not authorized to edit projects", "Authorization");
+    }
+
+    public new bool CanDelete
+    {
+      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)); }
+    }
+
+    public void Delete()
+    {
+      if (CanDelete)
+      {
+        Model.Project.Delete();
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
+        Model.Project.BeginSave((o, e) =>
+          {
+            Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+            if (e.Error != null)
+              Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
+            else
+              Bxf.Shell.Instance.ShowView(null, null);
+          });
+      }
+      else
+      {
+        Bxf.Shell.Instance.ShowError("Not authorized to delete projects", "Authorization");
+      }
     }
 
     public void Close()

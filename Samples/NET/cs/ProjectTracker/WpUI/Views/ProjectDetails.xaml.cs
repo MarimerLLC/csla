@@ -24,18 +24,15 @@ namespace WpUI.Views
     {
       if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
-      if (!viewmodel.CanEditObject)
-        Bxf.Shell.Instance.ShowError("Can't edit", "Authorization");
-      else
-        viewmodel.Edit();
+      viewmodel.Edit();
     }
 
     private void DeleteButton_Click(object sender, EventArgs e)
     {
       if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
-      if (!viewmodel.CanEditObject)
-        Bxf.Shell.Instance.ShowError("Can't delete", "Authorization");
+      if (!viewmodel.CanDelete)
+        Bxf.Shell.Instance.ShowError("Not authorized to delete projects", "Authorization");
       else if (MessageBox.Show("Delete item?", "Project", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
         viewmodel.Delete();
     }

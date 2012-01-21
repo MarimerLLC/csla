@@ -10,63 +10,13 @@ namespace WpUI.ViewModels
 {
   public class MainPageViewModel : INotifyPropertyChanged, IShowStatus, IViewModel
   {
-    public void NavigatingTo()
-    {
-      IsDataLoaded = false;
-      LoadData();
-    }
-
-    public void NavigatingBackTo()
-    {
-      LoadData();
-    }
-
-    public void NavigatedAway()
-    {
-    }
-
-    public void ReloadMainView()
-    {
-      ProjectsChanged = true;
-      ResourcesChanged = true;
-      LoadData();
-    }
-
-    public void LoginOut()
-    {
-      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
-        ProjectTracker.Library.Security.PTPrincipal.Logout();
-      Bxf.Shell.Instance.ShowView("/Login.xaml", null, null, null);
-    }
-
-    public void ViewRoles()
-    {
-      Bxf.Shell.Instance.ShowView("/RoleListEdit.xaml", null, null, null);
-    }
-
-    public bool IsDataLoaded 
-    {
-      get
-      {
-        return !ProjectsChanged && !ResourcesChanged;
-      }
-      private set
-      {
-        IsFirstLoad = !value;
-        ProjectsChanged = !value;
-        ResourcesChanged = !value;
-      }
-    }
-
-    public bool IsFirstLoad { get; private set; }
     public bool ProjectsChanged { get; set; }
     public bool ResourcesChanged { get; set; }
 
     public void LoadData()
     {
-      if (IsFirstLoad)
+      if (MainViews == null)
       {
-        IsFirstLoad = false;
         MainViews = new ObservableCollection<PanoramaItem>
         {
           new PanoramaItem { Header = "welcome", Content = new Views.Welcome() },
@@ -81,7 +31,7 @@ namespace WpUI.ViewModels
       {
         ProjectsChanged = false;
         var projectView = (Views.ProjectList)MainViews.First(r => r.Content is Views.ProjectList).Content;
-        projectView.DataContext = new List<object> { new ViewModels.ProjectList() };
+        projectView.DataContext = new ViewModels.ProjectList(); // new List<object> { new ViewModels.ProjectList() };
       }
 
       if (ResourcesChanged)
@@ -90,6 +40,18 @@ namespace WpUI.ViewModels
         var resourceView = (Views.ResourceList)MainViews.First(r => r.Content is Views.ResourceList).Content;
         resourceView.DataContext = new List<object> { new ViewModels.ResourceList() };
       }
+    }
+
+    public bool IsDataLoaded
+    {
+      get { return MainViews != null && !ProjectsChanged && !ResourcesChanged; }
+    }
+
+    public void Refresh()
+    {
+      ProjectsChanged = true;
+      ResourcesChanged = true;
+      LoadData();
     }
 
     private ObservableCollection<PanoramaItem> _mainViews;
@@ -101,6 +63,24 @@ namespace WpUI.ViewModels
         _mainViews = value;
         OnPropertyChanged("MainViews");
       }
+    }
+
+    public void LoginOut()
+    {
+      if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+      {
+        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Logging out" });
+        ProjectTracker.Library.Security.PTPrincipal.Logout();
+      }
+      else
+      {
+        Bxf.Shell.Instance.ShowView("/Login.xaml", null, null, null);
+      }
+    }
+
+    public void ViewRoles()
+    {
+      Bxf.Shell.Instance.ShowView("/RoleListEdit.xaml", null, null, null);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -123,6 +103,20 @@ namespace WpUI.ViewModels
         StatusContent = new Views.StatusDisplay { DataContext = status };
       else
         StatusContent = null;
+    }
+
+    public void NavigatingTo()
+    {
+      Refresh();
+    }
+
+    public void NavigatingBackTo()
+    {
+      LoadData();
+    }
+
+    public void NavigatedAway()
+    {
     }
   }
 }

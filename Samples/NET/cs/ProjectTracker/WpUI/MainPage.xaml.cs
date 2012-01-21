@@ -32,7 +32,7 @@ namespace WpUI
     {
       if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.MainPageViewModel)this.DataContext;
-      viewmodel.ReloadMainView();
+      viewmodel.Refresh();
     }
 
     private void RolesButton_Click(object sender, EventArgs e)

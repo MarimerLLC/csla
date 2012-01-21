@@ -13,15 +13,11 @@
     <my:BoolVisibilityConverter x:Key="BoolVisibilityConverter" />
   </UserControl.Resources>
   <Grid x:Name="LayoutRoot" Margin="0,0,-12,0">
-    <Grid.Resources>
-      <CollectionViewSource x:Key="projectListViewSource" Source="{Binding}" />
-      <CollectionViewSource x:Key="projectListItemListViewSource" Source="{Binding Path=ItemList, Source={StaticResource projectListViewSource}}" />
-    </Grid.Resources>
     <Grid.RowDefinitions>
       <RowDefinition Height="*"/>
       <RowDefinition Height="Auto"/>
     </Grid.RowDefinitions>
-    <ListBox ItemsSource="{Binding Source={StaticResource projectListItemListViewSource}}" 
+    <ListBox ItemsSource="{Binding Path=ItemList}" 
              Grid.Row="0"
              Name="modelListBox">
       <ListBox.ItemTemplate>
@@ -35,16 +31,11 @@
             <bxf:TriggerAction TargetControl="{Binding ElementName=Item}"
                                TriggerEvent="Tap"
                                MethodName="DisplayItem"/>
-            <!--<bxf:TriggerAction TargetControl="{Binding ElementName=Item}"
-                               TriggerEvent="Tap"
-                               DataContext="{Binding Source={StaticResource projectListViewSource}}"
-                               MethodName="ShowDetail"/>-->
           </StackPanel>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
     <StackPanel Orientation="Horizontal" 
-                DataContext="{Binding Source={StaticResource projectListViewSource}}"
                 Grid.Row="1">
       <Button Content="Add new" Name="AddButton" FontSize="16"
               Margin="3" IsEnabled="{Binding Path=CanAdd}"

@@ -30,9 +30,6 @@
                        Name="panorama"
                        Grid.Row="0"
                        ItemsSource="{Binding Path=MainViews}">
-      <!--<controls:Panorama.Background>
-        <ImageBrush ImageSource="PanoramaBackground.png"/>
-      </controls:Panorama.Background>-->
     </controls:Panorama>
     <ContentControl Content="{Binding Path=StatusContent}"
                     VerticalContentAlignment="Stretch"

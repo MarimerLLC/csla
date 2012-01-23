@@ -31,10 +31,7 @@ namespace WpUI.Views
     {
       if (App.ViewModel.AppBusy) return;
       var viewmodel = (ViewModels.ProjectDetail)this.DataContext;
-      if (!viewmodel.CanDelete)
-        Bxf.Shell.Instance.ShowError("Not authorized to delete projects", "Authorization");
-      else if (MessageBox.Show("Delete item?", "Project", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-        viewmodel.Delete();
+      viewmodel.Delete();
     }
 
     private void CloseButton_Click(object sender, EventArgs e)

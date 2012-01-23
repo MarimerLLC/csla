@@ -61,22 +61,30 @@ namespace WpUI
 
       presenter.OnShowView += (view, region) =>
         {
-          var nav = Application.Current.RootVisual as PhoneApplicationFrame;
-          if (nav == null)
-            return;
-
-          if (view == null || string.IsNullOrEmpty(view.ViewName))
+          if (region == "confirm")
           {
-            // navigate back, or to main page
-            if (nav.CanGoBack)
-              nav.GoBack();
-            else
-              nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            var c = (Confirm)view.Model;
+            c.Result = MessageBox.Show(c.Prompt, c.Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK;
           }
           else
           {
-            // navigate to new page
-            nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
+            var nav = Application.Current.RootVisual as PhoneApplicationFrame;
+            if (nav == null)
+              return;
+
+            if (view == null || string.IsNullOrEmpty(view.ViewName))
+            {
+              // navigate back, or to main page
+              if (nav.CanGoBack)
+                nav.GoBack();
+              else
+                nav.Navigate(new Uri("/MainPage.xaml", UriKind.Relative));
+            }
+            else
+            {
+              // navigate to new page
+              nav.Navigate(new Uri("/Views" + view.ViewName, UriKind.Relative));
+            }
           }
         };
     }

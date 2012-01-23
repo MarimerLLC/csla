@@ -65,16 +65,22 @@ namespace WpUI.ViewModels
     {
       if (CanDelete)
       {
-        Model.Project.Delete();
-        Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
-        Model.Project.BeginSave((o, e) =>
-          {
-            Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
-            if (e.Error != null)
-              Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
-            else
-              Bxf.Shell.Instance.ShowView(null, null);
-          });
+        var dialog = new Confirm { Title = "Project", Prompt = "Delete project?" };
+        Bxf.Shell.Instance.ShowView(null, null, dialog, "confirm");
+        if (dialog.Result)
+        {
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting project" });
+          Model.Project.Delete();
+          Model.Project.BeginSave((o, e) =>
+            {
+              App.ViewModel.MainPageViewModel.ProjectsChanged = true;
+              Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+              if (e.Error != null)
+                Bxf.Shell.Instance.ShowError(e.Error.Message, "Project delete");
+              else
+                Bxf.Shell.Instance.ShowView(null, null);
+            });
+        }
       }
       else
       {

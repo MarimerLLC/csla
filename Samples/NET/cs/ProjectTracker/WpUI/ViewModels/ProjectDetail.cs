@@ -16,7 +16,8 @@ namespace WpUI.ViewModels
       BeginRefresh(callback => ProjectTracker.Library.ProjectGetter.GetExistingProject(_projectId, callback));
     }
 
-    protected override void OnModelChanged(ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)
+    protected override void OnModelChanged(
+      ProjectTracker.Library.ProjectGetter oldValue, ProjectTracker.Library.ProjectGetter newValue)
     {
       base.OnModelChanged(oldValue, newValue);
       OnPropertyChanged("Resources");
@@ -45,7 +46,8 @@ namespace WpUI.ViewModels
 
     public bool CanEdit
     {
-      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, typeof(ProjectTracker.Library.ProjectEdit)); }
+      get { return Csla.Rules.BusinessRules.HasPermission(
+        Csla.Rules.AuthorizationActions.EditObject, Model.Project); }
     }
 
     public void Edit()
@@ -53,12 +55,13 @@ namespace WpUI.ViewModels
       if (CanEdit)
         Bxf.Shell.Instance.ShowView("/ProjectEdit.xaml?id=" + Model.Project.Id, null, null, null);
       else
-        Bxf.Shell.Instance.ShowError("Not authorized to edit projects", "Authorization");
+        Bxf.Shell.Instance.ShowError("Not authorized to edit project", "Authorization");
     }
 
     public new bool CanDelete
     {
-      get { return Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, typeof(ProjectTracker.Library.ProjectEdit)); }
+      get { return Csla.Rules.BusinessRules.HasPermission(
+        Csla.Rules.AuthorizationActions.DeleteObject, Model.Project); }
     }
 
     public void Delete()

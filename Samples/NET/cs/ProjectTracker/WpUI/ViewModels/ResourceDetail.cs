@@ -43,23 +43,57 @@ namespace WpUI.ViewModels
       }
     }
 
-    internal void Delete()
+    public new bool CanDelete
     {
-      Model.Resource.Delete();
-      Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting resource" });
-      Model.Resource.BeginSave((o, e) =>
+      get
+      {
+        return Csla.Rules.BusinessRules.HasPermission(
+          Csla.Rules.AuthorizationActions.DeleteObject, Model.Resource);
+      }
+    }
+
+    public void Delete()
+    {
+      if (CanDelete)
+      {
+        var dialog = new Confirm { Title = "Resource", Prompt = "Delete resource?" };
+        Bxf.Shell.Instance.ShowView(null, null, dialog, "confirm");
+        if (dialog.Result)
         {
-          Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
-          if (e.Error != null)
-            Bxf.Shell.Instance.ShowError(e.Error.Message, "Resource delete");
-          else
-            Bxf.Shell.Instance.ShowView(null, null);
-        });
+          Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Deleting resource" });
+          Model.Resource.Delete();
+          Model.Resource.BeginSave((o, e) =>
+            {
+              App.ViewModel.MainPageViewModel.ResourcesChanged = true;
+              Bxf.Shell.Instance.ShowStatus(new Bxf.Status());
+              if (e.Error != null)
+                Bxf.Shell.Instance.ShowError(e.Error.Message, "Resource delete");
+              else
+                Bxf.Shell.Instance.ShowView(null, null);
+            });
+        }
+      }
+      else
+      {
+        Bxf.Shell.Instance.ShowError("Not authorized to delete projects", "Authorization");
+      }
+    }
+
+    public bool CanEdit
+    {
+      get
+      {
+        return Csla.Rules.BusinessRules.HasPermission(
+          Csla.Rules.AuthorizationActions.EditObject, Model.Resource);
+      }
     }
 
     internal void Edit()
     {
-      Bxf.Shell.Instance.ShowView("/ResourceEdit.xaml?id=" + Model.Resource.Id, null, null, null);
+      if (CanEdit)
+        Bxf.Shell.Instance.ShowView("/ResourceEdit.xaml?id=" + Model.Resource.Id, null, null, null);
+      else
+        Bxf.Shell.Instance.ShowError("Not authorized to edit resource", "Authorization");
     }
 
     internal void Close()

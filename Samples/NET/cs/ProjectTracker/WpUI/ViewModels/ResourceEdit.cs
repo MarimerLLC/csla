@@ -37,7 +37,7 @@ namespace WpUI.ViewModels
         var result = new ObservableCollection<AssignmentInfo>();
         if (Model != null)
           foreach (var item in Model.Resource.Assignments)
-            result.Add(new AssignmentInfo(Model.Resource, item));
+            result.Add(new AssignmentInfo(item));
         return result;
       }
     }
@@ -97,11 +97,8 @@ namespace WpUI.ViewModels
     /// </summary>
     public class AssignmentInfo : ViewModelLocal<ProjectTracker.Library.ResourceAssignmentEdit>
     {
-      public ProjectTracker.Library.ResourceEdit ParentResource { get; private set; }
-
-      public AssignmentInfo(ProjectTracker.Library.ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit model)
+      public AssignmentInfo(ProjectTracker.Library.ResourceAssignmentEdit model)
       {
-        ParentResource = parent;
         Model = model;
       }
 
@@ -118,7 +115,7 @@ namespace WpUI.ViewModels
       public void EditAssignment()
       {
         Bxf.Shell.Instance.ShowView("/ResourceAssignmentEdit.xaml", null, 
-          new ResourceAssignmentEdit(ParentResource, Model), null);
+          new ResourceAssignmentEdit(Model), null);
       }
     }
   }

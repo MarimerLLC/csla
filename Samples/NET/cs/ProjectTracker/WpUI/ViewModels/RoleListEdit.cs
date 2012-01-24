@@ -8,10 +8,10 @@ namespace WpUI.ViewModels
       BeginRefresh(ProjectTracker.Library.Admin.RoleEditList.GetRoles);
     }
 
-    protected override void OnSaved()
+    public override void NavigatingBackTo()
     {
-      base.OnSaved();
-      Bxf.Shell.Instance.ShowView(null, null);
+      base.NavigatingBackTo();
+      SelectedItem = null;
     }
 
     private ProjectTracker.Library.Admin.RoleEdit _selectedItem;
@@ -28,9 +28,9 @@ namespace WpUI.ViewModels
 
     public void EditItem()
     {
-      if (CanEditObject)
+      if (CanEditObject && SelectedItem != null)
         Bxf.Shell.Instance.ShowView("/RoleEdit.xaml", null, 
-          new RoleEdit(Model, SelectedItem), null);
+          new RoleEdit(SelectedItem), null);
     }
 
     public void AddItem()

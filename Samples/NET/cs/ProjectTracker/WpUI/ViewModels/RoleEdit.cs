@@ -14,9 +14,9 @@ namespace WpUI.ViewModels
       Model = new ProjectTracker.Library.Admin.RoleEdit();
     }
 
-    public RoleEdit(ProjectTracker.Library.Admin.RoleEditList parent, ProjectTracker.Library.Admin.RoleEdit role)
+    public RoleEdit(ProjectTracker.Library.Admin.RoleEdit role)
     {
-      ParentList = parent;
+      ParentList = (ProjectTracker.Library.Admin.RoleEditList)role.Parent;
       EditMode = true;
       ManageObjectLifetime = true;
       Model = role;

@@ -26,11 +26,11 @@ namespace WpUI.ViewModels
       });
     }
 
-    public ResourceAssignmentEdit(ProjectTracker.Library.ResourceEdit parent, ProjectTracker.Library.ResourceAssignmentEdit item)
+    public ResourceAssignmentEdit(ProjectTracker.Library.ResourceAssignmentEdit item)
     {
       ManageObjectLifetime = true;
       EditMode = true;
-      ParentResource = parent;
+      ParentResource = (ProjectTracker.Library.ResourceEdit)((ProjectTracker.Library.ResourceAssignments)item.Parent).Parent;
       Model = item;
     }
 

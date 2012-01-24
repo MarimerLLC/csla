@@ -37,7 +37,7 @@ namespace WpUI.ViewModels
         var result = new ObservableCollection<ResourceInfo>();
         if (Model != null)
           foreach (var item in Model.Project.Resources)
-            result.Add(new ResourceInfo(Model.Project, item));
+            result.Add(new ResourceInfo(item));
         return result;
       }
     }
@@ -88,7 +88,7 @@ namespace WpUI.ViewModels
 
     public void AddNewResource()
     {
-      Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
+      Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null,
         new ProjectResourceEdit(Model.Project), null);
     }
 
@@ -97,11 +97,8 @@ namespace WpUI.ViewModels
     /// </summary>
     public class ResourceInfo : ViewModelLocal<ProjectTracker.Library.ProjectResourceEdit>
     {
-      public ProjectTracker.Library.ProjectEdit ParentProject { get; private set; }
-
-      public ResourceInfo(ProjectTracker.Library.ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit model)
+      public ResourceInfo(ProjectTracker.Library.ProjectResourceEdit model)
       {
-        ParentProject = parent;
         Model = model;
       }
 
@@ -118,7 +115,7 @@ namespace WpUI.ViewModels
       public void EditResource()
       {
         Bxf.Shell.Instance.ShowView("/ProjectResourceEdit.xaml", null, 
-          new ProjectResourceEdit(ParentProject, Model), null);
+          new ProjectResourceEdit(Model), null);
       }
     }
   }

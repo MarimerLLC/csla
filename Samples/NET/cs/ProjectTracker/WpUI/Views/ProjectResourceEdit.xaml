@@ -44,7 +44,7 @@
             <TextBlock Text="{Binding Path=Model.FullName}" 
                        Style="{StaticResource PhoneTextLargeStyle}" />
             <TextBlock Text="Assigned"/>
-            <TextBlock Text="{Binding Path=Model.Assigned}"
+            <TextBlock Text="{Binding Path=Model.Assigned, StringFormat=\{0:d\}}"
                      Style="{StaticResource PhoneTextLargeStyle}" />
             <TextBlock Text="Role"/>
             <ListBox ItemsSource="{Binding Path=RoleList}"

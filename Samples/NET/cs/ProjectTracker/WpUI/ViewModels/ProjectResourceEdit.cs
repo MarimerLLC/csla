@@ -26,13 +26,14 @@ namespace WpUI.ViewModels
       });
     }
 
-    public ProjectResourceEdit(ProjectTracker.Library.ProjectEdit parent, ProjectTracker.Library.ProjectResourceEdit item)
+    public ProjectResourceEdit(ProjectTracker.Library.ProjectResourceEdit item)
     {
       ManageObjectLifetime = true;
       EditMode = true;
-      ParentProject = parent;
+      ParentProject = (ProjectTracker.Library.ProjectEdit)((ProjectTracker.Library.ProjectResources)item.Parent).Parent;
       Model = item;
     }
+    // ...
 
     public void CreateProjectResource()
     {
@@ -90,7 +91,6 @@ namespace WpUI.ViewModels
         Model.ApplyEdit();
         if (!EditMode)
           ParentProject.Resources.Add(Model);
-        Model = null;
       }
       Bxf.Shell.Instance.ShowView(null, null);
     }

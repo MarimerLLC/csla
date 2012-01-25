@@ -17,12 +17,7 @@ namespace WpUI.ViewModels
         if (e.Error != null)
           Bxf.Shell.Instance.ShowError("Error retrieving project list", "Data Error");
         else
-        {
-          var list = new ObservableCollection<ProjectInfo>();
-          foreach (var item in e.Object)
-            list.Add(new ProjectInfo(item, this));
-          Projects = list;
-        }
+          Projects = e.Object;
       });
     }
 
@@ -55,8 +50,8 @@ namespace WpUI.ViewModels
       set { _panel = value; OnPropertyChanged("DisplayIndex"); }
     }
 
-    private ObservableCollection<ProjectInfo> _projects;
-    public ObservableCollection<ProjectInfo> Projects
+    private ProjectTracker.Library.ProjectList _projects;
+    public ProjectTracker.Library.ProjectList Projects
     {
       get { return _projects; }
       private set 
@@ -66,8 +61,8 @@ namespace WpUI.ViewModels
       }
     }
 
-    private ProjectInfo _selectedProject;
-    public ProjectInfo SelectedProject
+    private ProjectTracker.Library.ProjectInfo _selectedProject;
+    public ProjectTracker.Library.ProjectInfo SelectedProject
     {
       get { return _selectedProject; }
       set
@@ -83,7 +78,7 @@ namespace WpUI.ViewModels
       get { return ProjectTracker.Library.RoleList.GetList(); }
     }
 
-    public new void Save()
+    public void Accept()
     {
       if (Model != null)
       {
@@ -92,7 +87,7 @@ namespace WpUI.ViewModels
           ParentResource.Assignments.Add(Model);
         Model = null;
       }
-      Bxf.Shell.Instance.ShowView(null, null);
+      Close();
     }
 
     public void Remove()
@@ -103,17 +98,12 @@ namespace WpUI.ViewModels
         if (EditMode)
           ParentResource.Assignments.Remove(Model);
         Model = null;
-        Bxf.Shell.Instance.ShowView(null, null);
       }
+      Close();
     }
 
-    public new void Cancel()
+    public void Close()
     {
-      if (Model != null)
-      {
-        Model.CancelEdit();
-        Model = null;
-      }
       Bxf.Shell.Instance.ShowView(null, null);
     }
 
@@ -124,20 +114,6 @@ namespace WpUI.ViewModels
         Model.CancelEdit();
         Model = null;
       }
-    }
-
-    public class ProjectInfo
-    {
-      public ProjectInfo(ProjectTracker.Library.ProjectInfo item, ResourceAssignmentEdit parent)
-      {
-        Id = item.Id;
-        ProjectName = item.Name;
-        Parent = parent;
-      }
-
-      public int Id { get; private set; }
-      public ResourceAssignmentEdit Parent { get; private set; }
-      public string ProjectName { get; set; }
     }
   }
 }

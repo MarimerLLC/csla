@@ -34,14 +34,14 @@ namespace WpUI.Views
 
       // copy lostfocus-based view values to model
 
-      context.Save();
+      context.Accept();
     }
 
     private void CancelButton_Click(object sender, EventArgs e)
     {
       if (App.ViewModel.AppBusy) return;
       var context = (ViewModels.ProjectResourceEdit)DataContext;
-      context.Cancel();
+      context.Close();
     }
 
     private void RemoveButton_Click(object sender, EventArgs e)

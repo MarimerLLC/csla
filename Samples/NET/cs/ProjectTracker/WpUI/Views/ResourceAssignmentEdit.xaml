@@ -28,7 +28,7 @@
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid>
-                  <TextBlock Text="{Binding Path=ProjectName}" 
+                  <TextBlock Text="{Binding Path=Name}" 
                              Style="{StaticResource PhoneTextLargeStyle}" />
                 </Grid>
               </DataTemplate>

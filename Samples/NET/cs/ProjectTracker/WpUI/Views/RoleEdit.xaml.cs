@@ -28,7 +28,7 @@ namespace WpUI.Views
       // copy lostfocus-based view values to model
       viewmodel.Model.Name = NameTextBox.Text;
 
-      viewmodel.Save();
+      viewmodel.Accept();
     }
 
     private void RemoveButton_Click(object sender, EventArgs e)

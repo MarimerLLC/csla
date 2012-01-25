@@ -33,7 +33,9 @@
     <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
       <StackPanel>
         <TextBlock Text="Name"/>
-        <TextBox Text="{Binding Path=Model.Name, Mode=TwoWay}" Name="NameTextBox" Style="{StaticResource PhoneTextBoxStyle}"/>
+        <TextBox Text="{Binding Path=Model.Name, Mode=TwoWay}" 
+                 Name="NameTextBox"
+                 Style="{StaticResource PhoneTextBoxStyle}"/>
       </StackPanel>
     </Grid>
   </Grid>

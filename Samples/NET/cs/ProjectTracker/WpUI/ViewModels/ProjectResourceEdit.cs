@@ -17,12 +17,7 @@ namespace WpUI.ViewModels
         if (e.Error != null)
           Bxf.Shell.Instance.ShowError("Error retrieving resource list", "Data Error");
         else
-        {
-          var list = new ObservableCollection<ResourceInfo>();
-          foreach (var item in e.Object)
-            list.Add(new ResourceInfo(item, this));
-          Resources = list;
-        }
+          Resources = e.Object;
       });
     }
 
@@ -33,7 +28,6 @@ namespace WpUI.ViewModels
       ParentProject = (ProjectTracker.Library.ProjectEdit)((ProjectTracker.Library.ProjectResources)item.Parent).Parent;
       Model = item;
     }
-    // ...
 
     public void CreateProjectResource()
     {
@@ -56,19 +50,19 @@ namespace WpUI.ViewModels
       set { _panel = value; OnPropertyChanged("DisplayIndex"); }
     }
 
-    private ObservableCollection<ResourceInfo> _resources;
-    public ObservableCollection<ResourceInfo> Resources
+    private ProjectTracker.Library.ResourceList _resources;
+    public ProjectTracker.Library.ResourceList Resources
     {
       get { return _resources; }
-      private set 
-      { 
-        _resources = value; 
+      private set
+      {
+        _resources = value;
         OnPropertyChanged("Resources");
       }
     }
 
-    private ResourceInfo _selectedResource;
-    public ResourceInfo SelectedResource
+    private ProjectTracker.Library.ResourceInfo _selectedResource;
+    public ProjectTracker.Library.ResourceInfo SelectedResource
     {
       get { return _selectedResource; }
       set
@@ -84,15 +78,16 @@ namespace WpUI.ViewModels
       get { return ProjectTracker.Library.RoleList.GetList(); }
     }
 
-    public new void Save()
+    public void Accept()
     {
       if (Model != null)
       {
         Model.ApplyEdit();
         if (!EditMode)
           ParentProject.Resources.Add(Model);
+        Model = null;
       }
-      Bxf.Shell.Instance.ShowView(null, null);
+      Close();
     }
 
     public void Remove()
@@ -103,17 +98,12 @@ namespace WpUI.ViewModels
         if (EditMode)
           ParentProject.Resources.Remove(Model);
         Model = null;
-        Bxf.Shell.Instance.ShowView(null, null);
       }
+      Close();
     }
 
-    public new void Cancel()
+    public void Close()
     {
-      if (Model != null)
-      {
-        Model.CancelEdit();
-        Model = null;
-      }
       Bxf.Shell.Instance.ShowView(null, null);
     }
 
@@ -124,20 +114,6 @@ namespace WpUI.ViewModels
         Model.CancelEdit();
         Model = null;
       }
-    }
-
-    public class ResourceInfo
-    {
-      public ResourceInfo(ProjectTracker.Library.ResourceInfo item, ProjectResourceEdit parent)
-      {
-        Id = item.Id;
-        FullName = item.Name;
-        Parent = parent;
-      }
-
-      public int Id { get; private set; }
-      public ProjectResourceEdit Parent { get; private set; }
-      public string FullName { get; set; }
     }
   }
 }

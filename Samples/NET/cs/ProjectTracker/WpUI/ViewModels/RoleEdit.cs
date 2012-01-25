@@ -22,7 +22,7 @@ namespace WpUI.ViewModels
       Model = role;
     }
 
-    public new void Save()
+    public void Accept()
     {
       if (Model != null)
       {
@@ -30,21 +30,27 @@ namespace WpUI.ViewModels
         if (!EditMode)
           ParentList.Add(Model);
       }
+      Model = null;
+      Close();
+    }
+
+    public void Close()
+    {
       Bxf.Shell.Instance.ShowView(null, null);
     }
 
-    public new void Cancel()
+    public override void NavigatedAway()
     {
       if (Model != null)
         Model.CancelEdit();
-      Bxf.Shell.Instance.ShowView(null, null);
     }
 
-    internal void Remove()
+    public void Remove()
     {
       if (Model != null)
         ParentList.Remove(Model);
-      Bxf.Shell.Instance.ShowView(null, null);
+      Model = null;
+      Close();
     }
   }
 }

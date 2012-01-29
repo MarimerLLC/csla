@@ -466,7 +466,7 @@ namespace Csla.Rules
           }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty);
+          affectedProperties.AddRange(CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty));
       }
 
       RunningRules = oldRR;

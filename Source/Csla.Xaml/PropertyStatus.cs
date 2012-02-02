@@ -94,13 +94,12 @@ namespace Csla.Xaml
                                   UpdateState();
                                 }
                               };
-
+#endif
       // DataContextChanged is public in WPF but internal in SL. 
       DataContextChanged += (o, e) =>
       {
         if (!_loading) SetSource(e.NewValue);
       };
-#endif
     }
 
     /// <summary>
@@ -331,27 +330,6 @@ namespace Csla.Xaml
     }
 
     #endregion
-
-#if SILVERLIGHT
-    #region MyDataContext Property
-    /// <summary>
-    /// Workaround for DataContextChanged event that is intenal in SL4 to catch when the DataContext is changed
-    /// http://msmvps.com/blogs/theproblemsolver/archive/2008/12/29/how-to-know-when-the-datacontext-changed-in-your-control.aspx
-    /// </summary>
-    public static readonly DependencyProperty MyDataContextProperty =
-    DependencyProperty.Register("MyDataContext",
-                                typeof(Object),
-                                typeof(PropertyStatus),
-                                new PropertyMetadata(MyDataContextPropertyChanged));
-
-    private static void MyDataContextPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-      ((PropertyStatus)sender).SetSource(e.NewValue);
-    }
-
-
-    #endregion
-#endif
 
     #region BrokenRules property
 

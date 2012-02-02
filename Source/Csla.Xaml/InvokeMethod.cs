@@ -199,34 +199,34 @@ namespace Csla.Xaml
     public InvokeMethod(UIElement ctrl)
     {
       _element = ctrl;
-			var triggerEvent = GetTriggerEvent(_element);
-			if (!string.IsNullOrEmpty(triggerEvent))
-			{
+      var triggerEvent = GetTriggerEvent(_element);
+      if (!string.IsNullOrEmpty(triggerEvent))
+      {
         // hook up the trigger event
-				var eventRef = ctrl.GetType().GetEvent(triggerEvent);
-				if (eventRef != null)
-				{
-					var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
-					var p = invoke.GetParameters();
-					if (p.Length == 2)
-					{
-						var p1Type = p[1].ParameterType;
-						if (typeof(EventArgs).IsAssignableFrom(p1Type))
-						{
-							var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
-								this,
-								this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
-							eventRef.AddEventHandler(ctrl, del);
-						}
-						else
-						{
-							throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
-						}
-					}
-					else
-						throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
-				}
-			}
+        var eventRef = ctrl.GetType().GetEvent(triggerEvent);
+        if (eventRef != null)
+        {
+          var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
+          var p = invoke.GetParameters();
+          if (p.Length == 2)
+          {
+            var p1Type = p[1].ParameterType;
+            if (typeof(EventArgs).IsAssignableFrom(p1Type))
+            {
+              var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+                this,
+                this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+              eventRef.AddEventHandler(ctrl, del);
+            }
+            else
+            {
+              throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+            }
+          }
+          else
+            throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+        }
+      }
     }
 
     private void CallMethod(object sender, EventArgs e)

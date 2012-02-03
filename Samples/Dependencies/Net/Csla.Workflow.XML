@@ -4,6 +4,46 @@
         <name>Csla.Workflow</name>
     </assembly>
     <members>
+        <member name="T:Csla.Workflow.WorkflowStatus">
+            <summary>
+            Status of the workflow.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Initializing">
+            <summary>
+            Workflow is being initialized.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Executing">
+            <summary>
+            Workflow is currently executing.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Completed">
+            <summary>
+            Workflow has completed normally.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Idled">
+            <summary>
+            Workflow has been idled.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Terminated">
+            <summary>
+            Workflow has terminated abnormally.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Aborted">
+            <summary>
+            Workflow was aborted.
+            </summary>
+        </member>
+        <member name="F:Csla.Workflow.WorkflowStatus.Suspended">
+            <summary>
+            Workflow has been suspended.
+            </summary>
+        </member>
         <member name="T:Csla.Workflow.WorkflowManager">
             <summary>
             Manages execution of a WF workflow.
@@ -268,46 +308,6 @@
             <summary>
             Gets the workflow runtime instance
             that is executing the workflow.
-            </summary>
-        </member>
-        <member name="T:Csla.Workflow.WorkflowStatus">
-            <summary>
-            Status of the workflow.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Initializing">
-            <summary>
-            Workflow is being initialized.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Executing">
-            <summary>
-            Workflow is currently executing.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Completed">
-            <summary>
-            Workflow has completed normally.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Idled">
-            <summary>
-            Workflow has been idled.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Terminated">
-            <summary>
-            Workflow has terminated abnormally.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Aborted">
-            <summary>
-            Workflow was aborted.
-            </summary>
-        </member>
-        <member name="F:Csla.Workflow.WorkflowStatus.Suspended">
-            <summary>
-            Workflow has been suspended.
             </summary>
         </member>
     </members>

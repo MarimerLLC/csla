@@ -1907,7 +1907,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     protected virtual object ReadProperty(IPropertyInfo propertyInfo)
     {
-      if ((propertyInfo.RelationshipType == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
+      if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)

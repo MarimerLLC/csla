@@ -11,8 +11,6 @@ namespace Library
   [Serializable]
   public class CustomerEdit : BusinessBase<CustomerEdit>
   {
-    #region Business Methods
-
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c =>c.Id);
     public int Id
     {
@@ -35,10 +33,6 @@ namespace Library
       get { return GetProperty(StatusProperty); }
       set { SetProperty(StatusProperty, value); }
     }
-
-    #endregion
-
-    #region Business Rules
 
     protected override void AddBusinessRules()
     {
@@ -105,10 +99,6 @@ namespace Library
       }
     }
 
-    #endregion
-
-    #region Factory Methods
-
 #if SILVERLIGHT
     public static void BeginNewCustomer(
       DataPortal.ProxyModes proxyMode,
@@ -168,10 +158,6 @@ namespace Library
     {	/* require use of factory methods */ }
 #endif
 
-    #endregion
-
-    #region Data Access
-
 #if !SILVERLIGHT
     protected override void DataPortal_Create()
     {
@@ -216,7 +202,5 @@ namespace Library
         Status = "Deleted " + ApplicationContext.ExecutionLocation.ToString();
     }
 #endif
-
-    #endregion
   }
 }

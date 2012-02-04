@@ -358,8 +358,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        TypeAuthRules.Rules.
-        Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
+        TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
         var context = new AuthorizationContext { Rule = rule, Target = this.Target, TargetType = this.Target.GetType() };
@@ -650,7 +649,7 @@ namespace Csla.Rules
               foreach (var property in affected.Distinct())
               {
                 // property is not in AffectedProperties (already signalled to UI)
-                if (!r.Rule.AffectedProperties.Where(p => p.Name == property).Any()) 
+                if (!r.Rule.AffectedProperties.Any(p => p.Name == property)) 
                   _target.RuleComplete(property);
               }
 
@@ -670,7 +669,7 @@ namespace Csla.Rules
               BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
 
               // is any rules here broken with severity Error
-              if (r.Results.Where(p => !p.Success && p.Severity == RuleSeverity.Error).Any())
+              if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))
                 anyRuleBroken = true;
             }
 
@@ -690,7 +689,11 @@ namespace Csla.Rules
           var target = (Core.IManageProperties) _target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
-            context.InputPropertyValues.Add(item, target.ReadProperty(item));
+          {
+            // do not add lazy loaded fields that have no field data.
+            if (target.FieldExists(item)) 
+              context.InputPropertyValues.Add(item, target.ReadProperty(item));
+          }
         }
 
         // mark properties busy
@@ -735,7 +738,7 @@ namespace Csla.Rules
           if (context.Results != null)
           {
             // explicit short-circuiting
-            if (context.Results.Where(r => r.StopProcessing).Any())
+            if (context.Results.Any(r => r.StopProcessing))
               break;
           }
         }

@@ -691,8 +691,11 @@ namespace Csla.Rules
           foreach (var item in rule.InputProperties)
           {
             // do not add lazy loaded fields that have no field data.
-            if (((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && target.FieldExists(item)) 
-              context.InputPropertyValues.Add(item, target.ReadProperty(item));
+            if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+            {
+              if (target.FieldExists(item))
+                context.InputPropertyValues.Add(item, target.ReadProperty(item));
+            }
             else
               context.InputPropertyValues.Add(item, target.ReadProperty(item));
           }

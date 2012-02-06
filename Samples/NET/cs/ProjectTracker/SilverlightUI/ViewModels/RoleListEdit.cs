@@ -9,7 +9,7 @@ namespace SilverlightUI.ViewModels
       BeginRefresh(ProjectTracker.Library.Admin.RoleEditList.GetRoles);
     }
 
-    public bool CanAddNew
+    public override bool CanAddNew
     {
       get { return Csla.Rules.BusinessRules.HasPermission(
                      Csla.Rules.AuthorizationActions.CreateObject, 
@@ -22,7 +22,7 @@ namespace SilverlightUI.ViewModels
       Model.AddNew();
     }
 
-    public bool CanRemove
+    public override bool CanRemove
     {
       get { return Csla.Rules.BusinessRules.HasPermission(
                      Csla.Rules.AuthorizationActions.DeleteObject, 

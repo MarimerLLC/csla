@@ -18,27 +18,5 @@ namespace Mvc3UI.ViewModels
     {
       ModelObject = ResourceEdit.GetResource(resourceId);
     }
-
-    public bool Save(ModelStateDictionary modelState, bool forceUpdate)
-    {
-      try
-      {
-        ModelObject = ModelObject.Save(forceUpdate);
-        return true;
-      }
-      catch (Csla.DataPortalException ex)
-      {
-        if (ex.BusinessException != null)
-          modelState.AddModelError("", ex.BusinessException.Message);
-        else
-          modelState.AddModelError("", ex.Message);
-        return false;
-      }
-      catch (Exception ex)
-      {
-        modelState.AddModelError("", ex.Message);
-        return false;
-      }
-    }
   }
 }

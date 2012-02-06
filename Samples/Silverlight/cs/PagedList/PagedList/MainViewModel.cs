@@ -17,6 +17,20 @@ namespace PagedList
         BeginRefresh("GetFirstPage");
     }
 
+    protected override void OnModelChanged(Library.DataList oldValue, Library.DataList newValue)
+    {
+      base.OnModelChanged(oldValue, newValue);
+      TotalRowCount = Model.TotalRowCount;
+      LoadedRowCount = Model.Count;
+      Model.CollectionChanged += (o, e) => LoadedRowCount = Model.Count;
+    }
+
+    protected override void OnError(Exception error)
+    {
+      base.OnError(error);
+      MessageBox.Show(error.ToString());
+    }
+
     public static readonly DependencyProperty AutoLoadProperty =
       DependencyProperty.Register("AutoLoad", typeof(bool), typeof(MainViewModel), null);
     public bool AutoLoad
@@ -39,14 +53,6 @@ namespace PagedList
     {
       get { return (int)GetValue(TotalRowCountProperty); }
       set { SetValue(TotalRowCountProperty, value); }
-    }
-   
-    protected override void OnRefreshed()
-    {
-      TotalRowCount = Model.TotalRowCount;
-      LoadedRowCount = Model.Count;
-      Model.CollectionChanged += (o, e) => LoadedRowCount = Model.Count;
-      base.OnRefreshed();
     }
 
     private int _lastPage;

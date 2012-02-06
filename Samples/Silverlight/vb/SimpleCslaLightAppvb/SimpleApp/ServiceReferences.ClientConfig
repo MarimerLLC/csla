@@ -8,7 +8,7 @@
       </basicHttpBinding>
     </bindings>
     <client>
-      <endpoint address="http://localhost:1406/SimpleAppWeb/WcfPortal.svc"
+      <endpoint address="http://localhost:1406/WcfPortal.svc"
           binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IWcfPortal"
           contract="WcfPortal.IWcfPortal" name="BasicHttpBinding_IWcfPortal" />
     </client>

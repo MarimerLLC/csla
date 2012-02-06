@@ -18,7 +18,7 @@
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
     <SilverlightApplicationList>{6A74A236-A5B6-41D9-B8C4-0BEDEBFEBB2B}|..\SilverlightUI\SilverlightUI.csproj|ClientBin|False</SilverlightApplicationList>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -104,12 +104,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>21647</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost:21647/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

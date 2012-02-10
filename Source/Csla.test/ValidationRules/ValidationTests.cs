@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using UnitDriven;
 using Csla.Serialization;
@@ -490,6 +491,26 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+    [TestMethod]
+    public void CanHaveRuleOnLazyField()
+    {
+      var context = GetContext();
+
+      var root = new HasLazyField();
+      var rootEI = (IDataErrorInfo) root;
+      root.CheckRules();
+      var broken = rootEI[HasLazyField.Value1Property.Name];
+      context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
+      var value = root.Value1;  // intializes field
+      root.CheckRules();
+      broken = rootEI[HasLazyField.Value1Property.Name];
+      context.Assert.AreEqual("PrimaryProperty has value.", broken);
+
+      context.Assert.Success();
+      context.Complete();
+
+    }
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     [TestMethod]
     public void NotifyDataErrorInfo()
@@ -666,6 +687,54 @@ namespace Csla.Test.ValidationRules
       var v2 = (string)context.InputPropertyValues[SecondaryProperty];
       if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
         context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
+    }
+  }
+
+  [Serializable]
+  public class HasLazyField : BusinessBase<HasLazyField>
+  {
+    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1, RelationshipTypes.LazyLoad);
+    public string Value1
+    {
+      get
+      {
+        if (!FieldManager.FieldExists(Value1Property))
+          SetProperty(Value1Property, string.Empty);
+        return GetProperty(Value1Property);
+      }
+      set { SetProperty(Value1Property, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new CheckLazyInputFieldExists(Value1Property));
+    }
+
+    public void CheckRules()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class CheckLazyInputFieldExists : Csla.Rules.BusinessRule
+  {
+    public CheckLazyInputFieldExists(Csla.Core.IPropertyInfo primaryProperty)
+      : base(primaryProperty)
+    {
+      InputProperties = new List<Core.IPropertyInfo> {primaryProperty };
+    }
+
+    protected override void Execute(Rules.RuleContext context)
+    {
+      if (context.InputPropertyValues.ContainsKey(PrimaryProperty))
+      {
+        context.AddErrorResult("PrimaryProperty has value.");
+      }
+      else
+      {
+        context.AddErrorResult("PrimaryProperty does not exist.");
+      }
     }
   }
 }

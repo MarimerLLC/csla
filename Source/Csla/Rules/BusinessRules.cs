@@ -212,9 +212,9 @@ namespace Csla.Rules
     {
       IAuthorizationRule oldRule = null;
       if (rule.Element != null)
-        oldRule = mgr.Rules.Where(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action).FirstOrDefault();
+        oldRule = mgr.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action);
       else
-        oldRule = mgr.Rules.Where(c => c.Element == null && c.Action == rule.Action).FirstOrDefault();
+        oldRule = mgr.Rules.FirstOrDefault(c => c.Element == null && c.Action == rule.Action);
       if (oldRule != null)
         throw new ArgumentException("rule");
     }
@@ -330,7 +330,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.Where(c => c.Element == null && c.Action == action).FirstOrDefault();
+        AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
         var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType };
@@ -382,8 +382,7 @@ namespace Csla.Rules
 
       bool result = true;
       var rule =
-        TypeAuthRules.Rules.
-        Where(c => c.Element != null && c.Element.Name == element.Name && c.Action == action).FirstOrDefault();
+        TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
         result = rule.CacheResult;
       return result;
@@ -403,8 +402,10 @@ namespace Csla.Rules
         return new List<string>();
 
       RunningRules = true;
-      var affectedProperties = CheckObjectRules(RuleContextModes.CheckRules, false); 
-      var properties = ((IManageProperties)Target).GetManagedProperties();
+      var affectedProperties = CheckObjectRules(RuleContextModes.CheckRules, false);
+      var properties = TypeRules.Rules.Where(p => p.PrimaryProperty != null)
+                                          .Select(p => p.PrimaryProperty)
+                                          .Distinct();
       foreach (var property in properties)
         affectedProperties.AddRange(CheckRules(property, RuleContextModes.CheckRules));
       RunningRules = false;
@@ -795,7 +796,7 @@ namespace Csla.Rules
         foreach (var att in attList)
         {
           var target = (IManageProperties)_target;
-          var pi = target.GetManagedProperties().Where(c => c.Name == prop.Name).First();
+          var pi = target.GetManagedProperties().First(c => c.Name == prop.Name);
           AddRule(new CommonRules.DataAnnotation(pi, (System.ComponentModel.DataAnnotations.ValidationAttribute)att));
         }
       }

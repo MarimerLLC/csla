@@ -10,25 +10,25 @@ namespace Rolodex.Silverlight.Behaviors
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.KeyUp += AssociatedObject_KeyUp;
+            AssociatedObject.KeyUp += AssociatedObjectKeyUp;
         }
 
-        private void AssociatedObject_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void AssociatedObjectKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 if (TargetButton != null && TargetButton.IsEnabled)
                 {
-                    ButtonAutomationPeer peer = new ButtonAutomationPeer(TargetButton);
-                    IInvokeProvider invokeProvider =  peer.GetPattern(PatternInterface.Invoke)  as IInvokeProvider;
-                    invokeProvider.Invoke();
+                    var peer = new ButtonAutomationPeer(TargetButton);
+                    var invokeProvider =  peer.GetPattern(PatternInterface.Invoke)  as IInvokeProvider;
+                    if (invokeProvider != null) invokeProvider.Invoke();
                 }
             }
         }
 
         protected override void OnDetaching()
         {
-            AssociatedObject.KeyUp -= AssociatedObject_KeyUp;
+            AssociatedObject.KeyUp -= AssociatedObjectKeyUp;
             base.OnDetaching();
         }
 

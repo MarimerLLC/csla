@@ -13,7 +13,7 @@ namespace Rolodex.Silverlight.Services
 {
     public class RolodexServiceLoader : IRolodexServiceLoader
     {
-        private Dictionary<RolodexService, ServiceDefinition> services = new Dictionary<RolodexService, ServiceDefinition>();
+        private readonly Dictionary<RolodexService, ServiceDefinition> _services = new Dictionary<RolodexService, ServiceDefinition>();
         private readonly IRegionManager regionManager;
         private readonly IUnityContainer unityContainer;
         private readonly IEventAggregator eventAggregator;
@@ -111,7 +111,7 @@ namespace Rolodex.Silverlight.Services
             where TViewModelInterface : IRolodexViewModel
             where TViewModel : TViewModelInterface
         {
-            services.Add(rolodexService, new ServiceDefinition(
+            _services.Add(rolodexService, new ServiceDefinition(
                 typeof(TViewInterface), typeof(TView), typeof(TViewModelInterface), typeof(TViewModel)));
             unityContainer.RegisterType(typeof(TViewInterface), typeof(TView));
             unityContainer.RegisterType(typeof(TViewModelInterface), typeof(TViewModel));
@@ -139,7 +139,7 @@ namespace Rolodex.Silverlight.Services
             {
                 regionName = Constants.MainRegion;
             }
-            ServiceDefinition serviceDefinition = services[rolodexService];
+            ServiceDefinition serviceDefinition = _services[rolodexService];
             if (!regionManager.ActivateViewIfExists(regionName, serviceDefinition.ViewInterfaceType))
             {
                 regionManager.DeactivateViews(regionName);

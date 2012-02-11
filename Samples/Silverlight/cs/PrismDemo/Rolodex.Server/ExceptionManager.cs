@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Rolodex
 {
@@ -13,7 +10,7 @@ namespace Rolodex
             {
                 action();
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 // Do logging
                 throw;

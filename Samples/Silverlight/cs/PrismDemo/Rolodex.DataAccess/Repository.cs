@@ -15,7 +15,7 @@ namespace Rolodex.DataAccess
     {
         #region Setup
 
-        private CompanyContext _context;
+        private readonly CompanyContext _context;
 
         static Repository()
         {
@@ -151,7 +151,7 @@ namespace Rolodex.DataAccess
             return _context.Companies
                 .OrderBy(one => one.CompanyName)
                 .Where(one => one.CompanyName.Contains(partialName) || partialName == "" || partialName == null)
-                .Select(one => new CompanyInfo() { CompanyID = one.CompanyID, CompanyName = one.CompanyName });
+                .Select(one => new CompanyInfo { CompanyID = one.CompanyID, CompanyName = one.CompanyName });
         }
 
         #endregion

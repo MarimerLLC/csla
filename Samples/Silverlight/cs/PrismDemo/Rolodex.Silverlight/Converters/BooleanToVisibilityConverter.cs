@@ -13,18 +13,13 @@ namespace Rolodex.Silverlight.Converters
                 useFalseAsVisible = true;
             if (!useFalseAsVisible)
             {
-                if ((bool)value == true)
+                if ((bool)value)
                     return Visibility.Visible;
-                else
-                    return Visibility.Collapsed;
+                return Visibility.Collapsed;
             }
-            else
-            {
-                if ((bool)value == true)
-                    return Visibility.Collapsed;
-                else
-                    return Visibility.Visible;
-            }
+            if (value != null && (bool)value)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

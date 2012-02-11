@@ -12,7 +12,7 @@ namespace Rolodex.Silverlight.DataBinding
 
         public Object DataSource
         {
-            get { return (Object)GetValue(DataSourceProperty); }
+            get { return GetValue(DataSourceProperty); }
             set { SetValue(DataSourceProperty, value); }
         }
 
@@ -21,37 +21,38 @@ namespace Rolodex.Silverlight.DataBinding
 
         private static void DataSourceChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
-            (source as DataContextProxy).OnPropertyChanged("DataSource");
+            var dataContextProxy = source as DataContextProxy;
+            if (dataContextProxy != null) dataContextProxy.OnPropertyChanged("DataSource");
         }
 
         public DataContextProxy()
         {
-            this.Loaded += new RoutedEventHandler(DataContextProxy_Loaded);
+            Loaded += DataContextProxyLoaded;
         }
 
-        void DataContextProxy_Loaded(object sender, RoutedEventArgs e)
+        void DataContextProxyLoaded(object sender, RoutedEventArgs e)
         {
-            INotifyPropertyChanged source = this.DataContext as INotifyPropertyChanged;
+            var source = DataContext as INotifyPropertyChanged;
             if (source != null && !string.IsNullOrEmpty(BindingPropertyName))
             {
-                source.PropertyChanged += new PropertyChangedEventHandler(source_PropertyChanged);
+                source.PropertyChanged += SourcePropertyChanged;
             }
             CreateBinding();
         }
 
         private void CreateBinding()
         {
-            Binding binding = new Binding();
+            var binding = new Binding();
             if (!string.IsNullOrEmpty(BindingPropertyName))
             {
                 binding.Path = new PropertyPath(BindingPropertyName);
             }
-            binding.Source = this.DataContext;
+            binding.Source = DataContext;
             binding.Mode = BindingMode;
-            this.SetBinding(DataContextProxy.DataSourceProperty, binding);
+            SetBinding(DataSourceProperty, binding);
         }
 
-        private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void SourcePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == BindingPropertyName)
             {

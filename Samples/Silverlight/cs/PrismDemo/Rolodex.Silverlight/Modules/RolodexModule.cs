@@ -16,13 +16,13 @@ namespace Rolodex.Silverlight.Modules
         private readonly IModuleManager _moduleManager;
         private readonly IModuleCatalog _moduleCatalog;
         private static IRolodexServiceLoader _serviceLoader;
-        private static object _lock = new object();
+        private static readonly object Lock = new object();
 
         #endregion
 
         #region Constructor
 
-        public RolodexModule(
+        protected RolodexModule(
                    IRegionManager regionManager,
                    IEventAggregator eventAggregator,
                    IUnityContainer unityContainer,
@@ -34,7 +34,7 @@ namespace Rolodex.Silverlight.Modules
             _unityContainer = unityContainer;
             _moduleManager = moduleManager;
             _moduleCatalog = moduleCatalog;
-            lock (_lock)
+            lock (Lock)
             {
                 if (_serviceLoader == null)
                 {

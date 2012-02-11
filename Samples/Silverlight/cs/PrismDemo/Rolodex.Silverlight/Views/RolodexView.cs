@@ -10,30 +10,30 @@ namespace Rolodex.Silverlight.Views
 {
     public abstract class RolodexView : UserControl, IRolodexView
     {
-        public RolodexView()
+        protected RolodexView()
         {
 
             TabNavigation = System.Windows.Input.KeyboardNavigationMode.Cycle;
-            Loaded += View_Loaded;
+            Loaded += ViewLoaded;
         }
 
-        private void View_Loaded(object sender, RoutedEventArgs e)
+        private void ViewLoaded(object sender, RoutedEventArgs e)
         {
 
 
-            if (this.DataContext is IRolodexViewModel)
+            if (DataContext is IRolodexViewModel)
             {
-                var model = this.DataContext as IRolodexViewModel;
+                var model = DataContext as IRolodexViewModel;
                 Grid root = null;
-                if (this.Content is Grid)
+                if (Content is Grid)
                 {
-                    root = this.Content as Grid;
+                    root = Content as Grid;
                 }
-                else if (this.Content is Border)
+                else if (Content is Border)
                 {
-                    if ((this.Content as Border).Child is Grid)
+                    if ((Content as Border).Child is Grid)
                     {
-                        root = (this.Content as Border).Child as Grid;
+                        root = (Content as Border).Child as Grid;
                     }
                 }
                 if (root != null)
@@ -42,49 +42,43 @@ namespace Rolodex.Silverlight.Views
                     {
                         root.Background = new SolidColorBrush(Colors.LightGray);
                     }
-                    Grid curtainGrid = new Grid();
+                    var curtainGrid = new Grid();
                     curtainGrid.SetValue(Canvas.ZIndexProperty, 9999);
                     curtainGrid.Opacity = 0.6;
                     curtainGrid.SetValue(Grid.RowSpanProperty, root.RowDefinitions.Count + 1);
                     curtainGrid.SetValue(Grid.ColumnSpanProperty, root.ColumnDefinitions.Count + 1);
 
-                    LinearGradientBrush brush = new LinearGradientBrush();
-                    brush.EndPoint = new Point(0.5, 1);
-                    brush.StartPoint = new Point(0.5, 0);
-                    GradientStopCollection stops = new GradientStopCollection();
+                    var brush = new LinearGradientBrush {EndPoint = new Point(0.5, 1), StartPoint = new Point(0.5, 0)};
+                    var stops = new GradientStopCollection();
 
-                    GradientStop stop = new GradientStop();
-                    stop.Color = new Color() { R = 0x80, G = 0x74, B = 0xD4 };
+                    var stop = new GradientStop {Color = new Color {R = 0x80, G = 0x74, B = 0xD4}};
                     stops.Add(stop);
 
-                    stop = new GradientStop();
-                    stop.Color = new Color() { R = 0x80, G = 0x74, B = 0xD4 };
-                    stop.Offset = 1;
+                    stop = new GradientStop {Color = new Color {R = 0x80, G = 0x74, B = 0xD4}, Offset = 1};
                     stops.Add(stop);
 
-                    stop = new GradientStop();
-                    stop.Color = new Color() { R = 0xB7, G = 0x84, B = 0xD0 };
-                    stop.Offset = 0.5;
+                    stop = new GradientStop {Color = new Color {R = 0xB7, G = 0x84, B = 0xD0}, Offset = 0.5};
                     stops.Add(stop);
                     brush.GradientStops = stops;
 
                     curtainGrid.Background = brush;
 
-                    BusyAnimation busyAnimation = new BusyAnimation();
-                    busyAnimation.MinHeight = 48;
-                    busyAnimation.MinWidth = 48;
-                    busyAnimation.MaxHeight = 300;
-                    busyAnimation.MaxWidth = 300;
-                    busyAnimation.TabNavigation = System.Windows.Input.KeyboardNavigationMode.Cycle;
-                    Binding binding = new Binding("IsBusy");
-                    busyAnimation.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                    busyAnimation.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+                    var busyAnimation = new BusyAnimation
+                                            {
+                                                MinHeight = 48,
+                                                MinWidth = 48,
+                                                MaxHeight = 300,
+                                                MaxWidth = 300,
+                                                TabNavigation = System.Windows.Input.KeyboardNavigationMode.Cycle
+                                            };
+                    var binding = new Binding("IsBusy");
+                    busyAnimation.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    busyAnimation.VerticalAlignment = VerticalAlignment.Stretch;
                     busyAnimation.SetBinding(BusyAnimation.IsRunningProperty, binding);
                     curtainGrid.Children.Add(busyAnimation);
 
-                    binding = new Binding("IsBusy");
-                    binding.Converter = new BooleanToVisibilityConverter();
-                    curtainGrid.SetBinding(Grid.VisibilityProperty, binding);
+                    binding = new Binding("IsBusy") {Converter = new BooleanToVisibilityConverter()};
+                    curtainGrid.SetBinding(VisibilityProperty, binding);
 
                     root.Children.Add(curtainGrid);
                     if (model.IsBusy)
@@ -99,11 +93,11 @@ namespace Rolodex.Silverlight.Views
                                 if (model.IsBusy)
                                     busyAnimation.Focus();
                                 else
-                                    this.Focus();
+                                    Focus();
                             }
                         };
 
-                    this.Loaded -= View_Loaded;
+                    Loaded -= ViewLoaded;
                 }
             }
         }
@@ -118,15 +112,9 @@ namespace Rolodex.Silverlight.Views
                     {
                         return (DataContext as IRolodexViewModel).IsDirty;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
                     return false;
                 }
+                return false;
             }
         }
     }

@@ -8,23 +8,23 @@ namespace Rolodex.Silverlight.Behaviors
         protected override void OnAttached()
         {
             base.OnAttached();
-            AssociatedObject.PasswordChanged += AssociatedObject_PasswordChanged;
+            AssociatedObject.PasswordChanged += AssociatedObjectPasswordChanged;
         }
 
-        private void AssociatedObject_PasswordChanged(object sender, RoutedEventArgs e)
+        private void AssociatedObjectPasswordChanged(object sender, RoutedEventArgs e)
         {
-            var updating = (bool?)AssociatedObject.GetValue(PasswordboxBehavior.UpdatingPasswordProperty);
+            var updating = (bool?)AssociatedObject.GetValue(UpdatingPasswordProperty);
             if (!updating.HasValue || updating.Value == false)
             {
-                AssociatedObject.SetValue(PasswordboxBehavior.UpdatingPasswordProperty, true);
+                AssociatedObject.SetValue(UpdatingPasswordProperty, true);
                 BoundPassword = AssociatedObject.Password;
-                AssociatedObject.SetValue(PasswordboxBehavior.UpdatingPasswordProperty, false);
+                AssociatedObject.SetValue(UpdatingPasswordProperty, false);
             }
         }
 
         protected override void OnDetaching()
         {
-            AssociatedObject.PasswordChanged -= AssociatedObject_PasswordChanged;
+            AssociatedObject.PasswordChanged -= AssociatedObjectPasswordChanged;
             base.OnDetaching();
         }
 
@@ -40,20 +40,23 @@ namespace Rolodex.Silverlight.Behaviors
 
         private static void OnBoundPasswordChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
-            PasswordboxBehavior behavior = dependencyObject as PasswordboxBehavior;
-            var updating = (bool?)behavior.AssociatedObject.GetValue(PasswordboxBehavior.UpdatingPasswordProperty);
-            if (!updating.HasValue || updating.Value == false)
+            var behavior = dependencyObject as PasswordboxBehavior;
+            if (behavior != null)
             {
-                behavior.AssociatedObject.SetValue(PasswordboxBehavior.UpdatingPasswordProperty, true);
-                if (e.NewValue != null)
+                var updating = (bool?)behavior.AssociatedObject.GetValue(UpdatingPasswordProperty);
+                if (!updating.HasValue || updating.Value == false)
                 {
-                    behavior.AssociatedObject.Password = e.NewValue as string;
+                    behavior.AssociatedObject.SetValue(UpdatingPasswordProperty, true);
+                    if (e.NewValue != null)
+                    {
+                        behavior.AssociatedObject.Password = e.NewValue as string;
+                    }
+                    else
+                    {
+                        behavior.AssociatedObject.Password = string.Empty;
+                    }
+                    behavior.AssociatedObject.SetValue(UpdatingPasswordProperty, false);
                 }
-                else
-                {
-                    behavior.AssociatedObject.Password = string.Empty;
-                }
-                behavior.AssociatedObject.SetValue(PasswordboxBehavior.UpdatingPasswordProperty, false);
             }
         }
 

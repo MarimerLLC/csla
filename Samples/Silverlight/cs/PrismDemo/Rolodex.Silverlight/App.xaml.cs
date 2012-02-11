@@ -20,7 +20,9 @@ namespace Rolodex.Silverlight
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            
+            Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaReaderType(typeof(Csla.Serialization.Mobile.CslaBinaryReader));
+            Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaWriterType(typeof(Csla.Serialization.Mobile.CslaBinaryWriter));
+
             var bootstrapper = new Bootstrapper();
 
             bootstrapper.Run();

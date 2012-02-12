@@ -1,5 +1,13 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="BusinessRuleTest.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved. Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Helper class for creating unit tests on rules.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 using System.Collections.Generic;
+using System;
 using System.Threading;
 using Csla;
 using Csla.Core;

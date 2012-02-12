@@ -50,6 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Root.cs" />
     <Compile Include="Rules\CanWrite.cs" />
+    <Compile Include="Rules\FieldExists.cs" />
     <Compile Include="Rules\IsNew.cs" />
     <Compile Include="Rules\IsNotNew.cs" />
   </ItemGroup>

@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="LookupCustomerTest.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved. Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Unit tests fot LookupCustomer rule.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+using System.Collections.Generic;
 using LookupRule;
 using LookupRule.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using Csla.Core;
-using Csla.Rules;
 using RuleTutorial.Testing.Common;
 
 namespace LooukupRule.Test

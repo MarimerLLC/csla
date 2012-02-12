@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AsyncLookupCustomerTest.cs" company="Marimer LLC">
+//   Copyright (c) Marimer LLC. All rights reserved. Website: http://www.lhotka.net/cslanet
+// </copyright>
+//  <summary>
+//   Unit tests foa AsyncLookupCustomer rule.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+using System.Collections.Generic;
 using AsyncLookupRule.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Csla.Core;
-using Csla.Rules;
 using RuleTutorial.Testing.Common;
 
 namespace AsyncLookupRule.Test

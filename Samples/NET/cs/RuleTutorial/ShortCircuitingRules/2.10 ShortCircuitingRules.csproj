@@ -61,6 +61,7 @@
     <Compile Include="Rules\StopIfNotCanWrite.cs" />
     <Compile Include="Rules\StopIfIsNew.cs" />
     <Compile Include="Rules\StopIfIsNotNew.cs" />
+    <Compile Include="Rules\StopIfNotFieldExists.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

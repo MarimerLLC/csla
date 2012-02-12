@@ -1,46 +1,41 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CanWrite.cs" company="Marimer LLC">
+// <copyright file="FieldExists.cs" company="Marimer LLC">
 //   Copyright (c) Marimer LLC. All rights reserved. Website: http://www.lhotka.net/cslanet
 // </copyright>
 //  <summary>
-//   Gateway rule that will only call inner rule when uuser can edit property
+//   Gateway rule that will only call inner rule when lazy loaded field (primary property) is initialized.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
+using Csla.Core;
 using Csla.Rules;
 
 namespace GatewayRules.Rules
 {
-  using Csla.Core;
-
   /// <summary>
-  /// Gateway rule that will only call inner rule when uuser can edit property
+  /// Gateway rule that will only call inner rule when lazy loaded field (primary property) is initialized.
   /// </summary>
-  public class CanWrite : PropertyRule
+  public class FieldExists : BusinessRule
   {
     /// <summary>
-    /// Gets the inner rule.
+    /// Gets or sets the inner rule.
     /// </summary>
+    /// <value>The inner rule.</value>
     public IBusinessRule InnerRule { get; private set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CanWrite"/> class.
+    /// Initializes a new instance of the <see cref="FieldExists"/> class.
     /// </summary>
-    /// <param name="primaryProperty">
-    /// The primary property.
-    /// </param>
-    /// <param name="innerRule">
-    /// The inner rule.
-    /// </param>
-    public CanWrite(IPropertyInfo primaryProperty, IBusinessRule innerRule)
+    /// <param name="primaryProperty">The primary property.</param>
+    /// <param name="innerRule">The inner rule.</param>
+    public FieldExists(IPropertyInfo primaryProperty, IBusinessRule innerRule)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo> { primaryProperty };
+      if (InputProperties == null)
+        InputProperties = new List<IPropertyInfo>();
+      InputProperties.Add(primaryProperty);
       InnerRule = innerRule;
       RuleUri.AddQueryParameter("rule", System.Uri.EscapeUriString(InnerRule.RuleName));
 
@@ -56,19 +51,14 @@ namespace GatewayRules.Rules
     }
 
     /// <summary>
-    /// Executes the rule
+    /// Calls inner rule if PrimaryProperty has value.
     /// </summary>
-    /// <param name="context">
-    /// The rule context.
-    /// </param>
+    /// <param name="context">Rule context object.</param>
     protected override void Execute(RuleContext context)
     {
-      var target = (Csla.Core.BusinessBase)context.Target;
-      
-      if (target.CanWriteProperty(PrimaryProperty))
+      if (context.InputPropertyValues.ContainsKey(PrimaryProperty))
       {
-        var chainedContext = context.GetChainedContext(InnerRule);
-        InnerRule.Execute(chainedContext);
+        context.ExecuteRule(InnerRule);
       }
     }
   }

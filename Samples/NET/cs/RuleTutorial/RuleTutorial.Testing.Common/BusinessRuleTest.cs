@@ -3,7 +3,7 @@
 //   Copyright (c) Marimer LLC. All rights reserved. Website: http://www.lhotka.net/cslanet
 // </copyright>
 //  <summary>
-//   Helper class for creating unit tests on rules.
+//   Helper class for creating unit tests on business rules.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections.Generic;

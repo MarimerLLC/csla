@@ -61,6 +61,15 @@ namespace CompareFieldsRules.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to One of the fields must have a value {0}.
+        /// </summary>
+        internal static string AnyRequiredRule {
+            get {
+                return ResourceManager.GetString("AnyRequiredRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} must be greater than or equal to {1}.
         /// </summary>
         internal static string GreaterThanOrEqualRule {

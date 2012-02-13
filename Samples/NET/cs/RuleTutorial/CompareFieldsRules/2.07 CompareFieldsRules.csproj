@@ -54,6 +54,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Root.cs" />
+    <Compile Include="Rules\AnyRequired.cs" />
     <Compile Include="Rules\GreaterThan.cs" />
     <Compile Include="Rules\GreaterThanOrEqual.cs" />
     <Compile Include="Rules\LessThan.cs" />

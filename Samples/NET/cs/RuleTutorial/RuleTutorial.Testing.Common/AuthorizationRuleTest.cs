@@ -33,7 +33,7 @@ namespace RuleTutorial.Testing.Common
     /// <summary>
     /// Executes the rule with the AuthorizationContext.
     /// </summary>
-    public void Execute()
+    public void ExecuteRule()
     {
       AuthorizationContext.Rule.Execute(AuthorizationContext);
     }

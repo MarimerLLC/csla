@@ -10,6 +10,7 @@ namespace AddonPropertyRules.Rules
   /// <summary>
   /// A rule that establishes a dependency from properties to PrimaryProperty.
   /// The rules for PrimaryProperty will be rerun wheneve one of the depencyProperties is changed.
+  /// NotifyPropertyChanged will also be raised for PrimaryProperty when any of input properties is changed. 
   /// </summary>
   public class DependencyFrom : BusinessRule
   {

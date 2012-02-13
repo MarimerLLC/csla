@@ -52,7 +52,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Unit Tests", "4. Unit Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RuleTutorial.Testing.Common", "RuleTutorial.Testing.Common\RuleTutorial.Testing.Common.csproj", "{85B11A6A-5986-46B6-BA0A-E75381209B87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LookupRule.Test", "LookupRule.Test\LookupRule.Test.csproj", "{52DFB112-C23B-4399-9DA7-4CE2ADE3D5DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.2 LookupRule.Test", "LookupRule.Test\4.2 LookupRule.Test.csproj", "{52DFB112-C23B-4399-9DA7-4CE2ADE3D5DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FDAA019-DE44-48CD-9614-2A36E45EFCA3}"
 	ProjectSection(SolutionItems) = preProject
@@ -62,7 +62,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncLookupRule.Test", "AsyncLookupRule.Test\AsyncLookupRule.Test.csproj", "{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.3 AsyncLookupRule.Test", "AsyncLookupRule.Test\4.3 AsyncLookupRule.Test.csproj", "{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.1 CustomAuthzRules.Test", "CustomAuthzRules.Test\4.1 CustomAuthzRules.Test.csproj", "{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -287,6 +289,16 @@ Global
 		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD}.Release|x86.ActiveCfg = Release|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,7 +323,8 @@ Global
 		{FCC1E148-1CC8-4674-8D95-1ADA1AAC10AC} = {E279D9A8-0FAA-4AA4-B33C-E6C392F0C596}
 		{D4E92931-4613-47E5-A83A-27BDCF083F18} = {5BD93CC7-EBE5-4E7B-B98A-806909F81D6F}
 		{85B11A6A-5986-46B6-BA0A-E75381209B87} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
-		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 		{52DFB112-C23B-4399-9DA7-4CE2ADE3D5DE} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
+		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
+		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 	EndGlobalSection
 EndGlobal

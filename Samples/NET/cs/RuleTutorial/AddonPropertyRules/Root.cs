@@ -106,6 +106,26 @@ namespace AddonPropertyRules
       set { SetPropertyConvert<SmartDate, string>(EndDateProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> String1Property = RegisterProperty<string>(c => c.String1);
+    public string String1
+    {
+      get { return GetProperty(String1Property); }
+      set { SetProperty(String1Property, value); }
+    }
+
+    public static readonly PropertyInfo<string> String2Property = RegisterProperty<string>(c => c.String2);
+    public string String2
+    {
+      get { return GetProperty(String2Property); }
+      set { SetProperty(String2Property, value); }
+    }
+
+    public static readonly PropertyInfo<string> ConcatStringProperty = RegisterProperty<string>(c => c.ConcatString);
+    public string ConcatString
+    {
+      get { return string.Format("{0} {1}", ReadProperty(String1Property), ReadProperty(String2Property)); }
+    }
+
     #endregion
 
     #region Validation Rules
@@ -121,6 +141,7 @@ namespace AddonPropertyRules
       // add authorization rules 
       BusinessRules.AddRule(new DependencyFrom(SumProperty, Num1Property, Num2Property, Num3Property));
       BusinessRules.AddRule(new Range(Num1Property, 1, 10, "Num1 must be between 1 and 10 to be valid."));
+      BusinessRules.AddRule(new DependencyFrom(ConcatStringProperty, String1Property, String2Property));
     }
 
     #endregion

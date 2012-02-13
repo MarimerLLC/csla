@@ -22,7 +22,7 @@ namespace Csla.Core.FieldManager
   {
     public override int Compare(IPropertyInfo x, IPropertyInfo y)
     {
-      return StringComparer.InvariantCultureIgnoreCase.Compare(x.Name, y.Name);
+      return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
     }
   }
 

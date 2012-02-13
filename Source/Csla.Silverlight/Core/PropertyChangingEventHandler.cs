@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Defines the method signature for the</summary>
 //-----------------------------------------------------------------------
+#if WINDOWS_PHONE || __ANDROID__ || IOS
 using System;
 
 namespace Csla.Core
@@ -17,3 +18,4 @@ namespace Csla.Core
   /// <param name="e">EventArgs object.</param>
   public delegate void PropertyChangingEventHandler(object sender, PropertyChangingEventArgs e);
 }
+#endif

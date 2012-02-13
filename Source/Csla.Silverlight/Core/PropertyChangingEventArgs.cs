@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Arguments object containing information about</summary>
 //-----------------------------------------------------------------------
+#if WINDOWS_PHONE || __ANDROID__ || IOS
 using System;
 
 namespace Csla.Core
@@ -13,7 +14,7 @@ namespace Csla.Core
   /// Arguments object containing information about
   /// a property changing.
   /// </summary>
-  public class PropertyChangingEventArgs: System.EventArgs
+  public class PropertyChangingEventArgs : System.EventArgs
   {
     private string _propertyName = string.Empty;
     /// <summary>
@@ -30,9 +31,10 @@ namespace Csla.Core
     /// <summary>
     /// Gets the name of the changing property.
     /// </summary>
-    public string PropertyName 
+    public string PropertyName
     {
       get { return _propertyName; }
     }
   }
 }
+#endif

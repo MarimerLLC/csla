@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Defines an object that raises the PropertyChanging</summary>
 //-----------------------------------------------------------------------
+#if WINDOWS_PHONE || __ANDROID__ || IOS
 using System;
 
 namespace Csla.Core
@@ -21,3 +22,4 @@ namespace Csla.Core
     event PropertyChangingEventHandler PropertyChanging;
   }
 }
+#endif

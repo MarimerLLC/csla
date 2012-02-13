@@ -4,67 +4,6 @@
         <name>Csla.Windows</name>
     </assembly>
     <members>
-        <member name="T:Csla.Windows.ReadWriteAuthorization">
-            <summary>
-            Windows Forms extender control that automatically
-            enables and disables detail form controls based
-            on the authorization settings from a CSLA .NET 
-            business object.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.#ctor(System.ComponentModel.IContainer)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="container">The container of the control.</param>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.CanExtend(System.Object)">
-            <summary>
-            Gets a value indicating whether the extender control
-            can extend the specified control.
-            </summary>
-            <param name="extendee">The control to be extended.</param>
-            <remarks>
-            Any control implementing either a ReadOnly property or
-            Enabled property can be extended.
-            </remarks>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.GetApplyAuthorization(System.Windows.Forms.Control)">
-            <summary>
-            Gets the custom ApplyAuthorization extender
-            property added to extended controls.
-            </summary>
-            <param name="source">Control being extended.</param>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.SetApplyAuthorization(System.Windows.Forms.Control,System.Boolean)">
-            <summary>
-            Sets the custom ApplyAuthorization extender
-            property added to extended controls.
-            </summary>
-            <param name="source">Control being extended.</param>
-            <param name="value">New value of property.</param>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.ResetControlAuthorization">
-            <summary>
-            Causes the ReadWriteAuthorization control
-            to apply authorization rules from the business
-            object to all extended controls on the form.
-            </summary>
-            <remarks>
-            Call this method to refresh the display of detail
-            controls on the form any time the authorization
-            rules may have changed. Examples include: after
-            a user logs in or out, and after an object has
-            been updated, inserted, deleted or retrieved
-            from the database.
-            </remarks>
-        </member>
-        <member name="T:Csla.Windows.HasBrokenRulesEventArgs">
-            <summary>
-            Event args object containing information about a
-            broken rule.
-            </summary>
-        </member>
         <member name="T:Csla.Windows.CslaActionCancelEventArgs">
             <summary>
             Event args providing information about
@@ -87,72 +26,63 @@
             Gets the name of the command.
             </summary>
         </member>
-        <member name="M:Csla.Windows.HasBrokenRulesEventArgs.#ctor(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="T:Csla.Windows.BindingSourceHelper">
             <summary>
-            Creates a new instance of the object.
-            </summary>
-            <param name="commandName">
-            Name of the command.
-            </param>
-            <param name="hasErrors">
-            Indicates whether error severity exists.
-            </param>
-            <param name="hasWarnings">
-            Indicates whether warning severity exists.
-            </param>
-            <param name="hasInformation">
-            Indicates whether information severity exists.
-            </param>
-            <param name="autoShowBrokenRules">
-            Indicates whether to automatically show broken rules.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.HasBrokenRulesEventArgs.#ctor(System.Boolean,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>
-            Creates a new instance of the object.
-            </summary>
-            <param name="cancel">
-            Indicates whether to cancel.
-            </param>
-            <param name="commandName">
-            Name of the command.
-            </param>
-            <param name="hasErrors">
-            Indicates whether error severity exists.
-            </param>
-            <param name="hasWarnings">
-            Indicates whether warning severity exists.
-            </param>
-            <param name="hasInformation">
-            Indicates whether information severity exists.
-            </param>
-            <param name="autoShowBrokenRules">
-            Indicates whether to automatically show broken rules.
-            </param>
-        </member>
-        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasErrors">
-            <summary>
-            Gets a value indicating whether
-            an error severity rule exists.
+            Helper methods for dealing with BindingSource
+            objects and data binding.
             </summary>
         </member>
-        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasWarning">
+        <member name="M:Csla.Windows.BindingSourceHelper.InitializeBindingSourceTree(System.ComponentModel.IContainer,System.Windows.Forms.BindingSource)">
             <summary>
-            Gets a value indicating whether
-            a warning severity rule exists.
+            Sets up BindingSourceNode objects for all
+            BindingSource objects related to the provided
+            root source.
+            </summary>
+            <param name="container">
+            Container for the components.
+            </param>
+            <param name="rootSource">
+            Root BindingSource object.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="T:Csla.Windows.ObjectSaveException">
+            <summary>
+            Exception indicating a failure during an object
+            save operation.
             </summary>
         </member>
-        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasInformation">
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor">
             <summary>
-            Gets a value indicating whether
-            an information severity rule exists.
+            Creates an instance of the object.
             </summary>
         </member>
-        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.AutoShowBrokenRules">
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String)">
             <summary>
-            Gets a value indicating whether
-            to show broken rules.
+            Creates an instance of the object.
             </summary>
+            <param name="message">
+            Exception message text.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="message">
+            Exception message text.
+            </param>
+            <param name="innerException">
+            Reference to an inner exception.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="innerException">
+            Reference to an inner exception.
+            </param>
         </member>
         <member name="T:Csla.Windows.CslaActionExtender">
             <summary>
@@ -369,6 +299,238 @@
             Event indicating that the object has been saved.
             </summary>
         </member>
+        <member name="T:Csla.Windows.HostPropertyAttribute">
+            <summary>
+            HostPropertyAttribute is used on components to 
+            indicate the property on the component that is to be used as the 
+            parent container control in conjunction with HostComponentDesigner.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.HostPropertyAttribute.#ctor(System.String)">
+            <summary>
+            Constructor creates a new HostPropertyAttribute object instance using the information supplied.
+            </summary>
+            <param name="hostPropertyName">The name of the host property.</param>
+        </member>
+        <member name="P:Csla.Windows.HostPropertyAttribute.HostPropertyName">
+            <summary>
+            HostPropertyName gets the host property name.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.BindingSourceNode">
+            <summary>
+            Maintains a reference to a BindingSource object
+            on the form.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.#ctor(System.Windows.Forms.BindingSource)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="source">
+            BindingSource object to be mananaged.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Bind(System.Object)">
+            <summary>
+            Binds a business object to the BindingSource.
+            </summary>
+            <param name="objectToBind">
+            Business object.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Apply">
+            <summary>
+            Applies changes to the business object.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Cancel(System.Object)">
+            <summary>
+            Cancels changes to the business object.
+            </summary>
+            <param name="businessObject"></param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Close">
+            <summary>
+            Disconnects from the BindingSource object.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.ReadWriteAuthorization">
+            <summary>
+            Windows Forms extender control that automatically
+            enables and disables detail form controls based
+            on the authorization settings from a CSLA .NET 
+            business object.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.ReadWriteAuthorization.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="container">The container of the control.</param>
+        </member>
+        <member name="M:Csla.Windows.ReadWriteAuthorization.CanExtend(System.Object)">
+            <summary>
+            Gets a value indicating whether the extender control
+            can extend the specified control.
+            </summary>
+            <param name="extendee">The control to be extended.</param>
+            <remarks>
+            Any control implementing either a ReadOnly property or
+            Enabled property can be extended.
+            </remarks>
+        </member>
+        <member name="M:Csla.Windows.ReadWriteAuthorization.GetApplyAuthorization(System.Windows.Forms.Control)">
+            <summary>
+            Gets the custom ApplyAuthorization extender
+            property added to extended controls.
+            </summary>
+            <param name="source">Control being extended.</param>
+        </member>
+        <member name="M:Csla.Windows.ReadWriteAuthorization.SetApplyAuthorization(System.Windows.Forms.Control,System.Boolean)">
+            <summary>
+            Sets the custom ApplyAuthorization extender
+            property added to extended controls.
+            </summary>
+            <param name="source">Control being extended.</param>
+            <param name="value">New value of property.</param>
+        </member>
+        <member name="M:Csla.Windows.ReadWriteAuthorization.ResetControlAuthorization">
+            <summary>
+            Causes the ReadWriteAuthorization control
+            to apply authorization rules from the business
+            object to all extended controls on the form.
+            </summary>
+            <remarks>
+            Call this method to refresh the display of detail
+            controls on the form any time the authorization
+            rules may have changed. Examples include: after
+            a user logs in or out, and after an object has
+            been updated, inserted, deleted or retrieved
+            from the database.
+            </remarks>
+        </member>
+        <member name="T:Csla.Windows.BusyAnimation">
+            <summary>
+            User control that displays busy animation
+            </summary>
+        </member>
+        <member name="F:Csla.Windows.BusyAnimation.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.#ctor">
+            <summary>
+            new instance busy animation
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.ProgressBarForeColor">
+            <summary>
+            Set or get foreground color for busy animation's progress bar
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.ProgressBarBackColor">
+            <summary>
+            Set or get background color for busy animation's progress bar 
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.IsRunning">
+            <summary>
+            Indicates if animation needs to be shown.  Set to true to start 
+            progress bar animation
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.HasBrokenRulesEventArgs">
+            <summary>
+            Event args object containing information about a
+            broken rule.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.HasBrokenRulesEventArgs.#ctor(System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new instance of the object.
+            </summary>
+            <param name="commandName">
+            Name of the command.
+            </param>
+            <param name="hasErrors">
+            Indicates whether error severity exists.
+            </param>
+            <param name="hasWarnings">
+            Indicates whether warning severity exists.
+            </param>
+            <param name="hasInformation">
+            Indicates whether information severity exists.
+            </param>
+            <param name="autoShowBrokenRules">
+            Indicates whether to automatically show broken rules.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.HasBrokenRulesEventArgs.#ctor(System.Boolean,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a new instance of the object.
+            </summary>
+            <param name="cancel">
+            Indicates whether to cancel.
+            </param>
+            <param name="commandName">
+            Name of the command.
+            </param>
+            <param name="hasErrors">
+            Indicates whether error severity exists.
+            </param>
+            <param name="hasWarnings">
+            Indicates whether warning severity exists.
+            </param>
+            <param name="hasInformation">
+            Indicates whether information severity exists.
+            </param>
+            <param name="autoShowBrokenRules">
+            Indicates whether to automatically show broken rules.
+            </param>
+        </member>
+        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasErrors">
+            <summary>
+            Gets a value indicating whether
+            an error severity rule exists.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasWarning">
+            <summary>
+            Gets a value indicating whether
+            a warning severity rule exists.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.HasInformation">
+            <summary>
+            Gets a value indicating whether
+            an information severity rule exists.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.HasBrokenRulesEventArgs.AutoShowBrokenRules">
+            <summary>
+            Gets a value indicating whether
+            to show broken rules.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.ErrorEncounteredEventArgs">
+            <summary>
+            Event args indicating an error.
+            </summary>
+        </member>
         <member name="T:Csla.Windows.CslaActionEventArgs">
             <summary>
             Event args for an action.
@@ -385,11 +547,6 @@
         <member name="P:Csla.Windows.CslaActionEventArgs.CommandName">
             <summary>
             Gets the name of the command.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.ErrorEncounteredEventArgs">
-            <summary>
-            Event args indicating an error.
             </summary>
         </member>
         <member name="M:Csla.Windows.ErrorEncounteredEventArgs.#ctor(System.String,System.Exception)">
@@ -452,163 +609,6 @@
         <member name="F:Csla.Windows.PostSaveActionType.AndNew">
             <summary>
             Also create a new object.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.HostPropertyAttribute">
-            <summary>
-            HostPropertyAttribute is used on components to 
-            indicate the property on the component that is to be used as the 
-            parent container control in conjunction with HostComponentDesigner.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.HostPropertyAttribute.#ctor(System.String)">
-            <summary>
-            Constructor creates a new HostPropertyAttribute object instance using the information supplied.
-            </summary>
-            <param name="hostPropertyName">The name of the host property.</param>
-        </member>
-        <member name="P:Csla.Windows.HostPropertyAttribute.HostPropertyName">
-            <summary>
-            HostPropertyName gets the host property name.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.BindingSourceNode">
-            <summary>
-            Maintains a reference to a BindingSource object
-            on the form.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.#ctor(System.Windows.Forms.BindingSource)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="source">
-            BindingSource object to be mananaged.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Bind(System.Object)">
-            <summary>
-            Binds a business object to the BindingSource.
-            </summary>
-            <param name="objectToBind">
-            Business object.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Apply">
-            <summary>
-            Applies changes to the business object.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Cancel(System.Object)">
-            <summary>
-            Cancels changes to the business object.
-            </summary>
-            <param name="businessObject"></param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Close">
-            <summary>
-            Disconnects from the BindingSource object.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.ObjectSaveException">
-            <summary>
-            Exception indicating a failure during an object
-            save operation.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="message">
-            Exception message text.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String,System.Exception)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="message">
-            Exception message text.
-            </param>
-            <param name="innerException">
-            Reference to an inner exception.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.Exception)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="innerException">
-            Reference to an inner exception.
-            </param>
-        </member>
-        <member name="T:Csla.Windows.BindingSourceHelper">
-            <summary>
-            Helper methods for dealing with BindingSource
-            objects and data binding.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceHelper.InitializeBindingSourceTree(System.ComponentModel.IContainer,System.Windows.Forms.BindingSource)">
-            <summary>
-            Sets up BindingSourceNode objects for all
-            BindingSource objects related to the provided
-            root source.
-            </summary>
-            <param name="container">
-            Container for the components.
-            </param>
-            <param name="rootSource">
-            Root BindingSource object.
-            </param>
-            <returns></returns>
-        </member>
-        <member name="T:Csla.Windows.BusyAnimation">
-            <summary>
-            User control that displays busy animation
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.#ctor">
-            <summary>
-            new instance busy animation
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.BusyAnimation.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.ProgressBarForeColor">
-            <summary>
-            Set or get foreground color for busy animation's progress bar
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.ProgressBarBackColor">
-            <summary>
-            Set or get background color for busy animation's progress bar 
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.IsRunning">
-            <summary>
-            Indicates if animation needs to be shown.  Set to true to start 
-            progress bar animation
             </summary>
         </member>
         <member name="T:Csla.Windows.BindingSourceRefresh">

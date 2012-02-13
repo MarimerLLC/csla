@@ -130,17 +130,6 @@
             convert child references to/from reference id values.
             </param>
         </member>
-        <member name="T:Csla.Core.INotifyPropertyChanging">
-            <summary>
-            Defines an object that raises the PropertyChanging
-            event.
-            </summary>
-        </member>
-        <member name="E:Csla.Core.INotifyPropertyChanging.PropertyChanging">
-            <summary>
-            Event indicating that a property is changing.
-            </summary>
-        </member>
         <member name="M:Csla.Core.BindableBase.#ctor">
             <summary>
             Creates an instance of the object.
@@ -5036,25 +5025,6 @@
             object.
             </summary>
         </member>
-        <member name="T:Csla.Core.PropertyChangingEventArgs">
-            <summary>
-            Arguments object containing information about
-            a property changing.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.PropertyChangingEventArgs.#ctor(System.String)">
-            <summary>
-            Creates an instnace of the object.
-            </summary>
-            <param name="propertyName">
-            Name of the property that is changing.
-            </param>
-        </member>
-        <member name="P:Csla.Core.PropertyChangingEventArgs.PropertyName">
-            <summary>
-            Gets the name of the changing property.
-            </summary>
-        </member>
         <member name="T:Csla.Core.ContextDictionary">
             <summary>
             Defines a counterpart to the .NET HybridDictionary
@@ -8498,14 +8468,6 @@
             </para>. You may also choose to use the 
             NetDataContractSerializer provided as part of WCF.
             </remarks>
-        </member>
-        <member name="T:Csla.Core.PropertyChangingEventHandler">
-            <summary>
-            Defines the method signature for the
-            PropertyChanging event handler.
-            </summary>
-            <param name="sender">Object raising the event.</param>
-            <param name="e">EventArgs object.</param>
         </member>
         <member name="T:Csla.Rules.CommonRules.CommonBusinessRule">
             <summary>

@@ -4,6 +4,13 @@
         <name>Csla.Web.Mvc</name>
     </assembly>
     <members>
+        <member name="T:Csla.Web.Mvc.ViewModelBase`1">
+            <summary>
+            Base class used to create ViewModel objects that
+            contain the Model object and related elements.
+            </summary>
+            <typeparam name="T">Type of the Model object.</typeparam>
+        </member>
         <member name="T:Csla.Web.Mvc.IViewModel">
             <summary>
             Defines a CSLA .NET MVC viewmodel object.
@@ -13,48 +20,6 @@
             <summary>
             Object property for the contained business object
             </summary>
-        </member>
-        <member name="T:Csla.Web.Mvc.HasPermissionAttribute">
-            <summary>
-            Restricts callers to an action method.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="action">AuthorizationActions for which the authorization is required.</param>
-            <param name="objectType">CSLA object type for which the action is applied.</param>
-        </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type,System.String)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="action">AuthorizationActions for which the authorization is required.</param>
-            <param name="objectType">CSLA object type for which the action is applied.</param>
-            <param name="message">Error message for resutl.</param>
-        </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.AuthorizeCore(System.Web.HttpContextBase)">
-            <summary>
-            Determines whether access to the core framework is authorized.
-            </summary>
-            <param name="httpContext">The HTTP context.</param>
-            <returns>True if access is authorized; otherwise, false.</returns>
-        </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
-            <summary>
-            Processes HTTP requests that fail authorization and handles AJAX requests
-            appropriately.
-            </summary>
-            <param name="filterContext">The filterContext object contains the controller, HTTP context, 
-            request context, action result, and route data.</param>
-        </member>
-        <member name="T:Csla.Web.Mvc.ViewModelBase`1">
-            <summary>
-            Base class used to create ViewModel objects that
-            contain the Model object and related elements.
-            </summary>
-            <typeparam name="T">Type of the Model object.</typeparam>
         </member>
         <member name="M:Csla.Web.Mvc.ViewModelBase`1.Save(System.Web.Mvc.ModelStateDictionary,System.Boolean)">
             <summary>
@@ -71,6 +36,19 @@
             <summary>
             Gets or sets the Model object.
             </summary>
+        </member>
+        <member name="T:Csla.Web.Mvc.IModelCreator">
+            <summary>
+            ASP.NET MVC model creator.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.Mvc.IModelCreator.CreateModel(System.Type)">
+            <summary>
+            Creates a model object of the specified
+            type.
+            </summary>
+            <param name="modelType">Type of model object to create.</param>
+            <returns></returns>
         </member>
         <member name="T:Csla.Web.Mvc.CslaModelBinder">
             <summary>
@@ -126,19 +104,6 @@
             <param name="bindingContext">Binding context</param>
             <param name="propertyDescriptor">Property descriptor</param>
             <param name="value">Value</param>
-        </member>
-        <member name="T:Csla.Web.Mvc.IModelCreator">
-            <summary>
-            ASP.NET MVC model creator.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.Mvc.IModelCreator.CreateModel(System.Type)">
-            <summary>
-            Creates a model object of the specified
-            type.
-            </summary>
-            <param name="modelType">Type of model object to create.</param>
-            <returns></returns>
         </member>
         <member name="T:Csla.Web.Mvc.HtmlExtensions">
             <summary>
@@ -235,6 +200,41 @@
             <param name="grantedAction">The rendered HTML helper action for granted users.</param>
             <param name="denieddAction">The rendered HTML helper action for denied users.</param>
             <returns>The appropriate HTML rendered output.</returns>
+        </member>
+        <member name="T:Csla.Web.Mvc.HasPermissionAttribute">
+            <summary>
+            Restricts callers to an action method.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="action">AuthorizationActions for which the authorization is required.</param>
+            <param name="objectType">CSLA object type for which the action is applied.</param>
+        </member>
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type,System.String)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="action">AuthorizationActions for which the authorization is required.</param>
+            <param name="objectType">CSLA object type for which the action is applied.</param>
+            <param name="message">Error message for resutl.</param>
+        </member>
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.AuthorizeCore(System.Web.HttpContextBase)">
+            <summary>
+            Determines whether access to the core framework is authorized.
+            </summary>
+            <param name="httpContext">The HTTP context.</param>
+            <returns>True if access is authorized; otherwise, false.</returns>
+        </member>
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
+            <summary>
+            Processes HTTP requests that fail authorization and handles AJAX requests
+            appropriately.
+            </summary>
+            <param name="filterContext">The filterContext object contains the controller, HTTP context, 
+            request context, action result, and route data.</param>
         </member>
         <member name="T:Csla.Web.Mvc.Controller">
             <summary>

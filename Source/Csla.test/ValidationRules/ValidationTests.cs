@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -496,17 +497,35 @@ namespace Csla.Test.ValidationRules
     {
       var context = GetContext();
 
-      var root = new HasLazyField();
-      var rootEI = (IDataErrorInfo) root;
-      root.CheckRules();
-      var broken = rootEI[HasLazyField.Value1Property.Name];
-      context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
-      var value = root.Value1;  // intializes field
-      root.CheckRules();
-      broken = rootEI[HasLazyField.Value1Property.Name];
-      context.Assert.AreEqual("PrimaryProperty has value.", broken);
+      context.Assert.Try(() =>
+        {
+          var root = new HasLazyField();
+          root.CheckRules();
 
-      context.Assert.Success();
+          string broken;
+
+#if SILVERLIGHT
+          var rootEI = (INotifyDataErrorInfo)root;
+          broken = rootEI.GetErrors(HasLazyField.Value1Property.Name).OfType<Csla.Rules.BrokenRule>().First().Description;
+#else
+          var rootEI = (IDataErrorInfo)root;
+          broken = rootEI[HasLazyField.Value1Property.Name];
+#endif
+
+          context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
+          var value = root.Value1;  // intializes field
+          
+          root.CheckRules();
+#if SILVERLIGHT
+          broken = rootEI.GetErrors(HasLazyField.Value1Property.Name).OfType<Csla.Rules.BrokenRule>().First().Description;
+#else
+          broken = rootEI[HasLazyField.Value1Property.Name];
+#endif
+          context.Assert.AreEqual("PrimaryProperty has value.", broken);
+
+          context.Assert.Success();
+        });
+
       context.Complete();
 
     }

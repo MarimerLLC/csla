@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>CSLA-Silverlight</id>
     <title>CSLA .NET - Silverlight</title>
     <tags>CSLA Silverlight</tags>
-    <version>4.2.1.0</version>
+    <version>4.3.2.0</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -23,9 +23,13 @@ CSLA .NET is an application development framework that reduces the cost of build
     <!-- .NET 4.0 Client -->
     <!-- > None -->
     <!-- Silverlight 4.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.dll*" target="lib\SL4.0" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.resources.dll*" target="lib\SL4.0" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.xml*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.resources.dll*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.xml*" target="lib\SL4.0" />
+    <!-- Silverlight 5.0 Client -->
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.dll*" target="lib\SL5.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.resources.dll*" target="lib\SL5.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.xml*" target="lib\SL5.0" />
     <!-- Windows Phone 7 Client -->
     <!-- > None -->
   </files>

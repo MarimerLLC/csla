@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Arguments object containing information about</summary>
 //-----------------------------------------------------------------------
-#if WINDOWS_PHONE || __ANDROID__ || IOS
+#if WINDOWS_PHONE || __ANDROID__ || IOS || SILVERLIGHT4
 using System;
 
 namespace Csla.Core

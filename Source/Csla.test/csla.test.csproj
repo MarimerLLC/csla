@@ -310,6 +310,7 @@
     <Compile Include="ValidationRules\HasBadSharedRule.cs" />
     <Compile Include="ValidationRules\HasChildren.cs" />
     <Compile Include="ValidationRules\HasInvalidAsyncRule.cs" />
+    <Compile Include="ValidationRules\HasLambdaRules.cs" />
     <Compile Include="ValidationRules\HasPerTypeClasses.cs" />
     <Compile Include="ValidationRules\HasPerTypeRules.cs" />
     <Compile Include="ValidationRules\HasRegEx.cs" />

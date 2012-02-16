@@ -709,9 +709,17 @@ namespace Csla.Rules.CommonRules
 #else
       var methodName = Rule.Method.ToString();
 #endif
-      base.RuleUri.AddQueryParameter(
-        "r", 
-        Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+      base.RuleUri.AddQueryParameter("r", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+    }
+
+    /// <summary>
+    /// Add a query parameter to make the RuleUri uniques for this rule and primary property.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="value">The value.</param>
+    public void AddQueryParameter(string key, string value)
+    {
+      base.RuleUri.AddQueryParameter(key, value);
     }
 
     private Action<RuleContext> Rule { get; set; }

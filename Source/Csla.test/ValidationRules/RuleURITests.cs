@@ -54,5 +54,16 @@ namespace Csla.Test.ValidationRules
       var rule = new Csla.Rules.CommonRules.Required(null);
       Assert.AreEqual("rule://csla.rules.commonrules.required/(object)", rule.RuleName);
     }
+
+    [TestMethod]
+    public void LambdaRuleExtensionsAddUniueURIs()
+    {
+      var root = HasLambdaRules.New();
+      var ruleUris = root.GetRuleDescriptions();
+
+      var distinctUris = ruleUris.Distinct().ToArray();
+      // must have same length
+      Assert.AreEqual(ruleUris.Length, distinctUris.Length);
+    }
   }
 }

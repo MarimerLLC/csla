@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Csla.Core;
 
 namespace Csla.Rules
@@ -31,6 +32,11 @@ namespace Csla.Rules
           }
         }
       });
+      #if !WINRT   // must set unique name 
+        var methodName = ruleHandler.Method.ToString();
+        rule.AddQueryParameter("s", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+      #endif
+     
       businessRules.AddRule(rule);
     }
 
@@ -71,6 +77,10 @@ namespace Csla.Rules
           }
         }
       });
+#if !WINRT   // must set unique name
+      var methodName = ruleHandler.Method.ToString();
+      rule.AddQueryParameter("s", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+#endif
       businessRules.AddRule(rule, ruleSet);
     }
 
@@ -111,6 +121,10 @@ namespace Csla.Rules
           }
         }
       });
+#if !WINRT   // must set unique name
+      var methodName = ruleHandler.Method.ToString();
+      rule.AddQueryParameter("s", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+#endif
       businessRules.AddRule(rule);
     }
 
@@ -152,6 +166,10 @@ namespace Csla.Rules
           }
         }
       });
+#if !WINRT   // must set unique name
+      var methodName = ruleHandler.Method.ToString();
+      rule.AddQueryParameter("s", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
+#endif
       businessRules.AddRule(rule, ruleSet);
     }
 

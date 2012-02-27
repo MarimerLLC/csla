@@ -48,9 +48,13 @@ namespace Csla.Rules
 
     internal void ClearRules()
     {
-      IsReadOnly = false;
-      base.Clear();
-      IsReadOnly = true; 
+      lock (_syncRoot)
+      {
+        IsReadOnly = false;
+        base.Clear();
+        RecalculateCounts();
+        IsReadOnly = true;
+      }
     }
 
     internal void ClearRules(Csla.Core.IPropertyInfo property)

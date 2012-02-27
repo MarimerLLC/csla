@@ -885,7 +885,7 @@ namespace Csla.Rules
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
-      info.AddValue("_isBusy", _isBusy);
+      //info.AddValue("_isBusy", _isBusy);
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
       {
@@ -914,7 +914,7 @@ namespace Csla.Rules
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
-      _isBusy = info.GetValue<bool>("_isBusy");
+      //_isBusy = info.GetValue<bool>("_isBusy");
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
       {

@@ -116,6 +116,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Silverlight\ApplicationContext.cs">
@@ -641,9 +642,6 @@
     <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Csla\Resources\favicon.ico">
-      <Link>Resources\favicon.ico</Link>
-    </Content>
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

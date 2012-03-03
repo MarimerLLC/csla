@@ -291,7 +291,11 @@ namespace Csla.Server
     /// <returns></returns>
     private static string GetAssemblyQualifiedName(Type type)
     {
+#if WINRT
+      if (type.IsGenericType())
+#else
       if (type.IsGenericType)
+#endif
       {
         return type.AssemblyQualifiedName;
       }

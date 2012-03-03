@@ -22,7 +22,11 @@ namespace Csla.Core.FieldManager
   {
     public override int Compare(IPropertyInfo x, IPropertyInfo y)
     {
+#if WINRT
+      return StringComparer.CurrentCulture.Compare(x.Name, y.Name);
+#else
       return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
+#endif
     }
   }
 

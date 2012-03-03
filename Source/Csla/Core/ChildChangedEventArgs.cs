@@ -9,11 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if WINRT
-using inpc = Windows.UI.Xaml.Data;
-#else
-using inpc = System.ComponentModel;
-#endif
 using System.ComponentModel;
 using System.Collections.Specialized;
 
@@ -33,7 +28,7 @@ namespace Csla.Core
     /// child's PropertyChanged event, if the child is
     /// not a collection or list.
     /// </summary>
-    public inpc.PropertyChangedEventArgs PropertyChangedArgs { get; private set; }
+    public PropertyChangedEventArgs PropertyChangedArgs { get; private set; }
     /// <summary>
     /// Gets the NotifyCollectionChangedEventArgs object from the
     /// child's CollectionChanged event, if the child is an
@@ -77,7 +72,7 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, inpc.PropertyChangedEventArgs propertyArgs)
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs)
     {
       this.ChildObject = childObject;
       this.PropertyChangedArgs = propertyArgs;
@@ -95,7 +90,7 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, inpc.PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
       : this(childObject, propertyArgs)
     {
       this.CollectionChangedArgs = listArgs;

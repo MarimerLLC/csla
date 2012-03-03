@@ -85,7 +85,11 @@ namespace Csla
     public static Type GetPropertyType(Type propertyType)
     {
       Type type = propertyType;
+#if WINRT
+      if (type.IsGenericType() &&
+#else
       if (type.IsGenericType &&
+#endif
         (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
         return Nullable.GetUnderlyingType(type);
       return type;
@@ -167,7 +171,11 @@ namespace Csla
       }
       else
       {
+#if WINRT
+        if (desiredType.IsGenericType())
+#else
         if (desiredType.IsGenericType)
+#endif
         {
           if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
@@ -178,7 +186,12 @@ namespace Csla
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
-      if (desiredType.IsEnum && (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
+#if WINRT
+      if (desiredType.IsEnum() &&
+#else
+      if (desiredType.IsEnum && 
+#endif
+        (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
         return System.Enum.Parse(desiredType, value.ToString(), true);
 
       if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)

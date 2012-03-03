@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines the method signature for the</summary>
 //-----------------------------------------------------------------------
-#if WINDOWS_PHONE || __ANDROID__ || IOS || SILVERLIGHT4
+#if WINDOWS_PHONE || __ANDROID__ || IOS || SILVERLIGHT4 || WINRT
 using System;
 
 namespace Csla.Core

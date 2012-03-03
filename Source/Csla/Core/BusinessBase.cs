@@ -8,11 +8,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-#if WINRT
-using inpc = Windows.UI.Xaml.Data;
-#else
-using inpc = System.ComponentModel;
-#endif
 using System.ComponentModel;
 using System.Runtime.Serialization;
 using Csla.Properties;
@@ -1381,7 +1376,7 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
-      inpc.INotifyPropertyChanged pc = child as inpc.INotifyPropertyChanged;
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
         pc.PropertyChanged += Child_PropertyChanged;
 
@@ -1425,7 +1420,7 @@ namespace Csla.Core
       if (unhandled != null)
         unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
-      inpc.INotifyPropertyChanged pc = child as inpc.INotifyPropertyChanged;
+      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
       if (pc != null)
         pc.PropertyChanged -= Child_PropertyChanged;
 
@@ -2910,7 +2905,7 @@ namespace Csla.Core
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
     private void RaiseChildChanged(
-      object childObject, inpc.PropertyChangedEventArgs propertyArgs)
+      object childObject, PropertyChangedEventArgs propertyArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs);
       OnChildChanged(args);
@@ -2932,7 +2927,7 @@ namespace Csla.Core
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
     private void RaiseChildChanged(
-      object childObject, inpc.PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -2943,7 +2938,7 @@ namespace Csla.Core
     /// a child object and echoes it up as
     /// a ChildChanged event.
     /// </summary>
-    private void Child_PropertyChanged(object sender, inpc.PropertyChangedEventArgs e)
+    private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       RaiseChildChanged(sender, e);
     }

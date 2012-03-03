@@ -190,7 +190,11 @@ namespace Csla.Rules
     /// <returns></returns>
     private static string GetTypeName(Type type)
     {
+#if WINRT
+      if (!type.IsGenericType())
+#else
       if (!type.IsGenericType)
+#endif
       {
         return type.FullName;
       }
@@ -208,7 +212,11 @@ namespace Csla.Rules
         foreach (var t in type.GetGenericArguments())
         {
           sb.Append("-");
+#if WINRT
+          if (t.IsGenericType())
+#else
           if (t.IsGenericType) 
+#endif
             sb.Append(GetTypeName(t));
           else 
             sb.Append(t.FullName);

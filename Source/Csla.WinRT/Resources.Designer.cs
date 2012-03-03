@@ -1169,5 +1169,38 @@
         return "Warning";
       }
     }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string PropertyNotInAffectedPropertiesException
+    {
+      get
+      {
+        return "PropertyNotInAffectedPropertiesException";
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string UnandledKNownTypeException
+    {
+      get
+      {
+        return "UnandledKNownTypeException";
+      }
+    }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string BinaryWriterObjectSerializationException
+    {
+      get
+      {
+        return "BinaryWriterObjectSerializationException";
+      }
+    }
   }
 }

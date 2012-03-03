@@ -6,11 +6,6 @@
 // <summary>This class implements INotifyPropertyChanged.</summary>
 //-----------------------------------------------------------------------
 using System;
-#if WINRT
-using inpc = Windows.UI.Xaml.Data;
-#else
-using inpc = System.ComponentModel;
-#endif
 using System.ComponentModel;
 using Csla.Serialization;
 
@@ -22,7 +17,7 @@ namespace Csla.Core
   [Serializable]
   public abstract class BindableBase : 
     MobileObject, 
-    inpc.INotifyPropertyChanged,
+    INotifyPropertyChanged,
     INotifyPropertyChanging
   {
     /// <summary>
@@ -34,7 +29,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a property is changed.
     /// </summary>
-    public event inpc.PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
     /// Event raised when a property is changing.
@@ -80,7 +75,7 @@ namespace Csla.Core
     protected virtual void OnPropertyChanged(string propertyName)
     {
       if (PropertyChanged != null)
-        PropertyChanged(this, new inpc.PropertyChangedEventArgs(propertyName));
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
 

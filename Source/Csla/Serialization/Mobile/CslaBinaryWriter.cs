@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla.Serialization.Mobile
 {
@@ -140,7 +141,11 @@ namespace Csla.Serialization.Mobile
 			}
 			else
 			{
+#if WINRT
+        var typeCode = TypeExtensions.GetTypeCode(target.GetType());
+#else
 				var typeCode = Type.GetTypeCode(target.GetType());
+#endif
 				switch (typeCode)
 				{
 					case TypeCode.Boolean:

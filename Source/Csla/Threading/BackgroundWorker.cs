@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Threading;
 #if WINRT
 using Windows.ApplicationModel.Resources.Core;
+using System.Collections.Generic;
 #endif
 
 namespace Csla.Threading
@@ -198,7 +199,7 @@ namespace Csla.Threading
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
 #if WINRT
         //var region = ResourceManager.Current.DefaultContext.HomeRegion;
-        var language = ResourceManager.Current.DefaultContext.Language;
+        var language = ResourceManager.Current.DefaultContext.Languages[0];
         this.CurrentUICulture = language;
         this.CurrentCulture = language;
 #else
@@ -232,8 +233,10 @@ namespace Csla.Threading
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
 #if WINRT
-      ResourceManager.Current.DefaultContext.Language = request.CurrentUICulture;
-      ResourceManager.Current.DefaultContext.Language = request.CurrentCulture;
+      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
+      ResourceManager.Current.DefaultContext.Languages = list;
+      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });
+      ResourceManager.Current.DefaultContext.Languages = list;
 #else
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -19,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\WinRT\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WINRT;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;SILVERLIGHT;WINRT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.xml</DocumentationFile>
@@ -28,10 +29,84 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\WinRT\</OutputPath>
-    <DefineConstants>TRACE;WINRT;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;SILVERLIGHT;WINRT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Bin\Debug\WinRT\</OutputPath>
+    <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\..\Bin\Release\WinRT\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ExpressRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -39,6 +114,9 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Silverlight\ApplicationContext.cs">
       <Link>ApplicationContext.cs</Link>
@@ -175,38 +253,8 @@
     <Compile Include="..\Csla.Silverlight\SmartDate.cs">
       <Link>SmartDate.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\Threading\Semaphore.cs">
-      <Link>Threading\Semaphore.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\Utilities.cs">
       <Link>Utilities.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\DisplayAttribute.cs">
-      <Link>DataAnnotations\DisplayAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RangeAttribute.cs">
-      <Link>DataAnnotations\RangeAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RegularExpressionAttribute.cs">
-      <Link>DataAnnotations\RegularExpressionAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RequiredAttribute.cs">
-      <Link>DataAnnotations\RequiredAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\StringLengthAttribute.cs">
-      <Link>DataAnnotations\StringLengthAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationAttribute.cs">
-      <Link>DataAnnotations\ValidationAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationContext.cs">
-      <Link>DataAnnotations\ValidationContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationResult.cs">
-      <Link>DataAnnotations\ValidationResult.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\PortedAttributes.cs">
-      <Link>PortedAttributes.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
       <Link>Core\FieldManager\FieldData.cs</Link>
@@ -394,6 +442,42 @@
     <Compile Include="..\Csla\Security\CslaPrincipal.cs">
       <Link>Security\CslaPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaKnownTypes.cs">
+      <Link>Serialization\Mobile\CslaKnownTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaNonClosingBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaNonClosingBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaReaderWriterFactory.cs">
+      <Link>Serialization\Mobile\CslaReaderWriterFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlReader.cs">
+      <Link>Serialization\Mobile\CslaXmlReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\DictionaryCheckResult.cs">
+      <Link>Serialization\Mobile\DictionaryCheckResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaReader.cs">
+      <Link>Serialization\Mobile\ICslaReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
+      <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -526,9 +610,6 @@
     <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
       <Link>Threading\BackgroundWorker.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Threading\BusyLock.cs">
-      <Link>Threading\BusyLock.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
     </Compile>
@@ -548,6 +629,7 @@
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
     <Compile Include="DataPortalClient\WcfProxy.cs" />
+    <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Resources.Designer.cs" />
@@ -594,15 +676,12 @@
     <None Include="ServiceReferences.Designer.ClientConfig" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v1.0\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' ">
+    <VisualStudioVersion>11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

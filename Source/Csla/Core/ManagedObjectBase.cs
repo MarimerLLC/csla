@@ -13,11 +13,6 @@ using System.Reflection;
 using System.Text;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
-#if WINRT
-using inpc = Windows.UI.Xaml.Data;
-#else
-using inpc = System.ComponentModel;
-#endif
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -31,7 +26,7 @@ namespace Csla.Core
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
-    inpc.INotifyPropertyChanged
+    INotifyPropertyChanged
   {
     #region Field Manager
 
@@ -336,7 +331,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
-    public event inpc.PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
     /// Raises the PropertyChanged event.
@@ -345,7 +340,7 @@ namespace Csla.Core
     protected void OnPropertyChanged(string propertyName)
     {
       if (PropertyChanged != null)
-        PropertyChanged(this, new inpc.PropertyChangedEventArgs(propertyName));
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 #else
     [NonSerialized]

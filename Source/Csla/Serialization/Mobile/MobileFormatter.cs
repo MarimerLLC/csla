@@ -93,7 +93,11 @@ namespace Csla.Serialization.Mobile
           {
             Type fieldType = fieldData.Value.GetType();
 
+#if WINRT
+            if (fieldType.IsEnum())
+#else
             if (fieldType.IsEnum)
+#endif
             {
 #if SILVERLIGHT
               fieldData.Value = Convert.ChangeType(fieldData.Value, Enum.GetUnderlyingType(fieldType), CultureInfo.CurrentCulture);

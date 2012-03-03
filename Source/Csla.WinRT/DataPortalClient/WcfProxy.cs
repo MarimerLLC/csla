@@ -147,7 +147,7 @@ namespace Csla.DataPortalClient
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
       //var region = ResourceManager.Current.DefaultContext.HomeRegion;
-      var language = ResourceManager.Current.DefaultContext.Language;
+      var language = ResourceManager.Current.DefaultContext.Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
       return request;
@@ -168,7 +168,7 @@ namespace Csla.DataPortalClient
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
       //var region = ResourceManager.Current.DefaultContext.HomeRegion;
-      var language = ResourceManager.Current.DefaultContext.Language;
+      var language = ResourceManager.Current.DefaultContext.Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
       return request;

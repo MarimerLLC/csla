@@ -27,6 +27,9 @@ namespace SilverlightUI
     private void Application_Startup(object sender, StartupEventArgs e)
     {
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:22627/SlPortal.svc";
+      Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaReaderType(typeof(Csla.Serialization.Mobile.CslaBinaryReader));
+      Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaWriterType(typeof(Csla.Serialization.Mobile.CslaBinaryWriter));
+
       this.RootVisual = new MainPage();
     }
 

@@ -11013,6 +11013,13 @@
             <param name="primaryProperty">Primary property for the rule.</param>
             <param name="rule">Rule implementation.</param>
         </member>
+        <member name="M:Csla.Rules.CommonRules.Lambda.AddQueryParameter(System.String,System.String)">
+            <summary>
+            Add a query parameter to make the RuleUri uniques for this rule and primary property.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+        </member>
         <member name="M:Csla.Rules.CommonRules.Lambda.Execute(Csla.Rules.RuleContext)">
             <summary>
             Executes the rule.

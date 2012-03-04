@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Csla.intermediate</name>
+        <name>Csla</name>
     </assembly>
     <members>
         <member name="T:Csla.ApplicationContext">
@@ -1385,6 +1385,12 @@
             Raises the ValidationComplete event.
             </summary>
         </member>
+        <member name="M:Csla.Core.BusinessBase.GetRegisteredRules">
+            <summary>
+            Gets the registered rules. Only for unit testing and not visible to code. 
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Core.BusinessBase.AddBusinessRules">
             <summary>
             Override this method in your business class to
@@ -2201,17 +2207,17 @@
             Creates a ChildChangedEventArgs and raises the event.
             </summary>
         </member>
-        <member name="M:Csla.Core.BusinessBase.RaiseChildChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs)">
+        <member name="M:Csla.Core.BusinessBase.RaiseChildChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
             <summary>
             Creates a ChildChangedEventArgs and raises the event.
             </summary>
         </member>
-        <member name="M:Csla.Core.BusinessBase.RaiseChildChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:Csla.Core.BusinessBase.RaiseChildChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Creates a ChildChangedEventArgs and raises the event.
             </summary>
         </member>
-        <member name="M:Csla.Core.BusinessBase.Child_PropertyChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs)">
+        <member name="M:Csla.Core.BusinessBase.Child_PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
             <summary>
             Handles any PropertyChanged event from 
             a child object and echoes it up as
@@ -3112,12 +3118,12 @@
             ChildChangedEventArgs object.
             </param>
         </member>
-        <member name="M:Csla.Core.ExtendedBindingList`1.RaiseChildChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:Csla.Core.ExtendedBindingList`1.RaiseChildChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Creates a ChildChangedEventArgs and raises the event.
             </summary>
         </member>
-        <member name="M:Csla.Core.ExtendedBindingList`1.Child_PropertyChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs)">
+        <member name="M:Csla.Core.ExtendedBindingList`1.Child_PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
             <summary>
             Handles any PropertyChanged event from 
             a child object and echoes it up as
@@ -5978,6 +5984,17 @@
             compare an empty date with a real date and get a meaningful result.
             </remarks>
         </member>
+        <member name="P:Csla.SmartDate.CustomParser">
+            <summary>
+            Gets or sets the custom parser.
+            
+            The CustomParser is called first in TryStringToDate to allow custom parsing.
+            The parser method must return null if unable to parse and allow SmartDate to try default parsing. 
+            </summary>
+            <value>
+            The custom parser.
+            </value>
+        </member>
         <member name="T:Csla.SmartDate.EmptyValue">
             <summary>
             Indicates the empty value of a
@@ -5994,36 +6011,6 @@
             <summary>
             Indicates that an empty SmartDate
             is the largest date.
-            </summary>
-        </member>
-        <member name="T:Csla.Threading.Semaphore">
-            <summary>
-            Implements a semaphore style lock
-            using a busy wait technique (user mode).
-            </summary>
-        </member>
-        <member name="M:Csla.Threading.Semaphore.#ctor">
-            <summary>
-            Creates an instance of the object,
-            placing a lock on the semaphore,
-            blocking the caller if the active
-            locks is at the Max value.
-            </summary>
-        </member>
-        <member name="M:Csla.Threading.Semaphore.Dispose">
-            <summary>
-            Disposes the object, releasing
-            a lock on the semaphore.
-            </summary>
-        </member>
-        <member name="P:Csla.Threading.Semaphore.Max">
-            <summary>
-            Gets or sets the max value.
-            </summary>
-        </member>
-        <member name="P:Csla.Threading.Semaphore.Active">
-            <summary>
-            Gets a the number of active locks.
             </summary>
         </member>
         <member name="T:Csla.Utilities">
@@ -6180,256 +6167,6 @@
             <summary>
             Sets a value into a property.
             </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.DisplayAttribute">
-            <summary>
-            Defines a user-friendly display name for the property.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.GetName">
-            <summary>
-            Gets the Name property value.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.#ctor(System.Boolean,System.String)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="AutoGenerateField">AutoGenerateField value.</param>
-            <param name="Name">Friendly name.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Name">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Description">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.AutoGenerateField">
-            <summary>
-            Gets or sets a value indicating whether to
-            autogenerate the field.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RangeAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationAttribute">
-            <summary>
-            Base class used to create validation attributes.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.GetValidationResult(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Checks whether the specified value is valid with respect to the current
-            validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessage">
-            <summary>
-            Gets or sets an error message to associated with a validation control if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceName">
-            <summary>
-            Gets or sets the error resource name in order to look up the error message
-            text from a resource if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceType">
-            <summary>
-            Gets or sets the resource type to use for message look-up if validation fails.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Type,System.String,System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="type">Type of object to test.</param>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RegularExpressionAttribute">
-            <summary>
-            Specifies that a data field value must
-            match the specified regular expression.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.#ctor(System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RequiredAttribute">
-            <summary>
-            Specifies that a data field value is required.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.#ctor">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.StringLengthAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.#ctor(System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="stringMaxLength">Maximum string length allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationContext">
-            <summary>
-            Validation context information.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationContext.#ctor(System.Object,System.Object,System.Collections.Generic.IDictionary{System.Object,System.Object})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="instance">Object to validate.</param>
-            <param name="serviceProvider">Ignored.</param>
-            <param name="items">Collection of name/value pairs.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.DisplayName">
-            <summary>
-            Gets or sets the display name of the member
-            to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.MemberName">
-            <summary>
-            Gets or sets the name of the member to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectInstance">
-            <summary>
-            Gets the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectType">
-            <summary>
-            Gets the type of the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.Items">
-            <summary>
-            Gets the dictionary of items that is associated with this context.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationResult">
-            <summary>
-            Results of a validation operation.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-            <param name="memberNames">The collection of member names that indicate
-            which fields have validation errors.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.ErrorMessage">
-            <summary>
-            Gets the error message for the validation.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.MemberNames">
-            <summary>
-            Gets the collection of member names that indicate which
-            fields have validation errors.
-            </summary>
-        </member>
-        <member name="T:Csla.BrowsableAttribute">
-            <summary>
-            Mock attribute ported from .NET/SL.
-            </summary>
-        </member>
-        <member name="M:Csla.BrowsableAttribute.#ctor(System.Boolean)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="flag">Flag value.</param>
         </member>
         <member name="T:Csla.Core.FieldManager.FieldData`1">
             <summary>
@@ -6763,6 +6500,11 @@
             <summary>
             Gets or sets the factory object that
             creates PropertyInfo objects.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.FieldManager.PropertyComparer">
+            <summary>
+            Compare to propertyinfo x with y for sorting
             </summary>
         </member>
         <member name="M:Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty``1(System.Type,Csla.PropertyInfo{``0})">
@@ -7490,12 +7232,12 @@
             ChildChangedEventArgs object.
             </param>
         </member>
-        <member name="M:Csla.Core.ObservableBindingList`1.RaiseChildChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:Csla.Core.ObservableBindingList`1.RaiseChildChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Creates a ChildChangedEventArgs and raises the event.
             </summary>
         </member>
-        <member name="M:Csla.Core.ObservableBindingList`1.Child_PropertyChanged(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs)">
+        <member name="M:Csla.Core.ObservableBindingList`1.Child_PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
             <summary>
             Handles any PropertyChanged event from 
             a child object and echoes it up as
@@ -7692,6 +7434,14 @@
             <summary>
             Gets any resulting error information.
             </summary>
+        </member>
+        <member name="P:Csla.IDataPortalResult.UserState">
+            <summary>
+            Gets the user state, pass through object
+            </summary>
+            <value>
+            The user state.
+            </value>
         </member>
         <member name="M:Csla.DataPortalResult`1.#ctor(`0,System.Exception,System.Object)">
             <summary>
@@ -7927,7 +7677,7 @@
             Contains event data about the changed child object.
             </summary>
         </member>
-        <member name="M:Csla.Core.ChildChangedEventArgs.#ctor(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs)">
+        <member name="M:Csla.Core.ChildChangedEventArgs.#ctor(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -7938,7 +7688,7 @@
             PropertyChangedEventArgs object or null.
             </param>
         </member>
-        <member name="M:Csla.Core.ChildChangedEventArgs.#ctor(System.Object,Windows.UI.Xaml.Data.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+        <member name="M:Csla.Core.ChildChangedEventArgs.#ctor(System.Object,System.ComponentModel.PropertyChangedEventArgs,System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -8347,6 +8097,19 @@
             Context information provided to an authorization
             rule when it is invoked.
             </summary>
+        </member>
+        <member name="M:Csla.Rules.AuthorizationContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.Rules.AuthorizationContext"/> class.
+            </summary>
+        </member>
+        <member name="M:Csla.Rules.AuthorizationContext.#ctor(Csla.Rules.IAuthorizationRule,System.Object,System.Type)">
+            <summary>
+            Creates a AuthorizationContext instance for unit testing.
+            </summary>
+            <param name="rule">The rule.</param>
+            <param name="target">The target.</param>
+            <param name="targetType">Type of the target.</param>
         </member>
         <member name="P:Csla.Rules.AuthorizationContext.Rule">
             <summary>
@@ -9071,6 +8834,12 @@
             data annotation attributes.
             </summary>
         </member>
+        <member name="M:Csla.Rules.BusinessRules.AddDataAnnotationsFromType(System.Type)">
+            <summary>
+            Adds data annotation validation rules from the given type.
+            </summary>
+            <param name="metadataType">Type of the metadata.</param>
+        </member>
         <member name="M:Csla.Rules.BusinessRules.OnGetState(Csla.Serialization.Mobile.SerializationInfo,Csla.Core.StateMode)">
             <summary>
             Override this method to insert your field values
@@ -9696,6 +9465,333 @@
         <member name="P:Csla.Security.CslaPrincipal.Identity">
             <summary>
             Returns the user's identity object.
+            </summary>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaBinaryReader">
+            <summary>
+            This is a class that is responsible for deserializing SerializationInfo objects for
+            receiving the data from client / server
+            </summary>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.ICslaReader">
+            <summary>
+            Represents a reader class that can be used
+            to read the data sent across the wire in byte array format
+            when communicating between server and client in both directions
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.ICslaReader.Read(System.IO.Stream)">
+            <summary>
+            Read the data from a stream and return a list of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects
+            </summary>
+            <param name="serializationStream">Stream to read the data from, typically MemoryStream</param>
+            <returns>List of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects</returns>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaBinaryReader.#ctor">
+            <summary>
+            Creates new instance of CslaBinaryReader
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaBinaryReader.Read(System.IO.Stream)">
+            <summary>
+            Read a data from a stream, typically MemoryStream, and convert it into 
+            a list of SerializationInfo objects
+            </summary>
+            <param name="serializationStream">Stream to read the data from</param>
+            <returns>List of SerializationInfo objects</returns>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaBinaryWriter">
+            <summary>
+            This is a class that is responsible for serializing SerializationInfo objects 
+            into a Stream for sending the data t client / server
+            </summary>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.ICslaWriter">
+            <summary>
+            Represents a class that can be used to write a list of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects
+            into a stream, typically MemoryStream
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.ICslaWriter.Write(System.IO.Stream,System.Collections.Generic.List{Csla.Serialization.Mobile.SerializationInfo})">
+            <summary>
+            Write a list of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects
+            into a stream, typically MemoryStream
+            </summary>
+            <param name="serializationStream">Stream to write the data into</param>
+            <param name="objectData">List of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects to write</param>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaBinaryWriter.#ctor">
+            <summary>
+            Create new instance of CslaBinaryWriter class
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaBinaryWriter.Write(System.IO.Stream,System.Collections.Generic.List{Csla.Serialization.Mobile.SerializationInfo})">
+            <summary>
+            Write a list of SerializationInfo objects into stream,
+            typically MemoryStream
+            </summary>
+            <param name="serializationStream">Stream to write the data into</param>
+            <param name="objectData">List of SerializationInfo objects to write to stream</param>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaKnownTypes">
+            <summary>
+            This enumeration contains the list of known types
+            that <see cref="T:Csla.Serialization.Mobile.CslaBinaryReader"/> and <see cref="T:Csla.Serialization.Mobile.CslaBinaryWriter"/>know about
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Boolean">
+            <summary>
+            Boolean
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Char">
+            <summary>
+            Character/char
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.SByte">
+            <summary>
+            Signed byte
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Byte">
+            <summary>
+            Byte
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Int16">
+            <summary>
+            Short /Int 16
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.UInt16">
+            <summary>
+            Unsigned short / Int 16
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Int32">
+            <summary>
+            Integer / Int32
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.UInt32">
+            <summary>
+            Unsigned Integer / Int32
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Int64">
+            <summary>
+            Long / Int64
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.UInt64">
+            <summary>
+            Unsigned Long / Int64
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Single">
+            <summary>
+            Single / single precision floating point
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Double">
+            <summary>
+            Double / double precision floating point
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Decimal">
+            <summary>
+            Decimal
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.DateTime">
+            <summary>
+            Date / time 
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.String">
+            <summary>
+            String
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.TimeSpan">
+            <summary>
+            TimeSpan - time span
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.DateTimeOffset">
+            <summary>
+            Date/time plus time zone / DateTimeOffset
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Guid">
+            <summary>
+            Globally unique identifier / Guid
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.ByteArray">
+            <summary>
+            Array of bytes. can be used to represent images data
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.CharArray">
+            <summary>
+            Array of characters, not the same as string
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.ListOfInt">
+            <summary>
+            List of integer / List(of Int)
+            Used internally for serialization of list based objects
+            such as BusinessListBase
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.Null">
+            <summary>
+            Represents null value
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.StringWithDictionaryKey">
+            <summary>
+            Represents string that is supported by internal dictionary
+            that is used to replace strings with integers to save space
+            in the serialization process.  This entry contains both string and 
+            integer value of that string.  This data is used to re-build the 
+            dictionary on the receiving end
+            </summary>
+        </member>
+        <member name="F:Csla.Serialization.Mobile.CslaKnownTypes.StringDictionaryKey">
+            <summary>
+            Key that corresponds to internally used string.  On the receiving end this
+            value will be replaces with the actual string
+            </summary>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaNonClosingBinaryWriter">
+            <summary>
+            This class is used to get around the issue in .NET framework, where
+            underlying stream is closed by a writer that writes to that stream
+            when said writer is disposed
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaNonClosingBinaryWriter.#ctor(System.IO.Stream)">
+            <summary>
+            New instance of CslaNonClosingBinaryWriter
+            </summary>
+            <param name="stream">Stream that the writer will write to</param>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaNonClosingBinaryWriter.Dispose(System.Boolean)">
+            <summary>
+            Overwrite the Dispose method of the base class
+            in order to keep the stream open
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaReaderWriterFactory">
+            <summary>
+            Factory class that is used to create Reader/Writer pair of classes
+            to read/write the data during serialization / deserialization process
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaReaderWriterFactory.GetDataContractSerializer">
+            <summary>
+            Get an instance of <see cref="T:System.Runtime.Serialization.DataContractSerializer"/>
+            and setup known types for that class
+            </summary>
+            <returns>instance of <see cref="T:System.Runtime.Serialization.DataContractSerializer"/></returns>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaWriterType(System.Type)">
+            <summary>
+            Setup the type for Writer class
+            </summary>
+            <param name="writerType">Type of writer</param>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaReaderType(System.Type)">
+            <summary>
+            Setup the type for reader class
+            </summary>
+            <param name="readerType">Reader class type</param>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaReaderWriterFactory.GetCslaWriter">
+            <summary>
+            Get an instance of the writer that is used to write data to serialization stream
+            </summary>
+            <returns>Instance of the writer that is used to write data to serialization stream</returns>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaReaderWriterFactory.GetCslaReader">
+            <summary>
+            Get an instance of the reader that is used to read data to serialization stream
+            </summary>
+            <returns>Instance of the reader that is used to read data to serialization stream</returns>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaXmlBinaryReader">
+            <summary>
+            This class uses <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> and <see cref="T:System.Xml.XmlDictionaryReader"/> classes
+            to read the data from a stream
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaXmlBinaryReader.Read(System.IO.Stream)">
+            <summary>
+            Read the data from a stream and produce list of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects
+            </summary>
+            <param name="serializationStream">Stream to read the data from</param>
+            <returns>List of SerializationInfo objects</returns>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaXmlBinaryWriter">
+            <summary>
+            This class uses <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> and <see cref="T:System.Xml.XmlDictionaryWriter"/> classes
+            to write the data to a stream
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaXmlBinaryWriter.Write(System.IO.Stream,System.Collections.Generic.List{Csla.Serialization.Mobile.SerializationInfo})">
+            <summary>
+            Write the data to a stream
+            </summary>
+            <param name="serializationStream">Stream to read the data from</param>
+            <param name="objectData">List of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects to write</param>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaXmlReader">
+            <summary>
+            This class uses <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> and <see cref="T:System.Xml.XmlReader"/> classes
+            to read the data from a stream
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaXmlReader.Read(System.IO.Stream)">
+            <summary>
+            Read the data from a stream and produce list of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects
+            </summary>
+            <param name="serializationStream">Stream to read the data from</param>
+            <returns>List of SerializationInfo objects</returns>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.CslaXmlWriter">
+            <summary>
+            This class uses <see cref="T:System.Runtime.Serialization.DataContractSerializer"/> and <see cref="T:System.Xml.XmlWriter"/> classes
+            to write the data to a stream
+            </summary>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.CslaXmlWriter.Write(System.IO.Stream,System.Collections.Generic.List{Csla.Serialization.Mobile.SerializationInfo})">
+            <summary>
+            Write the data to a stream
+            </summary>
+            <param name="serializationStream">Stream to read the data from</param>
+            <param name="objectData">List of <see cref="T:Csla.Serialization.Mobile.SerializationInfo"/> objects to write</param>
+        </member>
+        <member name="T:Csla.Serialization.Mobile.DictionaryCheckResult">
+            <summary>
+            This class contains the result of check for existing dictionary
+            key/value pair when creating internal dictionary of strings
+            in order to minimize the amount of data that <see cref="T:Csla.Serialization.Mobile.CslaBinaryWriter"/>
+            sends over the wire
+            </summary>
+        </member>
+        <member name="P:Csla.Serialization.Mobile.DictionaryCheckResult.IsNew">
+            <summary>
+            Indicates that the key did not exist and was just added
+            </summary>
+        </member>
+        <member name="P:Csla.Serialization.Mobile.DictionaryCheckResult.Key">
+            <summary>
+            Newly added or existing integer key corresponding to 
+            string value
             </summary>
         </member>
         <member name="T:Csla.Server.EmptyCriteria">
@@ -11041,6 +11137,13 @@
             <param name="primaryProperty">Primary property for the rule.</param>
             <param name="rule">Rule implementation.</param>
         </member>
+        <member name="M:Csla.Rules.CommonRules.Lambda.AddQueryParameter(System.String,System.String)">
+            <summary>
+            Add a query parameter to make the RuleUri uniques for this rule and primary property.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+        </member>
         <member name="M:Csla.Rules.CommonRules.Lambda.Execute(Csla.Rules.RuleContext)">
             <summary>
             Executes the rule.
@@ -11126,6 +11229,13 @@
             Gets a reference to the list of results being returned
             by this rule.
             </summary>
+        </member>
+        <member name="M:Csla.Rules.RuleContext.ExecuteRule(Csla.Rules.IBusinessRule)">
+            <summary>
+            Executes the inner rule from the outer rules context. 
+            Creates a chained context and if CanRunRule will execute the inner rule.  
+            </summary>
+            <param name="innerRule">The inner rule.</param>
         </member>
         <member name="M:Csla.Rules.RuleContext.#ctor(System.Action{Csla.Rules.RuleContext},Csla.Rules.IBusinessRule,System.Object,System.Collections.Generic.Dictionary{Csla.Core.IPropertyInfo,System.Object})">
             <summary>
@@ -12564,32 +12674,6 @@
             to serialize.
             </param>
         </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.Serialize(System.IO.TextWriter,System.Object)">
-            <summary>
-            Serialize an object graph into XML.
-            </summary>
-            <param name="textWriter">
-            TextWriter to which the serialized data
-            will be written.
-            </param>
-            <param name="graph">
-            Root object of the object graph
-            to serialize.
-            </param>
-        </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.Serialize(System.Xml.XmlWriter,System.Object)">
-            <summary>
-            Serialize an object graph into XML.
-            </summary>
-            <param name="writer">
-            XmlWriter to which the serialized data
-            will be written.
-            </param>
-            <param name="graph">
-            Root object of the object graph
-            to serialize.
-            </param>
-        </member>
         <member name="M:Csla.Serialization.Mobile.MobileFormatter.SerializeAsDTO(System.Object)">
             <summary>
             Serialize an object graph into DTO.
@@ -12629,26 +12713,6 @@
             </summary>
             <param name="serializationStream">
             Stream containing the serialized XML
-            data.
-            </param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.Deserialize(System.IO.TextReader)">
-            <summary>
-            Deserialize an object from XML.
-            </summary>
-            <param name="textReader">
-            TextReader containing the serialized XML
-            data.
-            </param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.Deserialize(System.Xml.XmlReader)">
-            <summary>
-            Deserialize an object from XML.
-            </summary>
-            <param name="reader">
-            XmlReader containing the serialized XML
             data.
             </param>
             <returns></returns>
@@ -12697,7 +12761,7 @@
         </member>
         <member name="M:Csla.Serialization.Mobile.MobileFormatter.DeserializeFromDTO(System.Collections.Generic.List{Csla.Serialization.Mobile.SerializationInfo})">
             <summary>
-            Serilizes an object from a DTO graph
+            Serializes an object from a DTO graph
             </summary>
             <param name="serialized">DTO Graph to deserialize</param>
             <returns>Deserialized object</returns>
@@ -12729,28 +12793,6 @@
             byte stream. The object must implement
             IMobileObject to be deserialized.
             </returns>
-        </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.GetXmlWriter(System.IO.Stream)">
-            <summary>
-            Gets a new XmlWriter object.
-            </summary>
-            <param name="stream">The stream to which you
-            want to write.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.Serialization.Mobile.MobileFormatter.GetXmlReader(System.IO.Stream)">
-            <summary>
-            Gets a new XmlReader object.
-            </summary>
-            <param name="stream">The stream from which you
-            want to read.</param>
-            <returns></returns>
-        </member>
-        <member name="P:Csla.Serialization.Mobile.MobileFormatter.UseBinaryXml">
-            <summary>
-            Gets or sets a value indicating whether to use
-            binary XML for serialization. Defaults to true.
-            </summary>
         </member>
         <member name="T:Csla.Serialization.Mobile.NullPlaceholder">
             <summary>
@@ -12857,6 +12899,23 @@
             </param>
             <param name="isDirty">
             Flag indicating whether the value is dirty.
+            </param>
+        </member>
+        <member name="M:Csla.Serialization.Mobile.SerializationInfo.AddValue(System.String,System.Object,System.Boolean,System.String)">
+            <summary>
+            Adds a value to the list of fields.
+            </summary>
+            <param name="name">
+            Name of the field.
+            </param>
+            <param name="value">
+            Value of the field.
+            </param>
+            <param name="isDirty">
+            Flag indicating whether the value is dirty.
+            </param>
+            <param name="enumTypeName">
+            Name of the enumeration
             </param>
         </member>
         <member name="M:Csla.Serialization.Mobile.SerializationInfo.GetValue``1(System.String)">
@@ -13286,9 +13345,7 @@
         </member>
         <member name="M:Csla.Server.ObjectFactory.LoadProperty``1(System.Object,Csla.PropertyInfo{``0},``0)">
             <summary>
-            Loads a property's managed field with the 
-            supplied value calling PropertyHasChanged 
-            if the value does change.
+            Loads a property's managed field with the supplied value.
             </summary>
             <typeparam name="P">
             Type of the property.
@@ -13307,6 +13364,20 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Server.ObjectFactory.LoadProperty(System.Object,Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Loads a property's managed field with the supplied value.
+            </summary>
+            <param name="obj">Object on which to call the method.</param>
+            <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+            <param name="newValue">The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
         <member name="M:Csla.Server.ObjectFactory.ReadProperty``1(System.Object,Csla.PropertyInfo{``0})">
             <summary>
             Reads a property's managed field value.
@@ -13317,6 +13388,17 @@
             </param>
             <param name="propertyInfo">
             PropertyInfo object containing property metadata.</param>
+            <remarks>
+            No authorization checks occur when this method is called.
+            </remarks>
+        </member>
+        <member name="M:Csla.Server.ObjectFactory.ReadProperty(System.Object,Csla.Core.IPropertyInfo)">
+            <summary>
+            Reads a property's managed field value.
+            </summary>
+            <param name="obj">Object on which to call the method.</param>
+            <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
+            <returns></returns>
             <remarks>
             No authorization checks occur when this method is called.
             </remarks>
@@ -13765,54 +13847,6 @@
             <summary>
             Gets a reference to the global context returned from
             the background thread and/or server.
-            </summary>
-        </member>
-        <member name="T:Csla.Threading.BusyLock">
-            <summary>
-            Implementation of a lock that waits while
-            a target object is busy.
-            </summary>
-            <remarks>
-            Do not call this from a Silverlight UI thread, as it will block
-            the entire browser.
-            </remarks>
-        </member>
-        <member name="M:Csla.Threading.BusyLock.WaitOne(Csla.Core.INotifyBusy)">
-            <summary>
-            Wait until the specified object is not busy 
-            (IsBusy is false).
-            </summary>
-            <param name="obj">Target object.</param>
-        </member>
-        <member name="M:Csla.Threading.BusyLock.WaitOne(Csla.Core.INotifyBusy,System.TimeSpan)">
-            <summary>
-            Wait until the specified object is not busy 
-            (IsBusy is false).
-            </summary>
-            <param name="obj">Target object.</param>
-            <param name="timeout">Timeout value.</param>
-        </member>
-        <member name="T:Csla.Threading.BusyLocker">
-            <summary>
-            Implementation of a lock that waits while
-            a target object is busy.
-            </summary>
-        </member>
-        <member name="M:Csla.Threading.BusyLocker.#ctor(Csla.Core.INotifyBusy,System.TimeSpan)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="target">Target object.</param>
-            <param name="timeout">Timeout value.</param>
-        </member>
-        <member name="M:Csla.Threading.BusyLocker.WaitOne">
-            <summary>
-            Waits for the target object to become not busy.
-            </summary>
-        </member>
-        <member name="M:Csla.Threading.BusyLocker.Dispose">
-            <summary>
-            Disposes the object.
             </summary>
         </member>
         <member name="T:Csla.PropertyInfo`1">
@@ -14552,6 +14586,20 @@
             <param name="t"></param>
             <returns></returns>
         </member>
+        <member name="M:Csla.Reflection.TypeExtensions.IsGenericType(System.Type)">
+            <summary>
+            Gets a value indicating whether this is a generic type.
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Reflection.TypeExtensions.IsEnum(System.Type)">
+            <summary>
+            Gets a value indicating whether this is an enum.
+            </summary>
+            <param name="t"></param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Reflection.TypeExtensions.GetCustomAttributes(System.Reflection.PropertyInfo,System.Type,System.Boolean)">
             <summary>
             Gets custom attributes.
@@ -14560,6 +14608,101 @@
             <param name="attributeType"></param>
             <param name="inherit"></param>
             <returns></returns>
+        </member>
+        <member name="T:Csla.Reflection.TypeCode">
+            <summary>
+            Type codes
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Empty">
+            <summary>
+            Empty
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Object">
+            <summary>
+            Object
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.DBNull">
+            <summary>
+            DBNull
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Boolean">
+            <summary>
+            Boolean
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Char">
+            <summary>
+            Char
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.SByte">
+            <summary>
+            SByte
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Byte">
+            <summary>
+            Byte
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Int16">
+            <summary>
+            Int16
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.UInt16">
+            <summary>
+            UInt16
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Int32">
+            <summary>
+            Int32
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.UInt32">
+            <summary>
+            UInt32
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Int64">
+            <summary>
+            Int64
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.UInt64">
+            <summary>
+            UInt64
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Single">
+            <summary>
+            Single
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Double">
+            <summary>
+            Double
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.Decimal">
+            <summary>
+            Decimal
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.DateTime">
+            <summary>
+            DateTime
+            </summary>
+        </member>
+        <member name="F:Csla.Reflection.TypeCode.String">
+            <summary>
+            String
+            </summary>
         </member>
         <member name="T:Csla.Properties.Resources">
             <summary>
@@ -15082,303 +15225,19 @@
               Looks up a localized string similar to Warning.
             </summary>
         </member>
-        <member name="T:Csla.WcfPortal.CriteriaRequest">
+        <member name="P:Csla.Properties.Resources.PropertyNotInAffectedPropertiesException">
             <summary>
-            
+            Looks up a localized string.
             </summary>
         </member>
-        <member name="M:Csla.WcfPortal.CriteriaRequest.RaisePropertyChanged(System.String)">
+        <member name="P:Csla.Properties.Resources.UnandledKNownTypeException">
             <summary>
-            
-            </summary>
-            <param name="propertyName"></param>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientContext">
-            <summary>
-            
+            Looks up a localized string.
             </summary>
         </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientCulture">
+        <member name="P:Csla.Properties.Resources.BinaryWriterObjectSerializationException">
             <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.ClientUICulture">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.CriteriaData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.GlobalContext">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.Principal">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.CriteriaRequest.TypeName">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Csla.WcfPortal.CriteriaRequest.PropertyChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfResponse">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfResponse.RaisePropertyChanged(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="propertyName"></param>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.ErrorData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.GlobalContext">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfResponse.ObjectData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfResponse.PropertyChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfErrorInfo">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfErrorInfo.RaisePropertyChanged(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="propertyName"></param>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.ExceptionTypeName">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.InnerError">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.Message">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.Source">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.StackTrace">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.WcfErrorInfo.TargetSiteName">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Csla.WcfPortal.WcfErrorInfo.PropertyChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Csla.WcfPortal.UpdateRequest">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.UpdateRequest.RaisePropertyChanged(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="propertyName"></param>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientContext">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientCulture">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ClientUICulture">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.GlobalContext">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.ObjectData">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Csla.WcfPortal.UpdateRequest.Principal">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="E:Csla.WcfPortal.UpdateRequest.PropertyChanged">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Csla.WcfPortal.IWcfPortal">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.IWcfPortal.CreateAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.IWcfPortal.FetchAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.IWcfPortal.UpdateAsync(Csla.WcfPortal.UpdateRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.IWcfPortal.DeleteAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="T:Csla.WcfPortal.IWcfPortalChannel">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfPortalClient">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.#ctor">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.#ctor(Csla.WcfPortal.WcfPortalClient.EndpointConfiguration)">
-            <summary>
-            
-            </summary>
-            <param name="endpointConfiguration"></param>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.#ctor(Csla.WcfPortal.WcfPortalClient.EndpointConfiguration,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="endpointConfiguration"></param>
-            <param name="remoteAddress"></param>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.#ctor(Csla.WcfPortal.WcfPortalClient.EndpointConfiguration,System.ServiceModel.EndpointAddress)">
-            <summary>
-            
-            </summary>
-            <param name="endpointConfiguration"></param>
-            <param name="remoteAddress"></param>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.#ctor(System.ServiceModel.Channels.Binding,System.ServiceModel.EndpointAddress)">
-            <summary>
-            
-            </summary>
-            <param name="binding"></param>
-            <param name="remoteAddress"></param>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.CreateAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.FetchAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.UpdateAsync(Csla.WcfPortal.UpdateRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.DeleteAsync(Csla.WcfPortal.CriteriaRequest)">
-            <summary>
-            
-            </summary>
-            <param name="request"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.OpenAsync">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.WcfPortal.WcfPortalClient.CloseAsync">
-            <summary>
-            
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Csla.WcfPortal.WcfPortalClient.EndpointConfiguration">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Csla.WcfPortal.WcfPortalClient.EndpointConfiguration.BasicHttpBinding_IWcfPortal">
-            <summary>
-            
+            Looks up a localized string.
             </summary>
         </member>
         <member name="T:System.ComponentModel.BackgroundWorker">

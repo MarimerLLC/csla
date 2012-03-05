@@ -348,6 +348,11 @@ namespace Csla.Reflection
       return t.GetTypeInfo().IsEnum;
     }
 
+    /// <summary>
+    /// Gets the TypeCode value for a type.
+    /// </summary>
+    /// <param name="t">Type object.</param>
+    /// <returns></returns>
     public static TypeCode GetTypeCode(Type t)
     {
       TypeCode result = TypeCode.Empty;

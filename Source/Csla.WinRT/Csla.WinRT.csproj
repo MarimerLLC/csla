@@ -86,7 +86,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\Bin\Debug\WinRT\</OutputPath>
     <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.xml</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;SILVERLIGHT;WINRT</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -98,7 +98,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\Bin\Release\WinRT\</OutputPath>
     <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
-    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;SILVERLIGHT;WINRT</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>

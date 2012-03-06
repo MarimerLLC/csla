@@ -22,9 +22,9 @@ CSLA .NET is an application development framework that reduces the cost of build
   </metadata>
   <files>
     <!-- .NET 4.0 Server -->
-    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.dll*" target="lib\NET4.0" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.resources.dll*" target="lib\NET4.0" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.xml*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Workflow.xml*" target="lib\net40" />
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->

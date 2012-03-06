@@ -11,7 +11,7 @@
     <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
-Supports the creation of Windows Phone 7 (WP7) applications.
+Supports the creation of Windows Phone 7 (WP7) "Mango" applications.
 
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
@@ -21,12 +21,12 @@ CSLA .NET is an application development framework that reduces the cost of build
     </dependencies>
     <!--
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Net" targetFramework="WP7.1" />
-      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="WP7.1" />
-      <frameworkAssembly assemblyName="System.Servicemodel" targetFramework="WP7.1" />
-      <frameworkAssembly assemblyName="System.Windows" targetFramework="WP7.1" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="WP7.1" />
-      <frameworkAssembly assemblyName="System.Xml.Serialization" targetFramework="WP7.1" />
+      <frameworkAssembly assemblyName="System.Net" targetFramework="sl4-wp71" />
+      <frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="sl4-wp71" />
+      <frameworkAssembly assemblyName="System.Servicemodel" targetFramework="sl4-wp71" />
+      <frameworkAssembly assemblyName="System.Windows" targetFramework="sl4-wp71" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="sl4-wp71" />
+      <frameworkAssembly assemblyName="System.Xml.Serialization" targetFramework="sl4-wp71" />
     </frameworkAssemblies>
     -->
   </metadata>
@@ -36,8 +36,8 @@ CSLA .NET is an application development framework that reduces the cost of build
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\WP7.1" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\WP7.1" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl4-wp71" />
   </files>
 </package>

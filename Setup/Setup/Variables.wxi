@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?ifndef MajorVersion?>
+  <?define MajorVersion = "4" ?>
+  <?endif?>
+  <?ifndef MinorVersion?>
+  <?define MinorVersion = "3" ?>
+  <?endif?>
+  <?ifndef BindMinorVersion?>
+  <?define BindMinorVersion = "10" ?>
+  <?endif?>
+  <?ifndef RevisionVersion?>
+  <?define RevisionVersion = "0" ?>
+  <?endif?>
+
+  <?define ProductName = "CSLA Framework" ?>
+  <?define VersionNumber = "$(var.MajorVersion).$(var.MinorVersion).$(var.BindMinorVersion).$(var.RevisionVersion)" ?>
+  <?define PackageManufacturer = "Marimer LLC" ?>
+  <?define UpgradeCode = "32B22926-C490-4B2A-99B9-B6BE0160031A" ?>
+  <?define PackageComments = "CSLA Framework $(var.VersionNumber)" ?>
+  <?define PackageDescription = "CSLA Framework" ?>
+  <?define PackageKeywords = "CSLA" ?>
+
+  <?ifndef PackageDir?>
+  <?define PackageDir = "..\..\" ?>
+  <?endif?>
+</Include>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include Variables.wxi ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="SourceDir" Name="Source" />
+    </DirectoryRef>
+
+    <DirectoryRef Id="SourceDir" FileSource="$(var.PackageDir)">
+      <Component Id="SourceFiles" Guid="04943ABC-58B3-4EB4-A567-7D1205FF401C">
+        <File Id="Source.zip" Name="Source.zip" />
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="SourceCodeComponents">
+      <ComponentRef Id="SourceFiles"/>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

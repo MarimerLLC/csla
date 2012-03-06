@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?include Variables.wxi ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" 
+      Name="$(var.ProductName)"
+      Language="1033" 
+      Version="$(var.VersionNumber)" 
+      Manufacturer="$(var.PackageManufacturer)" 
+      UpgradeCode="$(var.UpgradeCode)">
+    
+    <Package
+      Comments="$(var.PackageComments)"
+      Compressed="yes"
+      Description="$(var.PackageDescription)"
+      InstallerVersion="200"
+      Keywords="$(var.PackageKeywords)" />
+    
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <!--<Condition Message="$(var.ProductName) requires that the .NET Framework 4.0 is installed on your computer.">
+      Installed OR NETFRAMEWORK40FULL
+    </Condition>-->
+
+    <Icon Id="icon.ico" SourceFile="$(var.PackageDir)\favicon.ico" />
+
+    <!-- Media -->
+    <Media Id="1" Cabinet="CSLA.cab" EmbedCab="yes" />
+
+    <Feature
+        Id="AssemblyFeature"
+        Title="CSLA framework assemblies"
+        Description="Installs the CSLA framework assemblies."
+        Level="1"
+        ConfigurableDirectory="INSTALLDIR"
+        Display="expand"
+        AllowAdvertise="yes">
+      <ComponentGroupRef Id="AssemblyComponents" />
+    </Feature>
+    <Feature
+      Id="SourceCodeFeature"
+      Title="CSLA source code"
+      Description="Installs the CSLA source code."
+      Level="1"
+      ConfigurableDirectory="INSTALLDIR"
+      Display="expand"
+      AllowAdvertise="yes">
+      <ComponentGroupRef Id="SourceCodeComponents" />
+    </Feature>
+    <Feature
+      Id="SupportFeature"
+      Title="CSLA Support"
+      Description="Installs the CSLA snippets and other item templates."
+      Level="1"
+      ConfigurableDirectory="INSTALLDIR"
+      Display="expand"
+      AllowAdvertise="yes">
+      <ComponentGroupRef Id="SupportComponents" />
+    </Feature>
+
+    <UI>
+      <UIRef Id="WixUI_FeatureTree"/>
+    </UI>
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="MarimerLLC" Name="Marimer LLC">
+          <Directory Id="CSLANET" Name="CSLA .NET">
+            <Directory Id="CSLANETVersion" Name="$(var.MajorVersion).$(var.MinorVersion).$(var.BindMinorVersion)">
+              <Directory Id="INSTALLDIR" />
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <!-- Properties --><!--
+  <PropertyRef Id="NETFRAMEWORK40FULL" />-->
+</Wix>

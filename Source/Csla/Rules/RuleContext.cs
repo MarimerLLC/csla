@@ -390,5 +390,65 @@ namespace Csla.Rules
         Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty));
       _completeHandler(this);
     }
+
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="propertyInfo">The property info.</param>
+    /// <returns></returns>
+    public  T GetInputValue<T>(PropertyInfo<T> propertyInfo)
+    {
+      return (T)InputPropertyValues[propertyInfo];
+    }
+
+    /// <summary>
+    /// Gets the value with explicit cast
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="propertyInfo">The generic property info.</param>
+    /// <returns></returns>
+    public T GetInputValue<T>(IPropertyInfo propertyInfo)
+    {
+      return (T)InputPropertyValues[propertyInfo];
+    }
+
+    /// <summary>
+    /// Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="propertyInfo">The generic property info.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>true if value exists else false</returns>
+    public bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T value)
+    {
+      if (!InputPropertyValues.ContainsKey(propertyInfo))
+      {
+        value = default(T);
+        return false;
+      }
+
+      value = (T)InputPropertyValues[propertyInfo];
+      return true;
+    }
+
+    /// <summary>
+    /// Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="propertyInfo">The generic property info.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>true if value exists else false</returns>
+    public bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T value)
+    {
+      if (!InputPropertyValues.ContainsKey(propertyInfo))
+      {
+        value = default(T);
+        return false;
+      }
+
+      value = (T)InputPropertyValues[propertyInfo];
+      return true;
+    }
   }
 }

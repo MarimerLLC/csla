@@ -128,6 +128,7 @@ namespace Csla.Test.ValidationRules
 
     #endregion
 
+    [RunLocal]
     protected void DataPortal_Create(string ruleSet)
     {
       BusinessRules.RuleSet = ruleSet;
@@ -263,7 +264,7 @@ namespace Csla.Test.ValidationRules
     {
       var customerId = (int)context.InputPropertyValues[PrimaryProperty];
       var bw = new BackgroundWorker();
-      bw.DoWork += (o, e) => Thread.Sleep(50);
+      bw.DoWork += (o, e) => Thread.Sleep(200);
       bw.RunWorkerCompleted += (o, e) =>
                                  {
                                    string name;

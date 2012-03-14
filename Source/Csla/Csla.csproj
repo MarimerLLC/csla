@@ -38,24 +38,24 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>Full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\Client\</OutputPath>
+    <OutputPath>..\..\Bin\Debug\NET\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <DocumentationFile>..\..\Bin\Debug\Client\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET\Csla.XML</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\Client\</OutputPath>
+    <OutputPath>..\..\Bin\Release\NET\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\Client\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET\Csla.XML</DocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>

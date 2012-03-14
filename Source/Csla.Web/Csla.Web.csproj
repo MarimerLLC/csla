@@ -21,21 +21,21 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\Server\</OutputPath>
+    <OutputPath>..\..\Bin\Debug\NET\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\Server\Csla.Web.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET\Csla.Web.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\Server\</OutputPath>
+    <OutputPath>..\..\Bin\Release\NET\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\Server\Csla.Web.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET\Csla.Web.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono Debug|AnyCPU'">

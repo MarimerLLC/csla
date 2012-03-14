@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml", "csla.xaml\Csla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Silverlight", "Csla.Xaml.Silverlight\Csla.Xaml.Silverlight.csproj", "{2EF8662C-9FC9-4523-B936-B3B173625C5D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{06977FFA-D6A8-453D-9496-063FCE34976F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.WinRT", "Csla.WinRT\Csla.WinRT.csproj", "{24C13E06-70A8-46C2-8351-987AF0780F78}"
 EndProject
 Global
@@ -114,8 +112,8 @@ Global
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|AnyOS.ActiveCfg = Debug|Any CPU
-		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Win32.ActiveCfg = Debug|x86
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Win32.Build.0 = Debug|x86
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Debug|Win64.ActiveCfg = Debug|Any CPU

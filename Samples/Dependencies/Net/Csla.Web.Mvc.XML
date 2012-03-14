@@ -4,106 +4,92 @@
         <name>Csla.Web.Mvc</name>
     </assembly>
     <members>
-        <member name="T:Csla.Web.Mvc.ViewModelBase`1">
+        <member name="T:Csla.Web.Mvc.Controller">
             <summary>
-            Base class used to create ViewModel objects that
-            contain the Model object and related elements.
-            </summary>
-            <typeparam name="T">Type of the Model object.</typeparam>
-        </member>
-        <member name="T:Csla.Web.Mvc.IViewModel">
-            <summary>
-            Defines a CSLA .NET MVC viewmodel object.
+            Provides methods that respond to HTTP requests
+            in an ASP.NET MVC web site.
             </summary>
         </member>
-        <member name="P:Csla.Web.Mvc.IViewModel.ModelObject">
+        <member name="M:Csla.Web.Mvc.Controller.SaveObject``1(``0,System.Boolean)">
             <summary>
-            Object property for the contained business object
+            Performs a Save() operation on an
+            editable business object, with appropriate
+            validation and exception handling.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="item">The business object to insert.</param>
+            <param name="forceUpdate">true to force Save() to be an update.</param>
+            <returns>true the Save() succeeds, false if not.</returns>
+        </member>
+        <member name="M:Csla.Web.Mvc.Controller.SaveObject``1(``0,System.Action{``0},System.Boolean)">
+            <summary>
+            Performs a Save() operation on an
+            editable business object, with appropriate
+            validation and exception handling.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="item">The business object to insert.</param>
+            <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
+            <param name="forceUpdate">true to force Save() to be an update.</param>
+            <returns>true the Save() succeeds, false if not.</returns>
+        </member>
+        <member name="M:Csla.Web.Mvc.Controller.LoadProperty``1(System.Object,Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value calling PropertyHasChanged 
+            if the value does change.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="obj">
+            Object on which to call the method. 
+            </param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
+        <member name="T:Csla.Web.Mvc.HasPermissionAttribute">
+            <summary>
+            Restricts callers to an action method.
             </summary>
         </member>
-        <member name="M:Csla.Web.Mvc.ViewModelBase`1.Save(System.Web.Mvc.ModelStateDictionary,System.Boolean)">
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type)">
             <summary>
-            Saves the current Model object if the object
-            implements Csla.Core.ISavable.
+            Creates an instance of the type.
             </summary>
-            <param name="modelState">Controller's ModelState object.</param>
-            <param name="forceUpdate">if set to <c>true</c> force update.</param>
-            <returns>
-            true if the save succeeds.
-            </returns>
+            <param name="action">AuthorizationActions for which the authorization is required.</param>
+            <param name="objectType">CSLA object type for which the action is applied.</param>
         </member>
-        <member name="P:Csla.Web.Mvc.ViewModelBase`1.ModelObject">
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type,System.String)">
             <summary>
-            Gets or sets the Model object.
+            Creates an instance of the type.
             </summary>
+            <param name="action">AuthorizationActions for which the authorization is required.</param>
+            <param name="objectType">CSLA object type for which the action is applied.</param>
+            <param name="message">Error message for resutl.</param>
         </member>
-        <member name="T:Csla.Web.Mvc.IModelCreator">
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.AuthorizeCore(System.Web.HttpContextBase)">
             <summary>
-            ASP.NET MVC model creator.
+            Determines whether access to the core framework is authorized.
             </summary>
+            <param name="httpContext">The HTTP context.</param>
+            <returns>True if access is authorized; otherwise, false.</returns>
         </member>
-        <member name="M:Csla.Web.Mvc.IModelCreator.CreateModel(System.Type)">
+        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
             <summary>
-            Creates a model object of the specified
-            type.
+            Processes HTTP requests that fail authorization and handles AJAX requests
+            appropriately.
             </summary>
-            <param name="modelType">Type of model object to create.</param>
-            <returns></returns>
-        </member>
-        <member name="T:Csla.Web.Mvc.CslaModelBinder">
-            <summary>
-            Model binder for use with CSLA .NET editable business
-            objects.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.#ctor(System.Boolean)">
-            <summary>
-            Creates an instance of the model binder.
-            </summary>
-            <param name="CheckRulesOnModelUpdated">Value indicating if business rules will be checked after the model is updated.</param>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.BindModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
-            <summary>
-            Binds the model by using the specified controller context and binding context.
-            </summary>
-            <param name="controllerContext">Controller Context</param>
-            <param name="bindingContext">Binding Context</param>
-            <returns>Bound object</returns>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.BindCslaCollection(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
-            <summary>
-            Bind CSLA Collection object using specified controller context and binding context
-            </summary>
-            <param name="controllerContext">Controller Context</param>
-            <param name="bindingContext">Binding Context</param>
-            <returns>Bound CSLA collection object</returns>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.CreateModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.Type)">
-            <summary>
-            Creates an instance of the model if the controller implements
-            IModelCreator.
-            </summary>
-            <param name="controllerContext">Controller context</param>
-            <param name="bindingContext">Binding context</param>
-            <param name="modelType">Type of model object</param>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.OnModelUpdated(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
-            <summary>
-            Checks the validation rules for properties
-            after the Model has been updated.
-            </summary>
-            <param name="controllerContext">Controller context</param>
-            <param name="bindingContext">Binding context</param>
-        </member>
-        <member name="M:Csla.Web.Mvc.CslaModelBinder.OnPropertyValidated(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.ComponentModel.PropertyDescriptor,System.Object)">
-            <summary>
-            Prevents IDataErrorInfo validation from
-            operating against editable objects.
-            </summary>
-            <param name="controllerContext">Controller context</param>
-            <param name="bindingContext">Binding context</param>
-            <param name="propertyDescriptor">Property descriptor</param>
-            <param name="value">Value</param>
+            <param name="filterContext">The filterContext object contains the controller, HTTP context, 
+            request context, action result, and route data.</param>
         </member>
         <member name="T:Csla.Web.Mvc.HtmlExtensions">
             <summary>
@@ -201,92 +187,106 @@
             <param name="denieddAction">The rendered HTML helper action for denied users.</param>
             <returns>The appropriate HTML rendered output.</returns>
         </member>
-        <member name="T:Csla.Web.Mvc.HasPermissionAttribute">
+        <member name="T:Csla.Web.Mvc.CslaModelBinder">
             <summary>
-            Restricts callers to an action method.
+            Model binder for use with CSLA .NET editable business
+            objects.
             </summary>
         </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type)">
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.#ctor(System.Boolean)">
             <summary>
-            Creates an instance of the type.
+            Creates an instance of the model binder.
             </summary>
-            <param name="action">AuthorizationActions for which the authorization is required.</param>
-            <param name="objectType">CSLA object type for which the action is applied.</param>
+            <param name="CheckRulesOnModelUpdated">Value indicating if business rules will be checked after the model is updated.</param>
         </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.#ctor(Csla.Rules.AuthorizationActions,System.Type,System.String)">
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.BindModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
             <summary>
-            Creates an instance of the type.
+            Binds the model by using the specified controller context and binding context.
             </summary>
-            <param name="action">AuthorizationActions for which the authorization is required.</param>
-            <param name="objectType">CSLA object type for which the action is applied.</param>
-            <param name="message">Error message for resutl.</param>
+            <param name="controllerContext">Controller Context</param>
+            <param name="bindingContext">Binding Context</param>
+            <returns>Bound object</returns>
         </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.AuthorizeCore(System.Web.HttpContextBase)">
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.BindCslaCollection(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
             <summary>
-            Determines whether access to the core framework is authorized.
+            Bind CSLA Collection object using specified controller context and binding context
             </summary>
-            <param name="httpContext">The HTTP context.</param>
-            <returns>True if access is authorized; otherwise, false.</returns>
+            <param name="controllerContext">Controller Context</param>
+            <param name="bindingContext">Binding Context</param>
+            <returns>Bound CSLA collection object</returns>
         </member>
-        <member name="M:Csla.Web.Mvc.HasPermissionAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.CreateModel(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.Type)">
             <summary>
-            Processes HTTP requests that fail authorization and handles AJAX requests
-            appropriately.
+            Creates an instance of the model if the controller implements
+            IModelCreator.
             </summary>
-            <param name="filterContext">The filterContext object contains the controller, HTTP context, 
-            request context, action result, and route data.</param>
+            <param name="controllerContext">Controller context</param>
+            <param name="bindingContext">Binding context</param>
+            <param name="modelType">Type of model object</param>
         </member>
-        <member name="T:Csla.Web.Mvc.Controller">
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.OnModelUpdated(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext)">
             <summary>
-            Provides methods that respond to HTTP requests
-            in an ASP.NET MVC web site.
+            Checks the validation rules for properties
+            after the Model has been updated.
+            </summary>
+            <param name="controllerContext">Controller context</param>
+            <param name="bindingContext">Binding context</param>
+        </member>
+        <member name="M:Csla.Web.Mvc.CslaModelBinder.OnPropertyValidated(System.Web.Mvc.ControllerContext,System.Web.Mvc.ModelBindingContext,System.ComponentModel.PropertyDescriptor,System.Object)">
+            <summary>
+            Prevents IDataErrorInfo validation from
+            operating against editable objects.
+            </summary>
+            <param name="controllerContext">Controller context</param>
+            <param name="bindingContext">Binding context</param>
+            <param name="propertyDescriptor">Property descriptor</param>
+            <param name="value">Value</param>
+        </member>
+        <member name="T:Csla.Web.Mvc.IModelCreator">
+            <summary>
+            ASP.NET MVC model creator.
             </summary>
         </member>
-        <member name="M:Csla.Web.Mvc.Controller.SaveObject``1(``0,System.Boolean)">
+        <member name="M:Csla.Web.Mvc.IModelCreator.CreateModel(System.Type)">
             <summary>
-            Performs a Save() operation on an
-            editable business object, with appropriate
-            validation and exception handling.
+            Creates a model object of the specified
+            type.
             </summary>
-            <typeparam name="T">Type of business object.</typeparam>
-            <param name="item">The business object to insert.</param>
-            <param name="forceUpdate">true to force Save() to be an update.</param>
-            <returns>true the Save() succeeds, false if not.</returns>
+            <param name="modelType">Type of model object to create.</param>
+            <returns></returns>
         </member>
-        <member name="M:Csla.Web.Mvc.Controller.SaveObject``1(``0,System.Action{``0},System.Boolean)">
+        <member name="T:Csla.Web.Mvc.IViewModel">
             <summary>
-            Performs a Save() operation on an
-            editable business object, with appropriate
-            validation and exception handling.
+            Defines a CSLA .NET MVC viewmodel object.
             </summary>
-            <typeparam name="T">Type of business object.</typeparam>
-            <param name="item">The business object to insert.</param>
-            <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
-            <param name="forceUpdate">true to force Save() to be an update.</param>
-            <returns>true the Save() succeeds, false if not.</returns>
         </member>
-        <member name="M:Csla.Web.Mvc.Controller.LoadProperty``1(System.Object,Csla.PropertyInfo{``0},``0)">
+        <member name="P:Csla.Web.Mvc.IViewModel.ModelObject">
             <summary>
-            Loads a property's managed field with the 
-            supplied value calling PropertyHasChanged 
-            if the value does change.
+            Object property for the contained business object
             </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="obj">
-            Object on which to call the method. 
-            </param>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="newValue">
-            The new value for the property.</param>
-            <remarks>
-            No authorization checks occur when this method is called,
-            and no PropertyChanging or PropertyChanged events are raised.
-            Loading values does not cause validation rules to be
-            invoked.
-            </remarks>
+        </member>
+        <member name="T:Csla.Web.Mvc.ViewModelBase`1">
+            <summary>
+            Base class used to create ViewModel objects that
+            contain the Model object and related elements.
+            </summary>
+            <typeparam name="T">Type of the Model object.</typeparam>
+        </member>
+        <member name="M:Csla.Web.Mvc.ViewModelBase`1.Save(System.Web.Mvc.ModelStateDictionary,System.Boolean)">
+            <summary>
+            Saves the current Model object if the object
+            implements Csla.Core.ISavable.
+            </summary>
+            <param name="modelState">Controller's ModelState object.</param>
+            <param name="forceUpdate">if set to <c>true</c> force update.</param>
+            <returns>
+            true if the save succeeds.
+            </returns>
+        </member>
+        <member name="P:Csla.Web.Mvc.ViewModelBase`1.ModelObject">
+            <summary>
+            Gets or sets the Model object.
+            </summary>
         </member>
     </members>
 </doc>

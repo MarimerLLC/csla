@@ -4,6 +4,267 @@
         <name>Csla.Windows</name>
     </assembly>
     <members>
+        <member name="T:Csla.Windows.BindingSourceHelper">
+            <summary>
+            Helper methods for dealing with BindingSource
+            objects and data binding.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceHelper.InitializeBindingSourceTree(System.ComponentModel.IContainer,System.Windows.Forms.BindingSource)">
+            <summary>
+            Sets up BindingSourceNode objects for all
+            BindingSource objects related to the provided
+            root source.
+            </summary>
+            <param name="container">
+            Container for the components.
+            </param>
+            <param name="rootSource">
+            Root BindingSource object.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="T:Csla.Windows.BindingSourceNode">
+            <summary>
+            Maintains a reference to a BindingSource object
+            on the form.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.#ctor(System.Windows.Forms.BindingSource)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="source">
+            BindingSource object to be mananaged.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Bind(System.Object)">
+            <summary>
+            Binds a business object to the BindingSource.
+            </summary>
+            <param name="objectToBind">
+            Business object.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Apply">
+            <summary>
+            Applies changes to the business object.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Cancel(System.Object)">
+            <summary>
+            Cancels changes to the business object.
+            </summary>
+            <param name="businessObject"></param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceNode.Close">
+            <summary>
+            Disconnects from the BindingSource object.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.BindingSourceRefresh">
+            <summary>
+            BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data
+            binding errors that occur in Host.
+            </summary>
+            <remarks>Windows Forms extender control that resolves the
+            data refresh issue with data bound detail controls
+            as discussed in Chapter 5.</remarks>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.#ctor">
+            <summary>
+            Constructor creates a new BindingSourceRefresh component then initialises all the different sub components.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Constructor creates a new BindingSourceRefresh component, adds the component to the container supplied before initialising all the different sub components.
+            </summary>
+            <param name="container">The container the component is to be added to.</param>
+        </member>
+        <member name="F:Csla.Windows.BindingSourceRefresh.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.CanExtend(System.Object)">
+            <summary>
+            CanExtend() returns true if extendee is a binding source.
+            </summary>
+            <param name="extendee">The control to be extended.</param>
+            <returns>True if the control is a binding source, else false.</returns>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.GetReadValuesOnChange(System.Windows.Forms.BindingSource)">
+            <summary>
+            GetReadValuesOnChange() gets the value of the custom ReadValuesOnChange extender property added to extended controls.
+            property added to extended controls.
+            </summary>
+            <param name="source">Control being extended.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.SetReadValuesOnChange(System.Windows.Forms.BindingSource,System.Boolean)">
+            <summary>
+            SetReadValuesOnChange() sets the value of the custom ReadValuesOnChange extender
+            property added to extended controls.
+            </summary>
+            <param name="source">Control being extended.</param>
+            <param name="value">New value of property.</param>
+            <remarks></remarks>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterControlEvents(System.Windows.Forms.ICurrencyManagerProvider,System.Boolean)">
+            <summary>
+            RegisterControlEvents() registers all the relevant events for the container control supplied and also to all child controls
+            in the oontainer control.
+            </summary>
+            <param name="container">The control (including child controls) to have the refresh events registered.</param>
+            <param name="register">True to register the events, false to unregister them.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterBindingEvents(System.Windows.Forms.BindingsCollection,System.Boolean)">
+            <summary>
+            Registers the control events.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="register">if set to <c>true</c> [register].</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterBindingEvent(System.Windows.Forms.Binding,System.Boolean)">
+            <summary>
+            Registers the binding event.
+            </summary>
+            <param name="register">if set to <c>true</c> [register].</param>
+            <param name="binding">The binding.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.Bindings_CollectionChanging(System.Object,System.ComponentModel.CollectionChangeEventArgs)">
+             <summary>
+             Handles the CollectionChanging event of the Bindings control.
+            
+             Remove event hooks for element or entire list depending on CollectionChangeAction.
+             </summary>
+             <param name="sender">The source of the event.</param>
+             <param name="e">The <see cref="T:System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.Bindings_CollectionChanged(System.Object,System.ComponentModel.CollectionChangeEventArgs)">
+            <summary>
+            Handles the CollectionChanged event of the Bindings control.
+               
+            Add event hooks for element or entire list depending on CollectionChangeAction.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.Control_BindingComplete(System.Object,System.Windows.Forms.BindingCompleteEventArgs)">
+            <summary>
+            Control_BindingComplete() is a event driven routine triggered when one of the control's bindings has been completed.
+            Control_BindingComplete() simply validates the result where if the result was a exception then the BindingError
+            event is raised, else if the binding was a successful data source update and we are to re-read the value on changed then
+            the binding value is reread into the control.
+            </summary>
+            <param name="sender">The object that triggered the event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.System#ComponentModel#ISupportInitialize#BeginInit">
+            <summary>
+            BeginInit() is called when the component is starting to be initialised. BeginInit() simply sets the initialisation flag to true.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingSourceRefresh.System#ComponentModel#ISupportInitialize#EndInit">
+            <summary>
+            EndInit() is called when the component has finished being initialised.  EndInt() sets the initialise flag to false then runs
+            through registering all the different events that the component needs to hook into in Host.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.BindingSourceRefresh.BindingError">
+            <summary>
+            BindingError event is raised when a data binding error occurs due to a exception.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BindingSourceRefresh.Host">
+            <summary>
+            Not in use - kept for backward  compatibility
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.BindingErrorEventHandler">
+            <summary>
+            BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
+            </summary>
+            <param name="sender">The object that triggered the event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="T:Csla.Windows.BindingErrorEventArgs">
+            <summary>
+            BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BindingErrorEventArgs.#ctor(System.Windows.Forms.Binding,System.Exception)">
+            <summary>
+            Constructor creates a new BindingErrorEventArgs object instance using the information specified.
+            </summary>
+            <param name="binding">The binding that caused th exception.</param>
+            <param name="exception">The exception that caused the error.</param>
+        </member>
+        <member name="P:Csla.Windows.BindingErrorEventArgs.Exception">
+            <summary>
+            Exception gets the exception that caused the binding error.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BindingErrorEventArgs.Binding">
+            <summary>
+            Binding gets the binding that caused the exception.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.BusyAnimation">
+            <summary>
+            User control that displays busy animation
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.#ctor">
+            <summary>
+            new instance busy animation
+            </summary>
+        </member>
+        <member name="F:Csla.Windows.BusyAnimation.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Csla.Windows.BusyAnimation.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.ProgressBarForeColor">
+            <summary>
+            Set or get foreground color for busy animation's progress bar
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.ProgressBarBackColor">
+            <summary>
+            Set or get background color for busy animation's progress bar 
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.BusyAnimation.IsRunning">
+            <summary>
+            Indicates if animation needs to be shown.  Set to true to start 
+            progress bar animation
+            </summary>
+        </member>
         <member name="T:Csla.Windows.CslaActionCancelEventArgs">
             <summary>
             Event args providing information about
@@ -26,63 +287,23 @@
             Gets the name of the command.
             </summary>
         </member>
-        <member name="T:Csla.Windows.BindingSourceHelper">
+        <member name="T:Csla.Windows.CslaActionEventArgs">
             <summary>
-            Helper methods for dealing with BindingSource
-            objects and data binding.
+            Event args for an action.
             </summary>
         </member>
-        <member name="M:Csla.Windows.BindingSourceHelper.InitializeBindingSourceTree(System.ComponentModel.IContainer,System.Windows.Forms.BindingSource)">
-            <summary>
-            Sets up BindingSourceNode objects for all
-            BindingSource objects related to the provided
-            root source.
-            </summary>
-            <param name="container">
-            Container for the components.
-            </param>
-            <param name="rootSource">
-            Root BindingSource object.
-            </param>
-            <returns></returns>
-        </member>
-        <member name="T:Csla.Windows.ObjectSaveException">
-            <summary>
-            Exception indicating a failure during an object
-            save operation.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor">
+        <member name="M:Csla.Windows.CslaActionEventArgs.#ctor(System.String)">
             <summary>
             Creates an instance of the object.
             </summary>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="message">
-            Exception message text.
+            <param name="commandName">
+            Name of the command.
             </param>
         </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String,System.Exception)">
+        <member name="P:Csla.Windows.CslaActionEventArgs.CommandName">
             <summary>
-            Creates an instance of the object.
+            Gets the name of the command.
             </summary>
-            <param name="message">
-            Exception message text.
-            </param>
-            <param name="innerException">
-            Reference to an inner exception.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.Exception)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="innerException">
-            Reference to an inner exception.
-            </param>
         </member>
         <member name="T:Csla.Windows.CslaActionExtender">
             <summary>
@@ -299,158 +520,71 @@
             Event indicating that the object has been saved.
             </summary>
         </member>
-        <member name="T:Csla.Windows.HostPropertyAttribute">
+        <member name="T:Csla.Windows.CslaFormAction">
             <summary>
-            HostPropertyAttribute is used on components to 
-            indicate the property on the component that is to be used as the 
-            parent container control in conjunction with HostComponentDesigner.
+            The possible form actions.
             </summary>
         </member>
-        <member name="M:Csla.Windows.HostPropertyAttribute.#ctor(System.String)">
+        <member name="F:Csla.Windows.CslaFormAction.None">
             <summary>
-            Constructor creates a new HostPropertyAttribute object instance using the information supplied.
-            </summary>
-            <param name="hostPropertyName">The name of the host property.</param>
-        </member>
-        <member name="P:Csla.Windows.HostPropertyAttribute.HostPropertyName">
-            <summary>
-            HostPropertyName gets the host property name.
+            No action.
             </summary>
         </member>
-        <member name="T:Csla.Windows.BindingSourceNode">
+        <member name="F:Csla.Windows.CslaFormAction.Save">
             <summary>
-            Maintains a reference to a BindingSource object
-            on the form.
+            Perform a save.
             </summary>
         </member>
-        <member name="M:Csla.Windows.BindingSourceNode.#ctor(System.Windows.Forms.BindingSource)">
+        <member name="F:Csla.Windows.CslaFormAction.Cancel">
             <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="source">
-            BindingSource object to be mananaged.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Bind(System.Object)">
-            <summary>
-            Binds a business object to the BindingSource.
-            </summary>
-            <param name="objectToBind">
-            Business object.
-            </param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Apply">
-            <summary>
-            Applies changes to the business object.
+            Perform a cancel.
             </summary>
         </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Cancel(System.Object)">
+        <member name="F:Csla.Windows.CslaFormAction.Close">
             <summary>
-            Cancels changes to the business object.
-            </summary>
-            <param name="businessObject"></param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceNode.Close">
-            <summary>
-            Disconnects from the BindingSource object.
+            Close the form.
             </summary>
         </member>
-        <member name="T:Csla.Windows.ReadWriteAuthorization">
+        <member name="T:Csla.Windows.PostSaveActionType">
             <summary>
-            Windows Forms extender control that automatically
-            enables and disables detail form controls based
-            on the authorization settings from a CSLA .NET 
-            business object.
+            The possible options for posting
+            and saving.
             </summary>
         </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.#ctor(System.ComponentModel.IContainer)">
+        <member name="F:Csla.Windows.PostSaveActionType.None">
+            <summary>
+            No action.
+            </summary>
+        </member>
+        <member name="F:Csla.Windows.PostSaveActionType.AndClose">
+            <summary>
+            Also close the form.
+            </summary>
+        </member>
+        <member name="F:Csla.Windows.PostSaveActionType.AndNew">
+            <summary>
+            Also create a new object.
+            </summary>
+        </member>
+        <member name="T:Csla.Windows.ErrorEncounteredEventArgs">
+            <summary>
+            Event args indicating an error.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.ErrorEncounteredEventArgs.#ctor(System.String,System.Exception)">
             <summary>
             Creates an instance of the object.
             </summary>
-            <param name="container">The container of the control.</param>
+            <param name="commandName">
+            Name of the command.
+            </param>
+            <param name="ex">
+            Reference to the exception.
+            </param>
         </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.CanExtend(System.Object)">
+        <member name="P:Csla.Windows.ErrorEncounteredEventArgs.Ex">
             <summary>
-            Gets a value indicating whether the extender control
-            can extend the specified control.
-            </summary>
-            <param name="extendee">The control to be extended.</param>
-            <remarks>
-            Any control implementing either a ReadOnly property or
-            Enabled property can be extended.
-            </remarks>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.GetApplyAuthorization(System.Windows.Forms.Control)">
-            <summary>
-            Gets the custom ApplyAuthorization extender
-            property added to extended controls.
-            </summary>
-            <param name="source">Control being extended.</param>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.SetApplyAuthorization(System.Windows.Forms.Control,System.Boolean)">
-            <summary>
-            Sets the custom ApplyAuthorization extender
-            property added to extended controls.
-            </summary>
-            <param name="source">Control being extended.</param>
-            <param name="value">New value of property.</param>
-        </member>
-        <member name="M:Csla.Windows.ReadWriteAuthorization.ResetControlAuthorization">
-            <summary>
-            Causes the ReadWriteAuthorization control
-            to apply authorization rules from the business
-            object to all extended controls on the form.
-            </summary>
-            <remarks>
-            Call this method to refresh the display of detail
-            controls on the form any time the authorization
-            rules may have changed. Examples include: after
-            a user logs in or out, and after an object has
-            been updated, inserted, deleted or retrieved
-            from the database.
-            </remarks>
-        </member>
-        <member name="T:Csla.Windows.BusyAnimation">
-            <summary>
-            User control that displays busy animation
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.BusyAnimation.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BusyAnimation.#ctor">
-            <summary>
-            new instance busy animation
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.ProgressBarForeColor">
-            <summary>
-            Set or get foreground color for busy animation's progress bar
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.ProgressBarBackColor">
-            <summary>
-            Set or get background color for busy animation's progress bar 
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BusyAnimation.IsRunning">
-            <summary>
-            Indicates if animation needs to be shown.  Set to true to start 
-            progress bar animation
+            Gets a reference to the exception object.
             </summary>
         </member>
         <member name="T:Csla.Windows.HasBrokenRulesEventArgs">
@@ -526,250 +660,116 @@
             to show broken rules.
             </summary>
         </member>
-        <member name="T:Csla.Windows.ErrorEncounteredEventArgs">
+        <member name="T:Csla.Windows.HostPropertyAttribute">
             <summary>
-            Event args indicating an error.
+            HostPropertyAttribute is used on components to 
+            indicate the property on the component that is to be used as the 
+            parent container control in conjunction with HostComponentDesigner.
             </summary>
         </member>
-        <member name="T:Csla.Windows.CslaActionEventArgs">
+        <member name="M:Csla.Windows.HostPropertyAttribute.#ctor(System.String)">
             <summary>
-            Event args for an action.
+            Constructor creates a new HostPropertyAttribute object instance using the information supplied.
+            </summary>
+            <param name="hostPropertyName">The name of the host property.</param>
+        </member>
+        <member name="P:Csla.Windows.HostPropertyAttribute.HostPropertyName">
+            <summary>
+            HostPropertyName gets the host property name.
             </summary>
         </member>
-        <member name="M:Csla.Windows.CslaActionEventArgs.#ctor(System.String)">
+        <member name="T:Csla.Windows.ObjectSaveException">
+            <summary>
+            Exception indicating a failure during an object
+            save operation.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor">
             <summary>
             Creates an instance of the object.
             </summary>
-            <param name="commandName">
-            Name of the command.
-            </param>
         </member>
-        <member name="P:Csla.Windows.CslaActionEventArgs.CommandName">
-            <summary>
-            Gets the name of the command.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.ErrorEncounteredEventArgs.#ctor(System.String,System.Exception)">
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String)">
             <summary>
             Creates an instance of the object.
             </summary>
-            <param name="commandName">
-            Name of the command.
-            </param>
-            <param name="ex">
-            Reference to the exception.
+            <param name="message">
+            Exception message text.
             </param>
         </member>
-        <member name="P:Csla.Windows.ErrorEncounteredEventArgs.Ex">
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.String,System.Exception)">
             <summary>
-            Gets a reference to the exception object.
+            Creates an instance of the object.
+            </summary>
+            <param name="message">
+            Exception message text.
+            </param>
+            <param name="innerException">
+            Reference to an inner exception.
+            </param>
+        </member>
+        <member name="M:Csla.Windows.ObjectSaveException.#ctor(System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="innerException">
+            Reference to an inner exception.
+            </param>
+        </member>
+        <member name="T:Csla.Windows.ReadWriteAuthorization">
+            <summary>
+            Windows Forms extender control that automatically
+            enables and disables detail form controls based
+            on the authorization settings from a CSLA .NET 
+            business object.
             </summary>
         </member>
-        <member name="T:Csla.Windows.CslaFormAction">
+        <member name="M:Csla.Windows.ReadWriteAuthorization.#ctor(System.ComponentModel.IContainer)">
             <summary>
-            The possible form actions.
+            Creates an instance of the object.
             </summary>
+            <param name="container">The container of the control.</param>
         </member>
-        <member name="F:Csla.Windows.CslaFormAction.None">
+        <member name="M:Csla.Windows.ReadWriteAuthorization.CanExtend(System.Object)">
             <summary>
-            No action.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.CslaFormAction.Save">
-            <summary>
-            Perform a save.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.CslaFormAction.Cancel">
-            <summary>
-            Perform a cancel.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.CslaFormAction.Close">
-            <summary>
-            Close the form.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.PostSaveActionType">
-            <summary>
-            The possible options for posting
-            and saving.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.PostSaveActionType.None">
-            <summary>
-            No action.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.PostSaveActionType.AndClose">
-            <summary>
-            Also close the form.
-            </summary>
-        </member>
-        <member name="F:Csla.Windows.PostSaveActionType.AndNew">
-            <summary>
-            Also create a new object.
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.BindingSourceRefresh">
-            <summary>
-            BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data
-            binding errors that occur in Host.
-            </summary>
-            <remarks>Windows Forms extender control that resolves the
-            data refresh issue with data bound detail controls
-            as discussed in Chapter 5.</remarks>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.#ctor">
-            <summary>
-            Constructor creates a new BindingSourceRefresh component then initialises all the different sub components.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.#ctor(System.ComponentModel.IContainer)">
-            <summary>
-            Constructor creates a new BindingSourceRefresh component, adds the component to the container supplied before initialising all the different sub components.
-            </summary>
-            <param name="container">The container the component is to be added to.</param>
-        </member>
-        <member name="F:Csla.Windows.BindingSourceRefresh.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.CanExtend(System.Object)">
-            <summary>
-            CanExtend() returns true if extendee is a binding source.
+            Gets a value indicating whether the extender control
+            can extend the specified control.
             </summary>
             <param name="extendee">The control to be extended.</param>
-            <returns>True if the control is a binding source, else false.</returns>
+            <remarks>
+            Any control implementing either a ReadOnly property or
+            Enabled property can be extended.
+            </remarks>
         </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.GetReadValuesOnChange(System.Windows.Forms.BindingSource)">
+        <member name="M:Csla.Windows.ReadWriteAuthorization.GetApplyAuthorization(System.Windows.Forms.Control)">
             <summary>
-            GetReadValuesOnChange() gets the value of the custom ReadValuesOnChange extender property added to extended controls.
+            Gets the custom ApplyAuthorization extender
             property added to extended controls.
             </summary>
             <param name="source">Control being extended.</param>
         </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.SetReadValuesOnChange(System.Windows.Forms.BindingSource,System.Boolean)">
+        <member name="M:Csla.Windows.ReadWriteAuthorization.SetApplyAuthorization(System.Windows.Forms.Control,System.Boolean)">
             <summary>
-            SetReadValuesOnChange() sets the value of the custom ReadValuesOnChange extender
+            Sets the custom ApplyAuthorization extender
             property added to extended controls.
             </summary>
             <param name="source">Control being extended.</param>
             <param name="value">New value of property.</param>
-            <remarks></remarks>
         </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterControlEvents(System.Windows.Forms.ICurrencyManagerProvider,System.Boolean)">
+        <member name="M:Csla.Windows.ReadWriteAuthorization.ResetControlAuthorization">
             <summary>
-            RegisterControlEvents() registers all the relevant events for the container control supplied and also to all child controls
-            in the oontainer control.
+            Causes the ReadWriteAuthorization control
+            to apply authorization rules from the business
+            object to all extended controls on the form.
             </summary>
-            <param name="container">The control (including child controls) to have the refresh events registered.</param>
-            <param name="register">True to register the events, false to unregister them.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterBindingEvents(System.Windows.Forms.BindingsCollection,System.Boolean)">
-            <summary>
-            Registers the control events.
-            </summary>
-            <param name="source">The source.</param>
-            <param name="register">if set to <c>true</c> [register].</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.RegisterBindingEvent(System.Windows.Forms.Binding,System.Boolean)">
-            <summary>
-            Registers the binding event.
-            </summary>
-            <param name="register">if set to <c>true</c> [register].</param>
-            <param name="binding">The binding.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.Bindings_CollectionChanging(System.Object,System.ComponentModel.CollectionChangeEventArgs)">
-             <summary>
-             Handles the CollectionChanging event of the Bindings control.
-            
-             Remove event hooks for element or entire list depending on CollectionChangeAction.
-             </summary>
-             <param name="sender">The source of the event.</param>
-             <param name="e">The <see cref="T:System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.Bindings_CollectionChanged(System.Object,System.ComponentModel.CollectionChangeEventArgs)">
-            <summary>
-            Handles the CollectionChanged event of the Bindings control.
-               
-            Add event hooks for element or entire list depending on CollectionChangeAction.
-            </summary>
-            <param name="sender">The source of the event.</param>
-            <param name="e">The <see cref="T:System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.Control_BindingComplete(System.Object,System.Windows.Forms.BindingCompleteEventArgs)">
-            <summary>
-            Control_BindingComplete() is a event driven routine triggered when one of the control's bindings has been completed.
-            Control_BindingComplete() simply validates the result where if the result was a exception then the BindingError
-            event is raised, else if the binding was a successful data source update and we are to re-read the value on changed then
-            the binding value is reread into the control.
-            </summary>
-            <param name="sender">The object that triggered the event.</param>
-            <param name="e">The event arguments.</param>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.System#ComponentModel#ISupportInitialize#BeginInit">
-            <summary>
-            BeginInit() is called when the component is starting to be initialised. BeginInit() simply sets the initialisation flag to true.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingSourceRefresh.System#ComponentModel#ISupportInitialize#EndInit">
-            <summary>
-            EndInit() is called when the component has finished being initialised.  EndInt() sets the initialise flag to false then runs
-            through registering all the different events that the component needs to hook into in Host.
-            </summary>
-        </member>
-        <member name="E:Csla.Windows.BindingSourceRefresh.BindingError">
-            <summary>
-            BindingError event is raised when a data binding error occurs due to a exception.
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BindingSourceRefresh.Host">
-            <summary>
-            Not in use - kept for backward  compatibility
-            </summary>
-        </member>
-        <member name="T:Csla.Windows.BindingErrorEventHandler">
-            <summary>
-            BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
-            </summary>
-            <param name="sender">The object that triggered the event.</param>
-            <param name="e">The event arguments.</param>
-        </member>
-        <member name="T:Csla.Windows.BindingErrorEventArgs">
-            <summary>
-            BindingErrorEventArgs defines the event arguments for reporting a data binding error due to a exception.
-            </summary>
-        </member>
-        <member name="M:Csla.Windows.BindingErrorEventArgs.#ctor(System.Windows.Forms.Binding,System.Exception)">
-            <summary>
-            Constructor creates a new BindingErrorEventArgs object instance using the information specified.
-            </summary>
-            <param name="binding">The binding that caused th exception.</param>
-            <param name="exception">The exception that caused the error.</param>
-        </member>
-        <member name="P:Csla.Windows.BindingErrorEventArgs.Exception">
-            <summary>
-            Exception gets the exception that caused the binding error.
-            </summary>
-        </member>
-        <member name="P:Csla.Windows.BindingErrorEventArgs.Binding">
-            <summary>
-            Binding gets the binding that caused the exception.
-            </summary>
+            <remarks>
+            Call this method to refresh the display of detail
+            controls on the form any time the authorization
+            rules may have changed. Examples include: after
+            a user logs in or out, and after an object has
+            been updated, inserted, deleted or retrieved
+            from the database.
+            </remarks>
         </member>
     </members>
 </doc>

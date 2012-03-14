@@ -14372,6 +14372,17 @@
             is complete.
             </summary>
         </member>
+        <member name="T:Csla.BrowsableAttribute">
+            <summary>
+            Placeholder for missing Browsable attribute from full .NET.
+            </summary>
+        </member>
+        <member name="M:Csla.BrowsableAttribute.#ctor(System.Boolean)">
+            <summary>
+            Creates an instance of the attribute.
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="T:Csla.Reflection.BindingFlags">
             <summary>
             Binding flags.
@@ -14598,6 +14609,13 @@
             Gets a value indicating whether this is an enum.
             </summary>
             <param name="t"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Reflection.TypeExtensions.GetTypeCode(System.Type)">
+            <summary>
+            Gets the TypeCode value for a type.
+            </summary>
+            <param name="t">Type object.</param>
             <returns></returns>
         </member>
         <member name="M:Csla.Reflection.TypeExtensions.GetCustomAttributes(System.Reflection.PropertyInfo,System.Type,System.Boolean)">

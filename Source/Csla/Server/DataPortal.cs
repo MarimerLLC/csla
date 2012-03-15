@@ -340,8 +340,18 @@ namespace Csla.Server
                 AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
 
                 DataPortalResult result;
-
-                var method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
+                DataPortalMethodInfo method;
+                var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
+                if (factoryInfo != null)
+                {
+                    var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+                    string methodName = factoryInfo.DeleteMethodName;
+                    method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
+                }
+                else
+                {
+                    method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
+                }
 
                 IDataPortalServer portal;
                 switch (method.TransactionalType)

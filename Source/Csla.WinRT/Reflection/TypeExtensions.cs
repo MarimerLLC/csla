@@ -212,7 +212,9 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static bool IsSerializable(this Type t)
     {
-      return t.GetTypeInfo().IsSerializable;
+      var tinfo = t.GetTypeInfo();
+      var result = tinfo.GetCustomAttributes(typeof(Csla.Serialization.SerializableAttribute), false);
+      return (result != null && result.Count() > 0);
     }
 
     /// <summary>
@@ -358,6 +360,8 @@ namespace Csla.Reflection
       TypeCode result = TypeCode.Empty;
       if (t.Equals(typeof(bool)))
         result = TypeCode.Boolean;
+      else if (t.Equals(typeof(string)))
+        result = TypeCode.String;
       else if (t.Equals(typeof(byte)))
         result = TypeCode.Byte;
       else if (t.Equals(typeof(char)))

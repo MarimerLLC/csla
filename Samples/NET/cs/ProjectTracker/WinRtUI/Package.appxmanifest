@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+
+  <Identity Name="4bf3cb78-a813-47d6-a7f7-10e31fa94f47"
+            Publisher="CN=Rockford"
+            Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>WinRtUI</DisplayName>
+    <PublisherDisplayName>Rockford</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <Description>WinRtUI</Description>
+  </Properties>
+
+  <Prerequisites>
+    <OSMinVersion>6.2</OSMinVersion>
+    <OSMaxVersionTested>6.2</OSMaxVersionTested>
+  </Prerequisites>
+
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="WinRtUI.App">
+        <VisualElements
+            DisplayName="WinRtUI"
+            Logo="Assets\Logo.png"
+            SmallLogo="Assets\SmallLogo.png"
+            Description="WinRtUI"
+            ForegroundText="light"
+            BackgroundColor="#222222">
+            <DefaultTile ShowName="allLogos" />
+            <SplashScreen Image="Assets\SplashScreen.png" />
+        </VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>

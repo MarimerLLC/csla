@@ -36,29 +36,31 @@ namespace WinRtUI
     /// </summary>
     /// <param name="e">Event data that describes how this page was reached.  The Parameter
     /// property provides the group to be displayed.</param>
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    protected async override void OnNavigatedTo(NavigationEventArgs e)
     {
-      var group = (DataModel.DataGroup)e.Parameter;
+      var group = (ViewModel.DataGroup)e.Parameter;
       this.DefaultViewModel["Group"] = group;
 
       if (group.UniqueId == "Projects")
       {
-        ProjectTracker.Library.ProjectList.GetProjectList((o, a) =>
-          {
-            if (a.Error != null)
-            {
-              //TODO: process error
-              System.Diagnostics.Debug.Assert(false, a.Error.Message);
-            }
-            else
-            {
-              this.DefaultViewModel["Items"] = new DataModel.ItemList(a.Object);
+        ProjectTracker.Library.ProjectList model = null;
+        Exception error = null;
+        try
+        {
+          model = await ProjectTracker.Library.ProjectList.GetProjectListAsync();
+        }
+        catch (Exception ex)
+        {
+          error = ex;
+        }
+        if (error != null)
+          await new Windows.UI.Popups.MessageDialog(error.Message, "Can't fetch project list").ShowAsync();
+        else
+          this.DefaultViewModel["Items"] = new ViewModel.ItemList(model);
 
-              // Select the first item automatically unless logical page navigation is being used
-              // (see the logical page navigation #region below.)
-              if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
-            }
-          });
+        // Select the first item automatically unless logical page navigation is being used
+        // (see the logical page navigation #region below.)
+        if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
       }
     }
 

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -34,17 +36,9 @@ namespace WinRtUI
     /// </summary>
     /// <param name="e">Event data that describes how this page was reached.  The Parameter
     /// property provides the collection of items to be displayed.</param>
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    protected async override void OnNavigatedTo(NavigationEventArgs e)
     {
       this.DefaultViewModel["Items"] = e.Parameter;
-
-      //ProjectTracker.Library.ProjectList.GetProjectList((o, a) =>
-      //  {
-      //    if (a.Error != null)
-      //      System.Diagnostics.Debug.Assert(false, a.Error.Message);
-      //    else
-      //      this.DataContext = a.Object;
-      //  });
     }
 
     /// <summary>

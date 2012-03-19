@@ -50,7 +50,7 @@ namespace WinRtUI
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
       // TODO: Create a data model appropriate for your problem domain to replace the sample data
-      var sampleData = new DataModel.ProjectTrackerDataSource(); //new SampleDataSource();
+      var sampleData = new ViewModel.ProjectTrackerDataSource(); //new SampleDataSource();
 
       if (args.PreviousExecutionState == ApplicationExecutionState.Terminated)
       {

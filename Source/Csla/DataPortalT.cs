@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -92,6 +93,7 @@ namespace Csla
     public Csla.Core.ContextDictionary GlobalContext
     {
       get { return _globalContext; }
+      private set { _globalContext = value; }
     }
 
     #endregion
@@ -218,6 +220,45 @@ namespace Csla
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
       }
     }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to create a new object, which is loaded 
+    /// with default values from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    public async Task<T> CreateAsync(object criteria)
+    {
+      var request = new DataPortalAsyncRequest(criteria, null);
+      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoCreateAsync, request);
+      if (result.Error != null)
+        throw result.Error;
+      GlobalContext = result.GlobalContext;
+      return result.Result;
+    }
+
+    private DataPortalAsyncResult DoCreateAsync(object e)
+    {
+      DataPortalAsyncResult response = null;
+      var request = e as DataPortalAsyncRequest;
+      SetThreadContext(request);
+      T result = default(T);
+      try
+      {
+        object state = request.Argument;
+        if (state is Csla.Server.EmptyCriteria)
+          result = (T)Csla.DataPortal.Create<T>();
+        else
+          result = (T)Csla.DataPortal.Create<T>(state);
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
+      return response;
+    }
+
 
     #endregion
 

@@ -10,6 +10,7 @@ using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
+using System.Threading.Tasks;
 
 namespace Csla
 {

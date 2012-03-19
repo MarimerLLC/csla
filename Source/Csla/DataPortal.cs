@@ -11,6 +11,7 @@ using Csla.Reflection;
 using Csla.Properties;
 using Csla.Server;
 using Csla.Serialization.Mobile;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -605,6 +606,23 @@ namespace Csla
       DataPortal<T> dp = new DataPortal<T>();
       dp.CreateCompleted += callback;
       dp.BeginCreate(criteria, userState);
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    public static async Task<T> CreateAsync<T>(object criteria)
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      var result = await dp.CreateAsync(criteria);
+      return result;
     }
 
     #endregion

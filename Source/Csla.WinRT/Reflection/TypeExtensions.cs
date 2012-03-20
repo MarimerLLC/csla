@@ -404,7 +404,9 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static Attribute[] GetCustomAttributes(this System.Reflection.PropertyInfo pi, Type attributeType, bool inherit)
     {
-      return pi.GetCustomAttributes().Where(r => r.GetType().Equals(attributeType)).ToArray();
+      //attributeType.IsAssignableFrom(pi.CustomAttributes.First().AttributeType)
+      var result = pi.GetCustomAttributes().Where(r => attributeType.IsAssignableFrom(r.GetType())).ToArray();
+      return result;
     }
   }
 

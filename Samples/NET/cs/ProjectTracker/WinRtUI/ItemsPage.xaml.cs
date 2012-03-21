@@ -36,7 +36,7 @@ namespace WinRtUI
     /// </summary>
     /// <param name="e">Event data that describes how this page was reached.  The Parameter
     /// property provides the collection of items to be displayed.</param>
-    protected async override void OnNavigatedTo(NavigationEventArgs e)
+    protected override void OnNavigatedTo(NavigationEventArgs e)
     {
       this.DefaultViewModel["Items"] = e.Parameter;
     }
@@ -51,7 +51,10 @@ namespace WinRtUI
     {
       // Navigate to the appropriate destination page, configuring the new page
       // by passing required information as a navigation parameter
-      this.Frame.Navigate(typeof(SplitPage), e.ClickedItem);
+      if (((ViewModel.DataGroup)e.ClickedItem).UniqueId == "Resources")
+        this.Frame.Navigate(typeof(ResourceList));
+      else
+        this.Frame.Navigate(typeof(SplitPage), e.ClickedItem);
     }
   }
 }

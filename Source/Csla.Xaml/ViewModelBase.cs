@@ -19,6 +19,10 @@ using Csla.Security;
 using Csla.Core;
 using System.Collections;
 using System.Collections.Specialized;
+#if WINRT
+using Windows.UI.Xaml;
+using System.Linq.Expressions;
+#endif
 
 namespace Csla.Xaml
 {
@@ -52,7 +56,11 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+#if WINRT
+        new PropertyMetadata(default(T), (o, e) =>
+#else
         new PropertyMetadata((o, e) =>
+#endif
         {
           var viewmodel = (ViewModelBase<T>)o;
           viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
@@ -610,9 +618,19 @@ namespace Csla.Xaml
 
     private Delegate CreateHandler(Type objectType)
     {
-      var args = typeof(DataPortalResult<>).MakeGenericType(objectType);
       System.Reflection.MethodInfo method = MethodCaller.GetNonPublicMethod(GetType(), "QueryCompleted");
-      Delegate handler = Delegate.CreateDelegate(typeof(EventHandler<>).MakeGenericType(args), this, method);
+      var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
+      var args = typeof(EventHandler<>).MakeGenericType(innerType);
+
+#if WINRT
+      var target = Expression.Constant(this);
+      var p1 = new ParameterExpression[] { Expression.Parameter(typeof(object), "sender"), Expression.Parameter(typeof(EventArgs), "args") };
+      var call = Expression.Call(target, method, p1);
+      var lambda = Expression.Lambda(args, call, "QueryCompleted", p1);
+      var handler = lambda.Compile();
+#else
+      Delegate handler = Delegate.CreateDelegate(args, this, method);
+#endif
       return handler;
     }
 

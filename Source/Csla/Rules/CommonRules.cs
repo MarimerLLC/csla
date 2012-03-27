@@ -375,8 +375,8 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      var value = (T)context.InputPropertyValues[PrimaryProperty];
-      int result = value.CompareTo(Min);
+      var value = (context.InputPropertyValues[PrimaryProperty] != null ? (T)context.InputPropertyValues[PrimaryProperty] : (T)PrimaryProperty.DefaultValue);
+      var result = value.CompareTo(Min);
       if (result <= -1)
       {
         string outValue;
@@ -458,8 +458,8 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      var value = (T)context.InputPropertyValues[PrimaryProperty];
-      int result = value.CompareTo(Max);
+      var value = (context.InputPropertyValues[PrimaryProperty] != null ? (T)context.InputPropertyValues[PrimaryProperty] : (T)PrimaryProperty.DefaultValue);
+      var result = value.CompareTo(Max);
       if (result >= 1)
       {
         string outValue;

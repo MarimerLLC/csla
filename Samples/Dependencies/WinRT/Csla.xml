@@ -2313,6 +2313,26 @@
             Accept object state.
             </summary>
         </member>
+        <member name="M:Csla.Core.BusinessBase.OnErrorsChanged(System.ComponentModel.DataErrorsChangedEventArgs)">
+            <summary>
+            Raises the ErrorsChanged event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.OnPropertyChanged(System.String)">
+            <summary>
+            Call this method to raise the PropertyChanged event
+            for a specific property.
+            </summary>
+            <param name="propertyName">Name of the property that
+            is being changed.</param>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.OnUnknownPropertyChanged">
+            <summary>
+            Call this method to raise the PropertyChanged event
+            for all object properties.
+            </summary>
+        </member>
         <member name="M:Csla.Core.BusinessBase.Csla#Core#ICheckRules#SuppressRuleChecking">
             <summary>
             Sets value indicating no rule methods will be invoked.
@@ -2554,6 +2574,11 @@
             you can set property values on current business object
             without raising PropertyChanged events
             and checking user rights.
+            </summary>
+        </member>
+        <member name="E:Csla.Core.BusinessBase.ErrorsChanged">
+            <summary>
+            Event raised when error information has changed.
             </summary>
         </member>
         <member name="T:Csla.Core.BusinessBase.BypassPropertyChecksObject">
@@ -4008,6 +4033,34 @@
             <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="userState">User state object</param>
         </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(Csla.DataPortal.ProxyModes)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(System.Object)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginFetch``1(System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Retrieves an existing business object.
@@ -4048,6 +4101,20 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginFetch``1(System.EventHandler{Csla.DataPortalResult{``0}},Csla.DataPortal.ProxyModes,System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="userState">User state object.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginFetch``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
             <summary>
             Retrieves an existing business object.
@@ -4064,6 +4131,63 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginFetch``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}},Csla.DataPortal.ProxyModes,System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(Csla.DataPortal.ProxyModes)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Updates a business object.
@@ -4074,6 +4198,22 @@
             <param name="obj">
             Business object to update.
             </param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}})">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="callback">
             Delegate reference to a method that is invoked
             when the async operation is complete.
@@ -4094,6 +4234,46 @@
             when the async operation is complete.
             </param>
             <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.UpdateAsync``1(System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.UpdateAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
         </member>
         <member name="M:Csla.DataPortal.BeginDelete``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
@@ -4126,6 +4306,46 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginDelete``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Deletes an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.DeleteAsync``1(System.Object)">
+            <summary>
+            Deletes a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.DeleteAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Deletes a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginExecute``1(``0,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Updates a business object.
@@ -4134,6 +4354,20 @@
             Type of business object.
             </typeparam>
             <param name="command">Object to execute.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginExecute``1(``0,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}})">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="callback">
             Delegate reference to a method that is invoked
             when the async operation is complete.
@@ -4152,6 +4386,40 @@
             when the async operation is complete.
             </param>
             <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginExecute``1(``0,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.ExecuteAsync``1(``0)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+        </member>
+        <member name="M:Csla.DataPortal.ExecuteAsync``1(``0,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
         </member>
         <member name="M:Csla.DataPortal.FetchChild``1(System.Object[])">
             <summary>

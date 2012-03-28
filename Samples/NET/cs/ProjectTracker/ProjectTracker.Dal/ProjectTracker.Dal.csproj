@@ -47,9 +47,11 @@
     <Compile Include="AssignmentDto.cs" />
     <Compile Include="ConcurrencyException.cs" />
     <Compile Include="DalFactory.cs" />
+    <Compile Include="DashboardDto.cs" />
     <Compile Include="DataNotFoundException.cs" />
     <Compile Include="IAssignmentDal.cs" />
     <Compile Include="IDalManager.cs" />
+    <Compile Include="IDashboardDal.cs" />
     <Compile Include="IProjectDal.cs" />
     <Compile Include="IResourceDal.cs" />
     <Compile Include="IRoleDal.cs" />

@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\Dashboard.cs" />
     <Compile Include="ViewModels\Error.cs" />
     <Compile Include="ViewModels\Login.cs" />
     <Compile Include="ViewModels\MainMenu.cs" />
@@ -83,6 +84,9 @@
     <Compile Include="ViewModels\ViewModelEdit.cs" />
     <Compile Include="ViewModels\ViewModelLocal.cs" />
     <Compile Include="ViewModels\ViewModelLocalEdit.cs" />
+    <Compile Include="Views\Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ErrorDisplay.xaml.cs">
       <DependentUpon>ErrorDisplay.xaml</DependentUpon>
     </Compile>
@@ -140,6 +144,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ErrorDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

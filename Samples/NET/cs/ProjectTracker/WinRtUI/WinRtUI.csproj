@@ -117,6 +117,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\NullToVisibilityConverter.cs" />
     <Compile Include="ResourceList.xaml.cs">
       <DependentUpon>ResourceList.xaml</DependentUpon>
     </Compile>

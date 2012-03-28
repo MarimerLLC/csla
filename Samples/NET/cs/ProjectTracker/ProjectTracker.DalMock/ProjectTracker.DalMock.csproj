@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AssignmentDal.cs" />
     <Compile Include="DalManager.cs" />
+    <Compile Include="DashboardDal.cs" />
     <Compile Include="MockDb.cs" />
     <Compile Include="MockDbTypes\AssignmentData.cs" />
     <Compile Include="MockDbTypes\ProjectData.cs" />

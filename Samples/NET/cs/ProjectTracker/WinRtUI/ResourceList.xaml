@@ -10,7 +10,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-  <UserControl.Resources>
+  <common:LayoutAwarePage.Resources>
+
+    <common:Gt0VisibilityConverter x:Key="Gt0VisibilityConverter"/>
 
     <!-- Collection of items displayed by this page -->
     <CollectionViewSource
@@ -34,7 +36,7 @@
       </Grid>
     </DataTemplate>
 
-  </UserControl.Resources>
+  </common:LayoutAwarePage.Resources>
 
   <!--
         This grid acts as a root panel for the page that defines two rows:
@@ -102,10 +104,30 @@
 
         <Image Grid.Row="1" Margin="0,0,20,0" Width="180" Height="180" Source="{Binding Image}" Stretch="UniformToFill"/>
         <StackPanel x:Name="itemDetailTitlePanel" Grid.Row="1" Grid.Column="1">
-          <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding Title}" Style="{StaticResource SubheaderTextStyle}"/>
-          <TextBlock x:Name="itemSubtitle" Margin="0,0,0,20" Text="{Binding Subtitle}" Style="{StaticResource TitleTextStyle}"/>
+          <TextBlock x:Name="itemTitle" Margin="0,-10,0,0" Text="{Binding Model.Name}" Style="{StaticResource SubheaderTextStyle}"/>
+          <TextBlock x:Name="itemSubtitle" Margin="0,0,0,20" Text="Resource" Style="{StaticResource TitleTextStyle}"/>
         </StackPanel>
-        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0" Text="{Binding Content}" Style="{StaticResource BodyTextStyle}"/>
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="1,20,-1,0" DataContext="{Binding Path=ResourceEditViewModel}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="35"/>
+            <RowDefinition Height="Auto" MinHeight="35"/>
+            <RowDefinition Height="Auto" MinHeight="35"/>
+            <RowDefinition Height="Auto" MinHeight="35"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <TextBlock Grid.Column="0" Grid.Row="0" Text="Id: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=Model.Id}" Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBlock Grid.Column="0" Grid.Row="1" Text="First name: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Model.FirstName,Mode=TwoWay}" Margin="5"/>
+          <TextBlock Grid.Column="0" Grid.Row="2" Text="Last name: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBox Grid.Column="1" Grid.Row="2"  Text="{Binding Path=Model.LastName,Mode=TwoWay}"  Margin="5"/>
+          <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Content="Save" Click="SaveResource"/>
+          </StackPanel>
+        </Grid>
       </Grid>
     </ScrollViewer>
 

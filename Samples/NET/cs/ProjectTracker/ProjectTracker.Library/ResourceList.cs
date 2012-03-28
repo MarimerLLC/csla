@@ -38,7 +38,12 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginFetch<ResourceList>(callback);
     }
-
+#if WINRT
+    public async static System.Threading.Tasks.Task<ResourceList> GetResourceListAsync()
+    {
+      return await DataPortal.FetchAsync<ResourceList>();
+    }
+#endif
 #if !SILVERLIGHT
     public static ResourceList GetResourceList()
     {

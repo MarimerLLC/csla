@@ -24,6 +24,12 @@ namespace ProjectTracker.Library
       private set { LoadProperty(NameProperty, value); }
     }
 
+    public void SetName(ResourceEdit item)
+    {
+      Name = string.Format("{1}, {0}", item.FirstName, item.LastName);
+      OnPropertyChanged(NameProperty);
+    }
+
     public override string ToString()
     {
       return Name;

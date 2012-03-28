@@ -21,7 +21,9 @@ namespace ProjectTracker.Library
       set { SetProperty(TimeStampProperty, value); }
     }
 
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public static readonly PropertyInfo<int> IdProperty = 
+      RegisterProperty<int>(c => c.Id);
+    [Display(Name = "Project id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -82,10 +84,20 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = StartedProperty, AffectedProperties = { EndedProperty } });
-      BusinessRules.AddRule(new StartDateGTEndDate { PrimaryProperty = EndedProperty, AffectedProperties = { StartedProperty } });
+      BusinessRules.AddRule(
+        new StartDateGTEndDate { 
+          PrimaryProperty = StartedProperty, 
+          AffectedProperties = { EndedProperty } });
+      BusinessRules.AddRule(
+        new StartDateGTEndDate { 
+          PrimaryProperty = EndedProperty, 
+          AffectedProperties = { StartedProperty } });
 
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, NameProperty, "ProjectManager"));
+      BusinessRules.AddRule(
+        new Csla.Rules.CommonRules.IsInRole(
+          Csla.Rules.AuthorizationActions.WriteProperty, 
+          NameProperty, 
+          "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, StartedProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, EndedProperty, "ProjectManager"));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, DescriptionProperty, "ProjectManager"));
@@ -95,7 +107,11 @@ namespace ProjectTracker.Library
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static void AddObjectAuthorizationRules()
     {
-      Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, "ProjectManager"));
+      Csla.Rules.BusinessRules.AddRule(
+        typeof(ProjectEdit), 
+        new Csla.Rules.CommonRules.IsInRole(
+          Csla.Rules.AuthorizationActions.CreateObject, 
+          "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "ProjectManager"));
       Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, "ProjectManager", "Administrator"));
     }

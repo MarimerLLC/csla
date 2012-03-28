@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="AssignmentDal.cs" />
     <Compile Include="DalManager.cs" />
+    <Compile Include="DashboardDal.cs" />
     <Compile Include="ProjectDal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PTracker.Designer.cs">

@@ -8,8 +8,28 @@ using Windows.UI.Popups;
 
 namespace WinRtUI.ViewModel
 {
-  public class ViewModel<T> : ViewModelBase<T>
+  public abstract class ViewModel<T> : ViewModelBase<T>
   {
+    public async Task<ViewModel<T>> InitAsync()
+    {
+      try
+      {
+        Model = await DoInitAsync();
+      }
+      catch (Exception ex)
+      {
+        OnError(ex);
+      }
+      return this;
+    }
+
+#pragma warning disable 1998
+    protected async virtual Task<T> DoInitAsync()
+    {
+      throw new NotImplementedException("DoInitAsync");
+    }
+#pragma warning restore 1998
+
     protected async override void OnError(Exception error)
     {
       base.OnError(error);

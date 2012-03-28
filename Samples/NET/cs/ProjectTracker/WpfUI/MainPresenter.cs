@@ -77,6 +77,12 @@ namespace WpfUI
         new ViewModels.User(),
         "User");
 
+      Shell.Instance.ShowView(
+        typeof(Views.Dashboard).AssemblyQualifiedName,
+        "dashboardViewSource",
+        new ViewModels.Dashboard(),
+        "Main");
+
       ShowMenu();
 
       Shell.Instance.ShowStatus(new Status { Text = "Ready" });

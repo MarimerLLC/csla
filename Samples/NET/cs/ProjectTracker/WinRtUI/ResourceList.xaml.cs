@@ -26,6 +26,7 @@ namespace WinRtUI
     public ResourceList()
     {
       this.InitializeComponent();
+      itemDetailGrid.Visibility = Visibility.Collapsed;
     }
 
     /// <summary>
@@ -33,15 +34,16 @@ namespace WinRtUI
     /// </summary>
     /// <param name="e">Event data that describes how this page was reached.  The
     /// Parameter property provides the group to be displayed.</param>
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    protected async override void OnNavigatedTo(NavigationEventArgs e)
     {
       // TODO: Assign a bindable group to this.DefaultViewModel["Group"]
       // TODO: Assign a collection of bindable items to this.DefaultViewModel["Items"]
-      this.DataContext = new ViewModel.ResourceListViewModel();
+      this.DataContext = await new ViewModel.ResourceListViewModel().InitAsync();
+      itemDetailGrid.Visibility = Visibility.Visible;
 
       // Select the first item automatically unless logical page navigation is
       // being used (see the logical page navigation #region below.)
-      //if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
+      if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
     }
 
     #region Logical page navigation
@@ -131,5 +133,12 @@ namespace WinRtUI
     }
 
     #endregion
+
+    private async void SaveResource(object sender, RoutedEventArgs e)
+    {
+      var ctl = (Button)sender;
+      var vm = (ViewModel.ResourceEditViewModel)ctl.DataContext;
+      await vm.SaveAsync();
+    }
   }
 }

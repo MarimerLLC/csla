@@ -12,9 +12,9 @@ namespace WinRtUI.ViewModel
 {
   public class ResourceListViewModel : ViewModel<ProjectTracker.Library.ResourceList>
   {
-    public ResourceListViewModel()
+    protected async override Task<ProjectTracker.Library.ResourceList> DoInitAsync()
     {
-      BeginRefresh(ProjectTracker.Library.ResourceList.GetResourceList);
+      return await ProjectTracker.Library.ResourceList.GetResourceListAsync();
     }
 
     protected override void OnRefreshed()
@@ -56,6 +56,26 @@ namespace WinRtUI.ViewModel
       if (_imageIndex >= _imageList.Count) _imageIndex = 0;
     }
 
+    private ResourceEditViewModel _resourceEdit = null;
+    public ResourceEditViewModel ResourceEditViewModel
+    {
+      get
+      {
+        if (_resourceEdit == null)
+        {
+          new ResourceEditViewModel(Model.Id, this).InitAsync().ContinueWith(t => 
+              ResourceEditViewModel = (ResourceEditViewModel)t.Result, 
+              TaskContinuationOptions.ExecuteSynchronously);
+        }
+        return _resourceEdit;
+      }
+      private set
+      {
+        _resourceEdit = value;
+        OnPropertyChanged("ResourceEditViewModel");
+      }
+    }
+
     private ImageSource _image = null;
     private String _imagePath = null;
     public ImageSource Image
@@ -72,6 +92,36 @@ namespace WinRtUI.ViewModel
         _image = value;
         OnPropertyChanged("Image");
       }
+    }
+
+    internal void UpdateInfo(ProjectTracker.Library.ResourceEdit resourceEdit)
+    {
+      Model.SetName(resourceEdit);
+    }
+  }
+
+  public class ResourceEditViewModel : ViewModel<ProjectTracker.Library.ResourceEdit>
+  {
+    private int _resourceId;
+    private ResourceInfoViewModel _parent;
+
+    public ResourceEditViewModel(int id, ResourceInfoViewModel parent)
+    {
+      _resourceId = id;
+      _parent = parent;
+    }
+
+    protected override async Task<ProjectTracker.Library.ResourceEdit> DoInitAsync()
+    {
+      return await ProjectTracker.Library.ResourceEdit.GetResourceAsync(_resourceId);
+    }
+
+    public new async Task<ProjectTracker.Library.ResourceEdit> SaveAsync()
+    {
+      var result = await base.SaveAsync();
+      _parent.UpdateInfo(Model);
+      await new Windows.UI.Popups.MessageDialog("Save completed", "Resource").ShowAsync();
+      return result;
     }
   }
 }

@@ -139,6 +139,12 @@ namespace ProjectTracker.Library
       DataPortal.BeginDelete<ResourceEdit>(id, callback);
     }
 
+#if WINRT
+    public async static System.Threading.Tasks.Task<ResourceEdit> GetResourceAsync(int id)
+    {
+      return await DataPortal.FetchAsync<ResourceEdit>(id);
+    }
+#endif
 #if SILVERLIGHT
     public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
     {

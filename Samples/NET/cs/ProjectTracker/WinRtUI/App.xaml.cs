@@ -39,6 +39,8 @@ namespace WinRtUI
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:22627/SlPortal.svc";
       Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaReaderType(typeof(Csla.Serialization.Mobile.CslaBinaryReader));
       Csla.Serialization.Mobile.CslaReaderWriterFactory.SetCslaWriterType(typeof(Csla.Serialization.Mobile.CslaBinaryWriter));
+
+      ProjectTracker.Library.Security.PTPrincipal.BeginLogin("manager", "manager");
     }
 
     /// <summary>

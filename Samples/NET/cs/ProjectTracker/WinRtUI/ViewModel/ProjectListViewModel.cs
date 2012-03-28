@@ -10,9 +10,9 @@ namespace WinRtUI.ViewModel
 {
   public class ProjectListViewModel : ViewModel<ProjectTracker.Library.ProjectList>
   {
-    public ProjectListViewModel()
+    protected async override Task<ProjectTracker.Library.ProjectList> DoInitAsync()
     {
-      BeginRefresh(ProjectTracker.Library.ProjectList.GetProjectList);
+      return await ProjectTracker.Library.ProjectList.GetProjectListAsync();
     }
   }
 }

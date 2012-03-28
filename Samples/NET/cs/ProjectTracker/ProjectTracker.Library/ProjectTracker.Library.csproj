@@ -77,6 +77,7 @@
     <Compile Include="Admin\RoleEdit.cs" />
     <Compile Include="Admin\RoleEditList.cs" />
     <Compile Include="Admin\RoleEditManager.cs" />
+    <Compile Include="Dashboard.cs" />
     <Compile Include="ProjectEdit.cs" />
     <Compile Include="ProjectCloser.cs" />
     <Compile Include="ProjectExistsCommand.cs" />

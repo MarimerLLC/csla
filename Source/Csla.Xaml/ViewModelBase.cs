@@ -711,7 +711,61 @@ namespace Csla.Xaml
       return result;
     }
 #endif
+#if WINRT
+    /// <summary>
+    /// Saves the Model, first committing changes
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    protected virtual System.Threading.Tasks.Task<T> SaveAsync()
+    {
+      var tcs = new System.Threading.Tasks.TaskCompletionSource<T>();
+      try
+      {
+        var savable = Model as Csla.Core.ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          ICloneable clonable = Model as ICloneable;
+          if (clonable != null)
+            savable = (Csla.Core.ISavable)clonable.Clone();
 
+          //apply changes
+          var undoable = savable as Csla.Core.ISupportUndo;
+          if (undoable != null)
+            undoable.ApplyEdit();
+        }
+
+        savable.Saved += (o, e) =>
+        {
+          IsBusy = false;
+          if (e.Error == null)
+          {
+            var result = e.NewObject;
+            var model = (T)result;
+            OnSaving(model);
+            Model = model;
+            tcs.SetResult(model);
+          }
+          else
+          {
+            Error = e.Error;
+            tcs.SetException(e.Error);
+          }
+          OnSaved();
+        };
+        Error = null;
+        IsBusy = true;
+        savable.BeginSave();
+      }
+      catch (Exception ex)
+      {
+        IsBusy = false;
+        Error = ex;
+        OnSaved();
+      }
+      return tcs.Task;
+    }
+#endif
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.

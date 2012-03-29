@@ -663,13 +663,6 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(DataProperty, value); }
     }
 
-    private static PropertyInfo<int?> DataNullableProperty = RegisterProperty<int?>(c => c.DataNullable);
-    public int? DataNullable
-    {
-      get { return GetProperty(DataNullableProperty); }
-      set { SetProperty(DataNullableProperty, value); }
-    }
-
     private static PropertyInfo<string> MinCheckProperty = RegisterProperty<string>(c => c.MinCheck, null, "123456");
     public string MinCheck
     {
@@ -689,9 +682,6 @@ namespace Csla.Test.ValidationRules
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataProperty, 15));
-
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataNullableProperty, 5));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataNullableProperty, 15));
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinLength(MinCheckProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(MaxCheckProperty, 5));

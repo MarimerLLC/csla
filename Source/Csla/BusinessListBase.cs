@@ -381,23 +381,23 @@ namespace Csla
       try
       {
         this.RaiseListChangedEvents = false;
-        // set parent reference
-        item.SetParent(this);
-        // set child edit level
-        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-        // reset EditLevelAdded 
-        item.EditLevelAdded = this.EditLevel;
-        // add to list
-        base.SetItem(index, item);
+
+        if (child != null)
+          DeleteChild(child);
       }
       finally
       {
         this.RaiseListChangedEvents = oldRaiseListChangedEvents;
       }
-      if (child != null)
-        DeleteChild(child);
-      if (RaiseListChangedEvents)
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
+
+      // set parent reference
+      item.SetParent(this);
+      // set child edit level
+      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+      // reset EditLevelAdded 
+      item.EditLevelAdded = this.EditLevel;
+      // add to list and raise list changed as appropriate
+      base.SetItem(index, item);
     }
 
     /// <summary>

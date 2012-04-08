@@ -737,8 +737,8 @@ namespace Csla.Core.FieldManager
           IFieldData data = GetOrCreateFieldData(property);
           if (value.Value != null &&
             mode == StateMode.Undo &&
-            typeof(IMobileObject).IsAssignableFrom(property.Type) &&
-            !typeof(IUndoableObject).IsAssignableFrom(property.Type))
+            typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
+            !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
             data.Value = MobileFormatter.Deserialize((byte[])value.Value);
           }

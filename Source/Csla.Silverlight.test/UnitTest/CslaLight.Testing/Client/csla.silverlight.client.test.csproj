@@ -171,6 +171,9 @@
     <Compile Include="..\..\..\..\csla.test\Silverlight\Server\EditableRootTests\MockEditableRoot.cs">
       <Link>EditableRootTests\MockEditableRoot.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\..\Csla.test\Silverlight\Server\EditableRootTests\RootWithNullableProperty.cs">
+      <Link>EditableRootTests\RootWithNullableProperty.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\csla.test\Silverlight\Server\NameValueList\BasicNameValueList.cs">
       <Link>NameValueList\BasicNameValueList.cs</Link>
     </Compile>
@@ -216,6 +219,7 @@
     <Compile Include="EditableChildTests\MockEditableChild.partial.cs" />
     <Compile Include="EditableChildTests\MockList.partial.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
+    <Compile Include="EditableRootTests\RootWithNullableProperty.partial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyTest\ReadOnlyPerson.partial.cs" />
     <Compile Include="Security\SilverlightPrincipal.client.cs" />

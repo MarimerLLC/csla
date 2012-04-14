@@ -14,10 +14,13 @@ namespace WinRtUI.ViewModel
     {
       try
       {
+        IsBusy = true;
         Model = await DoInitAsync();
+        IsBusy = false;
       }
       catch (Exception ex)
       {
+        IsBusy = false;
         OnError(ex);
       }
       return this;

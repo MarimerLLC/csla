@@ -38,12 +38,15 @@ namespace WinRtUI
     {
       // TODO: Assign a bindable group to this.DefaultViewModel["Group"]
       // TODO: Assign a collection of bindable items to this.DefaultViewModel["Items"]
+      this.Progress.IsIndeterminate = true;
       this.DataContext = await new ViewModel.ResourceListViewModel().InitAsync();
+      this.Progress.IsIndeterminate = false;
       itemDetailGrid.Visibility = Visibility.Visible;
 
       // Select the first item automatically unless logical page navigation is
       // being used (see the logical page navigation #region below.)
-      if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
+      if (this.itemsViewSource.View != null)
+        if (!this.UsingLogicalPageNavigation()) this.itemsViewSource.View.MoveCurrentToFirst();
     }
 
     #region Logical page navigation
@@ -138,7 +141,10 @@ namespace WinRtUI
     {
       var ctl = (Button)sender;
       var vm = (ViewModel.ResourceEditViewModel)ctl.DataContext;
+      this.Progress.IsIndeterminate = true;
       await vm.SaveAsync();
+      this.Progress.IsIndeterminate = false;
+      await new Windows.UI.Popups.MessageDialog("Save completed", "Resource").ShowAsync();
     }
   }
 }

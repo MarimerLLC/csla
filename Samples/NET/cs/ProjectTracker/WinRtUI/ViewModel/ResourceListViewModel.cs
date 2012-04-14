@@ -63,8 +63,12 @@ namespace WinRtUI.ViewModel
       {
         if (_resourceEdit == null)
         {
+          IsBusy = true;
           new ResourceEditViewModel(Model.Id, this).InitAsync().ContinueWith(t => 
-              ResourceEditViewModel = (ResourceEditViewModel)t.Result, 
+              {
+                ResourceEditViewModel = (ResourceEditViewModel)t.Result;
+                IsBusy = false;
+              }, 
               TaskContinuationOptions.ExecuteSynchronously);
         }
         return _resourceEdit;
@@ -113,14 +117,14 @@ namespace WinRtUI.ViewModel
 
     protected override async Task<ProjectTracker.Library.ResourceEdit> DoInitAsync()
     {
-      return await ProjectTracker.Library.ResourceEdit.GetResourceAsync(_resourceId);
+      var result = await ProjectTracker.Library.ResourceEdit.GetResourceAsync(_resourceId);
+      return result;
     }
 
     public new async Task<ProjectTracker.Library.ResourceEdit> SaveAsync()
     {
       var result = await base.SaveAsync();
       _parent.UpdateInfo(Model);
-      await new Windows.UI.Popups.MessageDialog("Save completed", "Resource").ShowAsync();
       return result;
     }
   }

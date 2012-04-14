@@ -21,6 +21,19 @@ namespace WinRtUI.Common
     }
   }
 
+  public class NullToBooleanConverter : IValueConverter
+  {
+    public object Convert(object value, Type targetType, object parameter, string language)
+    {
+      return (value == null) ? true : false;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, string language)
+    {
+      throw new NotImplementedException();
+    }
+  }
+
   public class Gt0VisibilityConverter : IValueConverter
   {
     public object Convert(object value, Type targetType, object parameter, string language)

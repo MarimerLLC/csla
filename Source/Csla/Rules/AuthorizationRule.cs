@@ -21,6 +21,8 @@ namespace Csla.Rules
   {
     private Csla.Core.IMemberInfo _element;
     private AuthorizationActions _action;
+    private bool _cacheResult = true;
+    private bool _locked = false;
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -30,7 +32,6 @@ namespace Csla.Rules
     {
       _action = action;
     }
-
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
@@ -41,22 +42,28 @@ namespace Csla.Rules
     {
       _element = element;
     }
-
     /// <summary>
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
     protected abstract void Execute(AuthorizationContext context);
 
+
     /// <summary>
     /// Gets a value indicating whether the results
     /// of this rule can be cached at the business
     /// object level.
     /// </summary>
-    public virtual bool CacheResult
-    {
-      get { return true; }
-    }
+    /// <returns>bool, true by default to allow cache result.</returns>
+    public bool CacheResult
+      {
+          get { return _cacheResult; }
+          protected set
+          {
+            CanWriteProperty("CacheResult");
+            _cacheResult = value;
+          }
+      }
 
     /// <summary>
     /// Gets the name of the element (property/method)
@@ -65,8 +72,12 @@ namespace Csla.Rules
     protected Csla.Core.IMemberInfo Element
     {
       get { return _element; }
+      set
+      {
+        CanWriteProperty("Element");
+        _element = value;
+      }
     }
-
     /// <summary>
     /// Gets the authorization action this rule
     /// will enforce.
@@ -74,12 +85,25 @@ namespace Csla.Rules
     public AuthorizationActions Action
     {
       get { return _action; }
+      set
+      {
+        CanWriteProperty("Action");
+        _action = value;
+      }
+    }
+
+    private void CanWriteProperty(string argument)
+    {
+      if (_locked)
+        new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
     }
 
     #region IAuthorizationRule
 
     void IAuthorizationRule.Execute(AuthorizationContext context)
     {
+      if (!_locked)
+        _locked = true;
       Execute(context);
     }
 

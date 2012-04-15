@@ -110,22 +110,7 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity) 
       where T: Csla.Core.BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
-      {
-        var target = (T) o.Target;
-        using (target.BypassPropertyChecks)
-        {
-          if (!ruleHandler.Invoke(target))
-          {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke()) { Severity = severity });
-          }
-        }
-      });
-#if !WINRT   // must set unique name
-      var methodName = ruleHandler.Method.ToString();
-      rule.AddQueryParameter("s", Convert.ToBase64String(Encoding.Unicode.GetBytes(methodName)));
-#endif
-      businessRules.AddRule(rule);
+      AddRule(businessRules, ApplicationContext.DefaultRuleSet, primaryProperty, ruleHandler, messageDelegate, severity);
     }
 
 
@@ -139,7 +124,7 @@ namespace Csla.Rules
     /// <param name="messageDelegate">The message delegate.</param>
     public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate) where T : BusinessBase
     {
-      AddRule(businessRules,primaryProperty, ruleHandler, messageDelegate, RuleSeverity.Error);
+      AddRule(businessRules, ApplicationContext.DefaultRuleSet, primaryProperty, ruleHandler, messageDelegate, RuleSeverity.Error);
     }
 
     /// <summary>

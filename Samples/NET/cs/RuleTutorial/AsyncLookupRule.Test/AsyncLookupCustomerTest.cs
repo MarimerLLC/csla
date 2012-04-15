@@ -37,13 +37,13 @@ namespace AsyncLookupRule.Test
       }
 
       [TestMethod]
-      public void IsAsync()
+      public void AsyncLookupCustomer_MustBeAsync()
       {
         Assert.IsTrue(Rule.IsAsync);
       }
 
       [TestMethod]
-      public void HasPrimaryProperty()
+      public void AsyncLookupCustomer_MustHavePrimaryProperty()
       {
         Assert.IsNotNull(Rule.PrimaryProperty);
         Assert.AreEqual(Root.CustomerIdProperty, Rule.PrimaryProperty);
@@ -51,13 +51,13 @@ namespace AsyncLookupRule.Test
 
 
       [TestMethod]
-      public void HasInputProperties()
+      public void AsyncLookupCustomer_MustHaveCustomerIdInInputProperties()
       {
         Assert.IsTrue(Rule.InputProperties.Contains(Root.CustomerIdProperty));
       }
 
       [TestMethod]
-      public void HasAffectedProperties()
+      public void AsyncLookupCustomer_MustHaveNameInAffectedProperties()
       {
         Assert.IsTrue(Rule.AffectedProperties.Contains(Root.NameProperty));
       }
@@ -77,7 +77,7 @@ namespace AsyncLookupRule.Test
       }
 
       [TestMethod]
-      public void MustSetOutputPropertiesWithObjectAsTarget()
+      public void AsyncLookupCustomer_ExecuteMustSetNameInOutputWithObjectAsTarget()
       {
         // load values into BO
         LoadProperty(_myBO, Root.CustomerIdProperty, 21164);
@@ -89,7 +89,7 @@ namespace AsyncLookupRule.Test
       }
 
       [TestMethod]
-      public void MustSetOutputPropertiesTestWithExplicitInputProperties()
+      public void AsyncLookupCustomer_ExecuteMustSetNameInOutputWithExplicitInputProperties()
       {
         // run rule with supplied InputProperties 
         ExecuteRule(new Dictionary<IPropertyInfo, object>() {{Root.CustomerIdProperty, 21164}});

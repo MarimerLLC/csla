@@ -18,6 +18,7 @@ namespace RuleTutorial.Testing.Common
   public class AuthorizationRuleTest
   {
     public AuthorizationContext  AuthorizationContext { get; private set; }
+    protected static ObjectAccessor Accessor = new ObjectAccessor();
 
     /// <summary>
     /// Initializes the test.

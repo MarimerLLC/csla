@@ -25,6 +25,7 @@ namespace RuleTutorial.Testing.Common
     protected RuleContext RuleContext { get; private set; }
     private EventWaitHandle _ruleContextCompleteWaitHandle;
     protected IBusinessRule Rule { get; private set; }
+    protected static ObjectAccessor Accessor = new ObjectAccessor();
 
     /// <summary>
     /// Initializes the test.
@@ -50,7 +51,7 @@ namespace RuleTutorial.Testing.Common
       {
         RuleContext.InputPropertyValues.Clear();
         foreach (var item in Rule.InputProperties)
-          RuleContext.InputPropertyValues.Add(item, MethodCaller.CallMethod(RuleContext.Target, "ReadProperty", item));
+          RuleContext.InputPropertyValues.Add(item, Accessor.ReadProperty(RuleContext.Target,  item));
       }
 
       RuleContext.Rule.Execute(RuleContext);

@@ -39,17 +39,7 @@ namespace CustomAuthzRules.Rules
       : base(action, element)
     {
       CountryProperty = countryProperty;
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether CacheResult.
-    /// </summary>
-    public override bool CacheResult
-    {
-      get
-      {
-        return false; 
-      }
+	  CacheResult = false;
     }
 
     /// <summary>

@@ -28,7 +28,7 @@ namespace CustomAuthzRules.Test
       }
 
       [TestMethod]
-      public void MustReturnFalseWhenCountryIsNotUS()
+      public void OnlyForUS_MustReturnFalse_WhenCountryIsNotUS()
       {
         Root.Country = "NO";
         ExecuteRule();
@@ -36,7 +36,7 @@ namespace CustomAuthzRules.Test
       }
 
       [TestMethod]
-      public void MustReturnTrueWhenCountryIsUS()
+      public void OnlyForUS_MustReturnTrue_WhenCountryIsUS()
       {
         Root.Country = "US";
         ExecuteRule();

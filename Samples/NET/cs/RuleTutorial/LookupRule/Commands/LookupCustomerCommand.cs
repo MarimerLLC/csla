@@ -92,7 +92,7 @@ namespace LookupRule.Commands
     protected override void DataPortal_Execute()
     {
       // wait for 500 ms
-      System.Threading.Thread.Sleep(500);
+      System.Threading.Thread.Sleep(50);
 
       // simulate llokup and set customer name  
       this.Name = string.Format("Name ({0})", this.CustomerId);

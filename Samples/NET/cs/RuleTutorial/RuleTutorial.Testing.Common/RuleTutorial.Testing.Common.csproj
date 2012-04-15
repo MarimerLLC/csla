@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AuthorizationRuleTest.cs" />
     <Compile Include="BusinessRuleTest.cs" />
+    <Compile Include="ObjectAccessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

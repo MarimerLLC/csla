@@ -47,7 +47,7 @@ namespace Csla.Xaml
     /// <param name="error">Reference to an exception object if
     /// an error occurred.</param>
     /// <param name="userState">Reference to a userstate object.</param>
-    protected void OnSaved(object newObject, Exception error, object userState)
+    protected virtual void OnSaved(object newObject, Exception error, object userState)
     {
       if (Saved != null)
         Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));

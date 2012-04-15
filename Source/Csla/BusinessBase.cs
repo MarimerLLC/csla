@@ -401,7 +401,7 @@ namespace Csla
     /// <param name="e">Exception that occurred during operation.</param>
     /// <param name="userState">User state object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       MarkIdle();
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);

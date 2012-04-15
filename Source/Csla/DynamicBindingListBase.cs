@@ -205,7 +205,7 @@ namespace Csla
     /// the save.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception e)
+    protected virtual void OnSaved(T newObject, Exception e)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, null);
       if (_nonSerializableSavedHandlers != null)

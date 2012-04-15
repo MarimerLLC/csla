@@ -1114,7 +1114,7 @@ namespace Csla
     /// <param name="e">Execption that occurred during the operation.</param>
     /// <param name="userState">User state object.</param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
       if (_nonSerializableSavedHandlers != null)

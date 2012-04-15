@@ -60,7 +60,7 @@ namespace Csla.Xaml
     /// object that may have resulted from the operation.</param>
     /// <param name="userState">Reference to any user state
     /// object provided by the caller.</param>
-    protected void OnSaved(object newObject, Exception error, object userState)
+    protected virtual void OnSaved(object newObject, Exception error, object userState)
     {
       if (Saved != null)
         Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));

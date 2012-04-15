@@ -1218,7 +1218,7 @@ namespace Csla
     /// <param name="newObject">The new object instance.</param>
     /// <param name="error">Exception object.</param>
     /// <param name="userState">User state object.</param>
-    protected void OnSaved(T newObject, Exception error, object userState)
+    protected virtual void OnSaved(T newObject, Exception error, object userState)
     {
       if (Saved != null)
         Saved(this, new SavedEventArgs(newObject, error, userState));
@@ -1272,7 +1272,7 @@ namespace Csla
     /// <param name="e">Execption that occurred during the operation.</param>
     /// <param name="userState">User state object.</param>
     [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
       if (_savedEvent != null)

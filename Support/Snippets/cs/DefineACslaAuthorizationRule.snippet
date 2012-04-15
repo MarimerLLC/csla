@@ -22,7 +22,8 @@
           </Function>
         </Literal>
       </Declarations>
-      <Code Language="csharp" Kind="type decl"><![CDATA[  public class $ClassName$ : Csla.Rules.AuthorizationRule
+      <Code Language="csharp" Kind="type decl">
+      <![CDATA[  public class $ClassName$ : Csla.Rules.AuthorizationRule
   {
     // TODO: Add additional parameters to your rule to the constructor
     /// <summary>
@@ -33,6 +34,9 @@
     public $ClassName$ (AuthorizationActions action, IMemberInfo element)
       : base(action, element)
     {
+      // TODO: Set CacheResult to false if rule should run and never cache 
+      // CacheResult = false;
+    
       // TODO: Add additional constructor code here 
 
     }
@@ -46,19 +50,12 @@
     public $ClassName$ (AuthorizationActions action)
       : base(action)
     {
+      // TODO: Set CacheResult to false if rule should run and never cache 
+      // CacheResult = false;
+      
       // TODO: Add additional constructor code here 
 
     }
-
-    // TODO: Uncomment this property if rule result is not static. 
-    /// <summary>
-    ///   Notify RuelEngine that the result of this AuthzRule can not be cached. 
-    ///   Default is true so AuthzRules will only run once.
-    /// </summary>
-    //public override bool CacheResult
-    //{
-    //   get { return false; }
-    //}
 
     protected override void Execute(AuthorizationContext context)
     {

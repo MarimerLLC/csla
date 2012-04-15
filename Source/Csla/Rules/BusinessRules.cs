@@ -627,7 +627,7 @@ namespace Csla.Rules
               // update output values
               if (r.OutputPropertyValues != null)
                 foreach (var item in r.OutputPropertyValues)
-                  ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
+                  ((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value);
               // update broken rules list
               BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
 
@@ -663,7 +663,7 @@ namespace Csla.Rules
             // update output values
             if (r.OutputPropertyValues != null)
               foreach (var item in r.OutputPropertyValues)
-                ((IManageProperties)_target).LoadProperty(item.Key, item.Value);
+                ((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value);
             // update broken rules list
             if (r.Results != null)
             {

@@ -1500,6 +1500,11 @@ namespace Csla
       LoadProperty(propertyInfo, newValue);
     }
 
+    void IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadProperty(propertyInfo, newValue);
+    }
+
     List<object> IManageProperties.GetChildren()
     {
       return FieldManager.GetChildren();

@@ -129,6 +129,7 @@ namespace Csla.Test.MethodCaller
     public void CallDynamicIsFasterThanReflectionSuccess()
     {
       int times = 100000;
+
       TimeSpan dynamicTime, reflectionTime;
       var start = DateTime.Now;
       for (int x = 0; x < times; x++)
@@ -147,7 +148,7 @@ namespace Csla.Test.MethodCaller
       end = DateTime.Now;
       reflectionTime = end - start;
 
-      Assert.IsTrue(dynamicTime < reflectionTime);
+      Assert.IsTrue(dynamicTime < reflectionTime, string.Format("Dynamic {0} should be faster than reflection {1}", dynamicTime, reflectionTime));
     }
 #endif
 

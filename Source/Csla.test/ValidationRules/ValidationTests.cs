@@ -10,6 +10,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Csla.Core;
+using Csla.Rules;
 using UnitDriven;
 using Csla.Serialization;
 
@@ -554,6 +556,21 @@ namespace Csla.Test.ValidationRules
 
     }
 
+    [TestMethod]
+    public void ObjectDirtyWhenOutputValueChangesPropertyValue()
+    {
+      var context = GetContext();
+
+      var root = new DirtyAfterOutValueChangesProperty();
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("csla rocks", root.Value1);
+      root.CheckRules();
+      context.Assert.IsTrue(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.Success();
+      context.Complete();
+    }
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     [TestMethod]
     public void NotifyDataErrorInfo()
@@ -778,6 +795,55 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
   }
+
+  [Serializable]
+  public class DirtyAfterOutValueChangesProperty : BusinessBase<DirtyAfterOutValueChangesProperty>
+  {
+    public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
+    public string Value1
+    {
+      get { return GetProperty(Value1Property); }
+      set { SetProperty(Value1Property, value); }
+    }
+
+    public DirtyAfterOutValueChangesProperty()
+    {
+      using (BypassPropertyChecks)
+      {
+        Value1 = "csla rocks";
+      }
+      MarkOld();
+      MarkClean();
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new ToUpper(Value1Property));
+    }
+
+    private class ToUpper : Csla.Rules.BusinessRule
+    {
+      public ToUpper(IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      {
+        InputProperties = new List<IPropertyInfo>(){primaryProperty};
+      }
+
+      protected override void Execute(RuleContext context)
+      {
+        var value = (string) context.InputPropertyValues[PrimaryProperty];
+        context.AddOutValue(PrimaryProperty, value.ToUpperInvariant());
+      }
+    }
+
+
+    public void CheckRules()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
 
   public class CheckLazyInputFieldExists : Csla.Rules.BusinessRule
   {

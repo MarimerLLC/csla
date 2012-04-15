@@ -2452,6 +2452,51 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value and mark field as dirty if value is modified.
+    /// </summary> 
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected void LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
+          else
+            oldValue = (P)fieldData.Value;
+        }
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
+      }
+    }
+
     private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
     {
       var valuesDiffer = false;
@@ -2524,6 +2569,40 @@ namespace Csla.Core
         }
       }
     }
+
+    /// <summary>
+    /// Loads a property's managed field with the 
+    /// supplied value.
+    /// </summary>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// Loading values does not cause validation rules to be
+    /// invoked.
+    /// </remarks>
+    protected virtual void LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    {
+
+      // private field 
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+      {
+        LoadProperty(propertyInfo, newValue);
+        return;
+      }
+
+
+      var t = this.GetType();
+      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+      var method = t.GetMethods(flags).Where(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod).FirstOrDefault();
+      var gm = method.MakeGenericMethod(propertyInfo.Type);
+      var p = new object[] { propertyInfo, newValue };
+      gm.Invoke(this, p);
+    }
+
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -3137,6 +3216,11 @@ namespace Csla.Core
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       LoadProperty(propertyInfo, newValue);
+    }
+
+    void IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    {
+      LoadPropertyMarkDirty(propertyInfo, newValue);
     }
 
     List<object> IManageProperties.GetChildren()

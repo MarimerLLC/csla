@@ -571,6 +571,21 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+    [TestMethod]
+    public void ObjectNotDirtyWhenOutputValueDoNotChangePropertyValue()
+    {
+      var context = GetContext();
+
+      var root = new DirtyAfterOutValueChangesProperty("CSLA ROCKS");
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
+      root.CheckRules();
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.Success();
+      context.Complete();
+    }
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     [TestMethod]
     public void NotifyDataErrorInfo()
@@ -806,11 +821,14 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Value1Property, value); }
     }
 
-    public DirtyAfterOutValueChangesProperty()
+    public DirtyAfterOutValueChangesProperty() : this("csla rocks")
+    { }
+
+    public DirtyAfterOutValueChangesProperty(string value)
     {
       using (BypassPropertyChecks)
       {
-        Value1 = "csla rocks";
+        Value1 = value;
       }
       MarkOld();
       MarkClean();

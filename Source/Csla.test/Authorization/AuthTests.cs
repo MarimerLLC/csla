@@ -506,9 +506,10 @@ namespace Csla.Test.Authorization
   {
     public RootList()
     {
-      RaiseListChangedEvents = false;
-      Add(Csla.DataPortal.CreateChild<ChildItem>());
-      RaiseListChangedEvents = true;
+      using (SuppressListChangedEvents)
+      {
+        Add(Csla.DataPortal.CreateChild<ChildItem>());
+      }
     }
   }
 

@@ -19,4 +19,18 @@ namespace Csla
     {
     }
   }
+
+  /// <summary>
+  /// Placeholder for missing Category attribute from full .NET.
+  /// </summary>
+  public class CategoryAttribute : Attribute
+  {
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="value"></param>
+    public CategoryAttribute(string value)
+    {
+    }
+  }
 }

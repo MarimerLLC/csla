@@ -337,7 +337,7 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static bool IsGenericType(this Type t)
     {
-      return t.GetTypeInfo().IsPrimitive;
+      return t.GetTypeInfo().IsGenericType;
     }
 
     /// <summary>

@@ -24,16 +24,13 @@ namespace AsyncLookupRule.Test
   public class AsyncLookupCustomerTest 
   {
     [TestClass()]
-    public class TheCtor : BusinessRuleTest
+    public class TheCtor
     {
-      private Root _myBO;
-
+      private IBusinessRule Rule;
       [TestInitialize]
       public void InitTests()
       {
-        _myBO = new Root();
-        var rule = new AsyncLookupCustomer(Root.CustomerIdProperty, Root.NameProperty);
-        InitializeTest(rule, _myBO);
+        Rule = new AsyncLookupCustomer(RootFake.CustomerIdProperty, RootFake.NameProperty);
       }
 
       [TestMethod]
@@ -46,60 +43,63 @@ namespace AsyncLookupRule.Test
       public void AsyncLookupCustomer_MustHavePrimaryProperty()
       {
         Assert.IsNotNull(Rule.PrimaryProperty);
-        Assert.AreEqual(Root.CustomerIdProperty, Rule.PrimaryProperty);
+        Assert.AreEqual(RootFake.CustomerIdProperty, Rule.PrimaryProperty);
       }
 
 
       [TestMethod]
       public void AsyncLookupCustomer_MustHaveCustomerIdInInputProperties()
       {
-        Assert.IsTrue(Rule.InputProperties.Contains(Root.CustomerIdProperty));
+        Assert.IsTrue(Rule.InputProperties.Contains(RootFake.CustomerIdProperty));
       }
 
       [TestMethod]
       public void AsyncLookupCustomer_MustHaveNameInAffectedProperties()
       {
-        Assert.IsTrue(Rule.AffectedProperties.Contains(Root.NameProperty));
+        Assert.IsTrue(Rule.AffectedProperties.Contains(RootFake.NameProperty));
       }
     }
 
     [TestClass()]
     public class TheExecuteMethod : BusinessRuleTest
     {
-      private Root _myBO;
+      [TestInitialize]
+      public void InitTests()
+      {
+        var rule = new AsyncLookupCustomer(RootFake.CustomerIdProperty, RootFake.NameProperty);
+        InitializeTest(rule, null);
+      }
+
+      [TestMethod]
+      public void AsyncLookupCustomer_ExecuteMustSetNameInOutput()
+      {
+        // run rule with supplied InputProperties 
+        ExecuteRule(new Dictionary<IPropertyInfo, object>() {{RootFake.CustomerIdProperty, 21164}});
+
+        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(RootFake.NameProperty));
+      }
+    }
+
+    [TestClass()]
+    public class TheExecuteMethodAlt : BusinessRuleTest
+    {
+      private RootFake _myBO;
 
       [TestInitialize]
       public void InitTests()
       {
-        _myBO = new Root();
-        var rule = new AsyncLookupCustomer(Root.CustomerIdProperty, Root.NameProperty);
+        _myBO = new RootFake();
+        var rule = new AsyncLookupCustomer(RootFake.CustomerIdProperty, RootFake.NameProperty);
         InitializeTest(rule, _myBO);
       }
 
       [TestMethod]
-      public void AsyncLookupCustomer_ExecuteMustSetNameInOutputWithObjectAsTarget()
+      public void AsyncLookupCustomer_ExecuteMustSetNameInOutputAlt()
       {
         // load values into BO
-        LoadProperty(_myBO, Root.CustomerIdProperty, 21164);
-
+        LoadProperty(_myBO, RootFake.CustomerIdProperty, 21164);
         ExecuteRule(); // will add values into InputPropertyValues in RuleContext
-
-        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
-        //Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
-      }
-
-      [TestMethod]
-      public void AsyncLookupCustomer_ExecuteMustSetNameInOutputWithExplicitInputProperties()
-      {
-        // run rule with supplied InputProperties 
-        ExecuteRule(new Dictionary<IPropertyInfo, object>() {{Root.CustomerIdProperty, 21164}});
-
-        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(Root.NameProperty));
-        //Assert.AreEqual("Name (21164)", RuleContext.OutputPropertyValues[Root.NameProperty]);
-
-        // in the samme manner I  could also test for
-        //Assert.IsTrue(
-        //    RuleContext.Results.Any(p => p.PrimaryProperty == Root.NameProperty && p.Severity == RuleSeverity.Error));
+        Assert.IsTrue(RuleContext.OutputPropertyValues.ContainsKey(RootFake.NameProperty));
       }
     }
   }

@@ -14,6 +14,7 @@ namespace CompareFieldsRules.Rules
     {
       InputProperties = new List<IPropertyInfo>() {primaryProperty};
       InputProperties.AddRange(additionalProperties);
+      this.RuleUri.AddQueryParameter("any", string.Join(",", additionalProperties.Select(p => p.Name).ToArray()));
     }
 
     protected override string GetMessage()

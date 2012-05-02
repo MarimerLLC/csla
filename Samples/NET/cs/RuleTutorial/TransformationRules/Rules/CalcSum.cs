@@ -45,7 +45,7 @@ namespace TransformationRules.Rules
     {
       InputProperties = new List<IPropertyInfo>();
       InputProperties.AddRange(inputProperties);
-
+      this.RuleUri.AddQueryParameter("input", string.Join(",", inputProperties.Select(p => p.Name).ToArray()));
       CanRunOnServer = false;
     }
 

@@ -16,10 +16,9 @@
         </Literal>
         <Literal>
           <ID>IdProperty</ID>
-          <ToolTip>Replace with the Id property info name.</ToolTip>
+          <ToolTip>Replace with the Id property name.</ToolTip>
           <Default>IdProperty</Default>
         </Literal>
-	
         <Literal>
           <ID>IdType</ID>
           <ToolTip>Replace with the Id variable type.</ToolTip>
@@ -27,9 +26,8 @@
         </Literal>
       </Declarations>
       <Code Language="CSharp">
-  <![CDATA[#region Data Access
-
-private void DataPortal_Fetch(SingleCriteria<$ObjectType$, $IdType$> criteria)
+  <![CDATA[
+private void DataPortal_Fetch($IdType$ id)
 {
   // TODO: load values into object
 }
@@ -46,15 +44,14 @@ protected override void DataPortal_Update()
 
 protected override void DataPortal_DeleteSelf()
 {
-  DataPortal_Delete(new SingleCriteria<$ObjectType$, $IdType$>(ReadProperty<$IdType$>($IdProperty$)));
+  DataPortal_Delete(ReadProperty($IdProperty$Property));
 }
 
-private void DataPortal_Delete(SingleCriteria<$ObjectType$, $IdType$> criteria)
+private void DataPortal_Delete($IdType$ id)
 {
   // TODO: delete object's data
 }
-
-#endregion]]></Code>
+    ]]></Code>
     </Snippet>
   </CodeSnippet>
 </CodeSnippets>

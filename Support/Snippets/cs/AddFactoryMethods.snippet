@@ -38,6 +38,17 @@ public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResu
   DataPortal.BeginFetch<$ClassName$>($IdName$, callback);
 }
 
+#if NETFX_CORE
+public static async Task<$ClassName$> New$ClassName$()
+{
+  return await DataPortal.CreateAsync<$ClassName$>();
+}
+
+public static async Task<$ClassName$> Get$ClassName$($IdType$ $IdName$)
+{
+  return await DataPortal.FetchAsync<$ClassName$>($IdName$);
+}
+#else
 #if !SILVERLIGHT
 public static $ClassName$ New$ClassName$()
 {
@@ -54,6 +65,7 @@ public static void Delete$ClassName$($IdType$ $IdName$)
   DataPortal.Delete<$ClassName$>($IdName$);
 }
 
+#endif
 #endif]]></Code>
     </Snippet>
   </CodeSnippet>

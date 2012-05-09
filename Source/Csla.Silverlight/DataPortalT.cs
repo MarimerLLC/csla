@@ -10,7 +10,9 @@ using System.ServiceModel;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
+#if !WINDOWS_PHONE
 using System.Threading.Tasks;
+#endif
 
 namespace Csla
 {

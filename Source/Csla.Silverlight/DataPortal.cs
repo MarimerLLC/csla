@@ -8,7 +8,9 @@
 using System;
 using Csla.Serialization.Mobile;
 using Csla.DataPortalClient;
+#if !WINDOWS_PHONE
 using System.Threading.Tasks;
+#endif
 
 namespace Csla
 {
@@ -224,6 +226,8 @@ namespace Csla
       dp.BeginCreate(criteria, userState);
     }
 
+    #if !WINDOWS_PHONE
+
     /// <summary>
     /// Creates and initializes a business object.
     /// </summary>
@@ -299,6 +303,7 @@ namespace Csla
       }, proxyMode);
       return tcs.Task;
     }
+#endif
 
     #endregion
 
@@ -419,6 +424,7 @@ namespace Csla
       dp.BeginFetch(criteria, userState);
     }
 
+#if !WINDOWS_PHONE
     /// <summary>
     /// Retrieves an existing business object.
     /// </summary>
@@ -506,6 +512,7 @@ namespace Csla
       }, proxyMode);
       return tcs.Task;
     }
+#endif
 
     #endregion
 
@@ -593,6 +600,7 @@ namespace Csla
       dp.BeginUpdate(obj, userState);
     }
 
+#if !WINDOWS_PHONE
     /// <summary>
     /// Updates a business object.
     /// </summary>
@@ -639,6 +647,7 @@ namespace Csla
       }, proxyMode);
       return tcs.Task;
     }
+#endif
 
     #endregion
 
@@ -706,6 +715,7 @@ namespace Csla
       dp.BeginDelete(criteria, userState);
     }
 
+#if !WINDOWS_PHONE
     /// <summary>
     /// Deletes a business object.
     /// </summary>
@@ -752,6 +762,7 @@ namespace Csla
       }, proxyMode);
       return tcs.Task;
     }
+#endif
 
     #endregion
 
@@ -831,6 +842,7 @@ namespace Csla
       dp.BeginExecute(command, userState);
     }
 
+#if !WINDOWS_PHONE
     /// <summary>
     /// Updates a business object.
     /// </summary>
@@ -873,6 +885,7 @@ namespace Csla
       }, proxyMode);
       return tcs.Task;
     }
+#endif
 
     #endregion
 

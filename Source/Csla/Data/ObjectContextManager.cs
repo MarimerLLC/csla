@@ -8,10 +8,7 @@
 #if !MONO
 using System;
 using System.Configuration;
-
-
 using System.Data.Objects;
-
 using Csla.Properties;
 
 namespace Csla.Data

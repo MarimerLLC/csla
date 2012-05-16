@@ -45,6 +45,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -99,12 +103,15 @@
     <Compile Include="AppContext\TestContext.cs" />
     <Compile Include="AppDomainTests\AppDomainTests.cs" />
     <Compile Include="Authorization\AuthTests.cs" />
+    <Compile Include="Authorization\PermissionsRoot.cs" />
     <Compile Include="Authorization\PermissionsRoot2.cs" />
     <Compile Include="Authorization\PerTypeAuthClasses.cs" />
     <Compile Include="Authorization\PerTypeAuthorization.cs" />
     <Compile Include="Authorization\ReadonlyAuthorizationTests.cs" />
     <Compile Include="Authorization\ReadOnlyPerson.cs" />
     <Compile Include="Authorization\RootException.cs" />
+    <Compile Include="Authorization\TestIdentity.cs" />
+    <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />
@@ -242,9 +249,6 @@
     <Compile Include="PropertyInfo\PropertyInfoTests.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
-    <Compile Include="Authorization\PermissionsRoot.cs" />
-    <Compile Include="Authorization\TestIdentity.cs" />
-    <Compile Include="Authorization\TestPrincipal.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />
     <Compile Include="Serialization\BinaryReaderWriterTestClass.cs" />
     <Compile Include="Serialization\DCRoot.cs" />
@@ -359,6 +363,7 @@
       <LastGenOutput>TestLinqToSqlContext.designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\Csla.Test.Data.DataPortalTestDatabaseEntities.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -429,6 +434,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Csla.Data.EF4\Csla.Data.EF4.csproj">
+      <Project>{68a43187-0ee5-4b4c-a053-abf5123b5aad}</Project>
+      <Name>Csla.Data.EF4</Name>
+    </ProjectReference>
     <ProjectReference Include="..\csla\csla.csproj">
       <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
       <Name>Csla</Name>

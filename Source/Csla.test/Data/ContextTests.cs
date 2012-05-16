@@ -5,11 +5,15 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+
+using System;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using Csla.Data;
 using System.Configuration;
+using Csla.Data.EF4;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,6 +35,25 @@ namespace Csla.Test.Data
 
     private const string ConnectionWithMissingDB = "DataPortalTestDatabaseConnectionString_with_invalid_DB_value";
     private const string EntityConnectionWithMissingDB = "DataPortalTestDatabaseEntities_with_invalid_DB_value";
+
+    [ClassInitialize]
+    public static void InitDbContextDatabase(TestContext context)
+    {
+       using (var dbContextManager = DbContextManager<DataPortalDbContext>.GetManager())
+       {
+         dbContextManager.DbContext.Database.CreateIfNotExists();
+         dbContextManager.DbContext.Database.Initialize(true);
+
+         dbContextManager.DbContext.Table2.Add(new Csla.Data.EF4.Table2()
+                                                 {
+                                                   FirstName = "Rocky",
+                                                   Id = 1,
+                                                   LastName = "Lhotka",
+                                                   SmallColumns = "Test"
+                                                 });
+         dbContextManager.DbContext.SaveChanges();
+       }
+    }
 
     #region Invalid connection strings
     [TestMethod]
@@ -59,6 +82,7 @@ namespace Csla.Test.Data
       {
       }
     }
+
 #endif
 
     [TestMethod]
@@ -94,6 +118,27 @@ namespace Csla.Test.Data
         //Throws EntityException
         var table = (from p in objectContextManager.ObjectContext.Table2
                      select p).ToList();
+      }
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(EntityException))]
+    public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_DbContextDataContext()
+    {
+      var conn = ConfigurationManager.ConnectionStrings[EntityConnectionWithMissingDB].ConnectionString;
+      using (var context = new DataPortalTestDatabaseEntities(conn))
+      {
+        using (
+          var dbContextManager = DbContextManager<DataPortalDbContext>.GetManager(context))
+        {
+          Assert.IsNotNull(dbContextManager);
+
+          // Make sure the context is set in DbContext
+          Assert.AreSame(context, 	((IObjectContextAdapter)dbContextManager.DbContext).ObjectContext);
+          //Throws EntityException
+          var table = (from p in context.Table2
+                       select p).ToList();
+        }
       }
     }
 #endif
@@ -137,6 +182,18 @@ namespace Csla.Test.Data
                     select p;
 
         Assert.IsTrue(query.ToList().Count > 0, "Data in table is missing");
+      }
+    }
+
+    [TestMethod]
+    public void Table2_retreived_through_DbContextDataContext_has_records()
+    {
+      using (var dbContextManager = DbContextManager<DataPortalDbContext>.GetManager())
+      {
+        Assert.IsNotNull(dbContextManager);
+ 
+        var query = dbContextManager.DbContext.Table2;
+        Assert.IsTrue(query.Any(), "Data in table is missing");
       }
     }
 #endif

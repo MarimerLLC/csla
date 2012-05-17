@@ -191,11 +191,23 @@ namespace Csla.Xaml
       {
         var control = (FrameworkElement)sourceBinding.DataItem;
         var path = sourceBinding.ParentBinding.Path.Path;
-        
-        var fi = control.GetType().GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
-        DependencyProperty mappedDP = (DependencyProperty)fi.GetValue(control.GetType());
 
-        return control.GetBindingExpression(mappedDP);
+        var type = control.GetType();
+        FieldInfo fi = null;
+        while (type != null)
+        {
+          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
+
+          if (fi != null)
+          {
+            DependencyProperty mappedDP = (DependencyProperty)fi.GetValue(control.GetType());
+            return control.GetBindingExpression(mappedDP);
+          }
+          else
+            type = type.BaseType;
+        }
+
+        return null;
       }
 
       return sourceBinding;
@@ -218,6 +230,8 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void SetSource(object dataItem)
     {
+      bool isDataLoaded = true;
+
       SetBindingValues(GetBindingExpression(PropertyProperty));
       var newSource = GetRealSource(dataItem, BindingPath);
 
@@ -243,22 +257,28 @@ namespace Csla.Xaml
           if (b.Path != null
               && !string.IsNullOrEmpty(b.Path.Path)
               && b.Path.Path != BindingPath.Substring(BindingPath.LastIndexOf('.') + 1))
+          {
             SetBinding(MyDataContextProperty, b);
+            isDataLoaded = false;
+          }
         }
       }
 
       if (BindingPath.IndexOf('.') > 0)
         BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
-      
-      if (!ReferenceEquals(Source, newSource))
+
+      if (isDataLoaded)
       {
-        var old = Source;
-        Source = newSource;        
+        if (!ReferenceEquals(Source, newSource))
+        {
+          var old = Source;
+          Source = newSource;
 
-        HandleSourceEvents(old, Source);        
+          HandleSourceEvents(old, Source);
+        }
+
+        UpdateState();
       }
-
-      UpdateState();
     }
 
     /// <summary>

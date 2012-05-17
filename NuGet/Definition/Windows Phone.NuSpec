@@ -15,6 +15,9 @@ Supports the creation of Windows Phone 7 (WP7) "Mango" applications.
 
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
+    <summary>
+Supports the creation of Windows Phone 7 (WP7) "Mango" applications.
+    </summary>
     <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.3.10.0]" />
@@ -37,7 +40,12 @@ CSLA .NET is an application development framework that reduces the cost of build
     <!-- > None -->
     <!-- Windows Phone 7 Client -->
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.pdb*" target="lib\sl4-wp71" />
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.pdb*" target="lib\sl4-wp71" />
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl4-wp71" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Xaml.Wp\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml\**\*.cs" target="src" />
   </files>
 </package>

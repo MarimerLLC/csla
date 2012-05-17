@@ -15,6 +15,9 @@ Supports the creation of Windows Forms applications.
 
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
+    <summary>
+Supports the creation of Windows Forms applications.
+    </summary>
     <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.3.10.0]" />
@@ -23,11 +26,15 @@ CSLA .NET is an application development framework that reduces the cost of build
   <files>
     <!-- .NET 4.0 Client -->
     <file src="..\..\Bin\Release\Client\**\Csla.Windows.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.Windows.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\Client\**\Csla.Windows.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.Windows.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\Client\**\Csla.Windows.xml*" target="lib\net40" />
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->
     <!-- > None -->
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Windows\**\*.cs" target="src" />
   </files>
 </package>

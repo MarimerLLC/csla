@@ -15,6 +15,9 @@ Supports the creation of ASP.NET MVC applications.
 
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
+    <summary>
+Supports the creation of ASP.NET MVC applications.
+    </summary>
     <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.3.10.0]" />
@@ -23,11 +26,15 @@ CSLA .NET is an application development framework that reduces the cost of build
   <files>
     <!-- .NET 4.0 Server -->
     <file src="..\..\Bin\Release\Server\**\Csla.Web.Mvc.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Web.Mvc.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\Server\**\Csla.Web.Mvc.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Server\**\Csla.Web.Mvc.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\Server\**\Csla.Web.Mvc.xml*" target="lib\net40" />
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->
     <!-- > None -->
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Web.Mvc\**\*.cs" target="src" />
   </files>
 </package>

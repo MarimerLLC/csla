@@ -99,7 +99,14 @@ namespace Csla.Core.FieldManager
     private static List<IPropertyInfo> GetConsolidatedList(Type type)
     {
       List<IPropertyInfo> result = null;
-      if (!_consolidatedLists.TryGetValue(type, out result))
+      var found = false;
+      try
+      {
+        found = _consolidatedLists.TryGetValue(type, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_consolidatedLists)
         {

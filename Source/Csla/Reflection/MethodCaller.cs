@@ -62,7 +62,14 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));
       DynamicMethodHandle mh = null;
-      if (!_methodCache.TryGetValue(key, out mh))
+      var found = false;
+      try
+      {
+        found = _methodCache.TryGetValue(key, out mh);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_methodCache)
         {
@@ -114,7 +121,14 @@ namespace Csla.Reflection
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType)
     {
       DynamicCtorDelegate result = null;
-      if (!_ctorCache.TryGetValue(objectType, out result))
+      var found = false;
+      try
+      {
+        found = _ctorCache.TryGetValue(objectType, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_ctorCache)
         {

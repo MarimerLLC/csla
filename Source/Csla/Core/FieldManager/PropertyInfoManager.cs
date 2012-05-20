@@ -55,7 +55,14 @@ namespace Csla.Core.FieldManager
     {
       var cache = PropertyInfoCache;
       PropertyInfoList list = null;
-      if (!(cache.TryGetValue(objectType, out list)))
+      var found = false;
+      try
+      {
+        found = cache.TryGetValue(objectType, out list);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (cache)
         {

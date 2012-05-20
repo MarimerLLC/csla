@@ -37,7 +37,14 @@ namespace Csla.Rules
 
       BusinessRuleManager result = null;
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
-      if (!_perTypeRules.TryGetValue(key, out result))
+      var found = false;
+      try
+      {
+        found = _perTypeRules.TryGetValue(key, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_perTypeRules)
         {

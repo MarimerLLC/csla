@@ -31,7 +31,7 @@ namespace Csla.Web.Mvc
     protected virtual bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
     {
       return SaveObject(item, 
-        (i) => UpdateModel(i),
+        null,
         forceUpdate);
     }
 

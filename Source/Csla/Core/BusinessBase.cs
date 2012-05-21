@@ -3599,7 +3599,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets the broken rules for this object
     /// </summary>
-    BrokenRulesCollection ICheckRules.GetBrokenRules()
+    public BrokenRulesCollection GetBrokenRules()
     {
       return BrokenRulesCollection;
     }

@@ -335,6 +335,17 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is not Windows
+    /// </summary>
+    /// <param name="name">meta property name that has cchanged.</param>
+    protected virtual void MetaPropertyHasChanged(string name)
+    {
+      if (ApplicationContext.PropertyChangedMode != ApplicationContext.PropertyChangedModes.Windows)
+        OnPropertyChanged(name);
+    }
+
+
+    /// <summary>
     /// Checks the object rules and notifies UI of properties that may have changed. 
     /// </summary>
     protected virtual void CheckObjectRules()
@@ -3578,11 +3589,19 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Invokes all rules for the business type.
+    /// Invokes all rules for the business object.
     /// </summary>
     void ICheckRules.CheckRules()
     {
       BusinessRules.CheckRules();
+    }
+
+    /// <summary>
+    /// Gets the broken rules for this object
+    /// </summary>
+    BrokenRulesCollection ICheckRules.GetBrokenRules()
+    {
+      return BrokenRulesCollection;
     }
 
     #endregion

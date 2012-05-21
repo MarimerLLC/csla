@@ -173,6 +173,7 @@
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
+    <Compile Include="Data\DbContextManager.cs" />
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
     <Compile Include="LazySingleton.cs" />

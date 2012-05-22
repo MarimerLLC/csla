@@ -12,13 +12,24 @@ using System.Text;
 
 namespace Csla.Core.FieldManager
 {
-  internal class PropertyInfoList : List<IPropertyInfo>
+  /// <summary>
+  /// List of IPropertyInfo objects for a business object type.
+  /// </summary>
+  public class PropertyInfoList : List<IPropertyInfo>
   {
-    public bool IsLocked { get; set; }
+    internal bool IsLocked { get; set; }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public PropertyInfoList()
     { }
 
+    /// <summary>
+    /// Creates an instance of the object that
+    /// contains the items in 'list'.
+    /// </summary>
+    /// <param name="list">Source list.</param>
     public PropertyInfoList(IList<IPropertyInfo> list)
       : base(list)
     { }

@@ -26,7 +26,7 @@ namespace Csla
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class BusinessBase<T> : BusinessBase, ISavable
+  public class BusinessBase<T> : BusinessBase, ISavable, IBusinessBase
     where T : BusinessBase<T>
   {
     #region Object ID Value

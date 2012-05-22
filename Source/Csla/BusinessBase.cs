@@ -33,7 +33,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable()]
   public abstract class BusinessBase<T> :
-    Core.BusinessBase, Core.ISavable where T : BusinessBase<T>
+    Core.BusinessBase, Core.ISavable, IBusinessBase where T : BusinessBase<T>
   {
 
     #region Object ID Value

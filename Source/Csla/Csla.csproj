@@ -176,6 +176,8 @@
     <Compile Include="Data\DbContextManager.cs" />
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
+    <Compile Include="IBusinessBase.cs" />
+    <Compile Include="IDataPortal.cs" />
     <Compile Include="LazySingleton.cs" />
     <Compile Include="MethodInfo.cs" />
     <Compile Include="Core\MobileBindingList.cs" />

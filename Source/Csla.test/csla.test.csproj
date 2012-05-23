@@ -104,6 +104,7 @@
     <Compile Include="AppContext\AppContextThread.cs" />
     <Compile Include="AppContext\ExceptionRoot.cs" />
     <Compile Include="AppContext\SimpleRoot.cs" />
+    <Compile Include="AppContext\TestContext.cs" />
     <Compile Include="AppDomainTests\AppDomainTests.cs" />
     <Compile Include="Authorization\AuthTests.cs" />
     <Compile Include="Authorization\PermissionsRoot.cs" />

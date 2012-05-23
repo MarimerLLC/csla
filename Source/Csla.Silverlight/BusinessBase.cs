@@ -329,6 +329,50 @@ namespace Csla
       this.BeginSave(forceUpdate, handler, null);
     }
 
+#if WINRT
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    public async System.Threading.Tasks.Task<T> SaveAsync()
+    {
+      T result;
+      if (this.IsChild)
+        throw new InvalidOperationException(Resources.NoSaveChildException);
+      if (EditLevel > 0)
+        throw new InvalidOperationException(Resources.NoSaveEditingException);
+      if (!IsValid && !IsDeleted)
+        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
+      if (IsBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+      if (IsDirty)
+        result = await DataPortal.UpdateAsync<T>(this);
+      else
+        result = (T)this;
+      OnSaved(result, null, null);
+      return result;
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    public async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
+    {
+      if (forceUpdate && IsNew)
+      {
+        // mark the object as old - which makes it
+        // not dirty
+        MarkOld();
+        // now mark the object as dirty so it can save
+        MarkDirty(true);
+      }
+      return await this.SaveAsync();
+    }
+#endif
+
     #endregion
 
     #region  Register Properties

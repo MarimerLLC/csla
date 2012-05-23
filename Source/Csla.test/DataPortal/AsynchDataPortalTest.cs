@@ -9,6 +9,7 @@
 using Csla.DataPortalClient;
 #else
 using Csla.Test.Basic;
+using System.Threading.Tasks;
 #endif
 
 #if !SILVERLIGHT
@@ -160,6 +161,48 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
+#if !SILVERLIGHT
+    [TestMethod]
+    public async void CreateAsync_NoCriteria()
+    {
+      var result = await Csla.DataPortal.CreateAsync<Single>();
+      Assert.IsNotNull(result);
+      Assert.AreEqual(0, result.Id);
+    }
+
+    [TestMethod]
+    public async void CreateAsync_WithCriteria()
+    {
+      var result = await Csla.DataPortal.CreateAsync<Single2>(123);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(123, result.Id);
+    }
+
+
+    [TestMethod]
+    public void CreateAsync_WithException()
+    {
+      var lck = new AutoResetEvent(false);
+      new Action(async () => 
+      {
+        try
+        {
+          var result = await Csla.DataPortal.CreateAsync<Single2>(9999);
+          Assert.Fail("Expected exception not thrown");
+        }
+        catch (Exception ex)
+        {
+          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+        }
+        finally
+        {
+          lck.Set();
+        }
+      }).Invoke();
+      lck.WaitOne();
+    }
+#endif
+
     #endregion
 
     #region Fetch
@@ -236,6 +279,48 @@ namespace Csla.Test.DataPortal
         userState);
       context.Complete();
     }
+
+#if !SILVERLIGHT
+    [TestMethod]
+    public async void FetchAsync_NoCriteria()
+    {
+      var result = await Csla.DataPortal.FetchAsync<Single2>();
+      Assert.IsNotNull(result);
+      Assert.AreEqual(0, result.Id);
+    }
+
+    [TestMethod]
+    public async void FetchAsync_WithCriteria()
+    {
+      var result = await Csla.DataPortal.FetchAsync<Single2>(123);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(123, result.Id);
+    }
+
+
+    [TestMethod]
+    public void FetchAsync_WithException()
+    {
+      var lck = new AutoResetEvent(false);
+      new Action(async () =>
+      {
+        try
+        {
+          var result = await Csla.DataPortal.FetchAsync<Single2>(9999);
+          Assert.Fail("Expected exception not thrown");
+        }
+        catch (Exception ex)
+        {
+          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+        }
+        finally
+        {
+          lck.Set();
+        }
+      }).Invoke();
+      lck.WaitOne();
+    }
+#endif
 
     #endregion
 
@@ -483,6 +568,49 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
+#if !SILVERLIGHT
+    [TestMethod]
+    public async void SaveAsync()
+    {
+      var result = await Csla.DataPortal.CreateAsync<Single2>();
+      Assert.IsNotNull(result);
+      Assert.AreEqual(0, result.Id);
+      Assert.IsTrue(result.IsNew);
+      Assert.IsTrue(result.IsDirty);
+      result = await result.SaveAsync();
+      Assert.IsFalse(result.IsNew);
+      Assert.IsFalse(result.IsDirty);
+    }
+
+    [TestMethod]
+    public async void SaveAsyncWithException()
+    {
+      var result = await Csla.DataPortal.CreateAsync<Single2>(555);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(555, result.Id);
+      Assert.IsTrue(result.IsNew);
+      Assert.IsTrue(result.IsDirty);
+      var lck = new AutoResetEvent(false);
+      new Action(async () =>
+      {
+        try
+        {
+          result = await result.SaveAsync();
+          Assert.Fail("Expected exception not thrown");
+        }
+        catch (Exception ex)
+        {
+          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+        }
+        finally
+        {
+          lck.Set();
+        }
+      }).Invoke();
+      lck.WaitOne();
+    }
+#endif
+
     #endregion
 
     #region Delete
@@ -513,6 +641,38 @@ namespace Csla.Test.DataPortal
                                });
       context.Complete();
     }
+
+#if !SILVERLIGHT
+    [TestMethod]
+    public async void DeleteAsync()
+    {
+      var result = await Csla.DataPortal.DeleteAsync<Single2>(123);
+      Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public void DeleteAsync_WithException()
+    {
+      var lck = new AutoResetEvent(false);
+      new Action(async () =>
+      {
+        try
+        {
+          var result = await Csla.DataPortal.DeleteAsync<Single2>(555);
+          Assert.Fail("Expected exception not thrown");
+        }
+        catch (Exception ex)
+        {
+          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+        }
+        finally
+        {
+          lck.Set();
+        }
+      }).Invoke();
+      lck.WaitOne();
+    }
+#endif
 
     #endregion
 
@@ -552,6 +712,40 @@ namespace Csla.Test.DataPortal
 
 #endif
 
+#if !SILVERLIGHT
+    [TestMethod]
+    public async void ExecuteAsync()
+    {
+      var result = await Csla.DataPortal.ExecuteAsync<SingleCommand>(
+        new SingleCommand { Value = 123 });
+      Assert.IsNotNull(result);
+      Assert.AreEqual(124, result.Value);
+    }
+
+    [TestMethod]
+    public void ExecuteAsyncWithException()
+    {
+      var lck = new AutoResetEvent(false);
+      new Action(async () =>
+      {
+        try
+        {
+          var result = await Csla.DataPortal.ExecuteAsync<SingleCommand>(
+            new SingleCommand { Value = 555 });
+          Assert.Fail("Expected exception not thrown");
+        }
+        catch (Exception ex)
+        {
+          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+        }
+        finally
+        {
+          lck.Set();
+        }
+      }).Invoke();
+      lck.WaitOne();
+    }
+#endif
     #endregion
 
 

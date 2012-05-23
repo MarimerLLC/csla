@@ -80,7 +80,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     public Single()
-    { /* Require use of factory methods */ }
+    { }
 
     #endregion
 
@@ -213,5 +213,84 @@ namespace Csla.Test.DataPortalTest
 
 
     #endregion
+  }
+
+  [Serializable]
+  public class Single2 : BusinessBase<Single2>
+  {
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+#if !SILVERLIGHT
+    private void DataPortal_Create(int id)
+    {
+      if (id == 9999)
+        throw new Exception("bad value");
+      Id = id;
+      base.DataPortal_Create();
+    }
+
+    private void DataPortal_Fetch()
+    {
+      DataPortal_Fetch(0);
+    }
+
+    private void DataPortal_Fetch(int id)
+    {
+      if (id == 9999)
+        throw new Exception("bad value");
+      Id = id;
+      base.DataPortal_Create();
+    }
+
+    protected override void DataPortal_Insert()
+    {
+      if (Id == 555)
+        throw new Exception("bad value");
+    }
+
+    protected override void DataPortal_Update()
+    {
+      if (Id == 555)
+        throw new Exception("bad value");
+    }
+
+    protected override void DataPortal_DeleteSelf()
+    {
+      if (Id == 555)
+        throw new Exception("bad value");
+    }
+
+    private void DataPortal_Delete(int id)
+    {
+      if (Id == 555)
+        throw new Exception("bad value");
+      Id = id;
+    }
+#endif
+  }
+
+  [Serializable]
+  public class SingleCommand : CommandBase<SingleCommand>
+  {
+    public static readonly PropertyInfo<int> ValueProperty = RegisterProperty<int>(c => c.Value);
+    public int Value
+    {
+      get { return ReadProperty(ValueProperty); }
+      set { LoadProperty(ValueProperty, value); }
+    }
+
+#if !SILVERLIGHT
+    protected override void DataPortal_Execute()
+    {
+      if (Value == 555)
+        throw new Exception("bad value");
+      Value += 1;
+    }
+#endif
   }
 }

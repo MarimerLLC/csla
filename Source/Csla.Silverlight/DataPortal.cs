@@ -226,24 +226,16 @@ namespace Csla
       dp.BeginCreate(criteria, userState);
     }
 
-    #if !WINDOWS_PHONE
+#if !SILVERLIGHT || WINRT
 
     /// <summary>
     /// Creates and initializes a business object.
     /// </summary>
     /// <typeparam name="T">Type of business object.</typeparam>
-    public static Task<T> CreateAsync<T>()
+    public static async Task<T> CreateAsync<T>()
       where T : IMobileObject
     {
-      var tcs = new TaskCompletionSource<T>();
-      BeginCreate<T>((o, e) =>
-      {
-        if (e.Error != null)
-          tcs.SetException(e.Error);
-        else
-          tcs.SetResult(e.Object);
-      });
-      return tcs.Task;
+      return await CreateAsync<T>(ProxyModes.Auto);
     }
 
     /// <summary>
@@ -251,18 +243,11 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of business object.</typeparam>
     /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
-    public static Task<T> CreateAsync<T>(ProxyModes proxyMode)
+    public static async Task<T> CreateAsync<T>(ProxyModes proxyMode)
       where T : IMobileObject
     {
-      var tcs = new TaskCompletionSource<T>();
-      BeginCreate<T>((o, e) =>
-      {
-        if (e.Error != null)
-          tcs.SetException(e.Error);
-        else
-          tcs.SetResult(e.Object);
-      }, proxyMode);
-      return tcs.Task;
+      var dp = new DataPortal<T>(proxyMode);
+      return await dp.CreateAsync();
     }
 
     /// <summary>
@@ -270,18 +255,10 @@ namespace Csla
     /// </summary>
     /// <typeparam name="T">Type of business object.</typeparam>
     /// <param name="criteria">Criteria object passed to DataPortal_Create().</param>
-    public static Task<T> CreateAsync<T>(object criteria)
+    public static async Task<T> CreateAsync<T>(object criteria)
       where T : IMobileObject
     {
-      var tcs = new TaskCompletionSource<T>();
-      BeginCreate<T>(criteria, (o, e) =>
-      {
-        if (e.Error != null)
-          tcs.SetException(e.Error);
-        else
-          tcs.SetResult(e.Object);
-      });
-      return tcs.Task;
+      return await CreateAsync<T>(criteria, ProxyModes.Auto);
     }
 
     /// <summary>
@@ -290,19 +267,13 @@ namespace Csla
     /// <typeparam name="T">Type of business object.</typeparam>
     /// <param name="criteria">Criteria object passed to DataPortal_Create().</param>
     /// <param name="proxyMode">The proxy mode, Local or Auto.</param>
-    public static Task<T> CreateAsync<T>(object criteria, ProxyModes proxyMode)
+    public static async Task<T> CreateAsync<T>(object criteria, ProxyModes proxyMode)
       where T : IMobileObject
     {
-      var tcs = new TaskCompletionSource<T>();
-      BeginCreate<T>(criteria, (o, e) =>
-      {
-        if (e.Error != null)
-          tcs.SetException(e.Error);
-        else
-          tcs.SetResult(e.Object);
-      }, proxyMode);
-      return tcs.Task;
+      var dp = new DataPortal<T>(proxyMode);
+      return await dp.CreateAsync(criteria);
     }
+
 #endif
 
     #endregion

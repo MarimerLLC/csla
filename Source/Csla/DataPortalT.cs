@@ -306,7 +306,7 @@ namespace Csla
           _globalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
-            obj = (T)result.Result;
+            obj = result.Result;
           OnCreateCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
@@ -323,9 +323,9 @@ namespace Csla
       {
         object state = request.Argument;
         if (state is Csla.Server.EmptyCriteria)
-          result = (T)Csla.DataPortal.Create<T>();
+          result = Csla.DataPortal.Create<T>();
         else
-          result = (T)Csla.DataPortal.Create<T>(state);
+          result = Csla.DataPortal.Create<T>(state);
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
       }
       catch (Exception ex)
@@ -339,14 +339,24 @@ namespace Csla
     /// by the UI to create a new object, which is loaded 
     /// with default values from the database.
     /// </summary>
+    public async Task<T> CreateAsync()
+    {
+      return await CreateAsync(EmptyCriteria);
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to create a new object, which is loaded 
+    /// with default values from the database.
+    /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task<T> CreateAsync(object criteria)
     {
       var request = new DataPortalAsyncRequest(criteria, null);
       var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoCreateAsync, request);
+      GlobalContext = result.GlobalContext;
       if (result.Error != null)
         throw result.Error;
-      GlobalContext = result.GlobalContext;
       return result.Result;
     }
 
@@ -360,9 +370,9 @@ namespace Csla
       {
         object state = request.Argument;
         if (state is Csla.Server.EmptyCriteria)
-          result = (T)Csla.DataPortal.Create<T>();
+          result = Csla.DataPortal.Create<T>();
         else
-          result = (T)Csla.DataPortal.Create<T>(state);
+          result = Csla.DataPortal.Create<T>(state);
         response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
       }
       catch (Exception ex)
@@ -371,7 +381,6 @@ namespace Csla
       }
       return response;
     }
-
 
     #endregion
 
@@ -470,7 +479,7 @@ namespace Csla
           _globalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
-            obj = (T)result.Result;
+            obj = result.Result;
           OnFetchCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
@@ -487,15 +496,63 @@ namespace Csla
       {
         object state = request.Argument;
         if (state is Csla.Server.EmptyCriteria)
-          result = (T)Csla.DataPortal.Fetch<T>();
+          result = Csla.DataPortal.Fetch<T>();
         else
-          result = (T)Csla.DataPortal.Fetch<T>(state);
+          result = Csla.DataPortal.Fetch<T>(state);
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
       }
       catch (Exception ex)
       {
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
       }
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to retrieve an existing object, which is loaded 
+    /// with values from the database.
+    /// </summary>
+    public async Task<T> FetchAsync()
+    {
+      return await FetchAsync(EmptyCriteria);
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to retrieve an existing object, which is loaded 
+    /// with values from the database.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    public async Task<T> FetchAsync(object criteria)
+    {
+      var request = new DataPortalAsyncRequest(criteria, null);
+      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoFetchAsync, request);
+      if (result.Error != null)
+        throw result.Error;
+      GlobalContext = result.GlobalContext;
+      return result.Result;
+    }
+
+    private DataPortalAsyncResult DoFetchAsync(object e)
+    {
+      DataPortalAsyncResult response = null;
+      var request = e as DataPortalAsyncRequest;
+      SetThreadContext(request);
+      T result = default(T);
+      try
+      {
+        object state = request.Argument;
+        if (state is Csla.Server.EmptyCriteria)
+          result = Csla.DataPortal.Fetch<T>();
+        else
+          result = Csla.DataPortal.Fetch<T>(state);
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
+      return response;
     }
 
     #endregion
@@ -583,7 +640,7 @@ namespace Csla
           _globalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
-            obj = (T)result.Result;
+            obj = result.Result;
           OnUpdateCompleted(new DataPortalResult<T>(obj, result.Error, result.UserState));
           return;
         }
@@ -599,13 +656,46 @@ namespace Csla
       try
       {
         object state = request.Argument;
-        result = (T)Csla.DataPortal.Update<T>((T)state);
+        result = Csla.DataPortal.Update<T>((T)state);
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
       }
       catch (Exception ex)
       {
         e.Result = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
       }
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to update an object.
+    /// </summary>
+    /// <param name="obj">Object to update.</param>
+    public async Task<T> UpdateAsync(object obj)
+    {
+      var request = new DataPortalAsyncRequest(obj, null);
+      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoUpdateAsync, request);
+      if (result.Error != null)
+        throw result.Error;
+      GlobalContext = result.GlobalContext;
+      return result.Result;
+    }
+
+    private DataPortalAsyncResult DoUpdateAsync(object e)
+    {
+      DataPortalAsyncResult response = null;
+      var request = e as DataPortalAsyncRequest;
+      SetThreadContext(request);
+      T result = default(T);
+      try
+      {
+        result = Csla.DataPortal.Update<T>((T)request.Argument);
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
+      return response;
     }
 
     #endregion
@@ -714,6 +804,38 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to delete an object.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    public async Task<T> DeleteAsync(object criteria)
+    {
+      var request = new DataPortalAsyncRequest(criteria, null);
+      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoDeleteAsync, request);
+      if (result.Error != null)
+        throw result.Error;
+      GlobalContext = result.GlobalContext;
+      return result.Result;
+    }
+
+    private DataPortalAsyncResult DoDeleteAsync(object e)
+    {
+      DataPortalAsyncResult response = null;
+      var request = e as DataPortalAsyncRequest;
+      SetThreadContext(request);
+      try
+      {
+        Csla.DataPortal.Delete<T>(request.Argument);
+        response = new DataPortalAsyncResult(default(T), Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        response = new DataPortalAsyncResult(default(T), Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
+      return response;
+    }
+
     #endregion
 
     #region Execute
@@ -790,6 +912,39 @@ namespace Csla
     {
       if (ExecuteCompleted != null)
         ExecuteCompleted(this, e);
+    }
+
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to execute a command object.
+    /// </summary>
+    /// <param name="command">Command object to execute.</param>
+    public async Task<T> ExecuteAsync(object command)
+    {
+      var request = new DataPortalAsyncRequest(command, null);
+      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoExecuteAsync, request);
+      if (result.Error != null)
+        throw result.Error;
+      GlobalContext = result.GlobalContext;
+      return result.Result;
+    }
+
+    private DataPortalAsyncResult DoExecuteAsync(object e)
+    {
+      DataPortalAsyncResult response = null;
+      var request = e as DataPortalAsyncRequest;
+      SetThreadContext(request);
+      T result = default(T);
+      try
+      {
+        result = Csla.DataPortal.Execute<T>((T)request.Argument);
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+      }
+      catch (Exception ex)
+      {
+        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+      }
+      return response;
     }
 
     #endregion

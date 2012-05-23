@@ -615,14 +615,26 @@ namespace Csla
     /// <typeparam name="T">
     /// Type of business object to create.
     /// </typeparam>
+    public static async Task<T> CreateAsync<T>()
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      return await dp.CreateAsync();
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to create.
+    /// </typeparam>
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
     public static async Task<T> CreateAsync<T>(object criteria)
     {
       DataPortal<T> dp = new DataPortal<T>();
-      var result = await dp.CreateAsync(criteria);
-      return result;
+      return await dp.CreateAsync(criteria);
     }
 
     #endregion
@@ -711,6 +723,37 @@ namespace Csla
       dp.BeginFetch(criteria, userState);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// fetch a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to fetch.
+    /// </typeparam>
+    public static async Task<T> FetchAsync<T>()
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>();
+      return await dp.FetchAsync();
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// fetch a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to fetch.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to fetch.
+    /// </param>
+    public static async Task<T> FetchAsync<T>(object criteria)
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>();
+      return await dp.FetchAsync(criteria);
+    }
+
     #endregion
 
     #region Begin Update
@@ -758,6 +801,23 @@ namespace Csla
       DataPortal<T> dp = new DataPortal<T>();
       dp.UpdateCompleted += callback;
       dp.BeginUpdate(obj, userState);
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// update a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to update.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    public static async Task<T> UpdateAsync<T>(object obj)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>();
+      return await dp.UpdateAsync(obj);
     }
 
     #endregion
@@ -809,6 +869,23 @@ namespace Csla
       dp.BeginDelete(criteria, userState);
     }
 
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// delete a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to delete.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria describing the object to delete.
+    /// </param>
+    public static async Task<T> DeleteAsync<T>(object criteria)
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>();
+      return await dp.DeleteAsync(criteria);
+    }
+
     #endregion
 
     #region Begin Execute
@@ -828,7 +905,8 @@ namespace Csla
     /// asynchronous callback when the operation
     /// is complete.
     /// </param>
-    public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback) where T : IMobileObject
+    public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback) 
+      where T : IMobileObject
     {
       BeginExecute<T>(obj, callback, null);
     }
@@ -849,11 +927,29 @@ namespace Csla
     /// is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState) where T : IMobileObject
+    public static void BeginExecute<T>(T obj, EventHandler<DataPortalResult<T>> callback, object userState) 
+      where T : IMobileObject
     {
       var dp = new DataPortal<T>();
       dp.ExecuteCompleted += callback;
       dp.BeginExecute(obj, userState);
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// execute a command object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of object to execute.
+    /// </typeparam>
+    /// <param name="command">
+    /// Reference to the object to execute.
+    /// </param>
+    public static async Task<T> ExecuteAsync<T>(T command) 
+      where T : IMobileObject
+    {
+      var dp = new DataPortal<T>();
+      return await dp.ExecuteAsync(command);
     }
 
     #endregion

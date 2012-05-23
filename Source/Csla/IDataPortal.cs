@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if !SILVERLIGHT || WINRT
+using System.Threading.Tasks;
+#endif
 
 namespace Csla
 {
@@ -11,6 +14,52 @@ namespace Csla
   /// <typeparam name="T"></typeparam>
   public interface IDataPortal<T>
   {
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    Task<T> CreateAsync();
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    Task<T> CreateAsync(object criteria);
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    Task<T> FetchAsync();
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    Task<T> FetchAsync(object criteria);
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to update an object.
+    /// </summary>
+    /// <param name="obj">Object to update.</param>
+    Task<T> UpdateAsync(object obj);
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to execute a command object.
+    /// </summary>
+    /// <param name="command">Command object to execute.</param>
+    Task<T> ExecuteAsync(object command);
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to delete an object.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    Task<T> DeleteAsync(object criteria);
+#endif
 #if !SILVERLIGHT && !WINRT
     /// <summary>
     /// Called by a factory method in a business class to create 

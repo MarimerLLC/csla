@@ -48,6 +48,7 @@ namespace Csla
 
     #endregion
 
+    private Csla.DataPortal.ProxyModes _proxyMode;
     private DataPortalClient.IDataPortalProxy<T> _proxy;
 
     /// <summary>
@@ -69,6 +70,7 @@ namespace Csla
     /// </param>
     public DataPortal(DataPortal.ProxyModes proxyMode)
     {
+      _proxyMode = proxyMode;
       _proxy = DataPortal.ProxyFactory.GetProxy<T>(proxyMode);
       HookEvents(_proxy);
     }
@@ -165,6 +167,45 @@ namespace Csla
       OnCreateCompleted(e);
     }
 
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    public Task<T> CreateAsync()
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginCreate<T>((o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    public Task<T> CreateAsync(object criteria)
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginCreate<T>(criteria, (o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+#endif
+
     #endregion
 
     #region Fetch
@@ -249,6 +290,44 @@ namespace Csla
       OnFetchCompleted(e);
     }
 
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    public Task<T> FetchAsync()
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginFetch<T>((o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// create a business object.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria describing the object to create.
+    /// </param>
+    public Task<T> FetchAsync(object criteria)
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginFetch<T>(criteria, (o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+#endif
     #endregion
 
     #region Update
@@ -314,6 +393,26 @@ namespace Csla
     {
       OnUpdateCompleted(e);
     }
+
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to update an object.
+    /// </summary>
+    /// <param name="obj">Object to update.</param>
+    public Task<T> UpdateAsync(object obj)
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginUpdate<T>(obj, (o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+#endif
 
     #endregion
 
@@ -383,6 +482,26 @@ namespace Csla
       OnDeleteCompleted(e);
     }
 
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to delete an object.
+    /// </summary>
+    /// <param name="criteria">Object-specific criteria.</param>
+    public Task<T> DeleteAsync(object criteria)
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginDelete<T>(criteria, (o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult(e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+#endif
+
     #endregion
 
     #region Execute
@@ -446,6 +565,27 @@ namespace Csla
         ExecuteCompleted(this, e);
     }
 
+#if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Called by a factory method in a business class or
+    /// by the UI to execute a command object.
+    /// </summary>
+    /// <param name="command">Command object to execute.</param>
+    public Task<T> ExecuteAsync(object command)
+    {
+      var tcs = new TaskCompletionSource<T>();
+      DataPortal.BeginExecute((Core.ICommandObject)command, (o, e) =>
+      {
+        if (e.Error != null)
+          tcs.SetException(e.Error);
+        else
+          tcs.SetResult((T)e.Object);
+      }, _proxyMode);
+      return tcs.Task;
+    }
+#endif
+
     #endregion
+
   }
 }

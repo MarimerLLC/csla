@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Web.Mvc.Test", "Csla.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Workflow", "Csla.Workflow\Csla.Workflow.csproj", "{604B4707-4F80-4671-A956-A66CC8DC8917}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Silverlight", "Csla.Xaml.Silverlight\Csla.Xaml.Silverlight.csproj", "{2EF8662C-9FC9-4523-B936-B3B173625C5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Data.EF4", "Csla.Data.EF4\Csla.Data.EF4.csproj", "{68A43187-0EE5-4B4C-A053-ABF5123B5AAD}"
@@ -79,12 +77,6 @@ Global
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Release|Any CPU.Build.0 = Release|Any CPU
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{563EFDFA-EB47-4039-955B-654582EA5362}.Testing|Any CPU.Build.0 = Release|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Release|Any CPU.Build.0 = Release|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Testing|Any CPU.ActiveCfg = Release|Any CPU
-		{604B4707-4F80-4671-A956-A66CC8DC8917}.Testing|Any CPU.Build.0 = Release|Any CPU
 		{68A43187-0EE5-4B4C-A053-ABF5123B5AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{68A43187-0EE5-4B4C-A053-ABF5123B5AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A43187-0EE5-4B4C-A053-ABF5123B5AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU

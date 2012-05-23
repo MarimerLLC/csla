@@ -8,15 +8,15 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
-
 namespace Csla.Test.Data
 {
     #region Contexts
@@ -79,6 +79,7 @@ namespace Csla.Test.Data
         private ObjectSet<Table2> _Table2;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -90,11 +91,11 @@ namespace Csla.Test.Data
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -123,7 +124,8 @@ namespace Csla.Test.Data
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -142,7 +144,7 @@ namespace Csla.Test.Data
                 {
                     OnFirstNameChanging(value);
                     ReportPropertyChanging("FirstName");
-                    _FirstName = StructuralObject.SetValidValue(value, false);
+                    _FirstName = StructuralObject.SetValidValue(value, false, "FirstName");
                     ReportPropertyChanged("FirstName");
                     OnFirstNameChanged();
                 }
@@ -169,7 +171,7 @@ namespace Csla.Test.Data
                 {
                     OnLastNameChanging(value);
                     ReportPropertyChanging("LastName");
-                    _LastName = StructuralObject.SetValidValue(value, false);
+                    _LastName = StructuralObject.SetValidValue(value, false, "LastName");
                     ReportPropertyChanged("LastName");
                     OnLastNameChanged();
                 }
@@ -196,7 +198,7 @@ namespace Csla.Test.Data
                 {
                     OnSmallColumnChanging(value);
                     ReportPropertyChanging("SmallColumn");
-                    _SmallColumn = StructuralObject.SetValidValue(value, false);
+                    _SmallColumn = StructuralObject.SetValidValue(value, false, "SmallColumn");
                     ReportPropertyChanged("SmallColumn");
                     OnSmallColumnChanged();
                 }
@@ -207,9 +209,9 @@ namespace Csla.Test.Data
         partial void OnSmallColumnChanged();
 
         #endregion
-    
+
     }
 
     #endregion
-    
+
 }

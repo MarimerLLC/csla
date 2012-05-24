@@ -435,4 +435,7 @@
     <value>Property {0} must be added to AffectedProperties. </value>
     <comment>RuleContext</comment>
   </data>
+  <data name="PropertyNameNotRegisteredException" xml:space="preserve">
+    <value>Property '{0}' not registered.</value>
+  </data>
 </root>

@@ -754,6 +754,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; not registered..
+        /// </summary>
+        public static string PropertyNameNotRegisteredException {
+            get {
+                return ResourceManager.GetString("PropertyNameNotRegisteredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Property {0} must be added to AffectedProperties. .
         /// </summary>
         public static string PropertyNotInAffectedPropertiesException {

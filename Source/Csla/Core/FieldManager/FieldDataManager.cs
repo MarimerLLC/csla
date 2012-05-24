@@ -6,6 +6,7 @@
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
@@ -81,6 +82,22 @@ namespace Csla.Core.FieldManager
     public List<IPropertyInfo> GetRegisteredProperties()
     {
       return new List<IPropertyInfo>(_propertyList);
+    }
+
+    /// <summary>
+    /// Returns the IPropertyInfo object corresponding to the
+    /// property name.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the
+    /// property name doesn't correspond to a registered property.</exception>
+    public IPropertyInfo GetRegisteredProperty(string propertyName)
+    {
+      var result = GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (result == null)
+        throw new ArgumentOutOfRangeException(string.Format(Resources.PropertyNameNotRegisteredException, propertyName));
+      return result;
     }
 
     /// <summary>

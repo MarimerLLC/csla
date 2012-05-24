@@ -907,6 +907,17 @@
     }
 
     /// <summary>
+    ///   Looks up a localized string similar to Property &apos;{0}&apos; not registered.
+    /// </summary>
+    public static string PropertyNameNotRegisteredException
+    {
+      get
+      {
+        return "Property &apos;{0}&apos; not registered.";
+      }
+    }
+
+    /// <summary>
     ///   Looks up a localized string similar to Cannot register property {0}, a PropertyInfo with the same name already exists..
     /// </summary>
     public static string PropertyRegisterDuplicateNotAllowed

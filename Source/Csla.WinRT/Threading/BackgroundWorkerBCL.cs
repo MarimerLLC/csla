@@ -68,15 +68,14 @@ namespace System.ComponentModel
     /// </summary>
     /// <param name="percentProgress">Percent complete.</param>
     /// <param name="userState">User state value.</param>
-    public void ReportProgress(int percentProgress, object userState)
+    public async void ReportProgress(int percentProgress, object userState)
     {
       if (ProgressChanged != null)
-        _dispatcher.Invoke(CoreDispatcherPriority.Normal,
-          (sender, args) =>
+        await _dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+          () =>
           {
             ProgressChanged(this, new ProgressChangedEventArgs(percentProgress, userState));
-          },
-          this, null);
+          });
     }
 
     /// <summary>

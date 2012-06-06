@@ -49,6 +49,33 @@ namespace Csla.Xaml
     }
     #endregion
 
+    #region InitAsync
+#if !SILVERLIGHT || WINRT
+    public async System.Threading.Tasks.Task<ViewModelBase<T>> InitAsync()
+    {
+      try
+      {
+        IsBusy = true;
+        Model = await DoInitAsync();
+        IsBusy = false;
+      }
+      catch (Exception ex)
+      {
+        IsBusy = false;
+        OnError(ex);
+      }
+      return this;
+    }
+
+#pragma warning disable 1998
+    protected async virtual System.Threading.Tasks.Task<T> DoInitAsync()
+    {
+      throw new NotImplementedException("DoInitAsync");
+    }
+#pragma warning restore 1998
+#endif
+    #endregion
+
     #region Properties
 
     /// <summary>

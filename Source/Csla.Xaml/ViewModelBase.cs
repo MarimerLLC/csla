@@ -51,6 +51,12 @@ namespace Csla.Xaml
 
     #region InitAsync
 #if !SILVERLIGHT || WINRT
+    /// <summary>
+    /// Method used to perform async initialization of the
+    /// viewmodel. This method is usually invoked immediately
+    /// following construction of the object instance.
+    /// </summary>
+    /// <returns></returns>
     public async System.Threading.Tasks.Task<ViewModelBase<T>> InitAsync()
     {
       try
@@ -68,6 +74,12 @@ namespace Csla.Xaml
     }
 
 #pragma warning disable 1998
+    /// <summary>
+    /// Override this method to implement async initialization of
+    /// the model object. The result of this method is used
+    /// to set the Model property of the viewmodel.
+    /// </summary>
+    /// <returns>A Task that creates the model object.</returns>
     protected async virtual System.Threading.Tasks.Task<T> DoInitAsync()
     {
       throw new NotImplementedException("DoInitAsync");

@@ -507,6 +507,16 @@
             for this object.
             </summary>
         </member>
+        <member name="M:Csla.Core.FieldManager.FieldDataManager.GetRegisteredProperty(System.String)">
+            <summary>
+            Returns the IPropertyInfo object corresponding to the
+            property name.
+            </summary>
+            <param name="propertyName">Name of the property.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the
+            property name doesn't correspond to a registered property.</exception>
+        </member>
         <member name="M:Csla.Core.FieldManager.FieldDataManager.GetFieldData(Csla.Core.IPropertyInfo)">
             <summary>
             Gets the <see cref="T:Csla.Core.FieldManager.IFieldData"/> object
@@ -707,6 +717,11 @@
             Compare to propertyinfo x with y for sorting
             </summary>
         </member>
+        <member name="T:Csla.Core.FieldManager.PropertyInfoManager">
+            <summary>
+            Manages the PropertyInfo data for business object types.
+            </summary>
+        </member>
         <member name="M:Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty``1(System.Type,Csla.PropertyInfo{``0})">
             <summary>
             Indicates that the specified property belongs
@@ -735,6 +750,10 @@
             <param name="objectType">
             The business object type.
             </param>
+            <remarks>
+            Registered property information is only available after at least one instannce
+            of the object type has been created within the current AppDomain.
+            </remarks>
         </member>
         <member name="T:Csla.CommandBase`1">
             <summary>
@@ -1289,6 +1308,12 @@
             Invokes all rules for the business type.
             </summary>
         </member>
+        <member name="M:Csla.Core.ICheckRules.GetBrokenRules">
+            <summary>
+            Gets the broken rules collection
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:Csla.Core.IMemberInfo">
             <summary>
             Maintains metadata about a method or property.
@@ -1602,6 +1627,19 @@
             Event raised when a new object has been 
             added to the collection.
             </summary>
+        </member>
+        <member name="P:Csla.Core.ObservableBindingList`1.SuppressListChangedEvents">
+            <summary>
+            Use this object to suppress ListChangedEvents for an entire code block.
+            May be nested in multiple levels for the same object.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.ObservableBindingList`1.SuppressListChangedEventsClass`1">
+            <summary>
+            Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.
+            Will be instanciated by a factory property on the ObservableBindingList implementation.
+            </summary>
+            <typeparam name="TC">The type of the C.</typeparam>
         </member>
         <member name="T:Csla.Core.ReadOnlyObservableBindingList`1">
             <summary>
@@ -1997,6 +2035,23 @@
             <summary>
             Reference to the unhandled async exception object.
             </summary>
+        </member>
+        <member name="T:Csla.Core.FieldManager.PropertyInfoList">
+            <summary>
+            List of IPropertyInfo objects for a business object type.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoList.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoList.#ctor(System.Collections.Generic.IList{Csla.Core.IPropertyInfo})">
+            <summary>
+            Creates an instance of the object that
+            contains the items in 'list'.
+            </summary>
+            <param name="list">Source list.</param>
         </member>
         <member name="T:Csla.Core.IEditableCollection">
             <summary>
@@ -2673,6 +2728,19 @@
             Event raised when a child object has been changed.
             </summary>
         </member>
+        <member name="P:Csla.Core.ExtendedBindingList`1.SuppressListChangedEvents">
+            <summary>
+            Use this object to suppress ListChangedEvents for an entire code block.
+            May be nested in multiple levels for the same object.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.ExtendedBindingList`1.SuppressListChangedEventsClass`1">
+            <summary>
+            Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.
+            Will be instanciated by a factory property on the ObservableBindingList implementation.
+            </summary>
+            <typeparam name="TC">The type of the C.</typeparam>
+        </member>
         <member name="T:Csla.Core.IParent">
             <summary>
             Defines the interface that must be implemented
@@ -2848,6 +2916,304 @@
             Gets a value indicating whether this object
             or any child object is currently executing
             an async operation.
+            </summary>
+        </member>
+        <member name="T:Csla.IBusinessBase">
+            <summary>
+            Consolidated interface of public elements from the
+            BusinessBase type.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.IEditableBusinessObject">
+            <summary>
+            Defines the common methods required by all
+            editable CSLA single objects.
+            </summary>
+            <remarks>
+            It is strongly recommended that the implementations
+            of the methods in this interface be made Private
+            so as to not clutter up the native interface of
+            the collection objects.
+            </remarks>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.DeleteChild">
+            <summary>
+            Called by a parent object to mark the child
+            for deferred deletion.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.SetParent(Csla.Core.IParent)">
+            <summary>
+            Used by BusinessListBase as a child object is 
+            created to tell the child object about its
+            parent.
+            </summary>
+            <param name="parent">A reference to the parent collection object.</param>
+        </member>
+        <member name="M:Csla.Core.IEditableBusinessObject.Delete">
+            <summary>
+            Marks the object for deletion. The object will be deleted as part of the
+            next save operation.
+            </summary>
+        </member>
+        <member name="P:Csla.Core.IEditableBusinessObject.EditLevelAdded">
+            <summary>
+            For internal use only!!
+            </summary>
+            <remarks>
+            Altering this value will almost certainly
+            break your code. This property is for use
+            by the parent collection only!
+            </remarks>
+        </member>
+        <member name="T:Csla.Security.IAuthorizeReadWrite">
+            <summary>
+            Defines the authorization interface through which an
+            object can indicate which properties the current
+            user can read and write.
+            </summary>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanWriteProperty(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to write the
+            to the specified property.
+            </summary>
+            <returns><see langword="true" /> if write is allowed.</returns>
+            <param name="propertyName">Name of the property to read.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <returns><see langword="true" /> if read is allowed.</returns>
+            <param name="propertyName">Name of the property to read.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute 
+            the specified method.
+            </summary>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+            <param name="methodName">Name of the method to execute.</param>
+        </member>
+        <member name="T:Csla.Rules.IHostRules">
+            <summary>
+            Defines the interaction between the rules engine and
+            a business object that hosts the rules.
+            </summary>
+        </member>
+        <member name="M:Csla.Rules.IHostRules.RuleStart(Csla.Core.IPropertyInfo)">
+            <summary>
+            Indicates that a rule has started processing.
+            </summary>
+            <param name="property">Property for rule.</param>
+        </member>
+        <member name="M:Csla.Rules.IHostRules.RuleComplete(Csla.Core.IPropertyInfo)">
+            <summary>
+            Indicates that a rule has finished processing.
+            </summary>
+            <param name="property">Property for rule.</param>
+        </member>
+        <member name="M:Csla.Rules.IHostRules.RuleComplete(System.String)">
+            <summary>
+            Indicates that a rule has finished processing.
+            </summary>
+            <param name="property">Property for rule.</param>
+        </member>
+        <member name="M:Csla.Rules.IHostRules.AllRulesComplete">
+            <summary>
+            Indicates that all rules have finished processing.
+            </summary>
+        </member>
+        <member name="T:Csla.IDataPortal`1">
+            <summary>
+            Interface defining the members of the data portal type.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginDelete(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginDelete(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginExecute(`0)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginExecute(`0,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="P:Csla.IDataPortal`1.GlobalContext">
+            <summary>
+            Gets a reference to the global context returned from
+            the background thread and/or server.
+            </summary>
+        </member>
+        <member name="E:Csla.IDataPortal`1.CreateCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.FetchCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.UpdateCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.DeleteCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.ExecuteCompleted">
+            <summary>
+            Event indicating an execute operation is complete.
             </summary>
         </member>
         <member name="T:Csla.LazySingleton`1">
@@ -3311,6 +3677,11 @@
               Looks up a localized string similar to The specified property name &apos;{0}&apos; does not exist.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.PropertyNameNotRegisteredException">
+            <summary>
+              Looks up a localized string similar to Property &apos;{0}&apos; not registered..
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.PropertyNotInAffectedPropertiesException">
             <summary>
               Looks up a localized string similar to Property {0} must be added to AffectedProperties. .
@@ -3602,6 +3973,7 @@
             of this rule can be cached at the business
             object level.
             </summary>
+            <returns>bool, true by default to allow cache result.</returns>
         </member>
         <member name="P:Csla.Rules.AuthorizationRule.Element">
             <summary>
@@ -4430,35 +4802,6 @@
             <param name="primaryProperty">The primary property.</param>
             <param name="ruleHandler">The rule handler.</param>
             <param name="messageDelegate">The message delegate.</param>
-        </member>
-        <member name="T:Csla.Rules.IHostRules">
-            <summary>
-            Defines the interaction between the rules engine and
-            a business object that hosts the rules.
-            </summary>
-        </member>
-        <member name="M:Csla.Rules.IHostRules.RuleStart(Csla.Core.IPropertyInfo)">
-            <summary>
-            Indicates that a rule has started processing.
-            </summary>
-            <param name="property">Property for rule.</param>
-        </member>
-        <member name="M:Csla.Rules.IHostRules.RuleComplete(Csla.Core.IPropertyInfo)">
-            <summary>
-            Indicates that a rule has finished processing.
-            </summary>
-            <param name="property">Property for rule.</param>
-        </member>
-        <member name="M:Csla.Rules.IHostRules.RuleComplete(System.String)">
-            <summary>
-            Indicates that a rule has finished processing.
-            </summary>
-            <param name="property">Property for rule.</param>
-        </member>
-        <member name="M:Csla.Rules.IHostRules.AllRulesComplete">
-            <summary>
-            Indicates that all rules have finished processing.
-            </summary>
         </member>
         <member name="T:Csla.Rules.ObjectRule">
             <summary>
@@ -6785,6 +7128,40 @@
             must be invoked on the UI thread.
             </summary>
         </member>
+        <member name="M:Csla.Rules.RuleContext.GetInputValue``1(Csla.PropertyInfo{``0})">
+            <summary>
+            Gets the value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="propertyInfo">The property info.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Rules.RuleContext.GetInputValue``1(Csla.Core.IPropertyInfo)">
+            <summary>
+            Gets the value with explicit cast
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="propertyInfo">The generic property info.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Rules.RuleContext.TryGetInputValue``1(Csla.PropertyInfo{``0},``0@)">
+            <summary>
+            Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="propertyInfo">The generic property info.</param>
+            <param name="value">The value.</param>
+            <returns>true if value exists else false</returns>
+        </member>
+        <member name="M:Csla.Rules.RuleContext.TryGetInputValue``1(Csla.Core.IPropertyInfo,``0@)">
+            <summary>
+            Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="propertyInfo">The generic property info.</param>
+            <param name="value">The value.</param>
+            <returns>true if value exists else false</returns>
+        </member>
         <member name="P:Csla.Rules.RuleContext.Rule">
             <summary>
             Gets the rule object.
@@ -7072,37 +7449,6 @@
             <summary>
             Event raised when a property is changing.
             </summary>
-        </member>
-        <member name="T:Csla.Security.IAuthorizeReadWrite">
-            <summary>
-            Defines the authorization interface through which an
-            object can indicate which properties the current
-            user can read and write.
-            </summary>
-        </member>
-        <member name="M:Csla.Security.IAuthorizeReadWrite.CanWriteProperty(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to write the
-            to the specified property.
-            </summary>
-            <returns><see langword="true" /> if write is allowed.</returns>
-            <param name="propertyName">Name of the property to read.</param>
-        </member>
-        <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            specified property.
-            </summary>
-            <returns><see langword="true" /> if read is allowed.</returns>
-            <param name="propertyName">Name of the property to read.</param>
-        </member>
-        <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to execute 
-            the specified method.
-            </summary>
-            <returns><see langword="true" /> if execute is allowed.</returns>
-            <param name="methodName">Name of the method to execute.</param>
         </member>
         <member name="M:Csla.ReadOnlyBase`1.GetIdValue">
             <summary>
@@ -9942,48 +10288,6 @@
             Returns the current edit level of the object.
             </summary>
         </member>
-        <member name="T:Csla.Core.IEditableBusinessObject">
-            <summary>
-            Defines the common methods required by all
-            editable CSLA single objects.
-            </summary>
-            <remarks>
-            It is strongly recommended that the implementations
-            of the methods in this interface be made Private
-            so as to not clutter up the native interface of
-            the collection objects.
-            </remarks>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.DeleteChild">
-            <summary>
-            Called by a parent object to mark the child
-            for deferred deletion.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.SetParent(Csla.Core.IParent)">
-            <summary>
-            Used by BusinessListBase as a child object is 
-            created to tell the child object about its
-            parent.
-            </summary>
-            <param name="parent">A reference to the parent collection object.</param>
-        </member>
-        <member name="M:Csla.Core.IEditableBusinessObject.Delete">
-            <summary>
-            Marks the object for deletion. The object will be deleted as part of the
-            next save operation.
-            </summary>
-        </member>
-        <member name="P:Csla.Core.IEditableBusinessObject.EditLevelAdded">
-            <summary>
-            For internal use only!!
-            </summary>
-            <remarks>
-            Altering this value will almost certainly
-            break your code. This property is for use
-            by the parent collection only!
-            </remarks>
-        </member>
         <member name="M:Csla.Core.BusinessBase.#ctor">
             <summary>
             Creates an instance of the object.
@@ -10093,6 +10397,12 @@
             that no event is raised for IsDirty, so only the specific
             property changed event for the current property is raised.
             </remarks>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.MetaPropertyHasChanged(System.String)">
+            <summary>
+            Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is not Windows
+            </summary>
+            <param name="name">meta property name that has cchanged.</param>
         </member>
         <member name="M:Csla.Core.BusinessBase.CheckObjectRules">
             <summary>
@@ -10995,6 +11305,41 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Core.BusinessBase.LoadPropertyMarkDirty``1(Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value and mark field as dirty if value is modified.
+            </summary> 
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.LoadPropertyMarkDirty(Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value.
+            </summary>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
         <member name="M:Csla.Core.BusinessBase.LoadProperty(Csla.Core.IPropertyInfo,System.Object)">
             <summary>
             Loads a property's managed field with the 
@@ -11292,7 +11637,12 @@
         </member>
         <member name="M:Csla.Core.BusinessBase.Csla#Core#ICheckRules#CheckRules">
             <summary>
-            Invokes all rules for the business type.
+            Invokes all rules for the business object.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.GetBrokenRules">
+            <summary>
+            Gets the broken rules for this object
             </summary>
         </member>
         <member name="P:Csla.Core.BusinessBase.Parent">
@@ -12939,6 +13289,20 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginFetch``1(System.EventHandler{Csla.DataPortalResult{``0}},Csla.DataPortal.ProxyModes,System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="userState">User state object.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginFetch``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
             <summary>
             Retrieves an existing business object.
@@ -12955,6 +13319,63 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginFetch``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}},Csla.DataPortal.ProxyModes,System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(Csla.DataPortal.ProxyModes)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(System.Object)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.FetchAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Retrieves an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Fetch().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Updates a business object.
@@ -12965,6 +13386,22 @@
             <param name="obj">
             Business object to update.
             </param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}})">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="callback">
             Delegate reference to a method that is invoked
             when the async operation is complete.
@@ -12985,6 +13422,46 @@
             when the async operation is complete.
             </param>
             <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.UpdateAsync``1(System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.UpdateAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="obj">
+            Business object to update.
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
         </member>
         <member name="M:Csla.DataPortal.BeginDelete``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
@@ -13017,6 +13494,46 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal.BeginDelete``1(System.Object,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Deletes an existing business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.DeleteAsync``1(System.Object)">
+            <summary>
+            Deletes a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.DeleteAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Deletes a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="criteria">
+            Criteria object passed to DataPortal_Delete().
+            </param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginExecute``1(``0,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Updates a business object.
@@ -13025,6 +13542,20 @@
             Type of business object.
             </typeparam>
             <param name="command">Object to execute.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginExecute``1(``0,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}})">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="callback">
             Delegate reference to a method that is invoked
             when the async operation is complete.
@@ -13043,6 +13574,40 @@
             when the async operation is complete.
             </param>
             <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.BeginExecute``1(``0,Csla.DataPortal.ProxyModes,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+            <param name="callback">
+            Delegate reference to a method that is invoked
+            when the async operation is complete.
+            </param>
+            <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal.ExecuteAsync``1(``0)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+        </member>
+        <member name="M:Csla.DataPortal.ExecuteAsync``1(``0,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Updates a business object.
+            </summary>
+            <typeparam name="T">
+            Type of business object.
+            </typeparam>
+            <param name="command">Object to execute.</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
         </member>
         <member name="M:Csla.DataPortal.FetchChild``1(System.Object[])">
             <summary>

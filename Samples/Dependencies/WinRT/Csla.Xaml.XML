@@ -41,6 +41,22 @@
             implement their own commands/verbs/actions.
             </summary>
         </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.InitAsync">
+            <summary>
+            Method used to perform async initialization of the
+            viewmodel. This method is usually invoked immediately
+            following construction of the object instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.DoInitAsync">
+            <summary>
+            Override this method to implement async initialization of
+            the model object. The result of this method is used
+            to set the Model property of the viewmodel.
+            </summary>
+            <returns>A Task that creates the model object.</returns>
+        </member>
         <member name="F:Csla.Xaml.ViewModelBase`1.ModelProperty">
             <summary>
             Gets or sets the Model object.
@@ -278,6 +294,117 @@
         <member name="E:Csla.Xaml.ViewModelBase`1.PropertyChanged">
             <summary>
             Event raised when a property changes.
+            </summary>
+        </member>
+        <member name="T:Csla.Xaml.PropertyInfo">
+            <summary>
+            Expose metastate information about a property.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.PropertyInfo.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.PropertyInfo.#ctor(System.Boolean)">
+            <summary>
+            Creates an instance of the object for testing.
+            </summary>
+            <param name="testing">Test mode parameter.</param>
+        </member>
+        <member name="F:Csla.Xaml.PropertyInfo.BrokenRulesProperty">
+            <summary>
+            Gets the broken rules collection from the
+            business object.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.PropertyInfo.PropertyProperty">
+            <summary>
+            Gets or sets the source business
+            property to which this control is bound.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.PropertyInfo.SourceProperty">
+            <summary>
+            Gets or sets the Source.
+            </summary>
+            <value>The source.</value>
+        </member>
+        <member name="M:Csla.Xaml.PropertyInfo.SetSource">
+            <summary>
+            Sets the source binding and updates status.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.PropertyInfo.UpdateState">
+            <summary>
+            Updates the state on control Property.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.PropertyInfo.OnPropertyChanged(System.String)">
+            <summary>
+            Raises the PropertyChanged event.
+            </summary>
+            <param name="propertyName">Name of the changed property.</param>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.BrokenRules">
+            <summary>
+            Gets the broken rules collection from the
+            business object.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.Property">
+            <summary>
+            Gets or sets the source business
+            property to which this control is bound.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.Source">
+            <summary>
+            Gets or sets the Source.
+            </summary>
+            <value>The source.</value>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.CanRead">
+            <summary>
+            Gets a value indicating whether the user
+            is authorized to read the property.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.CanWrite">
+            <summary>
+            Gets a value indicating whether the user
+            is authorized to write the property.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.IsBusy">
+            <summary>
+            Gets a value indicating whether the property
+            is busy with an asynchronous operation.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.IsValid">
+            <summary>
+            Gets a value indicating whether the 
+            property is valid.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.RuleSeverity">
+            <summary>
+            Gets a valud indicating the worst
+            severity of all broken rules
+            for this property (if IsValid is
+            false).
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.PropertyInfo.RuleDescription">
+            <summary>
+            Gets the description of the most severe
+            broken rule for this property.
+            </summary>
+        </member>
+        <member name="E:Csla.Xaml.PropertyInfo.PropertyChanged">
+            <summary>
+            Event raised when a property has changed.
             </summary>
         </member>
     </members>

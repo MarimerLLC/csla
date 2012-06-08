@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Properties;
 
 namespace Csla.Rules
 {
@@ -85,11 +86,15 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     public RuleResult(string ruleName, Core.IPropertyInfo property, string description)
     {
+
+      if (string.IsNullOrEmpty(description))
+        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), "description");
+
       RuleName = ruleName;
       PrimaryProperty = property;
       Description = description;
       Success = string.IsNullOrEmpty(description);
-      Severity = Success ? RuleSeverity.Success : RuleSeverity.Error;
+      Severity = RuleSeverity.Error;
     }
   }
 }

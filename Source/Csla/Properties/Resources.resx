@@ -438,4 +438,7 @@
   <data name="PropertyNameNotRegisteredException" xml:space="preserve">
     <value>Property '{0}' not registered.</value>
   </data>
+  <data name="RuleMessageRequired" xml:space="preserve">
+    <value>Message for broken rule is required. Rule:{0}</value>
+  </data>
 </root>

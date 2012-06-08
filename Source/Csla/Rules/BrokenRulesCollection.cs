@@ -77,6 +77,10 @@ namespace Csla.Rules
     
     internal void SetBrokenRules(List<RuleResult> results, string originPropertyName)
     {
+      var errRule = results.FirstOrDefault(p => p.Severity != RuleSeverity.Success && string.IsNullOrEmpty(p.Description));
+      if (errRule != null)
+        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, errRule.RuleName));
+
       lock (_syncRoot)
       {
         this.IsReadOnly = false;

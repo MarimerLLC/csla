@@ -586,6 +586,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+
 #if SILVERLIGHT && !WINDOWS_PHONE
     [TestMethod]
     public void NotifyDataErrorInfo()
@@ -868,7 +869,7 @@ namespace Csla.Test.ValidationRules
     public CheckLazyInputFieldExists(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<Core.IPropertyInfo> {primaryProperty };
+      InputProperties = new List<Core.IPropertyInfo> {primaryProperty};
     }
 
     protected override void Execute(Rules.RuleContext context)
@@ -881,6 +882,132 @@ namespace Csla.Test.ValidationRules
       {
         context.AddErrorResult("PrimaryProperty does not exist.");
       }
+
+
+    }
+  }
+
+
+  [TestClass]
+  public class RuleContextTests
+  {
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddErrorResultThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddErrorResult(string.Empty, false);
+      Assert.Fail("Must throw exception.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddErrorResultOnPropertyThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddErrorResult(TwoPropertyRules.Value1Property, string.Empty);
+      Assert.Fail("Must throw exception.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddWarningResultThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddWarningResult(string.Empty, false);
+      Assert.Fail("Must throw exception.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddWarningResultOnPropertyThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddWarningResult(TwoPropertyRules.Value1Property, string.Empty);
+      Assert.Fail("Must throw exception.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddInformationResultThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddInformationResult(string.Empty, false);
+      Assert.Fail("Must throw exception.");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void AddInformationResultOnPropertyThrowsErrorWhenMessageIsEmpty()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddInformationResult(TwoPropertyRules.Value1Property, string.Empty);
+      Assert.Fail("Must throw exception.");
+    }
+
+
+    [TestMethod]
+    public void AddSuccessResultDoesNotFail()
+    {
+      var root = new TwoPropertyRules();
+      var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
+
+      var ctx = new Csla.Rules.RuleContext(null, rule, root,
+                                           new Dictionary<Core.IPropertyInfo, object>
+                                               {
+                                                 {TwoPropertyRules.Value1Property, "a"},
+                                                 {TwoPropertyRules.Value2Property, "b"}
+                                               });
+      ctx.AddSuccessResult(false);
+      Assert.IsTrue(true, "Must not fail.");
     }
   }
 }

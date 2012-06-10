@@ -544,6 +544,15 @@
     }
 
     /// <summary>
+    /// Looks up a serialized string similar to Rule message is required
+    /// </summary>
+    public static string RuleMessageRequired
+    {
+      get { return "Rule message is required. Rule:{0}"; }
+    }
+
+
+    /// <summary>
     ///   Looks up a localized string similar to List item must be marked as a child object.
     /// </summary>
     public static string ListItemNotAChildException

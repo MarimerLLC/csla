@@ -50,7 +50,7 @@ namespace Csla.Xaml
     #endregion
 
     #region InitAsync
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Method used to perform async initialization of the
     /// viewmodel. This method is usually invoked immediately
@@ -750,7 +750,7 @@ namespace Csla.Xaml
       return result;
     }
 #endif
-#if WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.

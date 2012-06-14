@@ -167,7 +167,7 @@ namespace Csla
       OnCreateCompleted(e);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -290,7 +290,7 @@ namespace Csla
       OnFetchCompleted(e);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -394,7 +394,7 @@ namespace Csla
       OnUpdateCompleted(e);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
@@ -482,7 +482,7 @@ namespace Csla
       OnDeleteCompleted(e);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
@@ -565,7 +565,7 @@ namespace Csla
         ExecuteCompleted(this, e);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.

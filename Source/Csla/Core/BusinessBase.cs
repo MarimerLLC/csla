@@ -232,6 +232,8 @@ namespace Csla.Core
     {
       _isNew = true;
       _isDeleted = false;
+      MetaPropertyHasChanged("IsNew");
+      MetaPropertyHasChanged("IsDeleted");
       MarkDirty();
     }
 
@@ -256,6 +258,7 @@ namespace Csla.Core
     protected virtual void MarkOld()
     {
       _isNew = false;
+      MetaPropertyHasChanged("IsNew");
       MarkClean();
     }
 
@@ -271,6 +274,7 @@ namespace Csla.Core
     protected void MarkDeleted()
     {
       _isDeleted = true;
+      MetaPropertyHasChanged("IsDeleted");
       MarkDirty();
     }
 
@@ -306,9 +310,16 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkDirty(bool suppressEvent)
     {
+      bool old = _isDirty;
       _isDirty = true;
       if (!suppressEvent)
         OnUnknownPropertyChanged();
+      if (_isDirty != old)
+      {
+        MetaPropertyHasChanged("IsSelfDirty");
+        MetaPropertyHasChanged("IsDirty");
+        MetaPropertyHasChanged("IsSavable");
+      }
     }
 
     /// <summary>
@@ -379,6 +390,9 @@ namespace Csla.Core
       if (_fieldManager != null)
         FieldManager.MarkClean();
       OnUnknownPropertyChanged();
+      MetaPropertyHasChanged("IsSelfDirty");
+      MetaPropertyHasChanged("IsDirty");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     /// <summary>
@@ -1079,16 +1093,25 @@ namespace Csla.Core
     {
       OnPropertyChanged(property);
       OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     void IHostRules.RuleComplete(string property)
     {
       OnPropertyChanged(property);
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     void Rules.IHostRules.AllRulesComplete()
     {
       OnValidationComplete();
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     /// <summary>
@@ -2857,6 +2880,8 @@ namespace Csla.Core
     {
       if (_busyChanged != null)
         _busyChanged(this, args);
+      MetaPropertyHasChanged("IsSelfBusy");
+      MetaPropertyHasChanged("IsBusy");
     }
 
     /// <summary>
@@ -2965,6 +2990,9 @@ namespace Csla.Core
     {
       if (_childChangedHandlers != null)
         _childChangedHandlers.Invoke(this, e);
+      MetaPropertyHasChanged("IsDirty");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     /// <summary>

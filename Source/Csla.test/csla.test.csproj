@@ -116,6 +116,10 @@
     <Compile Include="Authorization\RootException.cs" />
     <Compile Include="Authorization\TestIdentity.cs" />
     <Compile Include="Authorization\TestPrincipal.cs" />
+    <Compile Include="BasicModern\BasicModernTests.cs" />
+    <Compile Include="BasicModern\Child.cs" />
+    <Compile Include="BasicModern\ChildList.cs" />
+    <Compile Include="BasicModern\Root.cs" />
     <Compile Include="Basic\BasicTests.cs" />
     <Compile Include="Basic\Child.cs" />
     <Compile Include="Basic\Children.cs" />

@@ -34,6 +34,11 @@ namespace Csla.Test.BasicModern
       private set { LoadProperty(ChildrenProperty, value); }
     }
 
+    public void MakeOld()
+    {
+      MarkOld();
+    }
+
     public static void NewRoot(EventHandler<DataPortalResult<Root>> callback)
     {
       Csla.DataPortal.BeginCreate<Root>(callback);

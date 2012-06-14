@@ -38,7 +38,8 @@ public static void Get$ClassName$($IdType$ $IdName$, EventHandler<DataPortalResu
   DataPortal.BeginFetch<$ClassName$>($IdName$, callback);
 }
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
+
 public static async Task<$ClassName$> New$ClassName$Async()
 {
   return await DataPortal.CreateAsync<$ClassName$>();
@@ -48,6 +49,10 @@ public static async Task<$ClassName$> Get$ClassName$Async($IdType$ $IdName$)
 {
   return await DataPortal.FetchAsync<$ClassName$>($IdName$);
 }
+
+#endif
+
+#if !SILVERLIGHT
 
 public static $ClassName$ New$ClassName$()
 {

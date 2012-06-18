@@ -226,7 +226,7 @@ namespace Csla
       dp.BeginCreate(criteria, userState);
     }
 
-#if !SILVERLIGHT || WINRT
+#if !WINDOWS_PHONE
 
     /// <summary>
     /// Creates and initializes a business object.

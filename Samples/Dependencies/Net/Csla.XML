@@ -17669,6 +17669,11 @@
               Looks up a localized string similar to Remove is an invalid operation.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.RuleMessageRequired">
+            <summary>
+              Looks up a localized string similar to Message for broken rule is required. Rule:{0}.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.SmartDateT">
             <summary>
               Looks up a localized string similar to t.

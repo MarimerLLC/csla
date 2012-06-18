@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
 
-  <Identity Name="4bf3cb78-a813-47d6-a7f7-10e31fa94f47"
+  <Identity Name="dadbaf3c-38e2-411a-9cce-9ea6f85b989b"
             Publisher="CN=Rockford"
             Version="1.0.0.0" />
 
@@ -9,12 +9,11 @@
     <DisplayName>WinRtUI</DisplayName>
     <PublisherDisplayName>Rockford</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
-    <Description>WinRtUI</Description>
   </Properties>
 
   <Prerequisites>
-    <OSMinVersion>6.2</OSMinVersion>
-    <OSMaxVersionTested>6.2</OSMaxVersionTested>
+    <OSMinVersion>6.2.0</OSMinVersion>
+    <OSMaxVersionTested>6.2.0</OSMaxVersionTested>
   </Prerequisites>
 
   <Resources>
@@ -31,7 +30,7 @@
             SmallLogo="Assets\SmallLogo.png"
             Description="WinRtUI"
             ForegroundText="light"
-            BackgroundColor="#222222">
+            BackgroundColor="#464646">
             <DefaultTile ShowName="allLogos" />
             <SplashScreen Image="Assets\SplashScreen.png" />
         </VisualElements>

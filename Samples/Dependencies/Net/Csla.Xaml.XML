@@ -1283,6 +1283,12 @@
             if ManagedObjectLifetime is true.
             </summary>
         </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.SaveAsync">
+            <summary>
+            Saves the Model, first committing changes
+            if ManagedObjectLifetime is true.
+            </summary>
+        </member>
         <member name="M:Csla.Xaml.ViewModelBase`1.BeginSave">
             <summary>
             Saves the Model, first committing changes

@@ -136,6 +136,18 @@ namespace WinRtUI.Data
         {
             get { return this._items; }
         }
+        
+        public IEnumerable<SampleDataItem> TopItems
+        {
+            // Provides a subset of the full items collection to bind to from a GroupedItemsPage
+            // for two reasons: GridView will not virtualize large items collections, and it
+            // improves the user experience when browsing through groups with large numbers of
+            // items.
+            //
+            // A maximum of 12 items are displayed because it results in filled grid columns
+            // whether there are 1, 2, 3, 4, or 6 rows displayed
+            get { return this._items.Take(12); }
+        }
     }
 
     /// <summary>
@@ -143,10 +155,35 @@ namespace WinRtUI.Data
     /// </summary>
     public sealed class SampleDataSource
     {
-        private ObservableCollection<SampleDataGroup> _itemGroups = new ObservableCollection<SampleDataGroup>();
-        public ObservableCollection<SampleDataGroup> ItemGroups
+        private static SampleDataSource _sampleDataSource = new SampleDataSource();
+
+        private ObservableCollection<SampleDataGroup> _allGroups = new ObservableCollection<SampleDataGroup>();
+        public ObservableCollection<SampleDataGroup> AllGroups
         {
-            get { return this._itemGroups; }
+            get { return this._allGroups; }
+        }
+
+        public static IEnumerable<SampleDataGroup> GetGroups(string uniqueId)
+        {
+            if (!uniqueId.Equals("AllGroups")) throw new ArgumentException("Only 'AllGroups' is supported as a collection of groups");
+            
+            return _sampleDataSource.AllGroups;
+        }
+
+        public static SampleDataGroup GetGroup(string uniqueId)
+        {
+            // Simple linear search is acceptable for small data sets
+            var matches = _sampleDataSource.AllGroups.Where((group) => group.UniqueId.Equals(uniqueId));
+            if (matches.Count() == 1) return matches.First();
+            return null;
+        }
+
+        public static SampleDataItem GetItem(string uniqueId)
+        {
+            // Simple linear search is acceptable for small data sets
+            var matches = _sampleDataSource.AllGroups.SelectMany(group => group.Items).Where((item) => item.UniqueId.Equals(uniqueId));
+            if (matches.Count() == 1) return matches.First();
+            return null;
         }
 
         public SampleDataSource()
@@ -194,7 +231,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group1));
-            this.ItemGroups.Add(group1);
+            this.AllGroups.Add(group1);
 
             var group2 = new SampleDataGroup("Group-2",
                     "Group Title: 2",
@@ -222,7 +259,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group2));
-            this.ItemGroups.Add(group2);
+            this.AllGroups.Add(group2);
 
             var group3 = new SampleDataGroup("Group-3",
                     "Group Title: 3",
@@ -278,7 +315,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group3));
-            this.ItemGroups.Add(group3);
+            this.AllGroups.Add(group3);
 
             var group4 = new SampleDataGroup("Group-4",
                     "Group Title: 4",
@@ -327,7 +364,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group4));
-            this.ItemGroups.Add(group4);
+            this.AllGroups.Add(group4);
 
             var group5 = new SampleDataGroup("Group-5",
                     "Group Title: 5",
@@ -362,7 +399,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group5));
-            this.ItemGroups.Add(group5);
+            this.AllGroups.Add(group5);
 
             var group6 = new SampleDataGroup("Group-6",
                     "Group Title: 6",
@@ -425,7 +462,7 @@ namespace WinRtUI.Data
                     "Item Description: Pellentesque porta, mauris quis interdum vehicula, urna sapien ultrices velit, nec venenatis dui odio in augue. Cras posuere, enim a cursus convallis, neque turpis malesuada erat, ut adipiscing neque tortor ac erat.",
                     ITEM_CONTENT,
                     group6));
-            this.ItemGroups.Add(group6);
+            this.AllGroups.Add(group6);
         }
     }
 }

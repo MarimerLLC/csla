@@ -15698,6 +15698,11 @@
               Looks up a localized string similar to Invalid operation - insert not allowed.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.RuleMessageRequired">
+            <summary>
+            Looks up a serialized string similar to Rule message is required
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.ListItemNotAChildException">
             <summary>
               Looks up a localized string similar to List item must be marked as a child object.

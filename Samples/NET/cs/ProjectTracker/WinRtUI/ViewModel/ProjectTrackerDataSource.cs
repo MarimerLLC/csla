@@ -11,6 +11,11 @@ namespace WinRtUI.ViewModel
 {
   public class ProjectTrackerDataSource
   {
+    public static ObservableCollection<DataGroup> GetGroups(string p)
+    {
+      return new ProjectTrackerDataSource().ItemGroups;
+    }
+
     private ObservableCollection<DataGroup> _itemGroups = new ObservableCollection<DataGroup>();
     public ObservableCollection<DataGroup> ItemGroups
     {

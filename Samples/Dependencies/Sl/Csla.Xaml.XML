@@ -631,6 +631,22 @@
             implement their own commands/verbs/actions.
             </summary>
         </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.InitAsync">
+            <summary>
+            Method used to perform async initialization of the
+            viewmodel. This method is usually invoked immediately
+            following construction of the object instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.DoInitAsync">
+            <summary>
+            Override this method to implement async initialization of
+            the model object. The result of this method is used
+            to set the Model property of the viewmodel.
+            </summary>
+            <returns>A Task that creates the model object.</returns>
+        </member>
         <member name="F:Csla.Xaml.ViewModelBase`1.ModelProperty">
             <summary>
             Gets or sets the Model object.
@@ -694,6 +710,12 @@
             Method called after a refresh operation 
             has completed (whether successful or
             not).
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.SaveAsync">
+            <summary>
+            Saves the Model, first committing changes
+            if ManagedObjectLifetime is true.
             </summary>
         </member>
         <member name="M:Csla.Xaml.ViewModelBase`1.BeginSave">

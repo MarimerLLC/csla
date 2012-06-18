@@ -3722,6 +3722,11 @@
               Looks up a localized string similar to Remove is an invalid operation.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.RuleMessageRequired">
+            <summary>
+              Looks up a localized string similar to Message for broken rule is required. Rule:{0}.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.SmartDateT">
             <summary>
               Looks up a localized string similar to t.
@@ -13249,6 +13254,34 @@
             <param name="proxyMode">The proxy mode, Local or Auto.</param>
             <param name="userState">User state object</param>
         </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(Csla.DataPortal.ProxyModes)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(System.Object)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+        </member>
+        <member name="M:Csla.DataPortal.CreateAsync``1(System.Object,Csla.DataPortal.ProxyModes)">
+            <summary>
+            Creates and initializes a business object.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="criteria">Criteria object passed to DataPortal_Create().</param>
+            <param name="proxyMode">The proxy mode, Local or Auto.</param>
+        </member>
         <member name="M:Csla.DataPortal.BeginFetch``1(System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Retrieves an existing business object.
@@ -14641,6 +14674,21 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal`1.CreateAsync">
+            <summary>
+            Starts an asynchronous data portal operation to
+            create a business object.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortal`1.CreateAsync(System.Object)">
+            <summary>
+            Starts an asynchronous data portal operation to
+            create a business object.
+            </summary>
+            <param name="criteria">
+            Criteria describing the object to create.
+            </param>
+        </member>
         <member name="M:Csla.DataPortal`1.OnFetchCompleted(Csla.DataPortalResult{`0})">
             <summary>
             Raises the FetchCompleted event
@@ -14673,6 +14721,21 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal`1.FetchAsync">
+            <summary>
+            Starts an asynchronous data portal operation to
+            create a business object.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortal`1.FetchAsync(System.Object)">
+            <summary>
+            Starts an asynchronous data portal operation to
+            create a business object.
+            </summary>
+            <param name="criteria">
+            Criteria describing the object to create.
+            </param>
+        </member>
         <member name="M:Csla.DataPortal`1.OnUpdateCompleted(Csla.DataPortalResult{`0})">
             <summary>
             Raises the UpdateCompleted event
@@ -14697,6 +14760,13 @@
             Business object to update.
             </param>
             <param name="userState">User state object.</param>
+        </member>
+        <member name="M:Csla.DataPortal`1.UpdateAsync(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
         </member>
         <member name="M:Csla.DataPortal`1.OnDeleteCompleted(Csla.DataPortalResult{`0})">
             <summary>
@@ -14725,6 +14795,13 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
+        <member name="M:Csla.DataPortal`1.DeleteAsync(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
         <member name="M:Csla.DataPortal`1.BeginExecute(`0)">
             <summary>
             Starts an asynchronous execute operation.
@@ -14747,6 +14824,13 @@
             Raises the ExecuteCompleted event.
             </summary>
             <param name="e">Event args</param>
+        </member>
+        <member name="M:Csla.DataPortal`1.ExecuteAsync(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
         </member>
         <member name="P:Csla.DataPortal`1.GlobalContext">
             <summary>

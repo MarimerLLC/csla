@@ -13,18 +13,18 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using WinRtUI.ViewModel;
 
-// The Group Detail Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234229
+// The Grouped Items Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234231
 
 namespace WinRtUI
 {
     /// <summary>
-    /// A page that displays an overview of a single group, including a preview of the items
-    /// within the group.
+    /// A page that displays a grouped collection of items.
     /// </summary>
-    public sealed partial class GroupDetailPage : WinRtUI.Common.LayoutAwarePage
+    public sealed partial class HomePage : WinRtUI.Common.LayoutAwarePage
     {
-        public GroupDetailPage()
+        public HomePage()
         {
             this.InitializeComponent();
         }
@@ -41,23 +41,28 @@ namespace WinRtUI
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
         {
             // TODO: Create an appropriate data model for your problem domain to replace the sample data
-            var group = SampleDataSource.GetGroup((String)navigationParameter);
-            this.DefaultViewModel["Group"] = group;
-            this.DefaultViewModel["Items"] = group.Items;
+            var dataGroups = ProjectTrackerDataSource.GetGroups((String)navigationParameter);
+            this.DefaultViewModel["Groups"] = dataGroups;
         }
 
         /// <summary>
-        /// Invoked when an item is clicked.
+        /// Invoked when a group header is clicked.
         /// </summary>
-        /// <param name="sender">The GridView (or ListView when the application is snapped)
-        /// displaying the item clicked.</param>
-        /// <param name="e">Event data that describes the item clicked.</param>
-        void ItemView_ItemClick(object sender, ItemClickEventArgs e)
+        /// <param name="sender">The Button used as a group header for the selected group.</param>
+        /// <param name="e">Event data that describes how the click was initiated.</param>
+        void Header_Click(object sender, RoutedEventArgs e)
         {
-            // Navigate to the appropriate destination page, configuring the new page
-            // by passing required information as a navigation parameter
-            var itemId = ((SampleDataItem)e.ClickedItem).UniqueId;
-            this.Frame.Navigate(typeof(ItemDetailPage), itemId);
+          // Determine what group the Button instance represents
+          var group = (DataGroup)(sender as FrameworkElement).DataContext;
+
+          // Navigate to the appropriate destination page, configuring the new page
+          // by passing required information as a navigation parameter
+          if (group.UniqueId == "Projects")
+            this.Frame.Navigate(typeof(ProjectList));
+          else if (group.UniqueId == "Resources")
+            this.Frame.Navigate(typeof(ResourceList));
+          else if (group.UniqueId == "Roles")
+            this.Frame.Navigate(typeof(RoleList));
         }
     }
 }

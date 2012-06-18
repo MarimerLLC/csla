@@ -22,7 +22,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceAssignmentEditCreator>(projectId, callback);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static ResourceAssignmentEditCreator GetResourceAssignmentEditCreator(int projectId)
     {
       return DataPortal.Fetch<ResourceAssignmentEditCreator>(projectId);

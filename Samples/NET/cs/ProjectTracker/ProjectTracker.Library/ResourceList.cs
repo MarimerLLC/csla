@@ -38,13 +38,13 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginFetch<ResourceList>(callback);
     }
-#if WINRT
+#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<ResourceList> GetResourceListAsync()
     {
       return await DataPortal.FetchAsync<ResourceList>();
     }
 #endif
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>();

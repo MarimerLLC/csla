@@ -101,7 +101,7 @@ namespace ProjectTracker.Library
           Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void Child_Create(int resourceId)
     {
       using (BypassPropertyChecks)

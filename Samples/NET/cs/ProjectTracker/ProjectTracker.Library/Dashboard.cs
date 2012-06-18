@@ -37,13 +37,13 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginFetch<Dashboard>(callback);
     }
-#if WINRT
-    public async static Dashboard GetDashboardAsync()
+#if !WINDOWS_PHONE
+    public async static System.Threading.Tasks.Task<Dashboard> GetDashboardAsync()
     {
       return await DataPortal.FetchAsync<Dashboard>();
     }
 #endif
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static Dashboard GetDashboard()
     {
       return DataPortal.Fetch<Dashboard>();

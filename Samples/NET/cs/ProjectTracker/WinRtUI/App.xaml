@@ -18,7 +18,7 @@
 
             <!-- Application-specific resources -->
 
-            <x:String x:Key="AppName">WinRtUI</x:String>
+            <x:String x:Key="AppName">Project Tracker</x:String>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

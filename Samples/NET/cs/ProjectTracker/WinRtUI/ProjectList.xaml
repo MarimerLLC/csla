@@ -1,6 +1,6 @@
 ﻿<common:LayoutAwarePage
     x:Name="pageRoot"
-    x:Class="WinRtUI.ResourceList"
+    x:Class="WinRtUI.ProjectList"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
     IsTabStop="false"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,7 +18,7 @@
             x:Name="itemsViewSource"
             Source="{Binding Items}"/>
 
-    <DataTemplate x:Key="ResourceListItemTemplate">
+    <DataTemplate x:Key="ProjectListItemTemplate">
       <Grid Height="110" Margin="6">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto"/>
@@ -34,7 +34,6 @@
         </StackPanel>
       </Grid>
     </DataTemplate>
-
   </Page.Resources>
 
   <!--
@@ -57,7 +56,6 @@
       Grid.Row="0" Grid.ColumnSpan="2" MinWidth="200" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20"
       Background="{StaticResource ApplicationPageBackgroundThemeBrush}"/>
 
-
     <!-- Back button and page title -->
     <Grid x:Name="titlePanel">
       <Grid.ColumnDefinitions>
@@ -69,7 +67,7 @@
                 Click="GoBack"
                 IsEnabled="{Binding DefaultViewModel.CanGoBack, ElementName=pageRoot}"
                 Style="{StaticResource BackButtonStyle}"/>
-      <TextBlock x:Name="pageTitle" Grid.Column="1" Text="Resources" Style="{StaticResource PageHeaderTextStyle}"/>
+      <TextBlock x:Name="pageTitle" Grid.Column="1" Text="Projects" Style="{StaticResource PageHeaderTextStyle}"/>
     </Grid>
 
     <!-- Vertical scrolling item list -->
@@ -84,7 +82,7 @@
             ItemsSource="{Binding Source={StaticResource itemsViewSource}}"
             IsSwipeEnabled="False"
             SelectionChanged="ItemListView_SelectionChanged"
-            ItemTemplate="{StaticResource ResourceListItemTemplate}"/>
+            ItemTemplate="{StaticResource ProjectListItemTemplate}"/>
 
     <!-- Details for selected item -->
     <ScrollViewer
@@ -120,6 +118,8 @@
             <RowDefinition Height="Auto" MinHeight="35"/>
             <RowDefinition Height="Auto" MinHeight="35"/>
             <RowDefinition Height="Auto" MinHeight="35"/>
+            <RowDefinition Height="Auto" MinHeight="35"/>
+            <RowDefinition Height="Auto" MinHeight="35"/>
           </Grid.RowDefinitions>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -127,12 +127,18 @@
           </Grid.ColumnDefinitions>
           <TextBlock Grid.Column="0" Grid.Row="0" Text="Id: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
           <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Path=Model.Id}" Style="{StaticResource BodyTextStyle}" Margin="5"/>
-          <TextBlock Grid.Column="0" Grid.Row="1" Text="First name: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
-          <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Model.FirstName,Mode=TwoWay}" Margin="5"/>
-          <TextBlock Grid.Column="0" Grid.Row="2" Text="Last name: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
-          <TextBox Grid.Column="1" Grid.Row="2"  Text="{Binding Path=Model.LastName,Mode=TwoWay}"  Margin="5"/>
-          <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" d:LayoutOverrides="GridBox">
-            <Button Margin="5" Content="Save" Click="SaveResource"/>
+          <TextBlock Grid.Column="0" Grid.Row="1" Text="Name: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=Model.Name,Mode=TwoWay}" Margin="5"/>
+          <TextBlock Grid.Column="0" Grid.Row="2" Text="Started: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBox Grid.Column="1" Grid.Row="2"  Text="{Binding Path=Model.Started,Mode=TwoWay}"  Margin="5"/>
+          <TextBlock Grid.Column="0" Grid.Row="3" Text="Ended: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <TextBox Grid.Column="1" Grid.Row="3"  Text="{Binding Path=Model.Ended,Mode=TwoWay}"  Margin="5"/>
+          <TextBlock Grid.Column="0" Grid.Row="4" Text="Description: " Style="{StaticResource BodyTextStyle}" Margin="5"/>
+          <ScrollViewer Grid.Column="1" Grid.Row="4" VerticalScrollBarVisibility="Visible" MinHeight="100">
+            <TextBox Text="{Binding Path=Model.Description,Mode=TwoWay}"  Margin="5" AcceptsReturn="True" TextWrapping="Wrap"/>
+          </ScrollViewer>
+          <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" d:LayoutOverrides="GridBox">
+            <Button Margin="5" Content="Save" Click="SaveProject"/>
           </StackPanel>
         </Grid>
       </Grid>

@@ -24,7 +24,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ProjectResourceProperty, value); }
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static ProjectResourceEdit Update(int projectId, ProjectResourceEdit projectResource)
     {
       var cmd = new ProjectResourceUpdater { ProjectId = projectId, ProjectResource = projectResource };

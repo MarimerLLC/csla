@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
       });
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)

@@ -8,7 +8,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public ProjectResourceEdit Assign(int resourceId)
     {
       var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;
@@ -42,7 +42,7 @@ namespace ProjectTracker.Library
       return item > 0;
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void Child_Fetch(int projectId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

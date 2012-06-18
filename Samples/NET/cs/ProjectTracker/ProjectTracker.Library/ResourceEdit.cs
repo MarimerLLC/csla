@@ -139,7 +139,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginDelete<ResourceEdit>(id, callback);
     }
 
-#if WINRT
+#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<ResourceEdit> GetResourceAsync(int id)
     {
       return await DataPortal.FetchAsync<ResourceEdit>(id);
@@ -150,7 +150,8 @@ namespace ProjectTracker.Library
     {
       DataPortal.BeginCreate<ResourceEdit>(callback, DataPortal.ProxyModes.LocalOnly);
     }
-#else
+#endif
+#if !SILVERLIGHT && !NETFX_CORE
     public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
     {
       DataPortal.BeginCreate<ResourceEdit>(callback);

@@ -35,7 +35,7 @@ namespace ProjectTracker.Library
         new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>

@@ -26,7 +26,7 @@ namespace ProjectTracker.Library.Security
         });
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static bool Login(string username, string password)
     {
       var identity = PTIdentity.GetPTIdentity(username, password);

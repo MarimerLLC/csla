@@ -189,7 +189,18 @@ namespace ProjectTracker.Library
       DataPortal.BeginDelete<ProjectEdit>(id, callback);
     }
 
-#if !SILVERLIGHT
+#if !WINDOWS_PHONE
+    public async static System.Threading.Tasks.Task<ProjectEdit> NewProjectAsync()
+    {
+      return await DataPortal.CreateAsync<ProjectEdit>();
+    }
+
+    public async static System.Threading.Tasks.Task<ProjectEdit> GetProjectAsync(int id)
+    {
+      return await DataPortal.FetchAsync<ProjectEdit>(id);
+    }
+#endif
+#if !SILVERLIGHT && !NETFX_CORE
     public static ProjectEdit NewProject()
     {
       return DataPortal.Create<ProjectEdit>();

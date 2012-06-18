@@ -35,7 +35,7 @@ namespace ProjectTracker.Library
       return Name;
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void Child_Fetch(ProjectTracker.Dal.ResourceDto item)
     {
       Id = item.Id;

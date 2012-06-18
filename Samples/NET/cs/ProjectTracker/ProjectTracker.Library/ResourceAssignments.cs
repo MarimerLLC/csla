@@ -8,7 +8,7 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceAssignments : BusinessListBase<ResourceAssignments, ResourceAssignmentEdit>
   {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public ResourceAssignmentEdit AssignTo(int projectId)
     {
       if (!(Contains(projectId)))
@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
       return count > 0;
     }
 
-  #if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void Child_Fetch(int resourceId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

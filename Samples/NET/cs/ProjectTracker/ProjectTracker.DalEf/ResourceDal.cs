@@ -12,7 +12,6 @@ namespace ProjectTracker.DalEf
   {
     public List<ResourceDto> Fetch()
     {
-      System.Threading.Thread.Sleep(2000);
       using (var ctx = ObjectContextManager<PTrackerEntities>.GetManager("PTrackerEntities"))
       {
         var result = from r in ctx.ObjectContext.Resources
@@ -29,7 +28,6 @@ namespace ProjectTracker.DalEf
 
     public ResourceDto Fetch(int id)
     {
-      System.Threading.Thread.Sleep(3000);
       using (var ctx = ObjectContextManager<PTrackerEntities>.GetManager("PTrackerEntities"))
       {
         var result = (from r in ctx.ObjectContext.Resources

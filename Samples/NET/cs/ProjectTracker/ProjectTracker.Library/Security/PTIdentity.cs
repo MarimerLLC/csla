@@ -16,7 +16,7 @@ namespace ProjectTracker.Library.Security
       DataPortal.BeginFetch<PTIdentity>(new UsernameCriteria(username, password), callback);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static PTIdentity GetPTIdentity(string username, string password)
     {
       return DataPortal.Fetch<PTIdentity>(new UsernameCriteria(username, password));

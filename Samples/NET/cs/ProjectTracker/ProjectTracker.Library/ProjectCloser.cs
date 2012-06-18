@@ -36,7 +36,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginExecute<ProjectCloser>(cmd, callback);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     public static ProjectCloser CloseProject(int id)
     {
       ProjectCloser cmd = new ProjectCloser { ProjectId = id };

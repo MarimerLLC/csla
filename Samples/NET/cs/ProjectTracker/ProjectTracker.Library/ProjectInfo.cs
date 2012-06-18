@@ -25,12 +25,18 @@ namespace ProjectTracker.Library
       private set { LoadProperty(NameProperty, value); }
     }
 
+    public void SetName(ProjectEdit item)
+    {
+      Name = item.Name;
+      OnPropertyChanged(NameProperty);
+    }
+
     public override string ToString()
     {
       return Name;
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     private void Child_Fetch(ProjectTracker.Dal.ProjectDto item)
     {
       Id = item.Id;

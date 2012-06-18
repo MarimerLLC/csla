@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -137,6 +138,7 @@ namespace ProjectTracker.DalEf
         private ObjectSet<Role> _Roles;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -172,11 +174,11 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -209,7 +211,8 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -228,7 +231,7 @@ namespace ProjectTracker.DalEf
                 {
                     OnProjectIdChanging(value);
                     ReportPropertyChanging("ProjectId");
-                    _ProjectId = StructuralObject.SetValidValue(value);
+                    _ProjectId = StructuralObject.SetValidValue(value, "ProjectId");
                     ReportPropertyChanged("ProjectId");
                     OnProjectIdChanged();
                 }
@@ -255,7 +258,7 @@ namespace ProjectTracker.DalEf
                 {
                     OnResourceIdChanging(value);
                     ReportPropertyChanging("ResourceId");
-                    _ResourceId = StructuralObject.SetValidValue(value);
+                    _ResourceId = StructuralObject.SetValidValue(value, "ResourceId");
                     ReportPropertyChanged("ResourceId");
                     OnResourceIdChanged();
                 }
@@ -280,7 +283,7 @@ namespace ProjectTracker.DalEf
             {
                 OnAssignedChanging(value);
                 ReportPropertyChanging("Assigned");
-                _Assigned = StructuralObject.SetValidValue(value);
+                _Assigned = StructuralObject.SetValidValue(value, "Assigned");
                 ReportPropertyChanged("Assigned");
                 OnAssignedChanged();
             }
@@ -304,7 +307,7 @@ namespace ProjectTracker.DalEf
             {
                 OnRoleIdChanging(value);
                 ReportPropertyChanging("RoleId");
-                _RoleId = StructuralObject.SetValidValue(value);
+                _RoleId = StructuralObject.SetValidValue(value, "RoleId");
                 ReportPropertyChanged("RoleId");
                 OnRoleIdChanged();
             }
@@ -328,7 +331,7 @@ namespace ProjectTracker.DalEf
             {
                 OnLastChangedChanging(value);
                 ReportPropertyChanging("LastChanged");
-                _LastChanged = StructuralObject.SetValidValue(value, true);
+                _LastChanged = StructuralObject.SetValidValue(value, true, "LastChanged");
                 ReportPropertyChanged("LastChanged");
                 OnLastChangedChanged();
             }
@@ -338,7 +341,7 @@ namespace ProjectTracker.DalEf
         partial void OnLastChangedChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -456,6 +459,7 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -484,7 +488,8 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -503,7 +508,7 @@ namespace ProjectTracker.DalEf
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -528,7 +533,7 @@ namespace ProjectTracker.DalEf
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -552,7 +557,7 @@ namespace ProjectTracker.DalEf
             {
                 OnStartedChanging(value);
                 ReportPropertyChanging("Started");
-                _Started = StructuralObject.SetValidValue(value);
+                _Started = StructuralObject.SetValidValue(value, "Started");
                 ReportPropertyChanged("Started");
                 OnStartedChanged();
             }
@@ -576,7 +581,7 @@ namespace ProjectTracker.DalEf
             {
                 OnEndedChanging(value);
                 ReportPropertyChanging("Ended");
-                _Ended = StructuralObject.SetValidValue(value);
+                _Ended = StructuralObject.SetValidValue(value, "Ended");
                 ReportPropertyChanged("Ended");
                 OnEndedChanged();
             }
@@ -600,7 +605,7 @@ namespace ProjectTracker.DalEf
             {
                 OnDescriptionChanging(value);
                 ReportPropertyChanging("Description");
-                _Description = StructuralObject.SetValidValue(value, true);
+                _Description = StructuralObject.SetValidValue(value, true, "Description");
                 ReportPropertyChanged("Description");
                 OnDescriptionChanged();
             }
@@ -624,7 +629,7 @@ namespace ProjectTracker.DalEf
             {
                 OnLastChangedChanging(value);
                 ReportPropertyChanging("LastChanged");
-                _LastChanged = StructuralObject.SetValidValue(value, true);
+                _LastChanged = StructuralObject.SetValidValue(value, true, "LastChanged");
                 ReportPropertyChanged("LastChanged");
                 OnLastChangedChanged();
             }
@@ -634,7 +639,7 @@ namespace ProjectTracker.DalEf
         partial void OnLastChangedChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -660,6 +665,7 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -690,7 +696,8 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -709,7 +716,7 @@ namespace ProjectTracker.DalEf
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -734,7 +741,7 @@ namespace ProjectTracker.DalEf
             {
                 OnLastNameChanging(value);
                 ReportPropertyChanging("LastName");
-                _LastName = StructuralObject.SetValidValue(value, false);
+                _LastName = StructuralObject.SetValidValue(value, false, "LastName");
                 ReportPropertyChanged("LastName");
                 OnLastNameChanged();
             }
@@ -758,7 +765,7 @@ namespace ProjectTracker.DalEf
             {
                 OnFirstNameChanging(value);
                 ReportPropertyChanging("FirstName");
-                _FirstName = StructuralObject.SetValidValue(value, false);
+                _FirstName = StructuralObject.SetValidValue(value, false, "FirstName");
                 ReportPropertyChanged("FirstName");
                 OnFirstNameChanged();
             }
@@ -782,7 +789,7 @@ namespace ProjectTracker.DalEf
             {
                 OnLastChangedChanging(value);
                 ReportPropertyChanging("LastChanged");
-                _LastChanged = StructuralObject.SetValidValue(value, true);
+                _LastChanged = StructuralObject.SetValidValue(value, true, "LastChanged");
                 ReportPropertyChanged("LastChanged");
                 OnLastChangedChanged();
             }
@@ -792,7 +799,7 @@ namespace ProjectTracker.DalEf
         partial void OnLastChangedChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -818,6 +825,7 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -846,7 +854,8 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -865,7 +874,7 @@ namespace ProjectTracker.DalEf
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -890,7 +899,7 @@ namespace ProjectTracker.DalEf
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -914,7 +923,7 @@ namespace ProjectTracker.DalEf
             {
                 OnLastChangedChanging(value);
                 ReportPropertyChanging("LastChanged");
-                _LastChanged = StructuralObject.SetValidValue(value, true);
+                _LastChanged = StructuralObject.SetValidValue(value, true, "LastChanged");
                 ReportPropertyChanged("LastChanged");
                 OnLastChangedChanged();
             }
@@ -924,7 +933,7 @@ namespace ProjectTracker.DalEf
         partial void OnLastChangedChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -950,8 +959,9 @@ namespace ProjectTracker.DalEf
         }
 
         #endregion
+
     }
 
     #endregion
-    
+
 }

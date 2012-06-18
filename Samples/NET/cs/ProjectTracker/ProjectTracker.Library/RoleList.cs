@@ -47,7 +47,7 @@ namespace ProjectTracker.Library
         callback(null, new DataPortalResult<RoleList>(_list, null, null));
     }
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     public static int DefaultRole()
     {
       var list = _list; // get list from cache

@@ -433,7 +433,7 @@ namespace Csla
           tcs.SetException(e.Error);
         else
           tcs.SetResult(e.Object);
-      }, proxyMode);
+      }, proxyMode, null);
       return tcs.Task;
     }
 
@@ -480,7 +480,7 @@ namespace Csla
           tcs.SetException(e.Error);
         else
           tcs.SetResult(e.Object);
-      }, proxyMode);
+      }, proxyMode, null);
       return tcs.Task;
     }
 #endif
@@ -609,13 +609,13 @@ namespace Csla
       where T : IMobileObject
     {
       var tcs = new TaskCompletionSource<T>();
-      BeginUpdate<T>(obj, (o, e) =>
+      BeginUpdate<T>(obj, proxyMode, (o, e) =>
       {
         if (e.Error != null)
           tcs.SetException(e.Error);
         else
           tcs.SetResult(e.Object);
-      }, proxyMode);
+      }, null);
       return tcs.Task;
     }
 #endif
@@ -724,13 +724,13 @@ namespace Csla
       where T : IMobileObject
     {
       var tcs = new TaskCompletionSource<T>();
-      BeginDelete<T>(criteria, (o, e) =>
+      BeginDelete<T>(criteria, proxyMode, (o, e) =>
       {
         if (e.Error != null)
           tcs.SetException(e.Error);
         else
           tcs.SetResult(e.Object);
-      }, proxyMode);
+      }, null);
       return tcs.Task;
     }
 #endif
@@ -847,13 +847,13 @@ namespace Csla
       where T : Core.ICommandObject
     {
       var tcs = new TaskCompletionSource<T>();
-      BeginExecute<T>(command, (o, e) =>
+      BeginExecute<T>(command, proxyMode, (o, e) =>
       {
         if (e.Error != null)
           tcs.SetException(e.Error);
         else
           tcs.SetResult(e.Object);
-      }, proxyMode);
+      });
       return tcs.Task;
     }
 #endif

@@ -210,9 +210,6 @@
     <Compile Include="..\Csla.Silverlight\DataPortalClient\ChildDataPortal.cs">
       <Link>DataPortalClient\ChildDataPortal.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\FactoryProxy.cs">
-      <Link>DataPortalClient\FactoryProxy.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\DataPortalClient\IDataPortalProxy.cs">
       <Link>DataPortalClient\IDataPortalProxy.cs</Link>
     </Compile>
@@ -396,6 +393,9 @@
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Reflection\ReflectionExtension.cs">
+      <Link>Reflection\ReflectionExtension.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
     </Compile>
@@ -491,6 +491,12 @@
     </Compile>
     <Compile Include="..\Csla\Server\Hosts\Silverlight\PrimitiveCriteria.cs">
       <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IObjectFactoryLoader.cs">
+      <Link>Server\IObjectFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ObjectFactoryLoader.cs">
+      <Link>Server\ObjectFactoryLoader.cs</Link>
     </Compile>
     <Compile Include="..\Csla\SingleCriteria.cs">
       <Link>SingleCriteria.cs</Link>
@@ -636,6 +642,7 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
+    <Compile Include="DataPortalClient\FactoryProxy.cs" />
     <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -649,6 +656,7 @@
     <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="Resources.resw" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

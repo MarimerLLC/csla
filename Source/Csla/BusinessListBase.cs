@@ -1070,6 +1070,40 @@ namespace Csla
       }
     }
 
+#if WINRT
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    public async System.Threading.Tasks.Task<T> SaveAsync()
+    {
+      return await this.SaveAsync(DataPortal.ProxyModes.Auto);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="proxyMode">Sets the DataPortal.ProxyMode to either Auto or Local</param>
+    public async System.Threading.Tasks.Task<T> SaveAsync(DataPortal.ProxyModes proxyMode)
+    {
+      T result;
+      if (this.IsChild)
+        throw new InvalidOperationException(Resources.NoSaveChildException);
+      if (EditLevel > 0)
+        throw new InvalidOperationException(Resources.NoSaveEditingException);
+      if (!IsValid)
+        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
+      if (IsBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+      if (IsDirty)
+        result = await DataPortal.UpdateAsync<T>(this, proxyMode);
+      else
+        result = (T)this;
+      OnSaved(result, null, null);
+      return result;
+    }
+
+#endif
+
 #if SILVERLIGHT
     /// <summary>
     /// Override this method to load a new business object with default

@@ -335,6 +335,15 @@ namespace Csla
     /// </summary>
     public async System.Threading.Tasks.Task<T> SaveAsync()
     {
+      return await this.SaveAsync(DataPortal.ProxyModes.Auto);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="proxyMode">Sets the DataPortal.ProxyMode to either Auto or Local</param>
+    public async System.Threading.Tasks.Task<T> SaveAsync(DataPortal.ProxyModes proxyMode)
+    {
       T result;
       if (this.IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
@@ -345,7 +354,7 @@ namespace Csla
       if (IsBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>(this);
+        result = await DataPortal.UpdateAsync<T>(this, proxyMode);
       else
         result = (T)this;
       OnSaved(result, null, null);
@@ -369,7 +378,28 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      return await this.SaveAsync();
+      return await this.SaveAsync(DataPortal.ProxyModes.Auto);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <param name="proxyMode">Sets the DataPortal.ProxyMode to either Auto or Local</param>
+    public async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate, DataPortal.ProxyModes proxyMode)
+    {
+      if (forceUpdate && IsNew)
+      {
+        // mark the object as old - which makes it
+        // not dirty
+        MarkOld();
+        // now mark the object as dirty so it can save
+        MarkDirty(true);
+      }
+      return await this.SaveAsync(proxyMode);
     }
 #endif
 

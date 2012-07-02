@@ -1008,6 +1008,42 @@ namespace Csla.Reflection
       return result;
     }
 
+#if !WINDOWS_PHONE
+    /// <summary>
+    /// Invokes an instance method on an object. If the method
+    /// is async returning Task of object it will be invoked using an await statement.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="info">Method info object.</param>
+    /// <returns>Any exception that occurs while invoking the method.</returns>
+    public async static System.Threading.Tasks.Task<Exception> CallMethodAsync(object obj, System.Reflection.MethodInfo info)
+    {
+#if WINRT
+      var isgeneric = info.ReturnType.IsGenericType();
+#else
+      var isgeneric = info.ReturnType.IsGenericType;
+#endif
+      if (isgeneric && info.ReturnType.GetGenericTypeDefinition() == (typeof(System.Threading.Tasks.Task<>)))
+        try
+        {
+          await (System.Threading.Tasks.Task<object>)info.Invoke(obj, null);
+        }
+        catch (InvalidCastException ex)
+        {
+          return new NotSupportedException(
+            string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + info.Name), 
+            ex);
+        }
+        catch (Exception ex)
+        {
+          return new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, ex);
+        }
+      else
+        CallMethod(obj, info);
+      return null;
+    }
+#endif
+
     /// <summary>
     /// Invokes a static factory method.
     /// </summary>

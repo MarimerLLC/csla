@@ -1222,5 +1222,16 @@
         return "BinaryWriterObjectSerializationException";
       }
     }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string TaskOfObjectException
+    {
+      get
+      {
+        return "Method {0} must return Task";
+      }
+    }
   }
 }

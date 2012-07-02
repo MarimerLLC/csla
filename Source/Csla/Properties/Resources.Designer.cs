@@ -952,6 +952,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Method {0} must return Task&lt;object&gt;.
+        /// </summary>
+        public static string TaskOfObjectException {
+            get {
+                return ResourceManager.GetString("TaskOfObjectException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
         /// </summary>
         public static string TypeLoadException {

@@ -393,9 +393,6 @@
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Reflection\ReflectionExtension.cs">
-      <Link>Reflection\ReflectionExtension.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
     </Compile>
@@ -656,7 +653,6 @@
     <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PRIResource Include="Resources.resw" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

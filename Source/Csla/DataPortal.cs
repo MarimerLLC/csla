@@ -141,7 +141,7 @@ namespace Csla
           catch (AggregateException ex)
           {
             if (ex.InnerExceptions.Count > 0)
-              throw ex.InnerExceptions[0].InnerException;
+              throw ex.InnerExceptions[0];
             else
               throw;
           }
@@ -230,7 +230,7 @@ namespace Csla
           catch (AggregateException ex)
           {
             if (ex.InnerExceptions.Count > 0)
-              throw ex.InnerExceptions[0].InnerException;
+              throw ex.InnerExceptions[0];
             else
               throw;
           }
@@ -463,7 +463,7 @@ namespace Csla
           catch (AggregateException ex)
           {
             if (ex.InnerExceptions.Count > 0)
-              throw ex.InnerExceptions[0].InnerException;
+              throw ex.InnerExceptions[0];
             else
               throw;
           }
@@ -533,7 +533,7 @@ namespace Csla
           catch (AggregateException ex)
           {
             if (ex.InnerExceptions.Count > 0)
-              throw ex.InnerExceptions[0].InnerException;
+              throw ex.InnerExceptions[0];
             else
               throw;
           }

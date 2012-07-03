@@ -19,6 +19,8 @@ namespace Csla.Reflection
     public bool HasFinalArrayParam { get; private set; }
     public int MethodParamsLength { get; private set; }
     public Type FinalArrayElementType { get; private set; }
+    public bool IsAsyncTask { get; private set; }
+    public bool IsAsyncTaskObject { get; private set; }
 
     public DynamicMethodHandle(System.Reflection.MethodInfo info, params object[] parameters)
     {
@@ -42,10 +44,12 @@ namespace Csla.Reflection
         }
         var pCount = infoParams.Length;
 #if WINRT
+        var isgeneric = info.ReturnType.IsGenericType();
         if (pCount > 0 &&
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
            (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
 #else
+        var isgeneric = info.ReturnType.IsGenericType;
         if (pCount > 0 &&
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
            (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
@@ -55,6 +59,8 @@ namespace Csla.Reflection
           this.MethodParamsLength = pCount;
           this.FinalArrayElementType = infoParams[pCount - 1].ParameterType;
         }
+        IsAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
+        IsAsyncTaskObject = (isgeneric && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
         this.DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(info);
       }
     }

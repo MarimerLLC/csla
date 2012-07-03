@@ -6,6 +6,7 @@
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 using System.Transactions;
 
 namespace Csla.Server
@@ -34,14 +35,14 @@ namespace Csla.Server
     /// the object.</param>
     /// <param name="context">Context data from the client.</param>
     /// <returns>A populated business object.</returns>
-    public DataPortalResult Create(
+    public async Task<DataPortalResult> Create(
       System.Type objectType, object criteria, DataPortalContext context)
     {
       DataPortalResult result;
       using (TransactionScope tr = new TransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = portal.Create(objectType, criteria, context);
+        result = await portal.Create(objectType, criteria, context);
         tr.Complete();
       }
       return result;
@@ -62,13 +63,13 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Object containing context data from client.</param>
     /// <returns>A populated business object.</returns>
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       DataPortalResult result;
       using (TransactionScope tr = new TransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = portal.Fetch(objectType, criteria, context);
+        result = await portal.Fetch(objectType, criteria, context);
         tr.Complete();
       }
       return result;
@@ -88,13 +89,13 @@ namespace Csla.Server
     /// <param name="obj">A reference to the object being updated.</param>
     /// <param name="context">Context data from the client.</param>
     /// <returns>A reference to the newly updated object.</returns>
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
     {
       DataPortalResult result;
       using (TransactionScope tr = new TransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = portal.Update(obj, context);
+        result = await portal.Update(obj, context);
         tr.Complete();
       }
       return result;
@@ -114,13 +115,13 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
     {
       DataPortalResult result;
       using (TransactionScope tr = new TransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = portal.Delete(objectType, criteria, context);
+        result = await portal.Delete(objectType, criteria, context);
         tr.Complete();
       }
       return result;

@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 using Csla.Server;
 
 namespace Csla.DataPortalClient
@@ -29,10 +30,10 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Create(
+    public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context)
     {
-      return _portal.Create(objectType, criteria, context);
+      return await _portal.Create(objectType, criteria, context);
     }
 
     /// <summary>
@@ -44,9 +45,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
     {
-      return _portal.Fetch(objectType, criteria, context);
+      return await _portal.Fetch(objectType, criteria, context);
     }
 
     /// <summary>
@@ -57,9 +58,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
     {
-      return _portal.Update(obj, context);
+      return await _portal.Update(obj, context);
     }
 
     /// <summary>
@@ -71,9 +72,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
     {
-      return _portal.Delete(objectType, criteria, context);
+      return await _portal.Delete(objectType, criteria, context);
     }
 
     /// <summary>

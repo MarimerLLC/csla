@@ -263,6 +263,7 @@
     <Compile Include="Server\EmptyCriteria.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
     <Compile Include="Server\GenericBusinessException.cs" />
+    <Compile Include="Server\Hosts\RemotingPortal.cs" />
     <Compile Include="Server\Hosts\Silverlight\ISilverlightRequest.cs" />
     <Compile Include="Server\Hosts\Silverlight\PrimitiveCriteria.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs" />
@@ -318,17 +319,13 @@
     <Compile Include="Core\UndoableBase.cs" />
     <Compile Include="Core\UndoException.cs" />
     <Compile Include="DataPortal.cs" />
-    <Compile Include="DataPortalClient\EnterpriseServicesProxy.cs" />
     <Compile Include="DataPortalClient\IDataPortalProxy.cs" />
     <Compile Include="DataPortalClient\LocalProxy.cs" />
-    <Compile Include="DataPortalClient\RemotingProxy.cs" />
     <Compile Include="DataPortalClient\WcfProxy.cs" />
     <Compile Include="CriteriaBase.cs" />
     <Compile Include="DataPortalEventArgs.cs" />
     <Compile Include="DataPortalException.cs" />
-    <Compile Include="Server\Hosts\EnterpriseServicesPortal.cs" />
     <Compile Include="Server\Hosts\IWcfPortal.cs" />
-    <Compile Include="Server\Hosts\RemotingPortal.cs" />
     <Compile Include="Server\Hosts\WcfChannel\CreateRequest.cs" />
     <Compile Include="Server\Hosts\WcfChannel\DeleteRequest.cs" />
     <Compile Include="Server\Hosts\WcfChannel\FetchRequest.cs" />

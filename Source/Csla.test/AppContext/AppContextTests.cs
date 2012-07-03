@@ -388,7 +388,7 @@ namespace Csla.Test.AppContext
     public void FailFetchContext()
     {
       ApplicationContext.GlobalContext.Clear();
-      ExceptionRoot root;
+      ExceptionRoot root = null;
       try
       {
         root = ExceptionRoot.GetExceptionRoot("fail");
@@ -399,6 +399,10 @@ namespace Csla.Test.AppContext
         root = (ExceptionRoot)ex.BusinessObject;
         Assert.AreEqual("Fail fetch", ex.GetBaseException().Message, "Base exception message incorrect");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Fetch failed"), "Exception message incorrect");
+      }
+      catch (Exception ex)
+      {
+        Assert.Fail("Unexpected exception: " + ex.ToString());
       }
 
       Assert.AreEqual("fail", root.Data, "Business object not returned");

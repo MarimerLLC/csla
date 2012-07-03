@@ -268,25 +268,6 @@ namespace Csla
     /// </para><para>
     /// The value "Local" is a shortcut to running the DataPortal
     /// "server" in the client process.
-    /// </para><para>
-    /// Other built-in values include:
-    /// <list>
-    /// <item>
-    /// <term>Csla,Csla.DataPortalClient.RemotingProxy</term>
-    /// <description>Use .NET Remoting to communicate with the server</description>
-    /// </item>
-    /// <item>
-    /// <term>Csla,Csla.DataPortalClient.EnterpriseServicesProxy</term>
-    /// <description>Use Enterprise Services (DCOM) to communicate with the server</description>
-    /// </item>
-    /// <item>
-    /// <term>Csla,Csla.DataPortalClient.WebServicesProxy</term>
-    /// <description>Use Web Services (asmx) to communicate with the server</description>
-    /// </item>
-    /// </list>
-    /// Each proxy type does require that the DataPortal server be hosted using the appropriate
-    /// technology. For instance, Web Services and Remoting should be hosted in IIS, while
-    /// Enterprise Services must be hosted in COM+.
     /// </para>
     /// </remarks>
     public static string DataPortalProxy

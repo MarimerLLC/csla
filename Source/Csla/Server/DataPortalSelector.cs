@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Properties;
+using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -20,8 +21,6 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalSelector : IDataPortalServer
   {
-    #region IDataPortalServer Members
-
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -30,7 +29,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -38,12 +37,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return dp.Create(objectType, criteria, context);
+          return await dp.Create(objectType, criteria, context);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return dp.Create(objectType, criteria, context);
+          return await dp.Create(objectType, criteria, context);
         }
       }
       catch (DataPortalException)
@@ -66,7 +65,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -74,12 +73,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return dp.Fetch(objectType, criteria, context);
+          return await dp.Fetch(objectType, criteria, context);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return dp.Fetch(objectType, criteria, context);
+          return await dp.Fetch(objectType, criteria, context);
         }
       }
       catch (DataPortalException)
@@ -101,7 +100,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
     {
       try
       {
@@ -109,12 +108,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return dp.Update(obj, context);
+          return await dp.Update(obj, context);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return dp.Update(obj, context);
+          return await dp.Update(obj, context);
         }
       }
       catch (DataPortalException)
@@ -137,7 +136,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
     {
       try
       {
@@ -145,12 +144,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return dp.Delete(objectType, criteria, context);
+          return await dp.Delete(objectType, criteria, context);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return dp.Delete(objectType, criteria, context);
+          return await dp.Delete(objectType, criteria, context);
         }
       }
       catch (DataPortalException)
@@ -164,7 +163,5 @@ namespace Csla.Server
           ex, new DataPortalResult());
       }
     }
-
-    #endregion
   }
 }

@@ -30,7 +30,7 @@ namespace Csla.Server.Hosts.WcfChannel
     }
 
     /// <summary>
-    /// Criteria object describing business object.
+    /// Busines object or exception return as result of service call.
     /// </summary>
     public object Result
     {

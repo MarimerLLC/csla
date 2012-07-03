@@ -13,7 +13,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through .NET Remoting.
   /// </summary>
-  public class RemotingPortal : MarshalByRefObject, Server.IDataPortalServer
+  public class RemotingPortal : MarshalByRefObject//, Server.IDataPortalServer
   {
     /// <summary>
     /// Create a new business object.
@@ -27,7 +27,7 @@ namespace Csla.Server.Hosts
       Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Create(objectType, criteria, context);
+      return portal.Create(objectType, criteria, context).Result;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Fetch(objectType, criteria, context);
+      return portal.Fetch(objectType, criteria, context).Result;
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Update(obj, context);
+      return portal.Update(obj, context).Result;
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Delete(objectType, criteria, context);
+      return portal.Delete(objectType, criteria, context).Result;
     }
   }
 }

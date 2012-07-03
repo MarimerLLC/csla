@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Csla.Server;
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
@@ -19,8 +20,6 @@ namespace Csla.DataPortalClient
   /// </summary>
   public class WcfProxy : Csla.DataPortalClient.IDataPortalProxy
   {
-    #region IDataPortalProxy Members
-
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
@@ -29,10 +28,6 @@ namespace Csla.DataPortalClient
     {
       get { return true; }
     }
-
-    #endregion
-
-    #region IDataPortalServer Members
 
     private string _endPoint = "WcfDataPortal";
 
@@ -106,7 +101,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+#pragma warning disable 1998
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+#pragma warning restore 1998
     {
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
@@ -138,7 +135,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+#pragma warning disable 1998
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+#pragma warning restore 1998
     {
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
@@ -171,7 +170,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Update(object obj, DataPortalContext context)
+#pragma warning disable 1998
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+#pragma warning restore 1998
     {
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
@@ -205,7 +206,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+#pragma warning disable 1998
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+#pragma warning restore 1998
     {
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
@@ -229,7 +232,5 @@ namespace Csla.DataPortalClient
         throw (Exception)result;
       return (DataPortalResult)result;
     }
-
-    #endregion
   }
 }

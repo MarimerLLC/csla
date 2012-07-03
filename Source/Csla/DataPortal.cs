@@ -134,7 +134,17 @@ namespace Csla
 
         try
         {
-          result = proxy.Create(objectType, criteria, dpContext);
+          try
+          {
+            result = proxy.Create(objectType, criteria, dpContext).Result;
+          }
+          catch (AggregateException ex)
+          {
+            if (ex.InnerExceptions.Count > 0)
+              throw ex.InnerExceptions[0].InnerException;
+            else
+              throw;
+          }
         }
         catch (Server.DataPortalException ex)
         {
@@ -213,7 +223,17 @@ namespace Csla
 
         try
         {
-          result = proxy.Fetch(objectType, criteria, dpContext);
+          try
+          {
+            result = proxy.Fetch(objectType, criteria, dpContext).Result;
+          }
+          catch (AggregateException ex)
+          {
+            if (ex.InnerExceptions.Count > 0)
+              throw ex.InnerExceptions[0].InnerException;
+            else
+              throw;
+          }
         }
         catch (Server.DataPortalException ex)
         {
@@ -436,7 +456,17 @@ namespace Csla
             if (cloneable != null)
               obj = (T)cloneable.Clone();
           }
-          result = proxy.Update(obj, dpContext);
+          try
+          {
+            result = proxy.Update(obj, dpContext).Result;
+          }
+          catch (AggregateException ex)
+          {
+            if (ex.InnerExceptions.Count > 0)
+              throw ex.InnerExceptions[0].InnerException;
+            else
+              throw;
+          }
         }
         catch (Server.DataPortalException ex)
         {
@@ -496,7 +526,17 @@ namespace Csla
 
         try
         {
-          result = proxy.Delete(objectType, criteria, dpContext);
+          try
+          {
+            result = proxy.Delete(objectType, criteria, dpContext).Result;
+          }
+          catch (AggregateException ex)
+          {
+            if (ex.InnerExceptions.Count > 0)
+              throw ex.InnerExceptions[0].InnerException;
+            else
+              throw;
+          }
         }
         catch (Server.DataPortalException ex)
         {

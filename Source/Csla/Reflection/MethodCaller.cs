@@ -1009,38 +1009,65 @@ namespace Csla.Reflection
     }
 
 #if !WINDOWS_PHONE
+        /// <summary>
+    /// Uses reflection to dynamically invoke a method,
+    /// throwing an exception if it is not
+    /// implemented on the target object.
+    /// </summary>
+    /// <param name="obj">
+    /// Object containing method.
+    /// </param>
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
+    {
+      return await CallMethodTryAsync(obj, method, true, parameters);
+    }
+
     /// <summary>
     /// Invokes an instance method on an object. If the method
     /// is async returning Task of object it will be invoked using an await statement.
     /// </summary>
     /// <param name="obj">Object containing method.</param>
-    /// <param name="info">Method info object.</param>
-    /// <returns>Any exception that occurs while invoking the method.</returns>
-    public async static System.Threading.Tasks.Task<Exception> CallMethodAsync(object obj, System.Reflection.MethodInfo info)
+    /// <param name="method">
+    /// Name of the method.
+    /// </param>
+    public async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method)
     {
-#if WINRT
-      var isgeneric = info.ReturnType.IsGenericType();
-#else
-      var isgeneric = info.ReturnType.IsGenericType;
-#endif
-      if (isgeneric && info.ReturnType.GetGenericTypeDefinition() == (typeof(System.Threading.Tasks.Task<>)))
-        try
+      return await CallMethodTryAsync(obj, method, false, null);
+    }
+
+    private async static System.Threading.Tasks.Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
+    {
+      try
+      {
+        var mh = GetCachedMethod(obj, method, hasParameters, parameters);
+        if (mh == null || mh.DynamicMethod == null)
+          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        if (mh.IsAsyncTask)
         {
-          await (System.Threading.Tasks.Task<object>)info.Invoke(obj, null);
+          await (System.Threading.Tasks.Task)CallMethod(obj, mh, hasParameters, parameters);
+          return null;
         }
-        catch (InvalidCastException ex)
+        else if (mh.IsAsyncTaskObject)
         {
-          return new NotSupportedException(
-            string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + info.Name), 
-            ex);
+          return await (System.Threading.Tasks.Task<object>)CallMethod(obj, mh, hasParameters, parameters);
         }
-        catch (Exception ex)
+        else
         {
-          return new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, ex);
+          return CallMethod(obj, mh, hasParameters, parameters);
         }
-      else
-        CallMethod(obj, info);
-      return null;
+      }
+      catch (InvalidCastException ex)
+      {
+        throw new NotSupportedException(
+          string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + method),
+          ex);
+      }
     }
 #endif
 

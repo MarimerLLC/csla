@@ -20,8 +20,6 @@ namespace Csla.Server.Hosts
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
-    #region IWcfPortal Members
-
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -33,7 +31,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Create(request.ObjectType, request.Criteria, request.Context);
+        result = portal.Create(request.ObjectType, request.Criteria, request.Context).Result;
       }
       catch (Exception ex)
       {
@@ -53,7 +51,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context);
+        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context).Result;
       }
       catch (Exception ex)
       {
@@ -73,7 +71,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Update(request.Object, request.Context);
+        result = portal.Update(request.Object, request.Context).Result;
       }
       catch (Exception ex)
       {
@@ -93,7 +91,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Delete(request.ObjectType, request.Criteria, request.Context);
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context).Result;
       }
       catch (Exception ex)
       {
@@ -101,7 +99,5 @@ namespace Csla.Server.Hosts
       }
       return new WcfResponse(result);
     }
-
-    #endregion
   }
 }

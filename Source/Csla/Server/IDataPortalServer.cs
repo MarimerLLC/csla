@@ -6,6 +6,7 @@
 // <summary>Interface implemented by server-side data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -23,7 +24,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    DataPortalResult Create(Type objectType, object criteria, DataPortalContext context);
+    Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context);
     /// <summary>
     /// Get an existing business object.
     /// </summary>
@@ -32,7 +33,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context);
+    Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context);
     /// <summary>
     /// Update a business object.
     /// </summary>
@@ -40,7 +41,7 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    DataPortalResult Update(object obj, DataPortalContext context);
+    Task<DataPortalResult> Update(object obj, DataPortalContext context);
     /// <summary>
     /// Delete a business object.
     /// </summary>
@@ -49,6 +50,6 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context);
+    Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context);
   }
 }

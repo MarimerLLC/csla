@@ -8,9 +8,10 @@
 using System;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Csla.Server;
-using DataPortalContext=Csla.Server.DataPortalContext;
-using IDataPortalServer=Csla.Server.IDataPortalServer;
+using DataPortalContext = Csla.Server.DataPortalContext;
+using IDataPortalServer = Csla.Server.IDataPortalServer;
 
 namespace Csla.Testing.Business.TestProxies
 {
@@ -24,9 +25,9 @@ namespace Csla.Testing.Business.TestProxies
     private const int TIMEOUT = 70000;
 
     AppDomain _appDomain;
-    IDataPortalServer _portal;
+    Csla.Server.Hosts.RemotingPortal _portal;
 
-    IDataPortalServer Portal
+    Csla.Server.Hosts.RemotingPortal Portal
     {
       get
       {
@@ -45,7 +46,7 @@ namespace Csla.Testing.Business.TestProxies
             _appDomain.UnhandledException += new UnhandledExceptionEventHandler(_appDomain_UnhandledException);
           }
           if (_portal == null)
-            _portal = (IDataPortalServer)_appDomain.CreateInstanceAndUnwrap(
+            _portal = (Csla.Server.Hosts.RemotingPortal)_appDomain.CreateInstanceAndUnwrap(
               "Csla", "Csla.Server.Hosts.RemotingPortal");
         }
         catch (Exception ex)
@@ -83,7 +84,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public DataPortalResult Create(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
     {
       var t = new Thread(DoCreate);
       var task = new CreateTask{
@@ -127,7 +128,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       var t = new Thread(DoFetch);
       var task = 
@@ -172,7 +173,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
     {
       //Security.BusinessPrincipal
       //var temp = new DataPortalContext(new UnauthenticatedPrincipal(), context.IsRemotePortal);
@@ -216,7 +217,7 @@ namespace Csla.Testing.Business.TestProxies
 
     #region Delete
 
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
     {
       var t = new Thread(DoDelete);
       var task = 

@@ -9,6 +9,7 @@
 using System;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -38,11 +39,11 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
-    public DataPortalResult Create(
+    public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context)
     {
       var portal = new DataPortalSelector();
-      return portal.Create(objectType, criteria, context);
+      return await portal.Create(objectType, criteria, context);
     }
 
     /// <summary>
@@ -59,10 +60,10 @@ namespace Csla.Server
     /// <param name="context">Object containing context data from client.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
-    public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       var portal = new DataPortalSelector();
-      return portal.Fetch(objectType, criteria, context);
+      return await portal.Fetch(objectType, criteria, context);
     }
 
     /// <summary>
@@ -78,10 +79,10 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <returns>A reference to the newly updated object.</returns>
     [AutoComplete(true)]
-    public DataPortalResult Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
     {
       var portal = new DataPortalSelector();
-      return portal.Update(obj, context);
+      return await portal.Update(obj, context);
     }
 
     /// <summary>
@@ -97,10 +98,10 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     [AutoComplete(true)]
-    public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
     {
       var portal = new DataPortalSelector();
-      return portal.Delete(objectType, criteria, context);
+      return await portal.Delete(objectType, criteria, context);
     }
   }
 }

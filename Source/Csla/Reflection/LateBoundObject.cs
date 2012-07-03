@@ -110,69 +110,69 @@ namespace Csla.Reflection
     }
 
 #if !WINDOWS_PHONE
-    /// <summary>
-    /// Gets a value indicating whether the specified method
-    /// returns a Task of object.
-    /// </summary>
-    /// <param name="methodName">Name of the method.</param>
-    /// <returns>True if the method returns a Task of object.</returns>
-    public bool IsMethodAsync(string methodName)
-    {
-      var info = this.Instance.GetType().GetMethod(methodName);
-#if WINRT
-      var isgeneric = info.ReturnType.IsGenericType();
-#else
-     var isgeneric = info.ReturnType.IsGenericType;
-#endif
-      return (info.ReturnType.Equals(typeof(Task)));
-    }
+//    /// <summary>
+//    /// Gets a value indicating whether the specified method
+//    /// returns a Task of object.
+//    /// </summary>
+//    /// <param name="methodName">Name of the method.</param>
+//    /// <returns>True if the method returns a Task of object.</returns>
+//    public bool IsMethodAsync(string methodName)
+//    {
+//      var info = this.Instance.GetType().GetMethod(methodName);
+//#if WINRT
+//      var isgeneric = info.ReturnType.IsGenericType();
+//#else
+//     var isgeneric = info.ReturnType.IsGenericType;
+//#endif
+//      return (info.ReturnType.Equals(typeof(Task)));
+//    }
 
-    /// <summary>
-    /// Uses reflection to dynamically invoke a method,
-    /// throwing an exception if it is not
-    /// implemented on the target object.
-    /// </summary>
-    /// <param name="method">
-    /// Name of the method.
-    /// </param>
-    public async Task CallMethodAsync(string method)
-    {
-      try
-      {
-        await (Task)MethodCaller.CallMethod(this.Instance, method);
-      }
-      catch (InvalidCastException ex)
-      {
-        throw new NotSupportedException(
-          string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
-          ex);
-      }
-    }
+    ///// <summary>
+    ///// Uses reflection to dynamically invoke a method,
+    ///// throwing an exception if it is not
+    ///// implemented on the target object.
+    ///// </summary>
+    ///// <param name="method">
+    ///// Name of the method.
+    ///// </param>
+    //public async Task CallMethodAsync(string method)
+    //{
+    //  try
+    //  {
+    //    await (Task)MethodCaller.CallMethod(this.Instance, method);
+    //  }
+    //  catch (InvalidCastException ex)
+    //  {
+    //    throw new NotSupportedException(
+    //      string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
+    //      ex);
+    //  }
+    //}
 
-    /// <summary>
-    /// Uses reflection to dynamically invoke a method,
-    /// throwing an exception if it is not
-    /// implemented on the target object.
-    /// </summary>
-    /// <param name="method">
-    /// Name of the method.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters to pass to method.
-    /// </param>
-    public async Task CallMethodAsync(string method, params object[] parameters)
-    {
-      try
-      {
-        await (Task)MethodCaller.CallMethod(this.Instance, method, parameters);
-      }
-      catch (InvalidCastException ex)
-      {
-        throw new NotSupportedException(
-          string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
-          ex);
-      }
-    }
+    ///// <summary>
+    ///// Uses reflection to dynamically invoke a method,
+    ///// throwing an exception if it is not
+    ///// implemented on the target object.
+    ///// </summary>
+    ///// <param name="method">
+    ///// Name of the method.
+    ///// </param>
+    ///// <param name="parameters">
+    ///// Parameters to pass to method.
+    ///// </param>
+    //public async Task CallMethodAsync(string method, params object[] parameters)
+    //{
+    //  try
+    //  {
+    //    await (Task)MethodCaller.CallMethod(this.Instance, method, parameters);
+    //  }
+    //  catch (InvalidCastException ex)
+    //  {
+    //    throw new NotSupportedException(
+    //      string.Format(Resources.TaskOfObjectException, this.Instance.GetType().Name + "." + method),
+    //      ex);
+    //  }
+    //}
 
     /// <summary>
     /// Invokes a method using the await keyword
@@ -185,10 +185,7 @@ namespace Csla.Reflection
     {
       try
       {
-        if (IsMethodAsync(methodName))
-          await CallMethodAsync(methodName);
-        else
-          CallMethod(methodName);
+        await MethodCaller.CallMethodTryAsync(this.Instance, methodName);
       }
       catch (Csla.Reflection.CallMethodException)
       {
@@ -213,10 +210,7 @@ namespace Csla.Reflection
     {
       try
       {
-        if (IsMethodAsync(methodName))
-          await CallMethodAsync(methodName, parameters);
-        else
-          CallMethod(methodName, parameters);
+        await MethodCaller.CallMethodTryAsync(this.Instance, methodName, parameters);
       }
       catch (Csla.Reflection.CallMethodException)
       {

@@ -15,6 +15,7 @@ namespace Csla.Core
   /// </summary>
   public interface ISavable
   {
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -26,6 +27,7 @@ namespace Csla.Core
 		/// <returns>A new object containing the saved values.</returns>
 		/// <param name="forceUpdate">true to force the save to be an update.</param>
 		object Save(bool forceUpdate);
+#endif
 		/// <summary>
     /// Saves the object to the database asynchronously. The saved event will contain
     /// the new object when the save operation completes.

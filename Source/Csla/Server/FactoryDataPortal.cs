@@ -6,7 +6,9 @@
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
 using System;
+#if !NETFX_CORE
 using System.Configuration;
+#endif
 using System.Threading.Tasks;
 using Csla.Properties;
 
@@ -35,11 +37,13 @@ namespace Csla.Server
       {
         if (_factoryLoader == null)
         {
+#if !SILVERLIGHT && !NETFX_CORE
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =
               (IObjectFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
           else
+#endif
             _factoryLoader = new ObjectFactoryLoader();
         }
         return _factoryLoader;

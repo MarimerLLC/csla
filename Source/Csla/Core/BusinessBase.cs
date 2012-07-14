@@ -1193,7 +1193,7 @@ namespace Csla.Core
 
     #region Data Access
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.

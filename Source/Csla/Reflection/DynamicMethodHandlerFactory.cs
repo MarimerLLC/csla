@@ -11,7 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Reflection;
-#if !WINRT
+#if !NETFX_CORE
 using System.Reflection.Emit;
 #endif
 using Csla.Properties;
@@ -56,7 +56,7 @@ namespace Csla.Reflection
         throw new NotSupportedException(Resources.ConstructorsWithParametersNotSupported);
 
       Expression body = Expression.New(constructor);
-#if WINRT
+#if NETFX_CORE
       if (constructor.DeclaringType.IsValueType())
 #else
       if (constructor.DeclaringType.IsValueType)
@@ -102,7 +102,7 @@ namespace Csla.Reflection
            Expression.Return(target, nullRef),
           Expression.Label(target, nullRef));
       }
-#if WINRT
+#if NETFX_CORE
       else if (method.ReturnType.IsValueType())
 #else
       else if (method.ReturnType.IsValueType)
@@ -131,7 +131,7 @@ namespace Csla.Reflection
         Expression.Convert(target, property.DeclaringType),
         property);
 
-#if WINRT
+#if NETFX_CORE
       if (property.PropertyType.IsValueType())
 #else
       if (property.PropertyType.IsValueType)
@@ -181,7 +181,7 @@ namespace Csla.Reflection
         Expression.Convert(target, field.DeclaringType),
         field);
 
-#if WINRT
+#if NETFX_CORE
       if (field.FieldType.IsValueType())
 #else
       if (field.FieldType.IsValueType)
@@ -219,7 +219,7 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !WINRT
+#if !NETFX_CORE
     private static void EmitCastToReference(ILGenerator il, Type type)
     {
       if (type.IsValueType)

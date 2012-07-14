@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Csla.Server
@@ -16,8 +17,7 @@ namespace Csla.Server
     public TransactionalTypes TransactionalType { get; private set; }
 
     public DataPortalMethodInfo()
-    {
-      this.RunLocal = false;
+    { 
       this.TransactionalType = TransactionalTypes.Manual;
     }
 
@@ -33,9 +33,14 @@ namespace Csla.Server
 
     private static bool IsRunLocal(System.Reflection.MethodInfo method)
     {
+#if NETFX_CORE
+      return method.CustomAttributes.Count(r => r.AttributeType.Equals(typeof(RunLocalAttribute))) > 0;
+#else
       return Attribute.IsDefined(method, typeof(RunLocalAttribute), false);
+#endif
     }
 
+#if !SILVERLIGHT && !NETFX_CORE
     private static bool IsTransactionalMethod(System.Reflection.MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(TransactionalAttribute));
@@ -55,5 +60,11 @@ namespace Csla.Server
         result = TransactionalTypes.Manual;
       return result;
     }
+#else
+    private static TransactionalTypes GetTransactionalType(System.Reflection.MethodInfo method)
+    {
+      return TransactionalTypes.Manual;
+    }
+#endif
   }
 }

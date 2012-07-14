@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if !SILVERLIGHT || WINRT
+#if !SILVERLIGHT || NETFX_CORE
 using System.Threading.Tasks;
 #endif
 
@@ -14,7 +14,7 @@ namespace Csla
   /// <typeparam name="T"></typeparam>
   public interface IDataPortal<T>
   {
-#if !SILVERLIGHT || WINRT
+#if !SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -60,7 +60,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     Task<T> DeleteAsync(object criteria);
 #endif
-#if !SILVERLIGHT && !WINRT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default

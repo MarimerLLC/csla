@@ -171,20 +171,12 @@ namespace Csla
               OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
               OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
             }
-#if SILVERLIGHT
-            item.SaveComplete(result, null, null);
-#else
             item.SaveComplete(result);
-#endif
             OnSaved(result, null);
           }
           else
           {
-#if SILVERLIGHT
-            item.SaveComplete(item, e.Error, null);
-#else
             item.SaveComplete(item);
-#endif
             OnSaved(item, e.Error);
           }
         };

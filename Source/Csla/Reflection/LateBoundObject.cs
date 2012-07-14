@@ -119,7 +119,7 @@ namespace Csla.Reflection
 //    public bool IsMethodAsync(string methodName)
 //    {
 //      var info = this.Instance.GetType().GetMethod(methodName);
-//#if WINRT
+//#if NETFX_CORE
 //      var isgeneric = info.ReturnType.IsGenericType();
 //#else
 //     var isgeneric = info.ReturnType.IsGenericType;

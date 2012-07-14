@@ -9,6 +9,7 @@ using System;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using Csla.Core;
+using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -16,7 +17,7 @@ namespace Csla.Server
   /// Provides consistent context information between the client
   /// and server DataPortal objects. 
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public class DataPortalContext
   {
     private IPrincipal _principal;
@@ -110,10 +111,16 @@ namespace Csla.Server
       {
         _principal = principal;
         _remotePortal = isRemotePortal;
+#if NETFX_CORE
+        var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+        _clientCulture = language;
+        _clientUICulture = language;
+#else
         _clientCulture = 
           System.Threading.Thread.CurrentThread.CurrentCulture.Name;
         _clientUICulture = 
           System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+#endif
         _clientContext = Csla.ApplicationContext.ContextManager.GetClientContext();
         _globalContext = Csla.ApplicationContext.ContextManager.GetGlobalContext();
       }

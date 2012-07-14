@@ -141,7 +141,7 @@ namespace Csla.Serialization.Mobile
 			}
 			else
 			{
-#if WINRT
+#if NETFX_CORE
         var typeCode = TypeExtensions.GetTypeCode(target.GetType());
 #else
 				var typeCode = Type.GetTypeCode(target.GetType());

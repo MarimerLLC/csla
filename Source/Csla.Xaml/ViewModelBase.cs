@@ -19,7 +19,7 @@ using Csla.Security;
 using Csla.Core;
 using System.Collections;
 using System.Collections.Specialized;
-#if WINRT
+#if NETFX_CORE
 using Windows.UI.Xaml;
 using System.Linq.Expressions;
 #endif
@@ -95,7 +95,7 @@ namespace Csla.Xaml
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
-#if WINRT
+#if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
 #else
         new PropertyMetadata((o, e) =>
@@ -661,7 +661,7 @@ namespace Csla.Xaml
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 
-#if WINRT
+#if NETFX_CORE
       var target = Expression.Constant(this);
       var p1 = new ParameterExpression[] { Expression.Parameter(typeof(object), "sender"), Expression.Parameter(typeof(EventArgs), "args") };
       var call = Expression.Call(target, method, p1);

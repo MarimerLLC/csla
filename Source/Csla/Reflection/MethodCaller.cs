@@ -134,7 +134,7 @@ namespace Csla.Reflection
         {
           if (!_ctorCache.TryGetValue(objectType, out result))
           {
-#if WINRT
+#if NETFX_CORE
             ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, new Type[] { }, null);
 #else
             ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
@@ -175,7 +175,7 @@ namespace Csla.Reflection
 #else
         fullTypeName = typeName;
 #endif
-#if WINRT
+#if NETFX_CORE
       if (throwOnError)
         return Type.GetType(fullTypeName);
       else
@@ -736,7 +736,7 @@ namespace Csla.Reflection
                   break;
                 }
               }
-#if WINRT
+#if NETFX_CORE
               if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)
 #else
               if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
@@ -767,7 +767,7 @@ namespace Csla.Reflection
         }
         if (result != null)
           break;
-#if WINRT
+#if NETFX_CORE
         currentType = currentType.BaseType();
 #else
         currentType = currentType.BaseType;
@@ -805,7 +805,7 @@ namespace Csla.Reflection
           break; // match found
         }
 
-#if WINRT
+#if NETFX_CORE
         objectType = objectType.BaseType();
 #else
         objectType = objectType.BaseType;
@@ -845,7 +845,7 @@ namespace Csla.Reflection
           var pCount = infoParams.Length;
           if (pCount > 0 &&
              ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
-#if WINRT
+#if NETFX_CORE
              (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
 #else
              (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
@@ -866,7 +866,7 @@ namespace Csla.Reflection
             break;
           }
         }
-#if WINRT
+#if NETFX_CORE
         currentType = currentType.BaseType();
 #else
         currentType = currentType.BaseType;
@@ -1138,7 +1138,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#if !WINRT
+#if !NETFX_CORE
     /// <summary>
     /// Returns information about the specified
     /// method.

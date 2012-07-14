@@ -28,7 +28,7 @@ namespace Csla.Core
   {
     #region RemovingItem event
 
-#if WINRT
+#if NETFX_CORE
     /// <summary>
     /// Implements a serialization-safe RemovingItem event.
     /// </summary>

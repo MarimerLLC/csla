@@ -190,7 +190,7 @@ namespace Csla.Rules
     /// <returns></returns>
     private static string GetTypeName(Type type)
     {
-#if WINRT
+#if NETFX_CORE
       if (!type.IsGenericType())
 #else
       if (!type.IsGenericType)
@@ -203,7 +203,7 @@ namespace Csla.Rules
         var sb = new StringBuilder();
         if (!string.IsNullOrEmpty(type.Namespace)) 
           sb.Append(type.Namespace + ".");
-#if WINRT
+#if NETFX_CORE
         var typeName = type.Name();
 #else
         var typeName = type.Name;
@@ -212,7 +212,7 @@ namespace Csla.Rules
         foreach (var t in type.GetGenericArguments())
         {
           sb.Append("-");
-#if WINRT
+#if NETFX_CORE
           if (t.IsGenericType())
 #else
           if (t.IsGenericType) 

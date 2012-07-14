@@ -22,6 +22,23 @@ namespace Csla
   /// </summary>
   public static class DataPortal
   {
+    /// <summary>
+    /// Data portal proxy mode options.
+    /// </summary>
+    public enum ProxyModes
+    {
+      /// <summary>
+      /// Allow the data portal to auto-detect
+      /// the mode based on configuration.
+      /// </summary>
+      Auto,
+      /// <summary>
+      /// Force the data portal to only
+      /// execute in local mode.
+      /// </summary>
+      LocalOnly
+    }
+
     #region DataPortal events
 
     /// <summary>
@@ -561,7 +578,7 @@ namespace Csla
     }
 
     #endregion
-
+   
     #region Async Data Access Methods
 
     #region Begin Create
@@ -853,6 +870,26 @@ namespace Csla
     /// <param name="obj">
     /// Business object to update.
     /// </param>
+    /// <param name="mode">
+    /// Force the use of a local proxy.
+    /// </param>
+    public static async Task<T> UpdateAsync<T>(object obj, ProxyModes mode)
+      where T : IMobileObject
+    {
+      DataPortal<T> dp = new DataPortal<T>(mode);
+      return await dp.UpdateAsync(obj);
+    }
+
+    /// <summary>
+    /// Starts an asynchronous data portal operation to
+    /// update a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object to update.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
     public static async Task<T> UpdateAsync<T>(object obj)
       where T : IMobileObject
     {
@@ -1120,7 +1157,11 @@ namespace Csla
         }
         else
         {
+#if NETFX_CORE
+          var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory);
+#else
           var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory, true, true);
+#endif
           _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory) MethodCaller.CreateInstance(proxyFactoryType);
         }
       }

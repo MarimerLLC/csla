@@ -43,7 +43,7 @@ namespace Csla.Reflection
           inParams = parameters;
         }
         var pCount = infoParams.Length;
-#if WINRT
+#if NETFX_CORE
         var isgeneric = info.ReturnType.IsGenericType();
         if (pCount > 0 &&
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||

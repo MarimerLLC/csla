@@ -16,8 +16,6 @@ namespace Csla.Server
   /// </summary>
   public class ChildDataPortal
   {
-    #region  Data Access
-
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -327,7 +325,5 @@ namespace Csla.Server
       }
 
     }
-
-    #endregion
   }
 }

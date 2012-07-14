@@ -55,8 +55,6 @@ namespace Csla
       this.UserState = userState;
     }
 
-    #region IDataPortalResult Members
-
     object IDataPortalResult.Object
     {
       get { return this.Object; }
@@ -71,7 +69,5 @@ namespace Csla
     {
       get { return this.UserState; }
     }
-
-    #endregion
   }
 }

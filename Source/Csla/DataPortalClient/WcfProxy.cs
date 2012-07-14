@@ -8,9 +8,13 @@
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using Csla.Core;
+using Csla.Serialization.Mobile;
 using Csla.Server;
+#if !SILVERLIGHT && !NETFX_CORE
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
+#endif
 
 namespace Csla.DataPortalClient
 {
@@ -18,8 +22,68 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server by using WCF.
   /// </summary>
-  public class WcfProxy : Csla.DataPortalClient.IDataPortalProxy
+  public class WcfProxy : IDataPortalProxy
   {
+    private static System.ServiceModel.Channels.Binding _defaultBinding;
+    private const int TimeoutInMinutes = 10;
+    private static string _defaultUrl;
+    private static string _defaultEndPoint = "WcfDataPortal";
+
+    /// <summary>
+    /// Gets or sets the default binding used to initialize
+    /// future instances of WcfProxy.
+    /// </summary>
+    public static System.ServiceModel.Channels.Binding DefaultBinding
+    {
+      get 
+      {
+        if (_defaultBinding == null)
+        {
+          _defaultBinding  = new BasicHttpBinding();
+          BasicHttpBinding binding = (BasicHttpBinding)_defaultBinding;
+          binding.MaxBufferSize = int.MaxValue;
+          binding.MaxReceivedMessageSize = int.MaxValue;
+          binding.ReceiveTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
+          binding.SendTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
+          binding.OpenTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
+        }; 
+        return _defaultBinding; 
+      }
+      set { _defaultBinding = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the default URL address
+    /// for the data portal server.
+    /// </summary>
+    public static string DefaultUrl
+    {
+      get { return _defaultUrl; }
+      set { _defaultUrl = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the default WCF endpoint
+    /// name for the data portal server.
+    /// </summary>
+    public static string DefaultEndPoint
+    {
+      get { return _defaultEndPoint; }
+      set { _defaultEndPoint = value; }
+    }
+
+    /// <summary>
+    /// Creates an instance of the object, initializing
+    /// it to use the DefaultUrl and DefaultBinding
+    /// values.
+    /// </summary>
+    public WcfProxy()
+    {
+      this.DataPortalUrl = WcfProxy.DefaultUrl;
+      this.Binding = WcfProxy.DefaultBinding;
+      this.EndPoint = WcfProxy.DefaultEndPoint;
+    }
+    
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
@@ -29,27 +93,24 @@ namespace Csla.DataPortalClient
       get { return true; }
     }
 
-    private string _endPoint = "WcfDataPortal";
+    /// <summary>
+    /// Gets the binding object used by this proxy instance.
+    /// </summary>
+    public System.ServiceModel.Channels.Binding Binding { get; protected set; }
 
     /// <summary>
-    /// Gets or sets the WCF endpoint used
-    /// to contact the server.
+    /// Gets the URL address for the data portal server
+    /// used by this proxy instance.
     /// </summary>
-    /// <remarks>
-    /// The default value is WcfDataPortal.
-    /// </remarks>
-    protected string EndPoint
-    {
-      get
-      {
-        return _endPoint;
-      }
-      set
-      {
-        _endPoint = value;
-      }
-    }
+    public string DataPortalUrl { get; protected set; }
 
+    /// <summary>
+    /// Gets the WCF endpoint name for the data portal
+    /// server used by this proxy instance.
+    /// </summary>
+    public string EndPoint { get; protected set; }
+
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Returns an instance of the channel factory
     /// used by GetProxy() to create the WCF proxy
@@ -76,7 +137,7 @@ namespace Csla.DataPortalClient
       }
 
       // else return a channelfactory that uses the endpoint configuration in app.config/web.config
-      return new ChannelFactory<IWcfPortal>(_endPoint);
+      return new ChannelFactory<IWcfPortal>(EndPoint);
     }
 
     /// <summary>
@@ -91,6 +152,94 @@ namespace Csla.DataPortalClient
     {
       return cf.CreateChannel();
     }
+#else
+    /// <summary>
+    /// Gets an instance of the WcfPortalClient object
+    /// for use in communicating with the server.
+    /// </summary>
+    /// <remarks>
+    /// If both DataPortalUrl and Binding are non-null then
+    /// those values are used to initialize the proxy, otherwise
+    /// the proxy is initialized using values from the
+    /// system.serviceModel element in the Silverlight
+    /// client-side config file.
+    /// </remarks>
+    protected virtual WcfPortal.WcfPortalClient GetProxy()
+    {
+      if (!string.IsNullOrEmpty(this.DataPortalUrl) && this.Binding != null)
+      {
+        var address = new EndpointAddress(this.DataPortalUrl);
+        return new WcfPortal.WcfPortalClient(this.Binding, address);
+      }
+      else
+      {
+#if NETFX_CORE
+        return new WcfPortal.WcfPortalClient();
+#else
+        if (string.IsNullOrEmpty(EndPoint))
+          return new WcfPortal.WcfPortalClient();
+        else
+          return new WcfPortal.WcfPortalClient(EndPoint);
+#endif
+      }
+    }
+#endif
+
+#if SILVERLIGHT || NETFX_CORE
+    #region Criteria
+
+    private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
+    {
+      var request = new WcfPortal.CriteriaRequest();
+      request.CriteriaData = null;
+      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      if (ApplicationContext.AuthenticationType == "Windows")
+      {
+        request.Principal = MobileFormatter.Serialize(null);
+      }
+      else
+      {
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      }
+#if NETFX_CORE
+      var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+      request.ClientCulture = language;
+      request.ClientUICulture = language;
+#else
+      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+#endif
+      return request;
+    }
+
+    private WcfPortal.UpdateRequest GetBaseUpdateCriteriaRequest()
+    {
+      var request = new WcfPortal.UpdateRequest();
+      request.ObjectData = null;
+      request.ClientContext = MobileFormatter.Serialize(ApplicationContext.ClientContext);
+      request.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
+      if (ApplicationContext.AuthenticationType == "Windows")
+      {
+        request.Principal = MobileFormatter.Serialize(null);
+      }
+      else
+      {
+        request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
+      }
+#if NETFX_CORE
+      var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+      request.ClientCulture = language;
+      request.ClientUICulture = language;
+#else
+      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+#endif
+      return request;
+    }
+
+    #endregion
+#endif
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -105,6 +254,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
 #pragma warning restore 1998
     {
+#if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
       WcfResponse response = null;
@@ -124,6 +274,77 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#else
+      var request = GetBaseCriteriaRequest();
+      request.TypeName = objectType.AssemblyQualifiedName;
+      request = ConvertRequest(request);
+
+      var proxy = GetProxy();
+      DataPortalResult result = null;
+#if !NETFX_CORE
+      var tcs = new TaskCompletionSource<DataPortalResult>();
+      proxy.CreateCompleted += (s, e) => 
+        {
+          try
+          {
+            Csla.WcfPortal.WcfResponse response = null;
+            if (e.Error == null)
+              response = ConvertResponse(e.Result);
+            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            if (e.Error == null && response != null && response.ErrorData == null)
+            {
+              var obj = MobileFormatter.Deserialize(response.ObjectData);
+              result = new DataPortalResult(obj, null, globalContext);
+            }
+            else if (response != null && response.ErrorData != null)
+            {
+              var ex = new DataPortalException(response.ErrorData);
+              result = new DataPortalResult(null, ex, globalContext);
+            }
+            else
+            {
+              result = new DataPortalResult(null, e.Error, globalContext);
+            }
+          }
+          catch (Exception ex)
+          {
+            result = new DataPortalResult(null, ex, null);
+          }
+          finally
+          {
+            tcs.SetResult(result);
+          }
+        };
+      proxy.CreateAsync(request);
+      return await tcs.Task;
+#else
+      try
+      {
+        var response = await proxy.CreateAsync(request);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(obj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      return result;
+#endif
+#endif
     }
 
     /// <summary>
@@ -139,6 +360,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
 #pragma warning restore 1998
     {
+#if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
       WcfResponse response = null;
@@ -160,6 +382,77 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#else
+      var request = GetBaseCriteriaRequest();
+      request.TypeName = objectType.AssemblyQualifiedName;
+      request = ConvertRequest(request);
+
+      var proxy = GetProxy();
+      DataPortalResult result = null;
+#if !NETFX_CORE
+      var tcs = new TaskCompletionSource<DataPortalResult>();
+      proxy.FetchCompleted += (s, e) => 
+        {
+          try
+          {
+            Csla.WcfPortal.WcfResponse response = null;
+            if (e.Error == null)
+              response = ConvertResponse(e.Result);
+            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            if (e.Error == null && response != null && response.ErrorData == null)
+            {
+              var obj = MobileFormatter.Deserialize(response.ObjectData);
+              result = new DataPortalResult(obj, null, globalContext);
+            }
+            else if (response != null && response.ErrorData != null)
+            {
+              var ex = new DataPortalException(response.ErrorData);
+              result = new DataPortalResult(null, ex, globalContext);
+            }
+            else
+            {
+              result = new DataPortalResult(null, e.Error, globalContext);
+            }
+          }
+          catch (Exception ex)
+          {
+            result = new DataPortalResult(null, ex, null);
+          }
+          finally
+          {
+            tcs.SetResult(result);
+          }
+        };
+      proxy.FetchAsync(request);
+      return await tcs.Task;
+#else
+      try
+      {
+        var response = await proxy.FetchAsync(request);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var obj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(obj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      return result;
+#endif
+#endif
     }
 
     /// <summary>
@@ -174,6 +467,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
 #pragma warning restore 1998
     {
+#if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
       WcfResponse response = null;
@@ -195,6 +489,77 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#else
+      var request = GetBaseUpdateCriteriaRequest();
+      request.ObjectData = MobileFormatter.Serialize(obj);
+      request = ConvertRequest(request);
+
+      var proxy = GetProxy();
+      DataPortalResult result = null;
+#if !NETFX_CORE
+      var tcs = new TaskCompletionSource<DataPortalResult>();
+      proxy.UpdateCompleted += (s, e) => 
+        {
+          try
+          {
+            Csla.WcfPortal.WcfResponse response = null;
+            if (e.Error == null)
+              response = ConvertResponse(e.Result);
+            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            if (e.Error == null && response != null && response.ErrorData == null)
+            {
+              var newobj = MobileFormatter.Deserialize(response.ObjectData);
+              result = new DataPortalResult(newobj, null, globalContext);
+            }
+            else if (response != null && response.ErrorData != null)
+            {
+              var ex = new DataPortalException(response.ErrorData);
+              result = new DataPortalResult(null, ex, globalContext);
+            }
+            else
+            {
+              result = new DataPortalResult(null, e.Error, globalContext);
+            }
+          }
+          catch (Exception ex)
+          {
+            result = new DataPortalResult(null, ex, null);
+          }
+          finally
+          {
+            tcs.SetResult(result);
+          }
+        };
+      proxy.UpdateAsync(request);
+      return await tcs.Task;
+#else
+      try
+      {
+        var response = await proxy.UpdateAsync(request);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          var newobj = MobileFormatter.Deserialize(response.ObjectData);
+          result = new DataPortalResult(newobj, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      return result;
+#endif
+#endif
     }
 
     /// <summary>
@@ -210,6 +575,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
 #pragma warning restore 1998
     {
+#if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       IWcfPortal svr = GetProxy(cf);
       WcfResponse response = null;
@@ -231,6 +597,111 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#else
+      var request = GetBaseCriteriaRequest();
+      request.TypeName = objectType.AssemblyQualifiedName;
+      request = ConvertRequest(request);
+
+      var proxy = GetProxy();
+      DataPortalResult result = null;
+#if !NETFX_CORE
+      var tcs = new TaskCompletionSource<DataPortalResult>();
+      proxy.DeleteCompleted += (s, e) => 
+        {
+          try
+          {
+            Csla.WcfPortal.WcfResponse response = null;
+            if (e.Error == null)
+              response = ConvertResponse(e.Result);
+            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            if (e.Error == null && response != null && response.ErrorData == null)
+            {
+              result = new DataPortalResult(null, null, globalContext);
+            }
+            else if (response != null && response.ErrorData != null)
+            {
+              var ex = new DataPortalException(response.ErrorData);
+              result = new DataPortalResult(null, ex, globalContext);
+            }
+            else
+            {
+              result = new DataPortalResult(null, e.Error, globalContext);
+            }
+          }
+          catch (Exception ex)
+          {
+            result = new DataPortalResult(null, ex, null);
+          }
+          finally
+          {
+            tcs.SetResult(result);
+          }
+        };
+      proxy.DeleteAsync(request);
+      return await tcs.Task;
+#else
+      try
+      {
+        var response = await proxy.DeleteAsync(request);
+        response = ConvertResponse(response);
+        var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+        if (response != null && response.ErrorData == null)
+        {
+          result = new DataPortalResult(null, null, globalContext);
+        }
+        else if (response != null && response.ErrorData != null)
+        {
+          var ex = new DataPortalException(response.ErrorData);
+          result = new DataPortalResult(null, ex, globalContext);
+        }
+        else
+        {
+          throw new DataPortalException("null response", null);
+        }
+      }
+      catch (Exception ex)
+      {
+        result = new DataPortalResult(null, ex, null);
+      }
+      return result;
+#endif
+#endif
     }
+
+#if SILVERLIGHT || NETFX_CORE
+    #region Extension Method for Requests
+
+    /// <summary>
+    /// Override this method to manipulate the message
+    /// request data sent to the server.
+    /// </summary>
+    /// <param name="request">Update request data.</param>
+    protected virtual WcfPortal.UpdateRequest ConvertRequest(WcfPortal.UpdateRequest request)
+    {
+      return request;
+    }
+
+    /// <summary>
+    /// Override this method to manipulate the message
+    /// request data sent to the server.
+    /// </summary>
+    /// <param name="request">Criteria request data.</param>
+    protected virtual WcfPortal.CriteriaRequest ConvertRequest(WcfPortal.CriteriaRequest request)
+    {
+      return request;
+    }
+
+    /// <summary>
+    /// Override this method to manipulate the message
+    /// request data returned from the server.
+    /// </summary>
+    /// <param name="response">Response data.</param>
+    protected virtual WcfPortal.WcfResponse ConvertResponse(WcfPortal.WcfResponse response)
+    {
+      return response;
+    }
+
+    #endregion
+#endif
   }
 }

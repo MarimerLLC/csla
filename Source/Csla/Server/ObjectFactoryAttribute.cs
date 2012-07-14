@@ -291,7 +291,7 @@ namespace Csla.Server
     /// <returns></returns>
     private static string GetAssemblyQualifiedName(Type type)
     {
-#if WINRT
+#if NETFX_CORE
       if (type.IsGenericType())
 #else
       if (type.IsGenericType)

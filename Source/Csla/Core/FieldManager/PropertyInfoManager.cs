@@ -22,7 +22,7 @@ namespace Csla.Core.FieldManager
   {
     public override int Compare(IPropertyInfo x, IPropertyInfo y)
     {
-#if WINRT
+#if NETFX_CORE
       return StringComparer.CurrentCulture.Compare(x.Name, y.Name);
 #else
       return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
@@ -101,7 +101,7 @@ namespace Csla.Core.FieldManager
       lock (list)
       {
         if (list.IsLocked)
-#if WINRT
+#if NETFX_CORE
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name()));
 #else
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));

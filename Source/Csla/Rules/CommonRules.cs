@@ -73,7 +73,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-#if WINRT
+#if NETFX_CORE
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target);
 #else
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target, null, null);
@@ -717,7 +717,7 @@ namespace Csla.Rules.CommonRules
     private void Initialize(Action<RuleContext> rule)
     {
       Rule = rule;
-#if WINRT
+#if NETFX_CORE
       var methodName = Guid.NewGuid().ToString();
 #else
       var methodName = Rule.Method.ToString();

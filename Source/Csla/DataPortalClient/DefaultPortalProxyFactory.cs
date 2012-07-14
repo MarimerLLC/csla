@@ -31,7 +31,11 @@ namespace Csla.DataPortalClient
          if (proxyTypeName == "Local")
            _proxyType = typeof(LocalProxy);
          else
+#if NETFX_CORE
+           _proxyType = Type.GetType(proxyTypeName);
+#else
            _proxyType = Type.GetType(proxyTypeName, true, true);
+#endif
         }
 
       return (IDataPortalProxy)MethodCaller.CreateInstance(_proxyType);

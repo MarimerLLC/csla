@@ -26,7 +26,7 @@ namespace Csla
   [Serializable()]
   public struct SmartDate : Csla.Core.ISmartField,
     IComparable,
-#if !WINRT
+#if !NETFX_CORE
     IConvertible, 
 #endif
     IFormattable, Csla.Serialization.Mobile.IMobileObject
@@ -504,7 +504,7 @@ namespace Csla
 
     #endregion
 
-#if !WINRT
+#if !NETFX_CORE
     #region DBValue
 
     /// <summary>
@@ -1264,7 +1264,7 @@ namespace Csla
 
     #endregion
 
-#if !WINRT
+#if !NETFX_CORE
     #region  IConvertible
 
     System.TypeCode IConvertible.GetTypeCode()

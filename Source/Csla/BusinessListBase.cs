@@ -872,28 +872,6 @@ namespace Csla
     /// methods.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void Child_Update(params object[] parameters)
-    {
-      var oldRLCE = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
-      try
-      {
-        ChildDataPortal<C> dp = new ChildDataPortal<C>();
-        foreach (var child in DeletedList)
-          dp.Update(child, parameters);
-
-        DeletedList.Clear();
-
-        foreach (var child in this)
-          if (child.IsDirty) dp.Update(child, parameters);
-      }
-      finally
-      {
-        this.RaiseListChangedEvents = oldRLCE;
-      }
-    }
-#else
     protected virtual void Child_Update(params object[] parameters)
     {
       var oldRLCE = this.RaiseListChangedEvents;
@@ -912,13 +890,12 @@ namespace Csla
         this.RaiseListChangedEvents = oldRLCE;
       }
     }
-#endif
 
     #endregion
 
     #region Data Access
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -1070,7 +1047,6 @@ namespace Csla
       }
     }
 
-#if WINRT
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -1102,27 +1078,21 @@ namespace Csla
       return result;
     }
 
-#endif
-
 #if SILVERLIGHT
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.
     /// </summary>
-    /// <param name="handler">Callback handler.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Create(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
-    {
-      handler((T)this, null);
-    }
+    public virtual void DataPortal_Create()
+    { }
 
     /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>
-    /// <param name="handler">Callback handler.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Update(Csla.DataPortalClient.LocalProxy<T>.CompletedHandler handler)
+    public virtual void DataPortal_Update()
     {
       throw new NotSupportedException(Resources.UpdateNotSupportedException);
     }
@@ -1227,38 +1197,8 @@ namespace Csla
     #endregion
 
     #region ISavable Members
-#if SILVERLIGHT
 
-    void ISavable.BeginSave()
-    {
-      BeginSave();
-    }
-
-    void ISavable.SaveComplete(object newObject, Exception error, object userState)
-    {
-      OnSaved((T)newObject, error, userState);
-    }
-
-    /// <summary>
-    /// Event raised when an object has been saved.
-    /// </summary>
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
-
-    /// <summary>
-    /// Raises the <see cref="Saved"/> event, indicating that the
-    /// object has been saved, and providing a reference
-    /// to the new object instance.
-    /// </summary>
-    /// <param name="newObject">The new object instance.</param>
-    /// <param name="error">Exception object.</param>
-    /// <param name="userState">User state object.</param>
-    protected virtual void OnSaved(T newObject, Exception error, object userState)
-    {
-      if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error, userState));
-    }
-
-#else
+#if !SILVERLIGHT
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1267,6 +1207,12 @@ namespace Csla
     object Csla.Core.ISavable.Save(bool forceUpdate)
     {
       return Save();
+    }
+#endif
+
+    void ISavable.BeginSave()
+    {
+      BeginSave();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
@@ -1312,7 +1258,6 @@ namespace Csla
       if (_savedEvent != null)
         _savedEvent.Invoke(this, args);
     }
-#endif
     #endregion
 
     #region  Parent/Child link

@@ -6,6 +6,7 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -15,7 +16,7 @@ namespace Csla.Server
   /// and context data from the server.
   /// </summary>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
-  [Serializable()]
+  [Serializable]
   public class DataPortalException : Exception
   {
     private DataPortalResult _result;
@@ -54,6 +55,7 @@ namespace Csla.Server
       _result = result;
     }
 
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
@@ -81,5 +83,6 @@ namespace Csla.Server
       info.AddValue("_result", _result);
       info.AddValue("_innerStackTrace", _innerStackTrace);
     }
+#endif
   }
 }

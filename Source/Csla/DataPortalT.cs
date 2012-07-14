@@ -25,6 +25,35 @@ namespace Csla
   public class DataPortal<T> : IDataPortal<T>
   {
     internal static Csla.Server.EmptyCriteria EmptyCriteria = new Server.EmptyCriteria();
+    private Csla.DataPortal.ProxyModes _proxyMode;
+
+    /// <summary>
+    /// Creates an instance of the data portal
+    /// object, choosing a proxy object based
+    /// on current configuration.
+    /// </summary>
+    public DataPortal()
+      : this(DataPortal.ProxyModes.Auto)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the data portal
+    /// object, allowing the caller to specify
+    /// the type of proxy object to use.
+    /// </summary>
+    /// <param name="proxyMode">
+    /// Proxy mode used by this data portal instance.
+    /// </param>
+    public DataPortal(DataPortal.ProxyModes proxyMode)
+    {
+      _proxyMode = proxyMode;
+    }
+
+    /// <summary>
+    /// Gets a reference to the global context returned from
+    /// the background thread and/or server.
+    /// </summary>
+    public Csla.Core.ContextDictionary GlobalContext { get; set; }
 
     #region Data Portal Async Request
 
@@ -36,8 +65,13 @@ namespace Csla
       public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
+#if NETFX_CORE
+      public string CurrentCulture;
+      public string CurrentUICulture;
+#else
       public CultureInfo CurrentCulture;
       public CultureInfo CurrentUICulture;
+#endif
 
       public DataPortalAsyncRequest(object argument, object userState)
       {
@@ -46,8 +80,14 @@ namespace Csla
         this.ClientContext = Csla.ApplicationContext.ClientContext;
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
         this.UserState = userState;
+#if NETFX_CORE
+        var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+        this.CurrentCulture = language;
+        this.CurrentUICulture = language;
+#else
         this.CurrentCulture = Thread.CurrentThread.CurrentCulture;
         this.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
+#endif
       }
     }
 
@@ -76,24 +116,15 @@ namespace Csla
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       // set culture info for background thread 
+#if NETFX_CORE
+      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
+      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
+#else
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
-    }
-
-    #endregion
-
-    #region GlobalContext
-
-    private Csla.Core.ContextDictionary _globalContext;
-
-    /// <summary>
-    /// Gets a reference to the global context returned from
-    /// the background thread and/or server.
-    /// </summary>
-    public Csla.Core.ContextDictionary GlobalContext
-    {
-      get { return _globalContext; }
-      private set { _globalContext = value; }
+#endif
     }
 
     #endregion
@@ -303,7 +334,7 @@ namespace Csla
         var result = e.Result as DataPortalAsyncResult;
         if (result != null)
         {
-          _globalContext = result.GlobalContext;
+          GlobalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
             obj = result.Result;
@@ -476,7 +507,7 @@ namespace Csla
         var result = e.Result as DataPortalAsyncResult;
         if (result != null)
         {
-          _globalContext = result.GlobalContext;
+          GlobalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
             obj = result.Result;
@@ -637,7 +668,7 @@ namespace Csla
         var result = e.Result as DataPortalAsyncResult;
         if (result != null)
         {
-          _globalContext = result.GlobalContext;
+          GlobalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
             obj = result.Result;
@@ -780,7 +811,7 @@ namespace Csla
         var result = e.Result as DataPortalAsyncResult;
         if (result != null)
         {
-          _globalContext = result.GlobalContext;
+          GlobalContext = result.GlobalContext;
           OnDeleteCompleted(new DataPortalResult<T>(default(T), result.Error, result.UserState));
           return;
         }
@@ -876,7 +907,7 @@ namespace Csla
         var result = e.Result as DataPortalAsyncResult;
         if (result != null)
         {
-          _globalContext = result.GlobalContext;
+          GlobalContext = result.GlobalContext;
           T obj = default(T);
           if (result.Result != null)
             obj = (T)result.Result;

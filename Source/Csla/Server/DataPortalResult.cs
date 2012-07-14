@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Specialized;
 using Csla.Core;
+using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -16,36 +17,33 @@ namespace Csla.Server
   /// client-side DataPortal. Intended for internal CSLA .NET
   /// use only.
   /// </summary>
-  [Serializable()]
-  public class DataPortalResult
+  [Serializable]
+  public class DataPortalResult : EventArgs
   {
-    private object _returnObject;
-    private ContextDictionary _globalContext;
-
     /// <summary>
     /// The business object being returned from
     /// the server.
     /// </summary>
-    public object ReturnObject
-    {
-      get { return _returnObject; }
-    }
+    public object ReturnObject { get; private set; }
+
+    /// <summary>
+    /// Error that occurred during the DataPotal call.
+    /// This will be null if no errors occurred.
+    /// </summary>
+    public Exception Error { get; private set; }
 
     /// <summary>
     /// The global context being returned from
     /// the server.
     /// </summary>
-    public ContextDictionary GlobalContext
-    {
-      get { return _globalContext; }
-    }
+    public ContextDictionary GlobalContext { get; private set; }
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public DataPortalResult()
     {
-      _globalContext = ApplicationContext.ContextManager.GetGlobalContext();
+      GlobalContext = ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>
@@ -55,8 +53,8 @@ namespace Csla.Server
     /// of the result.</param>
     public DataPortalResult(object returnObject)
     {
-      _returnObject = returnObject;
-      _globalContext = ApplicationContext.ContextManager.GetGlobalContext();
+      ReturnObject = returnObject;
+      GlobalContext = ApplicationContext.ContextManager.GetGlobalContext();
     }
 
     /// <summary>
@@ -68,8 +66,26 @@ namespace Csla.Server
     /// </param>
     public DataPortalResult(object returnObject, ContextDictionary globalContext)
     {
-      _returnObject = returnObject;
-      _globalContext = globalContext;
+      ReturnObject = returnObject;
+      GlobalContext = globalContext;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="returnObject">Object to return as part
+    /// of the result.</param>
+    /// <param name="ex">
+    /// Error that occurred during the DataPotal call.
+    /// This will be null if no errors occurred.
+    /// </param>
+    /// <param name="globalContext">  Global context delivered via current reuest from the server
+    /// </param>
+    public DataPortalResult(object returnObject, Exception ex, ContextDictionary globalContext)
+    {
+      ReturnObject = returnObject;
+      Error = ex;
+      GlobalContext = globalContext;
     }
   }
 }

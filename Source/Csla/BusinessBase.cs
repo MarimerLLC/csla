@@ -12,6 +12,7 @@ using System.Reflection;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Reflection;
+using Csla.Serialization;
 
 namespace Csla
 {
@@ -31,7 +32,7 @@ namespace Csla
   /// </para>
   /// </remarks>
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
-  [Serializable()]
+  [Serializable]
   public abstract class BusinessBase<T> :
     Core.BusinessBase, Core.ISavable, IBusinessBase where T : BusinessBase<T>
   {
@@ -382,6 +383,13 @@ namespace Csla
 
     #region ISavable Members
 
+    void Csla.Core.ISavable.SaveComplete(object newObject)
+    {
+      OnSaved((T)newObject, null, null);
+    }
+
+#if !SILVERLIGHT && !NETFX_CORE
+
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -390,11 +398,6 @@ namespace Csla
     object Csla.Core.ISavable.Save(bool forceUpdate)
     {
       return Save(forceUpdate);
-    }
-
-    void Csla.Core.ISavable.SaveComplete(object newObject)
-    {
-      OnSaved((T)newObject, null, null);
     }
 
     [NonSerialized]
@@ -433,6 +436,12 @@ namespace Csla
             System.Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
+#else
+    /// <summary>
+    /// Event raised when an object has been saved.
+    /// </summary>
+    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+#endif
 
     /// <summary>
     /// Raises the Saved event, indicating that the
@@ -447,10 +456,15 @@ namespace Csla
     {
       MarkIdle();
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
+#if !SILVERLIGHT && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
+#else
+      if (Saved != null)
+        Saved(this, args);
+#endif
     }
 
     #endregion

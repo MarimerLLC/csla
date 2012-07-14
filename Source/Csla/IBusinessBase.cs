@@ -22,7 +22,7 @@ namespace Csla
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if !WINRT
+#if !NETFX_CORE
 #if SILVERLIGHT && !__ANDROID__ && !IOS
     ,INotifyDataErrorInfo
 #else

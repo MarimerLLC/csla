@@ -93,7 +93,7 @@ namespace Csla.Serialization.Mobile
           {
             Type fieldType = fieldData.Value.GetType();
 
-#if WINRT
+#if NETFX_CORE
             if (fieldType.IsEnum())
 #else
             if (fieldType.IsEnum)
@@ -139,7 +139,7 @@ namespace Csla.Serialization.Mobile
         if (mobile == null)
           throw new InvalidOperationException(
             string.Format(Resources.MustImplementIMobileObject,
-#if WINRT
+#if NETFX_CORE
             thisType.Name()));
 #else
             thisType.Name));

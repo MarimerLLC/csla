@@ -9,7 +9,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
-#if WINRT
+#if NETFX_CORE
 using Windows.ApplicationModel.Resources.Core;
 using System.Collections.Generic;
 #endif
@@ -45,7 +45,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
     /// </summary>
-#if !WINRT
+#if !NETFX_CORE
     [Description("Event handler to be run on a different thread when the operation begins."), Category("Asynchronous")]
 #endif
     public event DoWorkEventHandler DoWork
@@ -63,7 +63,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when the background operation has completed, has been canceled, or has raised an exception.
     /// </summary>
-#if !WINRT
+#if !NETFX_CORE
     [Description("Raised when the worker has completed (either through success, failure or cancellation)."), Category("Asynchronous")]
 #endif
     public event RunWorkerCompletedEventHandler RunWorkerCompleted
@@ -82,7 +82,7 @@ namespace Csla.Threading
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.ReportProgress"/> is called.
     /// </summary>
-#if !WINRT
+#if !NETFX_CORE
     [Description("Occurs when ReportProgress is called.).")]
 #endif
     public event ProgressChangedEventHandler ProgressChanged
@@ -183,7 +183,7 @@ namespace Csla.Threading
       public System.Security.Principal.IPrincipal Principal { get; private set; }
       public Csla.Core.ContextDictionary ClientContext { get; private set; }
       public Csla.Core.ContextDictionary GlobalContext { get; private set; }
-#if WINRT
+#if NETFX_CORE
       public string CurrentUICulture { get; private set; }
       public string CurrentCulture { get; private set; }
 #else
@@ -197,7 +197,7 @@ namespace Csla.Threading
         this.Principal = Csla.ApplicationContext.User;
         this.ClientContext = Csla.ApplicationContext.ClientContext;
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
-#if WINRT
+#if NETFX_CORE
         //var region = ResourceManager.Current.DefaultContext.HomeRegion;
         var language = ResourceManager.Current.DefaultContext.Languages[0];
         this.CurrentUICulture = language;
@@ -232,7 +232,7 @@ namespace Csla.Threading
     {
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
-#if WINRT
+#if NETFX_CORE
       var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
       ResourceManager.Current.DefaultContext.Languages = list;
       list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });

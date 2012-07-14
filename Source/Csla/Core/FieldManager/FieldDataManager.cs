@@ -152,7 +152,7 @@ namespace Csla.Core.FieldManager
       do
       {
         hierarchy.Add(current);
-#if WINRT
+#if NETFX_CORE
         current = current.BaseType();
 #else
         current = current.BaseType;
@@ -965,7 +965,7 @@ namespace Csla.Core.FieldManager
         var fields = t.GetFields(attr);
         if (fields.Length > 0)
           fields[0].GetValue(null);
-#if WINRT
+#if NETFX_CORE
         t = t.BaseType();
 #else
         t = t.BaseType;

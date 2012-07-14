@@ -327,7 +327,7 @@ namespace Csla.Core
 
     #region INotifyPropertyChanged Members
 
-#if WINRT
+#if NETFX_CORE
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>

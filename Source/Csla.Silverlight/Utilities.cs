@@ -85,7 +85,7 @@ namespace Csla
     public static Type GetPropertyType(Type propertyType)
     {
       Type type = propertyType;
-#if WINRT
+#if NETFX_CORE
       if (type.IsGenericType() &&
 #else
       if (type.IsGenericType &&
@@ -107,7 +107,7 @@ namespace Csla
         result = listType.GetElementType();
       else
       {
-#if WINRT
+#if NETFX_CORE
         DefaultMemberAttribute indexer =
           (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
 #else
@@ -171,7 +171,7 @@ namespace Csla
       }
       else
       {
-#if WINRT
+#if NETFX_CORE
         if (desiredType.IsGenericType())
 #else
         if (desiredType.IsGenericType)
@@ -186,7 +186,7 @@ namespace Csla
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
-#if WINRT
+#if NETFX_CORE
       if (desiredType.IsEnum() &&
 #else
       if (desiredType.IsEnum && 
@@ -206,7 +206,7 @@ namespace Csla
         return tmp;
       }
 
-#if WINRT
+#if NETFX_CORE
       if ((desiredType.IsPrimitive() || desiredType.Equals(typeof(decimal))) &&
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
 #else

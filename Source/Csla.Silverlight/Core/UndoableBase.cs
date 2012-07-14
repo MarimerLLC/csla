@@ -244,7 +244,7 @@ namespace Csla.Core
 
     private static bool NotUndoableField(FieldInfo field)
     {
-#if WINRT
+#if NETFX_CORE
       var attr = field.GetCustomAttribute(typeof(NotUndoableAttribute));
       return (attr != null);
 #else

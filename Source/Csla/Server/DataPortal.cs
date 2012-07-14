@@ -6,10 +6,13 @@
 // <summary>Implements the server-side DataPortal </summary>
 //-----------------------------------------------------------------------
 using System;
+#if !NETFX_CORE
 using System.Configuration;
+#endif
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
+using System.Collections.Generic;
 
 namespace Csla.Server
 {
@@ -21,6 +24,7 @@ namespace Csla.Server
   public class DataPortal : IDataPortalServer
   {
     #region Constructors
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -81,6 +85,7 @@ namespace Csla.Server
         return _authorizer.GetType();
 
     }
+#endif
 
     #endregion
 
@@ -101,13 +106,15 @@ namespace Csla.Server
       {
         SetContext(context);
 
+#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
-
+#endif
         DataPortalResult result;
 
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
+#if !SILVERLIGHT && !NETFX_CORE
         switch (method.TransactionalType)
         {
 #if !MONO
@@ -135,6 +142,10 @@ namespace Csla.Server
             result = await portal.Create(objectType, criteria, context);
             break;
         }
+#else
+        portal = new DataPortalSelector();
+        result = await portal.Create(objectType, criteria, context);
+#endif
         return result;
       }
       catch (Csla.Server.DataPortalException)
@@ -168,13 +179,15 @@ namespace Csla.Server
       {
         SetContext(context);
 
+#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
-
+#endif
         DataPortalResult result;
 
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
+#if !SILVERLIGHT && !NETFX_CORE
         switch (method.TransactionalType)
         {
 #if !MONO
@@ -199,6 +212,10 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context);
             break;
         }
+#else
+        portal = new DataPortalSelector();
+        result = await portal.Fetch(objectType, criteria, context);
+#endif
         return result;
       }
       catch (Csla.Server.DataPortalException)
@@ -244,8 +261,9 @@ namespace Csla.Server
       {
         SetContext(context);
 
+#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
-
+#endif
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
@@ -290,6 +308,7 @@ namespace Csla.Server
 
         context.TransactionalType = method.TransactionalType;
         IDataPortalServer portal;
+#if !SILVERLIGHT && !NETFX_CORE
         switch (method.TransactionalType)
         {
 #if !MONO
@@ -314,6 +333,10 @@ namespace Csla.Server
             result = await portal.Update(obj, context);
             break;
         }
+#else
+        portal = new DataPortalSelector();
+        result = await portal.Update(obj, context);
+#endif
         return result;
       }
       catch (Csla.Server.DataPortalException ex)
@@ -348,8 +371,9 @@ namespace Csla.Server
       {
         SetContext(context);
 
+#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
-
+#endif
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
@@ -365,6 +389,7 @@ namespace Csla.Server
         }
 
         IDataPortalServer portal;
+#if !SILVERLIGHT && !NETFX_CORE
         switch (method.TransactionalType)
         {
 #if !MONO
@@ -389,6 +414,10 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context);
             break;
         }
+#else
+        portal = new DataPortalSelector();
+        result = await portal.Delete(objectType, criteria, context);
+#endif
         return result;
       }
       catch (Csla.Server.DataPortalException ex)
@@ -433,10 +462,17 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
+#if NETFX_CORE
+      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
+      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
+#else
       System.Threading.Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);
       System.Threading.Thread.CurrentThread.CurrentUICulture =
         new System.Globalization.CultureInfo(context.ClientUICulture);
+#endif
 
       if (ApplicationContext.AuthenticationType == "Windows")
       {
@@ -448,8 +484,10 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
+#if !SILVERLIGHT && !NETFX_CORE
         // Set .NET to use integrated security
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
+#endif
       }
       else
       {
@@ -481,6 +519,7 @@ namespace Csla.Server
 
     #region Authorize
 
+#if !SILVERLIGHT && !NETFX_CORE
     private static object _syncRoot = new object();
     private static IAuthorizeDataPortal _authorizer = null;
 
@@ -518,6 +557,7 @@ namespace Csla.Server
       public void Authorize(AuthorizeRequest clientRequest)
       { /* default is to allow all requests */ }
     }
+#endif
 
     #endregion
   }

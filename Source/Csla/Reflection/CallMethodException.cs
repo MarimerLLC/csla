@@ -6,7 +6,7 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 using System;
-#if !WINRT
+#if !NETFX_CORE
 using System.Security.Permissions;
 #endif
 #if SILVERLIGHT

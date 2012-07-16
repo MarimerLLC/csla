@@ -29,13 +29,12 @@ namespace Csla.Testing.Business.BusyStatus
       return returnValue;
     }
 #if SILVERLIGHT
-    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRuleList>.CompletedHandler handler)
+    public override void DataPortal_Update()
     {
       foreach (var oneItem in this)
       {
         oneItem.DataPortal_Update();
       }
-      handler(this, null);
     }
 #else
     protected override void DataPortal_Update()

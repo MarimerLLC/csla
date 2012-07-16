@@ -72,9 +72,8 @@ namespace  Csla.Testing.Business.DataPortal
       ConfigurationManager.AppSettings[AppSettingKey] = AppSettingValue;
     }
 #else
-    public void DataPortal_Execute(LocalProxy<SetAppSettingValueCmd>.CompletedHandler handler)
+    protected override void DataPortal_Execute()
     {
-      handler(this, null);
     }
 #endif
   }

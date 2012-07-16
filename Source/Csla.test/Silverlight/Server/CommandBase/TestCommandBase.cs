@@ -81,10 +81,9 @@ namespace Csla.Testing.Business.CommandBase
       ExecutionResult = ExecutionSignal + Parameter;
     }
 #else
-    public void DataPortal_Execute(LocalProxy<TestCommandBase>.CompletedHandler handler)
+    protected override void DataPortal_Execute()
     {
       ExecutionResult = ExecutionSignal + Parameter;
-      handler(this, null);
     }
 #endif
   }

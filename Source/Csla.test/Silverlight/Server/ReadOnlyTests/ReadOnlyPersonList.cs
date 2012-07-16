@@ -30,9 +30,9 @@ namespace Csla.Testing.Business.ReadOnlyTest
     }
 
 #if SILVERLIGHT
-    public void DataPortal_Fetch(LocalProxy<ReadOnlyPersonList>.CompletedHandler completed)
+    public void DataPortal_Fetch()
     {
-      Fetch(completed);
+      Fetch();
     }
 #else
     private void DataPortal_Fetch()
@@ -40,11 +40,7 @@ namespace Csla.Testing.Business.ReadOnlyTest
       Fetch();
     }
 #endif
-#if SILVERLIGHT
-    private void Fetch(LocalProxy<ReadOnlyPersonList>.CompletedHandler completed)
-#else
     private void Fetch()
-#endif
     {
       RaiseListChangedEvents = false;
       IsReadOnly = false;
@@ -52,10 +48,6 @@ namespace Csla.Testing.Business.ReadOnlyTest
       Add(ReadOnlyPerson.GetReadOnlyPersonForList("Jane Doe", 1982));
       IsReadOnly = true;
       RaiseListChangedEvents = true;
-
-#if SILVERLIGHT
-      completed(this, null);
-#endif
     }
   }
 }

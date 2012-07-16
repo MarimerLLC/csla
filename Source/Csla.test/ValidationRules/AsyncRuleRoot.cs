@@ -59,10 +59,6 @@ namespace Csla.Test.ValidationRules
 
     }
 
-    protected void DataPortal_Create()
-    {
-    }
-
     private class LookupCustomerRule : Csla.Rules.BusinessRule
     {
       private IPropertyInfo _nameProperty;

@@ -45,7 +45,7 @@ namespace Csla.Test.DataPortal
     [TestInitialize]
     public void Setup()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
 
       CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;

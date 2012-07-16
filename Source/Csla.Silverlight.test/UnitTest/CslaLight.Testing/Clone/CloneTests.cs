@@ -73,7 +73,7 @@ namespace cslalighttest.Clone
     public void CloneNVList()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       BasicNameValueList.GetBasicNameValueList((o, e) =>
       {
@@ -88,7 +88,7 @@ namespace cslalighttest.Clone
     [TestMethod]
     public void CloneBB()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.DataPortalClient.WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
 
       var context = GetContext();

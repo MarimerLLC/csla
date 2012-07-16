@@ -83,60 +83,53 @@ namespace Csla.Testing.Business.ObjectFactory
 
 #if SILVERLIGHT
 
-    public void DataPortal_Fetch(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public void DataPortal_Fetch()
     {
       this.Id = "random_fetch";
       this.OperationResult = "DataPortal_Fetch/no parameters";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
-    public void DataPortal_Fetch(SingleCriteria<BusinessItem, string> criteria, Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public void DataPortal_Fetch(SingleCriteria<BusinessItem, string> criteria)
     {
       this.Id = "fetch_" + criteria.Value;
       this.OperationResult = "DataPortal_Fetch/with parameters";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Create()
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
       this.MarkNew();
-      completed.Invoke(this, null);
     }
 
-    public void DataPortal_Create(SingleCriteria<BusinessItem, string> criteria, Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public void DataPortal_Create(SingleCriteria<BusinessItem, string> criteria)
     {
       this.Id = "create_" + criteria.Value;
       this.OperationResult = "DataPortal_Create/with parameters";
       this.MarkNew();
-      completed.Invoke(this, null);
     }
 
-    public void DataPortal_Delete(SingleCriteria<BusinessItem, string> criteria, Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public void DataPortal_Delete(SingleCriteria<BusinessItem, string> criteria)
     {
       this.Id = "delete_" + criteria.Value;
       this.OperationResult = "DeleteObjectFactoryBusinessItem/with parameters";
       this.MarkDeleted();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Insert()
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
 #endif

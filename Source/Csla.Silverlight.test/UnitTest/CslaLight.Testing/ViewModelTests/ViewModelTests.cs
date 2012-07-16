@@ -18,7 +18,7 @@ namespace cslalighttest.ViewModelTests
       {
         using (var context = GetContext())
         {
-          DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+          DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
           WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
           TestBindingList.NewEditableList((o, e) =>
                                             {
@@ -69,7 +69,7 @@ namespace cslalighttest.ViewModelTests
         using (var context = GetContext())
         {
 
-          DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+          DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
           WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
           TestBusinessBindingList.NewEditableList((o, e) =>
                                                     {

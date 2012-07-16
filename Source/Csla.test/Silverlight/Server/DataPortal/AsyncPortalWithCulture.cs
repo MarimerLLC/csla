@@ -69,9 +69,8 @@ namespace Csla.Testing.Business.DataPortal
     }
 
 #else
-    public void DataPortal_Execute(LocalProxy<AsyncPortalWithCulture>.CompletedHandler handler)
+    protected override void DataPortal_Execute()
     {
-      handler(this, null);
     }
 #endif
   }

@@ -36,7 +36,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestCreateNewRemoteProxyWithUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       object userState = "user state";
@@ -59,7 +59,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestCreateNewRemoteProxyWithoutUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       DataPortal.BeginCreate<Customer>(new SingleCriteria<Customer, int>(2), (o, e) =>
@@ -81,7 +81,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestUpdateRemoteProxyWithUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       object userState = "user state";
@@ -109,7 +109,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestUpdateRemoteProxyWithoutUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       DataPortal.BeginCreate<Customer>(new SingleCriteria<Customer, int>(2), (o, e) =>
@@ -136,7 +136,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestDeleteRemoteProxyWithUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
       object userState = "user state";
@@ -158,7 +158,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestDeleteRemoteProxyWithoutUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
       DataPortal.BeginFetch<Customer>(new SingleCriteria<Customer, int>(2), (o, e) =>
@@ -179,7 +179,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestFetchRemoteProxyWithUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
       object userState = "user state";
@@ -199,7 +199,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestFetchRemoteProxyWithoutUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       Csla.ApplicationContext.GlobalContext.Clear();
       UnitTestContext context = GetContext();
       DataPortal.BeginFetch<Customer>(new SingleCriteria<Customer, int>(2), (o, e) =>
@@ -218,7 +218,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestSaveRemoteProxyWithUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       object userState = "user state";
@@ -251,7 +251,7 @@ namespace cslalighttest.UserStateForPortal
     [TestMethod]
     public void TestSaveRemoteProxyWithoutUserState()
     {
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
 
       UnitTestContext context = GetContext();
       DataPortal.BeginCreate<Customer>(new SingleCriteria<Customer, int>(2), (o, e) =>

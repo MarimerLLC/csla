@@ -41,7 +41,7 @@ namespace Csla.Test.Silverlight.DataPortal
     public void Setup()
     {
       #if SILVERLIGHT
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       #endif
     }
 

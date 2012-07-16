@@ -38,7 +38,7 @@ namespace cslalighttest.CommandBase
     public void Setup()
     {
 #if SILVERLIGHT
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
 #endif      
     }

@@ -35,7 +35,7 @@ namespace cslalighttest.DataPortalTests
     [TestInitialize]
     public void Setup()
     {
-     Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+     Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
     }
 

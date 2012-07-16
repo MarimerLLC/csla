@@ -42,7 +42,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -70,7 +70,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveNewItem()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -101,7 +101,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveNewItemViaListSaved()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -135,7 +135,7 @@ namespace cslalighttest.EditableRootListTests
     public void RemoveOldItem()
     {
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -168,7 +168,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -207,7 +207,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -243,7 +243,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 
@@ -279,7 +279,7 @@ namespace cslalighttest.EditableRootListTests
     {
 
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       ApplicationContext.GlobalContext.Clear();
 

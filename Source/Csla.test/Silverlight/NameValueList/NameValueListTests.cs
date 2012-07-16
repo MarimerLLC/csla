@@ -33,7 +33,7 @@ namespace cslalighttest.NameValueList
     {
 #if SILVERLIGHT
       UnitTestContext context = GetContext();
-      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
       BasicNameValueList.GetBasicNameValueList((o, e) =>
         {

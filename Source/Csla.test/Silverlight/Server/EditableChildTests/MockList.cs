@@ -42,11 +42,7 @@ namespace Csla.Testing.Business.EditableChildTests
     public static Guid MockEditableChildId2 = new Guid("{402DB94B-0D93-4be2-AFD0-7D1587CDDBC2}");
     public static Guid MockEditableChildId3 = new Guid("{B2ADE99D-7AB4-4e70-AEA1-D70443BCC3B0}");
 
-#if SILVERLIGHT
-    private void Fetch(string nameFilter, LocalProxy<MockList>.CompletedHandler completed)
-#else
     private void Fetch(string nameFilter)
-#endif
     {
       RaiseListChangedEvents = false;
       var children = 
@@ -64,10 +60,6 @@ namespace Csla.Testing.Business.EditableChildTests
       AddRange(found.ToArray());
 
       RaiseListChangedEvents = true;
-
-#if SILVERLIGHT
-      completed(this, null);
-#endif
     }
 
     #endregion

@@ -18,66 +18,59 @@ namespace Csla.Testing.Business.ObjectFactory
     public ObjectFactoryBusinessItemFactory() { }
 
 #if SILVERLIGHT
-    public void CreateObjectFactoryBusinessItem(FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void CreateObjectFactoryBusinessItem()
     {
       ObjectFactoryBusinessItem item = new ObjectFactoryBusinessItem();
       item.Id = "random_create";
       item.OperationResult = "CreateObjectFactoryBusinessItem/no parameters";
       MarkNew(item);
-      handler(item, null);
     }
 
-    public void CreateObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria, FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void CreateObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria)
     {
       ObjectFactoryBusinessItem item = new ObjectFactoryBusinessItem();
       item.Id = "create_" + criteria.Value;
       item.OperationResult = "CreateObjectFactoryBusinessItem/with parameters";
       MarkNew(item);
-      handler(item, null);
 
     }
 
-    public void FetchObjectFactoryBusinessItem(FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void FetchObjectFactoryBusinessItem()
     {
       ObjectFactoryBusinessItem item = new ObjectFactoryBusinessItem();
       item.Id = "random_fetch";
       item.OperationResult = "FetchObjectFactoryBusinessItem/no parameters";
       MarkOld(item);
-      handler(item, null);
     }
 
-    public void FetchObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria, FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void FetchObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria)
     {
       ObjectFactoryBusinessItem item = new ObjectFactoryBusinessItem();
       item.Id = "fetch_" + criteria.Value;
       item.OperationResult = "FetchObjectFactoryBusinessItem/with parameters";
       MarkOld(item);
-      handler(item, null);
     }
 
-    public void DeleteObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria, FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void DeleteObjectFactoryBusinessItem(SingleCriteria<ObjectFactoryBusinessItem, string> criteria)
     {
       ObjectFactoryBusinessItem item = new ObjectFactoryBusinessItem();
       item.Id = "delete_" + criteria.Value;
       item.OperationResult = "DeleteObjectFactoryBusinessItem/with parameters";
-      handler(item, null);
     }
 
-    public void UpdateObjectFactoryBusinessItem(ObjectFactoryBusinessItem item, FactoryProxy<ObjectFactoryBusinessItem>.CompletedHandler handler)
+    public void UpdateObjectFactoryBusinessItem(ObjectFactoryBusinessItem item)
     {
       if (item.IsNew)
       {
         item.Id = "inserted";
         item.OperationResult = "UpdateObjectFactoryBusinessItem/with parameters";
         MarkOld(item);
-        handler(item, null);
       }
       else
       {
         item.Id = "updated";
         item.OperationResult = "UpdateObjectFactoryBusinessItem/with parameters";
         MarkOld(item);
-        handler(item, null);
       }
 
     }

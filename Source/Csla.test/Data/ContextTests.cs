@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+#if !SILVERLIGHT && !NETFX_CORE
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -308,3 +309,4 @@ namespace Csla.Test.Data
 
   }
 }
+#endif

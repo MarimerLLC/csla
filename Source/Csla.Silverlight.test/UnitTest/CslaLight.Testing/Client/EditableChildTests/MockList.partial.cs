@@ -26,24 +26,22 @@ namespace Csla.Testing.Business.EditableChildTests
     #region  Data Access
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(LocalProxy<MockList>.CompletedHandler completed)
+    public void DataPortal_Fetch()
     {
       // fetch with no filter
-      Fetch("", completed);
+      Fetch("");
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public void DataPortal_Fetch(SingleCriteria<MockList, string> criteria, LocalProxy<MockList>.CompletedHandler completed)
+    public void DataPortal_Fetch(SingleCriteria<MockList, string> criteria)
     {
-      Fetch(criteria.Value, completed);
+      Fetch(criteria.Value);
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override void DataPortal_Update(LocalProxy<MockList>.CompletedHandler completed)
+    public override void DataPortal_Update()
     {
       Child_Update();
-
-      completed(this, null);
     }
 
     #endregion

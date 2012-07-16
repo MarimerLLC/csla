@@ -61,7 +61,7 @@ namespace Csla.Test.ValidationRules
       RootThrowsException.Counter = 0;
       var context = GetContext();
 
-      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy<>).AssemblyQualifiedName;
+      Csla.DataPortal.ProxyTypeName = typeof(SynchronizedWcfProxy).AssemblyQualifiedName;
       WcfProxy.DefaultUrl = cslalighttest.Properties.Resources.RemotePortalUrl;
 
 

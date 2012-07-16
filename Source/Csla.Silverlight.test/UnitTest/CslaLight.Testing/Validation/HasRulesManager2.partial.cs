@@ -25,14 +25,12 @@ namespace Csla.Test.ValidationRules
   {
     public HasRulesManager2() : base() { }
 
-    public void DataPortal_Create(object criteria, LocalProxy<HasRulesManager2>.CompletedHandler completed)
+    public void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)criteria;
       Name = crit._name;
       Csla.ApplicationContext.GlobalContext.Add("HasRulesManager2", "Created");
       BusinessRules.CheckRules();
-
-      completed(this, null);
     }
 
     #if !SILVERLIGHT

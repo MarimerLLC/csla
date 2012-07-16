@@ -635,7 +635,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
 
-    public Rules.BrokenRulesCollection GetBrokenRules()
+    public new Rules.BrokenRulesCollection GetBrokenRules()
     {
       return BusinessRules.GetBrokenRules();
     }

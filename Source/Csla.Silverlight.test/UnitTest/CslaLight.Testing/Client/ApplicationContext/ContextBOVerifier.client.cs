@@ -17,22 +17,18 @@ namespace Csla.Testing.Business.ApplicationContext
 
 #if SILVERLIGHT
     //DataPortal_Insert is used to verify that the ClientContext["MSG"] is received on the server
-    public override void DataPortal_Insert(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Client);
-
-      handler(this, null);
     }
 
 
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    public override void DataPortal_Update(DataPortalClient.LocalProxy<ClientContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Client);
-      
-      handler(this, null);
     }
 #endif
   }
@@ -45,20 +41,16 @@ namespace Csla.Testing.Business.ApplicationContext
 
 #if SILVERLIGHT
     //DataPortal_Insert is used to verify that the GlobalContext["MSG"] is received on the server
-    public override void DataPortal_Insert(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Global);
-
-      handler(this, null);
     }
 
     //DataPortal_Update is used to verify that the GlobalContext["MSG"] 
     //changed on the server does not change the value on the client
-    public override void DataPortal_Update(DataPortalClient.LocalProxy<GlobalContextBOVerifier>.CompletedHandler handler)
+    public override void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Global);
-
-      handler(this, null);
     }
 #endif
   }

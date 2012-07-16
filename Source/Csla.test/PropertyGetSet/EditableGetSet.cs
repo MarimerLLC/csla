@@ -232,24 +232,20 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if SILVERLIGHT
-    public override void DataPortal_Insert(LocalProxy<EditableGetSet>.CompletedHandler handler)
+    public override void DataPortal_Insert()
     {
       if (FieldManager.FieldExists(ManagedChildProperty))
         ManagedChild.Insert();
       if (FieldManager.FieldExists(ManagedChildListProperty))
         ManagedChildList.Update();
-
-      handler.Invoke(this, null);
     }
 
-    public override void DataPortal_Update(LocalProxy<EditableGetSet>.CompletedHandler handler)
+    public override void DataPortal_Update()
     {
       if (FieldManager.FieldExists(ManagedChildProperty))
         ManagedChild.Update();
       if (FieldManager.FieldExists(ManagedChildListProperty))
         ManagedChildList.Update();
-
-      handler.Invoke(this, null);
     }
 #else
     protected override void DataPortal_Insert()
@@ -377,14 +373,12 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if SILVERLIGHT
-    public override void DataPortal_Insert(LocalProxy<EditableGetSetNFI>.CompletedHandler handler)
+    public override void DataPortal_Insert()
     {
-      handler.Invoke(this, null);
     }
 
-    public override void DataPortal_Update(LocalProxy<EditableGetSetNFI>.CompletedHandler handler)
+    public override void DataPortal_Update()
     {
-      handler.Invoke(this, null);
     }
 #else
     protected override void DataPortal_Insert()

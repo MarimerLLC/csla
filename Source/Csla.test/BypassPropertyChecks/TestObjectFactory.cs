@@ -27,14 +27,13 @@ namespace Csla.Test.BypassPropertyChecks
       return returnValue;
     }
 #else
-    public void Fetch(Csla.DataPortalClient.FactoryProxy<Csla.Test.BypassPropertyChecks.BypassBusinessBaseUsingFactory>.CompletedHandler handler)
+    public void Fetch()
     {
       BypassBusinessBaseUsingFactory returnValue = new BypassBusinessBaseUsingFactory();
       using (this.BypassPropertyChecks(returnValue))
       {
         returnValue.Id2 = 7; // bypass user rights
       }
-      handler(returnValue, null);
     }
 
 #endif

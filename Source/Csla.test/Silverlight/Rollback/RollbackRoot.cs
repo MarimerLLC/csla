@@ -26,9 +26,9 @@ namespace Csla.Test.Silverlight.Rollback
 
 
 
-    public override void DataPortal_Create(LocalProxy<RollbackRoot>.CompletedHandler handler)
+    public override void DataPortal_Create()
     {
-      base.DataPortal_Create(handler);
+      base.DataPortal_Create();
     }
     #else
     private RollbackRoot() { }

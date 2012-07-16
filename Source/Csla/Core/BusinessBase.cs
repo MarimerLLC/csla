@@ -1193,7 +1193,6 @@ namespace Csla.Core
 
     #region Data Access
 
-#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.
@@ -1204,7 +1203,12 @@ namespace Csla.Core
     /// loosely-typed criteria parameter.
     /// </remarks>
     [RunLocal]
+#if SILVERLIGHT || NETFX_CORE
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void DataPortal_Create()
+#else
     protected virtual void DataPortal_Create()
+#endif
     {
       BusinessRules.CheckRules();
     }
@@ -1213,22 +1217,36 @@ namespace Csla.Core
     /// Override this method to allow insertion of a business
     /// object.
     /// </summary>
+#if SILVERLIGHT || NETFX_CORE
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void DataPortal_Insert()
+#else
     protected virtual void DataPortal_Insert()
+#endif
     { }
 
     /// <summary>
     /// Override this method to allow update of a business
     /// object.
     /// </summary>
+#if SILVERLIGHT || NETFX_CORE
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void DataPortal_Update()
+#else
     protected virtual void DataPortal_Update()
+#endif
     { }
 
     /// <summary>
     /// Override this method to allow deferred deletion of a business object.
     /// </summary>
+#if SILVERLIGHT || NETFX_CORE
+    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Never)]
+    public virtual void DataPortal_DeleteSelf()
+#else
     protected virtual void DataPortal_DeleteSelf()
-    { }
 #endif
+    { }
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -1267,7 +1285,7 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     [EditorBrowsable(EditorBrowsableState.Never)]
     public virtual void Child_Create()
 #else

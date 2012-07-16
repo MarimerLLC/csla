@@ -40,9 +40,8 @@ namespace Csla.Test.BypassPropertyChecks
       dp.BeginFetch();
     }
 
-    public void DataPortal_Fetch(Csla.DataPortalClient.LocalProxy<BypassBusinessBaseUsingFactory>.CompletedHandler completed)
+    public void DataPortal_Fetch()
     {
-      completed(this, null);
     }
 
 #endif

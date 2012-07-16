@@ -1157,14 +1157,42 @@ namespace Csla
         }
         else
         {
-#if NETFX_CORE
           var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory);
-#else
-          var proxyFactoryType = Type.GetType(ApplicationContext.DataPortalProxyFactory, true, true);
-#endif
           _dataProxyFactory = (DataPortalClient.IDataPortalProxyFactory) MethodCaller.CreateInstance(proxyFactoryType);
         }
       }
+    }
+
+    /// <summary>
+    /// Gets or sets a reference to a ProxyFactory object
+    /// that is used to create an instance of the data
+    /// portal proxy object.
+    /// </summary>
+    public static DataPortalClient.IDataPortalProxyFactory ProxyFactory
+    {
+      get
+      {
+        if (_dataProxyFactory == null)
+          LoadDataPortalProxyFactory();
+        return _dataProxyFactory;
+      }
+      set
+      {
+        _dataProxyFactory = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the assembly qualified type
+    /// name of the proxy object to be loaded
+    /// by the data portal. "Local" is a special
+    /// value used to indicate that the data
+    /// portal should run in local mode.
+    /// </summary>
+    public static string ProxyTypeName
+    {
+      get { return ApplicationContext.DataPortalProxy; }
+      set { ApplicationContext.DataPortalProxy = value; }
     }
 
     /// <summary>

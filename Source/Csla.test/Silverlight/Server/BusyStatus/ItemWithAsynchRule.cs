@@ -127,39 +127,28 @@ namespace Csla.Testing.Business.BusyStatus
 
 #if SILVERLIGHT
 
-    public void DataPortal_Fetch(SingleCriteria<ItemWithAsynchRule, string> criteria, Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public void DataPortal_Fetch(SingleCriteria<ItemWithAsynchRule, string> criteria)
     {
       this.Id = "fetch_" + criteria.Value;
       this.OperationResult = "DataPortal_Fetch/with parameters";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public override void DataPortal_Create()
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
       this.MarkNew();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public override void DataPortal_Insert()
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
       this.MarkOld();
-      completed.Invoke(this, null);
     }
 
-    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
-    {
-      this.Id = "random_update";
-      this.OperationResult = "DataPortal_Update";
-      this.MarkOld();
-      completed.Invoke(this, null);
-    }
-
-    internal void DataPortal_Update()
+    public override void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

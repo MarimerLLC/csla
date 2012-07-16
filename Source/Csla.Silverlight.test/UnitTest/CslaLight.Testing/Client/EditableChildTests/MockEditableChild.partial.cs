@@ -45,7 +45,8 @@ namespace Csla.Testing.Business.EditableChildTests
     {
       LoadProperty<string>(DataPortalMethodProperty, "Child_Update");
 
-      Csla.DataPortal.UpdateChild<GrandChildList>(GrandChildren);
+      //Csla.DataPortal.UpdateChild<GrandChildList>(GrandChildren);
+      Csla.DataPortal.UpdateChild(GrandChildren);
     }
 
     #endregion

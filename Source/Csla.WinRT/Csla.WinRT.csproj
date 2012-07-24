@@ -300,6 +300,9 @@
     <Compile Include="..\Csla\DataPortalClient\LocalProxy.cs">
       <Link>DataPortalClient\LocalProxy.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalClient\PrimitiveCriteria.cs">
+      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DataPortalClient\WcfProxy.cs">
       <Link>DataPortalClient\WcfProxy.cs</Link>
     </Compile>

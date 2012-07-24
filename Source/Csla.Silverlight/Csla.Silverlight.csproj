@@ -182,6 +182,9 @@
     <Compile Include="..\Csla\DataPortalClient\LocalProxy.cs">
       <Link>DataPortalClient\LocalProxy.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalClient\PrimitiveCriteria.cs">
+      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DataPortalClient\WcfProxy.cs">
       <Link>DataPortalClient\WcfProxy.cs</Link>
     </Compile>
@@ -412,9 +415,6 @@
     </Compile>
     <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
       <Link>Server\FactoryDataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\PrimitiveCriteria.cs">
-      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
       <Link>Server\IDataPortalExceptionInspector.cs</Link>

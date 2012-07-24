@@ -149,7 +149,7 @@ namespace Csla.Server.Hosts.Silverlight
           if (criteria == null)
             o = Csla.DataPortal.Fetch(t);
           else
-            o = Csla.DataPortal.Fetch(t, criteria);
+            o = Csla.DataPortal.Fetch(t, criteria).Result;
         }
         else
         {

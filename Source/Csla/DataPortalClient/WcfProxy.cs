@@ -26,7 +26,6 @@ namespace Csla.DataPortalClient
   {
     private static System.ServiceModel.Channels.Binding _defaultBinding;
     private const int TimeoutInMinutes = 10;
-    private static string _defaultUrl;
     private static string _defaultEndPoint = "WcfDataPortal";
 
     /// <summary>
@@ -56,10 +55,13 @@ namespace Csla.DataPortalClient
     /// Gets or sets the default URL address
     /// for the data portal server.
     /// </summary>
+    /// <remarks>
+    /// Deprecated: use ApplicationContext.DataPortalUrlString
+    /// </remarks>
     public static string DefaultUrl
     {
-      get { return _defaultUrl; }
-      set { _defaultUrl = value; }
+      get { return ApplicationContext.DataPortalUrlString; }
+      set { ApplicationContext.DataPortalUrlString = value; }
     }
 
     /// <summary>
@@ -277,6 +279,11 @@ namespace Csla.DataPortalClient
 #else
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
+      request.CriteriaData = MobileFormatter.Serialize(criteria);
       request = ConvertRequest(request);
 
       var proxy = GetProxy();
@@ -385,6 +392,12 @@ namespace Csla.DataPortalClient
 #else
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
+      request.CriteriaData = MobileFormatter.Serialize(criteria);
+
       request = ConvertRequest(request);
 
       var proxy = GetProxy();
@@ -600,6 +613,11 @@ namespace Csla.DataPortalClient
 #else
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
+      if (!(criteria is IMobileObject))
+      {
+        criteria = new PrimitiveCriteria(criteria);
+      }
+      request.CriteriaData = MobileFormatter.Serialize(criteria);
       request = ConvertRequest(request);
 
       var proxy = GetProxy();

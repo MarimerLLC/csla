@@ -265,7 +265,7 @@
     <Compile Include="Server\GenericBusinessException.cs" />
     <Compile Include="Server\Hosts\RemotingPortal.cs" />
     <Compile Include="Server\Hosts\Silverlight\ISilverlightRequest.cs" />
-    <Compile Include="Server\Hosts\Silverlight\PrimitiveCriteria.cs" />
+    <Compile Include="DataPortalClient\PrimitiveCriteria.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightRequestProcessor.cs" />
     <Compile Include="Server\Hosts\Silverlight\SilverlightResponse.cs" />

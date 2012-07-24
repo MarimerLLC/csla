@@ -41,9 +41,9 @@ namespace Csla.Server.Hosts.Silverlight
 
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
-        if (criteria is PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
-          criteria = ((PrimitiveCriteria)criteria).Value;
+          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
@@ -87,9 +87,9 @@ namespace Csla.Server.Hosts.Silverlight
         request = ConvertRequest(request);
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
-        if (criteria is PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
-          criteria = ((PrimitiveCriteria)criteria).Value;
+          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
         SilverlightCriteriaRequest fetchRequest = new SilverlightCriteriaRequest(
@@ -171,9 +171,9 @@ namespace Csla.Server.Hosts.Silverlight
         request = ConvertRequest(request);
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
-        if (criteria is PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
-          criteria = ((PrimitiveCriteria)criteria).Value;
+          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
         SilverlightRequestProcessor processor = new SilverlightRequestProcessor();

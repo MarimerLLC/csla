@@ -230,8 +230,6 @@ namespace Csla
 
     #region Settings
 
-#if !SILVERLIGHT && !NETFX_CORE
-
     private static string _dataPortalUrl = null;
 
     /// <summary>
@@ -243,10 +241,12 @@ namespace Csla
     {
       get
       {
+#if !SILVERLIGHT && !NETFX_CORE
         if (_dataPortalUrl == null)
         {
           _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
         }
+#endif
         return _dataPortalUrl;
       }
       set
@@ -268,8 +268,6 @@ namespace Csla
     {
       get { return new Uri(DataPortalUrlString); }
     }
-
-#endif
 
     private static string _dataPortalProxyFactory;
     ///<summary>

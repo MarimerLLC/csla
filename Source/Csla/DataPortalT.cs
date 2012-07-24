@@ -556,35 +556,38 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task<T> FetchAsync(object criteria)
     {
-      var request = new DataPortalAsyncRequest(criteria, null);
-      var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoFetchAsync, request);
-      if (result.Error != null)
-        throw result.Error;
-      GlobalContext = result.GlobalContext;
-      return result.Result;
+      var result = (T)await DataPortal.Fetch(typeof(T), criteria);
+      GlobalContext = Csla.ApplicationContext.GlobalContext;
+      return result;
+      //var request = new DataPortalAsyncRequest(criteria, null);
+      //var result = await Task.Factory.StartNew<DataPortalAsyncResult>(DoFetchAsync, request);
+      //if (result.Error != null)
+      //  throw result.Error;
+      //GlobalContext = result.GlobalContext;
+      //return result.Result;
     }
 
-    private DataPortalAsyncResult DoFetchAsync(object e)
-    {
-      DataPortalAsyncResult response = null;
-      var request = e as DataPortalAsyncRequest;
-      SetThreadContext(request);
-      T result = default(T);
-      try
-      {
-        object state = request.Argument;
-        if (state is Csla.Server.EmptyCriteria)
-          result = Csla.DataPortal.Fetch<T>();
-        else
-          result = Csla.DataPortal.Fetch<T>(state);
-        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
-      }
-      catch (Exception ex)
-      {
-        response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
-      }
-      return response;
-    }
+    //private DataPortalAsyncResult DoFetchAsync(object e)
+    //{
+    //  DataPortalAsyncResult response = null;
+    //  var request = e as DataPortalAsyncRequest;
+    //  SetThreadContext(request);
+    //  T result = default(T);
+    //  try
+    //  {
+    //    object state = request.Argument;
+    //    if (state is Csla.Server.EmptyCriteria)
+    //      result = Csla.DataPortal.Fetch<T>();
+    //    else
+    //      result = Csla.DataPortal.Fetch<T>(state);
+    //    response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, null, request.UserState);
+    //  }
+    //  catch (Exception ex)
+    //  {
+    //    response = new DataPortalAsyncResult(result, Csla.ApplicationContext.GlobalContext, ex, request.UserState);
+    //  }
+    //  return response;
+    //}
 
     #endregion
 

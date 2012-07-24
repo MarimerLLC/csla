@@ -9,7 +9,7 @@ using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
-namespace Csla.Silverlight
+namespace Csla.DataPortalClient
 {
   /// <summary>
   /// Class used as a wrapper for criteria based requests that use primitives

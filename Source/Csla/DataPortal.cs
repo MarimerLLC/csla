@@ -195,7 +195,7 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>(object criteria)
     {
-      return (T)Fetch(typeof(T), criteria);
+      return (T)Fetch(typeof(T), criteria).Result;
     }
 
     /// <summary>
@@ -206,15 +206,15 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>()
     {
-      return (T)Fetch(typeof(T), EmptyCriteria);
+      return (T)Fetch(typeof(T), EmptyCriteria).Result;
     }
 
     internal static object Fetch(Type objectType)
     {
-      return Fetch(objectType, EmptyCriteria);
+      return Fetch(objectType, EmptyCriteria).Result;
     }
 
-    internal static object Fetch(Type objectType, object criteria)
+    internal async static Task<object> Fetch(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -242,7 +242,9 @@ namespace Csla
         {
           try
           {
-            result = proxy.Fetch(objectType, criteria, dpContext).Result;
+            result = await proxy.Fetch(objectType, criteria, dpContext);
+            if (result.Error != null)
+              throw result.Error;
           }
           catch (AggregateException ex)
           {
@@ -1189,6 +1191,9 @@ namespace Csla
     /// value used to indicate that the data
     /// portal should run in local mode.
     /// </summary>
+    /// <remarks>
+    /// Deprecated: use ApplicationContext.DataPortalProxy
+    /// </remarks>
     public static string ProxyTypeName
     {
       get { return ApplicationContext.DataPortalProxy; }

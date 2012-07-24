@@ -556,7 +556,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public async Task<T> FetchAsync(object criteria)
     {
-      var result = (T)await DataPortal.Fetch(typeof(T), criteria);
+      var result = (T)await DataPortal.FetchAsync(typeof(T), criteria);
       GlobalContext = Csla.ApplicationContext.GlobalContext;
       return result;
       //var request = new DataPortalAsyncRequest(criteria, null);

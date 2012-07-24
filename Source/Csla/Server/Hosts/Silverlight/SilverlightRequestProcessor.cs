@@ -149,7 +149,7 @@ namespace Csla.Server.Hosts.Silverlight
           if (criteria == null)
             o = Csla.DataPortal.Fetch(t);
           else
-            o = Csla.DataPortal.Fetch(t, criteria).Result;
+            o = Csla.DataPortal.Fetch(t, criteria);
         }
         else
         {
@@ -270,7 +270,7 @@ namespace Csla.Server.Hosts.Silverlight
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)
         {
-          Csla.DataPortal.Delete(t, criteria);
+          Csla.DataPortal.DeleteAsync(t, criteria).RunSynchronously();
         }
         else
         {

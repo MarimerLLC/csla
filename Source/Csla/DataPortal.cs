@@ -127,6 +127,11 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public static object Create(Type objectType, object criteria)
     {
+      return CreateAsync(objectType, EmptyCriteria).Result;
+    }
+
+    internal async static Task<object> CreateAsync(Type objectType, object criteria)
+    {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
       try
@@ -153,7 +158,7 @@ namespace Csla
         {
           try
           {
-            result = proxy.Create(objectType, criteria, dpContext).Result;
+            result = await proxy.Create(objectType, criteria, dpContext);
           }
           catch (AggregateException ex)
           {
@@ -195,7 +200,7 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>(object criteria)
     {
-      return (T)Fetch(typeof(T), criteria).Result;
+      return (T)Fetch(typeof(T), criteria);
     }
 
     /// <summary>
@@ -206,15 +211,20 @@ namespace Csla
     /// <returns>An object populated with values from the database.</returns>
     public static T Fetch<T>()
     {
-      return (T)Fetch(typeof(T), EmptyCriteria).Result;
+      return (T)Fetch(typeof(T), EmptyCriteria);
     }
 
     internal static object Fetch(Type objectType)
     {
-      return Fetch(objectType, EmptyCriteria).Result;
+      return Fetch(objectType, EmptyCriteria);
     }
 
-    internal async static Task<object> Fetch(Type objectType, object criteria)
+    internal static object Fetch(Type objectType, object criteria)
+    {
+      return FetchAsync(objectType, criteria).Result;
+    }
+
+    internal async static Task<object> FetchAsync(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -327,6 +337,11 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
     public static T Update<T>(T obj)
+    {
+      return UpdateAsync(obj).Result;
+    }
+
+    internal async static Task<T> UpdateAsync<T>(T obj)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -477,7 +492,7 @@ namespace Csla
           }
           try
           {
-            result = proxy.Update(obj, dpContext).Result;
+            result = await proxy.Update(obj, dpContext);
           }
           catch (AggregateException ex)
           {
@@ -517,10 +532,10 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public static void Delete<T>(object criteria)
     {
-      Delete(typeof(T), criteria);
+      DeleteAsync(typeof(T), criteria).RunSynchronously();
     }
 
-    internal static void Delete(Type objectType, object criteria)
+    internal async static Task DeleteAsync(Type objectType, object criteria)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -547,7 +562,7 @@ namespace Csla
         {
           try
           {
-            result = proxy.Delete(objectType, criteria, dpContext).Result;
+            result = await proxy.Delete(objectType, criteria, dpContext);
           }
           catch (AggregateException ex)
           {

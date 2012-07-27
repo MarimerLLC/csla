@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if !SILVERLIGHT || NETFX_CORE
 using System.Threading.Tasks;
-#endif
 
 namespace Csla
 {
@@ -14,7 +12,6 @@ namespace Csla
   /// <typeparam name="T"></typeparam>
   public interface IDataPortal<T>
   {
-#if !SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -46,20 +43,19 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    Task<T> UpdateAsync(object obj);
+    Task<T> UpdateAsync(T obj);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
-    Task<T> ExecuteAsync(object command);
+    Task<T> ExecuteAsync(T command);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    Task<T> DeleteAsync(object criteria);
-#endif
+    Task DeleteAsync(object criteria);
 #if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Called by a factory method in a business class to create 
@@ -76,15 +72,6 @@ namespace Csla
     /// </summary>
     /// <returns>A new object, populated with default values.</returns>
     T Create();
-    /// <summary>
-    /// Called by a factory method in a business class to create 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <returns>A new object, populated with default values.</returns>
-    object Create(Type objectType, object criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
@@ -248,14 +235,14 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    void BeginUpdate(object obj);
+    void BeginUpdate(T obj);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="userState">User state data.</param>
-    void BeginUpdate(object obj, object userState);
+    void BeginUpdate(T obj, object userState);
     /// <summary>
     /// Event raised when the operation has completed.
     /// </summary>

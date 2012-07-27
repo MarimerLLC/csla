@@ -152,7 +152,7 @@ namespace Csla
       if (IsBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>(this);
+        result = await DataPortal.UpdateAsync<T>((T)this);
       else
         result = (T)this;
       OnSaved(result, null, null);
@@ -291,7 +291,7 @@ namespace Csla
           MarkBusy();
           if (userState == null)
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);
@@ -302,7 +302,7 @@ namespace Csla
           }
           else
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);

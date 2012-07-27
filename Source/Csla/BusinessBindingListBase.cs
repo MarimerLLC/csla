@@ -911,7 +911,7 @@ namespace Csla
         {
           if (userState == null)
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);
@@ -921,7 +921,7 @@ namespace Csla
           }
           else
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);

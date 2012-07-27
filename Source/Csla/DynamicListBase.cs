@@ -209,7 +209,7 @@ namespace Csla
     /// </summary>
     protected override void AddNewCore()
     {
-      var portal = new Csla.DataPortal<T>(DataPortal.ProxyModes.LocalOnly);
+      var portal = new Csla.DataPortal<T>();
       portal.CreateCompleted += (o, e) =>
       {
         // call OnUnhandledAsyncException if failed

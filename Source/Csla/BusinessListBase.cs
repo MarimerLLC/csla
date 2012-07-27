@@ -1019,7 +1019,7 @@ namespace Csla
         {
           if (userState == null)
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);
@@ -1029,7 +1029,7 @@ namespace Csla
           }
           else
           {
-            DataPortal.BeginUpdate<T>(this, (o, e) =>
+            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
             {
               T result = e.Object;
               OnSaved(result, e.Error, e.UserState);
@@ -1052,15 +1052,6 @@ namespace Csla
     /// </summary>
     public async System.Threading.Tasks.Task<T> SaveAsync()
     {
-      return await this.SaveAsync(DataPortal.ProxyModes.Auto);
-    }
-
-    /// <summary>
-    /// Saves the object to the database.
-    /// </summary>
-    /// <param name="proxyMode">Sets the DataPortal.ProxyMode to either Auto or Local</param>
-    public async System.Threading.Tasks.Task<T> SaveAsync(DataPortal.ProxyModes proxyMode)
-    {
       T result;
       if (this.IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
@@ -1071,7 +1062,7 @@ namespace Csla
       if (IsBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>(this, proxyMode);
+        result = await DataPortal.UpdateAsync<T>((T)this);
       else
         result = (T)this;
       OnSaved(result, null, null);

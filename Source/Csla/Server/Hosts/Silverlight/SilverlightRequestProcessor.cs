@@ -84,7 +84,7 @@ namespace Csla.Server.Hosts.Silverlight
           }
           else
           {
-            o = Csla.DataPortal.Create(t);
+            o = Csla.DataPortal.Create(t, new EmptyCriteria());
           }
         }
         else
@@ -147,7 +147,7 @@ namespace Csla.Server.Hosts.Silverlight
         if (factoryInfo == null)
         {
           if (criteria == null)
-            o = Csla.DataPortal.Fetch(t);
+            o = Csla.DataPortal.Fetch(t, new EmptyCriteria());
           else
             o = Csla.DataPortal.Fetch(t, criteria);
         }
@@ -270,7 +270,7 @@ namespace Csla.Server.Hosts.Silverlight
         var factoryInfo = GetMobileFactoryAttribute(t);
         if (factoryInfo == null)
         {
-          Csla.DataPortal.DeleteAsync(t, criteria).RunSynchronously();
+          Csla.DataPortal.Delete(t, criteria);
         }
         else
         {

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Csla.Server.Hosts.WcfChannel;
 
 namespace Csla.Server.Hosts
@@ -46,5 +47,6 @@ namespace Csla.Server.Hosts
     [OperationContract]
     [UseNetDataContract]
     WcfResponse Delete(DeleteRequest request);
+
   }
 }

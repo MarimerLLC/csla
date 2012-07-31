@@ -141,15 +141,21 @@ namespace Csla
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+          {
+            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
+            if (dpe != null)
+              HandleCreateDataPortalException(dpe, isSync, proxy);
+          }
+          throw new DataPortalException(
+            string.Format("DataPortal.Create {0}", Resources.Failed),
+            ex, null);
+        }
         catch (Server.DataPortalException ex)
         {
-          result = ex.Result;
-          GlobalContext = result.GlobalContext;
-          if (isSync && proxy.IsServerRemote)
-            ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-          throw new DataPortalException(
-            string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-            ex.InnerException, result.ReturnObject);
+          HandleCreateDataPortalException(ex, isSync, proxy);
         }
         DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create));
       }
@@ -159,6 +165,17 @@ namespace Csla
         throw;
       }
       return result.ReturnObject;
+    }
+
+    private void HandleCreateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    {
+      var result = ex.Result;
+      GlobalContext = result.GlobalContext;
+      if (isSync && proxy.IsServerRemote)
+        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      throw new DataPortalException(
+        string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
+        ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -310,8 +327,23 @@ namespace Csla
     {
       try
       {
-        CreateAsync(criteria).ContinueWith((task) =>
-          OnCreateCompleted(new DataPortalResult<T>(task.Result, task.Exception, userState)));
+        CreateAsync(criteria).ContinueWith((t) =>
+        {
+          T obj = default(T);
+          Exception error = null;
+          var ae = t.Exception as AggregateException;
+          if (ae != null && ae.InnerExceptions.Count > 0)
+          {
+            error = ae.Flatten().InnerExceptions[0];
+          }
+          else
+          {
+            error = t.Exception;
+          }
+          if (error == null)
+            obj = t.Result;
+          OnCreateCompleted(new DataPortalResult<T>(obj, error, userState));
+        });
       }
       catch (Exception ex)
       {
@@ -354,15 +386,21 @@ namespace Csla
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
         }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+          {
+            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
+            if (dpe != null)
+              HandleFetchDataPortalException(dpe, isSync, proxy);
+          }
+          throw new DataPortalException(
+            string.Format("DataPortal.Fetch {0}", Resources.Failed),
+            ex, null);
+        }
         catch (Server.DataPortalException ex)
         {
-          result = ex.Result;
-          GlobalContext = result.GlobalContext;
-          if (isSync && proxy.IsServerRemote)
-            ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-          throw new DataPortalException(
-            string.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-            ex.InnerException, result.ReturnObject);
+          HandleFetchDataPortalException(ex, isSync, proxy);
         }
         DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch));
       }
@@ -372,6 +410,17 @@ namespace Csla
         throw;
       }
       return result.ReturnObject;
+    }
+
+    private void HandleFetchDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    {
+      var result = ex.Result;
+      GlobalContext = result.GlobalContext;
+      if (isSync && proxy.IsServerRemote)
+        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      throw new DataPortalException(
+        string.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
+        ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -523,8 +572,23 @@ namespace Csla
     {
       try
       {
-        FetchAsync(criteria).ContinueWith((task) =>
-          OnFetchCompleted(new DataPortalResult<T>(task.Result, task.Exception, userState)));
+        FetchAsync(criteria).ContinueWith((t) =>
+          {
+            T obj = default(T);
+            Exception error = null;
+            var ae = t.Exception as AggregateException;
+            if (ae != null && ae.InnerExceptions.Count > 0)
+            {
+              error = ae.Flatten().InnerExceptions[0];
+            }
+            else
+            {
+              error = t.Exception;
+            }
+            if (error == null)
+              obj = t.Result;
+            OnFetchCompleted(new DataPortalResult<T>(obj, error, userState));
+          });
       }
       catch (Exception ex)
       {
@@ -687,15 +751,21 @@ namespace Csla
           }
           result = await proxy.Update(obj, dpContext);
         }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+          {
+            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
+            if (dpe != null)
+              HandleUpdateDataPortalException(dpe, isSync, proxy);
+          }
+          throw new DataPortalException(
+            string.Format("DataPortal.Update {0}", Resources.Failed),
+            ex, null);
+        }
         catch (Server.DataPortalException ex)
         {
-          result = ex.Result;
-          GlobalContext = result.GlobalContext;
-          if (proxy.IsServerRemote && isSync)
-            ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-          throw new DataPortalException(
-            String.Format("DataPortal.Update {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-            ex.InnerException, result.ReturnObject);
+          HandleUpdateDataPortalException(ex, isSync, proxy);
         }
 
         GlobalContext = result.GlobalContext;
@@ -710,6 +780,17 @@ namespace Csla
         throw;
       }
       return (T)result.ReturnObject;
+    }
+
+    private void HandleUpdateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    {
+      var result = ex.Result;
+      GlobalContext = result.GlobalContext;
+      if (proxy.IsServerRemote && isSync)
+        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      throw new DataPortalException(
+        String.Format("DataPortal.Update {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
+        ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -799,8 +880,23 @@ namespace Csla
     {
       try
       {
-        DoUpdateAsync(obj, true).ContinueWith((task) =>
-          OnUpdateCompleted(new DataPortalResult<T>(task.Result, task.Exception, userState)));
+        DoUpdateAsync(obj, true).ContinueWith((t) =>
+          {
+            T result = default(T);
+            Exception error = null;
+            var ae = t.Exception as AggregateException;
+            if (ae != null && ae.InnerExceptions.Count > 0)
+            {
+              error = ae.Flatten().InnerExceptions[0];
+            }
+            else
+            {
+              error = t.Exception;
+            }
+            if (error == null)
+              result = t.Result;
+            OnUpdateCompleted(new DataPortalResult<T>(result, error, userState));
+          });
       }
       catch (Exception ex)
       {
@@ -849,15 +945,21 @@ namespace Csla
         {
           result = await proxy.Delete(objectType, criteria, dpContext);
         }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+          {
+            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
+            if (dpe != null)
+              HandleDeleteDataPortalException(dpe, isSync, proxy);
+          }
+          throw new DataPortalException(
+            string.Format("DataPortal.Delete {0}", Resources.Failed),
+            ex, null);
+        }
         catch (Server.DataPortalException ex)
         {
-          result = ex.Result;
-          GlobalContext = result.GlobalContext;
-          if (proxy.IsServerRemote && isSync)
-            ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
-          throw new DataPortalException(
-            String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-            ex.InnerException, result.ReturnObject);
+          HandleDeleteDataPortalException(ex, isSync, proxy);
         }
 
         GlobalContext = result.GlobalContext;
@@ -871,6 +973,17 @@ namespace Csla
         DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete, ex));
         throw;
       }
+    }
+
+    private void HandleDeleteDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    {
+      var result = ex.Result;
+      GlobalContext = result.GlobalContext;
+      if (proxy.IsServerRemote && isSync)
+        ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
+      throw new DataPortalException(
+        String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
+        ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -976,8 +1089,20 @@ namespace Csla
     {
       try
       {
-        DoDeleteAsync(typeof(T), criteria, true).ContinueWith((task) => 
-          OnDeleteCompleted(new DataPortalResult<T>(default(T), task.Exception, userState)));
+        DoDeleteAsync(typeof(T), criteria, true).ContinueWith((t) => 
+          {
+            Exception error = null;
+            var ae = t.Exception as AggregateException;
+            if (ae != null && ae.InnerExceptions.Count > 0)
+            {
+              error = ae.Flatten().InnerExceptions[0];
+            }
+            else
+            {
+              error = t.Exception;
+            }
+            OnDeleteCompleted(new DataPortalResult<T>(default(T), error, userState));
+          });
       }
       catch (Exception ex)
       {
@@ -1044,8 +1169,23 @@ namespace Csla
     {
       try
       {
-        DoUpdateAsync(command, true).ContinueWith((task) =>
-          OnExecuteCompleted(new DataPortalResult<T>(task.Result, task.Exception, userState)));
+        DoUpdateAsync(command, true).ContinueWith((t) =>
+          {
+            T result = default(T);
+            Exception error = null;
+            var ae = t.Exception as AggregateException;
+            if (ae != null && ae.InnerExceptions.Count > 0)
+            {
+              error = ae.Flatten().InnerExceptions[0];
+            }
+            else
+            {
+              error = t.Exception;
+            }
+            if (error == null)
+              result = t.Result;
+            OnExecuteCompleted(new DataPortalResult<T>(result, error, userState));
+          });
       }
       catch (Exception ex)
       {

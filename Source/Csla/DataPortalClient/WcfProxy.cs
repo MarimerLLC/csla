@@ -252,18 +252,16 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-#pragma warning disable 1998
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
-#pragma warning restore 1998
     {
 #if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
-      IWcfPortal svr = GetProxy(cf);
+      var proxy = GetProxy(cf);
       WcfResponse response = null;
       try
       {
-        response =
-          svr.Create(new CreateRequest(objectType, criteria, context));
+        var request = new CreateRequest(objectType, criteria, context);
+        response = await proxy.CreateAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -369,12 +367,12 @@ namespace Csla.DataPortalClient
     {
 #if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
-      IWcfPortal svr = GetProxy(cf);
+      var proxy = GetProxy(cf);
       WcfResponse response = null;
       try
       {
-        response =
-               svr.Fetch(new FetchRequest(objectType, criteria, context));
+        var request = new FetchRequest(objectType, criteria, context);
+        response = await proxy.FetchAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -383,8 +381,6 @@ namespace Csla.DataPortalClient
         cf.Abort();
         throw;
       }
-
-
       object result = response.Result;
       if (result is Exception)
         throw (Exception)result;
@@ -482,12 +478,12 @@ namespace Csla.DataPortalClient
     {
 #if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
-      IWcfPortal svr = GetProxy(cf);
+      var proxy = GetProxy(cf);
       WcfResponse response = null;
       try
       {
-        response =
-              svr.Update(new UpdateRequest(obj, context));
+        var request = new UpdateRequest(obj, context);
+        response = await proxy.UpdateAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -496,8 +492,6 @@ namespace Csla.DataPortalClient
         cf.Abort();
         throw;
       }
-
-
       object result = response.Result;
       if (result is Exception)
         throw (Exception)result;
@@ -590,12 +584,12 @@ namespace Csla.DataPortalClient
     {
 #if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
-      IWcfPortal svr = GetProxy(cf);
+      var proxy = GetProxy(cf);
       WcfResponse response = null;
       try
       {
-        response =
-              svr.Delete(new DeleteRequest(objectType, criteria, context));
+        var request = new DeleteRequest(objectType, criteria, context);
+        response = await proxy.DeleteAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -604,8 +598,6 @@ namespace Csla.DataPortalClient
         cf.Abort();
         throw;
       }
-
-
       object result = response.Result;
       if (result is Exception)
         throw (Exception)result;

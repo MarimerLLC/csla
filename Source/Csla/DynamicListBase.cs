@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization;
@@ -96,6 +97,105 @@ namespace Csla
     /// <summary>
     /// Saves the specified item in the list.
     /// </summary>
+    /// <param name="item">Item to be saved.</param>
+    public async Task SaveItemAsync(T item)
+    {
+      await SaveItemAsync(IndexOf(item));
+    }
+
+    /// <summary>
+    /// Saves the specified item in the list.
+    /// </summary>
+    /// <param name="index">Index of item to be saved.</param>
+    public async Task SaveItemAsync(int index)
+    {
+      await SaveItemAsync(index, false);
+    }
+
+    /// <summary>
+    /// Saves the specified item in the list.
+    /// </summary>
+    /// <param name="index">Index of item to be saved.</param>
+    /// <param name="delete">true if the item should be deleted.</param>
+    protected virtual async Task SaveItemAsync(int index, bool delete)
+    {
+      T item = this[index];
+      var handleBusy = false;
+      if ((item.IsDeleted || delete) || (item.IsValid && item.IsDirty))
+      {
+        T savable = item;
+
+        // attempt to clone object
+        ICloneable cloneable = savable as ICloneable;
+        if (cloneable != null)
+        {
+          savable = (T)cloneable.Clone();
+          MethodCaller.CallMethodIfImplemented(item, "MarkBusy");
+          handleBusy = true;
+        }
+
+        // commit all changes
+        int editLevel = savable.EditLevel;
+        for (int tmp = 1; tmp <= editLevel; tmp++)
+          savable.AcceptChanges(editLevel - tmp, false);
+
+        if (delete)
+          savable.Delete();
+
+        Exception error = null;
+        T result = default(T);
+        try
+        {
+          result = await DataPortal.UpdateAsync<T>((T)savable);
+        }
+        catch (AggregateException ex)
+        {
+          if (ex.InnerExceptions.Count > 0)
+            error = ex.InnerExceptions[0];
+          else
+            error = ex;
+        }
+        catch (Exception ex)
+        {
+          error = ex;
+        }
+        finally
+        {
+          if (handleBusy)
+            MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
+        }
+        // update index - this may have changed under the duration of async call 
+        index = IndexOf(item);
+        if (error == null && result != null)
+        {
+          if (savable.IsDeleted)
+          {
+            //SafeRemoveItem  will raise INotifyCollectionChanged event
+            SafeRemoveItem(index);
+          }
+          else
+          {
+            for (int tmp = 1; tmp <= editLevel; tmp++)
+              result.CopyState(tmp, false);
+
+            SafeSetItem(index, result);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
+          }
+          item.SaveComplete(result);
+          OnSaved(result, null);
+        }
+        else
+        {
+          item.SaveComplete(item);
+          OnSaved(item, error);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Saves the specified item in the list.
+    /// </summary>
     /// <param name="item">
     /// Reference to the item to be saved.
     /// </param>
@@ -122,65 +222,18 @@ namespace Csla
     /// is properly replaced by the result of the
     /// Save() method call.
     /// </remarks>
-    public virtual void SaveItem(int index)
+    public async void SaveItem(int index)
     {
-
-      T item = this[index];
-      var handleBusy = false;
-      if (item.IsDeleted || (item.IsValid && item.IsDirty))
+      try
       {
-        T savable = item;
-
-        // attempt to clone object
-        ICloneable cloneable = savable as ICloneable;
-        if (cloneable != null)
-        {
-          savable = (T)cloneable.Clone();
-          MethodCaller.CallMethodIfImplemented(item, "MarkBusy");
-          handleBusy = true;
-        }
-
-        // commit all changes
-        int editLevel = savable.EditLevel;
-        for (int tmp = 1; tmp <= editLevel; tmp++)
-          savable.AcceptChanges(editLevel - tmp, false);
-
-        // save object
-        DataPortal<T> dp = new DataPortal<T>();
-        dp.UpdateCompleted += (o, e) =>
-        {
-          if (handleBusy)
-            MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
-
-          // update index - this may have changed under the duration of async call 
-          index = IndexOf(item);
-          if (e.Error == null)
-          {
-            T result = e.Object;
-            if (item.IsDeleted)
-            {
-              //SafeRemoveItem  will raise INotifyCollectionChanged event
-              SafeRemoveItem(index);
-            }
-            else
-            {
-              for (int tmp = 1; tmp <= editLevel; tmp++)
-                result.CopyState(tmp, false);
-
-              SafeSetItem(index, result);
-              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-              OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this[index], index));
-            }
-            item.SaveComplete(result);
-            OnSaved(result, null);
-          }
-          else
-          {
-            item.SaveComplete(item);
-            OnSaved(item, e.Error);
-          }
-        };
-        dp.BeginUpdate(savable);
+        await SaveItemAsync(index);
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
       }
     }
 
@@ -263,7 +316,7 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item
     /// to be removed.</param>
-    protected override void RemoveItem(int index)
+    protected override async void RemoveItem(int index)
     {
       T item = this[index];
       if (item.IsDeleted == false)
@@ -271,8 +324,17 @@ namespace Csla
         // only delete/save the item if it is not new
         if (!item.IsNew)
         {
-          item.Delete();
-          SaveItem(index);
+          try
+          {
+            await SaveItemAsync(index, true);
+          }
+          catch (AggregateException ex)
+          {
+            if (ex.InnerExceptions.Count > 0)
+              throw ex.InnerExceptions[0];
+            else
+              throw;
+          }
         }
         else
         {

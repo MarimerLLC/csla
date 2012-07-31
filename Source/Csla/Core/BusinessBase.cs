@@ -3475,7 +3475,7 @@ namespace Csla.Core
 
     #endregion
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     #region UndoableBase overrides
 
     /// <summary>
@@ -3541,7 +3541,7 @@ namespace Csla.Core
     System.Collections.IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
     {
       return BusinessRules.GetBrokenRules()
-        .Where(c => c.Property == propertyName && c.Severity == RuleSeverity.Error)
+        .Where(c => (string.IsNullOrEmpty(propertyName) || c.Property == propertyName) && c.Severity == RuleSeverity.Error)
         .ToList();
     }
 

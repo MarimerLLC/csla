@@ -1069,25 +1069,6 @@ namespace Csla
       return result;
     }
 
-#if SILVERLIGHT
-    /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Create()
-    { }
-
-    /// <summary>
-    /// Override this method to allow update of a business
-    /// object.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-#else
     /// <summary>
     /// Override this method to load a new business object with default
     /// values from the database.
@@ -1103,7 +1084,6 @@ namespace Csla
     {
       throw new NotSupportedException(Resources.UpdateNotSupportedException);
     }
-#endif
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -1111,11 +1091,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-#else
     protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-#endif
     { }
 
     /// <summary>
@@ -1124,11 +1100,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-#else
     protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-#endif
     { }
 
     /// <summary>
@@ -1138,11 +1110,7 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-#else
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-#endif
     { }
 
     /// <summary>
@@ -1151,11 +1119,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
-#else
     protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
-#endif
     { }
 
     /// <summary>
@@ -1164,11 +1128,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-#else
     protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-#endif
     { }
 
     /// <summary>
@@ -1178,11 +1138,7 @@ namespace Csla
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-#else
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-#endif
     { }
 
     #endregion

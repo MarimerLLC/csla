@@ -350,6 +350,8 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(null, ex, null);
       }
+      if (result.Error != null)
+        throw result.Error;
       return result;
 #endif
 #endif
@@ -465,6 +467,8 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(null, ex, null);
       }
+      if (result.Error != null)
+        throw result.Error;
       return result;
 #endif
 #endif
@@ -573,6 +577,8 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(null, ex, null);
       }
+      if (result.Error != null)
+        throw result.Error;
       return result;
 #endif
 #endif
@@ -685,6 +691,8 @@ namespace Csla.DataPortalClient
       {
         result = new DataPortalResult(null, ex, null);
       }
+      if (result.Error != null)
+        throw result.Error;
       return result;
 #endif
 #endif

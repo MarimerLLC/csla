@@ -855,11 +855,7 @@ namespace Csla
     /// with default values.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-#if SILVERLIGHT
-    public virtual void Child_Create()
-#else
     protected virtual void Child_Create()
-#endif
     { /* do nothing - list self-initializes */ }
 
     /// <summary>

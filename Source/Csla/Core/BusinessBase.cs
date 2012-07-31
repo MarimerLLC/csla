@@ -1265,12 +1265,7 @@ namespace Csla.Core
     /// criteria parameter, rather than overriding the method with a
     /// loosely-typed criteria parameter.
     /// </remarks>
-#if SILVERLIGHT || NETFX_CORE
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public virtual void Child_Create()
-#else
     protected virtual void Child_Create()
-#endif
     {
       BusinessRules.CheckRules();
     }

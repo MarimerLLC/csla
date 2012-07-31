@@ -321,7 +321,10 @@ namespace Csla.DataPortalClient
           }
         };
       proxy.CreateAsync(request);
-      return await tcs.Task;
+      var finalresult = await tcs.Task;
+      if (finalresult.Error != null)
+        throw finalresult.Error;
+      return finalresult;
 #else
       try
       {
@@ -433,7 +436,10 @@ namespace Csla.DataPortalClient
           }
         };
       proxy.FetchAsync(request);
-      return await tcs.Task;
+      var finalresult = await tcs.Task;
+      if (finalresult.Error != null)
+        throw finalresult.Error;
+      return finalresult;
 #else
       try
       {
@@ -538,7 +544,10 @@ namespace Csla.DataPortalClient
           }
         };
       proxy.UpdateAsync(request);
-      return await tcs.Task;
+      var finalresult = await tcs.Task;
+      if (finalresult.Error != null)
+        throw finalresult.Error;
+      return finalresult;
 #else
       try
       {
@@ -648,7 +657,10 @@ namespace Csla.DataPortalClient
           }
         };
       proxy.DeleteAsync(request);
-      return await tcs.Task;
+      var finalresult = await tcs.Task;
+      if (finalresult.Error != null)
+        throw finalresult.Error;
+      return finalresult;
 #else
       try
       {

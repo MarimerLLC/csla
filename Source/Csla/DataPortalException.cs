@@ -22,15 +22,32 @@ namespace Csla
   [Serializable]
   public class DataPortalException : Exception
   {
-#if SILVERLIGHT || NETFX_CORE
     /// <summary>
-    /// Gets information about the original
-    /// server-side exception. That exception
-    /// is not an exception on the client side,
-    /// but this property returns information
-    /// about the exception.
+    /// Creates an instance of the object.
     /// </summary>
-    public WcfPortal.WcfErrorInfo ErrorInfo { get; private set; }
+    /// <param name="message">Text describing the exception.</param>
+    /// <param name="businessObject">The business object
+    /// as it was at the time of the exception.</param>
+    public DataPortalException(string message, object businessObject)
+      : base(message)
+    {
+      _innerStackTrace = String.Empty;
+      _businessObject = businessObject;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="message">Text describing the exception.</param>
+    /// <param name="ex">Inner exception.</param>
+    /// <param name="businessObject">The business object
+    /// as it was at the time of the exception.</param>
+    public DataPortalException(string message, Exception ex, object businessObject)
+      : base(message, ex)
+    {
+      _innerStackTrace = ex.StackTrace;
+      _businessObject = businessObject;
+    }
 
     /// <summary>
     /// Creates an instance of the object.
@@ -42,11 +59,12 @@ namespace Csla
     /// Inner exception.
     /// </param>
     public DataPortalException(string message, Exception ex)
-      : base(message)
+      : base(message, ex)
     {
-      ErrorInfo = ex.ToErrorInfo();
+      _innerStackTrace = ex.StackTrace;
     }
 
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -64,17 +82,31 @@ namespace Csla
     public override string ToString()
     {
       var sb = new System.Text.StringBuilder();
-      var error = this.ErrorInfo;
-      while (error != null)
+      sb.AppendLine(base.ToString());
+      if (ErrorInfo != null)
       {
-        sb.AppendFormat("{0}: {1}", error.ExceptionTypeName, error.Message);
-        sb.Append(Environment.NewLine);
-        sb.Append(error.StackTrace);
-        sb.Append(Environment.NewLine);
-        error = error.InnerError;
+        sb.AppendLine("------------------------------");
+        var error = this.ErrorInfo;
+        while (error != null)
+        {
+          sb.AppendFormat("{0}: {1}", error.ExceptionTypeName, error.Message);
+          sb.Append(Environment.NewLine);
+          sb.Append(error.StackTrace);
+          sb.Append(Environment.NewLine);
+          error = error.InnerError;
+        }
       }
       return sb.ToString();
     }
+
+    /// <summary>
+    /// Gets information about the original
+    /// server-side exception. That exception
+    /// is not an exception on the client side,
+    /// but this property returns information
+    /// about the exception.
+    /// </summary>
+    public WcfPortal.WcfErrorInfo ErrorInfo { get; private set; }
 #endif
 
     private object _businessObject;
@@ -126,33 +158,6 @@ namespace Csla
     public override string StackTrace
     {
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="message">Text describing the exception.</param>
-    /// <param name="businessObject">The business object
-    /// as it was at the time of the exception.</param>
-    public DataPortalException(string message, object businessObject)
-      : base(message)
-    {
-      _innerStackTrace = String.Empty;
-      _businessObject = businessObject;
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="message">Text describing the exception.</param>
-    /// <param name="ex">Inner exception.</param>
-    /// <param name="businessObject">The business object
-    /// as it was at the time of the exception.</param>
-    public DataPortalException(string message, Exception ex, object businessObject)
-      : base(message, ex)
-    {
-      _innerStackTrace = ex.StackTrace;
-      _businessObject = businessObject;
     }
 
 #if !SILVERLIGHT && !NETFX_CORE

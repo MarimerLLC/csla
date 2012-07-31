@@ -17,6 +17,7 @@ using Csla.DataPortalClient;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -919,30 +920,55 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual T Save()
+    public T Save()
     {
-      T result;
-      if (this.IsChild)
-        throw new InvalidOperationException(Resources.NoSaveChildException);
-
-      if (_editLevel > 0)
-        throw new InvalidOperationException(Resources.NoSaveEditingException);
-
-      if (!IsValid)
-        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-
-      if (IsBusy)
-        // TODO: Review this resource text
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-
-      if (IsDirty)
-        result = (T)DataPortal.Update(this);
-      else
-        result = (T)this;
-      OnSaved(result, null, null);
-      return result;
+      try
+      {
+        return SaveAsync().Result;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
     }
 #endif
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    public virtual async Task<T> SaveAsync()
+    {
+      try
+      {
+        T result;
+        if (this.IsChild)
+          throw new InvalidOperationException(Resources.NoSaveChildException);
+
+        if (_editLevel > 0)
+          throw new InvalidOperationException(Resources.NoSaveEditingException);
+
+        if (!IsValid)
+          throw new Rules.ValidationException(Resources.NoSaveInvalidException);
+
+        if (IsBusy)
+          throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+
+        if (IsDirty)
+          result = await DataPortal.UpdateAsync<T>((T)this);
+        else
+          result = (T)this;
+        OnSaved(result, null, null);
+        return result;
+      }
+      catch (Exception ex)
+      {
+        OnSaved(null, ex, null);
+        throw;
+      }
+    }
 
     /// <summary>
     /// Starts an async operation to save the object to the database.
@@ -979,90 +1005,27 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    public async void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
-      if (this.IsChild)
+      Exception error = null;
+      T result = default(T);
+      try
       {
-        var error = new InvalidOperationException(Resources.NoSaveChildException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
+        result = await SaveAsync();
       }
-      else if (EditLevel > 0)
+      catch (AggregateException ex)
       {
-        var error = new InvalidOperationException(Resources.NoSaveEditingException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (!IsValid)
-      {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveInvalidException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (IsBusy)
-      {
-        var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else
-      {
-        if (IsDirty)
-        {
-          if (userState == null)
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, null));
-            });
-          }
-          else
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
-            }, userState);
-          }
-        }
+        if (ex.InnerExceptions.Count > 0)
+          error = ex.InnerExceptions[0];
         else
-        {
-          OnSaved((T)this, null, userState);
-          if (handler != null)
-            handler(this, new SavedEventArgs(this, null, userState));
-        }
+          error = ex;
       }
-    }
-
-    /// <summary>
-    /// Saves the object to the database.
-    /// </summary>
-    public async System.Threading.Tasks.Task<T> SaveAsync()
-    {
-      T result;
-      if (this.IsChild)
-        throw new InvalidOperationException(Resources.NoSaveChildException);
-      if (EditLevel > 0)
-        throw new InvalidOperationException(Resources.NoSaveEditingException);
-      if (!IsValid)
-        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-      if (IsBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-      if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>((T)this);
-      else
-        result = (T)this;
-      OnSaved(result, null, null);
-      return result;
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      if (handler != null)
+        handler(result, new SavedEventArgs(result, error, userState));
     }
 
     /// <summary>
@@ -1152,6 +1115,16 @@ namespace Csla
       return Save();
     }
 #endif
+
+    async Task<object> ISavable.SaveAsync()
+    {
+      return await SaveAsync();
+    }
+
+    async Task<object> ISavable.SaveAsync(bool forceUpdate)
+    {
+      return await SaveAsync();
+    }
 
     void ISavable.BeginSave()
     {

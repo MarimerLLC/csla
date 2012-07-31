@@ -6,6 +6,7 @@
 // <summary>Specifies that the object can save</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 
 namespace Csla.Core
 {
@@ -28,7 +29,18 @@ namespace Csla.Core
 		/// <param name="forceUpdate">true to force the save to be an update.</param>
 		object Save(bool forceUpdate);
 #endif
-		/// <summary>
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <returns>A new object containing the saved values.</returns>
+    Task<object> SaveAsync();
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <returns>A new object containing the saved values.</returns>
+    /// <param name="forceUpdate">true to force the save to be an update.</param>
+    Task<object> SaveAsync(bool forceUpdate);
+    /// <summary>
     /// Saves the object to the database asynchronously. The saved event will contain
     /// the new object when the save operation completes.
     /// </summary>

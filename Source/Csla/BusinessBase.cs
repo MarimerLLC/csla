@@ -13,6 +13,7 @@ using Csla.Properties;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -118,23 +119,19 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual T Save()
+    public T Save()
     {
-      T result;
-      if (this.IsChild)
-        throw new InvalidOperationException(Resources.NoSaveChildException);
-      if (EditLevel > 0)
-        throw new InvalidOperationException(Resources.NoSaveEditingException);
-      if (!IsValid && !IsDeleted)
-        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-      if (IsBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-      if (IsDirty)
-        result = (T)DataPortal.Update(this);
-      else
-        result = (T)this;
-      OnSaved(result, null, null);
-      return result;
+      try
+      {
+        return SaveAsync().Result;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
     }
 
     /// <summary>
@@ -142,21 +139,7 @@ namespace Csla
     /// </summary>
     public async System.Threading.Tasks.Task<T> SaveAsync()
     {
-      T result;
-      if (this.IsChild)
-        throw new InvalidOperationException(Resources.NoSaveChildException);
-      if (EditLevel > 0)
-        throw new InvalidOperationException(Resources.NoSaveEditingException);
-      if (!IsValid && !IsDeleted)
-        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-      if (IsBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-      if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>((T)this);
-      else
-        result = (T)this;
-      OnSaved(result, null, null);
-      return result;
+      return await SaveAsync(false);
     }
 
     /// <summary>
@@ -176,7 +159,21 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      return await this.SaveAsync();
+      T result;
+      if (this.IsChild)
+        throw new InvalidOperationException(Resources.NoSaveChildException);
+      if (EditLevel > 0)
+        throw new InvalidOperationException(Resources.NoSaveEditingException);
+      if (!IsValid && !IsDeleted)
+        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
+      if (IsBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+      if (IsDirty)
+        result = await DataPortal.UpdateAsync<T>((T)this);
+      else
+        result = (T)this;
+      OnSaved(result, null, null);
+      return result;
     }
 
     /// <summary>
@@ -245,80 +242,27 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state data.</param>
-    public virtual void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
+    public async void BeginSave(bool forceUpdate, EventHandler<SavedEventArgs> handler, object userState)
     {
-      if (forceUpdate && IsNew)
+      T result = default(T);
+      Exception error = null;
+      try
       {
-        // mark the object as old - which makes it
-        // not dirty
-        MarkOld();
-        // now mark the object as dirty so it can save
-        MarkDirty(true);
+        result = await SaveAsync(forceUpdate);
       }
-
-      if (this.IsChild)
+      catch (AggregateException ex)
       {
-        var error = new InvalidOperationException(Resources.NoSaveChildException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (EditLevel > 0)
-      {
-        var error = new InvalidOperationException(Resources.NoSaveEditingException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (!IsValid && !IsDeleted)
-      {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveInvalidException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (IsBusy)
-      {
-        var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else
-      {
-        if (IsDirty)
-        {
-          MarkBusy();
-          if (userState == null)
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
-              MarkIdle();
-            });
-          }
-          else
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
-              MarkIdle();
-            }, userState);
-          }
-        }
+        if (ex.InnerExceptions.Count > 0)
+          error = ex.InnerExceptions[0];
         else
-        {
-          OnSaved((T)this, null, userState);
-          if (handler != null)
-            handler(this, new SavedEventArgs(this, null, userState));
-        }
+          error = ex;
       }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      if (handler != null)
+        handler(this, new SavedEventArgs(result, error, userState));
     }
 
     /// <summary>
@@ -442,6 +386,16 @@ namespace Csla
     /// </summary>
     public event EventHandler<Csla.Core.SavedEventArgs> Saved;
 #endif
+
+    async Task<object> ISavable.SaveAsync()
+    {
+      return await SaveAsync();
+    }
+
+    async Task<object> ISavable.SaveAsync(bool forceUpdate)
+    {
+      return await SaveAsync();
+    }
 
     /// <summary>
     /// Raises the Saved event, indicating that the

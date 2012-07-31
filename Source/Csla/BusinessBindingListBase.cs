@@ -13,6 +13,7 @@ using Csla.Properties;
 using System.Linq;
 using System.Linq.Expressions;
 using Csla.Core;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -816,7 +817,25 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <returns>A new object containing the saved values.</returns>
-    public virtual T Save()
+    public T Save()
+    {
+      try
+      {
+        return SaveAsync().Result;
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    public virtual async Task<T> SaveAsync()
     {
       T result;
       if (this.IsChild)
@@ -833,7 +852,7 @@ namespace Csla
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
 
       if (IsDirty)
-        result = (T)DataPortal.Update(this);
+        result = await DataPortal.UpdateAsync<T>((T)this);
       else
         result = (T)this;
       OnSaved(result, null, null);
@@ -875,68 +894,27 @@ namespace Csla
     /// Method called when the operation is complete.
     /// </param>
     /// <param name="userState">User state object.</param>
-    public virtual void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
+    public async void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
     {
-      if (this.IsChild)
+      T result = default(T);
+      Exception error = null;
+      try
       {
-        var error = new InvalidOperationException(Resources.NoSaveChildException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
+        result = await SaveAsync();
       }
-      else if (EditLevel > 0)
+      catch (AggregateException ex)
       {
-        var error = new InvalidOperationException(Resources.NoSaveEditingException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (!IsValid)
-      {
-        Rules.ValidationException error = new Rules.ValidationException(Resources.NoSaveInvalidException);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else if (IsBusy)
-      {
-        var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-        OnSaved(null, error, userState);
-        if (handler != null)
-          handler(this, new SavedEventArgs(null, error, userState));
-      }
-      else
-      {
-        if (IsDirty)
-        {
-          if (userState == null)
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, null));
-            });
-          }
-          else
-          {
-            DataPortal.BeginUpdate<T>((T)this, (o, e) =>
-            {
-              T result = e.Object;
-              OnSaved(result, e.Error, e.UserState);
-              if (handler != null)
-                handler(result, new SavedEventArgs(result, e.Error, e.UserState));
-            }, userState);
-          }
-        }
+        if (ex.InnerExceptions.Count > 0)
+          error = ex.InnerExceptions[0];
         else
-        {
-          OnSaved((T)this, null, userState);
-          if (handler != null)
-            handler(this, new SavedEventArgs(this, null, userState));
-        }
+          error = ex;
       }
+      catch (Exception ex)
+      {
+        error = ex;
+      }
+      if (handler != null)
+        handler(this, new SavedEventArgs(result, error, userState));
     }
 
     /// <summary>
@@ -1061,6 +1039,16 @@ namespace Csla
     object Csla.Core.ISavable.Save(bool forceUpdate)
     {
       return Save();
+    }
+
+    async Task<object> ISavable.SaveAsync()
+    {
+      return await SaveAsync();
+    }
+
+    async Task<object> ISavable.SaveAsync(bool forceUpdate)
+    {
+      return await SaveAsync();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)

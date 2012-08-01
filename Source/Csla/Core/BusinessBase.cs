@@ -479,7 +479,7 @@ namespace Csla.Core
       bool result = CanReadProperty(property);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
+        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
           String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, property.Name));
         throw ex;
@@ -550,7 +550,7 @@ namespace Csla.Core
       bool result = CanWriteProperty(property);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
+        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
           String.Format("{0} ({1})", Resources.PropertySetNotAllowed, property.Name));
         throw ex;
       }
@@ -640,8 +640,8 @@ namespace Csla.Core
       bool result = CanExecuteMethod(method);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = 
-          new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+        Csla.Security.SecurityException ex = 
+          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
         throw ex;
       }
       return result;
@@ -667,7 +667,7 @@ namespace Csla.Core
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
         throw ex;
       }
       return result;
@@ -2092,7 +2092,11 @@ namespace Csla.Core
           }
         }
       }
-      catch (SecurityException)
+      catch (System.Security.SecurityException ex)
+      {
+        throw new Csla.Security.SecurityException(ex.Message);
+      }
+      catch (Csla.Security.SecurityException)
       {
         throw;
       }
@@ -2163,7 +2167,11 @@ namespace Csla.Core
           }
         }
       }
-      catch (SecurityException)
+      catch (System.Security.SecurityException ex)
+      {
+        throw new Csla.Security.SecurityException(ex.Message);
+      }
+      catch (Csla.Security.SecurityException)
       {
         throw;
       }
@@ -2249,7 +2257,11 @@ namespace Csla.Core
           LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), !_bypassPropertyChecks);
         }
       }
-      catch (SecurityException)
+      catch (System.Security.SecurityException ex)
+      {
+        throw new Csla.Security.SecurityException(ex.Message);
+      }
+      catch (Csla.Security.SecurityException)
       {
         throw;
       }
@@ -2332,7 +2344,11 @@ namespace Csla.Core
           if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
         }
       }
-      catch (SecurityException)
+      catch (System.Security.SecurityException ex)
+      {
+        throw new Csla.Security.SecurityException(ex.Message);
+      }
+      catch (Csla.Security.SecurityException)
       {
         throw;
       }

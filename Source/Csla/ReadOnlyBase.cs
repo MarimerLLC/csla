@@ -221,7 +221,7 @@ namespace Csla
       bool result = CanReadProperty(property);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(
+        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
           String.Format("{0} ({1})",
           Resources.PropertyGetNotAllowed, property.Name));
         throw ex;
@@ -310,8 +310,8 @@ namespace Csla
       bool result = CanExecuteMethod(method);
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex =
-          new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+        Csla.Security.SecurityException ex =
+          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
         throw ex;
       }
       return result;
@@ -337,7 +337,7 @@ namespace Csla
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        System.Security.SecurityException ex = new System.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
+        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
         throw ex;
       }
       return result;

@@ -242,6 +242,7 @@
     <Compile Include="Security\ICheckRoles.cs" />
     <Compile Include="Security\MembershipIdentity.cs" />
     <Compile Include="Security\NoAccessBehavior.cs" />
+    <Compile Include="Security\SecurityException.cs" />
     <Compile Include="Security\UnauthenticatedIdentity.cs" />
     <Compile Include="Security\UnauthenticatedPrincipal.cs" />
     <Compile Include="Security\UsernameCriteria.cs" />

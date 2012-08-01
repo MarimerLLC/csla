@@ -119,7 +119,7 @@ namespace Csla
         DataPortal.OnDataPortalInitInvoke(null);
 
         if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, objectType))
-          throw new System.Security.SecurityException(string.Format(
+          throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "create",
             objectType.Name));
@@ -364,7 +364,7 @@ namespace Csla
         DataPortal.OnDataPortalInitInvoke(null);
 
         if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.GetObject, objectType))
-          throw new System.Security.SecurityException(string.Format(
+          throw new Csla.Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "get",
             objectType.Name));
@@ -618,7 +618,7 @@ namespace Csla
           if (obj is Core.ICommandObject)
           {
             if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-              throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
             if (factoryType != null)
@@ -632,7 +632,7 @@ namespace Csla
               if (bbase.IsDeleted)
               {
                 if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
-                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "delete",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -643,7 +643,7 @@ namespace Csla
               else if (bbase.IsNew)
               {
                 if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
-                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "create",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -653,7 +653,7 @@ namespace Csla
               else
               {
                 if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "save",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -664,7 +664,7 @@ namespace Csla
             else
             {
               if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                           "save",
                                                                           objectType.Name));
 
@@ -684,7 +684,7 @@ namespace Csla
             methodName = "DataPortal_Execute";
             operation = DataPortalOperations.Execute;
             if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-              throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
           }
@@ -697,7 +697,7 @@ namespace Csla
               {
                 methodName = "DataPortal_DeleteSelf";
                 if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, obj))
-                  throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "delete",
                     objectType.Name));
               }
@@ -706,7 +706,7 @@ namespace Csla
                 {
                   methodName = "DataPortal_Insert";
                   if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, obj))
-                    throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                    throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                       "create",
                       objectType.Name));
                 }
@@ -714,7 +714,7 @@ namespace Csla
                 {
                   methodName = "DataPortal_Update";
                   if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                    throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                    throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                       "save",
                       objectType.Name));
                 }
@@ -723,7 +723,7 @@ namespace Csla
             {
               methodName = "DataPortal_Update";
               if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, obj))
-                throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                   "save",
                   objectType.Name));
             }
@@ -927,7 +927,7 @@ namespace Csla
         DataPortal.OnDataPortalInitInvoke(null);
 
         if (!Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.DeleteObject, objectType))
-          throw new System.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
             objectType.Name));
 

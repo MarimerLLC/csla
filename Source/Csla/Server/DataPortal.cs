@@ -479,8 +479,8 @@ namespace Csla.Server
         // When using integrated security, Principal must be null
         if (context.Principal != null)
         {
-          System.Security.SecurityException ex =
-            new System.Security.SecurityException(Resources.NoPrincipalAllowedException);
+          Csla.Security.SecurityException ex =
+            new Csla.Security.SecurityException(Resources.NoPrincipalAllowedException);
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
@@ -494,8 +494,8 @@ namespace Csla.Server
         // We expect the some Principal object
         if (context.Principal == null)
         {
-          System.Security.SecurityException ex =
-            new System.Security.SecurityException(
+          Csla.Security.SecurityException ex =
+            new Csla.Security.SecurityException(
               Resources.BusinessPrincipalException + " Nothing");
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;

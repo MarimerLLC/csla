@@ -459,6 +459,9 @@
     <Compile Include="..\Csla\Security\CslaPrincipal.cs">
       <Link>Security\CslaPrincipal.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Security\SecurityException.cs">
+      <Link>Security\SecurityException.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryReader.cs">
       <Link>Serialization\Mobile\CslaBinaryReader.cs</Link>
     </Compile>

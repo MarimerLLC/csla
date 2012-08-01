@@ -29,8 +29,8 @@
         </Border>
         <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
           <TextBlock Text="{Binding Model.Name}" Style="{StaticResource TitleTextStyle}" TextWrapping="NoWrap"/>
-          <TextBlock Text="Resource" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
-          <TextBlock Text="{Binding Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>
+          <TextBlock Text="Project" Style="{StaticResource CaptionTextStyle}" TextWrapping="NoWrap"/>
+          <TextBlock Text="{Binding Model.Description}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>
         </StackPanel>
       </Grid>
     </DataTemplate>
@@ -112,7 +112,7 @@
           <ProgressRing IsActive="{Binding Path=IsBusy}" MinHeight="40" MinWidth="40" Margin="20" HorizontalAlignment="Left"/>
         </StackPanel>
         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0" Text="{Binding Content}" Style="{StaticResource BodyTextStyle}"/>
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="1,20,-1,0" DataContext="{Binding Path=ResourceEditViewModel}">
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="1,20,-1,0" DataContext="{Binding Path=ProjectEditViewModel}">
           <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="35"/>
             <RowDefinition Height="Auto" MinHeight="35"/>

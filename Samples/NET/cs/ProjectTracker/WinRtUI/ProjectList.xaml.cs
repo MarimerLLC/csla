@@ -33,7 +33,7 @@ namespace WinRtUI
       if (e.NavigationMode == NavigationMode.New || e.NavigationMode == NavigationMode.Refresh)
       {
         this.Progress.IsIndeterminate = true;
-        this.DataContext = await new ViewModel.ResourceListViewModel().InitAsync();
+        this.DataContext = await new ViewModel.ProjectListViewModel().InitAsync();
         this.Progress.IsIndeterminate = false;
         itemDetailGrid.Visibility = Visibility.Visible;
       }

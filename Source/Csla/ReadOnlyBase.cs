@@ -126,7 +126,6 @@ namespace Csla
         lock (rules)
           if (!rules.Initialized)
           {
-            rules.Initialized = true;
             try
             {
               AddBusinessRules();
@@ -136,6 +135,7 @@ namespace Csla
               BusinessRuleManager.CleanupRulesForType(this.GetType());
               throw;  // and rethrow exception
             }
+            rules.Initialized = true;
           }
     }
 

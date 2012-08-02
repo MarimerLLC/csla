@@ -287,6 +287,7 @@
     <Compile Include="Silverlight\Serialization\AddressBase.cs" />
     <Compile Include="Silverlight\Serialization\AddressList.cs" />
     <Compile Include="Silverlight\Serialization\BindingListTests.cs" />
+    <Compile Include="Silverlight\Serialization\MockMobileList.cs" />
     <Compile Include="Silverlight\Serialization\Customer.cs" />
     <Compile Include="Silverlight\Serialization\CustomerContact.cs" />
     <Compile Include="Silverlight\Serialization\CustomerWithEnum.cs" />

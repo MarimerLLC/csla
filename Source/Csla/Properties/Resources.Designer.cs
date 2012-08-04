@@ -124,6 +124,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed on async load of property {0}.
+        /// </summary>
+        public static string AsyncLoadException {
+            get {
+                return ResourceManager.GetString("AsyncLoadException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
         /// </summary>
         public static string AuthenticationProviderDoesNotImplementIAuthorizeDataPortal {

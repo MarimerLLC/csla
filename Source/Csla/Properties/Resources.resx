@@ -444,4 +444,8 @@
   <data name="TaskOfObjectException" xml:space="preserve">
     <value>Method {0} must return Task&lt;object&gt;</value>
   </data>
+  <data name="AsyncLoadException" xml:space="preserve">
+    <value>Failed on async load of property {0}</value>
+    <comment>Csla 4.5</comment>
+  </data>
 </root>

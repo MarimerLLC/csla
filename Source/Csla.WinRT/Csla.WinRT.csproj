@@ -276,6 +276,15 @@
     <Compile Include="..\Csla\Core\ISavable.cs">
       <Link>Core\ISavable.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\AsyncLoadException.cs">
+      <Link>Core\LoadManager\AsyncLoadException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\IAsyncLoader.cs">
+      <Link>Core\LoadManager\IAsyncLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\TaskLoader.cs">
+      <Link>Core\LoadManager\TaskLoader.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\MobileObservableCollection.cs">
       <Link>Core\MobileObservableCollection.cs</Link>
     </Compile>

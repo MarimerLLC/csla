@@ -1233,5 +1233,16 @@
         return "Method {0} must return Task";
       }
     }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string AsyncLoadException
+    {
+      get
+      {
+        return "Failed on async load of property {0}";
+      }
+    }
   }
 }

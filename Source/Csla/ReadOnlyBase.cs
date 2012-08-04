@@ -13,6 +13,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
@@ -1173,7 +1174,7 @@ namespace Csla
       {
         if (_loadManager == null)
         {
-          _loadManager = new AsyncLoadManager();
+          _loadManager = new AsyncLoadManager(this, OnPropertyChanged);
           _loadManager.BusyChanged += loadManager_BusyChanged;
           _loadManager.UnhandledAsyncException += loadManager_UnhandledAsyncException;
         }
@@ -1190,6 +1191,18 @@ namespace Csla
     {
       OnBusyChanged(e);
     }
+    /*
+    /// <summary>
+    /// Loads a property value asynchronously.
+    /// </summary>
+    /// <typeparam name="R">Type of the property</typeparam>
+    /// <typeparam name="P">Type of the parameter.</typeparam>
+    /// <param name="property">Property to load.</param>
+    /// <param name="factory">AsyncFactory delegate.</param>
+    //protected void LoadPropertyAsync<R>(PropertyInfo<R> property, AsyncFactoryDelegate<R> factory)
+    //{
+    //  LoadManager.BeginLoad(new AsyncLoader<R>(property, factory));
+    //}
 
     /// <summary>
     /// Loads a property value asynchronously.
@@ -1199,93 +1212,22 @@ namespace Csla
     /// <param name="property">Property to load.</param>
     /// <param name="factory">AsyncFactory delegate.</param>
     /// <param name="parameter">Parameter value.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
-    {
-      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, parameter);
-      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
-    }
+    //protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P> factory, P parameter)
+    //{
+    //  LoadManager.BeginLoad(new AsyncLoader<R>(property, factory, parameter));
+    //}
+    */
 
     /// <summary>
-    /// Loads a property value asynchronously.
+    /// Load a property from an async method. 
     /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P1">Type of the parameter.</typeparam>
-    /// <typeparam name="P2">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    /// <param name="p1">Parameter value.</param>
-    /// <param name="p2">Parameter value.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void LoadPropertyAsync<R, P1, P2>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2> factory, P1 p1, P2 p2)
+    /// <typeparam name="R"></typeparam>
+    /// <param name="property"></param>
+    /// <param name="factory"></param>
+    protected void LoadPropertyAsync<R>(PropertyInfo<R> property, Task<R> factory)
     {
-      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2);
-      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
+      LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }
-
-    /// <summary>
-    /// Loads a property value asynchronously.
-    /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P1">Type of the parameter.</typeparam>
-    /// <typeparam name="P2">Type of the parameter.</typeparam>
-    /// <typeparam name="P3">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    /// <param name="p1">Parameter value.</param>
-    /// <param name="p2">Parameter value.</param>
-    /// <param name="p3">Parameter value.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void LoadPropertyAsync<R, P1, P2, P3>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3> factory, P1 p1, P2 p2, P3 p3)
-    {
-      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3);
-      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
-    }
-
-    /// <summary>
-    /// Loads a property value asynchronously.
-    /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P1">Type of the parameter.</typeparam>
-    /// <typeparam name="P2">Type of the parameter.</typeparam>
-    /// <typeparam name="P3">Type of the parameter.</typeparam>
-    /// <typeparam name="P4">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    /// <param name="p1">Parameter value.</param>
-    /// <param name="p2">Parameter value.</param>
-    /// <param name="p3">Parameter value.</param>
-    /// <param name="p4">Parameter value.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void LoadPropertyAsync<R, P1, P2, P3, P4>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4> factory, P1 p1, P2 p2, P3 p3, P4 p4)
-    {
-      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4);
-      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
-    }
-
-    /// <summary>
-    /// Loads a property value asynchronously.
-    /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P1">Type of the parameter.</typeparam>
-    /// <typeparam name="P2">Type of the parameter.</typeparam>
-    /// <typeparam name="P3">Type of the parameter.</typeparam>
-    /// <typeparam name="P4">Type of the parameter.</typeparam>
-    /// <typeparam name="P5">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    /// <param name="p1">Parameter value.</param>
-    /// <param name="p2">Parameter value.</param>
-    /// <param name="p3">Parameter value.</param>
-    /// <param name="p4">Parameter value.</param>
-    /// <param name="p5">Parameter value.</param>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected void LoadPropertyAsync<R, P1, P2, P3, P4, P5>(PropertyInfo<R> property, AsyncFactoryDelegate<R, P1, P2, P3, P4, P5> factory, P1 p1, P2 p2, P3 p3, P4 p4, P5 p5)
-    {
-      AsyncLoader loader = new AsyncLoader(property, factory, LoadProperty, OnPropertyChanged, p1, p2, p3, p4, p5);
-      LoadManager.BeginLoad(loader, (EventHandler<DataPortalResult<R>>)loader.LoadComplete);
-    }
-
     #endregion
 
     #region  Field Manager

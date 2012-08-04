@@ -8,63 +8,79 @@
 using System;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Csla.Properties;
 using Csla.Serialization;
 
 namespace Csla.Core.LoadManager
 {
   internal class AsyncLoadManager : INotifyBusy
   {
-    private ObservableCollection<AsyncLoader> _loading = new ObservableCollection<AsyncLoader>();
+    private IManageProperties _target;
+    private Action<IPropertyInfo> _onPropertyChanged;
 
-    public AsyncLoadManager() { }
+    public AsyncLoadManager(IManageProperties target, Action<IPropertyInfo> onPropertyChanged)
+    {
+      _target = target;
+      _onPropertyChanged = onPropertyChanged;
+
+    }
+
+    private object _syncRoot = new object();
+    private readonly ObservableCollection<IAsyncLoader> _loading = new ObservableCollection<IAsyncLoader>();
 
     public bool IsLoading
     {
       get
       {
-        lock (_loading)
-          return _loading.Count > 0;
+        lock (_syncRoot)
+          return _loading.Any();
       }
     }
 
-    public void BeginLoad(AsyncLoader loader, Delegate complete)
+    private bool IsAlreadyLoadingProperty(IPropertyInfo property)
     {
-      bool isAlreadyBusy = false;
-      lock(_loading)
+      lock (_syncRoot)
       {
-        isAlreadyBusy = (from l in _loading
-                         where l.Property == loader.Property
-                         select l).Count() > 0;
+        return _loading.Any(l => l.Property == property);
+      }
+    }
+
+    public void BeginLoad(IAsyncLoader loader)
+    {
+      if (IsAlreadyLoadingProperty(loader.Property)) return;
+
+      lock (_syncRoot)
+      {
         _loading.Add(loader);
       }
+      // notify property busy
+      OnPropertyBusy(loader.Property.Name, true);
 
-      loader.Complete += new EventHandler<ErrorEventArgs>(loader_Complete);
-
-      if(!isAlreadyBusy)
-        OnPropertyBusy(loader.Property.Name, true);
-      
-      loader.Load(complete);
+      // start async loading 
+      loader.Load(LoaderComplete);
     }
-
-    void loader_Complete(object sender, ErrorEventArgs e)
+    
+    void LoaderComplete(IAsyncLoader loader, IDataPortalResult e)
     {
-      AsyncLoader loader = (AsyncLoader)sender;
-      loader.Complete -= new EventHandler<ErrorEventArgs>(loader_Complete);
-
-      bool isStillBusy = false;
-      lock (_loading)
+      // remove from loading list 
+      lock (_syncRoot)
       {
         _loading.Remove(loader);
-        isStillBusy = (from l in _loading
-                       where l.Property == loader.Property
-                       select l).Count() > 0;
       }
 
-      if (!isStillBusy)
-        OnPropertyBusy(loader.Property.Name, false);
+      // no error then load new property value and notify property changed
+      if (e.Error == null) 
+      {
+        _target.LoadProperty(loader.Property, e.Object);
+        _onPropertyChanged(loader.Property);
+      }
 
-      if (e.Error != null)
-        OnUnhandledAsyncException(this, e.Error);
+      // mark property as not busy 
+      OnPropertyBusy(loader.Property.Name, false);
+
+      // if error raise OnUnhandledAsyncException event
+      if (e.Error != null) 
+        OnUnhandledAsyncException(this, new AsyncLoadException(loader.Property,string.Format(Resources.AsyncLoadException, loader.Property.FriendlyName), e.Error));
     }
 
     #region INotifyPropertyBusy Members

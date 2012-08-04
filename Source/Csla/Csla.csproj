@@ -155,6 +155,7 @@
     <Compile Include="Core\IReadOnlyBindingList.cs" />
     <Compile Include="Core\ICheckRules.cs" />
     <Compile Include="Core\LoadManager\AsyncLoader.cs" />
+    <Compile Include="Core\LoadManager\AsyncLoadException.cs" />
     <Compile Include="Core\LoadManager\AsyncLoadManager.cs" />
     <Compile Include="Core\BindableBase.cs" />
     <Compile Include="Core\BusinessBase.cs" />
@@ -173,6 +174,8 @@
     <Compile Include="Core\INotifyBusy.cs" />
     <Compile Include="Core\IPropertyInfo.cs" />
     <Compile Include="Core\ITrackStatus.cs" />
+    <Compile Include="Core\LoadManager\IAsyncLoader.cs" />
+    <Compile Include="Core\LoadManager\TaskLoader.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
     <Compile Include="DataPortalClient\IWcfPortal.cs" />
     <Compile Include="Data\DbContextManager.cs" />

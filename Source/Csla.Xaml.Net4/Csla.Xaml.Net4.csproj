@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8AC01FEE-C998-4048-B109-A98D070A167D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Xaml</RootNamespace>
+    <AssemblyName>Csla.Xaml</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\NET4\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Debug\NET4\Csla.Xaml.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\NET4\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Release\NET4\Csla.Xaml.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CompilerServices.AsyncTargetingPack.Net4, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.CompilerServices.AsyncTargetingPack.1.0.0\lib\net40\Microsoft.CompilerServices.AsyncTargetingPack.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Csla.Xaml\ApplicationContextManager.cs">
+      <Link>ApplicationContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\BrokenRulesSeverityConverter.cs">
+      <Link>BrokenRulesSeverityConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\BusyAnimation.cs">
+      <Link>BusyAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\CslaDataProvider.cs">
+      <Link>CslaDataProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\CslaDataProviderCommandManager.cs">
+      <Link>CslaDataProviderCommandManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\DataDecoratorBase.cs">
+      <Link>DataDecoratorBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ErrorDialog.cs">
+      <Link>ErrorDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
+      <Link>ErrorEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
+      <Link>ExecuteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\IdentityConverter.cs">
+      <Link>IdentityConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\IErrorDialog.cs">
+      <Link>IErrorDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\InvokeMethod.cs">
+      <Link>InvokeMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\IsNotConverter.cs">
+      <Link>IsNotConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\IViewModel.cs">
+      <Link>IViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ObjectStatus.cs">
+      <Link>ObjectStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\PropertyStatus.cs">
+      <Link>PropertyStatus.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\TriggerAction.cs">
+      <Link>TriggerAction.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ViewModel.cs">
+      <Link>ViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
+      <Link>ViewModelBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\VisibilityMode.cs">
+      <Link>VisibilityMode.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Csla.Silverlight\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Silverlight\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Silverlight\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\Csla.Xaml\Themes\Generic.xaml">
+      <Link>Themes\Generic.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.Net4\Csla.Net4.csproj">
+      <Project>{1fce45ff-c391-4ed1-a9c4-f71caf8773e6}</Project>
+      <Name>Csla.Net4</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

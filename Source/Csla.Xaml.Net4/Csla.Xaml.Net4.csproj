@@ -14,8 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -146,9 +145,11 @@
     <ProjectReference Include="..\Csla.Net4\Csla.Net4.csproj">
       <Project>{1fce45ff-c391-4ed1-a9c4-f71caf8773e6}</Project>
       <Name>Csla.Net4</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CslaKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

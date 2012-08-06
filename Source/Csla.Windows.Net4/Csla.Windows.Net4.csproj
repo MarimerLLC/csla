@@ -14,7 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -155,7 +156,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CslaKey.snk" />
+    <None Include="..\Csla\CslaKey.snk">
+      <Link>CslaKey.snk</Link>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

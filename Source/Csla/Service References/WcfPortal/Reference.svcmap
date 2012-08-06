@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6706f493-fc24-49d2-9278-04678e958355" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:40329/WcfPortal.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="b91a84ac-c872-4153-900c-f49acb6f3b72" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="a0dbfdc3-29a0-4c96-95d8-21307fc5ce29" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?wsdl" />
+    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="e9c2422d-43a0-40a8-8e74-505d33532597" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="75c64924-8372-464c-80ae-956508c5fd4e" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="366f12c1-a4a9-47f4-b1ed-5726b91e6fba" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

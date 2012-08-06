@@ -209,6 +209,9 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(Stream serializationStream)
     {
+      if (serializationStream == null)
+        return null;
+
     	ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
     	var data = reader.Read(serializationStream);
     	return DeserializeAsDTO(data);
@@ -363,6 +366,9 @@ namespace Csla.Serialization.Mobile
     /// </returns>
     public static object Deserialize(byte[] data)
     {
+      if (data == null)
+        return null;
+
       using (var buffer = new System.IO.MemoryStream(data))
       {
         var formatter = new MobileFormatter();
@@ -384,6 +390,9 @@ namespace Csla.Serialization.Mobile
     /// </returns>
     public static object Deserialize(List<SerializationInfo> data)
     {
+      if (data == null)
+        return null;
+
       var formatter = new MobileFormatter();
       return formatter.DeserializeAsDTO(data);
     }

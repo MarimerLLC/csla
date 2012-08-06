@@ -877,6 +877,11 @@
       <Link>Utilities.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Csla\CslaKey.snk">
@@ -885,7 +890,22 @@
     <None Include="..\Csla\Properties\Settings.settings">
       <Link>Settings.settings</Link>
     </None>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -917,6 +937,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+    <None Include="Service References\WcfPortal\WcfPortal.disco" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">
@@ -1003,6 +1030,9 @@
     <EmbeddedResource Include="..\Csla\Properties\Resources.zh-TW.resx">
       <Link>Properties\Resources.zh-TW.resx</Link>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

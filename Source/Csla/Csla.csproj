@@ -178,6 +178,7 @@
     <Compile Include="Core\LoadManager\TaskLoader.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
     <Compile Include="DataPortalClient\IWcfPortal.cs" />
+    <Compile Include="DataPortalClient\MobileProxy.cs" />
     <Compile Include="Data\DbContextManager.cs" />
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
@@ -279,6 +280,11 @@
     <Compile Include="Server\IDataPortalExceptionInspector.cs" />
     <Compile Include="Server\MobileFactoryAttribute.cs" />
     <Compile Include="Server\ObjectFactory.cs" />
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Silverlight\Security\WindowsIdentity.cs" />
     <Compile Include="Server\DataPortalMethodCache.cs" />
     <Compile Include="Server\DataPortalMethodInfo.cs" />
@@ -509,6 +515,20 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="Resources\favicon.ico" />
+    <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Web References\WebServiceHost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -554,6 +574,21 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

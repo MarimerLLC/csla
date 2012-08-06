@@ -64,7 +64,6 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -107,7 +106,6 @@ namespace Csla
     /// about the exception.
     /// </summary>
     public WcfPortal.WcfErrorInfo ErrorInfo { get; private set; }
-#endif
 
     private object _businessObject;
     private string _innerStackTrace;

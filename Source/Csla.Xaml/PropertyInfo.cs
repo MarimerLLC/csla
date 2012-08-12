@@ -98,6 +98,24 @@ namespace Csla.Xaml
 
     #endregion
 
+    #region RelativeBinding Property
+
+    /// <summary>
+    /// Used to monitor for changes in the binding path.
+    /// </summary>
+    public static readonly DependencyProperty RelativeBindingProperty =
+    DependencyProperty.Register("RelativeBinding",
+                                typeof(Object),
+                                typeof(PropertyInfo),
+                                new PropertyMetadata(RelativeBindingPropertyChanged));
+
+    private static void RelativeBindingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+      ((PropertyInfo)sender).SetSource(true);
+    }
+
+    #endregion
+
     #region Source property
 
     /// <summary>
@@ -241,6 +259,13 @@ namespace Csla.Xaml
       {
         var data = ((FrameworkElement)newSource).DataContext;
         SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
+
+        if (data != null && GetBindingExpression(RelativeBindingProperty) == null)
+        {
+          var relativeBinding = ParseRelativeBinding(GetBindingExpression(PropertyProperty));
+          if (relativeBinding != null)
+            SetBinding(RelativeBindingProperty, relativeBinding.ParentBinding);
+        }
 
         newSource = GetRealSource(data, BindingPath);
 

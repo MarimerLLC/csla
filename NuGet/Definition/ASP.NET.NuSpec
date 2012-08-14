@@ -23,16 +23,23 @@ Supports the creation of ASP.NET Web Forms applications, and is required for any
       <dependency id="CSLA-Core" version="[4.3.10]" />
     </dependencies>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="System.Web" targetFramework="NET4.0-Full" />
+      <frameworkAssembly assemblyName="System.Web" targetFramework="net40-full" />
+      <frameworkAssembly assemblyName="System.Web" targetFramework="net45-full" />
     </frameworkAssemblies>
   </metadata>
   <files>
     <!-- .NET 4.0 Server -->
-    <file src="..\..\Bin\Release\Server\**\Csla.Web.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Web.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Web.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Web.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Server\**\Csla.Web.xml*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Web.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Web.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Web.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Web.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Web.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Server -->
+    <file src="..\..\Bin\Release\NET\**\Csla.Web.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Web.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Web.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Web.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Web.xml*" target="lib\net45" />
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->

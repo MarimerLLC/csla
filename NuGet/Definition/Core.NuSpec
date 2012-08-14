@@ -22,11 +22,17 @@ Supports the creation of Class Library projects containing business domain class
   </metadata>
   <files>
     <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\Client\**\Csla.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.xml*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Client -->
+    <file src="..\..\Bin\Release\NET\**\Csla.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.xml*" target="lib\net45" />
     <!-- Silverlight 4.0 Client -->
     <file src="..\..\Bin\Release\Silverlight4\**\Csla.dll*" target="lib\sl40" />
     <file src="..\..\Bin\Release\Silverlight4\**\Csla.pdb*" target="lib\sl40" />

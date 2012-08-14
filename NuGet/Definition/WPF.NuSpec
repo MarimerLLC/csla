@@ -25,11 +25,17 @@ Supports the creation of WPF applications.
   </metadata>
   <files>
     <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\Client\**\Csla.Xaml.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.Xaml.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.Xaml.resources.dll*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.Xaml.resources.pdb*" target="lib\net40" />
-    <file src="..\..\Bin\Release\Client\**\Csla.Xaml.xml*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Client -->
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.xml*" target="lib\net45" />
     <!-- Silverlight 4.0 Client -->
     <!-- > None -->
     <!-- Windows Phone 7 Client -->

@@ -38,7 +38,7 @@ namespace Csla
       ObservableBindingList<C>,
 #endif
       IEditableCollection, Core.IUndoableObject, ICloneable,
-      ISavable, Core.IParent, Server.IDataPortalTarget,
+      ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
       INotifyBusy
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
@@ -1139,6 +1139,23 @@ namespace Csla
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
+    }
+
+#if !SILVERLIGHT && !NETFX_CORE
+    T Csla.Core.ISavable<T>.Save(bool forceUpdate)
+    {
+      return Save();
+    }
+#endif
+
+    async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
+    {
+      return await SaveAsync();
+    }
+
+    void Csla.Core.ISavable<T>.SaveComplete(T newObject)
+    {
+      OnSaved(newObject, null, null);
     }
 
     [NonSerialized()]

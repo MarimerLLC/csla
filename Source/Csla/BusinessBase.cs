@@ -35,7 +35,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable]
   public abstract class BusinessBase<T> :
-    Core.BusinessBase, Core.ISavable, IBusinessBase where T : BusinessBase<T>
+    Core.BusinessBase, Core.ISavable, Core.ISavable<T>, IBusinessBase where T : BusinessBase<T>
   {
 
     #region Object ID Value
@@ -330,6 +330,11 @@ namespace Csla
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
+    }
+
+    void Csla.Core.ISavable<T>.SaveComplete(T newObject)
+    {
+      OnSaved(newObject, null, null);
     }
 
 #if !SILVERLIGHT && !NETFX_CORE

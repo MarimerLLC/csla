@@ -154,6 +154,7 @@
     <Compile Include="Core\INotifyUnhandledAsyncException.cs" />
     <Compile Include="Core\IReadOnlyBindingList.cs" />
     <Compile Include="Core\ICheckRules.cs" />
+    <Compile Include="Core\ISavableT.cs" />
     <Compile Include="Core\LoadManager\AsyncLoader.cs" />
     <Compile Include="Core\LoadManager\AsyncLoadException.cs" />
     <Compile Include="Core\LoadManager\AsyncLoadManager.cs" />

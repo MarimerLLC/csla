@@ -29,7 +29,7 @@ namespace Csla
   public abstract class BusinessBindingListBase<T, C> :
       Core.ExtendedBindingList<C>,
       Core.IEditableCollection, Core.IUndoableObject, ICloneable,
-      Core.ISavable, Core.IParent, Server.IDataPortalTarget,
+      Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
@@ -1058,6 +1058,21 @@ namespace Csla
     void Csla.Core.ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
+    }
+
+    T Csla.Core.ISavable<T>.Save(bool forceUpdate)
+    {
+      return Save();
+    }
+
+    async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
+    {
+      return await SaveAsync();
+    }
+
+    void Csla.Core.ISavable<T>.SaveComplete(T newObject)
+    {
+      OnSaved(newObject, null, null);
     }
 
     [NonSerialized()]

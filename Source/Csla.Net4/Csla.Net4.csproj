@@ -271,6 +271,9 @@
     <Compile Include="..\Csla\Core\ISavable.cs">
       <Link>Core\ISavable.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\ISavableT.cs">
+      <Link>Core\ISavableT.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\ISmartField.cs">
       <Link>Core\ISmartField.cs</Link>
     </Compile>

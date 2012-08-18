@@ -29,5 +29,13 @@ namespace Csla.Core
     /// </summary>
     /// <param name="child">The child object that was edited.</param>
     void ApplyEditChild(Core.IEditableBusinessObject child);
+    /// <summary>
+    /// Provide access to the parent reference for use
+    /// in child object code.
+    /// </summary>
+    /// <remarks>
+    /// This value will be Nothing for root objects and DynamicLists.
+    /// </remarks>
+    IParent Parent { get; }
   }
 }

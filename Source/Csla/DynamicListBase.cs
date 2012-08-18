@@ -409,6 +409,12 @@ namespace Csla
       // the RemoveItem override
     }
 
+
+    IParent  Csla.Core.IParent.Parent
+    {
+      get { return null;  }
+    }
+
     #endregion
 
     #region IsBusy

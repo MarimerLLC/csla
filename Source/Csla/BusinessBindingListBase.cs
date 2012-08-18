@@ -221,6 +221,10 @@ namespace Csla
       EditChildComplete(child);
     }
 
+    IParent Csla.Core.IParent.Parent
+    {
+      get { return this.Parent; }
+    }
     /// <summary>
     /// Override this method to be notified when a child object's
     /// <see cref="Core.BusinessBase.ApplyEdit" /> method has

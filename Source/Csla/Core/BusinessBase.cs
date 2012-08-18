@@ -3102,6 +3102,11 @@ namespace Csla.Core
       FieldManager.RemoveField(info);
     }
 
+    IParent Csla.Core.IParent.Parent
+    {
+      get { return this.Parent; }
+    }
+
     #endregion
 
     #region IDataPortalTarget Members

@@ -28,5 +28,13 @@ namespace Csla.Server.Hosts.Silverlight
     /// Client context object.
     /// </summary>
     ContextDictionary ClientContext { get; set; }
+    /// <summary>
+    /// The client culture.
+    /// </summary>
+    string ClientCulture { get; set; }
+    /// <summary>
+    /// The client UI culture.
+    /// </summary>
+    string ClientUICulture { get; set; }
   }
 }

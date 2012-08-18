@@ -32,25 +32,38 @@ namespace Csla.Server.Hosts.Silverlight
     /// Client context object.
     /// </summary>
     public ContextDictionary ClientContext { get; set; }
-
+    /// <summary>
+    /// The client culture.
+    /// </summary>
+    public string ClientCulture { get; set; }
+    /// <summary>
+    /// The client UI culture.
+    /// </summary>
+    public string ClientUICulture { get; set; }
 
     /// <summary>
     /// New instance of criteria object
     /// </summary>
-     /// <param name="objectToUpdate">Business object that will be updated.</param>
+    /// <param name="objectToUpdate">Business object that will be updated.</param>
     /// <param name="principal">Principal that will be set for the request</param>
     /// <param name="globalContext">Global context object.</param>
     /// <param name="clientContext">Client context object.</param>
+    /// <param name="clientCulture">The client culture.</param>
+    /// <param name="clientUICulture">The client UI culture.</param>
     public SilverlightUpdateRequest(
       object objectToUpdate,
       IPrincipal principal,
       ContextDictionary globalContext,
-      ContextDictionary clientContext)
+      ContextDictionary clientContext,
+      string clientCulture,
+      string clientUICulture)
     {
       ObjectToUpdate = objectToUpdate;
       Principal = principal;
       GlobalContext = globalContext;
       ClientContext = clientContext;
+      ClientCulture = clientCulture;
+      ClientUICulture = clientUICulture;
     }
   }
 }

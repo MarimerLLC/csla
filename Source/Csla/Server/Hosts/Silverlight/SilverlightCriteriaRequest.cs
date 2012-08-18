@@ -37,6 +37,14 @@ namespace Csla.Server.Hosts.Silverlight
     /// Client context object.
     /// </summary>
     public ContextDictionary ClientContext { get; set; }
+    /// <summary>
+    /// The client culture.
+    /// </summary>
+    public string ClientCulture { get; set; }
+    /// <summary>
+    /// The client UI culture.
+    /// </summary>
+    public string ClientUICulture { get; set; }
 
     /// <summary>
     /// New instance of criteria object
@@ -46,18 +54,24 @@ namespace Csla.Server.Hosts.Silverlight
     /// <param name="principal">Principal that will be set for the request</param>
     /// <param name="globalContext">Global context object.</param>
     /// <param name="clientContext">Client context object.</param>
+    /// <param name="clientCulture">The client culture.</param>
+    /// <param name="clientUICulture">The client UI culture.</param>
     public SilverlightCriteriaRequest(
       string typeName,
       object criteria,
       IPrincipal principal,
       ContextDictionary globalContext,
-      ContextDictionary clientContext)
+      ContextDictionary clientContext,
+      string clientCulture,
+      string clientUICulture)
     {
       TypeName = typeName;
       Criteria = criteria;
       Principal = principal;
       GlobalContext = globalContext;
       ClientContext = clientContext;
+      ClientCulture = clientCulture;
+      ClientUICulture = clientUICulture;
     }
   }
 }

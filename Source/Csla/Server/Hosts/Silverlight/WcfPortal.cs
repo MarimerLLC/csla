@@ -52,7 +52,9 @@ namespace Csla.Server.Hosts.Silverlight
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          request.ClientCulture,
+          request.ClientUICulture);
 
         SilverlightResponse createResponse = processor.Create(createRequest);
         if (createResponse.Error != null)
@@ -97,7 +99,9 @@ namespace Csla.Server.Hosts.Silverlight
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          request.ClientCulture,
+          request.ClientUICulture);
 
         SilverlightResponse fetchResponse = processor.Fetch(fetchRequest);
         if (fetchResponse.Error != null)
@@ -137,7 +141,9 @@ namespace Csla.Server.Hosts.Silverlight
           obj,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          request.ClientCulture,
+          request.ClientUICulture);
 
         SilverlightResponse updateResponse = processor.Update(updateRequest);
         if (updateResponse.Error != null)
@@ -182,7 +188,9 @@ namespace Csla.Server.Hosts.Silverlight
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          request.ClientCulture,
+          request.ClientUICulture);
 
         SilverlightResponse deleteResponse = processor.Delete(deleteRequest);
         if (deleteResponse.Error != null)

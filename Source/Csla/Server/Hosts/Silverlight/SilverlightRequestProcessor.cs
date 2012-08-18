@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Configuration;
+using System.Globalization;
+using System.Threading;
 using Csla.Properties;
 
 namespace Csla.Server.Hosts.Silverlight
@@ -323,6 +325,7 @@ namespace Csla.Server.Hosts.Silverlight
       ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       if (ApplicationContext.AuthenticationType != "Windows")
         ApplicationContext.User = request.Principal;
+      SetClientCultures(request);
     }
 
     /// <summary>
@@ -334,6 +337,50 @@ namespace Csla.Server.Hosts.Silverlight
       if (ApplicationContext.AuthenticationType != "Windows")
         ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty), new string[] { });
     }
+
+    #region client culture
+    /// <summary>
+    /// Sets the client cultures on current tread.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    private void SetClientCultures(ISilverlightRequest request)
+    {
+      CultureInfo culture = null;
+      // clientCulture
+      if (TryGetCulture(request.ClientCulture, ref culture))
+      {
+        Thread.CurrentThread.CurrentCulture = culture;
+      }
+      // clientUICulture
+      if (TryGetCulture(request.ClientUICulture, ref culture))
+      {
+        Thread.CurrentThread.CurrentUICulture = culture;
+      }
+    }
+
+
+    /// <summary>
+    /// Tries the convert string culture name to culture.
+    /// </summary>
+    /// <param name="clientCulture">The client culture.</param>
+    /// <param name="culture">The culture.</param>
+    /// <returns></returns>
+    private bool TryGetCulture(string clientCulture, ref CultureInfo culture)
+    {
+      if (string.IsNullOrWhiteSpace(clientCulture)) return false;
+
+      try
+      {
+        culture = CultureInfo.GetCultureInfo(clientCulture);
+        return true;
+      }
+      catch (CultureNotFoundException)
+      {
+        return false;
+      }
+    }
+
+    #endregion 
 
     #endregion
   }

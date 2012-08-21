@@ -198,17 +198,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Create(object criteria)
     {
-      try
-      {
-        return (T)DoCreateAsync(typeof(T), criteria, true).Result;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
+      return (T)Create(typeof(T), criteria);
     }
 
     internal static object Create(Type objectType, object criteria)
@@ -490,17 +480,7 @@ namespace Csla
     /// <returns>A new object, populated with default values.</returns>
     public T Fetch(object criteria)
     {
-      try
-      {
-        return (T)DoFetchAsync(typeof(T), criteria, true).Result;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
+      return (T)Fetch(typeof(T), criteria);
     }
 
     internal static object Fetch(Type objectType, object criteria)
@@ -508,7 +488,7 @@ namespace Csla
       var dp = new DataPortal<object>();
       try
       {
-        return dp.DoFetchAsync(objectType, criteria, true).Result;
+        return Task.Run(() => dp.DoFetchAsync(objectType, criteria, true)).Result;
       }
       catch (AggregateException ex)
       {

@@ -50,8 +50,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\NET4\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\NET4\Csla.XML</DocumentationFile>

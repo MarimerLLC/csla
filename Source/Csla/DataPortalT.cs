@@ -488,7 +488,11 @@ namespace Csla
       var dp = new DataPortal<object>();
       try
       {
+#if (NET40 || SILVERLIGHT) && (!NETFX_CORE)
+        return TaskEx.Run(() => dp.DoFetchAsync(objectType, criteria, true)).Result;
+#else
         return Task.Run(() => dp.DoFetchAsync(objectType, criteria, true)).Result;
+#endif
       }
       catch (AggregateException ex)
       {
@@ -1069,7 +1073,7 @@ namespace Csla
     {
       try
       {
-        DoDeleteAsync(typeof(T), criteria, true).ContinueWith((t) => 
+        DoDeleteAsync(typeof(T), criteria, true).ContinueWith((t) =>
           {
             Exception error = null;
             var ae = t.Exception as AggregateException;
@@ -1108,7 +1112,7 @@ namespace Csla
     /// Event indicating an execute operation is complete.
     /// </summary>
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
-    
+
     /// <summary>
     /// Raises the ExecuteCompleted event.
     /// </summary>
@@ -1118,7 +1122,7 @@ namespace Csla
       if (ExecuteCompleted != null)
         ExecuteCompleted(this, e);
     }
-    
+
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.

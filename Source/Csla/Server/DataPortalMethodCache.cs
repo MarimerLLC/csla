@@ -18,7 +18,7 @@ namespace Csla.Server
 
     public static DataPortalMethodInfo GetMethodInfo(Type objectType, string methodName, params object[] parameters)
     {
-      var key = new MethodCacheKey(objectType.Name, methodName, MethodCaller.GetParameterTypes(parameters));
+      var key = new MethodCacheKey(objectType.FullName, methodName, MethodCaller.GetParameterTypes(parameters));
       DataPortalMethodInfo result = null;
       var found = false;
       try

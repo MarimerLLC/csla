@@ -543,7 +543,7 @@
   </data>
   <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
     <value>Indexed expressions must be closed</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="ListItemNotAChildException" xml:space="preserve">
     <value>List item must be marked as a child object</value>
@@ -551,7 +551,7 @@
   </data>
   <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
     <value>Please set NavigatorProvider prior to TriggerEvent property.</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="NoSuchMethod" xml:space="preserve">
     <value>No such method {0}</value>
@@ -559,7 +559,7 @@
   </data>
   <data name="ObjectNotNull" xml:space="preserve">
     <value>Can not set property if data object is not null</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="PrivateFieldException" xml:space="preserve">
     <value>Properties with private backing fields must be marked as RelationshipTypes.PrivateField</value>
@@ -571,7 +571,7 @@
   </data>
   <data name="PropertyNameDoesNotExist" xml:space="preserve">
     <value>The specified property name '{0}' does not exist</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
     <value>Cannot register property {0}, a PropertyInfo with the same name already exists.</value>
@@ -579,7 +579,7 @@
   </data>
   <data name="PropertyRequiresIndexArguments" xml:space="preserve">
     <value>This property requires {0} index arguments, {1} were provided</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
     <value>PropertyName '{0}' not found in list</value>

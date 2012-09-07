@@ -493,7 +493,7 @@
   </data>
   <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
     <value>Expressões indexadas devem ser fechadas</value>
-    <comment>Indexed expressions must be closed - Csla.Silverlight</comment>
+    <comment>Indexed expressions must be closed - Csla.Mobile</comment>
   </data>
   <data name="IndexIsOutOfRange" xml:space="preserve">
     <value>Índice fora da faixa</value>
@@ -521,11 +521,11 @@
   </data>
   <data name="MustImplementIMobileObject" xml:space="preserve">
     <value>Tipo {0} deve implementar IMobileObject</value>
-    <comment>Csla.Silverlight - Type {0} must implement IMobileObject</comment>
+    <comment>Csla.Mobile - Type {0} must implement IMobileObject</comment>
   </data>
   <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
     <value>Favor estabelecer NavigatorProvider antes da propriedade TriggerEvent.</value>
-    <comment>Csla.Silverlight - Please set NavigatorProvider prior to TriggerEvent property.</comment>
+    <comment>Csla.Mobile - Please set NavigatorProvider prior to TriggerEvent property.</comment>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>Não há tal método de fábrica: {0}</value>
@@ -541,7 +541,7 @@
   </data>
   <data name="ObjectNotNull" xml:space="preserve">
     <value>Não se pode estabelecer propriedade se objeto de dados não é nulo</value>
-    <comment>Csla.Silverlight - Can not set property if data object is not null</comment>
+    <comment>Csla.Mobile - Can not set property if data object is not null</comment>
   </data>
   <data name="ObjectNotSerializableFormatted" xml:space="preserve">
     <value>Objeto não serializavel ({0})</value>
@@ -565,7 +565,7 @@
   </data>
   <data name="PropertyNameDoesNotExist" xml:space="preserve">
     <value>O nome de propriedade especificado '{0}' não existe</value>
-    <comment>Csla.Silverlight - The specified property name '{0}' does not exist</comment>
+    <comment>Csla.Mobile - The specified property name '{0}' does not exist</comment>
   </data>
   <data name="PropertyNotRegistered" xml:space="preserve">
     <value>Uma ou mais propriedades não registradas para esta tipo</value>
@@ -581,7 +581,7 @@
   </data>
   <data name="PropertyRequiresIndexArguments" xml:space="preserve">
     <value>Esta propriedade requer {0} argumentos índice, {1} foi provido(s)</value>
-    <comment>Csla.Silverlight</comment>
+    <comment>Csla.Mobile</comment>
   </data>
   <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
     <value>PropertyName '{0}' não encontrado na lista</value>

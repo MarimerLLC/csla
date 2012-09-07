@@ -445,7 +445,7 @@ namespace Csla
       /// <summary>
       /// The code is executing on the Silverlight client.
       /// </summary>
-      Silverlight
+      MobileClient
     }
 
     /// <summary>
@@ -548,7 +548,7 @@ namespace Csla
 
     private static ExecutionLocations _executionLocation =
 #if SILVERLIGHT
-      ExecutionLocations.Silverlight;
+      ExecutionLocations.MobileClient;
 #else
       ExecutionLocations.Client;
 #endif

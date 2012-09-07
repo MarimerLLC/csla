@@ -4,7 +4,7 @@
     <xsd:schema targetNamespace="http://ws.lhotka.net/WcfDataPortal/Imports">
       <xsd:import schemaLocation="http://localhost:4832/WcfPortal.svc?xsd=xsd0" namespace="http://ws.lhotka.net/WcfDataPortal" />
       <xsd:import schemaLocation="http://localhost:4832/WcfPortal.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:4832/WcfPortal.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight" />
+      <xsd:import schemaLocation="http://localhost:4832/WcfPortal.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Mobile" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IWcfPortal_Create_InputMessage">

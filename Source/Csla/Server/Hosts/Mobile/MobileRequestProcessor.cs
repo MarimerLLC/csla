@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SilverlightRequestProcessor.cs" company="Marimer LLC">
+// <copyright file="MobileRequestProcessor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -11,12 +11,12 @@ using System.Globalization;
 using System.Threading;
 using Csla.Properties;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Object taht processes all the requests from a Silverlight client
   /// </summary>
-  public class SilverlightRequestProcessor
+  public class MobileRequestProcessor
   {
 
     #region Factory Loader
@@ -58,9 +58,9 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Resulf of the create operation - an instance of a business object</returns>
-    public SilverlightResponse Create(SilverlightCriteriaRequest request)
+    public MobileResponse Create(MobileCriteriaRequest request)
     {
-      var result = new SilverlightResponse();
+      var result = new MobileResponse();
       Type t = null;
       object criteria = null;
       try
@@ -125,9 +125,9 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the fetch operation - an instance of a business object</returns>
-    public SilverlightResponse Fetch(SilverlightCriteriaRequest request)
+    public MobileResponse Fetch(MobileCriteriaRequest request)
     {
-      var result = new SilverlightResponse();
+      var result = new MobileResponse();
       Type t = null;
       object criteria = null;
       try
@@ -189,9 +189,9 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the update operation - updated object</returns>
-    public SilverlightResponse Update(SilverlightUpdateRequest request)
+    public MobileResponse Update(MobileUpdateRequest request)
     {
-      var result = new SilverlightResponse();
+      var result = new MobileResponse();
       Type t = null;
       object obj = null;
       try
@@ -249,9 +249,9 @@ namespace Csla.Server.Hosts.Silverlight
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the delete operation</returns>
-    public SilverlightResponse Delete(SilverlightCriteriaRequest request)
+    public MobileResponse Delete(MobileCriteriaRequest request)
     {
-      var result = new SilverlightResponse();
+      var result = new MobileResponse();
       Type t = null;
       object criteria = null;
       try
@@ -320,7 +320,7 @@ namespace Csla.Server.Hosts.Silverlight
     #endregion
 
     #region Context and Criteria
-    private void SetContext(ISilverlightRequest request)
+    private void SetContext(IMobileRequest request)
     {
       ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       if (ApplicationContext.AuthenticationType != "Windows")
@@ -343,7 +343,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// Sets the client cultures on current tread.
     /// </summary>
     /// <param name="request">The request.</param>
-    private void SetClientCultures(ISilverlightRequest request)
+    private void SetClientCultures(IMobileRequest request)
     {
       CultureInfo culture = null;
       // clientCulture

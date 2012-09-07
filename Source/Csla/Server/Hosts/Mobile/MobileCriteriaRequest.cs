@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SilverlightCriteriaRequest.cs" company="Marimer LLC">
+// <copyright file="MobileCriteriaRequest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -9,13 +9,13 @@ using System;
 using Csla.Core;
 using System.Security.Principal;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Class that will be used to execute a request from a Silverlight client.
   /// This will inlcude Execute, Fetch, Create and Delete requests
   /// </summary>
-  public class SilverlightCriteriaRequest : ISilverlightRequest
+  public class MobileCriteriaRequest : IMobileRequest
   {
     /// <summary>
     /// Type of object that is the target of the request
@@ -56,7 +56,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// <param name="clientContext">Client context object.</param>
     /// <param name="clientCulture">The client culture.</param>
     /// <param name="clientUICulture">The client UI culture.</param>
-    public SilverlightCriteriaRequest(
+    public MobileCriteriaRequest(
       string typeName,
       object criteria,
       IPrincipal principal,

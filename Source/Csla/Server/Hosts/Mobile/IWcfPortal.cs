@@ -8,7 +8,7 @@
 using System;
 using System.ServiceModel;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Defines the service contract for the WCF data

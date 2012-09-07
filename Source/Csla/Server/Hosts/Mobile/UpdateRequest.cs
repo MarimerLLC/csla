@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CriteriaRequest.cs" company="Marimer LLC">
+// <copyright file="UpdateRequest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -8,44 +8,36 @@
 using System;
 using System.Runtime.Serialization;
 using System.Security.Principal;
-using Csla.Core;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Message sent to the Silverlight
   /// WCF data portal.
   /// </summary>
   [DataContract]
-  public class CriteriaRequest
+  public class UpdateRequest
   {
     /// <summary>
-    /// Assembly qualified name of the 
-    /// business object type to create.
+    /// Serialized object data.
     /// </summary>
     [DataMember]
-    public string TypeName { get; set; }
+    public byte[] ObjectData { get; set; }
 
     /// <summary>
-    /// Serialized data for the criteria object.
-    /// </summary>
-    [DataMember]
-    public byte[] CriteriaData { get; set; }
-
-    /// <summary>
-    /// Serialized data for the principal object.
+    /// Serialized principal object.
     /// </summary>
     [DataMember]
     public byte[] Principal { get; set; }
 
     /// <summary>
-    /// Serialized data for the global context object.
+    /// Serialized global context object.
     /// </summary>
     [DataMember]
     public byte[] GlobalContext { get; set; }
 
     /// <summary>
-    /// Serialized data for the client context object.
+    /// Serialized client context object.
     /// </summary>
     [DataMember]
     public byte[] ClientContext { get; set; }

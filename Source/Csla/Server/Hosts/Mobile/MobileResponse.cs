@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SilverlightResponse.cs" company="Marimer LLC">
+// <copyright file="MobileResponse.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -11,13 +11,13 @@ using System.Linq;
 using System.Text;
 using Csla.Core;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Object that encompasses the resut of the request from 
   /// a Silverlight client
   /// </summary>
-  public class SilverlightResponse
+  public class MobileResponse
   {
     /// <summary>
     /// Exception that occurred during portal execution

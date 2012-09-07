@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ISilverlightRequest.cs" company="Marimer LLC">
+// <copyright file="IMobileRequest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -9,12 +9,12 @@ using System;
 using Csla.Core;
 using System.Security.Principal;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Interface for all requests from Silverlight client
   /// </summary>
-  public interface ISilverlightRequest
+  public interface IMobileRequest
   {
     /// <summary>
     /// Principal that will be set for the request

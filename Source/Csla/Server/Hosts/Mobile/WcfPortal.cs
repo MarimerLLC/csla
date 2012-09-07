@@ -15,7 +15,7 @@ using System.Security.Principal;
 using Csla.Properties;
 using Csla.Silverlight;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Exposes server-side DataPortal functionality
@@ -46,8 +46,8 @@ namespace Csla.Server.Hosts.Silverlight
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
-        SilverlightCriteriaRequest createRequest = new SilverlightCriteriaRequest(
+        var processor = new MobileRequestProcessor();
+        var createRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
@@ -56,7 +56,7 @@ namespace Csla.Server.Hosts.Silverlight
           request.ClientCulture,
           request.ClientUICulture);
 
-        SilverlightResponse createResponse = processor.Create(createRequest);
+        var createResponse = processor.Create(createRequest);
         if (createResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(createResponse.Error);
@@ -70,7 +70,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        SilverlightRequestProcessor.ClearContext();
+        MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
 
@@ -93,8 +93,8 @@ namespace Csla.Server.Hosts.Silverlight
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
-        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
-        SilverlightCriteriaRequest fetchRequest = new SilverlightCriteriaRequest(
+        var processor = new MobileRequestProcessor();
+        var fetchRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
@@ -103,7 +103,7 @@ namespace Csla.Server.Hosts.Silverlight
           request.ClientCulture,
           request.ClientUICulture);
 
-        SilverlightResponse fetchResponse = processor.Fetch(fetchRequest);
+        var fetchResponse = processor.Fetch(fetchRequest);
         if (fetchResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(fetchResponse.Error);
@@ -117,7 +117,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        SilverlightRequestProcessor.ClearContext();
+        MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -136,8 +136,8 @@ namespace Csla.Server.Hosts.Silverlight
         // unpack object
         object obj = GetCriteria(request.ObjectData);
 
-        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
-        SilverlightUpdateRequest updateRequest = new SilverlightUpdateRequest(
+        var processor = new MobileRequestProcessor();
+        var updateRequest = new MobileUpdateRequest(
           obj,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
@@ -145,7 +145,7 @@ namespace Csla.Server.Hosts.Silverlight
           request.ClientCulture,
           request.ClientUICulture);
 
-        SilverlightResponse updateResponse = processor.Update(updateRequest);
+        var updateResponse = processor.Update(updateRequest);
         if (updateResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(updateResponse.Error);
@@ -159,7 +159,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        SilverlightRequestProcessor.ClearContext();
+        MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -182,8 +182,8 @@ namespace Csla.Server.Hosts.Silverlight
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
-        SilverlightCriteriaRequest deleteRequest = new SilverlightCriteriaRequest(
+        var processor = new MobileRequestProcessor();
+        var deleteRequest = new MobileCriteriaRequest(
           request.TypeName,
           criteria,
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
@@ -192,7 +192,7 @@ namespace Csla.Server.Hosts.Silverlight
           request.ClientCulture,
           request.ClientUICulture);
 
-        SilverlightResponse deleteResponse = processor.Delete(deleteRequest);
+        var deleteResponse = processor.Delete(deleteRequest);
         if (deleteResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(deleteResponse.Error);
@@ -206,7 +206,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        SilverlightRequestProcessor.ClearContext();
+        MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }

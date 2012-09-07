@@ -747,47 +747,47 @@
     <Compile Include="..\Csla\Server\Hosts\IWcfPortal.cs">
       <Link>Server\Hosts\IWcfPortal.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\CriteriaRequest.cs">
+      <Link>Server\Hosts\Mobile\CriteriaRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\IMobileFactoryLoader.cs">
+      <Link>Server\Hosts\Mobile\IMobileFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\IMobileRequest.cs">
+      <Link>Server\Hosts\Mobile\IMobileRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\IWcfPortal.cs">
+      <Link>Server\Hosts\Mobile\IWcfPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\MobileCriteriaRequest.cs">
+      <Link>Server\Hosts\Mobile\MobileCriteriaRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\MobileFactoryLoader.cs">
+      <Link>Server\Hosts\Mobile\MobileFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\MobileRequestProcessor.cs">
+      <Link>Server\Hosts\Mobile\MobileRequestProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\MobileResponse.cs">
+      <Link>Server\Hosts\Mobile\MobileResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\MobileUpdateRequest.cs">
+      <Link>Server\Hosts\Mobile\MobileUpdateRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\UpdateRequest.cs">
+      <Link>Server\Hosts\Mobile\UpdateRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\WcfErrorInfo.cs">
+      <Link>Server\Hosts\Mobile\WcfErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\WcfPortal.cs">
+      <Link>Server\Hosts\Mobile\WcfPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\WcfResponse.cs">
+      <Link>Server\Hosts\Mobile\WcfResponse.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\Hosts\RemotingPortal.cs">
       <Link>Server\Hosts\RemotingPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\CriteriaRequest.cs">
-      <Link>Server\Hosts\Silverlight\CriteriaRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\IMobileFactoryLoader.cs">
-      <Link>Server\Hosts\Silverlight\IMobileFactoryLoader.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\ISilverlightRequest.cs">
-      <Link>Server\Hosts\Silverlight\ISilverlightRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\IWcfPortal.cs">
-      <Link>Server\Hosts\Silverlight\IWcfPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\MobileFactoryLoader.cs">
-      <Link>Server\Hosts\Silverlight\MobileFactoryLoader.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs">
-      <Link>Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\SilverlightRequestProcessor.cs">
-      <Link>Server\Hosts\Silverlight\SilverlightRequestProcessor.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\SilverlightResponse.cs">
-      <Link>Server\Hosts\Silverlight\SilverlightResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\SilverlightUpdateRequest.cs">
-      <Link>Server\Hosts\Silverlight\SilverlightUpdateRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\UpdateRequest.cs">
-      <Link>Server\Hosts\Silverlight\UpdateRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\WcfErrorInfo.cs">
-      <Link>Server\Hosts\Silverlight\WcfErrorInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\WcfPortal.cs">
-      <Link>Server\Hosts\Silverlight\WcfPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\WcfResponse.cs">
-      <Link>Server\Hosts\Silverlight\WcfResponse.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\Hosts\WcfChannel\CreateRequest.cs">
       <Link>Server\Hosts\WcfChannel\CreateRequest.cs</Link>

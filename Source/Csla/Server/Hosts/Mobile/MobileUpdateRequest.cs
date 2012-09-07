@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SilverlightUpdateRequest.cs" company="Marimer LLC">
+// <copyright file="MobileUpdateRequest.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -9,12 +9,12 @@ using System;
 using System.Security.Principal;
 using Csla.Core;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Class that will be used to execute an Update request from a Silverlight client.
   /// </summary>
-  public class SilverlightUpdateRequest : ISilverlightRequest
+  public class MobileUpdateRequest : IMobileRequest
   {
     /// <summary>
     /// Business object that will be updated.
@@ -50,7 +50,7 @@ namespace Csla.Server.Hosts.Silverlight
     /// <param name="clientContext">Client context object.</param>
     /// <param name="clientCulture">The client culture.</param>
     /// <param name="clientUICulture">The client UI culture.</param>
-    public SilverlightUpdateRequest(
+    public MobileUpdateRequest(
       object objectToUpdate,
       IPrincipal principal,
       ContextDictionary globalContext,

@@ -8,7 +8,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Response message returned from the 

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using Csla.Properties;
 
-namespace Csla.Server.Hosts.Silverlight
+namespace Csla.Server.Hosts.Mobile
 {
   /// <summary>
   /// Class containing the default implementation for

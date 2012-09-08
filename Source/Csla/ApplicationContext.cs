@@ -652,7 +652,7 @@ namespace Csla
       private static ContextDictionary _localContext;
       private static ContextDictionary _clientContext;
       private static ContextDictionary _globalContext;
-      private static IPrincipal _principal;
+      private static IPrincipal _principal = new Csla.Security.UnauthenticatedPrincipal();
 
       public bool IsValid
       {

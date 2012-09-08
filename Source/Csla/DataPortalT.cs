@@ -313,27 +313,19 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
-    public void BeginCreate(object criteria, object userState)
+    public async void BeginCreate(object criteria, object userState)
     {
       try
       {
-        CreateAsync(criteria).ContinueWith((t) =>
-        {
-          T obj = default(T);
-          Exception error = null;
-          var ae = t.Exception as AggregateException;
-          if (ae != null && ae.InnerExceptions.Count > 0)
-          {
-            error = ae.Flatten().InnerExceptions[0];
-          }
-          else
-          {
-            error = t.Exception;
-          }
-          if (error == null)
-            obj = t.Result;
-          OnCreateCompleted(new DataPortalResult<T>(obj, error, userState));
-        });
+        var obj = await CreateAsync(criteria);
+        OnCreateCompleted(new DataPortalResult<T>(obj, null, userState));
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          OnCreateCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
+        else
+          OnCreateCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
       catch (Exception ex)
       {
@@ -552,27 +544,19 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
-    public void BeginFetch(object criteria, object userState)
+    public async void BeginFetch(object criteria, object userState)
     {
       try
       {
-        FetchAsync(criteria).ContinueWith((t) =>
-          {
-            T obj = default(T);
-            Exception error = null;
-            var ae = t.Exception as AggregateException;
-            if (ae != null && ae.InnerExceptions.Count > 0)
-            {
-              error = ae.Flatten().InnerExceptions[0];
-            }
-            else
-            {
-              error = t.Exception;
-            }
-            if (error == null)
-              obj = t.Result;
-            OnFetchCompleted(new DataPortalResult<T>(obj, error, userState));
-          });
+        var obj = await FetchAsync(criteria);
+        OnFetchCompleted(new DataPortalResult<T>(obj, null, userState));
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          OnFetchCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
+        else
+          OnFetchCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
       catch (Exception ex)
       {
@@ -860,27 +844,19 @@ namespace Csla
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="userState">User state data.</param>
-    public void BeginUpdate(T obj, object userState)
+    public async void BeginUpdate(T obj, object userState)
     {
       try
       {
-        DoUpdateAsync(obj, true).ContinueWith((t) =>
-          {
-            T result = default(T);
-            Exception error = null;
-            var ae = t.Exception as AggregateException;
-            if (ae != null && ae.InnerExceptions.Count > 0)
-            {
-              error = ae.Flatten().InnerExceptions[0];
-            }
-            else
-            {
-              error = t.Exception;
-            }
-            if (error == null)
-              result = t.Result;
-            OnUpdateCompleted(new DataPortalResult<T>(result, error, userState));
-          });
+        var result = await DoUpdateAsync(obj, true);
+        OnUpdateCompleted(new DataPortalResult<T>(result, null, userState));
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
+        else
+          OnUpdateCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
       catch (Exception ex)
       {
@@ -1069,24 +1045,19 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="userState">User state data.</param>
-    public void BeginDelete(object criteria, object userState)
+    public async void BeginDelete(object criteria, object userState)
     {
       try
       {
-        DoDeleteAsync(typeof(T), criteria, true).ContinueWith((t) =>
-          {
-            Exception error = null;
-            var ae = t.Exception as AggregateException;
-            if (ae != null && ae.InnerExceptions.Count > 0)
-            {
-              error = ae.Flatten().InnerExceptions[0];
-            }
-            else
-            {
-              error = t.Exception;
-            }
-            OnDeleteCompleted(new DataPortalResult<T>(default(T), error, userState));
-          });
+        await DoDeleteAsync(typeof(T), criteria, true);
+        OnDeleteCompleted(new DataPortalResult<T>(default(T), null, userState));
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          OnDeleteCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
+        else
+          OnDeleteCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
       catch (Exception ex)
       {
@@ -1149,27 +1120,19 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <param name="userState">User state data.</param>
-    public void BeginExecute(T command, object userState)
+    public async void BeginExecute(T command, object userState)
     {
       try
       {
-        DoUpdateAsync(command, true).ContinueWith((t) =>
-          {
-            T result = default(T);
-            Exception error = null;
-            var ae = t.Exception as AggregateException;
-            if (ae != null && ae.InnerExceptions.Count > 0)
-            {
-              error = ae.Flatten().InnerExceptions[0];
-            }
-            else
-            {
-              error = t.Exception;
-            }
-            if (error == null)
-              result = t.Result;
-            OnExecuteCompleted(new DataPortalResult<T>(result, error, userState));
-          });
+        var result = await DoUpdateAsync(command, true);
+        OnExecuteCompleted(new DataPortalResult<T>(result, null, userState));
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex.Flatten().InnerExceptions[0], userState));
+        else
+          OnExecuteCompleted(new DataPortalResult<T>(default(T), ex, userState));
       }
       catch (Exception ex)
       {

@@ -117,7 +117,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
@@ -717,6 +716,8 @@
     <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\no\Resources.resw" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

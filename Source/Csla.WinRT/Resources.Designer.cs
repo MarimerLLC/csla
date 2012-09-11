@@ -1,4 +1,6 @@
-﻿namespace Csla.Properties
+﻿using System.Runtime.CompilerServices;
+
+namespace Csla.Properties
 {
   using System;
   using Csla.Reflection;
@@ -17,48 +19,17 @@
   public class Resources
   {
 
-    private static global::System.Resources.ResourceManager resourceMan;
-
-    private static global::System.Globalization.CultureInfo resourceCulture;
+    //private static global::Windows.ApplicationModel.Resources.Core.ResourceManager resourceMan;
 
     [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    internal Resources()
+    internal Resources() { }
+
+    private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
+      var value = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("ms-resource:///Csla/Resources/" + resourceName);
+      return value.ValueAsString;
     }
 
-    /// <summary>
-    ///   Returns the cached ResourceManager instance used by this class.
-    /// </summary>
-    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-    public static global::System.Resources.ResourceManager ResourceManager
-    {
-      get
-      {
-        if (object.ReferenceEquals(resourceMan, null))
-        {
-          global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly());
-          resourceMan = temp;
-        }
-        return resourceMan;
-      }
-    }
-
-    /// <summary>
-    ///   Overrides the current thread's CurrentUICulture property for all
-    ///   resource lookups using this strongly typed resource class.
-    /// </summary>
-    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-    public static global::System.Globalization.CultureInfo Culture
-    {
-      get
-      {
-        return resourceCulture;
-      }
-      set
-      {
-        resourceCulture = value;
-      }
-    }
     /// <summary>
     ///   Looks up a localized string similar to Are you sure you want to close?.
     /// </summary>
@@ -66,7 +37,7 @@
     {
       get
       {
-        return "Are you sure you want to close?";
+        return GetResourceString();
       }
     }
 
@@ -77,7 +48,7 @@
     {
       get
       {
-        return "Object is currently in a dirty changed.";
+        return GetResourceString();
       }
     }
 
@@ -88,7 +59,7 @@
     {
       get
       {
-        return "DataSource does not cast to a BindingSource";
+        return GetResourceString();
       }
     }
 
@@ -99,7 +70,7 @@
     {
       get
       {
-        return "The underlying data source does not cast to a CSLA BusinessBase object";
+        return GetResourceString();
       }
     }
 
@@ -110,7 +81,7 @@
     {
       get
       {
-        return "DataSource must be a BindingSource control instance";
+        return GetResourceString();
       }
     }
 
@@ -121,7 +92,7 @@
     {
       get
       {
-        return "Are you sure you want to revert to the previous values?";
+        return GetResourceString();
       }
     }
 
@@ -132,7 +103,7 @@
     {
       get
       {
-        return "AddNewCore must be overridden";
+        return GetResourceString();
       }
     }
 
@@ -143,7 +114,7 @@
     {
       get
       {
-        return "Csla Authentication Provider specified does not implement IAuthorizeDataPortal";
+        return GetResourceString();
       }
     }
 
@@ -154,7 +125,7 @@
     {
       get
       {
-        return "Csla Authorization Provider App Setting name not specified";
+        return GetResourceString();
       }
     }
 
@@ -165,7 +136,7 @@
     {
       get
       {
-        return "A root binding source has not been provided.";
+        return GetResourceString();
       }
     }
 
@@ -176,7 +147,7 @@
     {
       get
       {
-        return "Principal must be of type BusinessPrincipal, not";
+        return GetResourceString();
       }
     }
 
@@ -187,7 +158,7 @@
     {
       get
       {
-        return "Objects that are marked busy may not be marked busy again";
+        return GetResourceString();
       }
     }
 
@@ -198,7 +169,7 @@
     {
       get
       {
-        return "Objects that are marked busy may not be saved";
+        return GetResourceString();
       }
     }
 
@@ -209,7 +180,7 @@
     {
       get
       {
-        return "Cannot serialize collections not of type IMobileObject";
+        return GetResourceString();
       }
     }
 
@@ -220,7 +191,7 @@
     {
       get
       {
-        return "Changing an element is an invalid operation";
+        return GetResourceString();
       }
     }
 
@@ -231,7 +202,7 @@
     {
       get
       {
-        return "Can not change a read-only list or collection";
+        return GetResourceString();
       }
     }
 
@@ -242,7 +213,7 @@
     {
       get
       {
-        return "Can not directly mark a child object for deletion - use its parent collection";
+        return GetResourceString();
       }
     }
 
@@ -253,7 +224,7 @@
     {
       get
       {
-        return "Clear is an invalid operation";
+        return GetResourceString();
       }
     }
 
@@ -264,7 +235,7 @@
     {
       get
       {
-        return "The client query is invalid:";
+        return GetResourceString();
       }
     }
 
@@ -275,7 +246,7 @@
     {
       get
       {
-        return "Constructor with parameters are not supported";
+        return GetResourceString();
       }
     }
 
@@ -286,7 +257,7 @@
     {
       get
       {
-        return "Create method name not specified in MobileFactory attribute";
+        return GetResourceString();
       }
     }
 
@@ -297,7 +268,7 @@
     {
       get
       {
-        return "Invalid operation - create not allowed";
+        return GetResourceString();
       }
     }
 
@@ -308,7 +279,7 @@
     {
       get
       {
-        return "Csla Authentication Provider not set!";
+        return GetResourceString();
       }
     }
 
@@ -319,7 +290,7 @@
     {
       get
       {
-        return "Database name not found in config file ({0})";
+        return GetResourceString();
       }
     }
 
@@ -330,7 +301,7 @@
     {
       get
       {
-        return "Default Constructor";
+        return GetResourceString();
       }
     }
 
@@ -341,7 +312,7 @@
     {
       get
       {
-        return "Delete method name not specified in MobileFactory attribute";
+        return GetResourceString();
       }
     }
 
@@ -352,7 +323,7 @@
     {
       get
       {
-        return "Invalid operation - delete not allowed";
+        return GetResourceString();
       }
     }
 
@@ -363,7 +334,7 @@
     {
       get
       {
-        return "Edit level mismatch in {0}";
+        return GetResourceString();
       }
     }
 
@@ -374,7 +345,7 @@
     {
       get
       {
-        return "Error reading value:";
+        return GetResourceString();
       }
     }
 
@@ -385,7 +356,7 @@
     {
       get
       {
-        return "An exception ocurred during the save operation";
+        return GetResourceString();
       }
     }
 
@@ -396,7 +367,7 @@
     {
       get
       {
-        return "Method to be executed must have 0 or 2 parameters";
+        return GetResourceString();
       }
     }
 
@@ -407,7 +378,7 @@
     {
       get
       {
-        return "Trigger event has an unsupported signature";
+        return GetResourceString();
       }
     }
 
@@ -418,7 +389,7 @@
     {
       get
       {
-        return "Invalid operation - execute not allowed";
+        return GetResourceString();
       }
     }
 
@@ -429,7 +400,7 @@
     {
       get
       {
-        return "Factory type or assembly could not be loaded ({0})";
+        return GetResourceString();
       }
     }
 
@@ -440,7 +411,7 @@
     {
       get
       {
-        return "failed";
+        return GetResourceString();
       }
     }
 
@@ -451,7 +422,7 @@
     {
       get
       {
-        return "failed on the server";
+        return GetResourceString();
       }
     }
 
@@ -462,7 +433,7 @@
     {
       get
       {
-        return "Fetch method name not specified in MobileFactory attribute";
+        return GetResourceString();
       }
     }
 
@@ -473,7 +444,7 @@
     {
       get
       {
-        return "Invalid operation - fetch not allowed";
+        return GetResourceString();
       }
     }
 
@@ -484,7 +455,7 @@
     {
       get
       {
-        return "Filter parameter and filter provider are required";
+        return GetResourceString();
       }
     }
 
@@ -495,7 +466,7 @@
     {
       get
       {
-        return "Target object must implement IEditableCollection";
+        return GetResourceString();
       }
     }
 
@@ -506,7 +477,7 @@
     {
       get
       {
-        return "Target object must implement IManageProperties";
+        return GetResourceString();
       }
     }
 
@@ -517,7 +488,7 @@
     {
       get
       {
-        return "Indexed expressions must be closed";
+        return GetResourceString();
       }
     }
 
@@ -528,7 +499,7 @@
     {
       get
       {
-        return "Insert is an invalid operation";
+        return GetResourceString();
       }
     }
 
@@ -539,7 +510,7 @@
     {
       get
       {
-        return "Invalid operation - insert not allowed";
+        return GetResourceString();
       }
     }
 
@@ -548,7 +519,10 @@
     /// </summary>
     public static string RuleMessageRequired
     {
-      get { return "Rule message is required. Rule:{0}"; }
+      get
+      {
+        return GetResourceString();
+      }
     }
 
 
@@ -559,7 +533,7 @@
     {
       get
       {
-        return "List item must be marked as a child object";
+        return GetResourceString();
       }
     }
 
@@ -570,7 +544,7 @@
     {
       get
       {
-        return "{0} can not exceed {1}";
+        return GetResourceString();
       }
     }
 
@@ -581,7 +555,7 @@
     {
       get
       {
-        return "Member not found on object ({0})";
+        return GetResourceString();
       }
     }
 
@@ -592,7 +566,7 @@
     {
       get
       {
-        return "method call failed";
+        return GetResourceString();
       }
     }
 
@@ -603,7 +577,7 @@
     {
       get
       {
-        return "Method execution not allowed";
+        return GetResourceString();
       }
     }
 
@@ -614,7 +588,7 @@
     {
       get
       {
-        return "not implemented";
+        return GetResourceString();
       }
     }
 
@@ -625,7 +599,7 @@
     {
       get
       {
-        return "{0} can not be less than {1}";
+        return GetResourceString();
       }
     }
 
@@ -636,7 +610,7 @@
     {
       get
       {
-        return "The Type &apos;{0}&apos; was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application";
+        return GetResourceString();
       }
     }
 
@@ -647,7 +621,7 @@
     {
       get
       {
-        return "Type {0} must implement IMobileObject";
+        return GetResourceString();
       }
     }
 
@@ -658,7 +632,7 @@
     {
       get
       {
-        return "Please set NavigatorProvider prior to TriggerEvent property.";
+        return GetResourceString();
       }
     }
 
@@ -669,7 +643,7 @@
     {
       get
       {
-        return "ApplyEdit is not valid on a child object";
+        return GetResourceString();
       }
     }
 
@@ -680,7 +654,7 @@
     {
       get
       {
-        return "BeginEdit is not valid on a child object";
+        return GetResourceString();
       }
     }
 
@@ -691,7 +665,7 @@
     {
       get
       {
-        return "CancelEdit is not valid on a child object";
+        return GetResourceString();
       }
     }
 
@@ -702,7 +676,7 @@
     {
       get
       {
-        return "Invalid for root objects - use Delete instead";
+        return GetResourceString();
       }
     }
 
@@ -713,7 +687,7 @@
     {
       get
       {
-        return "No principal object should be passed to DataPortal when using Windows integrated security";
+        return GetResourceString();
       }
     }
 
@@ -724,7 +698,7 @@
     {
       get
       {
-        return "Can not directly save a child object";
+        return GetResourceString();
       }
     }
 
@@ -735,7 +709,7 @@
     {
       get
       {
-        return "Object is still being edited and can not be saved";
+        return GetResourceString();
       }
     }
 
@@ -746,7 +720,7 @@
     {
       get
       {
-        return "Object is not valid and can not be saved";
+        return GetResourceString();
       }
     }
 
@@ -757,7 +731,7 @@
     {
       get
       {
-        return "No such factory method:{0}";
+        return GetResourceString();
       }
     }
 
@@ -768,7 +742,7 @@
     {
       get
       {
-        return "No such method {0}";
+        return GetResourceString();
       }
     }
 
@@ -779,7 +753,7 @@
     {
       get
       {
-        return "No such value exists:";
+        return GetResourceString();
       }
     }
 
@@ -790,7 +764,7 @@
     {
       get
       {
-        return "Argument must not be Nothing";
+        return GetResourceString();
       }
     }
 
@@ -801,7 +775,7 @@
     {
       get
       {
-        return "Can not set property if data object is not null";
+        return GetResourceString();
       }
     }
 
@@ -812,7 +786,7 @@
     {
       get
       {
-        return "Object not serializable ({0})";
+        return GetResourceString();
       }
     }
 
@@ -823,7 +797,7 @@
     {
       get
       {
-        return "Object rule can not have PrimaryPropery.";
+        return GetResourceString();
       }
     }
 
@@ -834,7 +808,7 @@
     {
       get
       {
-        return "Object type or assembly could not be loaded ({0})";
+        return GetResourceString();
       }
     }
 
@@ -845,7 +819,7 @@
     {
       get
       {
-        return "Properties with private backing fields must be marked as RelationshipTypes.PrivateField";
+        return GetResourceString();
       }
     }
 
@@ -856,7 +830,7 @@
     {
       get
       {
-        return "Property copy failed";
+        return GetResourceString();
       }
     }
 
@@ -867,7 +841,7 @@
     {
       get
       {
-        return "Property get not allowed";
+        return GetResourceString();
       }
     }
 
@@ -878,7 +852,7 @@
     {
       get
       {
-        return "Attempt to read/load private field property in managed properties.";
+        return GetResourceString();
       }
     }
 
@@ -889,7 +863,7 @@
     {
       get
       {
-        return "Property load or set failed for property {0} ({1})";
+        return GetResourceString();
       }
     }
 
@@ -900,7 +874,7 @@
     {
       get
       {
-        return "The specified property name &apos;{0}&apos; does not exist";
+        return GetResourceString();
       }
     }
 
@@ -911,7 +885,7 @@
     {
       get
       {
-        return "One or more properties are not registered for this type";
+        return GetResourceString();
       }
     }
 
@@ -922,7 +896,7 @@
     {
       get
       {
-        return "Property &apos;{0}&apos; not registered.";
+        return GetResourceString();
       }
     }
 
@@ -933,7 +907,7 @@
     {
       get
       {
-        return "Cannot register property {0}, a PropertyInfo with the same name already exists.";
+        return GetResourceString();
       }
     }
 
@@ -944,7 +918,7 @@
     {
       get
       {
-        return "Cannot register property {0} after containing type ({1}) has been instantiated";
+        return GetResourceString();
       }
     }
 
@@ -955,7 +929,7 @@
     {
       get
       {
-        return "This property requires {0} index arguments, {1} were provided";
+        return GetResourceString();
       }
     }
 
@@ -966,7 +940,7 @@
     {
       get
       {
-        return "Property set not allowed";
+        return GetResourceString();
       }
     }
 
@@ -977,7 +951,7 @@
     {
       get
       {
-        return "{0} does not match regular expression";
+        return GetResourceString();
       }
     }
 
@@ -988,7 +962,7 @@
     {
       get
       {
-        return "Remove is an invalid operation";
+        return GetResourceString();
       }
     }
 
@@ -999,7 +973,7 @@
     {
       get
       {
-        return "t";
+        return GetResourceString();
       }
     }
 
@@ -1010,7 +984,7 @@
     {
       get
       {
-        return "today";
+        return GetResourceString();
       }
     }
 
@@ -1021,7 +995,7 @@
     {
       get
       {
-        return "tom";
+        return GetResourceString();
       }
     }
 
@@ -1032,7 +1006,7 @@
     {
       get
       {
-        return "tomorrow";
+        return GetResourceString();
       }
     }
 
@@ -1043,7 +1017,7 @@
     {
       get
       {
-        return "y";
+        return GetResourceString();
       }
     }
 
@@ -1054,7 +1028,7 @@
     {
       get
       {
-        return "yesterday";
+        return GetResourceString();
       }
     }
 
@@ -1065,7 +1039,7 @@
     {
       get
       {
-        return "PropertyName &apos;{0}&apos; not found in list";
+        return GetResourceString();
       }
     }
 
@@ -1076,7 +1050,7 @@
     {
       get
       {
-        return "Sorting not supported";
+        return GetResourceString();
       }
     }
 
@@ -1087,7 +1061,7 @@
     {
       get
       {
-        return "{0} can not exceed {1} characters";
+        return GetResourceString();
       }
     }
 
@@ -1098,7 +1072,7 @@
     {
       get
       {
-        return "{0} must be at least {1} characters";
+        return GetResourceString();
       }
     }
 
@@ -1109,7 +1083,7 @@
     {
       get
       {
-        return "{0} required";
+        return GetResourceString();
       }
     }
 
@@ -1120,7 +1094,7 @@
     {
       get
       {
-        return "String value can not be converted to a date";
+        return GetResourceString();
       }
     }
 
@@ -1131,7 +1105,7 @@
     {
       get
       {
-        return "Failed to load type &apos;{0}&apos;";
+        return GetResourceString();
       }
     }
 
@@ -1142,7 +1116,7 @@
     {
       get
       {
-        return "Update method name not specified in MobileFactory attribute";
+        return GetResourceString();
       }
     }
 
@@ -1153,7 +1127,7 @@
     {
       get
       {
-        return "Invalid operation - update not allowed";
+        return GetResourceString();
       }
     }
 
@@ -1164,7 +1138,7 @@
     {
       get
       {
-        return "User not authorized to {0} object type {1}";
+        return GetResourceString();
       }
     }
 
@@ -1175,7 +1149,7 @@
     {
       get
       {
-        return "Value is not a SmartDate";
+        return GetResourceString();
       }
     }
 
@@ -1186,7 +1160,7 @@
     {
       get
       {
-        return "Warning";
+        return GetResourceString();
       }
     }
 
@@ -1197,7 +1171,7 @@
     {
       get
       {
-        return "PropertyNotInAffectedPropertiesException";
+        return GetResourceString();
       }
     }
 
@@ -1208,7 +1182,7 @@
     {
       get
       {
-        return "UnandledKNownTypeException";
+        return GetResourceString();
       }
     }
 
@@ -1219,7 +1193,7 @@
     {
       get
       {
-        return "BinaryWriterObjectSerializationException";
+        return GetResourceString();
       }
     }
 
@@ -1230,7 +1204,7 @@
     {
       get
       {
-        return "Method {0} must return Task";
+        return GetResourceString();
       }
     }
 
@@ -1241,7 +1215,7 @@
     {
       get
       {
-        return "Failed on async load of property {0}";
+        return GetResourceString();
       }
     }
   }

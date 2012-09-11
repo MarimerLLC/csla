@@ -123,7 +123,7 @@ namespace Csla
     {
       try
       {
-        return SaveAsync().Result;
+        return SaveAsync(false, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -151,6 +151,19 @@ namespace Csla
     /// </param>
     public async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
     {
+      return await SaveAsync(forceUpdate, false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="forceUpdate">
+    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+    /// If <see langword="false"/> then it is the same as calling Save().
+    /// </param>
+    /// <param name="isSync">True if the save operation should be synchronous.</param>
+    protected async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate, bool isSync)
+    {
       if (forceUpdate && IsNew)
       {
         // mark the object as old - which makes it
@@ -169,9 +182,16 @@ namespace Csla
       if (IsBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
       if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>((T)this);
+      {
+        if (isSync)
+          result = DataPortal.Update<T>((T)this);
+        else
+          result = await DataPortal.UpdateAsync<T>((T)this);
+      }
       else
+      {
         result = (T)this;
+      }
       OnSaved(result, null, null);
       return result;
     }

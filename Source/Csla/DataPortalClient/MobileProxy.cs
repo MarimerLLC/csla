@@ -187,7 +187,8 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
@@ -238,8 +239,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
       var request = GetBaseCriteriaRequest();
@@ -291,8 +293,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
       var request = GetBaseUpdateCriteriaRequest();
@@ -339,8 +342,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
       var request = GetBaseCriteriaRequest();

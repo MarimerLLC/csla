@@ -27,7 +27,7 @@ namespace Csla.Server.Hosts
       Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Create(objectType, criteria, context).Result;
+      return portal.Create(objectType, criteria, context, true).Result;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Fetch(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Fetch(objectType, criteria, context).Result;
+      return portal.Fetch(objectType, criteria, context, true).Result;
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Update(object obj, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Update(obj, context).Result;
+      return portal.Update(obj, context, true).Result;
     }
 
     /// <summary>
@@ -68,7 +68,7 @@ namespace Csla.Server.Hosts
     public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
     {
       Server.DataPortal portal = new DataPortal();
-      return portal.Delete(objectType, criteria, context).Result;
+      return portal.Delete(objectType, criteria, context, true).Result;
     }
   }
 }

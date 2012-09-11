@@ -112,7 +112,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -140,7 +141,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -167,7 +169,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       string methodName = string.Empty;
       try
@@ -199,7 +202,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {

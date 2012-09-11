@@ -99,8 +99,9 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context)
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -122,7 +123,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = await portal.Create(objectType, criteria, context);
+              result = await portal.Create(objectType, criteria, context, isSync);
             }
             finally
             {
@@ -134,12 +135,12 @@ namespace Csla.Server
           case TransactionalTypes.TransactionScope:
 
             portal = new TransactionalDataPortal();
-            result = await portal.Create(objectType, criteria, context);
+            result = await portal.Create(objectType, criteria, context, isSync);
 
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Create(objectType, criteria, context);
+            result = await portal.Create(objectType, criteria, context, isSync);
             break;
         }
 #else
@@ -173,7 +174,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -195,7 +197,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = await portal.Fetch(objectType, criteria, context);
+              result = await portal.Fetch(objectType, criteria, context, isSync);
             }
             finally
             {
@@ -205,16 +207,16 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
-            result = await portal.Fetch(objectType, criteria, context);
+            result = await portal.Fetch(objectType, criteria, context, isSync);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Fetch(objectType, criteria, context);
+            result = await portal.Fetch(objectType, criteria, context, isSync);
             break;
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Fetch(objectType, criteria, context);
+        result = await portal.Fetch(objectType, criteria, context, isSync);
 #endif
         return result;
       }
@@ -254,8 +256,9 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -316,7 +319,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = await portal.Update(obj, context);
+              result = await portal.Update(obj, context, isSync);
             }
             finally
             {
@@ -326,11 +329,11 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
-            result = await portal.Update(obj, context);
+            result = await portal.Update(obj, context, isSync);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Update(obj, context);
+            result = await portal.Update(obj, context, isSync);
             break;
         }
 #else
@@ -365,7 +368,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -397,7 +401,7 @@ namespace Csla.Server
             portal = new ServicedDataPortal();
             try
             {
-              result = await portal.Delete(objectType, criteria, context);
+              result = await portal.Delete(objectType, criteria, context, isSync);
             }
             finally
             {
@@ -407,11 +411,11 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal();
-            result = await portal.Delete(objectType, criteria, context);
+            result = await portal.Delete(objectType, criteria, context, isSync);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Delete(objectType, criteria, context);
+            result = await portal.Delete(objectType, criteria, context, isSync);
             break;
         }
 #else

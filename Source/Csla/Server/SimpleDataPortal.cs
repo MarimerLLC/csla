@@ -26,10 +26,11 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public async Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context)
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
@@ -97,9 +98,10 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
@@ -167,9 +169,10 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
@@ -275,8 +278,9 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;

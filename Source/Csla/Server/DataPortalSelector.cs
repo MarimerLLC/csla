@@ -31,7 +31,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -39,12 +40,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Create(objectType, criteria, context);
+          return await dp.Create(objectType, criteria, context, isSync);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Create(objectType, criteria, context);
+          return await dp.Create(objectType, criteria, context, isSync);
         }
       }
       catch (DataPortalException)
@@ -67,7 +68,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -75,12 +77,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Fetch(objectType, criteria, context);
+          return await dp.Fetch(objectType, criteria, context, isSync);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Fetch(objectType, criteria, context);
+          return await dp.Fetch(objectType, criteria, context, isSync);
         }
       }
       catch (DataPortalException)
@@ -102,7 +104,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -110,12 +113,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Update(obj, context);
+          return await dp.Update(obj, context, isSync);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Update(obj, context);
+          return await dp.Update(obj, context, isSync);
         }
       }
       catch (DataPortalException)
@@ -138,7 +141,8 @@ namespace Csla.Server
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -146,12 +150,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Delete(objectType, criteria, context);
+          return await dp.Delete(objectType, criteria, context, isSync);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Delete(objectType, criteria, context);
+          return await dp.Delete(objectType, criteria, context, isSync);
         }
       }
       catch (DataPortalException)

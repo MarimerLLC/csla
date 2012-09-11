@@ -31,7 +31,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Create(request.ObjectType, request.Criteria, request.Context).Result;
+        result = portal.Create(request.ObjectType, request.Criteria, request.Context, true).Result;
       }
       catch (Exception ex)
       {
@@ -51,7 +51,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context).Result;
+        result = portal.Fetch(request.ObjectType, request.Criteria, request.Context, true).Result;
       }
       catch (Exception ex)
       {
@@ -71,7 +71,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Update(request.Object, request.Context).Result;
+        result = portal.Update(request.Object, request.Context, true).Result;
       }
       catch (Exception ex)
       {
@@ -91,7 +91,7 @@ namespace Csla.Server.Hosts
       object result;
       try
       {
-        result = portal.Delete(request.ObjectType, request.Criteria, request.Context).Result;
+        result = portal.Delete(request.ObjectType, request.Criteria, request.Context, true).Result;
       }
       catch (Exception ex)
       {

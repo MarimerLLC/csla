@@ -252,7 +252,8 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
 #if !SILVERLIGHT && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
@@ -261,7 +262,10 @@ namespace Csla.DataPortalClient
       try
       {
         var request = new CreateRequest(objectType, criteria, context);
-        response = await proxy.CreateAsync(request);
+        if (isSync)
+          response = proxy.Create(request);
+        else
+          response = await proxy.CreateAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -366,8 +370,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
 #if !SILVERLIGHT && !NETFX_CORE
@@ -377,7 +382,10 @@ namespace Csla.DataPortalClient
       try
       {
         var request = new FetchRequest(objectType, criteria, context);
-        response = await proxy.FetchAsync(request);
+        if (isSync)
+          response = proxy.Fetch(request);
+        else
+          response = await proxy.FetchAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -482,8 +490,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
 #if !SILVERLIGHT && !NETFX_CORE
@@ -493,7 +502,10 @@ namespace Csla.DataPortalClient
       try
       {
         var request = new UpdateRequest(obj, context);
-        response = await proxy.UpdateAsync(request);
+        if (isSync)
+          response = proxy.Update(request);
+        else
+          response = await proxy.UpdateAsync(request);
         if (cf != null)
           cf.Close();
       }
@@ -593,8 +605,9 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
 #pragma warning disable 1998
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
 #if !SILVERLIGHT && !NETFX_CORE
@@ -604,7 +617,10 @@ namespace Csla.DataPortalClient
       try
       {
         var request = new DeleteRequest(objectType, criteria, context);
-        response = await proxy.DeleteAsync(request);
+        if (isSync)
+          response = proxy.Delete(request);
+        else
+          response = await proxy.DeleteAsync(request);
         if (cf != null)
           cf.Close();
       }

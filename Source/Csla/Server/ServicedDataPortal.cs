@@ -37,13 +37,14 @@ namespace Csla.Server
     /// extra information that may be required to properly create
     /// the object.</param>
     /// <param name="context">Context data from the client.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
     public async Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context)
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var portal = new DataPortalSelector();
-      return await portal.Create(objectType, criteria, context);
+      return await portal.Create(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -58,12 +59,13 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Object containing context data from client.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     [AutoComplete(true)]
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var portal = new DataPortalSelector();
-      return await portal.Fetch(objectType, criteria, context);
+      return await portal.Fetch(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -77,12 +79,13 @@ namespace Csla.Server
     /// </remarks>
     /// <param name="obj">A reference to the object being updated.</param>
     /// <param name="context">Context data from the client.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A reference to the newly updated object.</returns>
     [AutoComplete(true)]
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       var portal = new DataPortalSelector();
-      return await portal.Update(obj, context);
+      return await portal.Update(obj, context, isSync);
     }
 
     /// <summary>
@@ -97,11 +100,12 @@ namespace Csla.Server
     /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     [AutoComplete(true)]
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var portal = new DataPortalSelector();
-      return await portal.Delete(objectType, criteria, context);
+      return await portal.Delete(objectType, criteria, context, isSync);
     }
   }
 }

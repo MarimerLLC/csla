@@ -30,10 +30,11 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context)
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Create(objectType, criteria, context);
+      return await _portal.Create(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -45,9 +46,10 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Fetch(objectType, criteria, context);
+      return await _portal.Fetch(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -58,9 +60,10 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      return await _portal.Update(obj, context);
+      return await _portal.Update(obj, context, isSync);
     }
 
     /// <summary>
@@ -72,9 +75,10 @@ namespace Csla.DataPortalClient
     /// <param name="context">
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Delete(objectType, criteria, context);
+      return await _portal.Delete(objectType, criteria, context, isSync);
     }
 
     /// <summary>

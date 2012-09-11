@@ -136,7 +136,7 @@ namespace Csla
 
         try
         {
-          result = await proxy.Create(objectType, criteria, dpContext);
+          result = await proxy.Create(objectType, criteria, dpContext, isSync);
           GlobalContext = result.GlobalContext;
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
@@ -363,7 +363,7 @@ namespace Csla
 
         try
         {
-          result = await proxy.Fetch(objectType, criteria, dpContext);
+          result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
           GlobalContext = result.GlobalContext;
           if (isSync && proxy.IsServerRemote)
             ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
@@ -480,11 +480,7 @@ namespace Csla
       var dp = new DataPortal<object>();
       try
       {
-#if (NET40 || SILVERLIGHT) && (!NETFX_CORE)
-        return TaskEx.Run(() => dp.DoFetchAsync(objectType, criteria, true)).Result;
-#else
-        return Task.Run(() => dp.DoFetchAsync(objectType, criteria, true)).Result;
-#endif
+        return dp.DoFetchAsync(objectType, criteria, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -717,7 +713,7 @@ namespace Csla
             if (cloneable != null)
               obj = (T)cloneable.Clone();
           }
-          result = await proxy.Update(obj, dpContext);
+          result = await proxy.Update(obj, dpContext, isSync);
         }
         catch (AggregateException ex)
         {
@@ -817,7 +813,7 @@ namespace Csla
     {
       try
       {
-        return UpdateAsync(obj).Result;
+        return DoUpdateAsync(obj, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -903,7 +899,7 @@ namespace Csla
 
         try
         {
-          result = await proxy.Delete(objectType, criteria, dpContext);
+          result = await proxy.Delete(objectType, criteria, dpContext, isSync);
         }
         catch (AggregateException ex)
         {

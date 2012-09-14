@@ -731,7 +731,7 @@
     <PRIResource Include="Resources\es-ES\Resources.resw" />
     <PRIResource Include="Resources\es\Resources.resw" />
     <PRIResource Include="Resources\el\Resources.resw" />
-    <PRIResource Include="Resources\de¨\Resources.resw" />
+    <PRIResource Include="Resources\de\Resources.resw" />
     <PRIResource Include="Resources\da\Resources.resw" />
     <PRIResource Include="Resources\ca-ES\Resources.resw" />
     <PRIResource Include="Resources\bs\Resources.resw" />
@@ -786,7 +786,7 @@
     <PreBuildEvent>copy "$(SolutionDir)Csla\Properties\resources.resx" "$(ProjectDir)\resources\en\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.ar.resx" "$(ProjectDir)\resources\ar\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.bs.resx" "$(ProjectDir)\resources\bs\Resources.resw"
-copy "$(SolutionDir)Csla\Properties\resources.ca-ES.resources.resx" "$(ProjectDir)\resources\ca-ES\Resources.resw"
+copy "$(SolutionDir)Csla\Properties\resources.ca-ES.resx" "$(ProjectDir)\resources\ca-ES\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.da.resx" "$(ProjectDir)\resources\da\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.de.resx" "$(ProjectDir)\resources\de\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.el.resx" "$(ProjectDir)\resources\el\Resources.resw"
@@ -795,7 +795,6 @@ copy "$(SolutionDir)Csla\Properties\resources.es-ES.resx" "$(ProjectDir)\resourc
 copy "$(SolutionDir)Csla\Properties\resources.fr.resx" "$(ProjectDir)\resources\fr\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.hr.resx" "$(ProjectDir)\resources\hr\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.hu.resx" "$(ProjectDir)\resources\hu\Resources.resw"
-copy "$(SolutionDir)Csla\Properties\resources.ar.resx" "$(ProjectDir)\resources\ar\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.it.resx" "$(ProjectDir)\resources\it\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.km-KH.resx" "$(ProjectDir)\resources\km-KH\Resources.resw"
 copy "$(SolutionDir)Csla\Properties\resources.nl.resx" "$(ProjectDir)\resources\nl\Resources.resw"

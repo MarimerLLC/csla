@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear è un operazione non valida</value>
@@ -222,9 +222,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>Operazione non valida - Insert non è consentito</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue non può ritornare Nothing</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Property get non consentito</value>
   </data>
@@ -233,9 +230,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argument non deve essere Nothing</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Il parametro Type deve essere un tipo primitivo</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Copia della proprietà fallita</value>

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear este o operatie invalida</value>
@@ -132,10 +132,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Schimbarea unui element este o operatie invalida</value>
     <comment>Changing an element is an invalid operation</comment>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Valoarea Parent poate fi setata doar pentru obiectele copil</value>
-    <comment>Parent value can only be set for child objects</comment>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Nu se poate marca direct un copil pentru stergere - utilizati colectia sa parinte</value>
@@ -257,10 +253,6 @@
     <value>Operatie invalida - insert nu e permis</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue nu poate intoarce Nothing</value>
-    <comment>GetIdValue must not return Nothing</comment>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Proprietatea nu admite get</value>
     <comment>Property get not allowed</comment>
@@ -272,10 +264,6 @@
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argumetul trebuie sa nu fie Nothing</value>
     <comment>Argument must not be Nothing</comment>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Parametru Type trebuie sa fie un type "primitiv"</value>
-    <comment>Type parameter must be a primitive type</comment>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Copierea proprietatii a dat eroare</value>

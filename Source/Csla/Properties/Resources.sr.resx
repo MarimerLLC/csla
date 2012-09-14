@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BusinessPrincipalException" xml:space="preserve">
     <value>Principal objekat mora biti tipa BusinessPrincipal, a ne</value>
@@ -138,32 +138,11 @@
   <data name="ErrorReadingValueException" xml:space="preserve">
     <value>Greška pri čitanju vrednosti:</value>
   </data>
-  <data name="ExecuteNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - izvršavanje</value>
-  </data>
-  <data name="Failed" xml:space="preserve">
-    <value>neuspešno</value>
-  </data>
-  <data name="FailedOnServer" xml:space="preserve">
-    <value>neuspešno na serveru</value>
-  </data>
   <data name="FetchNotSupportedException" xml:space="preserve">
     <value>Nedozvoljena operacija - učitavanje</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue ne sme vratiti Nothing</value>
-  </data>
   <data name="InsertInvalidException" xml:space="preserve">
     <value>Dodavanje nije dozvoljeno</value>
-  </data>
-  <data name="InsertNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - dodavanje</value>
-  </data>
-  <data name="MethodCallFailed" xml:space="preserve">
-    <value>neuspešan poziv metoda</value>
-  </data>
-  <data name="MethodNotImplemented" xml:space="preserve">
-    <value>metod nije implementiran</value>
   </data>
   <data name="NoApplyEditChildException" xml:space="preserve">
     <value>ApplyEdit nije važeći na "dete" objektu</value>
@@ -192,23 +171,8 @@
   <data name="NoSuchValueExistsException" xml:space="preserve">
     <value>Ne postoji vrednost:</value>
   </data>
-  <data name="NothingNotValid" xml:space="preserve">
-    <value>Argument ne sme biti Nothing</value>
-  </data>
   <data name="ParentSetException" xml:space="preserve">
     <value>Parent vrednost može biti podešena samo za objekte "decu"</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Type parametar mora biti primitivni tip</value>
-  </data>
-  <data name="PropertyCopyFailed" xml:space="preserve">
-    <value>Kopiranje osobine nije uspelo</value>
-  </data>
-  <data name="PropertyGetNotAllowed" xml:space="preserve">
-    <value>Uzimanje osobine objekta (Property get) nije dopušteno</value>
-  </data>
-  <data name="PropertySetNotAllowed" xml:space="preserve">
-    <value>Podešavanje osobine objekta (Property set) nije dopušteno</value>
   </data>
   <data name="RemoveInvalidException" xml:space="preserve">
     <value>Uklanjanje nije dozvoljeno</value>

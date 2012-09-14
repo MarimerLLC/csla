@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Nettoyer (clear) est une opération invalide</value>
@@ -132,10 +132,6 @@
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Changer un élément est une opération invalide</value>
     <comment>Changing an element is an invalid operation</comment>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>La valeur "Parent" ne peux être appliquée qu'aux objets enfant</value>
-    <comment>Parent value can only be set for child objects</comment>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Un objet enfant ne peux être directement marqué pour effacement - Utilisez la collection qui le contient</value>
@@ -253,10 +249,6 @@
     <value>Opération invalide - Insérer (insert) n'est pas permis</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>"GetIdValue" ne peut retourner une valeur nul (Nothing)</value>
-    <comment>GetIdValue must not return Nothing</comment>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Le "get" n'est pas permis pour cette propriété</value>
     <comment>Property get not allowed</comment>
@@ -272,10 +264,6 @@
   <data name="NothingNotValid" xml:space="preserve">
     <value>Cet argument ne peut être nul (Nothing)</value>
     <comment>Argument must not be Nothing</comment>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Le paramètre doit être d'un type primaire (primitive type)</value>
-    <comment>Type parameter must be a primitive type</comment>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>La copie (copy) de cette propriété a échoué</value>
@@ -301,32 +289,24 @@
     <value>{0} ne vérifie pas l'expression régulière</value>
     <comment>{0} does not match regular expression</comment>
   </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Méthode de règle invalide (les méthodes d'instance de l'objet destination ne sont pas autorisées)</value>
-    <comment>Invalid rule method (instance methods of the target object not allowed)</comment>
-  </data>
   <data name="TypeLoadException" xml:space="preserve">
     <value>Echec lors du chargement du type '{0}'</value>
-	<comment>Failed to load type '{0}'</comment>
+    <comment>Failed to load type '{0}'</comment>
   </data>
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} doit au moins avoir {1} caractères</value>
-	<comment>{0} can not be less than {1} characters</comment>
+    <comment>{0} can not be less than {1} characters</comment>
   </data>
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>L'éxécution de cette méthode n'est pas autorisée</value>
-	<comment>Method execution not allowed</comment>
-  </data>
-  <data name="ValidationRuleException" xml:space="preserve">
-    <value>La règle de validation {1} a échouée dans la propriété {0}</value>
-	<comment>Validation rule {1} failed in property {0}</comment>
+    <comment>Method execution not allowed</comment>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>le factory méthode:{0} n'existe pas</value>
-	<comment>No such factory method:{0}</comment>
+    <comment>No such factory method:{0}</comment>
   </data>
   <data name="EditLevelMismatchException" xml:space="preserve">
     <value>Edit level mismatch in {0}</value>
-	<comment>Edit level mismatch in {0}</comment>
+    <comment>Edit level mismatch in {0}</comment>
   </data>
 </root>

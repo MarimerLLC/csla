@@ -112,14 +112,11 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BrokenRulesMergeException" xml:space="preserve">
-    <value>Csak egyedi objektum-gyűjteményeket lehet egyesíteni</value>
-  </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
     <value>A Principal típusa csak BusinessPrincipal lehet, nem pedig</value>
   </data>
@@ -162,17 +159,11 @@
   <data name="FilterRequiredException" xml:space="preserve">
     <value>A szűrő-paraméter és a szűrő-ellátó kötelező</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue nem adhat vissza null értéket</value>
-  </data>
   <data name="InsertInvalidException" xml:space="preserve">
     <value>Insert érvénytelen művelet</value>
   </data>
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>Érvénytelen művelet - a felvétel nem megengedett</value>
-  </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Érvénytelen szabály metódus (a célobjektum példány metódusai nem megengedettek)</value>
   </data>
   <data name="MaxValueRule" xml:space="preserve">
     <value>{0} nem lehet nagyobb mint {1}</value>
@@ -221,12 +212,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Az argumentum nem lehet null érték</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>A felettest csak alobjektumoknál lehet megadni</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>A típus paraméternek primitív típusnak kell lennie</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Tulajdonság másolása nem sikerült</value>
@@ -282,17 +267,11 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>'{0}' típus betöltése nem sikerült</value>
   </data>
-  <data name="UnRegisteredPropertyException" xml:space="preserve">
-    <value>Nem használhat nem nyilvántartott tulajdonságot. Hívja meg a RegisterProperty() metódust a {0} tulajdonságra</value>
-  </data>
   <data name="UpdateNotSupportedException" xml:space="preserve">
     <value>Érvénytelen művelet - a módosítás nem megengedett</value>
   </data>
   <data name="UserNotAuthorizedException" xml:space="preserve">
     <value>Nincs felhatalmazása {0} műveletre {1} objektumtípusnál</value>
-  </data>
-  <data name="ValidationRulesException" xml:space="preserve">
-    <value>{1} érvényességi szabály nem teljesül {0} tulajdonságra</value>
   </data>
   <data name="ValueNotSmartDateException" xml:space="preserve">
     <value>Az érték nem SmartDate</value>

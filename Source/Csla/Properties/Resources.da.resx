@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear er en ugyldig handling</value>
@@ -128,9 +128,6 @@
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Ændring af et element er en ugyldig handling</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Forældreværdi kan kun sættes i børneobjekter</value>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Det er ikke muligt direkte at markere et børneobjekt til sletning - brug objektets forældre kollektion</value>
@@ -219,23 +216,17 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>Ugyldig handling - insert er ikke tilladt</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue må ikke returnere Nothing</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Property get er ikke tilladt</value>
   </data>
   <data name="PropertySetNotAllowed" xml:space="preserve">
     <value>Property set er ikke tilladt</value>
   </data>
-	<data name="NoDeleteRootException" xml:space="preserve">
+  <data name="NoDeleteRootException" xml:space="preserve">
     <value>Ugyldig for rod objekter - brug Delete i stedet</value>
   </data>
-	<data name="NothingNotValid" xml:space="preserve">
+  <data name="NothingNotValid" xml:space="preserve">
     <value>Argument kan ikke være Nothing</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Type parameter skal være en primitiv type</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Property kopi fejlede</value>
@@ -246,34 +237,28 @@
   <data name="MinValueRule" xml:space="preserve">
     <value>{0} kan ikke være mindre end {1}</value>
   </data>
-	<data name="StringMaxLengthRule" xml:space="preserve">
+  <data name="StringMaxLengthRule" xml:space="preserve">
     <value>{0} kan ikke være længere end {1} tegn</value>
   </data>
-	<data name="StringRequiredRule" xml:space="preserve">
+  <data name="StringRequiredRule" xml:space="preserve">
     <value>{0} er påkrævet</value>
   </data>
-	<data name="RegExMatchRule" xml:space="preserve">
+  <data name="RegExMatchRule" xml:space="preserve">
     <value>{0} passer ikke på det regulære udtryk</value>
   </data>
-	<data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Ugyldig regel metode (instans metoder af target objekt er ikke tilladt)</value>
-  </data>
-	<data name="TypeLoadException" xml:space="preserve">
+  <data name="TypeLoadException" xml:space="preserve">
     <value>Kunne ikke læse typen '{0}'</value>
   </data>
-	<data name="StringMinLengthRule" xml:space="preserve">
+  <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} må ikke være mindre end {1} tegn</value>
   </data>
-	<data name="MethodExecuteNotAllowed" xml:space="preserve">
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>Udførsel af metoden er ikke tilladt</value>
   </data>
-	<data name="ValidationRuleException" xml:space="preserve">
-    <value>Valideringsregel {1} fejlede in egenskaben {0}</value>
-  </data>
-	<data name="NoSuchFactoryMethod" xml:space="preserve">
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>Factory metode findes ikke:{0}</value>
   </data>
-	<data name="EditLevelMismatchException" xml:space="preserve">
+  <data name="EditLevelMismatchException" xml:space="preserve">
     <value>Uoverensstemmelse i redigeringsniveau i {0}</value>
   </data>
 </root>

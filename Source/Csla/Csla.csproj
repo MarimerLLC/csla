@@ -423,9 +423,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CslaPrivate.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources-il.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.bs.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -489,7 +486,7 @@
     <EmbeddedResource Include="Properties\Resources.vi.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.zh-CHS.resx">
+    <EmbeddedResource Include="Properties\Resources.zh-Hans.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

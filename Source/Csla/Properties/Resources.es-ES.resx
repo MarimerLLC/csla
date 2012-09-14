@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear no es una operación válida</value>
@@ -128,9 +128,6 @@
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Cambiar un elemento no es una operación válida</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>El valor Parent sólo puede ser establecido para objetos hijo</value>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>No se puede marcar directamente un objeto hijo como borrado - use su colección padre</value>
@@ -147,17 +144,11 @@
   <data name="NoSaveInvalidException" xml:space="preserve">
     <value>El objeto no es válido y no puede ser guardado</value>
   </data>
-  <data name="CreateNotSupportedException" xml:space="preserve">
-    <value>Operación no válida - no está permitido crear (create)</value>
-  </data>
   <data name="FetchNotSupportedException" xml:space="preserve">
     <value>Operación no válida - lectura (fetch) no permitida</value>
   </data>
   <data name="UpdateNotSupportedException" xml:space="preserve">
     <value>Operación no válida - no está permitido actualizar (update)</value>
-  </data>
-  <data name="DeleteNotSupportedException" xml:space="preserve">
-    <value>Operación no válida - no está permitido borrar (delete)</value>
   </data>
   <data name="NoBeginEditChildException" xml:space="preserve">
     <value>BeginEdit no es válido en un objeto hijo</value>
@@ -222,9 +213,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>Operación no válida - no está permitido insertar (insert)</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue no debe devolver Nothing</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>No está permitido recuperar (get) la propiedad</value>
   </data>
@@ -234,14 +222,8 @@
   <data name="NothingNotValid" xml:space="preserve">
     <value>El argumento no puede ser Nothing</value>
   </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>El tipo del parámetro debe ser un tipo primitivo</value>
-  </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>La copia de la propiedad falló</value>
-  </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Método de regla no válido (no se permiten métodos de instancia del objeto de destino)</value>
   </data>
   <data name="MaxValueRule" xml:space="preserve">
     <value>{0} no puede ser superior a {1}</value>
@@ -273,29 +255,14 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>Ocurrió un error al cargar el tipo '{0}'</value>
   </data>
-  <data name="ValidationRuleException" xml:space="preserve">
-    <value>La regla de validación {1} falló en la propiedad {0}</value>
-  </data>
   <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
     <value>Los objetos marcados como Busy no pueden ser guardados</value>
-  </data>
-  <data name="CanReadAuthorizationRuleDescription" xml:space="preserve">
-    <value>No está autorizado para leer este campo</value>
-  </data>
-  <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
-    <value>No está autorizado para escribir en este campo</value>
   </data>
   <data name="DefaultConstructor" xml:space="preserve">
     <value>Constructor por defecto</value>
   </data>
   <data name="MemberNotFoundException" xml:space="preserve">
     <value>Miembro no encontrado en el objeto ({0})</value>
-  </data>
-  <data name="String" xml:space="preserve">
-    <value>La copia de la propiedad falló</value>
-  </data>
-  <data name="ArrayIsMultiDimensional" xml:space="preserve">
-    <value>El array es multidimensional</value>
   </data>
   <data name="AuthenticationProviderDoesNotImplementIAuthorizeDataPortal" xml:space="preserve">
     <value>El Proveedor de Autenticación de Csla especificado, no implementa IAuthorizeDataPortal</value>
@@ -306,14 +273,8 @@
   <data name="BindingSourceNotProvided" xml:space="preserve">
     <value>No se ha establecido un origen de datos raíz.</value>
   </data>
-  <data name="BrokenRulesMergeException" xml:space="preserve">
-    <value>La operación Merge sólo se permite en colecciones de objetos personalizas</value>
-  </data>
   <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
     <value>Los objetos que están marcados como 'busy' no pueden ser marcados como 'busy' de nuevo</value>
-  </data>
-  <data name="CannotHaveMemberEqualsMemberInAnExpression" xml:space="preserve">
-    <value>No puede tener 'miembro' == 'miembro' en una expresión</value>
   </data>
   <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
     <value>No se pueden serializar colecciones que no sean de tipo IMobileObject</value>
@@ -327,9 +288,6 @@
   <data name="CreateMethodNameNotSpecified" xml:space="preserve">
     <value>El nombre del método Create no se especificó en el atributo MobileFactory</value>
   </data>
-  <data name="CreateNotSupportedException1" xml:space="preserve">
-    <value>Operación no válida - 'Create' no permitido</value>
-  </data>
   <data name="CslaAuthenticationProviderNotSet" xml:space="preserve">
     <value>'No se estableció el Proveedor de Autenticación de Csla especificado!</value>
   </data>
@@ -339,14 +297,8 @@
   <data name="DeleteMethodNameNotSpecified" xml:space="preserve">
     <value>El nombre del método Delete no se especificó en el atributo MobileFactory</value>
   </data>
-  <data name="DeleteNotSupportedException1" xml:space="preserve">
-    <value>Operación no válida - 'Delete' no permitido</value>
-  </data>
   <data name="ExceptionOccurredDuringSaveOperation" xml:space="preserve">
     <value>Ocurrió una excepción durante la operación de guardado</value>
-  </data>
-  <data name="ExpressionTypeNotSupportedToObtainValue" xml:space="preserve">
-    <value>El tipo de expresión {0} no se soporta para obtener un valor</value>
   </data>
   <data name="FactoryTypeNotFoundException" xml:space="preserve">
     <value>El tipo o ensamblado de factory no pudo ser cargado ({0})</value>
@@ -360,17 +312,11 @@
   <data name="IManagePropertiesRequiredException" xml:space="preserve">
     <value>El objeto de destino debe implementar IManageProperties</value>
   </data>
-  <data name="IndexIsOutOfRange" xml:space="preserve">
-    <value>El índice está fuera de rango</value>
-  </data>
   <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
     <value>El tipo '{0}' no pudo ser deserializado, compruebe que el ensamblado conteniendo esta clase tiene el mismo nombre en Cliente y Servidor y que es referenciado por su aplicación de servidorby your server application</value>
   </data>
   <data name="MustImplementIMobileObject" xml:space="preserve">
     <value>El tipo {0} debe implementar IMobileObject</value>
-  </data>
-  <data name="NullArrayReference" xml:space="preserve">
-    <value>Referencia a array nulo</value>
   </data>
   <data name="ObjectNotSerializableFormatted" xml:space="preserve">
     <value>Objeto no serializable ({0})</value>
@@ -390,22 +336,10 @@
   <data name="SortingNotSupported" xml:space="preserve">
     <value>Ordenación no soportada</value>
   </data>
-  <data name="UnhandledBindingType" xml:space="preserve">
-    <value>Tipo de enlace no controlado '{0}'</value>
-  </data>
-  <data name="UnhandledExpressionType" xml:space="preserve">
-    <value>Tipo de expresión no controlado: '{0}'</value>
-  </data>
   <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
     <value>El nombre del método Update no se especificó en el atributo MobileFactory</value>
   </data>
-  <data name="UpdateNotSupportedException1" xml:space="preserve">
-    <value>Operación no válida - 'Update' no permitido</value>
-  </data>
   <data name="UserNotAuthorizedException" xml:space="preserve">
     <value>Usuario no autorizado a {0} en el tipo de objeto {1}</value>
-  </data>
-  <data name="ValidationRulesException" xml:space="preserve">
-    <value>La regla de validación {1} falló en la propiedad {0}</value>
   </data>
 </root>

@@ -112,14 +112,11 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BrokenRulesMergeException" xml:space="preserve">
-    <value>عملية الدمج مسموح بها فقط على مجموعات الكائنات المخصصة.</value>
-  </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
     <value>الكائن "Principal" يجب أن يكون من النوع "BusinessPrincipal"</value>
   </data>
@@ -162,17 +159,11 @@
   <data name="FilterRequiredException" xml:space="preserve">
     <value>البرمتر فلتر و مزود الفلتر مطلوبين</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>العملية GetIdValue يجب أن لا تعيد القيمة "لا شيء" Nothing</value>
-  </data>
   <data name="InsertInvalidException" xml:space="preserve">
     <value>عملية الاضافة (Insert) عملية غير مسموح بها</value>
   </data>
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>عملية غير صحيحة، الاضافة insert عملية غير مسموح بها.</value>
-  </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>طريقة القاعدة (rule) غير صحيح (طرائق الكائنات الهدف غير مسموح بها)</value>
   </data>
   <data name="MaxValueRule" xml:space="preserve">
     <value>{0} يجب أن لا يتجاوز {1}</value>
@@ -221,12 +212,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argument لا يجب أن تكون لا شيء Nothing</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>قيمة الخاصية Parent لا يمكن اعطاؤها إلا للكائنات الأبناء</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>البرمتر Type يجب أن يكون من الأنواع القاعدية</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>عملية نسخ الخاصية لم تنجح</value>
@@ -282,17 +267,11 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>فشل أثناء عملية تحميل النوع '{0}'</value>
   </data>
-  <data name="UnRegisteredPropertyException" xml:space="preserve">
-    <value>استعمال خاصية غير مسجلة غير ممكن. عليك باستدعاء الطريقة RegisterProperty() للخاصية {0}</value>
-  </data>
   <data name="UpdateNotSupportedException" xml:space="preserve">
     <value>عملية غير صحيحة، update عملية غير ممكنة.</value>
   </data>
   <data name="UserNotAuthorizedException" xml:space="preserve">
     <value>المستعمل ليس مصرح له {0} نوع الكائن {1}</value>
-  </data>
-  <data name="ValidationRulesException" xml:space="preserve">
-    <value>قاعدة التحقق {1} فشلت على الخاصية {0}</value>
   </data>
   <data name="ValueNotSmartDateException" xml:space="preserve">
     <value>القيمة ليست من نوع SmartDate</value>

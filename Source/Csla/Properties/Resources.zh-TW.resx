@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>清除操作無效</value>
@@ -128,9 +128,6 @@
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>元素變更操作無效</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>只允許為子物件設定值(Parent value)</value>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>無法直接將子物件標記為刪除 - 請經由母集合</value>
@@ -219,9 +216,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>操作無效 - 不允許插入</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>商業物件必須在GetIdValue提供一個非空值的ID值</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>不允許讀取的屬性</value>
   </data>
@@ -233,9 +227,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>引數不可為空值</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>參數型別必須為基礎型別</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>屬性複製失敗</value>
@@ -255,9 +246,6 @@
   <data name="RegExMatchRule" xml:space="preserve">
     <value>{0} 未符合正規表示法</value>
   </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>無效的規則方法 (目標物件 instance methods 不被允許)</value>
-  </data>
   <data name="TypeLoadException" xml:space="preserve">
     <value>載入「{0}」型別失敗 </value>
   </data>
@@ -266,9 +254,6 @@
   </data>
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>方法不允許執行</value>
-  </data>
-  <data name="ValidationRuleException" xml:space="preserve">
-    <value>驗證規則 {1} 於屬性 {0}驗證失敗</value>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>不存在的工廠方法:{0}</value>

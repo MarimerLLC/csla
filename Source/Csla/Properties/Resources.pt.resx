@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>"Clear" é uma operação inválida</value>
@@ -257,10 +257,6 @@
     <value>Operação inválida - não pode inserir</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>"GetIdValue" não pode devolver um ID nulo para o "business object"</value>
-    <comment>Business object must supply a non-null ID value in GetIdValue</comment>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Não pode ler o valor da propriedade</value>
     <comment>Property get not allowed</comment>
@@ -272,10 +268,6 @@
   <data name="NothingNotValid" xml:space="preserve">
     <value>O argumento não pode ser nulo</value>
     <comment>Argument must not be null</comment>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>O parâmetro tem que ser de um tipo primário</value>
-    <comment>Type parameter must be a primitive type</comment>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>A cópia da propriedade falhou</value>
@@ -301,10 +293,6 @@
     <value>{0} não encaixa na expressão regular</value>
     <comment>{0} does not match regular expression</comment>
   </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>Método da regra inválido (não pode instanciar métodos do objecto alvo)</value>
-    <comment>Invalid rule method (instance methods of the target object not allowed)</comment>
-  </data>
   <data name="TypeLoadException" xml:space="preserve">
     <value>Não conseguiu carregar o tipo '{0}'</value>
     <comment>Failed to load type '{0}'</comment>
@@ -316,10 +304,6 @@
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} deve ter pelo menos {1} caracteres</value>
     <comment>{0} must be at least {1} characters</comment>
-  </data>
-  <data name="ValidationRulesException" xml:space="preserve">
-    <value>A regra de validação {1} falhou na propriedade {0}</value>
-    <comment>Validation rule {1} failed in property {0}</comment>
   </data>
   <data name="EditLevelMismatchException" xml:space="preserve">
     <value>Troca de Edit Level em {0}</value>

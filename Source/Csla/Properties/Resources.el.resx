@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Δεν επιτρέπεται η διαγραφή στοιχείων</value>
@@ -128,9 +128,6 @@
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Δεν επιτρέπεται η μεταβολή στοιχείων</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Η αναφορά στο μητρικό αντικείμενο μπορεί να τεθεί μόνο σε αντικείμενα παιδιά</value>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Δεν μπορείτε να διαγράψετε απευθείας ένα αντικείμενο που περιέχεται σε συλλογή - Χρησιμοποιήστε τη συλλογή</value>
@@ -222,9 +219,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>Δεν υποστηρίζεται η εισαγωγή αντικειμένου</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>Η συνάρτηση GetIdValue δεν επιτρέπεται να επιστρέφει Null</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Πρόβλημα κατά την ανάγνωση της ιδιότητας</value>
   </data>
@@ -233,9 +227,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Η παράμετρος δεν μπορεί να είναι Null</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Η παράμετρος Type πρέπει να είναι βασικού τύπου</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Η αντιγραφή της ιδιότητας απέτυχε</value>

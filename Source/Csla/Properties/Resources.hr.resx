@@ -112,22 +112,13 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BrokenRulesMergeException" xml:space="preserve">
-    <value>Spajanje samo dozvoljeno na posebnim kolekcijama</value>
-  </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
     <value>Principal objekt mora biti tipa BusinessPrincipal, a ne</value>
-  </data>
-  <data name="CanReadAuthorizationRuleDescription" xml:space="preserve">
-    <value>Niste autorizovani da čitate ovo polje</value>
-  </data>
-  <data name="CanWriteAuthorizationRuleDescription" xml:space="preserve">
-    <value>Niste autoriyovani da pišete u ovo polje</value>
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Izmjena nije dozvoljena</value>
@@ -161,9 +152,6 @@
   </data>
   <data name="FetchNotSupportedException" xml:space="preserve">
     <value>Nedozvoljena operacija - učitavanje</value>
-  </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue ne smije vratiti Nothing</value>
   </data>
   <data name="InsertInvalidException" xml:space="preserve">
     <value>Dodavanje nije dozvoljeno</value>
@@ -206,12 +194,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argument ne smije biti Nothing</value>
-  </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Parent vrijednost može biti podešena samo za objekte "djecu"</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Type parametar mora biti primitivni tip</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Kopiranje osobine nije uspjelo</value>

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear ist eine ungültige Operation </value>
@@ -257,10 +257,6 @@
     <value>ungülitge Operation - Einfügen nicht erlaubt</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>GetIdValue darf nicht Nothing zurückgeben</value>
-    <comment>GetIdValue must not return Nothing</comment>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>Lesen der Eigenschaft nicht erlaubt</value>
     <comment>Property get not allowed</comment>
@@ -272,10 +268,6 @@
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argument darf nicht Nothing sein</value>
     <comment>Argument must not be Nothing</comment>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>Type Parameter muss ein primitiver Typ sein</value>
-    <comment>Type parameter must be a primitive type</comment>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>Kopieren einer Eigenschaft fehlgeschlagen</value>

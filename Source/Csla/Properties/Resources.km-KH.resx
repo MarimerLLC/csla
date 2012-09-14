@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>ដំណើរការ លុបមិនត្រឹមត្រូវ</value>
@@ -216,9 +216,6 @@
   <data name="InsertNotSupportedException" xml:space="preserve">
     <value>ប្រតិបត្តិការពុំមានសុពលភាព - ការបន្ថែមទិន្នន័យមិនត្រូវបានអនុញ្ញាត្តិ ។</value>
   </data>
-  <data name="GetIdValueCantBeNull" xml:space="preserve">
-    <value>កម្មវត្ថុជំនួញ ត្រូវតែផ្តល់ លេខកូដសំគាល់ដែលខុសពី ទទេ នៅក្នុង វិធីសាស្រ្ត GetIdValue ។</value>
-  </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
     <value>ការអាន លក្ខណៈសម្បត្តិ មិនត្រូវបានអនុញ្ញាត្តិ</value>
   </data>
@@ -230,9 +227,6 @@
   </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>អាគុយម៉ង មិនអាចទទេបានទេ ។</value>
-  </data>
-  <data name="PrimitiveTypeRequired" xml:space="preserve">
-    <value>អញ្ញត្តិ ត្រូវតែជាប្រភេទទិន្នន័យ ដំបូង ។</value>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
     <value>បរាជ័យក្នុងការចំលង លក្ខណៈសម្បត្តិ</value>
@@ -252,9 +246,6 @@
   <data name="RegExMatchRule" xml:space="preserve">
     <value>{0} មិនត្រូវគ្នា នឹងកន្សោមធម្មតាទេ ។</value>
   </data>
-  <data name="InvalidRuleMethodException" xml:space="preserve">
-    <value>វិធីសាស្រ្ត វិន័យគ្មានសុពលភាព (មិនអនុញ្ញាត្តិអោយប្រើ​ វិធីសាស្រ្តរបស់វត្ថុគោលដៅ)</value>
-  </data>
   <data name="TypeLoadException" xml:space="preserve">
     <value>បរាជ័យក្នុងការផ្ទុកទិន្នន័យប្រភេទ '{0}'</value>
   </data>
@@ -263,9 +254,6 @@
   </data>
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>វិធីសាស្រ្ត មិនត្រូវបានអនុញ្ញាត្តិអោយប្រតិបត្តិ</value>
-  </data>
-  <data name="ValidationRuleException" xml:space="preserve">
-    <value>ផ្ទៀងផ្ទាត់វិន័យ {1} បរាជ័យនៅពេលពិនិត្យលក្ខណៈសម្បត្តិរបស់ {0}</value>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>មិនមាន វិធីសាស្រ្តបង្កើត :{0} នេះទេ ។</value>

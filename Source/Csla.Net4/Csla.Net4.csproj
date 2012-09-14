@@ -950,9 +950,6 @@
     <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">
       <Link>CslaPrivate.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources-il.resx">
-      <Link>Properties\Resources-il.resx</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.ar.resx">
       <Link>Properties\Resources.ar.resx</Link>
     </EmbeddedResource>
@@ -1025,7 +1022,7 @@
     <EmbeddedResource Include="..\Csla\Properties\Resources.vi.resx">
       <Link>Properties\Resources.vi.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-CHS.resx">
+    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-Hans.resx">
       <Link>Properties\Resources.zh-CHS.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.zh-TW.resx">

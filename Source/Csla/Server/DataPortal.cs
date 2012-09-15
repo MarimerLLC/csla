@@ -145,7 +145,7 @@ namespace Csla.Server
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Create(objectType, criteria, context);
+        result = await portal.Create(objectType, criteria, context, isSync);
 #endif
         return result;
       }
@@ -338,7 +338,7 @@ namespace Csla.Server
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Update(obj, context);
+        result = await portal.Update(obj, context, isSync);
 #endif
         return result;
       }
@@ -420,7 +420,7 @@ namespace Csla.Server
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Delete(objectType, criteria, context);
+        result = await portal.Delete(objectType, criteria, context, isSync);
 #endif
         return result;
       }

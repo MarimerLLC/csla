@@ -39,7 +39,7 @@ namespace Csla.Testing.Business.EditableChildTests
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       Child_Update();
     }

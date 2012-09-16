@@ -21,7 +21,7 @@ namespace Csla.Testing.Business.EditableRootTests
 
 #if SILVERLIGHT
 
-    public override void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
       LoadProperty<Guid>(IdProperty, MockEditableRootId);
       //ValidationRules.CheckRules();
@@ -39,7 +39,7 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "fetch");
     }
 
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -48,7 +48,7 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "insert");
     }
 
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       Guid id = ReadProperty<Guid>(IdProperty);
       if (id != MockEditableRootId)
@@ -57,7 +57,7 @@ namespace Csla.Testing.Business.EditableRootTests
       LoadProperty<string>(DataPortalMethodProperty, "update");
     }
 
-    public override void DataPortal_DeleteSelf()
+    protected override void DataPortal_DeleteSelf()
     {
       DataPortal_Delete(new SingleCriteria<MockEditableRoot, Guid>(this.Id));
     }

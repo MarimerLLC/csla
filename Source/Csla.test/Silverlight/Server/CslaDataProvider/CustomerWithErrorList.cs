@@ -64,10 +64,6 @@ namespace cslalighttest.CslaDataProvider
       dp.BeginFetch();
     }
 
-    public override void BeginSave(EventHandler<SavedEventArgs> handler, object userState)
-    {
-      base.BeginSave(handler, userState);
-    }
 #endif
   }
 }

@@ -29,11 +29,11 @@ namespace Csla.Testing.Business.BusyStatus
       return returnValue;
     }
 #if SILVERLIGHT
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       foreach (var oneItem in this)
       {
-        oneItem.DataPortal_Update();
+        oneItem.DoDataPortal_Update();
       }
     }
 #else

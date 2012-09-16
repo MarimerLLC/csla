@@ -19,14 +19,14 @@ namespace Csla.Test.Silverlight.Rollback
 
     public static void BeginCreateLocal(EventHandler<DataPortalResult<RollbackRoot>> callback)
     {
-      var dp = new DataPortal<RollbackRoot>(Csla.DataPortal.ProxyModes.LocalOnly);
+      var dp = new DataPortal<RollbackRoot>();   //Csla.DataPortal.ProxyModes.LocalOnly 
       dp.CreateCompleted += callback;
       dp.BeginCreate();
     }
 
 
-
-    public override void DataPortal_Create()
+    [RunLocal]
+    protected override void DataPortal_Create()
     {
       base.DataPortal_Create();
     }

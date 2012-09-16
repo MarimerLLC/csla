@@ -97,7 +97,7 @@ namespace Csla.Testing.Business.ObjectFactory
       this.MarkOld();
     }
 
-    public override void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
@@ -118,14 +118,14 @@ namespace Csla.Testing.Business.ObjectFactory
       this.MarkDeleted();
     }
 
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
       this.MarkOld();
     }
 
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

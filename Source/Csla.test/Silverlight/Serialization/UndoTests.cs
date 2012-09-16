@@ -353,7 +353,7 @@ namespace cslalighttest.Serialization
             root.CancelEdit();
             context.Assert.Success();
             context.Complete();
-        }, Csla.DataPortal.ProxyModes.LocalOnly);
+        });   // , Csla.DataPortal.ProxyModes.LocalOnly
     }
 #endif
   }

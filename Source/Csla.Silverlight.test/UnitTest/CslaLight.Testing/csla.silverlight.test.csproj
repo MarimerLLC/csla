@@ -295,6 +295,9 @@
     <Compile Include="..\..\..\csla.test\Silverlight\Serialization\CustomMobileList.cs">
       <Link>Serialization\CustomMobileList.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Csla.test\Silverlight\Serialization\MockMobileList.cs">
+      <Link>Serialization\MockMobileList.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csla.test\Silverlight\Serialization\MockNonBusinessObject.cs">
       <Link>Serialization\MockNonBusinessObject.cs</Link>
     </Compile>

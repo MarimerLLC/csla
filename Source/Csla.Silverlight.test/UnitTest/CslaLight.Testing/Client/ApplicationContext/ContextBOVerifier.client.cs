@@ -17,7 +17,7 @@ namespace Csla.Testing.Business.ApplicationContext
 
 #if SILVERLIGHT
     //DataPortal_Insert is used to verify that the ClientContext["MSG"] is received on the server
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Client);
     }
@@ -26,7 +26,7 @@ namespace Csla.Testing.Business.ApplicationContext
 
     //DataPortal_Update is used to verify that the ClientContext["MSG"] 
     //changed on the server does not change the value on the client
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Client);
     }
@@ -41,14 +41,14 @@ namespace Csla.Testing.Business.ApplicationContext
 
 #if SILVERLIGHT
     //DataPortal_Insert is used to verify that the GlobalContext["MSG"] is received on the server
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       SetReceivedContextValuePropertyFrom(Contexts.Global);
     }
 
     //DataPortal_Update is used to verify that the GlobalContext["MSG"] 
     //changed on the server does not change the value on the client
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       SetContextValueModified(Contexts.Global);
     }

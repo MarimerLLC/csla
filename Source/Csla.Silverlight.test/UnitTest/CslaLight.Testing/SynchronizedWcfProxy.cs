@@ -26,24 +26,24 @@ namespace Csla.DataPortalClient
       get { return _proxy.IsServerRemote; }
     }
 
-    public async System.Threading.Tasks.Task<Server.DataPortalResult> Create(Type objectType, object criteria, Server.DataPortalContext context)
+    public async System.Threading.Tasks.Task<Server.DataPortalResult> Create(Type objectType, object criteria, Server.DataPortalContext context, bool isAsync)
     {
-      return await _proxy.Create(objectType, criteria, context);
+      return await _proxy.Create(objectType, criteria, context, isAsync);
     }
 
-    public async System.Threading.Tasks.Task<Server.DataPortalResult> Fetch(Type objectType, object criteria, Server.DataPortalContext context)
+    public async System.Threading.Tasks.Task<Server.DataPortalResult> Fetch(Type objectType, object criteria, Server.DataPortalContext context, bool isAsync)
     {
-      return await _proxy.Fetch(objectType, criteria, context);
+      return await _proxy.Fetch(objectType, criteria, context, isAsync);
     }
 
-    public async System.Threading.Tasks.Task<Server.DataPortalResult> Update(object obj, Server.DataPortalContext context)
+    public async System.Threading.Tasks.Task<Server.DataPortalResult> Update(object obj, Server.DataPortalContext context, bool isAsync)
     {
-      return await _proxy.Update(obj, context);
+      return await _proxy.Update(obj, context, isAsync);
     }
 
-    public async System.Threading.Tasks.Task<Server.DataPortalResult> Delete(Type objectType, object criteria, Server.DataPortalContext context)
+    public async System.Threading.Tasks.Task<Server.DataPortalResult> Delete(Type objectType, object criteria, Server.DataPortalContext context, bool isAsync)
     {
-      return await _proxy.Delete(objectType, criteria, context);
+      return await _proxy.Delete(objectType, criteria, context, isAsync);
     }
   }
 }

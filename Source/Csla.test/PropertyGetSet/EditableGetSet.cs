@@ -232,7 +232,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if SILVERLIGHT
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       if (FieldManager.FieldExists(ManagedChildProperty))
         ManagedChild.Insert();
@@ -240,7 +240,7 @@ namespace Csla.Test.PropertyGetSet
         ManagedChildList.Update();
     }
 
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
       if (FieldManager.FieldExists(ManagedChildProperty))
         ManagedChild.Update();
@@ -373,11 +373,11 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if SILVERLIGHT
-    public override void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
     }
 
-    public override void DataPortal_Update()
+    protected override void DataPortal_Update()
     {
     }
 #else

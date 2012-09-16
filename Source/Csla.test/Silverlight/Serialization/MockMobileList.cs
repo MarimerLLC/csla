@@ -25,7 +25,14 @@ namespace cslalighttest.Serialization
   [Serializable]
   public class MockMobileList : Csla.Core.MobileBindingList<MockReadOnly>
   {
-    public MockMobileList() { this.ListChanged += (o, e) => { this.HasRaisedOnListChanged = true; }; }
+    public MockMobileList()
+    {
+#if SILVERLIGHT
+        this.CollectionChanged += (o, e) => {this.HasRaisedOnListChanged = true;};
+#else 
+        this.ListChanged += (o, e) => {this.HasRaisedOnListChanged = true;};
+#endif
+    }
 
     public bool HasRaisedOnListChanged { get; set; }
   }

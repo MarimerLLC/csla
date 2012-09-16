@@ -51,7 +51,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestDenyInstanceAndShared()
     {
       
@@ -66,7 +66,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod()]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestDenyInstanceAndSharedForClone()
     {
 

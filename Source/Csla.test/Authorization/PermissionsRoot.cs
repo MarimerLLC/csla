@@ -41,7 +41,7 @@ namespace Csla.Test.Security
         }
         else
         {
-          throw new System.Security.SecurityException("Property get not allowed");
+          throw new Csla.Security.SecurityException("Property get not allowed");
         }
       }
       set
@@ -52,7 +52,7 @@ namespace Csla.Test.Security
         }
         else
         {
-          throw new System.Security.SecurityException("Property set not allowed");
+          throw new Csla.Security.SecurityException("Property set not allowed");
         }
       }
     }

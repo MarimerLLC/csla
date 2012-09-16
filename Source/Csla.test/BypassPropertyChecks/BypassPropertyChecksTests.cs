@@ -62,7 +62,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassReadWriteNoRightsTurnNotificationBackOn()
     {
       UnitTestContext context = GetContext();
@@ -138,7 +138,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypass()
     {
       UnitTestContext context = GetContext();
@@ -230,7 +230,7 @@ namespace Csla.Test.BypassPropertyChecks
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypassBackingField()
     {
       UnitTestContext context = GetContext();

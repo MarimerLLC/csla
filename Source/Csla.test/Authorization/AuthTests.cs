@@ -265,7 +265,7 @@ namespace Csla.Test.Authorization
       Csla.Test.Security.TestPrincipal.SimulateLogout();
     }
 
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     [TestMethod]
     public void TestUnauthorizedAccessToGet()
     {
@@ -277,7 +277,7 @@ namespace Csla.Test.Authorization
       string something = pr.FirstName;
     }
 
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     [TestMethod]
     public void TestUnauthorizedAccessToSet()
     {
@@ -339,7 +339,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestUnAuthExecute()
     {
       Csla.ApplicationContext.GlobalContext.Clear();

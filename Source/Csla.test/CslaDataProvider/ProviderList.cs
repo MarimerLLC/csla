@@ -37,7 +37,7 @@ namespace Csla.Test.CslaDataProvider
     }
 
     //error testing
-    public override ProviderList Save()
+    public new ProviderList Save()
     {
       throw new Exception();
     }

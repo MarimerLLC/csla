@@ -32,7 +32,7 @@ namespace Csla.Test.Authorization
   public class PerTypeAuthorizationTests
   {
     [TestMethod()]
-    [ExpectedException(typeof(System.Security.SecurityException))]
+    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void DenyWritePerType()
     {
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();

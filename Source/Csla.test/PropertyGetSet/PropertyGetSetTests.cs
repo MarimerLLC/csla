@@ -30,13 +30,30 @@ namespace Csla.Test.PropertyGetSet
   [TestClass]
   public class PropertyGetSetTests
   {
+    private ApplicationContext.PropertyChangedModes _mode;
+
 #if SILVERLIGHT
     [TestInitialize]
     public void Setup()
     {
       Csla.DataPortal.ProxyTypeName = "Local"; // "Csla.DataPortalClient.WcfProxy, Csla";
+      _mode = Csla.ApplicationContext.PropertyChangedMode;
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
+    }
+#else
+    [TestInitialize]
+    public void Initialize()
+    {
+      _mode = Csla.ApplicationContext.PropertyChangedMode;
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
     }
 #endif
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      Csla.ApplicationContext.PropertyChangedMode = _mode;
+    }
 
     [TestMethod]
     public void ForceStaticInit()

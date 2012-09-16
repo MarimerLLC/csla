@@ -32,7 +32,7 @@ namespace Csla.Test.ObjectFactory
     public static bool Execute()
     {
       if (!CanExecuteCommand())
-        throw new System.Security.SecurityException("Not authorized to execute command");
+        throw new Csla.Security.SecurityException("Not authorized to execute command");
 
       CommandObjectMissingFactoryMethod cmd = new CommandObjectMissingFactoryMethod();
       cmd.BeforeServer();

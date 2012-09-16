@@ -174,7 +174,7 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadOnProperty"))
-          throw new System.Security.SecurityException("Not allowed 1");
+          throw new Csla.Security.SecurityException("Not allowed 1");
 
         else
           return "[DenyReadOnProperty] Can't read property";
@@ -197,7 +197,7 @@ namespace Csla.Test.DataPortal
       set
       {
         if (CanWriteProperty("DenyWriteOnProperty"))
-          throw new System.Security.SecurityException("Not allowed 2");
+          throw new Csla.Security.SecurityException("Not allowed 2");
 
         else
           _auth = "[DenyWriteOnProperty] Can't write variable";
@@ -211,7 +211,7 @@ namespace Csla.Test.DataPortal
       get
       {
         if (CanReadProperty("DenyReadWriteOnProperty"))
-          throw new System.Security.SecurityException("Not allowed 3");
+          throw new Csla.Security.SecurityException("Not allowed 3");
 
         else
           return "[DenyReadWriteOnProperty] Can't read property";
@@ -219,7 +219,7 @@ namespace Csla.Test.DataPortal
       set
       {
         if (CanWriteProperty("DenyReadWriteOnProperty"))
-          throw new System.Security.SecurityException("Not allowed 4");
+          throw new Csla.Security.SecurityException("Not allowed 4");
 
         else
           _auth = "[DenyReadWriteOnProperty] Can't write variable";
@@ -235,7 +235,7 @@ namespace Csla.Test.DataPortal
           return _auth;
 
         else
-          throw new System.Security.SecurityException("Should be allowed 5");
+          throw new Csla.Security.SecurityException("Should be allowed 5");
       }
       set
       {
@@ -243,7 +243,7 @@ namespace Csla.Test.DataPortal
           _auth = value;
 
         else
-          throw new System.Security.SecurityException("Should be allowed 5");
+          throw new Csla.Security.SecurityException("Should be allowed 5");
       }
     }
 

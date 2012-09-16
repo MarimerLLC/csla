@@ -338,7 +338,7 @@ namespace Csla.Test.Serialization
         root.FirstName = "something";
         Assert.Fail("Exception didn't occur");
       }
-      catch (System.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException ex)
       {
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
@@ -349,7 +349,7 @@ namespace Csla.Test.Serialization
       {
         root.FirstName = "something";
       }
-      catch (System.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException ex)
       {
         Assert.Fail("exception occurred");
       }
@@ -363,7 +363,7 @@ namespace Csla.Test.Serialization
         rootClone.FirstName = "something else";
         Assert.Fail("Exception didn't occur");
       }
-      catch (System.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException ex)
       {
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
@@ -374,7 +374,7 @@ namespace Csla.Test.Serialization
       {
         rootClone.FirstName = "something new";
       }
-      catch (System.Security.SecurityException ex)
+      catch (Csla.Security.SecurityException ex)
       {
         Assert.Fail("exception occurred");
       }

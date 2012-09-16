@@ -136,7 +136,7 @@ namespace Csla.Test.DataPortal
     public void DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Create(typeof(TestBO), null, new DataPortalContext(null,false));
+      dp.Create(typeof(TestBO), null, new DataPortalContext(null,false), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 
@@ -148,7 +148,7 @@ namespace Csla.Test.DataPortal
     public void DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Fetch(typeof(TestBO), null, new DataPortalContext(null, false));
+      dp.Fetch(typeof(TestBO), null, new DataPortalContext(null, false), true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
@@ -161,7 +161,7 @@ namespace Csla.Test.DataPortal
     public void DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Update(new TestBO(), new DataPortalContext(null, false));
+      dp.Update(new TestBO(), new DataPortalContext(null, false), true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
@@ -174,7 +174,7 @@ namespace Csla.Test.DataPortal
     public void DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
       var dp = new TestableDataPortal();
-      dp.Delete(typeof(TestBO), null, new DataPortalContext(null, false));
+      dp.Delete(typeof(TestBO), null, new DataPortalContext(null, false), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;//This comes from App.Config
 

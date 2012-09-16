@@ -74,8 +74,8 @@ namespace Csla.Test.Silverlight.DataPortal
             dp.CreateCompleted += ((sender, e1) =>
              {
                context.Assert.IsNotNull(e1.Error);
-               //TODO: perhaps check to assure that exception type is System.Security.SecurityException
-               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="System.Security.SecurityException");
+               //TODO: perhaps check to assure that exception type is Csla.Security.SecurityException
+               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="Csla.Security.SecurityException");
                context.Assert.Success();
              });
             dp.BeginCreate();

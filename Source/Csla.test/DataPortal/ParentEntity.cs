@@ -99,11 +99,6 @@ namespace Csla.Test.DataBinding
 
     #endregion
 
-    public override ParentEntity Save()
-    {
-      return base.Save();
-    }
-
     #region "Criteria"
 
     [Serializable()]

@@ -84,7 +84,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var t = new Thread(DoCreate);
       var task = new CreateTask{
@@ -128,7 +128,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var t = new Thread(DoFetch);
       var task = 
@@ -173,7 +173,7 @@ namespace Csla.Testing.Business.TestProxies
       public Exception ResultException;
     }
 
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context)
+    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       //Security.BusinessPrincipal
       //var temp = new DataPortalContext(new UnauthenticatedPrincipal(), context.IsRemotePortal);
@@ -217,7 +217,7 @@ namespace Csla.Testing.Business.TestProxies
 
     #region Delete
 
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context)
+    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       var t = new Thread(DoDelete);
       var task = 

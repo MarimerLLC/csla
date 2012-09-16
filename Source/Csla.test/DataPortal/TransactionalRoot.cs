@@ -87,11 +87,6 @@ namespace Csla.Test.DataPortal
 
         #endregion
 
-        public override TransactionalRoot Save()
-        {
-            return base.Save();
-        }
-
         #region "Criteria"
 
         [Serializable()]

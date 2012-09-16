@@ -646,8 +646,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async void DeleteAsync()
     {
-      var result = await Csla.DataPortal.DeleteAsync<Single2>(123);
-      Assert.IsNull(result);
+      await Csla.DataPortal.DeleteAsync<Single2>(123);
+      Assert.Inconclusive("how to test when method is void?");
     }
 
     [TestMethod]
@@ -658,7 +658,7 @@ namespace Csla.Test.DataPortal
       {
         try
         {
-          var result = await Csla.DataPortal.DeleteAsync<Single2>(555);
+          await Csla.DataPortal.DeleteAsync<Single2>(555);
           Assert.Fail("Expected exception not thrown");
         }
         catch (Exception ex)

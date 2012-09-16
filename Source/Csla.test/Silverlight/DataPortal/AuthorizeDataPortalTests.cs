@@ -100,8 +100,8 @@ namespace Csla.Test.Silverlight.DataPortal
             dp.CreateCompleted += ((sender, e1) =>
              {
                context.Assert.IsNotNull(e1.Error);
-               //TODO: perhaps check to assure that exception type is System.Security.SecurityException
-               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="System.Security.SecurityException");
+               //TODO: perhaps check to assure that exception type is Csla.Security.SecurityException
+               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="Csla.Security.SecurityException");
                context.Assert.Success();
              });
             dp.BeginCreate();
@@ -159,8 +159,8 @@ namespace Csla.Test.Silverlight.DataPortal
             dp.FetchCompleted += ((sender, e1) =>
             {
               context.Assert.IsNotNull(e1.Error);
-              //TODO: perhaps check to assure that exception type is System.Security.SecurityException
-              //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="System.Security.SecurityException");
+              //TODO: perhaps check to assure that exception type is Csla.Security.SecurityException
+              //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="Csla.Security.SecurityException");
               context.Assert.Success();
             });
             dp.BeginFetch();
@@ -218,8 +218,8 @@ namespace Csla.Test.Silverlight.DataPortal
             dp.DeleteCompleted += ((sender, e1) =>
              {
                context.Assert.IsNotNull(e1.Error);
-               //TODO: perhaps check to assure that exception type is System.Security.SecurityException
-               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="System.Security.SecurityException");
+               //TODO: perhaps check to assure that exception type is Csla.Security.SecurityException
+               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="Csla.Security.SecurityException");
                context.Assert.Success();
              });
             dp.BeginDelete(new SingleCriteria<TestBO, int>(1));
@@ -277,8 +277,8 @@ namespace Csla.Test.Silverlight.DataPortal
             dp.UpdateCompleted += ((sender, e1) =>
              {
                context.Assert.IsNotNull(e1.Error);
-               //TODO: perhaps check to assure that exception type is System.Security.SecurityException
-               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="System.Security.SecurityException");
+               //TODO: perhaps check to assure that exception type is Csla.Security.SecurityException
+               //context.Assert.IsTrue(((Csla.DataPortalException)(e1.Error)).ErrorInfo.InnerError.ExceptionTypeName=="Csla.Security.SecurityException");
                context.Assert.Success();
              });
             dp.BeginUpdate(new TestBO());

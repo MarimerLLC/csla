@@ -26,6 +26,21 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class ChildChangedTests
   {
+    private ApplicationContext.PropertyChangedModes _mode;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+      _mode = Csla.ApplicationContext.PropertyChangedMode;
+      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+      Csla.ApplicationContext.PropertyChangedMode = _mode;
+    }
+
     [TestMethod]
     public void SingleRoot()
     {

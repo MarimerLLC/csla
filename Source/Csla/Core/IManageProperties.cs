@@ -21,7 +21,7 @@ namespace Csla.Core
     P ReadProperty<P>(PropertyInfo<P> propertyInfo);
     void SetProperty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty(IPropertyInfo propertyInfo, object newValue);
-    void LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue);
+    bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue);
     List<object> GetChildren();
   }

@@ -64,6 +64,23 @@ namespace Csla.Rules
     /// </summary>
     public Dictionary<Csla.Core.IPropertyInfo, object> InputPropertyValues { get; internal set; }
 
+    private LazySingleton<List<IPropertyInfo>> _dirtyProperties;
+    /// <summary>
+    /// Gets a list of dirty properties (value was updated).
+    /// </summary>
+    /// <value>
+    /// The dirty properties.
+    /// </value>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public List<IPropertyInfo> DirtyProperties
+    {
+      get
+      {
+        if (!_dirtyProperties.IsValueCreated)
+          return null;
+        return _dirtyProperties.Value;
+      }
+    }
 
     private readonly LazySingleton<Dictionary<IPropertyInfo, object>> _outputPropertyValues;
     /// <summary>
@@ -185,19 +202,19 @@ namespace Csla.Rules
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
+      _dirtyProperties = new LazySingleton<List<IPropertyInfo>>();
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext)
+    internal RuleContext(Action<RuleContext> completeHandler, RuleContextModes executeContext) : this(completeHandler)
     {
-      _completeHandler = completeHandler;
-      _outputPropertyValues = new LazySingleton<Dictionary<IPropertyInfo, object>>();
       ExecuteContext = executeContext;
     }
 
-    internal RuleContext(Action<RuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, RuleContextModes executeContext)
+    internal RuleContext(Action<RuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
     {
       _completeHandler = completeHandler;
       _outputPropertyValues = outputPropertyValues;
+      _dirtyProperties = dirtyProperties;
       ExecuteContext = executeContext;
     }
 
@@ -232,7 +249,7 @@ namespace Csla.Rules
     /// </remarks>
     public RuleContext GetChainedContext(IBusinessRule rule)
     {
-      var result = new RuleContext(_completeHandler, _outputPropertyValues, ExecuteContext);
+      var result = new RuleContext(_completeHandler, _outputPropertyValues, _dirtyProperties, ExecuteContext);
       result.Rule = rule;
       result.OriginPropertyName = OriginPropertyName;
       result.InputPropertyValues = InputPropertyValues;
@@ -382,6 +399,20 @@ namespace Csla.Rules
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       _outputPropertyValues.Value.Add(property, value);
+    }
+
+
+    /// <summary>
+    /// Adds a property name as a dirty field (changed value).
+    /// </summary>
+    /// <param name="property">The property.</param>
+    /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public void AddDirtyProperty(Csla.Core.IPropertyInfo property)
+    {
+      if (!Rule.AffectedProperties.Contains(property))
+        throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
+      _dirtyProperties.Value.Add(property);
     }
 
     /// <summary>

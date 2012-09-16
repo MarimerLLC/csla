@@ -1436,9 +1436,10 @@ namespace Csla
       LoadProperty(propertyInfo, newValue);
     }
 
-    void IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
     {
       LoadProperty(propertyInfo, newValue);
+      return false;
     }
 
     List<object> IManageProperties.GetChildren()

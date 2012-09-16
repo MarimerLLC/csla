@@ -37,12 +37,12 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public abstract class BusinessBase :  UndoableBase,
+  public abstract class BusinessBase : UndoableBase,
     IEditableBusinessObject,
-    IEditableObject, 
-    ICloneable, 
-    IAuthorizeReadWrite, 
-    IParent, 
+    IEditableObject,
+    ICloneable,
+    IAuthorizeReadWrite,
+    IParent,
     IDataPortalTarget,
     IManageProperties,
     Rules.IHostRules,
@@ -411,7 +411,7 @@ namespace Csla.Core
     [Display(AutoGenerateField = false)]
     public virtual bool IsSavable
     {
-      get 
+      get
       {
         bool auth;
         if (IsDeleted)
@@ -420,7 +420,7 @@ namespace Csla.Core
           auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.CreateObject, this);
         else
           auth = Csla.Rules.BusinessRules.HasPermission(Rules.AuthorizationActions.EditObject, this);
-        return (auth && IsDirty && IsValid && !IsBusy); 
+        return (auth && IsDirty && IsValid && !IsBusy);
       }
     }
 
@@ -641,7 +641,7 @@ namespace Csla.Core
       bool result = CanExecuteMethod(method);
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = 
+        Csla.Security.SecurityException ex =
           new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
         throw ex;
       }
@@ -771,7 +771,7 @@ namespace Csla.Core
       if (!_disableIEditableObject && BindingEdit)
       {
         ApplyEdit();
-        BindingEdit = false; 
+        BindingEdit = false;
       }
     }
 
@@ -859,7 +859,7 @@ namespace Csla.Core
 
       // !!!! Will trigger Save here when using DynamicListBase template
       if (Parent != null)
-        Parent.ApplyEditChild(this);    
+        Parent.ApplyEditChild(this);
     }
 
     #endregion
@@ -922,7 +922,7 @@ namespace Csla.Core
     {
       if (!this.IsChild)
         throw new NotSupportedException(Resources.NoDeleteRootException);
-      
+
       BindingEdit = false;
       MarkDeleted();
     }
@@ -2498,7 +2498,7 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    protected bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       try
       {
@@ -2517,12 +2517,38 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, true);
+
+        var valuesDiffer = !(oldValue.Equals(newValue));
+        if (valuesDiffer)
+        {
+
+          IBusinessObject old = oldValue as IBusinessObject;
+          if (old != null)
+            RemoveEventHooks(old);
+          IBusinessObject @new = newValue as IBusinessObject;
+          if (@new != null)
+            AddEventHooks(@new);
+
+          if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
+          {
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+            ResetChildEditLevel(newValue);
+          }
+          else if (typeof(IEditableCollection).IsAssignableFrom(propertyInfo.Type))
+          {
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+            ResetChildEditLevel(newValue);
+          }
+          else
+          {
+            FieldManager.SetFieldData<P>(propertyInfo, newValue);
+          }
+        }
+        return valuesDiffer;
       }
       catch (Exception ex)
       {
-        throw new PropertyLoadException(
-          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -2613,23 +2639,22 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected virtual void LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    protected virtual bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
     {
-
       // private field 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
         LoadProperty(propertyInfo, newValue);
-        return;
+        return false;
       }
 
 
       var t = this.GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).Where(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod).FirstOrDefault();
+      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
-      gm.Invoke(this, p);
+      return (bool)gm.Invoke(this, p);
     }
 
 
@@ -2651,7 +2676,7 @@ namespace Csla.Core
     {
       var t = this.GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).Where(c => c.Name == "LoadProperty" && c.IsGenericMethod).FirstOrDefault();
+      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
       gm.Invoke(this, p);
@@ -2756,7 +2781,7 @@ namespace Csla.Core
     }
 
     #endregion
-    
+
     #region IsBusy / IsIdle
 
     [NonSerialized]
@@ -2863,7 +2888,7 @@ namespace Csla.Core
     }
 
     #endregion
-    
+
     #region INotifyUnhandledAsyncException Members
 
     [NotUndoable]
@@ -3005,7 +3030,7 @@ namespace Csla.Core
     /// </summary>
     private void Child_ListChanged(object sender, ListChangedEventArgs e)
     {
-      if(e.ListChangedType != ListChangedType.ItemChanged)
+      if (e.ListChangedType != ListChangedType.ItemChanged)
         RaiseChildChanged(sender, null, e);
     }
 #endif
@@ -3200,9 +3225,9 @@ namespace Csla.Core
       LoadProperty(propertyInfo, newValue);
     }
 
-    void IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
     {
-      LoadPropertyMarkDirty(propertyInfo, newValue);
+      return LoadPropertyMarkDirty(propertyInfo, newValue);
     }
 
     List<object> IManageProperties.GetChildren()
@@ -3327,8 +3352,8 @@ namespace Csla.Core
     [NotUndoable]
     private bool _bypassPropertyChecks = false;
 
-    [NonSerialized] 
-    [NotUndoable] 
+    [NonSerialized]
+    [NotUndoable]
     private BypassPropertyChecksObject _bypassPropertyChecksObject = null;
 
     /// <summary>

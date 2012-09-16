@@ -87,6 +87,19 @@ namespace Csla.Rules
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether rule engine should cacade n-leves when property value is changed from OuputPropertyValues. 
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if [cascade when changed]; otherwise, <c>false</c>.
+    /// </value>
+    public bool CascadeOnDirtyProperties
+    {
+      get { return _cascadeOnDirtyProperties; }
+      set { _cascadeOnDirtyProperties = value; }
+    }
+
+
     [NonSerialized]
     private BusinessRuleManager _typeRules;
     internal BusinessRuleManager TypeRules
@@ -452,7 +465,7 @@ namespace Csla.Rules
                   select r;
       BrokenRules.ClearRules(null);
       // Changed to cascade propertyrule to make async ObjectLevel rules rerun PropertLevel rules.
-      var affectedProperties = RunRules(rules, false, executionContext);
+      var firstResult = RunRules(rules, false, executionContext);
 
       // rerun property level rules for affected properties 
       if (cascade)
@@ -466,13 +479,19 @@ namespace Csla.Rules
           }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          affectedProperties.AddRange(CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty));
+        {
+          var doCascade = false;
+          if (CascadeOnDirtyProperties)
+            doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
+          firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
+                                                            executionContext | RuleContextModes.AsAffectedPoperty));
+        }
       }
 
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
-      return affectedProperties.Distinct().ToList();
+      return firstResult.AffectedProperties.Distinct().ToList();
     }
 
     /// <summary>
@@ -551,10 +570,9 @@ namespace Csla.Rules
                     && CanRunRule(r, executionContext)
                   orderby r.Priority
                   select r;
-      var affectedProperties = new List<string> { property.Name };
-      BrokenRules.ClearRules(property);
-      affectedProperties.AddRange(RunRules(rules, cascade, executionContext));
 
+      BrokenRules.ClearRules(property);
+      var firstResult = RunRules(rules, cascade, executionContext);
       if (cascade)
       {
         // get properties affected by all rules
@@ -582,14 +600,25 @@ namespace Csla.Rules
         }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
-          affectedProperties.AddRange(CheckRulesForProperty(item, false, executionContext | RuleContextModes.AsAffectedPoperty));
+        {
+          var doCascade = false; 
+          if (CascadeOnDirtyProperties)
+            doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
+          firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
+                                                               executionContext | RuleContextModes.AsAffectedPoperty));
+        }
       }
 
-      return affectedProperties.Distinct().ToList();
+      // always make sure to add PrimaryProperty
+      firstResult.AffectedProperties.Add(property.Name);
+      return firstResult.AffectedProperties.Distinct().ToList();
     }
 
     [NonSerialized]
     private List<Csla.Core.IPropertyInfo> _busyProperties;
+
+    private bool _cascadeOnDirtyProperties;
+
     private List<Csla.Core.IPropertyInfo> BusyProperties
     {
       get
@@ -607,9 +636,10 @@ namespace Csla.Rules
     /// <param name="cascade">if set to <c>true</c> cascade.</param>
     /// <param name="executionContext">The execution context.</param>
     /// <returns></returns>
-    private List<string> RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleContextModes executionContext)
+    private RunRulesResult RunRules(IEnumerable<IBusinessRule> rules, bool cascade, RuleContextModes executionContext)
     {
       var affectedProperties = new List<string>();
+      var dirtyProperties = new List<string>();
       bool anyRuleBroken = false;
       foreach (var rule in rules)
       {
@@ -627,7 +657,11 @@ namespace Csla.Rules
               // update output values
               if (r.OutputPropertyValues != null)
                 foreach (var item in r.OutputPropertyValues)
-                  ((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value);
+                {
+                  // value is changed add to dirtyValues
+                  if (((IManageProperties) _target).LoadPropertyMarkDirty(item.Key, item.Value))
+                    r.AddDirtyProperty(item.Key);
+                }
               // update broken rules list
               BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
 
@@ -636,7 +670,12 @@ namespace Csla.Rules
               if (cascade)
                 foreach (var item in r.Rule.AffectedProperties.Distinct())
                   if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
-                    affected.AddRange(CheckRulesForProperty(item, false, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
+                  {
+                    var doCascade = false;
+                    if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
+                       doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
+                    affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedPoperty));
+                  }
 
               // mark each property as not busy
               foreach (var item in r.Rule.AffectedProperties)
@@ -663,7 +702,12 @@ namespace Csla.Rules
             // update output values
             if (r.OutputPropertyValues != null)
               foreach (var item in r.OutputPropertyValues)
-                ((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value);
+              {
+                // value is changed add to dirtyValues
+                if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
+                  r.AddDirtyProperty(item.Key);
+              }
+
             // update broken rules list
             if (r.Results != null)
             {
@@ -740,7 +784,11 @@ namespace Csla.Rules
           affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
           // copy output property names
           if (context.OutputPropertyValues != null)
-            affectedProperties.AddRange(context.OutputPropertyValues.Select(item => item.Key.Name));
+            affectedProperties.AddRange(context.OutputPropertyValues.Select(c =>c.Key.Name));
+          // copy dirty properties 
+          if (context.DirtyProperties != null)
+            dirtyProperties.AddRange(context.DirtyProperties.Select(c => c.Name));
+
           if (context.Results != null)
           {
             // explicit short-circuiting
@@ -750,7 +798,7 @@ namespace Csla.Rules
         }
       }
       // return any synchronous results
-      return affectedProperties;
+      return new RunRulesResult(affectedProperties, dirtyProperties);
     }
 
     #region DataAnnotations
@@ -885,6 +933,7 @@ namespace Csla.Rules
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
+      info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
       //info.AddValue("_isBusy", _isBusy);
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
@@ -914,6 +963,7 @@ namespace Csla.Rules
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
+      _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
       //_isBusy = info.GetValue<bool>("_isBusy");
 #if SILVERLIGHT
       if (mode == StateMode.Serialization)
@@ -1078,7 +1128,20 @@ namespace Csla.Rules
       }
       return;
     }
-
+    
     #endregion
+
+
+    internal class RunRulesResult
+    {
+      public RunRulesResult(List<string> affectedProperties, List<string> dirtyProperties)
+      {
+        AffectedProperties = affectedProperties;
+        DirtyProperties = dirtyProperties;
+      }
+
+      public List<string> AffectedProperties { get; set; }
+      public List<string> DirtyProperties { get; set; }
+    }
   }
 }

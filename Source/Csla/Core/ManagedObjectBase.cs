@@ -286,6 +286,34 @@ namespace Csla.Core
       }
     }
 
+    private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    {
+      try
+      {
+        P oldValue = default(P);
+        var fieldData = FieldManager.GetFieldData(propertyInfo);
+        if (fieldData == null)
+        {
+          oldValue = propertyInfo.DefaultValue;
+          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+        }
+        else
+        {
+          var fd = fieldData as FieldManager.IFieldData<P>;
+          if (fd != null)
+            oldValue = fd.Value;
+          else
+            oldValue = (P)fieldData.Value;
+        }
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, false);
+        return !oldValue.Equals(newValue);
+      }
+      catch (Exception ex)
+      {
+        throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
+      }
+    }
+
     private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
     {
       var valuesDiffer = false;
@@ -317,10 +345,31 @@ namespace Csla.Core
     {
       var t = this.GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).Where(c => c.Name == "LoadProperty" && c.IsGenericMethod).FirstOrDefault();
+      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
       gm.Invoke(this, p);
+    }
+
+    /// <summary>
+    /// Loads the property vith new value and mark field dirty if value is changed.
+    /// </summary>
+    /// <param name="propertyInfo">The property info.</param>
+    /// <param name="newValue">The new value.</param>
+    /// <returns>[true] if changed, else [false] </returns>
+    protected virtual bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    {
+      if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
+      {
+        LoadProperty(propertyInfo, newValue);
+        return false;
+      }
+      var t = this.GetType();
+      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
+      var gm = method.MakeGenericMethod(propertyInfo.Type);
+      var p = new object[] { propertyInfo, newValue };
+      return (bool) gm.Invoke(this, p);
     }
 
     #endregion

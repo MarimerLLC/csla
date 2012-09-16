@@ -318,6 +318,8 @@
     <Compile Include="ValidationRules\AsyncRuleRoot.cs" />
     <Compile Include="ValidationRules\AsyncRuleTests.cs" />
     <Compile Include="ValidationRules\BrokenRulesMergeRoot.cs" />
+    <Compile Include="ValidationRules\CascadeRoot.cs" />
+    <Compile Include="ValidationRules\CascadeTests.cs" />
     <Compile Include="ValidationRules\Child.cs" />
     <Compile Include="ValidationRules\ChildList.cs" />
     <Compile Include="ValidationRules\HasAsyncRule.cs" />

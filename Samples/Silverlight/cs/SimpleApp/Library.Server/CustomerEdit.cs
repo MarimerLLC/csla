@@ -5,6 +5,7 @@ using System.Text;
 using Csla;
 using Csla.Serialization;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Library
 {
@@ -45,9 +46,9 @@ namespace Library
           Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
     }
 
-    public override void BeginSave(bool forceUpdate, EventHandler<Csla.Core.SavedEventArgs> handler, object userState)
+    public override System.Threading.Tasks.Task<CustomerEdit> SaveAsync(bool forceUpdate)
     {
-      base.BeginSave(forceUpdate, handler, userState);
+      return base.SaveAsync(forceUpdate);
     }
 
     private class StringOnlyLetters : Csla.Rules.BusinessRule
@@ -99,80 +100,66 @@ namespace Library
       }
     }
 
-#if SILVERLIGHT
-    public static void BeginNewCustomer(
-      DataPortal.ProxyModes proxyMode,
-      EventHandler<DataPortalResult<CustomerEdit>> callback)
+    public static void NewCustomerEdit(EventHandler<DataPortalResult<CustomerEdit>> callback)
     {
-      var dp = new DataPortal<CustomerEdit>(DataPortal.ProxyModes.LocalOnly);
-      dp.CreateCompleted += callback;
-      dp.BeginCreate();
+      DataPortal.BeginCreate<CustomerEdit>(callback);
     }
 
-    public static void BeginGetCustomer(
-      DataPortal.ProxyModes proxyMode,
-      EventHandler<DataPortalResult<CustomerEdit>> callback)
+    public static void GetCustomerEdit(int id, EventHandler<DataPortalResult<CustomerEdit>> callback)
     {
-      var dp = new DataPortal<CustomerEdit>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch();
+      DataPortal.BeginFetch<CustomerEdit>(id, callback);
     }
 
-    [Obsolete("For use by MobileFormatter")]
-    public CustomerEdit()
-    { /* required by MobileFormatter */ }
+#if !WINDOWS_PHONE
 
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<CustomerEdit>.CompletedHandler handler)
+    public static async Task<CustomerEdit> NewCustomerEditAsync()
     {
-      var bw = new System.ComponentModel.BackgroundWorker();
-      bw.DoWork += (s, e) =>
-        { e.Result = e.Argument; };
-      bw.RunWorkerCompleted += (s, e) =>
-        {
-          try
-          {
-            using (BypassPropertyChecks)
-              Status = "Created " + ApplicationContext.ExecutionLocation.ToString();
-            CreateComplete(handler);
-          }
-          catch (Exception ex)
-          {
-            handler(this, ex);
-          }
-        };
-      bw.RunWorkerAsync();
+      return await DataPortal.CreateAsync<CustomerEdit>();
     }
 
-    private void CreateComplete(Csla.DataPortalClient.LocalProxy<CustomerEdit>.CompletedHandler handler)
+    public static async Task<CustomerEdit> GetCustomerEditAsync(int id)
     {
-      base.DataPortal_Create(handler);
-    }
-#else
-    public static CustomerEdit GetCustomer(int id)
-    {
-      return DataPortal.Fetch<CustomerEdit>(new SingleCriteria<CustomerEdit, int>(id));
+      return await DataPortal.FetchAsync<CustomerEdit>(id);
     }
 
-    private CustomerEdit()
-    {	/* require use of factory methods */ }
 #endif
 
 #if !SILVERLIGHT
+
+public static CustomerEdit NewCustomerEdit()
+{
+  return DataPortal.Create<CustomerEdit>();
+}
+
+public static CustomerEdit GetCustomerEdit(int id)
+{
+  return DataPortal.Fetch<CustomerEdit>(id);
+}
+
+public static void DeleteCustomerEdit(int id)
+{
+  DataPortal.Delete<CustomerEdit>(id);
+}
+
+#endif
+    [RunLocal]
     protected override void DataPortal_Create()
     {
       using (BypassPropertyChecks)
+      {
+        Id = 7000;
         Status = "Created " + ApplicationContext.ExecutionLocation.ToString();
+      }
       base.DataPortal_Create();
     }
 
-    private void DataPortal_Fetch(SingleCriteria<CustomerEdit, int> criteria)
+    private void DataPortal_Fetch(int id)
     {
       System.Threading.Thread.Sleep(1500);
       using (BypassPropertyChecks)
       {
-        Id = criteria.Value;
-        Name = "Test " + criteria.Value;
+        Id = id;
+        Name = "Test " + id;
         Status = "Retrieved " + ApplicationContext.ExecutionLocation.ToString();
       }
     }
@@ -201,6 +188,5 @@ namespace Library
       using (BypassPropertyChecks)
         Status = "Deleted " + ApplicationContext.ExecutionLocation.ToString();
     }
-#endif
   }
 }

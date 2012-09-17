@@ -12,5 +12,12 @@ namespace SimpleApp
     {
       InitializeComponent();
     }
+
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+      var dc = new CustomerViewModel();
+      this.DataContext = dc;
+      await dc.InitAsync();
+    }
   }
 }

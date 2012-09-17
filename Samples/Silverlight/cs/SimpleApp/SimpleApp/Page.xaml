@@ -4,7 +4,7 @@
     xmlns:l="clr-namespace:SimpleApp"
     xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
     FontSize="16"
-    MinWidth="660" MinHeight="520">
+    MinWidth="660" MinHeight="520" Loaded="Page_Loaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -12,7 +12,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <l:VisibilityConverter x:Key="VisibilityConverter" />
-      <l:CustomerViewModel x:Key="MyData" />
+      <!--<l:CustomerViewModel x:Key="MyData" />-->
 
       <DataTemplate x:Key="BrokenRuleTemplate">
         <Grid>
@@ -44,7 +44,8 @@
     	<Border Grid.Row="1" Padding="0,10,0,0" 
     		VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#3A000000">
 
-    		<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource MyData}}">
+        <!--<Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource MyData}}">-->
+        <Grid x:Name="LayoutRoot">
     			<Grid.RowDefinitions>
     				<RowDefinition Height="Auto" />
     				<RowDefinition Height="Auto" />
@@ -78,12 +79,12 @@
           <Border Grid.Row="5" Grid.ColumnSpan="2" Background="#FFE0E0E0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
     			<StackPanel Grid.Row="5" x:Name="stackPanel1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1">
-    				<Button x:Name="DeleteButton" Content="mark for delete" IsEnabled="{Binding CanDelete, Source={StaticResource MyData}}" Style="{StaticResource CslaButtonStyle}" />
-    				<csla:TriggerAction TargetControl="{Binding ElementName=DeleteButton}" DataContext="{Binding Source={StaticResource MyData}}" MethodName="Delete"/>
-    				<Button x:Name="CancelButton" Content="cancel" IsEnabled="{Binding CanCancel, Source={StaticResource MyData}}" Style="{StaticResource CslaButtonStyle}" />
-    				<csla:TriggerAction TargetControl="{Binding ElementName=CancelButton}" DataContext="{Binding Source={StaticResource MyData}}" MethodName="Cancel"/>
-    				<Button x:Name="SaveButton" Content="save" IsEnabled="{Binding CanSave, Source={StaticResource MyData}}" Style="{StaticResource CslaButtonStyle}" />
-    				<csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" DataContext="{Binding Source={StaticResource MyData}}" MethodName="Save"/>
+    				<Button x:Name="DeleteButton" Content="mark for delete" IsEnabled="{Binding CanDelete}" Style="{StaticResource CslaButtonStyle}" />
+    				<csla:TriggerAction TargetControl="{Binding ElementName=DeleteButton}" MethodName="Delete"/>
+    				<Button x:Name="CancelButton" Content="cancel" IsEnabled="{Binding CanCancel}" Style="{StaticResource CslaButtonStyle}" />
+    				<csla:TriggerAction TargetControl="{Binding ElementName=CancelButton}" MethodName="Cancel"/>
+    				<Button x:Name="SaveButton" Content="save" IsEnabled="{Binding CanSave}" Style="{StaticResource CslaButtonStyle}" />
+    				<csla:TriggerAction TargetControl="{Binding ElementName=SaveButton}" MethodName="Save"/>
     			</StackPanel>
 
     			<StackPanel Grid.Row="5" Orientation="Horizontal">
@@ -98,6 +99,6 @@
 
     <Canvas x:Name="Overlay" 
             Background="Wheat" Opacity=".01"
-            Visibility="{Binding Source={StaticResource MyData}, Path=IsBusy, Converter={StaticResource VisibilityConverter}}"></Canvas>
+            Visibility="{Binding Path=IsBusy, Converter={StaticResource VisibilityConverter}}"></Canvas>
   </Grid>
 </UserControl>

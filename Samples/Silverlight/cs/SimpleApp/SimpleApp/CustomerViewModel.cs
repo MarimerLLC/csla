@@ -8,15 +8,32 @@ namespace SimpleApp
 {
   public class CustomerViewModel : ViewModel<Library.CustomerEdit>
   {
+    protected async override System.Threading.Tasks.Task<Library.CustomerEdit> DoInitAsync()
+    {
+      var result = await Library.CustomerEdit.GetCustomerEditAsync(1234);
+      IsBusy = false;
+      return result;
+    }
+
     public CustomerViewModel()
     {
-      if (!DesignerProperties.IsInDesignTool)
-        BeginRefresh("BeginNewCustomer", DataPortal.ProxyModes.LocalOnly);
+      IsBusy = true;
+      //if (!DesignerProperties.IsInDesignTool)
+      //  BeginRefresh("GetCustomerEdit", 1234); //BeginRefresh("NewCustomerEdit");
     }
 
     public CustomerViewModel(int id)
     {
-      BeginRefresh("BeginGetCustomer", DataPortal.ProxyModes.LocalOnly);
+      BeginRefresh("GetCustomerEdit", id);
+    }
+
+    public async override void Save(object sender, ExecuteEventArgs e)
+    {
+      //base.Save(sender, e);
+      IsBusy = true;
+      Model.ApplyEdit();
+      Model = await Model.SaveAsync();
+      IsBusy = false;
     }
 
     protected override void OnError(Exception error)

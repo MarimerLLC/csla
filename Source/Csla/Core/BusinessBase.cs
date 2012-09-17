@@ -338,12 +338,12 @@ namespace Csla.Core
     protected virtual void PropertyHasChanged(Csla.Core.IPropertyInfo property)
     {
       MarkDirty(true);
-      var propertyNames = BusinessRules.CheckRules(property);
-      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
-        OnPropertyChanged(property);
-      else
-        foreach (var name in propertyNames)
-          OnPropertyChanged(name);
+      CheckPropertyRules(property);
+    }
+
+    private void PropertyHasChanged(string propertyName)
+    {
+      PropertyHasChanged(FieldManager.GetRegisteredProperty(propertyName));
     }
 
     /// <summary>
@@ -356,9 +356,23 @@ namespace Csla.Core
         OnPropertyChanged(name);
     }
 
+    /// <summary>
+    /// Check rules for the property and notifies UI of properties that may have changed.
+    /// </summary>
+    /// <param name="property">The property.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void CheckPropertyRules(IPropertyInfo property)
+    {
+      var propertyNames = BusinessRules.CheckRules(property);
+      if (ApplicationContext.PropertyChangedMode == ApplicationContext.PropertyChangedModes.Windows)
+        OnPropertyChanged(property);
+      else
+        foreach (var name in propertyNames)
+          OnPropertyChanged(name);
+    }
 
     /// <summary>
-    /// Checks the object rules and notifies UI of properties that may have changed. 
+    /// Check object rules and notifies UI of properties that may have changed. 
     /// </summary>
     protected virtual void CheckObjectRules()
     {
@@ -372,10 +386,7 @@ namespace Csla.Core
           OnPropertyChanged(name);
     }
 
-    private void PropertyHasChanged(string propertyName)
-    {
-      PropertyHasChanged(FieldManager.GetRegisteredProperty(propertyName));
-    }
+
 
     /// <summary>
     /// Forces the object's IsDirty flag to <see langword="false" />.

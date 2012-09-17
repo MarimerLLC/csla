@@ -62,7 +62,7 @@ namespace Csla.Test.DPException
             Assert.IsTrue(baseException.Contains("String or binary data would be truncated."), 
               "Exception should contain 'String or binary data would be truncated.'");
             //check inner exception
-            Assert.AreEqual("DataPortal_Insert method call failed", baseInnerException);
+            Assert.AreEqual("TransactionalRoot.DataPortal_Insert method call failed", baseInnerException);
             //check inner exception of inner exception
             Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", baseInnerInnerException);
 
@@ -87,19 +87,19 @@ namespace Csla.Test.DPException
 
             try
             {
-                //this will throw an exception
-                Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
+              //this will throw an exception
+              Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13);
             }
             catch (Csla.DataPortalException ex)
             {
-                baseException = ex.Message;
-                baseInnerException = ex.InnerException.Message;
-                baseInnerInnerException = ex.InnerException.InnerException.Message;
+              baseException = ex.Message;
+              baseInnerException = ex.InnerException.Message;
+              baseInnerInnerException = ex.InnerException.InnerException.Message;
             }
 
-            Assert.IsTrue(baseException.StartsWith("DataPortal.Delete failed"));
+            Assert.IsTrue(baseException.StartsWith("DataPortal.Delete failed"), "Should start with 'DataPortal.Delete failed'");
             Assert.IsTrue(baseException.Contains("DataPortal_Delete: you chose an unlucky number"));
-            Assert.AreEqual("DataPortal_Delete method call failed", baseInnerException);
+            Assert.AreEqual("TransactionalRoot.DataPortal_Delete method call failed", baseInnerException);
             Assert.AreEqual("DataPortal_Delete: you chose an unlucky number", baseInnerInnerException);
 
             //verify that the implemented method, DataPortal_OnDataPortal 
@@ -132,7 +132,7 @@ namespace Csla.Test.DPException
             Assert.IsTrue(baseException.StartsWith("DataPortal.Fetch failed"), "Should start with 'DataPortal.Fetch failed'");
             Assert.IsTrue(baseException.Contains("DataPortal_Fetch: you chose an unlucky number"), 
               "Should contain with 'DataPortal_Fetch: you chose an unlucky number'");
-            Assert.AreEqual("DataPortal_Fetch method call failed", baseInnerException);
+            Assert.AreEqual("TransactionalRoot.DataPortal_Fetch method call failed", baseInnerException);
             Assert.AreEqual("DataPortal_Fetch: you chose an unlucky number", baseInnerInnerException);
 
             //verify that the implemented method, DataPortal_OnDataPortal 

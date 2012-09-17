@@ -196,13 +196,13 @@ namespace Csla.Test.ObjectFactory
     [ExpectedException(typeof(DataPortalException))]
     public void DataPortalExecute_OnCommandObjectWithFalseExecuteMethod_ThrowsExeptionMehodNotFound()
     {
-      try 
+      try
       {
         Csla.ApplicationContext.GlobalContext.Clear();
         Csla.Server.FactoryDataPortal.FactoryLoader = null;
         var test = CommandObjectMissingFactoryMethod.Execute();
       }
-      catch (DataPortalException ex) 
+      catch (DataPortalException ex)
       {
         // inner exception should be System.NotImplementedException and mesaage should contain methodname 
         Assert.AreEqual(typeof(System.NotImplementedException), ex.InnerException.GetType());

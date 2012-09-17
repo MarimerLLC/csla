@@ -86,14 +86,15 @@ namespace Csla.Testing.Business.TestProxies
 
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var t = new Thread(DoCreate);
       var task = new CreateTask{
             ObjectType = objectType, 
             Criteria = criteria, 
             Context = context
           };
-      t.Start(task);
-      t.Join(TIMEOUT);
+      if (isSync)
+        DoCreate(task);
+      else
+        await Task.Factory.StartNew(DoCreate, task);
       if (task.ResultException != null)
         throw task.ResultException;
       return task.Result;
@@ -130,7 +131,6 @@ namespace Csla.Testing.Business.TestProxies
 
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var t = new Thread(DoFetch);
       var task = 
         new FetchTask
           {
@@ -138,8 +138,10 @@ namespace Csla.Testing.Business.TestProxies
             Criteria = criteria, 
             Context = context
           };
-      t.Start(task);
-      t.Join(TIMEOUT);
+      if (isSync)
+        DoFetch(task);
+      else
+        await Task.Factory.StartNew(DoFetch, task);
       if (task.ResultException != null)
         throw task.ResultException;
       return task.Result;
@@ -178,7 +180,6 @@ namespace Csla.Testing.Business.TestProxies
       //Security.BusinessPrincipal
       //var temp = new DataPortalContext(new UnauthenticatedPrincipal(), context.IsRemotePortal);
 
-      var t = new Thread(DoUpdate);
       var task = 
         new UpdateTask
           {
@@ -186,14 +187,13 @@ namespace Csla.Testing.Business.TestProxies
             Context = context
           };
 
-      t.Start(task);
-      t.Join(TIMEOUT);
+      if (isSync)
+        DoUpdate(task);
+      else
+        await Task.Factory.StartNew(DoUpdate, task);
       if (task.ResultException != null)
-      {
-          t.Abort();
           throw task.ResultException;
-      }
-        return task.Result;
+      return task.Result;
     }
 
     void DoUpdate(object state)
@@ -219,7 +219,6 @@ namespace Csla.Testing.Business.TestProxies
 
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var t = new Thread(DoDelete);
       var task = 
         new DeleteTask
           {
@@ -227,9 +226,10 @@ namespace Csla.Testing.Business.TestProxies
             Context = context, 
             ObjectType = objectType
           };
-
-      t.Start(task);
-      t.Join(TIMEOUT);
+      if (isSync)
+        DoDelete(task);
+      else
+        await Task.Factory.StartNew(DoDelete, task);
       if (task.ResultException != null)
         throw task.ResultException;
       return task.Result;

@@ -169,13 +169,14 @@ namespace Csla
 
     private void HandleCreateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
-      var result = ex.Result;
-      GlobalContext = result.GlobalContext;
-      if (isSync && proxy.IsServerRemote)
-        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-      throw new DataPortalException(
-        string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-        ex.InnerException, result.ReturnObject);
+      HandleDataPortalException("Create", ex, isSync, proxy);
+      //var result = ex.Result;
+      //GlobalContext = result.GlobalContext;
+      //if (isSync && proxy.IsServerRemote)
+      //  ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      //throw new DataPortalException(
+      //  string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
+      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -396,13 +397,14 @@ namespace Csla
 
     private void HandleFetchDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
-      var result = ex.Result;
-      GlobalContext = result.GlobalContext;
-      if (isSync && proxy.IsServerRemote)
-        ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-      throw new DataPortalException(
-        string.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-        ex.InnerException, result.ReturnObject);
+      HandleDataPortalException("Fetch", ex, isSync, proxy);
+      //var result = ex.Result;
+      //GlobalContext = result.GlobalContext;
+      //if (isSync && proxy.IsServerRemote)
+      //  ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      //throw new DataPortalException(
+      //  string.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
+      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -748,12 +750,20 @@ namespace Csla
 
     private void HandleUpdateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
+      HandleDataPortalException("Update", ex, isSync, proxy);
+    }
+
+    private void HandleDataPortalException(string operation, Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    {
       var result = ex.Result;
       GlobalContext = result.GlobalContext;
       if (proxy.IsServerRemote && isSync)
         ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
+      var original = ex.InnerException;
+      if (original.InnerException != null)
+        original = original.InnerException;
       throw new DataPortalException(
-        String.Format("DataPortal.Update {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
+        String.Format("DataPortal.{2} {0} ({1})", Resources.Failed, original.Message, operation),
         ex.InnerException, result.ReturnObject);
     }
 
@@ -933,13 +943,14 @@ namespace Csla
 
     private void HandleDeleteDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
-      var result = ex.Result;
-      GlobalContext = result.GlobalContext;
-      if (proxy.IsServerRemote && isSync)
-        ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
-      throw new DataPortalException(
-        String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException),
-        ex.InnerException, result.ReturnObject);
+      HandleDataPortalException("Delete", ex, isSync, proxy);
+      //var result = ex.Result;
+      //GlobalContext = result.GlobalContext;
+      //if (proxy.IsServerRemote && isSync)
+      //  ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
+      //throw new DataPortalException(
+      //  String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
+      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -996,17 +1007,7 @@ namespace Csla
     /// <param name="criteria">Object-specific criteria.</param>
     public void Delete(object criteria)
     {
-      try
-      {
-        DoDeleteAsync(typeof(T), criteria, true).RunSynchronously();
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
+      Delete(typeof(T), criteria);
     }
 
     internal static void Delete(Type objectType, object criteria)
@@ -1014,7 +1015,11 @@ namespace Csla
       var dp = new DataPortal<object>();
       try
       {
-        dp.DoDeleteAsync(objectType, criteria, true).RunSynchronously();
+        var task = dp.DoDeleteAsync(objectType, criteria, true);
+        if (!task.IsCompleted)
+          task.RunSynchronously();
+        if (task.Exception != null)
+          throw task.Exception;
       }
       catch (AggregateException ex)
       {

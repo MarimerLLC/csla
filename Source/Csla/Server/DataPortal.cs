@@ -344,7 +344,6 @@ namespace Csla.Server
       }
       catch (Csla.Server.DataPortalException ex)
       {
-        Exception tmp = ex;
         throw;
       }
       catch (Exception ex)

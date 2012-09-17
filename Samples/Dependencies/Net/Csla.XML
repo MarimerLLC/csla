@@ -20,6 +20,12 @@
             Clears all context collections.
             </summary>
         </member>
+        <member name="M:Csla.ApplicationContext.SetLogicalExecutionLocation(Csla.ApplicationContext.LogicalExecutionLocations)">
+            <summary>
+            Set logical execution location
+            </summary>
+            <param name="location">Location to set context to</param>
+        </member>
         <member name="P:Csla.ApplicationContext.WebContextManager">
             <summary>
             Gets or sets the web context manager.
@@ -107,60 +113,22 @@
             </para>
             </remarks>
         </member>
-        <member name="P:Csla.ApplicationContext.AuthenticationType">
+        <member name="P:Csla.ApplicationContext.DataPortalUrlString">
             <summary>
-            Returns the authentication type being used by the
-            CSLA .NET framework.
+            Gets or sets the data portal URL string.
+            If not set on Get will read CslaDataPortalUrl from config file. 
+            </summary>
+            <value>The data portal URL string.</value>
+        </member>
+        <member name="P:Csla.ApplicationContext.DataPortalUrl">
+            <summary>
+            Returns the URL for the DataPortal server.
             </summary>
             <value></value>
             <returns></returns>
             <remarks>
             This value is read from the application configuration
-            file with the key value "CslaAuthentication". The value
-            "Windows" indicates CSLA .NET should use Windows integrated
-            (or AD) security. Any other value indicates the use of
-            custom security derived from BusinessPrincipalBase.
-            </remarks>
-        </member>
-        <member name="P:Csla.ApplicationContext.DataPortalProxy">
-            <summary>
-            Gets or sets the full type name (or 'Local') of
-            the data portal proxy object to be used when
-            communicating with the data portal server.
-            </summary>
-            <value>Fully qualified assembly/type name of the proxy class
-            or 'Local'.</value>
-            <returns></returns>
-            <remarks>
-            <para>
-            If this value is empty or null, a new value is read from the 
-            application configuration file with the key value 
-            "CslaDataPortalProxy".
-            </para><para>
-            The proxy class must implement Csla.Server.IDataPortalServer.
-            </para><para>
-            The value "Local" is a shortcut to running the DataPortal
-            "server" in the client process.
-            </para><para>
-            Other built-in values include:
-            <list>
-            <item>
-            <term>Csla,Csla.DataPortalClient.RemotingProxy</term>
-            <description>Use .NET Remoting to communicate with the server</description>
-            </item>
-            <item>
-            <term>Csla,Csla.DataPortalClient.EnterpriseServicesProxy</term>
-            <description>Use Enterprise Services (DCOM) to communicate with the server</description>
-            </item>
-            <item>
-            <term>Csla,Csla.DataPortalClient.WebServicesProxy</term>
-            <description>Use Web Services (asmx) to communicate with the server</description>
-            </item>
-            </list>
-            Each proxy type does require that the DataPortal server be hosted using the appropriate
-            technology. For instance, Web Services and Remoting should be hosted in IIS, while
-            Enterprise Services must be hosted in COM+.
-            </para>
+            file with the key value "CslaDataPortalUrl". 
             </remarks>
         </member>
         <member name="P:Csla.ApplicationContext.DataPortalProxyFactory">
@@ -186,22 +154,41 @@
              </para>
              </remarks>
         </member>
-        <member name="P:Csla.ApplicationContext.DataPortalUrlString">
+        <member name="P:Csla.ApplicationContext.AuthenticationType">
             <summary>
-            Gets or sets the data portal URL string.
-            If not set on Get will read CslaDataPortalUrl from config file. 
-            </summary>
-            <value>The data portal URL string.</value>
-        </member>
-        <member name="P:Csla.ApplicationContext.DataPortalUrl">
-            <summary>
-            Returns the URL for the DataPortal server.
+            Returns the authentication type being used by the
+            CSLA .NET framework.
             </summary>
             <value></value>
             <returns></returns>
             <remarks>
             This value is read from the application configuration
-            file with the key value "CslaDataPortalUrl". 
+            file with the key value "CslaAuthentication". The value
+            "Windows" indicates CSLA .NET should use Windows integrated
+            (or AD) security. Any other value indicates the use of
+            custom security derived from CslaPrincipal.
+            </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.DataPortalProxy">
+            <summary>
+            Gets or sets the full type name (or 'Local') of
+            the data portal proxy object to be used when
+            communicating with the data portal server.
+            </summary>
+            <value>Fully qualified assembly/type name of the proxy class
+            or 'Local'.</value>
+            <returns></returns>
+            <remarks>
+            <para>
+            If this value is empty or null, a new value is read from the 
+            application configuration file with the key value 
+            "CslaDataPortalProxy".
+            </para><para>
+            The proxy class must implement Csla.Server.IDataPortalServer.
+            </para><para>
+            The value "Local" is a shortcut to running the DataPortal
+            "server" in the client process.
+            </para>
             </remarks>
         </member>
         <member name="P:Csla.ApplicationContext.IsInRoleProvider">
@@ -232,37 +219,6 @@
             for all explicit object serialization (such as cloning,
             n-level undo, etc).
             </summary>
-            <remarks>
-            <para>
-            If you use the DataContract and DataMember attributes
-            to specify how your objects should be serialized then
-            you <b>must</b> change this setting to use the
-            <see cref="T:System.Runtime.Serialization.NetDataContractSerializer">
-            NetDataContractSerializer</see> option. The default is to
-            use the standard Microsoft .NET 
-            <see cref="T:System.Runtime.Serialization.Formatters.Binary.BinaryFormatter"/>.
-            </para>
-            <para>
-            This setting does <b>not affect</b> the serialization
-            formatters used by the various data portal channels.
-            </para>
-            <para>
-            If you are using the Remoting, Web Services or 
-            Enterprise Services technologies, they will use the
-            BinaryFormatter regardless of this setting, and will
-            <b>fail to work</b> if you attempt to use the
-            DataContract and DataMember attributes when building
-            your business objects.
-            </para>
-            <para>
-            If you want to use DataContract and DataMember, and
-            you want a remote data portal server, you <b>must</b>
-            use the WCF data portal channel, or create your own
-            custom channel that uses the
-            <see cref="T:System.Runtime.Serialization.NetDataContractSerializer">
-            NetDataContractSerializer</see> provided as part of WCF.
-            </para>
-            </remarks>
         </member>
         <member name="P:Csla.ApplicationContext.PropertyChangedMode">
             <summary>
@@ -284,8 +240,28 @@
         </member>
         <member name="P:Csla.ApplicationContext.LogicalExecutionLocation">
             <summary>
-            Gets a value indicating the logical execution location
-            of the currently executing code.
+            Return Logical Execution Location - Client or Server
+            This is applicable to Local mode as well
+            </summary>
+        </member>
+        <member name="T:Csla.ApplicationContext.ExecutionLocations">
+            <summary>
+            Enum representing the locations code can execute.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.Client">
+            <summary>
+            The code is executing on the client.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.Server">
+            <summary>
+            The code is executing on the application server.
+            </summary>
+        </member>
+        <member name="F:Csla.ApplicationContext.ExecutionLocations.MobileClient">
+            <summary>
+            The code is executing on the Silverlight client.
             </summary>
         </member>
         <member name="T:Csla.ApplicationContext.SerializationFormatters">
@@ -310,26 +286,6 @@
         <member name="F:Csla.ApplicationContext.SerializationFormatters.MobileFormatter">
             <summary>
             Use the CSLA .NET MobileFormatter
-            </summary>
-        </member>
-        <member name="T:Csla.ApplicationContext.ExecutionLocations">
-            <summary>
-            Enum representing the locations code can execute.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Client">
-            <summary>
-            The code is executing on the client.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Server">
-            <summary>
-            The code is executing on the application server.
-            </summary>
-        </member>
-        <member name="F:Csla.ApplicationContext.ExecutionLocations.Silverlight">
-            <summary>
-            The code is executing on the Silverlight client.
             </summary>
         </member>
         <member name="T:Csla.ApplicationContext.PropertyChangedModes">
@@ -364,7 +320,7 @@
         </member>
         <member name="F:Csla.ApplicationContext.LogicalExecutionLocations.Server">
             <summary>
-            The code is executing on the server.  This inlcudes
+            The code is executing on the server.  This includes
             Local mode execution
             </summary>
         </member>
@@ -1157,6 +1113,15 @@
             </summary>
             <param name="child">The child object that was edited.</param>
         </member>
+        <member name="P:Csla.Core.IParent.Parent">
+            <summary>
+            Provide access to the parent reference for use
+            in child object code.
+            </summary>
+            <remarks>
+            This value will be Nothing for root objects and DynamicLists.
+            </remarks>
+        </member>
         <member name="T:Csla.Rules.IHostRules">
             <summary>
             Defines the interaction between the rules engine and
@@ -1358,9 +1323,15 @@
             </summary>
             <param name="name">meta property name that has cchanged.</param>
         </member>
+        <member name="M:Csla.Core.BusinessBase.CheckPropertyRules(Csla.Core.IPropertyInfo)">
+            <summary>
+            Check rules for the property and notifies UI of properties that may have changed.
+            </summary>
+            <param name="property">The property.</param>
+        </member>
         <member name="M:Csla.Core.BusinessBase.CheckObjectRules">
             <summary>
-            Checks the object rules and notifies UI of properties that may have changed. 
+            Check object rules and notifies UI of properties that may have changed. 
             </summary>
         </member>
         <member name="M:Csla.Core.BusinessBase.MarkClean">
@@ -2345,75 +2316,13 @@
             </summary>
             <param name="newValue">Potential child object</param>
         </member>
-        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``2(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1},``1)">
+        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``1(Csla.PropertyInfo{``0},System.Threading.Tasks.Task{``0})">
             <summary>
-            Loads a property value asynchronously.
+            Load a property from an async method. 
             </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="parameter">Parameter value.</param>
-        </member>
-        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``3(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2},``1,``2)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-        </member>
-        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``4(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3},``1,``2,``3)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-        </member>
-        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``5(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3,``4},``1,``2,``3,``4)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <typeparam name="P4">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-            <param name="p4">Parameter value.</param>
-        </member>
-        <member name="M:Csla.Core.BusinessBase.LoadPropertyAsync``6(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3,``4,``5},``1,``2,``3,``4,``5)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <typeparam name="P4">Type of the parameter.</typeparam>
-            <typeparam name="P5">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-            <param name="p4">Parameter value.</param>
-            <param name="p5">Parameter value.</param>
+            <typeparam name="R"></typeparam>
+            <param name="property"></param>
+            <param name="factory"></param>
         </member>
         <member name="M:Csla.Core.BusinessBase.MarkBusy">
             <summary>
@@ -2881,6 +2790,19 @@
             <returns>A new object containing the saved values.</returns>
             <param name="forceUpdate">true to force the save to be an update.</param>
         </member>
+        <member name="M:Csla.Core.ISavable.SaveAsync">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+        </member>
+        <member name="M:Csla.Core.ISavable.SaveAsync(System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+            <param name="forceUpdate">true to force the save to be an update.</param>
+        </member>
         <member name="M:Csla.Core.ISavable.BeginSave">
             <summary>
             Saves the object to the database asynchronously. The saved event will contain
@@ -2905,6 +2827,66 @@
             </param>
         </member>
         <member name="E:Csla.Core.ISavable.Saved">
+            <summary>
+            Event raised when an object has been saved.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.ISavable`1">
+            <summary>
+            Specifies that the object can save
+            itself.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.Save">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.Save(System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+            <param name="forceUpdate">true to force the save to be an update.</param>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.SaveAsync">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.SaveAsync(System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <returns>A new object containing the saved values.</returns>
+            <param name="forceUpdate">true to force the save to be an update.</param>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.BeginSave">
+            <summary>
+            Saves the object to the database asynchronously. The saved event will contain
+            the new object when the save operation completes.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.BeginSave(System.Object)">
+            <summary>
+            Saves the object to the database asynchronously. The saved event will contain
+            the new object when the save operation completes.
+            </summary>
+            <param name="userState">
+            User state object.
+            </param>
+        </member>
+        <member name="M:Csla.Core.ISavable`1.SaveComplete(`0)">
+            <summary>
+            INTERNAL CSLA .NET USE ONLY.
+            </summary>
+            <param name="newObject">
+            The new object returned as a result of the save.
+            </param>
+        </member>
+        <member name="E:Csla.Core.ISavable`1.Saved">
             <summary>
             Event raised when an object has been saved.
             </summary>
@@ -2984,6 +2966,17 @@
             If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
             If <see langword="false"/> then it is the same as calling Save().
             </param>
+        </member>
+        <member name="M:Csla.BusinessBase`1.SaveAsync(System.Boolean,System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="forceUpdate">
+            If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
+            If <see langword="false"/> then it is the same as calling Save().
+            </param>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
         </member>
         <member name="M:Csla.BusinessBase`1.Save(System.Boolean)">
             <summary>
@@ -3659,6 +3652,11 @@
             </para>
             </remarks>
             <returns>A new object containing the saved values.</returns>
+        </member>
+        <member name="M:Csla.BusinessBindingListBase`2.SaveAsync">
+            <summary>
+            Saves the object to the database.
+            </summary>
         </member>
         <member name="M:Csla.BusinessBindingListBase`2.BeginSave">
             <summary>
@@ -4454,6 +4452,11 @@
             </remarks>
             <returns>A new object containing the saved values.</returns>
         </member>
+        <member name="M:Csla.BusinessListBase`2.SaveAsync">
+            <summary>
+            Saves the object to the database.
+            </summary>
+        </member>
         <member name="M:Csla.BusinessListBase`2.BeginSave">
             <summary>
             Starts an async operation to save the object to the database.
@@ -4795,6 +4798,14 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Core.ManagedObjectBase.LoadPropertyMarkDirty(Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Loads the property vith new value and mark field dirty if value is changed.
+            </summary>
+            <param name="propertyInfo">The property info.</param>
+            <param name="newValue">The new value.</param>
+            <returns>[true] if changed, else [false] </returns>
+        </member>
         <member name="M:Csla.Core.ManagedObjectBase.OnPropertyChanged(System.String)">
             <summary>
             Raises the PropertyChanged event.
@@ -5007,18 +5018,6 @@
             object.
             </summary>
         </member>
-        <member name="T:Csla.Core.AsyncFactoryDelegate">
-            <summary>
-            Delegate for an asynchronous business object 
-            factory method with n parameters.
-            </summary>
-            <param name="completed">
-            Delegate pointer to callback method.
-            </param>
-            <param name="parameters">
-            Parameters passed to the factory method.
-            </param>
-        </member>
         <member name="T:Csla.Core.AsyncFactoryDelegate`1">
             <summary>
             Delegate for an asynchronous business object 
@@ -5044,82 +5043,6 @@
             Delegate pointer to callback method.
             </param>
             <param name="arg">Argument to method.</param>
-        </member>
-        <member name="T:Csla.Core.AsyncFactoryDelegate`3">
-            <summary>
-            Delegate for an asynchronous business object 
-            factory method with n parameters.
-            </summary>
-            <typeparam name="R">
-            Type of business object to be created.
-            </typeparam>
-            <param name="completed">
-            Delegate pointer to callback method.
-            </param>
-            <typeparam name="T1">Type of argument</typeparam>
-            <param name="arg1">Argument to method.</param>
-            <typeparam name="T2">Type of argument</typeparam>
-            <param name="arg2">Argument to method.</param>
-        </member>
-        <member name="T:Csla.Core.AsyncFactoryDelegate`4">
-            <summary>
-            Delegate for an asynchronous business object 
-            factory method with n parameters.
-            </summary>
-            <typeparam name="R">
-            Type of business object to be created.
-            </typeparam>
-            <param name="completed">
-            Delegate pointer to callback method.
-            </param>
-            <typeparam name="T1">Type of argument</typeparam>
-            <param name="arg1">Argument to method.</param>
-            <typeparam name="T2">Type of argument</typeparam>
-            <param name="arg2">Argument to method.</param>
-            <typeparam name="T3">Type of argument</typeparam>
-            <param name="arg3">Argument to method.</param>
-        </member>
-        <member name="T:Csla.Core.AsyncFactoryDelegate`5">
-            <summary>
-            Delegate for an asynchronous business object 
-            factory method with n parameters.
-            </summary>
-            <typeparam name="R">
-            Type of business object to be created.
-            </typeparam>
-            <param name="completed">
-            Delegate pointer to callback method.
-            </param>
-            <typeparam name="T1">Type of argument</typeparam>
-            <param name="arg1">Argument to method.</param>
-            <typeparam name="T2">Type of argument</typeparam>
-            <param name="arg2">Argument to method.</param>
-            <typeparam name="T3">Type of argument</typeparam>
-            <param name="arg3">Argument to method.</param>
-            <typeparam name="T4">Type of argument</typeparam>
-            <param name="arg4">Argument to method.</param>
-        </member>
-        <member name="T:Csla.Core.AsyncFactoryDelegate`6">
-            <summary>
-            Delegate for an asynchronous business object 
-            factory method with n parameters.
-            </summary>
-            <typeparam name="R">
-            Type of business object to be created.
-            </typeparam>
-            <param name="completed">
-            Delegate pointer to callback method.
-            </param>
-            <typeparam name="T1">Type of argument</typeparam>
-            <param name="arg1">Argument to method.</param>
-            <typeparam name="T2">Type of argument</typeparam>
-            <param name="arg2">Argument to method.</param>
-            <typeparam name="T3">Type of argument</typeparam>
-            <param name="arg3">Argument to method.</param>
-            <typeparam name="T4">Type of argument</typeparam>
-            <param name="arg4">Argument to method.</param>
-            <typeparam name="T5">Type of argument</typeparam>
-            <param name="arg5">Argument to method.</param>
         </member>
         <member name="T:Csla.Core.BusyChangedEventHandler">
             <summary>
@@ -5388,6 +5311,33 @@
             contains the items in 'list'.
             </summary>
             <param name="list">Source list.</param>
+        </member>
+        <member name="T:Csla.Core.LoadManager.AsyncLoader`1">
+            <summary>
+            Wraps async loading by static factory method or DataPortal.BeginXYZ methods
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Csla.Core.LoadManager.AsyncLoadException">
+            <summary>
+            Exception class to add the PropertyInfo and better nmessage to an async exception
+            </summary>
+        </member>
+        <member name="M:Csla.Core.LoadManager.AsyncLoadException.#ctor(Csla.Core.IPropertyInfo,System.String,System.Exception)">
+            <summary>
+            Constructor for AsyncLoadException
+            </summary>
+            <param name="property">the IPropertyInfo that desccribes the property</param>
+            <param name="message">Clear text message for user</param>
+            <param name="ex">the actual exception</param>
+        </member>
+        <member name="P:Csla.Core.LoadManager.AsyncLoadException.Property">
+            <summary>
+            The property that Async LazyLoad failed on.  
+            </summary>
+            <value>
+            The property.
+            </value>
         </member>
         <member name="T:Csla.Core.ChildChangedEventArgs">
             <summary>
@@ -5886,6 +5836,234 @@
             INTERNAL CSLA .NET USE ONLY.
             </summary>
         </member>
+        <member name="T:Csla.IDataPortalResult">
+            <summary>
+            IDataPortalResult defines the results of DataPortal operation
+            </summary>
+        </member>
+        <member name="P:Csla.IDataPortalResult.Object">
+            <summary>
+            Gets the resulting object.
+            </summary>
+        </member>
+        <member name="P:Csla.IDataPortalResult.Error">
+            <summary>
+            Gets any resulting error information.
+            </summary>
+        </member>
+        <member name="P:Csla.IDataPortalResult.UserState">
+            <summary>
+            Gets the user state, pass through object
+            </summary>
+            <value>
+            The user state.
+            </value>
+        </member>
+        <member name="T:Csla.Core.LoadManager.TaskLoader`1">
+            <summary>
+            Wraps async loading by Task&gt;T&lt; from DataPortal.XYZAsync methods
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalClient.MobileProxy">
+            <summary>
+            Implements a data portal proxy to relay data portal
+            calls to a remote application server by using WCF.
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalClient.IDataPortalProxy">
+            <summary>
+            Interface implemented by client-side 
+            data portal proxy objects.
+            </summary>
+        </member>
+        <member name="T:Csla.Server.IDataPortalServer">
+            <summary>
+            Interface implemented by server-side data portal
+            components.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.IDataPortalServer.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Create a new business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.Server.IDataPortalServer.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Get an existing business object.
+            </summary>
+            <param name="objectType">Type of business object to retrieve.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.Server.IDataPortalServer.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Update a business object.
+            </summary>
+            <param name="obj">Business object to update.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.Server.IDataPortalServer.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Delete a business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.IDataPortalProxy.IsServerRemote">
+            <summary>
+            Get a value indicating whether this proxy will invoke
+            a remote data portal server, or run the "server-side"
+            data portal in the caller's process and AppDomain.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.#ctor">
+            <summary>
+            Creates an instance of the object, initializing
+            it to use the DefaultUrl and DefaultBinding
+            values.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.GetProxy">
+            <summary>
+            Gets an instance of the WcfPortalClient object
+            for use in communicating with the server.
+            </summary>
+            <remarks>
+            If both DataPortalUrl and Binding are non-null then
+            those values are used to initialize the proxy, otherwise
+            the proxy is initialized using values from the
+            system.serviceModel element in the Silverlight
+            client-side config file.
+            </remarks>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to create a
+            new business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to load an
+            existing business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to update a
+            business object.
+            </summary>
+            <param name="obj">The business object to update.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to delete a
+            business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.ConvertRequest(Csla.WcfPortal.UpdateRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Update request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.ConvertRequest(Csla.WcfPortal.CriteriaRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Criteria request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.MobileProxy.ConvertResponse(Csla.WcfPortal.WcfResponse)">
+            <summary>
+            Override this method to manipulate the message
+            request data returned from the server.
+            </summary>
+            <param name="response">Response data.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.DefaultBinding">
+            <summary>
+            Gets or sets the default binding used to initialize
+            future instances of MobileProxy.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.DefaultUrl">
+            <summary>
+            Gets or sets the default URL address
+            for the data portal server.
+            </summary>
+            <remarks>
+            Deprecated: use ApplicationContext.DataPortalUrlString
+            </remarks>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.DefaultEndPoint">
+            <summary>
+            Gets or sets the default WCF endpoint
+            name for the data portal server.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.IsServerRemote">
+            <summary>
+            Gets a value indicating whether the data portal
+            is hosted on a remote server.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.Binding">
+            <summary>
+            Gets the binding object used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.DataPortalUrl">
+            <summary>
+            Gets the URL address for the data portal server
+            used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.MobileProxy.EndPoint">
+            <summary>
+            Gets the WCF endpoint name for the data portal
+            server used by this proxy instance.
+            </summary>
+        </member>
         <member name="T:Csla.Data.DbContextManager`1">
             <summary>
             Provides an automated way to reuse 
@@ -6212,6 +6390,25 @@
             <param name="error">Exception returned as a result
             of the save operation.</param>
         </member>
+        <member name="M:Csla.DynamicListBase`1.SaveItemAsync(`0)">
+            <summary>
+            Saves the specified item in the list.
+            </summary>
+            <param name="item">Item to be saved.</param>
+        </member>
+        <member name="M:Csla.DynamicListBase`1.SaveItemAsync(System.Int32)">
+            <summary>
+            Saves the specified item in the list.
+            </summary>
+            <param name="index">Index of item to be saved.</param>
+        </member>
+        <member name="M:Csla.DynamicListBase`1.SaveItemAsync(System.Int32,System.Boolean)">
+            <summary>
+            Saves the specified item in the list.
+            </summary>
+            <param name="index">Index of item to be saved.</param>
+            <param name="delete">true if the item should be deleted.</param>
+        </member>
         <member name="M:Csla.DynamicListBase`1.SaveItem(`0)">
             <summary>
             Saves the specified item in the list.
@@ -6381,14 +6578,14 @@
             Criteria describing the object to create.
             </param>
         </member>
-        <member name="M:Csla.IDataPortal`1.UpdateAsync(System.Object)">
+        <member name="M:Csla.IDataPortal`1.UpdateAsync(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
             </summary>
             <param name="obj">Object to update.</param>
         </member>
-        <member name="M:Csla.IDataPortal`1.ExecuteAsync(System.Object)">
+        <member name="M:Csla.IDataPortal`1.ExecuteAsync(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to execute a command object.
@@ -6417,16 +6614,6 @@
             a new object, which is loaded with default
             values from the database.
             </summary>
-            <returns>A new object, populated with default values.</returns>
-        </member>
-        <member name="M:Csla.IDataPortal`1.Create(System.Type,System.Object)">
-            <summary>
-            Called by a factory method in a business class to create 
-            a new object, which is loaded with default
-            values from the database.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Object-specific criteria.</param>
             <returns>A new object, populated with default values.</returns>
         </member>
         <member name="M:Csla.IDataPortal`1.Fetch(System.Object)">
@@ -6535,14 +6722,14 @@
             <param name="criteria">Object-specific criteria.</param>
             <param name="userState">User state data.</param>
         </member>
-        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object)">
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
             </summary>
             <param name="obj">Object to update.</param>
         </member>
-        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object,System.Object)">
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(`0,System.Object)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
@@ -6931,29 +7118,6 @@
             </summary>
             <typeparam name="T">Type of object that DataPortal received</typeparam>
         </member>
-        <member name="T:Csla.IDataPortalResult">
-            <summary>
-            IDataPortalResult defines the results of DataPortal operation
-            </summary>
-        </member>
-        <member name="P:Csla.IDataPortalResult.Object">
-            <summary>
-            Gets the resulting object.
-            </summary>
-        </member>
-        <member name="P:Csla.IDataPortalResult.Error">
-            <summary>
-            Gets any resulting error information.
-            </summary>
-        </member>
-        <member name="P:Csla.IDataPortalResult.UserState">
-            <summary>
-            Gets the user state, pass through object
-            </summary>
-            <value>
-            The user state.
-            </value>
-        </member>
         <member name="M:Csla.DataPortalResult`1.#ctor(`0,System.Exception,System.Object)">
             <summary>
             Create new instance of data portal result
@@ -6996,6 +7160,14 @@
             Type of business object.
             </typeparam>
         </member>
+        <member name="M:Csla.DataPortal`1.Create">
+            <summary>
+            Called by a factory method in a business class to create 
+            a new object, which is loaded with default
+            values from the database.
+            </summary>
+            <returns>A new object, populated with default values.</returns>
+        </member>
         <member name="M:Csla.DataPortal`1.Create(System.Object)">
             <summary>
             Called by a factory method in a business class to create 
@@ -7005,79 +7177,18 @@
             <param name="criteria">Object-specific criteria.</param>
             <returns>A new object, populated with default values.</returns>
         </member>
-        <member name="M:Csla.DataPortal`1.Create">
+        <member name="M:Csla.DataPortal`1.CreateAsync">
             <summary>
-            Called by a factory method in a business class to create 
-            a new object, which is loaded with default
-            values from the database.
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
             </summary>
-            <returns>A new object, populated with default values.</returns>
         </member>
-        <member name="M:Csla.DataPortal`1.Create(System.Type,System.Object)">
+        <member name="M:Csla.DataPortal`1.CreateAsync(System.Object)">
             <summary>
-            Called by a factory method in a business class to create 
-            a new object, which is loaded with default
-            values from the database.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Object-specific criteria.</param>
-            <returns>A new object, populated with default values.</returns>
-        </member>
-        <member name="M:Csla.DataPortal`1.Fetch(System.Object)">
-            <summary>
-            Called by a factory method in a business class to retrieve
-            an object, which is loaded with values from the database.
-            </summary>
-            <param name="criteria">Object-specific criteria.</param>
-            <returns>An object populated with values from the database.</returns>
-        </member>
-        <member name="M:Csla.DataPortal`1.Fetch">
-            <summary>
-            Called by a factory method in a business class to retrieve
-            an object, which is loaded with values from the database.
-            </summary>
-            <returns>An object populated with values from the database.</returns>
-        </member>
-        <member name="M:Csla.DataPortal`1.Execute(`0)">
-            <summary>
-            Called to execute a Command object on the server.
-            </summary>
-            <remarks>
-            <para>
-            To be a Command object, the object must inherit from
-            CommandBase.
-            </para><para>
-            Note that this method returns a reference to the updated business object.
-            If the server-side DataPortal is running remotely, this will be a new and
-            different object from the original, and all object references MUST be updated
-            to use this new object.
-            </para><para>
-            On the server, the Command object's DataPortal_Execute() method will
-            be invoked and on an ObjectFactory the Execute method will be invoked. 
-            Write any server-side code in that method. 
-            </para>
-            </remarks>
-            <param name="obj">A reference to the Command object to be executed.</param>
-            <returns>A reference to the updated Command object.</returns>
-        </member>
-        <member name="M:Csla.DataPortal`1.Update(`0)">
-            <summary>
-            Called by the business object's Save() method to
-            insert, update or delete an object in the database.
-            </summary>
-            <remarks>
-            Note that this method returns a reference to the updated business object.
-            If the server-side DataPortal is running remotely, this will be a new and
-            different object from the original, and all object references MUST be updated
-            to use this new object.
-            </remarks>
-            <param name="obj">A reference to the business object to be updated.</param>
-            <returns>A reference to the updated business object.</returns>
-        </member>
-        <member name="M:Csla.DataPortal`1.Delete(System.Object)">
-            <summary>
-            Called by a Shared (static in C#) method in the business class to cause
-            immediate deletion of a specific object from the database.
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
             </summary>
             <param name="criteria">Object-specific criteria.</param>
         </member>
@@ -7128,21 +7239,6 @@
             <param name="criteria">Object-specific criteria.</param>
             <param name="userState">User state data.</param>
         </member>
-        <member name="M:Csla.DataPortal`1.CreateAsync">
-            <summary>
-            Called by a factory method in a business class or
-            by the UI to create a new object, which is loaded 
-            with default values from the database.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortal`1.CreateAsync(System.Object)">
-            <summary>
-            Called by a factory method in a business class or
-            by the UI to create a new object, which is loaded 
-            with default values from the database.
-            </summary>
-            <param name="criteria">Object-specific criteria.</param>
-        </member>
         <member name="M:Csla.DataPortal`1.OnFetchCompleted(Csla.DataPortalResult{`0})">
             <summary>
             Raises the event.
@@ -7166,44 +7262,61 @@
             </para>
             </remarks>
         </member>
+        <member name="M:Csla.DataPortal`1.Fetch">
+            <summary>
+            Called by a factory method in a business class to Fetch 
+            a new object, which is loaded with default
+            values from the database.
+            </summary>
+            <returns>A new object, populated with default values.</returns>
+        </member>
+        <member name="M:Csla.DataPortal`1.Fetch(System.Object)">
+            <summary>
+            Called by a factory method in a business class to Fetch 
+            a new object, which is loaded with default
+            values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <returns>A new object, populated with default values.</returns>
+        </member>
+        <member name="M:Csla.DataPortal`1.FetchAsync">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to Fetch a new object, which is loaded 
+            with default values from the database.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortal`1.FetchAsync(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to Fetch a new object, which is loaded 
+            with default values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
         <member name="M:Csla.DataPortal`1.BeginFetch">
             <summary>
             Called by a factory method in a business class or
-            by the UI to retrieve an existing object, which is loaded 
-            with values from the database.
+            by the UI to Fetch a new object, which is loaded 
+            with default values from the database.
             </summary>
         </member>
         <member name="M:Csla.DataPortal`1.BeginFetch(System.Object)">
             <summary>
             Called by a factory method in a business class or
-            by the UI to retrieve an existing object, which is loaded 
-            with values from the database.
+            by the UI to Fetch a new object, which is loaded 
+            with default values from the database.
             </summary>
             <param name="criteria">Object-specific criteria.</param>
         </member>
         <member name="M:Csla.DataPortal`1.BeginFetch(System.Object,System.Object)">
             <summary>
             Called by a factory method in a business class or
-            by the UI to retrieve an existing object, which is loaded 
-            with values from the database.
+            by the UI to Fetch a new object, which is loaded 
+            with default values from the database.
             </summary>
             <param name="criteria">Object-specific criteria.</param>
             <param name="userState">User state data.</param>
-        </member>
-        <member name="M:Csla.DataPortal`1.FetchAsync">
-            <summary>
-            Called by a factory method in a business class or
-            by the UI to retrieve an existing object, which is loaded 
-            with values from the database.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortal`1.FetchAsync(System.Object)">
-            <summary>
-            Called by a factory method in a business class or
-            by the UI to retrieve an existing object, which is loaded 
-            with values from the database.
-            </summary>
-            <param name="criteria">Object-specific criteria.</param>
         </member>
         <member name="M:Csla.DataPortal`1.OnUpdateCompleted(Csla.DataPortalResult{`0})">
             <summary>
@@ -7228,14 +7341,21 @@
             </para>
             </remarks>
         </member>
-        <member name="M:Csla.DataPortal`1.BeginUpdate(System.Object)">
+        <member name="M:Csla.DataPortal`1.Update(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
             </summary>
             <param name="obj">Object to update.</param>
         </member>
-        <member name="M:Csla.DataPortal`1.BeginUpdate(System.Object,System.Object)">
+        <member name="M:Csla.DataPortal`1.BeginUpdate(`0)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
+        </member>
+        <member name="M:Csla.DataPortal`1.BeginUpdate(`0,System.Object)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
@@ -7243,7 +7363,7 @@
             <param name="obj">Object to update.</param>
             <param name="userState">User state data.</param>
         </member>
-        <member name="M:Csla.DataPortal`1.UpdateAsync(System.Object)">
+        <member name="M:Csla.DataPortal`1.UpdateAsync(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to update an object.
@@ -7273,6 +7393,13 @@
             </para>
             </remarks>
         </member>
+        <member name="M:Csla.DataPortal`1.Delete(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
         <member name="M:Csla.DataPortal`1.BeginDelete(System.Object)">
             <summary>
             Called by a factory method in a business class or
@@ -7295,6 +7422,19 @@
             </summary>
             <param name="criteria">Object-specific criteria.</param>
         </member>
+        <member name="M:Csla.DataPortal`1.OnExecuteCompleted(Csla.DataPortalResult{`0})">
+            <summary>
+            Raises the ExecuteCompleted event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.DataPortal`1.Execute(`0)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
+        </member>
         <member name="M:Csla.DataPortal`1.BeginExecute(`0)">
             <summary>
             Called by a factory method in a business class or
@@ -7310,13 +7450,7 @@
             <param name="command">Command object to execute.</param>
             <param name="userState">User state data.</param>
         </member>
-        <member name="M:Csla.DataPortal`1.OnExecuteCompleted(Csla.DataPortalResult{`0})">
-            <summary>
-            Raises the ExecuteCompleted event.
-            </summary>
-            <param name="e">Event arguments.</param>
-        </member>
-        <member name="M:Csla.DataPortal`1.ExecuteAsync(System.Object)">
+        <member name="M:Csla.DataPortal`1.ExecuteAsync(`0)">
             <summary>
             Called by a factory method in a business class or
             by the UI to execute a command object.
@@ -8996,6 +9130,14 @@
             business object instance.
             </summary>
         </member>
+        <member name="P:Csla.Rules.BusinessRules.CascadeOnDirtyProperties">
+            <summary>
+            Gets or sets a value indicating whether rule engine should cacade n-leves when property value is changed from OuputPropertyValues. 
+            </summary>
+            <value>
+              <c>true</c> if [cascade when changed]; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:Csla.Rules.BusinessRules.IsValid">
             <summary>
             Gets a value indicating whether there are
@@ -9746,6 +9888,13 @@
             <param name="value">New property value.</param>
             <exception cref="T:System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
         </member>
+        <member name="M:Csla.Rules.RuleContext.AddDirtyProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Adds a property name as a dirty field (changed value).
+            </summary>
+            <param name="property">The property.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
         <member name="M:Csla.Rules.RuleContext.Complete">
             <summary>
             Indicates that the rule processing is complete, so
@@ -9802,6 +9951,14 @@
             Gets a dictionary containing copies of property values from
             the target business object.
             </summary>
+        </member>
+        <member name="P:Csla.Rules.RuleContext.DirtyProperties">
+            <summary>
+            Gets a list of dirty properties (value was updated).
+            </summary>
+            <value>
+            The dirty properties.
+            </value>
         </member>
         <member name="P:Csla.Rules.RuleContext.OutputPropertyValues">
             <summary>
@@ -10768,75 +10925,13 @@
             invoked.
             </remarks>
         </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``2(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1},``1)">
+        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``1(Csla.PropertyInfo{``0},System.Threading.Tasks.Task{``0})">
             <summary>
-            Loads a property value asynchronously.
+            Load a property from an async method. 
             </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="parameter">Parameter value.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``3(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2},``1,``2)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``4(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3},``1,``2,``3)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``5(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3,``4},``1,``2,``3,``4)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <typeparam name="P4">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-            <param name="p4">Parameter value.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``6(Csla.PropertyInfo{``0},Csla.Core.AsyncFactoryDelegate{``0,``1,``2,``3,``4,``5},``1,``2,``3,``4,``5)">
-            <summary>
-            Loads a property value asynchronously.
-            </summary>
-            <typeparam name="R">Type of the property</typeparam>
-            <typeparam name="P1">Type of the parameter.</typeparam>
-            <typeparam name="P2">Type of the parameter.</typeparam>
-            <typeparam name="P3">Type of the parameter.</typeparam>
-            <typeparam name="P4">Type of the parameter.</typeparam>
-            <typeparam name="P5">Type of the parameter.</typeparam>
-            <param name="property">Property to load.</param>
-            <param name="factory">AsyncFactory delegate.</param>
-            <param name="p1">Parameter value.</param>
-            <param name="p2">Parameter value.</param>
-            <param name="p3">Parameter value.</param>
-            <param name="p4">Parameter value.</param>
-            <param name="p5">Parameter value.</param>
+            <typeparam name="R"></typeparam>
+            <param name="property"></param>
+            <param name="factory"></param>
         </member>
         <member name="M:Csla.ReadOnlyBase`1.MarkBusy">
             <summary>
@@ -11206,6 +11301,43 @@
             <summary>
             Throw security exception.
             </summary>
+        </member>
+        <member name="T:Csla.Security.SecurityException">
+            <summary>
+            Security exception.
+            </summary>
+        </member>
+        <member name="M:Csla.Security.SecurityException.#ctor">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+        </member>
+        <member name="M:Csla.Security.SecurityException.#ctor(System.String)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="message">Exception text.</param>
+        </member>
+        <member name="M:Csla.Security.SecurityException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="message">Exception text.</param>
+            <param name="innerException">Inner exception.</param>
+        </member>
+        <member name="M:Csla.Security.SecurityException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Creates an instance of the object for serialization.
+            </summary>
+            <param name="info">Serialiation info object.</param>
+            <param name="context">Serialization context object.</param>
+        </member>
+        <member name="M:Csla.Security.SecurityException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Serializes the object.
+            </summary>
+            <param name="info">Serialiation info object.</param>
+            <param name="context">Serialization context object.</param>
         </member>
         <member name="T:Csla.Security.UnauthenticatedIdentity">
             <summary>
@@ -11877,13 +12009,7 @@
             interacting with the business object.
             </summary>
         </member>
-        <member name="T:Csla.Server.IDataPortalServer">
-            <summary>
-            Interface implemented by server-side data portal
-            components.
-            </summary>
-        </member>
-        <member name="M:Csla.Server.IDataPortalServer.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.FactoryDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Create a new business object.
             </summary>
@@ -11892,8 +12018,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.IDataPortalServer.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.FactoryDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Get an existing business object.
             </summary>
@@ -11902,8 +12029,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.IDataPortalServer.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.FactoryDataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Update a business object.
             </summary>
@@ -11911,8 +12039,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.IDataPortalServer.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.FactoryDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Delete a business object.
             </summary>
@@ -11921,45 +12050,7 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
-        </member>
-        <member name="M:Csla.Server.FactoryDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Create a new business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.FactoryDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Get an existing business object.
-            </summary>
-            <param name="objectType">Type of business object to retrieve.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.FactoryDataPortal.Update(System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Update a business object.
-            </summary>
-            <param name="obj">Business object to update.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.FactoryDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Delete a business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="P:Csla.Server.FactoryDataPortal.FactoryLoader">
             <summary>
@@ -12044,43 +12135,98 @@
             </summary>
             <value>The name of the type.</value>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.ISilverlightRequest">
+        <member name="T:Csla.Server.Hosts.RemotingPortal">
+            <summary>
+            Exposes server-side DataPortal functionality
+            through .NET Remoting.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.RemotingPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+            <summary>
+            Create a new business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+        </member>
+        <member name="M:Csla.Server.Hosts.RemotingPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+            <summary>
+            Get an existing business object.
+            </summary>
+            <param name="objectType">Type of business object to retrieve.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+        </member>
+        <member name="M:Csla.Server.Hosts.RemotingPortal.Update(System.Object,Csla.Server.DataPortalContext)">
+            <summary>
+            Update a business object.
+            </summary>
+            <param name="obj">Business object to update.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+        </member>
+        <member name="M:Csla.Server.Hosts.RemotingPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+            <summary>
+            Delete a business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+        </member>
+        <member name="T:Csla.Server.Hosts.Mobile.IMobileRequest">
             <summary>
             Interface for all requests from Silverlight client
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.ISilverlightRequest.Principal">
+        <member name="P:Csla.Server.Hosts.Mobile.IMobileRequest.Principal">
             <summary>
             Principal that will be set for the request
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.ISilverlightRequest.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.IMobileRequest.GlobalContext">
             <summary>
             Global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.ISilverlightRequest.ClientContext">
+        <member name="P:Csla.Server.Hosts.Mobile.IMobileRequest.ClientContext">
             <summary>
             Client context object.
             </summary>
         </member>
-        <member name="T:Csla.Silverlight.PrimitiveCriteria">
+        <member name="P:Csla.Server.Hosts.Mobile.IMobileRequest.ClientCulture">
+            <summary>
+            The client culture.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.Mobile.IMobileRequest.ClientUICulture">
+            <summary>
+            The client UI culture.
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalClient.PrimitiveCriteria">
             <summary>
             Class used as a wrapper for criteria based requests that use primitives
             </summary>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.#ctor">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.#ctor">
             <summary>
             Creates an instance of the object.
             </summary>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.#ctor(System.Object)">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.#ctor(System.Object)">
             <summary>
             New instance of the criteria
             </summary>
             <param name="value">Criteria value</param>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.GetState(Csla.Serialization.Mobile.SerializationInfo)">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.GetState(Csla.Serialization.Mobile.SerializationInfo)">
             <summary>
             Method called by MobileFormatter when an object
             should serialize its data. The data should be
@@ -12090,7 +12236,7 @@
             Object to contain the serialized data.
             </param>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.GetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.GetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
             <summary>
             Method called by MobileFormatter when an object
             should serialize its child references. The data should be
@@ -12103,7 +12249,7 @@
             Reference to the formatter performing the serialization.
             </param>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.SetState(Csla.Serialization.Mobile.SerializationInfo)">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.SetState(Csla.Serialization.Mobile.SerializationInfo)">
             <summary>
             Method called by MobileFormatter when an object
             should be deserialized. The data should be
@@ -12113,7 +12259,7 @@
             Object containing the serialized data.
             </param>
         </member>
-        <member name="M:Csla.Silverlight.PrimitiveCriteria.SetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
+        <member name="M:Csla.DataPortalClient.PrimitiveCriteria.SetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
             <summary>
             Method called by MobileFormatter when an object
             should deserialize its child references. The data should be
@@ -12126,18 +12272,18 @@
             Reference to the formatter performing the deserialization.
             </param>
         </member>
-        <member name="P:Csla.Silverlight.PrimitiveCriteria.Value">
+        <member name="P:Csla.DataPortalClient.PrimitiveCriteria.Value">
             <summary>
             Criteria value
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest">
+        <member name="T:Csla.Server.Hosts.Mobile.MobileCriteriaRequest">
             <summary>
             Class that will be used to execute a request from a Silverlight client.
             This will inlcude Execute, Fetch, Create and Delete requests
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.#ctor(System.String,System.Object,System.Security.Principal.IPrincipal,Csla.Core.ContextDictionary,Csla.Core.ContextDictionary)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.#ctor(System.String,System.Object,System.Security.Principal.IPrincipal,Csla.Core.ContextDictionary,Csla.Core.ContextDictionary,System.String,System.String)">
             <summary>
             New instance of criteria object
             </summary>
@@ -12146,71 +12292,97 @@
             <param name="principal">Principal that will be set for the request</param>
             <param name="globalContext">Global context object.</param>
             <param name="clientContext">Client context object.</param>
+            <param name="clientCulture">The client culture.</param>
+            <param name="clientUICulture">The client UI culture.</param>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.TypeName">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.TypeName">
             <summary>
             Type of object that is the target of the request
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.Criteria">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.Criteria">
             <summary>
             Criteria object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.Principal">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.Principal">
             <summary>
             Principal that will be set for the request
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.GlobalContext">
             <summary>
             Global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest.ClientContext">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.ClientContext">
             <summary>
             Client context object.
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.ClientCulture">
+            <summary>
+            The client culture.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.Mobile.MobileCriteriaRequest.ClientUICulture">
+            <summary>
+            The client UI culture.
+            </summary>
+        </member>
+        <member name="T:Csla.Server.Hosts.Mobile.MobileRequestProcessor">
             <summary>
             Object taht processes all the requests from a Silverlight client
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Create(Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.Create(Csla.Server.Hosts.Mobile.MobileCriteriaRequest)">
             <summary>
             Create a new business object.
             </summary>
             <param name="request">The request parameter object.</param>
             <returns>Resulf of the create operation - an instance of a business object</returns>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Fetch(Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.Fetch(Csla.Server.Hosts.Mobile.MobileCriteriaRequest)">
             <summary>
             Get an existing business object.
             </summary>
             <param name="request">The request parameter object.</param>
             <returns>Result of the fetch operation - an instance of a business object</returns>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Update(Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.Update(Csla.Server.Hosts.Mobile.MobileUpdateRequest)">
             <summary>
             Update a business object.
             </summary>
             <param name="request">The request parameter object.</param>
             <returns>Result of the update operation - updated object</returns>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.Delete(Csla.Server.Hosts.Silverlight.SilverlightCriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.Delete(Csla.Server.Hosts.Mobile.MobileCriteriaRequest)">
             <summary>
             Delete a business object.
             </summary>
             <param name="request">The request parameter object.</param>
             <returns>Result of the delete operation</returns>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.ClearContext">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.ClearContext">
             <summary>
             Clears the application context and current principal.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor.FactoryLoader">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.SetClientCultures(Csla.Server.Hosts.Mobile.IMobileRequest)">
+            <summary>
+            Sets the client cultures on current tread.
+            </summary>
+            <param name="request">The request.</param>
+        </member>
+        <member name="M:Csla.Server.Hosts.Mobile.MobileRequestProcessor.TryGetCulture(System.String,System.Globalization.CultureInfo@)">
+            <summary>
+            Tries the convert string culture name to culture.
+            </summary>
+            <param name="clientCulture">The client culture.</param>
+            <param name="culture">The culture.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Csla.Server.Hosts.Mobile.MobileRequestProcessor.FactoryLoader">
             <summary>
             Gets or sets a delegate reference to the method
             called to create instances of factory objects
@@ -12218,34 +12390,34 @@
             a CSLA Light business object.
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.SilverlightResponse">
+        <member name="T:Csla.Server.Hosts.Mobile.MobileResponse">
             <summary>
             Object that encompasses the resut of the request from 
             a Silverlight client
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightResponse.Error">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileResponse.Error">
             <summary>
             Exception that occurred during portal execution
             Null if no exception occurred
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightResponse.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileResponse.GlobalContext">
             <summary>
             Global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightResponse.Object">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileResponse.Object">
             <summary>
             Result of the request
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest">
+        <member name="T:Csla.Server.Hosts.Mobile.MobileUpdateRequest">
             <summary>
             Class that will be used to execute an Update request from a Silverlight client.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest.#ctor(System.Object,System.Security.Principal.IPrincipal,Csla.Core.ContextDictionary,Csla.Core.ContextDictionary)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileUpdateRequest.#ctor(System.Object,System.Security.Principal.IPrincipal,Csla.Core.ContextDictionary,Csla.Core.ContextDictionary,System.String,System.String)">
             <summary>
             New instance of criteria object
             </summary>
@@ -12253,25 +12425,37 @@
             <param name="principal">Principal that will be set for the request</param>
             <param name="globalContext">Global context object.</param>
             <param name="clientContext">Client context object.</param>
+            <param name="clientCulture">The client culture.</param>
+            <param name="clientUICulture">The client UI culture.</param>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest.ObjectToUpdate">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.ObjectToUpdate">
             <summary>
             Business object that will be updated.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest.Principal">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.Principal">
             <summary>
             Principal that will be set for the request
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.GlobalContext">
             <summary>
             Global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.SilverlightUpdateRequest.ClientContext">
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.ClientContext">
             <summary>
             Client context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.ClientCulture">
+            <summary>
+            The client culture.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.Mobile.MobileUpdateRequest.ClientUICulture">
+            <summary>
+            The client UI culture.
             </summary>
         </member>
         <member name="T:Csla.Server.IAuthorizeDataPortal">
@@ -12716,7 +12900,7 @@
             to invoke based on the object and configuration.
             </summary>
         </member>
-        <member name="M:Csla.Server.DataPortalSelector.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortalSelector.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Create a new business object.
             </summary>
@@ -12725,8 +12909,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortalSelector.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortalSelector.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Get an existing business object.
             </summary>
@@ -12735,8 +12920,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortalSelector.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortalSelector.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Update a business object.
             </summary>
@@ -12744,8 +12930,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortalSelector.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortalSelector.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Delete a business object.
             </summary>
@@ -12754,52 +12941,53 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.CriteriaRequest">
+        <member name="T:Csla.Server.Hosts.Mobile.CriteriaRequest">
             <summary>
             Message sent to the Silverlight
             WCF data portal.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.TypeName">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.TypeName">
             <summary>
             Assembly qualified name of the 
             business object type to create.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.CriteriaData">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.CriteriaData">
             <summary>
             Serialized data for the criteria object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.Principal">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.Principal">
             <summary>
             Serialized data for the principal object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.GlobalContext">
             <summary>
             Serialized data for the global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.ClientContext">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.ClientContext">
             <summary>
             Serialized data for the client context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.ClientCulture">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.ClientCulture">
             <summary>
             Serialized client culture.
             </summary>
             <value>The client culture.</value>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.CriteriaRequest.ClientUICulture">
+        <member name="P:Csla.Server.Hosts.Mobile.CriteriaRequest.ClientUICulture">
             <summary>
             Serialized client UI culture.
             </summary>
             <value>The client UI culture.</value>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.IMobileFactoryLoader">
+        <member name="T:Csla.Server.Hosts.Mobile.IMobileFactoryLoader">
             <summary>
             Defines an interface to be implemented by
             a factory object that returns MobileFactory
@@ -12807,7 +12995,7 @@
             used to decorate CSLA Light business objects.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.IMobileFactoryLoader.GetFactory(System.String)">
+        <member name="M:Csla.Server.Hosts.Mobile.IMobileFactoryLoader.GetFactory(System.String)">
             <summary>
             Returns a MobileFactory object.
             </summary>
@@ -12816,44 +13004,44 @@
             an assembly qualified type name.
             </param>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.IWcfPortal">
+        <member name="T:Csla.Server.Hosts.Mobile.IWcfPortal">
             <summary>
             Defines the service contract for the WCF data
             portal.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.IWcfPortal.Create(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.IWcfPortal.Create(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Create a new business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.IWcfPortal.Fetch(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.IWcfPortal.Fetch(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Get an existing business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.IWcfPortal.Update(Csla.Server.Hosts.Silverlight.UpdateRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.IWcfPortal.Update(Csla.Server.Hosts.Mobile.UpdateRequest)">
             <summary>
             Update a business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.IWcfPortal.Delete(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.IWcfPortal.Delete(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Delete a business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.MobileFactoryLoader">
+        <member name="T:Csla.Server.Hosts.Mobile.MobileFactoryLoader">
             <summary>
             Class containing the default implementation for
             the FactoryLoader delegate used by the
             Silverlight data portal host.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.MobileFactoryLoader.GetFactory(System.String)">
+        <member name="M:Csla.Server.Hosts.Mobile.MobileFactoryLoader.GetFactory(System.String)">
             <summary>
             Creates an instance of a mobile factory
             object for use by the data portal.
@@ -12869,51 +13057,51 @@
             type name parameter.
             </returns>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.UpdateRequest">
+        <member name="T:Csla.Server.Hosts.Mobile.UpdateRequest">
             <summary>
             Message sent to the Silverlight
             WCF data portal.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.ObjectData">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.ObjectData">
             <summary>
             Serialized object data.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.Principal">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.Principal">
             <summary>
             Serialized principal object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.GlobalContext">
             <summary>
             Serialized global context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.ClientContext">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.ClientContext">
             <summary>
             Serialized client context object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.ClientCulture">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.ClientCulture">
             <summary>
             Serialized client culture.
             </summary>
             <value>The client culture.</value>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.UpdateRequest.ClientUICulture">
+        <member name="P:Csla.Server.Hosts.Mobile.UpdateRequest.ClientUICulture">
             <summary>
             Serialized client UI culture.
             </summary>
             <value>The client UI culture.</value>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.WcfErrorInfo">
+        <member name="T:Csla.Server.Hosts.Mobile.WcfErrorInfo">
             <summary>
             Message containing details about any
             server-side exception.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfErrorInfo.#ctor(System.Exception)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfErrorInfo.#ctor(System.Exception)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -12921,106 +13109,106 @@
             The Exception to encapusulate.
             </param>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.ExceptionTypeName">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.ExceptionTypeName">
             <summary>
             Type name of the exception object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.Message">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.Message">
             <summary>
             Message from the exception object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.StackTrace">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.StackTrace">
             <summary>
             Stack trace from the exception object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.Source">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.Source">
             <summary>
             Source of the exception object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.TargetSiteName">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.TargetSiteName">
             <summary>
             Target site name from the exception object.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfErrorInfo.InnerError">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfErrorInfo.InnerError">
             <summary>
             WcfErrorInfo object containing information
             about any inner exception of the original
             exception.
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.WcfPortal">
+        <member name="T:Csla.Server.Hosts.Mobile.WcfPortal">
             <summary>
             Exposes server-side DataPortal functionality
             through WCF.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.Create(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.Create(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Create a new business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.Fetch(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Get an existing business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.Update(Csla.Server.Hosts.Silverlight.UpdateRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.Update(Csla.Server.Hosts.Mobile.UpdateRequest)">
             <summary>
             Update a business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.Delete(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.Delete(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Delete a business object.
             </summary>
             <param name="request">The request parameter object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.ConvertRequest(Csla.Server.Hosts.Silverlight.UpdateRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.ConvertRequest(Csla.Server.Hosts.Mobile.UpdateRequest)">
             <summary>
             Override to convert the request data before it
             is transferred over the network.
             </summary>
             <param name="request">Request object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.ConvertRequest(Csla.Server.Hosts.Silverlight.CriteriaRequest)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.ConvertRequest(Csla.Server.Hosts.Mobile.CriteriaRequest)">
             <summary>
             Override to convert the request data before it
             is transferred over the network.
             </summary>
             <param name="request">Request object.</param>
         </member>
-        <member name="M:Csla.Server.Hosts.Silverlight.WcfPortal.ConvertResponse(Csla.Server.Hosts.Silverlight.WcfResponse)">
+        <member name="M:Csla.Server.Hosts.Mobile.WcfPortal.ConvertResponse(Csla.Server.Hosts.Mobile.WcfResponse)">
             <summary>
             Override to convert the response data after it
             comes back from the network.
             </summary>
             <param name="response">Response object.</param>
         </member>
-        <member name="T:Csla.Server.Hosts.Silverlight.WcfResponse">
+        <member name="T:Csla.Server.Hosts.Mobile.WcfResponse">
             <summary>
             Response message returned from the 
             Silverlight WCF data portal methods.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfResponse.ObjectData">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfResponse.ObjectData">
             <summary>
             Serialized object data.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfResponse.ErrorData">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfResponse.ErrorData">
             <summary>
             Serialized error/exception data.
             </summary>
         </member>
-        <member name="P:Csla.Server.Hosts.Silverlight.WcfResponse.GlobalContext">
+        <member name="P:Csla.Server.Hosts.Mobile.WcfResponse.GlobalContext">
             <summary>
             Serialized global context data.
             </summary>
@@ -14247,8 +14435,7 @@
         </member>
         <member name="T:Csla.DataPortal">
             <summary>
-            This is the client-side DataPortal as described in
-            Chapter 4.
+            This is the client-side DataPortal.
             </summary>
         </member>
         <member name="M:Csla.DataPortal.Create``1(System.Object)">
@@ -14279,68 +14466,6 @@
             <param name="objectType">Type of business object to create.</param>
             <param name="criteria">Object-specific criteria.</param>
             <returns>A new object, populated with default values.</returns>
-        </member>
-        <member name="M:Csla.DataPortal.Fetch``1(System.Object)">
-            <summary>
-            Called by a factory method in a business class to retrieve
-            an object, which is loaded with values from the database.
-            </summary>
-            <typeparam name="T">Specific type of the business object.</typeparam>
-            <param name="criteria">Object-specific criteria.</param>
-            <returns>An object populated with values from the database.</returns>
-        </member>
-        <member name="M:Csla.DataPortal.Fetch``1">
-            <summary>
-            Called by a factory method in a business class to retrieve
-            an object, which is loaded with values from the database.
-            </summary>
-            <typeparam name="T">Specific type of the business object.</typeparam>
-            <returns>An object populated with values from the database.</returns>
-        </member>
-        <member name="M:Csla.DataPortal.Execute``1(``0)">
-            <summary>
-            Called to execute a Command object on the server.
-            </summary>
-            <remarks>
-            <para>
-            To be a Command object, the object must inherit from
-            CommandBase.
-            </para><para>
-            Note that this method returns a reference to the updated business object.
-            If the server-side DataPortal is running remotely, this will be a new and
-            different object from the original, and all object references MUST be updated
-            to use this new object.
-            </para><para>
-            On the server, the Command object's DataPortal_Execute() method will
-            be invoked and on an ObjectFactory the Execute method will be invoked. 
-            Write any server-side code in that method. 
-            </para>
-            </remarks>
-            <typeparam name="T">Specific type of the Command object.</typeparam>
-            <param name="obj">A reference to the Command object to be executed.</param>
-            <returns>A reference to the updated Command object.</returns>
-        </member>
-        <member name="M:Csla.DataPortal.Update``1(``0)">
-            <summary>
-            Called by the business object's Save() method to
-            insert, update or delete an object in the database.
-            </summary>
-            <remarks>
-            Note that this method returns a reference to the updated business object.
-            If the server-side DataPortal is running remotely, this will be a new and
-            different object from the original, and all object references MUST be updated
-            to use this new object.
-            </remarks>
-            <typeparam name="T">Specific type of the business object.</typeparam>
-            <param name="obj">A reference to the business object to be updated.</param>
-            <returns>A reference to the updated business object.</returns>
-        </member>
-        <member name="M:Csla.DataPortal.Delete``1(System.Object)">
-            <summary>
-            Called by a Shared (static in C#) method in the business class to cause
-            immediate deletion of a specific object from the database.
-            </summary>
-            <param name="criteria">Object-specific criteria.</param>
         </member>
         <member name="M:Csla.DataPortal.BeginCreate``1(System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
@@ -14427,6 +14552,23 @@
             Criteria describing the object to create.
             </param>
         </member>
+        <member name="M:Csla.DataPortal.Fetch``1(System.Object)">
+            <summary>
+            Called by a factory method in a business class to retrieve
+            an object, which is loaded with values from the database.
+            </summary>
+            <typeparam name="T">Specific type of the business object.</typeparam>
+            <param name="criteria">Object-specific criteria.</param>
+            <returns>An object populated with values from the database.</returns>
+        </member>
+        <member name="M:Csla.DataPortal.Fetch``1">
+            <summary>
+            Called by a factory method in a business class to retrieve
+            an object, which is loaded with values from the database.
+            </summary>
+            <typeparam name="T">Specific type of the business object.</typeparam>
+            <returns>An object populated with values from the database.</returns>
+        </member>
         <member name="M:Csla.DataPortal.BeginFetch``1(System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Starts an asynchronous data portal operation to
@@ -14512,7 +14654,22 @@
             Criteria describing the object to fetch.
             </param>
         </member>
-        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
+        <member name="M:Csla.DataPortal.Update``1(``0)">
+            <summary>
+            Called by the business object's Save() method to
+            insert, update or delete an object in the database.
+            </summary>
+            <remarks>
+            Note that this method returns a reference to the updated business object.
+            If the server-side DataPortal is running remotely, this will be a new and
+            different object from the original, and all object references MUST be updated
+            to use this new object.
+            </remarks>
+            <typeparam name="T">Specific type of the business object.</typeparam>
+            <param name="obj">A reference to the business object to be updated.</param>
+            <returns>A reference to the updated business object.</returns>
+        </member>
+        <member name="M:Csla.DataPortal.BeginUpdate``1(``0,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
             Starts an asynchronous data portal operation to
             update a business object.
@@ -14529,7 +14686,7 @@
             is complete.
             </param>
         </member>
-        <member name="M:Csla.DataPortal.BeginUpdate``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
+        <member name="M:Csla.DataPortal.BeginUpdate``1(``0,System.EventHandler{Csla.DataPortalResult{``0}},System.Object)">
             <summary>
             Starts an asynchronous data portal operation to
             update a business object.
@@ -14547,7 +14704,7 @@
             </param>
             <param name="userState">User state object.</param>
         </member>
-        <member name="M:Csla.DataPortal.UpdateAsync``1(System.Object)">
+        <member name="M:Csla.DataPortal.UpdateAsync``1(``0)">
             <summary>
             Starts an asynchronous data portal operation to
             update a business object.
@@ -14558,6 +14715,13 @@
             <param name="obj">
             Business object to update.
             </param>
+        </member>
+        <member name="M:Csla.DataPortal.Delete``1(System.Object)">
+            <summary>
+            Called by a Shared (static in C#) method in the business class to cause
+            immediate deletion of a specific object from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
         </member>
         <member name="M:Csla.DataPortal.BeginDelete``1(System.Object,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
@@ -14605,6 +14769,29 @@
             <param name="criteria">
             Criteria describing the object to delete.
             </param>
+        </member>
+        <member name="M:Csla.DataPortal.Execute``1(``0)">
+            <summary>
+            Called to execute a Command object on the server.
+            </summary>
+            <remarks>
+            <para>
+            To be a Command object, the object must inherit from
+            CommandBase.
+            </para><para>
+            Note that this method returns a reference to the updated business object.
+            If the server-side DataPortal is running remotely, this will be a new and
+            different object from the original, and all object references MUST be updated
+            to use this new object.
+            </para><para>
+            On the server, the Command object's DataPortal_Execute() method will
+            be invoked and on an ObjectFactory the Execute method will be invoked. 
+            Write any server-side code in that method. 
+            </para>
+            </remarks>
+            <typeparam name="T">Specific type of the Command object.</typeparam>
+            <param name="obj">A reference to the Command object to be executed.</param>
+            <returns>A reference to the updated Command object.</returns>
         </member>
         <member name="M:Csla.DataPortal.BeginExecute``1(``0,System.EventHandler{Csla.DataPortalResult{``0}})">
             <summary>
@@ -14761,81 +14948,24 @@
             server-side DataPortal method call is complete.
             </summary>
         </member>
-        <member name="T:Csla.DataPortalClient.EnterpriseServicesProxy">
+        <member name="P:Csla.DataPortal.ProxyFactory">
             <summary>
-            Implements a data portal proxy to relay data portal
-            calls to an application server hosted in COM+.
+            Gets or sets a reference to a ProxyFactory object
+            that is used to create an instance of the data
+            portal proxy object.
             </summary>
         </member>
-        <member name="T:Csla.DataPortalClient.IDataPortalProxy">
+        <member name="P:Csla.DataPortal.ProxyTypeName">
             <summary>
-            Interface implemented by client-side 
-            data portal proxy objects.
+            Gets or sets the assembly qualified type
+            name of the proxy object to be loaded
+            by the data portal. "Local" is a special
+            value used to indicate that the data
+            portal should run in local mode.
             </summary>
-        </member>
-        <member name="P:Csla.DataPortalClient.IDataPortalProxy.IsServerRemote">
-            <summary>
-            Get a value indicating whether this proxy will invoke
-            a remote data portal server, or run the "server-side"
-            data portal in the caller's process and AppDomain.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.EnterpriseServicesProxy.GetServerObject">
-            <summary>
-            Override this method to return a reference to
-            the server-side COM+ (ServicedComponent) object
-            implementing the data portal server functionality.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.EnterpriseServicesProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to create a
-            new business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.EnterpriseServicesProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to load an
-            existing business object.
-            </summary>
-            <param name="objectType">Type of business object to retrieve.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.EnterpriseServicesProxy.Update(System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to update a
-            business object.
-            </summary>
-            <param name="obj">The business object to update.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.EnterpriseServicesProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to delete a
-            business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="P:Csla.DataPortalClient.EnterpriseServicesProxy.IsServerRemote">
-            <summary>
-            Get a value indicating whether this proxy will invoke
-            a remote data portal server, or run the "server-side"
-            data portal in the caller's process and AppDomain.
-            </summary>
+            <remarks>
+            Deprecated: use ApplicationContext.DataPortalProxy
+            </remarks>
         </member>
         <member name="T:Csla.DataPortalClient.LocalProxy">
             <summary>
@@ -14844,7 +14974,7 @@
             in the client process and AppDomain.
             </summary>
         </member>
-        <member name="M:Csla.DataPortalClient.LocalProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.LocalProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to create a
             new business object.
@@ -14854,8 +14984,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.LocalProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.LocalProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to load an
             existing business object.
@@ -14865,8 +14996,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.LocalProxy.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.LocalProxy.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to update a
             business object.
@@ -14875,8 +15007,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.LocalProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.LocalProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to delete a
             business object.
@@ -14886,74 +15019,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="P:Csla.DataPortalClient.LocalProxy.IsServerRemote">
-            <summary>
-            Get a value indicating whether this proxy will invoke
-            a remote data portal server, or run the "server-side"
-            data portal in the caller's process and AppDomain.
-            </summary>
-        </member>
-        <member name="T:Csla.DataPortalClient.RemotingProxy">
-            <summary>
-            Implements a data portal proxy to relay data portal
-            calls to a remote application server by using the
-            .NET Remoting technology.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.RemotingProxy.#cctor">
-            <summary>
-            Configure .NET Remoting to use a binary
-            serialization technology even when using
-            the HTTP channel. Also ensures that the
-            user's Windows credentials are passed to
-            the server appropriately.
-            </summary>
-        </member>
-        <member name="M:Csla.DataPortalClient.RemotingProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to create a
-            new business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.RemotingProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to load an
-            existing business object.
-            </summary>
-            <param name="objectType">Type of business object to retrieve.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.RemotingProxy.Update(System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to update a
-            business object.
-            </summary>
-            <param name="obj">The business object to update.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.DataPortalClient.RemotingProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Called by <see cref="T:Csla.DataPortal"/> to delete a
-            business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="P:Csla.DataPortalClient.RemotingProxy.IsServerRemote">
             <summary>
             Get a value indicating whether this proxy will invoke
             a remote data portal server, or run the "server-side"
@@ -14966,6 +15034,13 @@
             calls to a remote application server by using WCF.
             </summary>
         </member>
+        <member name="M:Csla.DataPortalClient.WcfProxy.#ctor">
+            <summary>
+            Creates an instance of the object, initializing
+            it to use the DefaultUrl and DefaultBinding
+            values.
+            </summary>
+        </member>
         <member name="M:Csla.DataPortalClient.WcfProxy.GetChannelFactory">
             <summary>
             Returns an instance of the channel factory
@@ -14973,7 +15048,7 @@
             object.
             </summary>
         </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy.GetProxy(System.ServiceModel.ChannelFactory{Csla.Server.Hosts.IWcfPortal})">
+        <member name="M:Csla.DataPortalClient.WcfProxy.GetProxy(System.ServiceModel.ChannelFactory{Csla.DataPortalClient.IWcfPortal})">
             <summary>
             Returns the WCF proxy object used for
             communication with the data portal
@@ -14983,7 +15058,7 @@
             The ChannelFactory created by GetChannelFactory().
             </param>
         </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.WcfProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to create a
             new business object.
@@ -14993,8 +15068,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.WcfProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to load an
             existing business object.
@@ -15004,8 +15080,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.WcfProxy.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to update a
             business object.
@@ -15014,8 +15091,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.DataPortalClient.WcfProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.DataPortalClient.WcfProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by <see cref="T:Csla.DataPortal"/> to delete a
             business object.
@@ -15025,6 +15103,28 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultBinding">
+            <summary>
+            Gets or sets the default binding used to initialize
+            future instances of WcfProxy.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultUrl">
+            <summary>
+            Gets or sets the default URL address
+            for the data portal server.
+            </summary>
+            <remarks>
+            Deprecated: use ApplicationContext.DataPortalUrlString
+            </remarks>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DefaultEndPoint">
+            <summary>
+            Gets or sets the default WCF endpoint
+            name for the data portal server.
+            </summary>
         </member>
         <member name="P:Csla.DataPortalClient.WcfProxy.IsServerRemote">
             <summary>
@@ -15032,14 +15132,22 @@
             is hosted on a remote server.
             </summary>
         </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.Binding">
+            <summary>
+            Gets the binding object used by this proxy instance.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.WcfProxy.DataPortalUrl">
+            <summary>
+            Gets the URL address for the data portal server
+            used by this proxy instance.
+            </summary>
+        </member>
         <member name="P:Csla.DataPortalClient.WcfProxy.EndPoint">
             <summary>
-            Gets or sets the WCF endpoint used
-            to contact the server.
+            Gets the WCF endpoint name for the data portal
+            server used by this proxy instance.
             </summary>
-            <remarks>
-            The default value is WcfDataPortal.
-            </remarks>
         </member>
         <member name="T:Csla.DataPortalEventArgs">
             <summary>
@@ -15129,6 +15237,29 @@
             <param name="businessObject">The business object
             as it was at the time of the exception.</param>
         </member>
+        <member name="M:Csla.DataPortalException.#ctor(System.String,System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="message">
+            Exception message.
+            </param>
+            <param name="ex">
+            Inner exception.
+            </param>
+        </member>
+        <member name="M:Csla.DataPortalException.#ctor(Csla.WcfPortal.WcfErrorInfo)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="info">Info about the exception.</param>
+        </member>
+        <member name="M:Csla.DataPortalException.ToString">
+            <summary>
+            Gets a string representation
+            of this object.
+            </summary>
+        </member>
         <member name="M:Csla.DataPortalException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
             Creates an instance of the object for serialization.
@@ -15142,6 +15273,15 @@
             </summary>
             <param name="info">Serialiation info object.</param>
             <param name="context">Serialization context object.</param>
+        </member>
+        <member name="P:Csla.DataPortalException.ErrorInfo">
+            <summary>
+            Gets information about the original
+            server-side exception. That exception
+            is not an exception on the client side,
+            but this property returns information
+            about the exception.
+            </summary>
         </member>
         <member name="P:Csla.DataPortalException.BusinessObject">
             <summary>
@@ -15178,58 +15318,6 @@
             and client.
             </summary>
         </member>
-        <member name="T:Csla.Server.Hosts.EnterpriseServicesPortal">
-            <summary>
-            Exposes server-side DataPortal functionality
-            through Enterprise Services.
-            </summary>
-        </member>
-        <member name="M:Csla.Server.Hosts.EnterpriseServicesPortal.#cctor">
-            <summary>
-            Set up event handler to deal with
-            serialization issue as discussed
-            in Chapter 4.
-            </summary>
-        </member>
-        <member name="M:Csla.Server.Hosts.EnterpriseServicesPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Create a new business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.EnterpriseServicesPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Get an existing business object.
-            </summary>
-            <param name="objectType">Type of business object to retrieve.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.EnterpriseServicesPortal.Update(System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Update a business object.
-            </summary>
-            <param name="obj">Business object to update.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.EnterpriseServicesPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Delete a business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
         <member name="T:Csla.Server.Hosts.IWcfPortal">
             <summary>
             Defines the service contract for the WCF data
@@ -15259,51 +15347,6 @@
             Delete a business object.
             </summary>
             <param name="request">The request parameter object.</param>
-        </member>
-        <member name="T:Csla.Server.Hosts.RemotingPortal">
-            <summary>
-            Exposes server-side DataPortal functionality
-            through .NET Remoting.
-            </summary>
-        </member>
-        <member name="M:Csla.Server.Hosts.RemotingPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Create a new business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.RemotingPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Get an existing business object.
-            </summary>
-            <param name="objectType">Type of business object to retrieve.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.RemotingPortal.Update(System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Update a business object.
-            </summary>
-            <param name="obj">Business object to update.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
-        </member>
-        <member name="M:Csla.Server.Hosts.RemotingPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
-            <summary>
-            Delete a business object.
-            </summary>
-            <param name="objectType">Type of business object to create.</param>
-            <param name="criteria">Criteria object describing business object.</param>
-            <param name="context">
-            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
-            </param>
         </member>
         <member name="T:Csla.Server.Hosts.WcfChannel.CreateRequest">
             <summary>
@@ -15498,7 +15541,7 @@
         </member>
         <member name="P:Csla.Server.Hosts.WcfChannel.WcfResponse.Result">
             <summary>
-            Criteria object describing business object.
+            Busines object or exception return as result of service call.
             </summary>
         </member>
         <member name="T:Csla.Server.Hosts.WcfPortal">
@@ -15602,7 +15645,7 @@
             </summary>
             <param name="authProviderType"></param>
         </member>
-        <member name="M:Csla.Server.DataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Create a new business object.
             </summary>
@@ -15611,8 +15654,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Get an existing business object.
             </summary>
@@ -15621,8 +15665,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortal.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Update a business object.
             </summary>
@@ -15630,8 +15675,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.DataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.DataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Delete a business object.
             </summary>
@@ -15640,6 +15686,7 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="P:Csla.Server.DataPortal.Authorizer">
             <summary>
@@ -15792,10 +15839,29 @@
             <param name="globalContext">  Global context delivered via current reuest from the server
             </param>
         </member>
+        <member name="M:Csla.Server.DataPortalResult.#ctor(System.Object,System.Exception,Csla.Core.ContextDictionary)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="returnObject">Object to return as part
+            of the result.</param>
+            <param name="ex">
+            Error that occurred during the DataPotal call.
+            This will be null if no errors occurred.
+            </param>
+            <param name="globalContext">  Global context delivered via current reuest from the server
+            </param>
+        </member>
         <member name="P:Csla.Server.DataPortalResult.ReturnObject">
             <summary>
             The business object being returned from
             the server.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.DataPortalResult.Error">
+            <summary>
+            Error that occurred during the DataPotal call.
+            This will be null if no errors occurred.
             </summary>
         </member>
         <member name="P:Csla.Server.DataPortalResult.GlobalContext">
@@ -15810,7 +15876,7 @@
             DataPortal described in Chapter 4.
             </summary>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.ServicedDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Create call in a ServicedComponent.
             </summary>
@@ -15826,9 +15892,10 @@
             extra information that may be required to properly create
             the object.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.ServicedDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Fetch call in a ServicedComponent.
             </summary>
@@ -15841,9 +15908,10 @@
             <param name="objectType">Type of business object to retrieve.</param>
             <param name="criteria">Object-specific criteria.</param>
             <param name="context">Object containing context data from client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.ServicedDataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps an Update call in a ServicedComponent.
             </summary>
@@ -15855,9 +15923,10 @@
             </remarks>
             <param name="obj">A reference to the object being updated.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A reference to the newly updated object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.ServicedDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Delete call in a ServicedComponent.
             </summary>
@@ -15870,6 +15939,7 @@
             <param name="objectType">Type of business object to create.</param>
             <param name="criteria">Object-specific criteria.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="T:Csla.Server.SimpleDataPortal">
             <summary>
@@ -15877,7 +15947,7 @@
             in Chapter 4.
             </summary>
         </member>
-        <member name="M:Csla.Server.SimpleDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.SimpleDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Create a new business object.
             </summary>
@@ -15886,8 +15956,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.SimpleDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.SimpleDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Get an existing business object.
             </summary>
@@ -15896,8 +15967,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.SimpleDataPortal.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.SimpleDataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Update a business object.
             </summary>
@@ -15905,8 +15977,9 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
-        <member name="M:Csla.Server.SimpleDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.SimpleDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Delete a business object.
             </summary>
@@ -15915,6 +15988,7 @@
             <param name="context">
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="T:Csla.Server.TransactionalDataPortal">
             <summary>
@@ -15922,7 +15996,7 @@
             DataPortal described in Chapter 4.
             </summary>
         </member>
-        <member name="M:Csla.Server.TransactionalDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.TransactionalDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Create call in a TransactionScope
             </summary>
@@ -15940,9 +16014,10 @@
             extra information that may be required to properly create
             the object.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.TransactionalDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.TransactionalDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by the client-side DataProtal to retrieve an object.
             </summary>
@@ -15957,9 +16032,10 @@
             <param name="objectType">Type of business object to retrieve.</param>
             <param name="criteria">Object-specific criteria.</param>
             <param name="context">Object containing context data from client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.TransactionalDataPortal.Update(System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.TransactionalDataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by the client-side DataPortal to update an object.
             </summary>
@@ -15973,9 +16049,10 @@
             </remarks>
             <param name="obj">A reference to the object being updated.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A reference to the newly updated object.</returns>
         </member>
-        <member name="M:Csla.Server.TransactionalDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext)">
+        <member name="M:Csla.Server.TransactionalDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Called by the client-side DataPortal to delete an object.
             </summary>
@@ -15990,6 +16067,7 @@
             <param name="objectType">Type of business object to create.</param>
             <param name="criteria">Object-specific criteria.</param>
             <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
         </member>
         <member name="T:Csla.Threading.BackgroundWorker">
             <summary>
@@ -17274,6 +17352,11 @@
               Looks up a localized string similar to AddNewCore must be overridden.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.AsyncLoadException">
+            <summary>
+              Looks up a localized string similar to Failed on async load of property {0}.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.AuthenticationProviderDoesNotImplementIAuthorizeDataPortal">
             <summary>
               Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
@@ -17734,6 +17817,11 @@
               Looks up a localized string similar to String value can not be converted to a date.
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.TaskOfObjectException">
+            <summary>
+              Looks up a localized string similar to Method {0} must return Task&lt;object&gt;.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.TypeLoadException">
             <summary>
               Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
@@ -18132,6 +18220,26 @@
             Parameters to pass to method.
             </param>
         </member>
+        <member name="M:Csla.Reflection.LateBoundObject.CallMethodTryAsync(System.String)">
+            <summary>
+            Invokes a method using the await keyword
+            if the method returns Task,
+            otherwise synchronously invokes the method.
+            </summary>
+            <param name="methodName">Name of the method.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Reflection.LateBoundObject.CallMethodTryAsync(System.String,System.Object[])">
+            <summary>
+            Invokes a method using the await keyword
+            if the method returns Task,
+            otherwise synchronously invokes the method.
+            </summary>
+            <param name="methodName">Name of the method.</param>
+            <param name="parameters">
+            Parameters to pass to method.
+            </param>
+        </member>
         <member name="P:Csla.Reflection.LateBoundObject.Instance">
             <summary>
             Object instance managed by LateBoundObject.
@@ -18373,6 +18481,32 @@
             <param name="obj">Object containing method.</param>
             <param name="info">Method info object.</param>
             <returns>Any value returned from the method.</returns>
+        </member>
+        <member name="M:Csla.Reflection.MethodCaller.CallMethodTryAsync(System.Object,System.String,System.Object[])">
+            <summary>
+            Uses reflection to dynamically invoke a method,
+            throwing an exception if it is not
+            implemented on the target object.
+            </summary>
+            <param name="obj">
+            Object containing method.
+            </param>
+            <param name="method">
+            Name of the method.
+            </param>
+            <param name="parameters">
+            Parameters to pass to method.
+            </param>
+        </member>
+        <member name="M:Csla.Reflection.MethodCaller.CallMethodTryAsync(System.Object,System.String)">
+            <summary>
+            Invokes an instance method on an object. If the method
+            is async returning Task of object it will be invoked using an await statement.
+            </summary>
+            <param name="obj">Object containing method.</param>
+            <param name="method">
+            Name of the method.
+            </param>
         </member>
         <member name="M:Csla.Reflection.MethodCaller.CallFactoryMethod(System.Type,System.String,System.Object[])">
             <summary>

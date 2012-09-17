@@ -123,7 +123,7 @@ namespace Csla
     {
       try
       {
-        return SaveAsync(false, true).Result;
+        return SaveAsync(false, null, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -151,7 +151,7 @@ namespace Csla
     /// </param>
     public async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
     {
-      return await SaveAsync(forceUpdate, false);
+      return await SaveAsync(forceUpdate, null, false);
     }
 
     /// <summary>
@@ -161,8 +161,9 @@ namespace Csla
     /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
     /// If <see langword="false"/> then it is the same as calling Save().
     /// </param>
+    /// <param name="userState">User state data.</param>
     /// <param name="isSync">True if the save operation should be synchronous.</param>
-    protected async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate, bool isSync)
+    protected async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate, object userState, bool isSync)
     {
       if (forceUpdate && IsNew)
       {
@@ -192,7 +193,7 @@ namespace Csla
       {
         result = (T)this;
       }
-      OnSaved(result, null, null);
+      OnSaved(result, null, userState);
       return result;
     }
 
@@ -268,7 +269,7 @@ namespace Csla
       Exception error = null;
       try
       {
-        result = await SaveAsync(forceUpdate);
+        result = await SaveAsync(forceUpdate, userState, false);
       }
       catch (AggregateException ex)
       {

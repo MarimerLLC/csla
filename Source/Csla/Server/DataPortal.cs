@@ -342,7 +342,7 @@ namespace Csla.Server
 #endif
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (Csla.Server.DataPortalException)
       {
         throw;
       }

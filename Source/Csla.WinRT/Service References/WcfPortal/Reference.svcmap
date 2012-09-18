@@ -21,15 +21,15 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:2114/WcfPortal.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:19454/MobilePortal.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="3b8f2263-d0d6-4d64-bfa9-4d5764656d57" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="445ea6dd-015c-4927-ab76-7eeae27119ab" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd2" />
-    <MetadataFile FileName="WcfPortal.disco" MetadataType="Disco" ID="7fbd72dc-b14b-4963-94c9-7bf2ab93e9ec" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?disco" />
-    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="c62df9c3-bf71-4b2e-a11c-04ad25585725" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd0" />
-    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="9cf70021-934f-483c-a070-52e41634d77e" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?xsd=xsd1" />
-    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="88586b5f-2633-44bb-aea6-1aad8106afdf" SourceId="1" SourceUrl="http://localhost:2114/WcfPortal.svc?wsdl" />
+    <MetadataFile FileName="WcfPortal2.wsdl" MetadataType="Wsdl" ID="36b46e33-39f8-4f1e-91c6-0c448e8e62c3" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl" />
+    <MetadataFile FileName="MobilePortal.xsd" MetadataType="Schema" ID="800f1a1e-d1db-4581-ad33-d290bbab4063" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="MobilePortal1.xsd" MetadataType="Schema" ID="d10326da-c048-448d-a455-5b4ad0642735" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="MobilePortal.disco" MetadataType="Disco" ID="e38c1871-cdf8-47f2-a006-ac4169581d26" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?disco" />
+    <MetadataFile FileName="MobilePortal.wsdl" MetadataType="Wsdl" ID="906c5767-d1a3-41a4-8a2d-936f8bb9969d" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="MobilePortal2.xsd" MetadataType="Schema" ID="04caf500-16be-4abb-9e6a-b5ea595b7bf8" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

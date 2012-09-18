@@ -516,17 +516,17 @@
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal.wsdl" />
+    <None Include="Service References\WcfPortal\MobilePortal.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal2.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
     <None Include="Web References\WebServiceHost\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>

@@ -398,7 +398,8 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-#else
+
+#else // WinRT and Silverlight
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
       if (!(criteria is IMobileObject))
@@ -411,7 +412,8 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+
+#if !NETFX_CORE // Silverlight
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.FetchCompleted += (s, e) => 
         {
@@ -450,7 +452,8 @@ namespace Csla.DataPortalClient
       if (finalresult.Error != null)
         throw finalresult.Error;
       return finalresult;
-#else
+
+#else // WinRT
       try
       {
         var response = await proxy.FetchAsync(request);

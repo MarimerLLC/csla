@@ -117,6 +117,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Service References\WcfPortal\MobilePortal.disco" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
@@ -735,8 +736,19 @@
     <PRIResource Include="Resources\da\Resources.resw" />
     <PRIResource Include="Resources\ca-ES\Resources.resw" />
     <PRIResource Include="Resources\bs\Resources.resw" />
+    <None Include="Properties\ServiceReferences.Designer.ClientConfig" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal.wsdl" />
+    <None Include="Service References\WcfPortal\MobilePortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\MobilePortal2.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfPortal\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
@@ -744,7 +756,6 @@
     </None>
     <None Include="Service References\WcfPortal\configuration.svcinfo" />
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />
-    <None Include="Service References\WcfPortal\WcfPortal.disco" />
     <PRIResource Include="Resources\pt-BR\Resources.resw" />
     <PRIResource Include="Resources\pt\Resources.resw" />
     <PRIResource Include="Resources\ro\Resources.resw" />
@@ -762,17 +773,7 @@
     <None Include="..\Csla\CslaKey.snk">
       <Link>CslaKey.snk</Link>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
     <None Include="ServiceReferences.Designer.ClientConfig" />
   </ItemGroup>
   <ItemGroup>

@@ -1,17 +1,2 @@
 ﻿<configuration>
-  <system.serviceModel>
-    <bindings>
-      <basicHttpBinding>
-        <binding name="BasicHttpBinding_IWcfPortal" maxBufferSize="2147483647"
-            maxReceivedMessageSize="2147483647" receiveTimeout="10" sendTimeout="10">
-        </binding>
-      </basicHttpBinding>
-    </bindings>
-    <client>
-      <endpoint name="BasicHttpBinding_IWcfPortal"
-                address="http://localhost:21647/SlPortal.svc"
-                binding="basicHttpBinding"
-                contract="WcfPortal.IWcfPortal" />
-    </client>
-  </system.serviceModel>
 </configuration>

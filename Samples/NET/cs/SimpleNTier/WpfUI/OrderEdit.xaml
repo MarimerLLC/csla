@@ -69,7 +69,7 @@
                   ColumnHeaderHeight="35"
                   ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
                   RowStyle="{StaticResource DataGridRowStyle}"
-                  CellStyle="{StaticResource DataGridCellStyle}">
+                  CellStyle="{StaticResource DataGridCellStyle}" Margin="0,2,0,35" Grid.RowSpan="2">
         <DataGrid.Columns>
           <DataGridTextColumn x:Name="idColumn" Binding="{Binding Path=Id, ValidatesOnDataErrors=True}" Header="ID" Width="Auto" EditingElementStyle="{StaticResource GridEditTextBoxStyle}" />
           <DataGridTextColumn x:Name="nameColumn" Binding="{Binding Path=Name}" Header="NAME" Width="*" EditingElementStyle="{StaticResource GridEditTextBoxStyle}" />

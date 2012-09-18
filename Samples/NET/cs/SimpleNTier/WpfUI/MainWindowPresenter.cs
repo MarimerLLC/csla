@@ -29,17 +29,22 @@ namespace WpfUI
       {
         try
         {
-          Shell.Instance.ShowView(
-            typeof(OrderEdit).AssemblyQualifiedName,
-            "orderVmViewSource",
-            new OrderVm(),
-            "Main");
+          Init();
         }
         catch (Exception ex)
         {
           Shell.Instance.ShowError(ex.Message, "Startup error");
         }
       }
+    }
+
+    private async void Init()
+    {
+      Shell.Instance.ShowView(
+        typeof(OrderEdit).AssemblyQualifiedName,
+        "orderVmViewSource",
+        await new OrderVm().InitAsync(),
+        "Main");
     }
 
     public static readonly DependencyProperty MainContentProperty =

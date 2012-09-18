@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using Csla;
 using Csla.Rules.CommonRules;
 using Csla.Serialization;
@@ -27,6 +28,7 @@ namespace BusinessLibrary
     public static PropertyInfo<string> CustomerNameProperty = 
       RegisterProperty<string>(p => p.CustomerName);
     [Display(Name = "Customer name")]
+    [Required]
     public string CustomerName
     {
       get { return GetProperty(CustomerNameProperty); }
@@ -90,6 +92,15 @@ namespace BusinessLibrary
         return GetProperty(LineItemsProperty);
       }
     }
+    public static async Task<Order> NewOrderAsync()
+    {
+      return await DataPortal.CreateAsync<Order>();
+    }
+
+    public static async Task<Order> GetOrderAsync(int id)
+    {
+      return await DataPortal.FetchAsync<Order>(id);
+    }
 
     public static void NewOrder(EventHandler<DataPortalResult<Order>> callback)
     {
@@ -102,6 +113,7 @@ namespace BusinessLibrary
     }
 
 #if !SILVERLIGHT
+
     public static Order NewOrder()
     {
       return DataPortal.Create<Order>();
@@ -116,6 +128,7 @@ namespace BusinessLibrary
     {
       DataPortal.Delete<Order>(id);
     }
+
 #endif
   }
 
@@ -165,7 +178,7 @@ namespace BusinessLibrary
         });
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     protected override void DataPortal_Execute()
     {
       System.Threading.Thread.Sleep(5000);

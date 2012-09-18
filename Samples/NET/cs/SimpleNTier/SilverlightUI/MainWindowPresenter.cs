@@ -29,17 +29,22 @@ namespace SilverlightUI
       {
         try
         {
-          Shell.Instance.ShowView(
-            typeof(OrderEdit).AssemblyQualifiedName,
-            "orderVmViewSource",
-            new OrderVm(),
-            "Main");
+          Initialize();
         }
         catch (Exception ex)
         {
           Shell.Instance.ShowError(ex.Message, "Startup error");
         }
       }
+    }
+
+    private async void Initialize()
+    {
+      Shell.Instance.ShowView(
+        typeof(OrderEdit).AssemblyQualifiedName,
+        "orderVmViewSource",
+        await new OrderVm().InitAsync(),
+        "Main");
     }
 
     public static readonly DependencyProperty MainContentProperty =

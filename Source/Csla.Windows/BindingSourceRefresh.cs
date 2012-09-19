@@ -135,9 +135,16 @@ namespace Csla.Windows
     /// </summary>
     [Browsable(false)]
     [DefaultValue(null)]
-    public ContainerControl Host {get; set;}
+    public ContainerControl Host { get; set; }
 
-    #endregion 
+    /// <summary>
+    /// Forces the binding to re-read after an exception is thrown when changing the binding value
+    /// </summary>
+    [Browsable(true)]
+    [DefaultValue(false)]
+    public bool RefreshOnException { get; set; }
+
+    #endregion
 
     #region Private Methods
     /// <summary>
@@ -261,6 +268,12 @@ namespace Csla.Windows
       switch (e.BindingCompleteState)
       {
         case BindingCompleteState.Exception:
+          if ((RefreshOnException)
+        && e.Binding.DataSource is BindingSource
+        && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
+          {
+            e.Binding.ReadValue();
+          }
           if (BindingError != null)
           {
             BindingError(this, new BindingErrorEventArgs(e.Binding, e.Exception));

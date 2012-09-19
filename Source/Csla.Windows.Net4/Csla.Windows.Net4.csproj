@@ -121,6 +121,10 @@
     <Compile Include="..\Csla.Windows\CslaActionExtenderProperties.cs">
       <Link>CslaActionExtenderProperties.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Windows\CslaActionExtenderToolStrip.cs">
+      <Link>CslaActionExtenderToolStrip.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="..\Csla.Windows\Enums.cs">
       <Link>Enums.cs</Link>
     </Compile>

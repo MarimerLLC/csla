@@ -448,4 +448,13 @@
     <value>Failed on async load of property {0}</value>
     <comment>Csla 4.5</comment>
   </data>
+  <data name="ActionExtenderErrorCaption" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ActionExtenderInformationCaption" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
+    <value>Object is valid</value>
+  </data>
 </root>

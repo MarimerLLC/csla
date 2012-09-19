@@ -347,6 +347,8 @@
     <Compile Include="ValidationRules\ValidationTests.cs" />
     <Compile Include="ViewModelTests\TestViewModel.cs" />
     <Compile Include="ViewModelTests\ViewModelTests.cs" />
+    <Compile Include="Windows\ActionExtenderTests.cs" />
+    <Compile Include="Windows\BindingRefreshTests.cs" />
     <Compile Include="Windows\EditablePerson.cs" />
     <Compile Include="Windows\PersonForm.cs">
       <SubType>Form</SubType>

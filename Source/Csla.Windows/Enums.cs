@@ -27,7 +27,11 @@ namespace Csla.Windows
     /// <summary>
     /// Close the form.
     /// </summary>
-    Close
+    Close,
+    /// <summary>
+    /// Display a message box with any broken rules
+    /// </summary>
+    Validate
   }
 
   /// <summary>

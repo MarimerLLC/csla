@@ -24,10 +24,23 @@ namespace Csla.Test.Windows
       InitializeComponent();
     }
 
-    public void BindUI(EditablePerson person)
+    public void BindUI(EditablePerson person, bool useStandardActionExtender)
     {
       editablePersonBindingSource.DataSource = person;
       readWriteAuthorization1.ResetControlAuthorization();
+      if (useStandardActionExtender)
+      {
+        cslaActionExtender1.ResetActionBehaviors(person);
+      }
+      else
+      {
+        cslaActionExtenderToolStrip1.ResetActionBehaviors(person);
+      }
+    }
+
+    public void BindUI(EditablePerson person)
+    {
+      BindUI(person, true);
     }
 
     private void editablePersonBindingSource_CurrentItemChanged(object sender, EventArgs e)

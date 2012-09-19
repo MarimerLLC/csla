@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using Csla.Serialization;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Test.Windows
 {
@@ -33,10 +34,26 @@ namespace Csla.Test.Windows
     }
     public static EditablePerson GetEditablePerson()
     {
+      var tmp = new EditablePerson();
+      tmp.MarkOld();
+      return tmp;
+    }
+
+    public static EditablePerson GetEditablePerson(int authLevel)
+    {
+      var tmp = new EditablePerson();
+      tmp.LoadProperty(AuthLevelProperty, authLevel);
+      tmp.MarkOld();
+      return tmp;
+    }
+
+    public static EditablePerson NewEditablePerson()
+    {
       return new EditablePerson();
     }
 
     public static readonly PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
+    [Required()]
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
@@ -90,6 +107,43 @@ namespace Csla.Test.Windows
       }
 
       return base.CanWriteProperty(propertyName);
+    }
+
+    protected override void OnPropertyChanged(Core.IPropertyInfo propertyInfo)
+    {
+      using (BypassPropertyChecks)
+      {
+        if (AuthLevel == 3)
+        {
+          FirstName = "New First Name Value";
+          LastName = "New Last Name Value";
+          MiddleName = "New Middle Name Value";
+          PlaceOfBirth = "New PlaceOfBirth Value";
+        }
+
+      }
+      base.OnPropertyChanged(propertyInfo);
+    }
+
+    [RunLocal()]
+    private void DataPortal_Insert()
+    {
+      DoInsertUpdate();
+    }
+
+    [RunLocal()]
+    private void DataPortal_Update()
+    {
+      DoInsertUpdate();
+    }
+
+    private void DoInsertUpdate()
+    {
+      if (this.AuthLevel == 6)
+      {
+        throw new InvalidProgramException();
+      }
+ 
     }
 
   }

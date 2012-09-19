@@ -105,6 +105,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CslaActionExtenderProperties.cs" />
+    <Compile Include="CslaActionExtenderToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Enums.cs" />
     <Compile Include="ErrorEncounteredEventArgs.cs" />
     <Compile Include="HasBrokenRulesEventArgs.cs" />

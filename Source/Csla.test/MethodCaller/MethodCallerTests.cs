@@ -126,7 +126,9 @@ namespace Csla.Test.MethodCaller
 
 #if !WINDOWS_PHONE
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void CallDynamicIsFasterThanReflectionSuccess()
     {
       int times = 100000;

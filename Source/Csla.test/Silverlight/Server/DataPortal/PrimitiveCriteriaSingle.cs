@@ -150,7 +150,7 @@ namespace Csla.Test.DataPortalTest
 
     private void DataPortal_Delete(int id)
     {
-      Csla.ApplicationContext.GlobalContext.Clear();
+      ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("PrimitiveCriteriaSingle", "Deleted");
       MethodCalled = "Deleted+" + id.ToString();
     }

@@ -367,7 +367,6 @@ namespace Csla.Test.Basic
         [TestMethod]
         public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
         {
-
           bool changed = false;
           var obj = new RootList();
           obj.ListChanged += (o, e) =>
@@ -386,6 +385,11 @@ namespace Csla.Test.Basic
           Assert.IsFalse(changed, "Should not raise ListChanged event");
           Assert.IsTrue(obj.RaiseListChangedEvents);
           Assert.AreEqual(child, obj[0]);
+        }
+
+        [TestCleanup]
+        public void ClearContextsAfterEachTest() {
+          Csla.ApplicationContext.GlobalContext.Clear();
         }
       }
 

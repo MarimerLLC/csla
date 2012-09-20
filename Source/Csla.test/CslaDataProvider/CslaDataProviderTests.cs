@@ -121,5 +121,10 @@ namespace Csla.Test.CslaDataProvider
       dp.Save();
       Assert.IsTrue(saved);
     }
+
+    [TestCleanup]
+    public void ClearContextsAfterEachTest() {
+      Csla.ApplicationContext.GlobalContext.Clear();
+    }
   }
 }

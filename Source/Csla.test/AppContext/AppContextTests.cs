@@ -471,5 +471,11 @@ namespace Csla.Test.AppContext
       Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
     }
     #endregion
+
+    [TestCleanup]
+    public void ClearContextsAfterEachTest() {
+      ApplicationContext.GlobalContext.Clear();
+      ApplicationContext.Clear();
+    }
   }
 }

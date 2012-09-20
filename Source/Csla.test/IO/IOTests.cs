@@ -129,5 +129,10 @@ namespace Csla.Test.IO
             Assert.AreEqual("Deleted", Csla.ApplicationContext.GlobalContext["Root"]);
         }
 
+        [TestCleanup]
+        public void ClearContextsAfterEachTest()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+        }
     }
 }

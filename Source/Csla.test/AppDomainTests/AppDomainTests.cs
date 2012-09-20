@@ -39,5 +39,10 @@ namespace Csla.Test.AppDomainTests
   
         }
 
+        [TestCleanup]
+        public void ClearContextsAfterEachTest()
+        {
+            Csla.ApplicationContext.GlobalContext.Clear();
+        }
     }
 }

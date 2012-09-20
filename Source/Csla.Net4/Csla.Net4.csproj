@@ -896,17 +896,17 @@
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal.xsd">
+    <None Include="Service References\WcfPortal\SlPortal.wsdl" />
+    <None Include="Service References\WcfPortal\SlPortal.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal1.wsdl" />
-    <None Include="Service References\WcfPortal\WcfPortal1.xsd">
+    <None Include="Service References\WcfPortal\SlPortal1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal2.xsd">
+    <None Include="Service References\WcfPortal\SlPortal2.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -944,7 +944,6 @@
     </None>
     <None Include="Service References\WcfPortal\configuration.svcinfo" />
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />
-    <None Include="Service References\WcfPortal\WcfPortal.disco" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">

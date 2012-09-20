@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fabe0895-0f4a-4d0e-91e6-0e77492fd0e9" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
-    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
     <EnableDataBinding>true</EnableDataBinding>
     <ExcludedTypes />
     <ImportXmlTypes>false</ImportXmlTypes>
@@ -17,15 +17,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:40329/WcfPortal.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:21647/SlPortal.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="588b0a63-d16c-4f7e-8958-347401ff4f81" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="WcfPortal.disco" MetadataType="Disco" ID="4538af71-7b48-4b16-b94f-4657a6024df3" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?disco" />
-    <MetadataFile FileName="WcfPortal1.wsdl" MetadataType="Wsdl" ID="4da35d23-4409-4f60-b06a-2a5566d2e962" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?wsdl" />
-    <MetadataFile FileName="WcfPortal.xsd" MetadataType="Schema" ID="d3559c03-8bac-46cd-8db7-2b11eeefd0d5" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd1" />
-    <MetadataFile FileName="WcfPortal1.xsd" MetadataType="Schema" ID="ee4102be-654f-49d2-a3ae-58908efdf49b" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd0" />
-    <MetadataFile FileName="WcfPortal2.xsd" MetadataType="Schema" ID="96e3a188-e5ad-4217-aba4-7303fe0794a6" SourceId="1" SourceUrl="http://localhost:40329/WcfPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="SlPortal.xsd" MetadataType="Schema" ID="dd1854cb-d36d-43e4-94d7-253bb86658ce" SourceId="1" SourceUrl="http://localhost:21647/SlPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="WcfPortal2.wsdl" MetadataType="Wsdl" ID="8a4c9067-72af-4a97-ae3e-af3432ee7e70" SourceId="1" SourceUrl="http://localhost:21647/SlPortal.svc?wsdl" />
+    <MetadataFile FileName="SlPortal1.xsd" MetadataType="Schema" ID="05066b27-ae9a-42b7-b1de-4e407f490432" SourceId="1" SourceUrl="http://localhost:21647/SlPortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="SlPortal2.xsd" MetadataType="Schema" ID="294ca5ca-3e44-420d-b3c5-4aa692bea13d" SourceId="1" SourceUrl="http://localhost:21647/SlPortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="SlPortal.wsdl" MetadataType="Wsdl" ID="9e0a787e-3df2-4f23-a01e-bd74a0f18038" SourceId="1" SourceUrl="http://localhost:21647/SlPortal.svc?wsdl=wsdl0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

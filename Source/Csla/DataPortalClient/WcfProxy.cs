@@ -259,6 +259,42 @@ namespace Csla.DataPortalClient
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
+#if NET40
+      try
+      {
+        var request = new CreateRequest(objectType, criteria, context);
+        if (isSync)
+        {
+          response = proxy.Create(request);
+        }
+        else
+        {
+          var worker = new Csla.Threading.BackgroundWorker();
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          worker.RunWorkerCompleted += (o, e) =>
+            {
+              tcs.SetResult((WcfResponse)e.Result);
+            };
+          worker.DoWork += (o, e) =>
+            {
+              e.Result = proxy.Create(request);
+            };
+          worker.RunWorkerAsync();
+          response = await tcs.Task;
+        }
+        if (cf != null)
+          cf.Close();
+        object result = response.Result;
+        if (result is Exception)
+          throw (Exception)result;
+        return (DataPortalResult)result;
+      }
+      catch
+      {
+        cf.Abort();
+        throw;
+      }
+#else
       try
       {
         var request = new CreateRequest(objectType, criteria, context);
@@ -278,6 +314,7 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#endif
 #else
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
@@ -379,6 +416,42 @@ namespace Csla.DataPortalClient
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
+#if NET40
+      try
+      {
+        var request = new FetchRequest(objectType, criteria, context);
+        if (isSync)
+        {
+          response = proxy.Fetch(request);
+        }
+        else
+        {
+          var worker = new Csla.Threading.BackgroundWorker();
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          worker.RunWorkerCompleted += (o, e) =>
+            {
+              tcs.SetResult((WcfResponse)e.Result);
+            };
+          worker.DoWork += (o, e) =>
+            {
+              e.Result = proxy.Fetch(request);
+            };
+          worker.RunWorkerAsync();
+          response = await tcs.Task;
+        }
+        if (cf != null)
+          cf.Close();
+        object result = response.Result;
+        if (result is Exception)
+          throw (Exception)result;
+        return (DataPortalResult)result;
+      }
+      catch
+      {
+        cf.Abort();
+        throw;
+      }
+#else
       try
       {
         var request = new FetchRequest(objectType, criteria, context);
@@ -398,7 +471,7 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
-
+#endif
 #else // WinRT and Silverlight
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
@@ -502,6 +575,42 @@ namespace Csla.DataPortalClient
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
+      #if NET40
+      try
+      {
+        var request = new UpdateRequest(obj, context);
+        if (isSync)
+        {
+          response = proxy.Update(request);
+        }
+        else
+        {
+          var worker = new Csla.Threading.BackgroundWorker();
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          worker.RunWorkerCompleted += (o, e) =>
+            {
+              tcs.SetResult((WcfResponse)e.Result);
+            };
+          worker.DoWork += (o, e) =>
+            {
+              e.Result = proxy.Update(request);
+            };
+          worker.RunWorkerAsync();
+          response = await tcs.Task;
+        }
+        if (cf != null)
+          cf.Close();
+        object result = response.Result;
+        if (result is Exception)
+          throw (Exception)result;
+        return (DataPortalResult)result;
+      }
+      catch
+      {
+        cf.Abort();
+        throw;
+      }
+#else
       try
       {
         var request = new UpdateRequest(obj, context);
@@ -521,6 +630,7 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#endif
 #else
       var request = GetBaseUpdateCriteriaRequest();
       request.ObjectData = MobileFormatter.Serialize(obj);
@@ -617,6 +727,42 @@ namespace Csla.DataPortalClient
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
+#if NET40
+      try
+      {
+        var request = new DeleteRequest(objectType, criteria, context);
+        if (isSync)
+        {
+          response = proxy.Delete(request);
+        }
+        else
+        {
+          var worker = new Csla.Threading.BackgroundWorker();
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          worker.RunWorkerCompleted += (o, e) =>
+            {
+              tcs.SetResult((WcfResponse)e.Result);
+            };
+          worker.DoWork += (o, e) =>
+            {
+              e.Result = proxy.Delete(request);
+            };
+          worker.RunWorkerAsync();
+          response = await tcs.Task;
+        }
+        if (cf != null)
+          cf.Close();
+        object result = response.Result;
+        if (result is Exception)
+          throw (Exception)result;
+        return (DataPortalResult)result;
+      }
+      catch
+      {
+        cf.Abort();
+        throw;
+      }
+#else
       try
       {
         var request = new DeleteRequest(objectType, criteria, context);
@@ -636,6 +782,7 @@ namespace Csla.DataPortalClient
       if (result is Exception)
         throw (Exception)result;
       return (DataPortalResult)result;
+#endif
 #else
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;

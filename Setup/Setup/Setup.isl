@@ -262,7 +262,7 @@
 		<row><td>NewBinary16</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\InstallFirstUse.ico</td></row>
 		<row><td>NewBinary17</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\InstallPartial.ico</td></row>
 		<row><td>NewBinary18</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\InstallStateMenu.ico</td></row>
-		<row><td>NewBinary19</td><td/><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\csla_logo_banner.jpg</td></row>
+		<row><td>NewBinary19</td><td/><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\csla_logo_banner.jpg</td></row>
 		<row><td>NewBinary2</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\New.ibd</td></row>
 		<row><td>NewBinary3</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\Up.ibd</td></row>
 		<row><td>NewBinary4</td><td/><td>&lt;ISProductFolder&gt;\Redist\Language Independent\OS Independent\WarningIcon.ibd</td></row>
@@ -349,6 +349,8 @@
 		<row><td>Csla.dll1</td><td>{F4718EDA-A208-4FE4-BA22-A96C436DB5D0}</td><td>SILVERLIGHT</td><td>2</td><td/><td>csla.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.dll2</td><td>{F3B54540-DF04-49C1-8AB2-72AFB04C6771}</td><td>WINRT</td><td>2</td><td/><td>csla.dll2</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.dll3</td><td>{A6464DFB-8CC1-4345-8B54-3691E79D5AB7}</td><td>NET</td><td>2</td><td/><td>csla.dll3</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISO19770_LocalTag</td><td>{F81728F5-F09F-4EE2-B386-A36F0CA8FA80}</td><td>INSTALLDIR</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISO19770_SystemTag</td><td>{224EBC3A-A1F6-4ED1-8B6D-098FEFF9EEEE}</td><td>CommonAppDataFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{949C7D8F-9D38-4CE3-BBC7-3A20E2488478}</td><td>PersonalFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{EEE371EC-A027-4BD7-A80C-90F245E4C6FB}</td><td>BIN</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td>{118F480F-487F-4F05-96FA-2D16F56121A0}</td><td>CSLA_.NET</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -570,7 +572,7 @@
 		<row><td>LicenseAgreement</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>LicenseAgreement</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>292</td><td>25</td><td>65539</td><td/><td>##IDS__IsLicenseDlg_LicenseAgreement##</td><td/><td/><td>0</td><td/><td/><td/></row>
 		<row><td>LicenseAgreement</td><td>ISPrintButton</td><td>PushButton</td><td>301</td><td>188</td><td>65</td><td>17</td><td>3</td><td/><td>##IDS_PRINT_BUTTON##</td><td>Agree</td><td/><td>0</td><td/><td/><td/></row>
-		<row><td>LicenseAgreement</td><td>Memo</td><td>ScrollableText</td><td>8</td><td>55</td><td>358</td><td>130</td><td>7</td><td/><td/><td/><td/><td>0</td><td/><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\license.rtf</td><td/></row>
+		<row><td>LicenseAgreement</td><td>Memo</td><td>ScrollableText</td><td>8</td><td>55</td><td>358</td><td>130</td><td>7</td><td/><td/><td/><td/><td>0</td><td/><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\license.rtf</td><td/></row>
 		<row><td>LicenseAgreement</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_BACK##</td><td>Next</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>MaintenanceType</td><td>Banner</td><td>Bitmap</td><td>0</td><td>0</td><td>374</td><td>44</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary1</td></row>
@@ -634,7 +636,7 @@
 		<row><td>ReadmeInformation</td><td>DlgLine</td><td>Line</td><td>48</td><td>234</td><td>326</td><td>0</td><td>3</td><td/><td/><td/><td/><td>0</td><td>0</td><td/><td/></row>
 		<row><td>ReadmeInformation</td><td>DlgTitle</td><td>Text</td><td>13</td><td>6</td><td>193</td><td>13</td><td>65539</td><td/><td>##IDS__IsReadmeDlg_ReadMeInfo##</td><td>DlgDesc</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>ReadmeInformation</td><td>Next</td><td>PushButton</td><td>230</td><td>243</td><td>66</td><td>17</td><td>1048579</td><td/><td>##IDS_NEXT##</td><td>Cancel</td><td/><td>0</td><td/><td/><td/></row>
-		<row><td>ReadmeInformation</td><td>Readme</td><td>ScrollableText</td><td>10</td><td>55</td><td>353</td><td>166</td><td>3</td><td/><td/><td>Banner</td><td/><td>0</td><td/><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\readme.rtf</td><td/></row>
+		<row><td>ReadmeInformation</td><td>Readme</td><td>ScrollableText</td><td>10</td><td>55</td><td>353</td><td>166</td><td>3</td><td/><td/><td>Banner</td><td/><td>0</td><td/><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\readme.rtf</td><td/></row>
 		<row><td>ReadyToInstall</td><td>Back</td><td>PushButton</td><td>164</td><td>243</td><td>66</td><td>17</td><td>3</td><td/><td>##IDS_BACK##</td><td>GroupBox1</td><td/><td>0</td><td/><td/><td/></row>
 		<row><td>ReadyToInstall</td><td>Banner</td><td>Bitmap</td><td>0</td><td>0</td><td>374</td><td>44</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td>NewBinary1</td></row>
 		<row><td>ReadyToInstall</td><td>BannerLine</td><td>Line</td><td>0</td><td>44</td><td>374</td><td>0</td><td>1</td><td/><td/><td/><td/><td>0</td><td/><td/><td/></row>
@@ -1070,6 +1072,8 @@
 		<col key="yes" def="s72">Component_</col>
 		<row><td>BIN</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>CSLA_.NET</td><td>ISX_DEFAULTCOMPONENT10</td></row>
+		<row><td>CommonAppDataFolder</td><td>ISO19770_SystemTag</td></row>
+		<row><td>INSTALLDIR</td><td>ISO19770_LocalTag</td></row>
 		<row><td>PersonalFolder</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>SNIPPETS</td><td>ISX_DEFAULTCOMPONENT7</td></row>
 		<row><td>SUPPORT</td><td>ISX_DEFAULTCOMPONENT6</td></row>
@@ -1090,6 +1094,7 @@
 		<row><td>ISSelfRegisterFinalize</td><td>1</td><td>ISSELFREG.DLL</td><td>ISSelfRegisterFinalize</td><td/><td/></row>
 		<row><td>ISUnSelfRegisterFiles</td><td>3073</td><td>ISSELFREG.DLL</td><td>ISUnSelfRegisterFiles</td><td/><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td>51</td><td>ARPINSTALLLOCATION</td><td>[INSTALLDIR]</td><td/><td/></row>
+		<row><td>SetARPReadme</td><td>51</td><td>ARPREADME</td><td>INSTALLDIR</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%SystemRoot]\Profiles\All Users</td><td/><td/></row>
 		<row><td>ShowMsiLog</td><td>226</td><td>SystemFolder</td><td>[SystemFolder]notepad.exe "[MsiLogFileLocation]"</td><td/><td>Shows Property-driven MSI Log</td></row>
 		<row><td>setAllUsersProfile2K</td><td>51</td><td>ALLUSERSPROFILE</td><td>[%ALLUSERSPROFILE]</td><td/><td/></row>
@@ -1165,7 +1170,7 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>CSLA</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>_.5.2</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1198,6 +1203,7 @@
 		<row><td>WINRT</td><td>BIN</td><td>WinRT</td><td/><td>0</td><td/></row>
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
+		<row><td>_.5.2</td><td>CSLA_.NET</td><td>4.5.2</td><td/><td>0</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -1923,72 +1929,72 @@
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I4">ISAttributes</col>
 		<col def="S72">ISComponentSubFolder_</col>
-		<row><td>addacriteriaclass.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDACR~1.SNI|AddACriteriaClass.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddACriteriaClass.snippet</td><td>1</td><td/></row>
-		<row><td>addacriteriaclass.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDACR~1.SNI|AddACriteriaClass.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddACriteriaClass.snippet</td><td>1</td><td/></row>
-		<row><td>addbusinessregions.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDBUS~1.SNI|AddBusinessRegions.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddBusinessRegions.snippet</td><td>1</td><td/></row>
-		<row><td>addbusinessregions.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDBUS~1.SNI|AddBusinessRegions.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddBusinessRegions.snippet</td><td>1</td><td/></row>
-		<row><td>adddataaccessregion.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDDAT~1.SNI|AddDataAccessRegion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddDataAccessRegion.snippet</td><td>1</td><td/></row>
-		<row><td>adddataaccessregion.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDDAT~1.SNI|AddDataAccessRegion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddDataAccessRegion.snippet</td><td>1</td><td/></row>
-		<row><td>addfactorymethods.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddFactoryMethods.snippet</td><td>1</td><td/></row>
-		<row><td>addfactorymethods.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddFactoryMethods.snippet</td><td>1</td><td/></row>
-		<row><td>csla.dll1</td><td>Csla.dll1</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.dll</td><td>1</td><td/></row>
-		<row><td>csla.dll2</td><td>Csla.dll2</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.dll</td><td>1</td><td/></row>
-		<row><td>csla.dll3</td><td>Csla.dll3</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.dll</td><td>1</td><td/></row>
-		<row><td>csla.web.dll1</td><td>Csla.Web.dll1</td><td>CSLAWE~1.DLL|Csla.Web.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.dll</td><td>1</td><td/></row>
-		<row><td>csla.web.mvc.dll1</td><td>Csla.Web.Mvc.dll1</td><td>CSLAWE~1.DLL|Csla.Web.Mvc.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.dll</td><td>1</td><td/></row>
-		<row><td>csla.web.mvc.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.Mvc.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.XML</td><td>1</td><td/></row>
-		<row><td>csla.web.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.XML</td><td>1</td><td/></row>
-		<row><td>csla.windows.dll1</td><td>Csla.Windows.dll1</td><td>CSLAWI~1.DLL|Csla.Windows.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.dll</td><td>1</td><td/></row>
-		<row><td>csla.windows.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWI~1.XML|Csla.Windows.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.XML</td><td>1</td><td/></row>
-		<row><td>csla.xaml.dll1</td><td>Csla.Xaml.dll1</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.dll</td><td>1</td><td/></row>
-		<row><td>csla.xaml.dll2</td><td>Csla.Xaml.dll2</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.dll</td><td>1</td><td/></row>
-		<row><td>csla.xaml.dll3</td><td>Csla.Xaml.dll3</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.dll</td><td>1</td><td/></row>
-		<row><td>csla.xaml.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.XML</td><td>1</td><td/></row>
-		<row><td>csla.xaml.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.XML</td><td>1</td><td/></row>
-		<row><td>csla.xaml.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.XML</td><td>1</td><td/></row>
-		<row><td>csla.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.XML</td><td>1</td><td/></row>
-		<row><td>csla.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>Csla.xml</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.xml</td><td>1</td><td/></row>
-		<row><td>csla.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.XML</td><td>1</td><td/></row>
-		<row><td>cslasamples.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASA~1.ZIP|CslaSamples.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSamples.zip</td><td>1</td><td/></row>
-		<row><td>cslasource.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASO~1.ZIP|CslaSource.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSource.zip</td><td>1</td><td/></row>
-		<row><td>defineacslaauthorizationrule</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaAuthorizationRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaAuthorizationRule.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslaauthorizationrule1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaAuthorizationRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaAuthorizationRule.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslabusinessrule.snip</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaBusinessRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaBusinessRule.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslabusinessrule.snip1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaBusinessRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaBusinessRule.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildproperty.sni</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildproperty.sni1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildpropertywith</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildpropertywith1</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildpropertywith2</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslachildpropertywith3</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslaintergraphreferen</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaIntergraphReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaIntergraphReference.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslaintergraphreferen1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaIntergraphReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaIntergraphReference.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslamethod.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaMethod.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaMethod.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslamethod.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaMethod.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaMethod.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslaproperty.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslaproperty.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithconve</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithConversion.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithconve1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithConversion.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithnoaut</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithnoaut1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithpriva</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslapropertywithpriva1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlyproperty.</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlyproperty.1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithConversion.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw1</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw2</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw3</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithConversion.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw4</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslareadonlypropertyw5</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslasmartdateproperty</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaSmartDateProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaSmartDateProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslasmartdateproperty1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaSmartDateProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaSmartDateProperty.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslausingreference.sn</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaUsingReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaUsingReference.snippet</td><td>1</td><td/></row>
-		<row><td>defineacslausingreference.sn1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaUsingReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaUsingReference.snippet</td><td>1</td><td/></row>
-		<row><td>license.rtf2</td><td>ISX_DEFAULTCOMPONENT5</td><td>license.rtf</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\license.rtf</td><td>1</td><td/></row>
-		<row><td>license.txt1</td><td>ISX_DEFAULTCOMPONENT5</td><td>license.txt</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\license.txt</td><td>1</td><td/></row>
-		<row><td>readme.rtf1</td><td>ISX_DEFAULTCOMPONENT5</td><td>readme.rtf</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\readme.rtf</td><td>1</td><td/></row>
-		<row><td>readme.txt1</td><td>ISX_DEFAULTCOMPONENT5</td><td>readme.txt</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\readme.txt</td><td>1</td><td/></row>
+		<row><td>addacriteriaclass.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDACR~1.SNI|AddACriteriaClass.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddACriteriaClass.snippet</td><td>1</td><td/></row>
+		<row><td>addacriteriaclass.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDACR~1.SNI|AddACriteriaClass.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddACriteriaClass.snippet</td><td>1</td><td/></row>
+		<row><td>addbusinessregions.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDBUS~1.SNI|AddBusinessRegions.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddBusinessRegions.snippet</td><td>1</td><td/></row>
+		<row><td>addbusinessregions.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDBUS~1.SNI|AddBusinessRegions.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddBusinessRegions.snippet</td><td>1</td><td/></row>
+		<row><td>adddataaccessregion.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDDAT~1.SNI|AddDataAccessRegion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddDataAccessRegion.snippet</td><td>1</td><td/></row>
+		<row><td>adddataaccessregion.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDDAT~1.SNI|AddDataAccessRegion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddDataAccessRegion.snippet</td><td>1</td><td/></row>
+		<row><td>addfactorymethods.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddFactoryMethods.snippet</td><td>1</td><td/></row>
+		<row><td>addfactorymethods.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddFactoryMethods.snippet</td><td>1</td><td/></row>
+		<row><td>csla.dll1</td><td>Csla.dll1</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.dll</td><td>1</td><td/></row>
+		<row><td>csla.dll2</td><td>Csla.dll2</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.dll</td><td>1</td><td/></row>
+		<row><td>csla.dll3</td><td>Csla.dll3</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.dll1</td><td>Csla.Web.dll1</td><td>CSLAWE~1.DLL|Csla.Web.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.mvc.dll1</td><td>Csla.Web.Mvc.dll1</td><td>CSLAWE~1.DLL|Csla.Web.Mvc.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.mvc.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.Mvc.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.XML</td><td>1</td><td/></row>
+		<row><td>csla.web.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.XML</td><td>1</td><td/></row>
+		<row><td>csla.windows.dll1</td><td>Csla.Windows.dll1</td><td>CSLAWI~1.DLL|Csla.Windows.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.dll</td><td>1</td><td/></row>
+		<row><td>csla.windows.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWI~1.XML|Csla.Windows.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.XML</td><td>1</td><td/></row>
+		<row><td>csla.xaml.dll1</td><td>Csla.Xaml.dll1</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.dll</td><td>1</td><td/></row>
+		<row><td>csla.xaml.dll2</td><td>Csla.Xaml.dll2</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.dll</td><td>1</td><td/></row>
+		<row><td>csla.xaml.dll3</td><td>Csla.Xaml.dll3</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.dll</td><td>1</td><td/></row>
+		<row><td>csla.xaml.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.XML</td><td>1</td><td/></row>
+		<row><td>csla.xaml.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.XML</td><td>1</td><td/></row>
+		<row><td>csla.xaml.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.XML</td><td>1</td><td/></row>
+		<row><td>csla.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.XML</td><td>1</td><td/></row>
+		<row><td>csla.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>Csla.xml</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.xml</td><td>1</td><td/></row>
+		<row><td>csla.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.XML</td><td>1</td><td/></row>
+		<row><td>cslasamples.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASA~1.ZIP|CslaSamples.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSamples.zip</td><td>1</td><td/></row>
+		<row><td>cslasource.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASO~1.ZIP|CslaSource.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSource.zip</td><td>1</td><td/></row>
+		<row><td>defineacslaauthorizationrule</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaAuthorizationRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaAuthorizationRule.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslaauthorizationrule1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaAuthorizationRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaAuthorizationRule.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslabusinessrule.snip</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaBusinessRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaBusinessRule.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslabusinessrule.snip1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaBusinessRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaBusinessRule.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildproperty.sni</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildproperty.sni1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildpropertywith</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildpropertywith1</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildpropertywith2</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildPropertyWithAsyncLazyLoad.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslachildpropertywith3</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaChildPropertyWithSyncLazyLoad.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslaintergraphreferen</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaIntergraphReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaIntergraphReference.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslaintergraphreferen1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaIntergraphReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaIntergraphReference.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslamethod.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaMethod.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaMethod.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslamethod.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaMethod.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaMethod.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslaproperty.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslaproperty.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithconve</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithConversion.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithconve1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithConversion.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithnoaut</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithnoaut1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithpriva</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslapropertywithpriva1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlyproperty.</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlyproperty.1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithConversion.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw1</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw2</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw3</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithConversion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithConversion.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw4</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithNoAuthorization.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslareadonlypropertyw5</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslasmartdateproperty</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaSmartDateProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaSmartDateProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslasmartdateproperty1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaSmartDateProperty.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaSmartDateProperty.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslausingreference.sn</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaUsingReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaUsingReference.snippet</td><td>1</td><td/></row>
+		<row><td>defineacslausingreference.sn1</td><td>ISX_DEFAULTCOMPONENT8</td><td>DEFINE~1.SNI|DefineACslaUsingReference.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\DefineACslaUsingReference.snippet</td><td>1</td><td/></row>
+		<row><td>license.rtf2</td><td>ISX_DEFAULTCOMPONENT5</td><td>license.rtf</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\license.rtf</td><td>1</td><td/></row>
+		<row><td>license.txt1</td><td>ISX_DEFAULTCOMPONENT5</td><td>license.txt</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\license.txt</td><td>1</td><td/></row>
+		<row><td>readme.rtf1</td><td>ISX_DEFAULTCOMPONENT5</td><td>readme.rtf</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\readme.rtf</td><td>1</td><td/></row>
+		<row><td>readme.txt1</td><td>ISX_DEFAULTCOMPONENT5</td><td>readme.txt</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\readme.txt</td><td>1</td><td/></row>
 	</table>
 
 	<table name="FileSFPCatalog">
@@ -2254,6 +2260,8 @@
 		<row><td>Csla.dll1</td><td/><td/><td>_B6F1577D_79BA_40D5_AE3B_8453D9C40A8B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.dll2</td><td/><td/><td>_D41CFFDD_2EC0_4CFA_98C6_BC309725EEF4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.dll3</td><td/><td/><td>_1539351C_D310_42AA_A723_CAA167C40B21_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISO19770_LocalTag</td><td/><td/><td>_CF4AE941_B5C6_4D53_91F6_71ED1E5C5ED5_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISO19770_SystemTag</td><td/><td/><td>_EDEFE363_5723_46D3_A190_9E7D259AEDF2_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_FD0B65CA_8A68_41BA_B36C_6B0E1108ADED_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_5FE346E4_2565_4718_A426_C76E07715FCC_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td/><td/><td>_B2FA0475_1528_4DF3_9120_1DE108DA7932_FILTER</td><td/><td/><td/><td/></row>
@@ -4036,12 +4044,14 @@
 		<row><td>ID_STRING1</td><td>1033</td><td/><td>0</td><td/><td>991980977</td></row>
 		<row><td>ID_STRING2</td><td>1033</td><td>http://www.lhotka.net/cslanet</td><td>0</td><td/><td>991976913</td></row>
 		<row><td>ID_STRING3</td><td>1033</td><td>Marimer LLC</td><td>0</td><td/><td>992009649</td></row>
+		<row><td>ID_STRING4</td><td>1033</td><td>http://forums.lhotka.net</td><td>0</td><td/><td>-996104949</td></row>
 		<row><td>IIDS_UITEXT_FeatureUninstalled</td><td>1033</td><td>This feature will remain uninstalled.</td><td>0</td><td/><td>991980977</td></row>
 	</table>
 
 	<table name="ISSwidtagProperty">
 		<col key="yes" def="s72">Name</col>
 		<col def="s0">Value</col>
+		<row><td>TagCreatorRegid</td><td>regid.1999-01.net.lhotka</td></row>
 		<row><td>UniqueId</td><td>7847789F-7F23-49B5-AA84-2D8F3F1B4D7B</td></row>
 	</table>
 
@@ -4143,7 +4153,7 @@
 		<col def="V0">Data</col>
 		<col def="S255">ISBuildSourcePath</col>
 		<col def="I2">ISIconIndex</col>
-		<row><td>ARPPRODUCTICON.exe</td><td/><td>C:\Users\Rockford\Documents\Visual Studio 2012\Projects\csla\trunk\favicon.ico</td><td>0</td></row>
+		<row><td>ARPPRODUCTICON.exe</td><td/><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\favicon.ico</td><td>0</td></row>
 	</table>
 
 	<table name="IniFile">
@@ -4232,6 +4242,7 @@
 		<row><td>SelfRegModules</td><td/><td>5600</td><td>SelfRegModules</td><td/></row>
 		<row><td>SelfUnregModules</td><td/><td>2200</td><td>SelfUnregModules</td><td/></row>
 		<row><td>SetARPINSTALLLOCATION</td><td/><td>1100</td><td>SetARPINSTALLLOCATION</td><td/></row>
+		<row><td>SetARPReadme</td><td/><td>1001</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>VersionNT = 400</td><td>970</td><td/><td/></row>
 		<row><td>SetODBCFolders</td><td/><td>1200</td><td>SetODBCFolders</td><td/></row>
 		<row><td>StartServices</td><td>VersionNT</td><td>5900</td><td>StartServices</td><td/></row>
@@ -4276,7 +4287,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>ISTheme</td><td>InstallShield Blue.theme</td></row>
 		<row><td>ISUSLock</td><td>{B915B32E-CA69-4DE1-908C-38F7C6FAEB48}</td></row>
 		<row><td>ISUSSignature</td><td>{00F91D4A-0130-40F1-9BA0-6C412400BDCB}</td></row>
-		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewTextMessages,viewProject,viewRealSetupDesign,viewSetupDesign,viewSetupTypes,viewUpgradePaths,viewUpdateService,viewCE,viewFeatureFiles,viewAppFiles</td></row>
+		<row><td>ISVisitedViews</td><td>viewAssistant,viewUI,viewTextMessages,viewProject,viewRealSetupDesign,viewSetupDesign,viewSetupTypes,viewUpgradePaths,viewUpdateService,viewCE,viewFeatureFiles,viewAppFiles,viewDependencies,viewObjects</td></row>
 		<row><td>Limited</td><td>1</td></row>
 		<row><td>LockPermissionMode</td><td>1</td></row>
 		<row><td>MsiExecCmdLineOptions</td><td/></row>
@@ -4289,8 +4300,8 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>SccEnabled</td><td>0</td></row>
 		<row><td>SccPath</td><td/></row>
 		<row><td>SchemaVersion</td><td>773</td></row>
-		<row><td>SwidtagLocalComponent</td><td/></row>
-		<row><td>SwidtagSystemComponent</td><td/></row>
+		<row><td>SwidtagLocalComponent</td><td>ISO19770_LocalTag</td></row>
+		<row><td>SwidtagSystemComponent</td><td>ISO19770_SystemTag</td></row>
 		<row><td>Type</td><td>MSIE</td></row>
 	</table>
 
@@ -4316,6 +4327,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PatchWelcome</td><td>Installed And PATCH And Not IS_MAJOR_UPGRADE</td><td>1205</td><td>Patch Panel</td><td/></row>
 		<row><td>RMCCPSearch</td><td>Not CCP_SUCCESS And CCP_TEST</td><td>600</td><td>RMCCPSearch</td><td/></row>
 		<row><td>ResolveSource</td><td>Not Installed</td><td>990</td><td>ResolveSource</td><td/></row>
+		<row><td>SetARPReadme</td><td/><td>1001</td><td/><td/></row>
 		<row><td>SetAllUsersProfileNT</td><td>VersionNT = 400</td><td>970</td><td/><td/></row>
 		<row><td>SetupCompleteError</td><td/><td>-3</td><td>SetupCompleteError</td><td/></row>
 		<row><td>SetupCompleteSuccess</td><td/><td>-1</td><td>SetupCompleteSuccess</td><td/></row>
@@ -4584,8 +4596,10 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<col def="L0">Value</col>
 		<col def="S255">ISComments</col>
 		<row><td>ALLUSERS</td><td>1</td><td/></row>
+		<row><td>ARPHELPLINK</td><td>##ID_STRING4##</td><td/></row>
 		<row><td>ARPINSTALLLOCATION</td><td/><td/></row>
 		<row><td>ARPPRODUCTICON</td><td>ARPPRODUCTICON.exe</td><td/></row>
+		<row><td>ARPREADME</td><td>INSTALLDIR</td><td/></row>
 		<row><td>ARPSIZE</td><td/><td/></row>
 		<row><td>ARPURLINFOABOUT</td><td>##ID_STRING2##</td><td/></row>
 		<row><td>AgreeToLicense</td><td>No</td><td/></row>
@@ -4653,7 +4667,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{5E49E98A-E901-47B5-BF08-11BC0AAB3C72}</td><td/></row>
 		<row><td>ProductName</td><td>CSLA .NET</td><td/></row>
-		<row><td>ProductVersion</td><td>4.5.1</td><td/></row>
+		<row><td>ProductVersion</td><td>4.5.2</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

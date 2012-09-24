@@ -4,7 +4,7 @@
     <id>CSLA-Silverlight</id>
     <title>CSLA .NET - Silverlight</title>
     <tags>CSLA Silverlight</tags>
-    <version>4.3.10</version>
+    <version>4.5.2-Beta1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -19,18 +19,13 @@ CSLA .NET is an application development framework that reduces the cost of build
 Supports the creation of Silverlight applications.
     </summary>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.3.10]" />
+      <dependency id="CSLA-Core" version="[4.5.2-Beta1]" />
     </dependencies>
   </metadata>
   <files>
     <!-- .NET 4.0 Client -->
     <!-- > None -->
     <!-- Silverlight 4.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.dll*" target="lib\sl40" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.pdb*" target="lib\sl40" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.resources.dll*" target="lib\sl40" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.resources.pdb*" target="lib\sl40" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.Xaml.xml*" target="lib\sl40" />
     <!-- Silverlight 5.0 Client -->
     <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.dll*" target="lib\sl50" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.Xaml.pdb*" target="lib\sl50" />

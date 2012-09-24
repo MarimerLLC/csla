@@ -4,7 +4,7 @@
     <id>CSLA-WindowsPhone</id>
     <title>CSLA .NET - Windows Phone</title>
     <tags>CSLA WP7 Windows Phone</tags>
-    <version>4.3.10</version>
+    <version>4.5.2</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Windows Phone 7 (WP7) "Mango" applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.3.10]" />
+      <dependency id="CSLA-Core" version="[4.5.2]" />
     </dependencies>
     <!--
     <frameworkAssemblies>
@@ -43,7 +43,7 @@ Supports the creation of Windows Phone 7 (WP7) "Mango" applications.
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.pdb*" target="lib\sl4-wp71" />
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.dll*" target="lib\sl4-wp71" />
     <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.resources.pdb*" target="lib\sl4-wp71" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.Xaml.xml*" target="lib\sl4-wp71" /> 
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Xaml.Wp\**\*.cs" target="src" />
     <file src="..\..\Source\**\Csla.Xaml\**\*.cs" target="src" />

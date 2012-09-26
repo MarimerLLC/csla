@@ -1,93 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿//-----------------------------------------------------------------------
+// <copyright file="OrderMaint2.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary></summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Windows.Forms;
-using CslaStore.Business;
+using ActionExtenderSample.Business;
 using Csla.Windows;
 
-namespace Sample
+namespace ActionExtenderSample
 {
-	public partial class OrderMaint2 : Form
-	{
-		public OrderMaint2()
-		{
-			InitializeComponent();
-		}
+  public partial class OrderMaint2 : Form
+  {
+    private Order _order = null;
 
-		public OrderMaint2(Guid orderId)
-		{
-			InitializeComponent();
+    private OrderMaint2()
+    {
+    }
 
-			_Order = Order.GetOrderWithDetail(orderId);
-			BindUI();
-		}
+    public OrderMaint2(Guid orderId)
+    {
+      InitializeComponent();
 
-		Order _Order = null;
+      _order = Order.GetOrder(orderId);
+      BindUI();
+    }
 
-		void BindUI()
-		{
-			_BindingTree = BindingSourceHelper.InitializeBindingSourceTree(this.components, orderBindingSource);
-			_BindingTree.Bind(_Order);
-		}
+    private void BindUI()
+    {
+      cslaActionExtender1.ResetActionBehaviors(_order);
+    }
 
-		BindingSourceNode _BindingTree = null;
+    private void cslaActionExtender1_SetForNew(object sender, CslaActionEventArgs e)
+    {
+      _order = Order.NewOrder();
+      BindUI();
+    }
 
-		private void toolSave_Click(object sender, EventArgs e)
-		{
-			if (Save())
-				MessageBox.Show("Order saved.");
-		}
+    private void orderDetailListDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+    {
+      e.Cancel = true;
+    }
 
-		private void toolSaveNew_Click(object sender, EventArgs e)
-		{
-			if (Save())
-			{
-				_Order = Order.NewOrder();
-				BindUI();
-			}
-		}
+    private void orderDateTextBox_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      var textBox = sender as TextBox;
+      if (textBox != null && textBox.Name == "orderDateTextBox")
+        orderBindingSource.BindingComplete += orderBindingSource_BindingComplete;
+    }
 
-		private void toolSaveClose_Click(object sender, EventArgs e)
-		{
-			if (Save())
-			{
-				this.Close();
-			}
-		}
-
-		private void toolCancel_Click(object sender, EventArgs e)
-		{
-			_BindingTree.Cancel(_Order);
-		}
-
-		private void toolClose_Click(object sender, EventArgs e)
-		{
-			_BindingTree.Close();
-		}
-
-		bool Save()
-		{
-			bool ret = false;
-
-			_BindingTree.Apply();
-
-			try
-			{
-				_Order = _Order.Save();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
-			BindUI();
-
-			ret = true;
-
-			return ret;
-		}
-	}
+    private void orderBindingSource_BindingComplete(object sender, BindingCompleteEventArgs e)
+    {
+      orderBindingSource.BindingComplete -= orderBindingSource_BindingComplete;
+      if (e.BindingCompleteState != BindingCompleteState.Success)
+      {
+        var textBox = e.Binding.BindableComponent as TextBox;
+        if (textBox != null && textBox.Name == "orderDateTextBox")
+        {
+          textBox.Text = ((sender as BindingSource).Current as Order).OrderDate;
+        }
+      }
+    }
+  }
 }

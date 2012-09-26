@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="OrderMaint.cs" company="Marimer LLC">
+// <copyright file="OrderMaint3.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -12,15 +12,17 @@ using Csla.Windows;
 
 namespace ActionExtenderSample
 {
-  public partial class OrderMaint : Form
+  public partial class OrderMaint3 : Form
   {
     private Order _order = null;
 
-    private OrderMaint()
+    private BindingSourceNode _bindingTree = null;
+
+    private OrderMaint3()
     {
     }
 
-    public OrderMaint(Guid orderId)
+    public OrderMaint3(Guid orderId)
     {
       InitializeComponent();
 
@@ -30,13 +32,63 @@ namespace ActionExtenderSample
 
     private void BindUI()
     {
-      cslaActionExtender1.ResetActionBehaviors(_order);
+      _bindingTree = BindingSourceHelper.InitializeBindingSourceTree(components, orderBindingSource);
+      _bindingTree.Bind(_order);
     }
 
-    private void cslaActionExtender1_SetForNew(object sender, CslaActionEventArgs e)
+    private void toolSave_Click(object sender, EventArgs e)
     {
-      _order = Order.NewOrder();
+      if (Save())
+        MessageBox.Show("Order saved.");
+    }
+
+    private void toolSaveNew_Click(object sender, EventArgs e)
+    {
+      if (Save())
+      {
+        _order = Order.NewOrder();
+        BindUI();
+      }
+    }
+
+    private void toolSaveClose_Click(object sender, EventArgs e)
+    {
+      if (Save())
+      {
+        Close();
+      }
+    }
+
+    private void toolCancel_Click(object sender, EventArgs e)
+    {
+      _bindingTree.Cancel(_order);
+    }
+
+    private void toolClose_Click(object sender, EventArgs e)
+    {
+      _bindingTree.Close();
+      Close();
+    }
+
+    private bool Save()
+    {
+      bool ret = false;
+
+      _bindingTree.Apply();
+
+      try
+      {
+        _order = _order.Save();
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message);
+      }
       BindUI();
+
+      ret = true;
+
+      return ret;
     }
 
     private void orderDetailListDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)

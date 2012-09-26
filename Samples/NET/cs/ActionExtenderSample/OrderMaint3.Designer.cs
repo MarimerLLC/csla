@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="OrderMaint.Designer.cs" company="Marimer LLC">
+// <copyright file="OrderMaint3.Designer.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
@@ -8,7 +8,7 @@
 
 namespace ActionExtenderSample
 {
-  partial class OrderMaint
+  partial class OrderMaint3
   {
     /// <summary>
     /// Required designer variable.
@@ -58,14 +58,12 @@ namespace ActionExtenderSample
       this.orderDateTextBox = new System.Windows.Forms.TextBox();
       this.orderDetailListBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.orderDetailListDataGridView = new System.Windows.Forms.DataGridView();
-      this.btnForceSave = new System.Windows.Forms.Button();
-      this.btnValidate = new System.Windows.Forms.Button();
-      this.btnClose = new System.Windows.Forms.Button();
-      this.btnCancel = new System.Windows.Forms.Button();
-      this.btnSaveClose = new System.Windows.Forms.Button();
-      this.btnSaveNew = new System.Windows.Forms.Button();
-      this.btnSave = new System.Windows.Forms.Button();
-      this.cslaActionExtender1 = new Csla.Windows.CslaActionExtender(this.components);
+      this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+      this.toolSave = new System.Windows.Forms.ToolStripButton();
+      this.toolSaveNew = new System.Windows.Forms.ToolStripButton();
+      this.toolSaveClose = new System.Windows.Forms.ToolStripButton();
+      this.toolCancel = new System.Windows.Forms.ToolStripButton();
+      this.toolClose = new System.Windows.Forms.ToolStripButton();
       this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
       this.bindingSourceRefresh1 = new Csla.Windows.BindingSourceRefresh(this.components);
       this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -83,6 +81,7 @@ namespace ActionExtenderSample
       ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.orderDetailListBindingSource)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.orderDetailListDataGridView)).BeginInit();
+      this.toolStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.bindingSourceRefresh1)).BeginInit();
       this.SuspendLayout();
@@ -255,89 +254,59 @@ namespace ActionExtenderSample
       this.orderDetailListDataGridView.TabIndex = 16;
       this.orderDetailListDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(orderDetailListDataGridView_DataError);
       // 
-      // btnForceSave
+      // toolStrip1
       // 
-      this.cslaActionExtender1.SetActionType(this.btnForceSave, Csla.Windows.CslaFormAction.Save);
-      this.btnForceSave.Location = new System.Drawing.Point(518, 238);
-      this.btnForceSave.Name = "btnForceSave";
-      this.btnForceSave.Size = new System.Drawing.Size(117, 23);
-      this.btnForceSave.TabIndex = 22;
-      this.btnForceSave.Text = "Force Save";
-      this.btnForceSave.UseVisualStyleBackColor = true;
+      this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.toolSave,
+      this.toolSaveNew,
+      this.toolSaveClose,
+      this.toolCancel,
+      this.toolClose});
+      this.toolStrip1.Location = new System.Drawing.Point(0, 0);
+      this.toolStrip1.Name = "toolStrip1";
+      this.toolStrip1.Size = new System.Drawing.Size(791, 25);
+      this.toolStrip1.TabIndex = 22;
+      this.toolStrip1.Text = "toolStrip1";
       // 
-      // btnValidate
+      // toolSave
       // 
-      this.cslaActionExtender1.SetActionType(this.btnValidate, Csla.Windows.CslaFormAction.Validate);
-      this.btnValidate.Location = new System.Drawing.Point(518, 208);
-      this.btnValidate.Name = "btnValidate";
-      this.btnValidate.Size = new System.Drawing.Size(117, 23);
-      this.btnValidate.TabIndex = 22;
-      this.btnValidate.Text = "Validate";
-      this.btnValidate.UseVisualStyleBackColor = true;
+      this.toolSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolSave.Name = "toolSave";
+      this.toolSave.Size = new System.Drawing.Size(23, 22);
+      this.toolSave.Text = "Save";
+      this.toolSave.Click += new System.EventHandler(this.toolSave_Click);
       // 
-      // btnClose
+      // toolSaveNew
       // 
-      this.cslaActionExtender1.SetActionType(this.btnClose, Csla.Windows.CslaFormAction.Close);
-      this.btnClose.Location = new System.Drawing.Point(518, 158);
-      this.btnClose.Name = "btnClose";
-      this.btnClose.Size = new System.Drawing.Size(117, 23);
-      this.btnClose.TabIndex = 21;
-      this.btnClose.Text = "Close";
-      this.btnClose.UseVisualStyleBackColor = true;
+      this.toolSaveNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolSaveNew.Name = "toolSaveNew";
+      this.toolSaveNew.Size = new System.Drawing.Size(23, 22);
+      this.toolSaveNew.Text = "Save/New";
+      this.toolSaveNew.Click += new System.EventHandler(this.toolSaveNew_Click);
       // 
-      // btnCancel
+      // toolSaveClose
       // 
-      this.cslaActionExtender1.SetActionType(this.btnCancel, Csla.Windows.CslaFormAction.Cancel);
-      this.cslaActionExtender1.SetCommandName(this.btnCancel, "Undo");
-      this.cslaActionExtender1.SetDisableWhenUseless(this.btnCancel, true);
-      this.btnCancel.Location = new System.Drawing.Point(518, 128);
-      this.btnCancel.Name = "btnCancel";
-      this.btnCancel.Size = new System.Drawing.Size(117, 23);
-      this.btnCancel.TabIndex = 20;
-      this.btnCancel.Text = "Cancel";
-      this.btnCancel.UseVisualStyleBackColor = true;
+      this.toolSaveClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolSaveClose.Name = "toolSaveClose";
+      this.toolSaveClose.Size = new System.Drawing.Size(23, 22);
+      this.toolSaveClose.Text = "Save/Close";
+      this.toolSaveClose.Click += new System.EventHandler(this.toolSaveClose_Click);
       // 
-      // btnSaveClose
+      // toolCancel
       // 
-      this.cslaActionExtender1.SetActionType(this.btnSaveClose, Csla.Windows.CslaFormAction.Save);
-      this.cslaActionExtender1.SetDisableWhenUseless(this.btnSaveClose, true);
-      this.btnSaveClose.Location = new System.Drawing.Point(518, 98);
-      this.btnSaveClose.Name = "btnSaveClose";
-      this.cslaActionExtender1.SetPostSaveAction(this.btnSaveClose, Csla.Windows.PostSaveActionType.AndClose);
-      this.cslaActionExtender1.SetRebindAfterSave(this.btnSaveClose, false);
-      this.btnSaveClose.Size = new System.Drawing.Size(117, 23);
-      this.btnSaveClose.TabIndex = 19;
-      this.btnSaveClose.Text = "Save/Close";
-      this.btnSaveClose.UseVisualStyleBackColor = true;
+      this.toolCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolCancel.Name = "toolCancel";
+      this.toolCancel.Size = new System.Drawing.Size(23, 22);
+      this.toolCancel.Text = "Cancel";
+      this.toolCancel.Click += new System.EventHandler(this.toolCancel_Click);
       // 
-      // btnSaveNew
+      // toolClose
       // 
-      this.cslaActionExtender1.SetActionType(this.btnSaveNew, Csla.Windows.CslaFormAction.Save);
-      this.cslaActionExtender1.SetDisableWhenUseless(this.btnSaveNew, true);
-      this.btnSaveNew.Location = new System.Drawing.Point(518, 68);
-      this.btnSaveNew.Name = "btnSaveNew";
-      this.cslaActionExtender1.SetPostSaveAction(this.btnSaveNew, Csla.Windows.PostSaveActionType.AndNew);
-      this.btnSaveNew.Size = new System.Drawing.Size(117, 23);
-      this.btnSaveNew.TabIndex = 18;
-      this.btnSaveNew.Text = "Save/New";
-      this.btnSaveNew.UseVisualStyleBackColor = true;
-      // 
-      // btnSave
-      // 
-      this.cslaActionExtender1.SetActionType(this.btnSave, Csla.Windows.CslaFormAction.Save);
-      this.cslaActionExtender1.SetDisableWhenUseless(this.btnSave, true);
-      this.btnSave.Location = new System.Drawing.Point(518, 38);
-      this.btnSave.Name = "btnSave";
-      this.btnSave.Size = new System.Drawing.Size(117, 23);
-      this.btnSave.TabIndex = 17;
-      this.btnSave.Text = "Save";
-      this.btnSave.UseVisualStyleBackColor = true;
-      // 
-      // cslaActionExtender1
-      // 
-      this.cslaActionExtender1.DataSource = this.orderBindingSource;
-      this.cslaActionExtender1.ObjectIsValidMessage = "Order is valid";
-      this.cslaActionExtender1.SetForNew += new System.EventHandler<Csla.Windows.CslaActionEventArgs>(this.cslaActionExtender1_SetForNew);
+      this.toolClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolClose.Name = "toolClose";
+      this.toolClose.Size = new System.Drawing.Size(23, 22);
+      this.toolClose.Text = "Close";
+      this.toolClose.Click += new System.EventHandler(this.toolClose_Click);
       // 
       // errorProvider1
       // 
@@ -381,18 +350,12 @@ namespace ActionExtenderSample
       this.dataGridViewTextBoxColumn5.HeaderText = "Quantity";
       this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
       // 
-      // OrderMaint
+      // OrderMaint3
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(791, 571);
-      this.Controls.Add(this.btnForceSave);
-      this.Controls.Add(this.btnValidate);
-      this.Controls.Add(this.btnClose);
-      this.Controls.Add(this.btnCancel);
-      this.Controls.Add(this.btnSaveClose);
-      this.Controls.Add(this.btnSaveNew);
-      this.Controls.Add(this.btnSave);
+      this.Controls.Add(this.toolStrip1);
       this.Controls.Add(this.orderDetailListDataGridView);
       this.Controls.Add(textLabel);
       this.Controls.Add(this.orderDateTextBox);
@@ -410,11 +373,13 @@ namespace ActionExtenderSample
       this.Controls.Add(this.orderNumberTextBox);
       this.Controls.Add(userNameLabel);
       this.Controls.Add(this.userNameTextBox);
-      this.Name = "OrderMaint";
-      this.Text = "Order Maintenance - Button";
+      this.Name = "OrderMaint3";
+      this.Text = "Order Maintenance - Helper";
       ((System.ComponentModel.ISupportInitialize)(this.orderBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.orderDetailListBindingSource)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.orderDetailListDataGridView)).EndInit();
+      this.toolStrip1.ResumeLayout(false);
+      this.toolStrip1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.bindingSourceRefresh1)).EndInit();
       this.ResumeLayout(false);
@@ -435,14 +400,12 @@ namespace ActionExtenderSample
     private System.Windows.Forms.TextBox orderDateTextBox;
     private System.Windows.Forms.BindingSource orderDetailListBindingSource;
     private System.Windows.Forms.DataGridView orderDetailListDataGridView;
-    private Csla.Windows.CslaActionExtender cslaActionExtender1;
-    private System.Windows.Forms.Button btnSave;
-    private System.Windows.Forms.Button btnSaveNew;
-    private System.Windows.Forms.Button btnSaveClose;
-    private System.Windows.Forms.Button btnCancel;
-    private System.Windows.Forms.Button btnClose;
-    private System.Windows.Forms.Button btnForceSave;
-    private System.Windows.Forms.Button btnValidate;
+    private System.Windows.Forms.ToolStrip toolStrip1;
+    private System.Windows.Forms.ToolStripButton toolSave;
+    private System.Windows.Forms.ToolStripButton toolSaveNew;
+    private System.Windows.Forms.ToolStripButton toolSaveClose;
+    private System.Windows.Forms.ToolStripButton toolCancel;
+    private System.Windows.Forms.ToolStripButton toolClose;
     private System.Windows.Forms.ErrorProvider errorProvider1;
     private Csla.Windows.BindingSourceRefresh bindingSourceRefresh1;
     private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;

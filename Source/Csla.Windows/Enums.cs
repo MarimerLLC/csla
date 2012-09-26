@@ -21,7 +21,7 @@ namespace Csla.Windows
     /// </summary>
     Save,
     /// <summary>
-    /// Perform a cancel.
+    /// Undo changes.
     /// </summary>
     Cancel,
     /// <summary>
@@ -35,8 +35,7 @@ namespace Csla.Windows
   }
 
   /// <summary>
-  /// The possible options for posting
-  /// and saving.
+  /// The possible actions for post save.
   /// </summary>
   public enum PostSaveActionType
   {

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.Text;
+using Csla.Core;
 
 namespace Csla.Windows
 {
@@ -27,56 +27,56 @@ namespace Csla.Windows
     /// </param>
     public BindingSourceNode(BindingSource source)
     {
-      _Source = source;
-      _Source.CurrentChanged += BindingSource_CurrentChanged;
+      _source = source;
+      _source.CurrentChanged += BindingSource_CurrentChanged;
     }
 
-    private BindingSource _Source;
-    private List<BindingSourceNode> _Children;
-    private BindingSourceNode _Parent;
+    private BindingSource _source;
+    private List<BindingSourceNode> _children;
+    private BindingSourceNode _parent;
 
-    void BindingSource_CurrentChanged(object sender, EventArgs e)
+    private void BindingSource_CurrentChanged(object sender, EventArgs e)
     {
-      if (_Children.Count > 0)
-        foreach (BindingSourceNode child in _Children)
+      if (_children.Count > 0)
+        foreach (BindingSourceNode child in _children)
           child.Source.EndEdit();
     }
 
     internal BindingSource Source
     {
-      get { return _Source; }
+      get { return _source; }
     }
 
     internal List<BindingSourceNode> Children
     {
       get
       {
-        if (_Children == null)
-          _Children = new List<BindingSourceNode>();
+        if (_children == null)
+          _children = new List<BindingSourceNode>();
 
-        return _Children;
+        return _children;
       }
     }
 
     internal BindingSourceNode Parent
     {
-      get { return _Parent; }
-      set { _Parent = value; }
+      get { return _parent; }
+      set { _parent = value; }
     }
 
     internal void Unbind(bool cancel)
     {
-      if (_Source == null)
+      if (_source == null)
         return;
 
-      if (_Children.Count > 0)
-        foreach (BindingSourceNode child in _Children)
+      if (_children.Count > 0)
+        foreach (BindingSourceNode child in _children)
           child.Unbind(cancel);
 
-      IEditableObject current = _Source.Current as IEditableObject;
+      IEditableObject current = _source.Current as IEditableObject;
 
-      if (!(_Source.DataSource is BindingSource))
-        _Source.DataSource = null;
+      if (!(_source.DataSource is BindingSource))
+        _source.DataSource = null;
 
       if (current != null)
       {
@@ -86,8 +86,8 @@ namespace Csla.Windows
           current.EndEdit();
       }
 
-      if (_Source.DataSource is BindingSource)
-        _Source.DataSource = _Parent.Source;
+      if (_source.DataSource is BindingSource)
+        _source.DataSource = _parent.Source;
     }
 
     internal void EndEdit()
@@ -95,35 +95,35 @@ namespace Csla.Windows
       if (Source == null)
         return;
 
-      if (_Children.Count > 0)
-        foreach (BindingSourceNode child in _Children)
+      if (_children.Count > 0)
+        foreach (BindingSourceNode child in _children)
           child.EndEdit();
 
-      _Source.EndEdit();
+      _source.EndEdit();
     }
 
     internal void SetEvents(bool value)
     {
-      if (_Source == null)
+      if (_source == null)
         return;
 
-      _Source.RaiseListChangedEvents = value;
+      _source.RaiseListChangedEvents = value;
 
-      if (_Children.Count > 0)
-        foreach (BindingSourceNode child in _Children)
+      if (_children.Count > 0)
+        foreach (BindingSourceNode child in _children)
           child.SetEvents(value);
     }
 
     internal void ResetBindings(bool refreshMetadata)
     {
-      if (_Source == null)
+      if (_source == null)
         return;
 
-      if (_Children.Count > 0)
-        foreach (BindingSourceNode child in _Children)
+      if (_children.Count > 0)
+        foreach (BindingSourceNode child in _children)
           child.ResetBindings(refreshMetadata);
 
-      _Source.ResetBindings(refreshMetadata);
+      _source.ResetBindings(refreshMetadata);
     }
 
     /// <summary>
@@ -134,12 +134,12 @@ namespace Csla.Windows
     /// </param>
     public void Bind(object objectToBind)
     {
-      Csla.Core.ISupportUndo root = objectToBind as Csla.Core.ISupportUndo;
+      ISupportUndo root = objectToBind as ISupportUndo;
 
       if (root != null)
         root.BeginEdit();
 
-      _Source.DataSource = objectToBind;
+      _source.DataSource = objectToBind;
       SetEvents(true);
       ResetBindings(false);
     }
@@ -151,7 +151,7 @@ namespace Csla.Windows
     {
       SetEvents(false);
 
-      Csla.Core.ISupportUndo root = _Source.DataSource as Csla.Core.ISupportUndo;
+      ISupportUndo root = _source.DataSource as ISupportUndo;
 
       Unbind(false);
       EndEdit();
@@ -168,7 +168,7 @@ namespace Csla.Windows
     {
       SetEvents(false);
 
-      Csla.Core.ISupportUndo root = _Source.DataSource as Csla.Core.ISupportUndo;
+      ISupportUndo root = _source.DataSource as ISupportUndo;
 
       Unbind(true);
 

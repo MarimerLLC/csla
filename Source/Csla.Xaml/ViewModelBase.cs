@@ -200,6 +200,50 @@ namespace Csla.Xaml
 
     #region Can___ properties
 
+    private bool _isDirty;
+
+    /// <summary>
+    /// Gets a value indicating whether the Model
+    /// has been changed.
+    /// </summary>
+    public virtual bool IsDirty
+    {
+      get
+      {
+        return _isDirty;
+      }
+      protected set
+      {
+        if (_isDirty != value)
+        {
+          _isDirty = value;
+          OnPropertyChanged("IsDirty");
+        }
+      }
+    }
+
+    private bool _isValid;
+
+    /// <summary>
+    /// Gets a value indicating whether the Model
+    /// is currently valid (has no broken rules).
+    /// </summary>
+    public virtual bool IsValid
+    {
+      get
+      {
+        return _isValid;
+      }
+      protected set
+      {
+        if (_isValid != value)
+        {
+          _isValid = value;
+          OnPropertyChanged("IsValid");
+        }
+      }
+    }
+
     private bool _canSave = false;
 
     /// <summary>
@@ -370,6 +414,8 @@ namespace Csla.Xaml
       {
         var canDeleteInstance = BusinessRules.HasPermission(AuthorizationActions.DeleteObject, targetObject);
 
+        IsDirty = targetObject.IsDirty;
+        IsValid = targetObject.IsValid;
         CanSave = CanEditObject && targetObject.IsSavable && !isObjectBusy;
         CanCancel = CanEditObject && targetObject.IsDirty && !isObjectBusy;
         CanCreate = CanCreateObject && !targetObject.IsDirty && !isObjectBusy;
@@ -421,6 +467,8 @@ namespace Csla.Xaml
       }
       else
       {
+        IsDirty = false;
+        IsValid = false;
         CanCancel = false;
         CanCreate = CanCreateObject;
         CanDelete = false;

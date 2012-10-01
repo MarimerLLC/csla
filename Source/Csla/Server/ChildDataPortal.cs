@@ -41,7 +41,7 @@ namespace Csla.Server
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(null, objectType, DataPortalOperations.Create);
+      var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
         // create an instance of the business object
@@ -129,7 +129,7 @@ namespace Csla.Server
 
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(null, objectType, DataPortalOperations.Fetch);
+      var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object
@@ -231,10 +231,10 @@ namespace Csla.Server
       {
         if (target != null)
           target.Child_OnDataPortalInvoke(
-            new DataPortalEventArgs(null, objectType, operation));
+            new DataPortalEventArgs(null, objectType, obj, operation));
         else
           lb.CallMethodIfImplemented("Child_OnDataPortalInvoke",
-            new DataPortalEventArgs(null, objectType, operation));
+            new DataPortalEventArgs(null, objectType, obj, operation));
 
         // tell the business object to update itself
         if (busObj != null)
@@ -299,10 +299,10 @@ namespace Csla.Server
 
         if (target != null)
           target.Child_OnDataPortalInvokeComplete(
-            new DataPortalEventArgs(null, objectType, operation));
+            new DataPortalEventArgs(null, objectType, obj, operation));
         else
           lb.CallMethodIfImplemented("Child_OnDataPortalInvokeComplete",
-            new DataPortalEventArgs(null, objectType, operation));
+            new DataPortalEventArgs(null, objectType, obj, operation));
 
       }
       catch (Exception ex)
@@ -311,10 +311,10 @@ namespace Csla.Server
         {
           if (target != null)
             target.Child_OnDataPortalException(
-              new DataPortalEventArgs(null, objectType, operation), ex);
+              new DataPortalEventArgs(null, objectType, obj, operation), ex);
           else if (lb != null)
             lb.CallMethodIfImplemented("Child_OnDataPortalException",
-              new DataPortalEventArgs(null, objectType, operation), ex);
+              new DataPortalEventArgs(null, objectType, obj, operation), ex);
         }
         catch
         {

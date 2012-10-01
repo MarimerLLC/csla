@@ -34,7 +34,7 @@ namespace Csla.Server
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Create);
+      var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
         // create an instance of the business object.
@@ -105,7 +105,7 @@ namespace Csla.Server
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Fetch);
+      var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
         // create an instance of the business object.
@@ -182,11 +182,11 @@ namespace Csla.Server
       {
         if (target != null)
           target.DataPortal_OnDataPortalInvoke(
-            new DataPortalEventArgs(context, objectType, operation));
+            new DataPortalEventArgs(context, objectType, obj, operation));
         else
           lb.CallMethodIfImplemented(
             "DataPortal_OnDataPortalInvoke",
-            new DataPortalEventArgs(context, objectType, operation));
+            new DataPortalEventArgs(context, objectType, obj, operation));
 
         // tell the business object to update itself
         var busObj = obj as Core.BusinessBase;
@@ -242,10 +242,10 @@ namespace Csla.Server
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(
-            new DataPortalEventArgs(context, objectType, operation));
+            new DataPortalEventArgs(context, objectType, obj, operation));
         else
           lb.CallMethodIfImplemented("DataPortal_OnDataPortalInvokeComplete",
-            new DataPortalEventArgs(context, objectType, operation));
+            new DataPortalEventArgs(context, objectType, obj, operation));
 
         return new DataPortalResult(obj);
       }
@@ -255,9 +255,9 @@ namespace Csla.Server
         {
           if (target != null)
             target.DataPortal_OnDataPortalException(
-              new DataPortalEventArgs(context, objectType, operation), ex);
+              new DataPortalEventArgs(context, objectType, obj, operation), ex);
           else
-            lb.CallMethodIfImplemented("DataPortal_OnDataPortalException", new DataPortalEventArgs(context, objectType, operation), ex);
+            lb.CallMethodIfImplemented("DataPortal_OnDataPortalException", new DataPortalEventArgs(context, objectType, obj, operation), ex);
         }
         catch
         {
@@ -284,7 +284,7 @@ namespace Csla.Server
     {
       LateBoundObject obj = null;
       IDataPortalTarget target = null;
-      var eventArgs = new DataPortalEventArgs(context, objectType, DataPortalOperations.Delete);
+      var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
         // create an instance of the business objet

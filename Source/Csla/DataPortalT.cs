@@ -132,7 +132,7 @@ namespace Csla
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create));
+        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create));
 
         try
         {
@@ -157,11 +157,11 @@ namespace Csla
         {
           HandleCreateDataPortalException(ex, isSync, proxy);
         }
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create));
       }
       catch (Exception ex)
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Create, ex));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Create, ex));
         throw;
       }
       return result.ReturnObject;
@@ -353,7 +353,7 @@ namespace Csla
         dpContext =
           new Csla.Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch));
+        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch));
 
         try
         {
@@ -378,11 +378,11 @@ namespace Csla
         {
           HandleFetchDataPortalException(ex, isSync, proxy);
         }
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch));
       }
       catch (Exception ex)
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Fetch, ex));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Fetch, ex));
         throw;
       }
       return result.ReturnObject;
@@ -689,7 +689,7 @@ namespace Csla
         dpContext =
           new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, operation));
+        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, obj, operation));
 
         try
         {
@@ -724,11 +724,11 @@ namespace Csla
         if (proxy.IsServerRemote && isSync)
           ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
 
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, operation));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, obj, operation));
       }
       catch (Exception ex)
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, operation, ex));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, obj, operation, ex));
         throw;
       }
       return (T)result.ReturnObject;
@@ -891,7 +891,7 @@ namespace Csla
 
         dpContext = new Server.DataPortalContext(GetPrincipal(), proxy.IsServerRemote);
 
-        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete));
+        DataPortal.OnDataPortalInvoke(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
 
         try
         {
@@ -918,11 +918,11 @@ namespace Csla
         if (proxy.IsServerRemote && isSync)
           ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
 
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete));
       }
       catch (Exception ex)
       {
-        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, DataPortalOperations.Delete, ex));
+        DataPortal.OnDataPortalInvokeComplete(new DataPortalEventArgs(dpContext, objectType, criteria, DataPortalOperations.Delete, ex));
         throw;
       }
     }

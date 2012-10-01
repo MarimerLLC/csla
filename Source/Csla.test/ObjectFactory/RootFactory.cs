@@ -82,9 +82,9 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.Server.DataPortalContext context)
+    public void Invoke(Csla.DataPortalEventArgs args)
     {
-      _transactionalType = context.TransactionalType;
+      _transactionalType = args.DataPortalContext.TransactionalType;
     }
   }
 
@@ -101,9 +101,9 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.Server.DataPortalContext context)
+    public void Invoke(Csla.DataPortalEventArgs args)
     {
-      _transactionalType = context.TransactionalType;
+      _transactionalType = args.DataPortalContext.TransactionalType;
     }
   }
 
@@ -120,9 +120,9 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.Server.DataPortalContext context)
+    public void Invoke(Csla.DataPortalEventArgs args)
     {
-      _transactionalType = context.TransactionalType;
+      _transactionalType = args.DataPortalContext.TransactionalType;
     }
   }
 

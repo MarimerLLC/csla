@@ -19,6 +19,7 @@ namespace Csla
     private DataPortalOperations _operation;
     private Exception _exception;
     private Type _objectType;
+    private object _object;
 
     /// <summary>
     /// The DataPortalContext object passed to the
@@ -61,22 +62,12 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of the object.
+    /// Gets the criteria object or business object
+    /// being processed by the data portal.
     /// </summary>
-    /// <param name="dataPortalContext">
-    /// Data portal context object.
-    /// </param>
-    /// <param name="objectType">
-    /// Business object type.
-    /// </param>
-    /// <param name="operation">
-    /// Data portal operation being performed.
-    /// </param>
-    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, DataPortalOperations operation)
+    public object Object
     {
-      _dataPortalContext = dataPortalContext;
-      _operation = operation;
-      _objectType = objectType;
+      get { return _object; }
     }
 
     /// <summary>
@@ -88,14 +79,40 @@ namespace Csla
     /// <param name="objectType">
     /// Business object type.
     /// </param>
+    /// <param name="obj">
+    /// Criteria or business object for request.
+    /// </param>
+    /// <param name="operation">
+    /// Data portal operation being performed.
+    /// </param>
+    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation)
+    {
+      _dataPortalContext = dataPortalContext;
+      _operation = operation;
+      _objectType = objectType;
+      _object = obj;
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="dataPortalContext">
+    /// Data portal context object.
+    /// </param>
+    /// <param name="objectType">
+    /// Business object type.
+    /// </param>
+    /// <param name="obj">
+    /// Criteria or business object for request.
+    /// </param>
     /// <param name="operation">
     /// Data portal operation being performed.
     /// </param>
     /// <param name="exception">
     /// Exception encountered during processing.
     /// </param>
-    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, DataPortalOperations operation, Exception exception)
-      : this(dataPortalContext, objectType, operation)
+    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation, Exception exception)
+      : this(dataPortalContext, objectType, obj, operation)
     {
       _exception = exception;
     }

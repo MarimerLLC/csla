@@ -58,10 +58,12 @@ namespace Csla.Server
 
     #region Method invokes
 
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, string methodName, DataPortalContext context)
+    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, DataPortalContext context)
     {
       object factory = FactoryLoader.GetFactory(factoryTypeName);
-      Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", context);
+      var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
+
+      Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
       object result = null;
       try
       {
@@ -69,20 +71,23 @@ namespace Csla.Server
         var error = result as Exception;
         if (error != null)
           throw error;
-        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", context);
+        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }
       catch (Exception ex)
       {
-        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", ex);
+        Csla.Reflection.MethodCaller.CallMethodIfImplemented(
+          factory, "InvokeError", new DataPortalEventArgs(context, objectType, null, operation, ex));
         throw;
       }
       return new DataPortalResult(result);
     }
 
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, string methodName, object e, DataPortalContext context)
+    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context)
     {
       object factory = FactoryLoader.GetFactory(factoryTypeName);
-      Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", context);
+      var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
+
+      Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
       object result = null;
       try
       {
@@ -90,11 +95,11 @@ namespace Csla.Server
         var error = result as Exception;
         if (error != null)
           throw error;
-        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", context);
+        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }
       catch (Exception ex)
       {
-        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", ex);
+        Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", new DataPortalEventArgs(context, objectType, e, operation, ex));
         throw;
       }
       return new DataPortalResult(result);
@@ -119,9 +124,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.CreateMethodName, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, context);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.CreateMethodName, criteria, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, criteria, context);
         return result;
       }
       catch (Exception ex)
@@ -148,9 +153,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.FetchMethodName, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, context);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.FetchMethodName, criteria, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, criteria, context);
         return result;
       }
       catch (Exception ex)
@@ -181,7 +186,7 @@ namespace Csla.Server
         else
           methodName = context.FactoryInfo.UpdateMethodName;
 
-        result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, methodName, obj, context);
+        result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context);
         return result;
       }
       catch (Exception ex)
@@ -209,9 +214,9 @@ namespace Csla.Server
       {
         DataPortalResult result = null;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.DeleteMethodName, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, context);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, context.FactoryInfo.DeleteMethodName, criteria, context);
+          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, criteria, context);
         return result;
       }
       catch (Exception ex)

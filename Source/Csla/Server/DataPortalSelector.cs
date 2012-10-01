@@ -54,9 +54,9 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           "DataPortal.Create " + Resources.FailedOnServer,
-          ex, new DataPortalResult());
+          ex, null);
       }
     }
 
@@ -91,9 +91,9 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           "DataPortal.Fetch " + Resources.FailedOnServer,
-          ex, new DataPortalResult());
+          ex, null);
       }
     }
 
@@ -127,9 +127,9 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           "DataPortal.Update " + Resources.FailedOnServer,
-          ex, new DataPortalResult(obj));
+          ex, obj);
       }
     }
 
@@ -164,9 +164,9 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           "DataPortal.Delete " + Resources.FailedOnServer,
-          ex, new DataPortalResult());
+          ex, null);
       }
     }
   }

@@ -83,10 +83,10 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
               "DataPortal.Create " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
-              new DataPortalResult(outval));
+              outval);
       }
     }
 
@@ -155,10 +155,10 @@ namespace Csla.Server
         }
         object outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
               "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
-              new DataPortalResult(outval));
+              outval);
       }
     }
 
@@ -263,10 +263,10 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
               "DataPortal.Update " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
-              new DataPortalResult(obj));
+              obj);
       }
     }
 
@@ -320,10 +320,10 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
               "DataPortal.Delete " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(objectType, obj, null, "DataPortal.Delete", ex),
-              new DataPortalResult());
+              null);
       }
     }
   }

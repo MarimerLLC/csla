@@ -429,6 +429,36 @@ namespace Csla
       }
     }
 
+    private static bool _dataPortalReturnObjectOnException = false;
+    private static bool _dataPortalReturnObjectOnExceptionSet = false;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// server-side business object should be returned to
+    /// the client as part of the DataPortalException
+    /// (default is false).
+    /// </summary>
+    public static bool DataPortalReturnObjectOnException
+    {
+      get
+      {
+        if (!_dataPortalReturnObjectOnExceptionSet)
+        {
+#if !SILVERLIGHT && !NETFX_CORE
+          string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
+          if (!string.IsNullOrEmpty(setting))
+            DataPortalReturnObjectOnException = bool.Parse(setting);
+#endif
+        }
+        return _dataPortalReturnObjectOnException;
+      }
+      set
+      {
+        _dataPortalReturnObjectOnException = value;
+        _dataPortalReturnObjectOnExceptionSet = true;
+      }
+    }
+
     /// <summary>
     /// Enum representing the locations code can execute.
     /// </summary>

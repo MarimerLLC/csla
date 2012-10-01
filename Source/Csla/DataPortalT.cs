@@ -170,13 +170,6 @@ namespace Csla
     private void HandleCreateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
       HandleDataPortalException("Create", ex, isSync, proxy);
-      //var result = ex.Result;
-      //GlobalContext = result.GlobalContext;
-      //if (isSync && proxy.IsServerRemote)
-      //  ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-      //throw new DataPortalException(
-      //  string.Format("DataPortal.Create {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
-      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -398,13 +391,6 @@ namespace Csla
     private void HandleFetchDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
       HandleDataPortalException("Fetch", ex, isSync, proxy);
-      //var result = ex.Result;
-      //GlobalContext = result.GlobalContext;
-      //if (isSync && proxy.IsServerRemote)
-      //  ApplicationContext.ContextManager.SetGlobalContext(GlobalContext);
-      //throw new DataPortalException(
-      //  string.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
-      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -944,13 +930,6 @@ namespace Csla
     private void HandleDeleteDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
     {
       HandleDataPortalException("Delete", ex, isSync, proxy);
-      //var result = ex.Result;
-      //GlobalContext = result.GlobalContext;
-      //if (proxy.IsServerRemote && isSync)
-      //  ApplicationContext.ContextManager.SetGlobalContext(result.GlobalContext);
-      //throw new DataPortalException(
-      //  String.Format("DataPortal.Delete {0} ({1})", Resources.Failed, ex.InnerException.InnerException.Message),
-      //  ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>

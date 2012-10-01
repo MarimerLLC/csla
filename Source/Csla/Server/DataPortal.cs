@@ -155,10 +155,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             "DataPortal.Create " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Create", ex),
-            new DataPortalResult());
+            null);
       }
       finally
       {
@@ -231,17 +231,17 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", error),
-            new DataPortalResult());
+            null);
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             "DataPortal.Fetch " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Fetch", ex),
-            new DataPortalResult());
+            null);
       }
       finally
       {
@@ -348,10 +348,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
-            new DataPortalResult());
+            null);
       }
       finally
       {
@@ -430,10 +430,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             "DataPortal.Delete " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", ex),
-            new DataPortalResult());
+            null);
       }
       finally
       {
@@ -563,5 +563,15 @@ namespace Csla.Server
 #endif
 
     #endregion
+
+    internal static DataPortalException NewDataPortalException(string message, Exception innerException, object businessObject)
+    {
+      if (!ApplicationContext.DataPortalReturnObjectOnException)
+        businessObject = null;
+
+      throw new DataPortalException(
+        message,
+        innerException, new DataPortalResult(businessObject));
+    }
   }
 }

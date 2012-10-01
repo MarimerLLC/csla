@@ -126,10 +126,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
             context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
-            new DataPortalResult());
+            null);
       }
     }
 
@@ -155,10 +155,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
          context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
-          new DataPortalResult());
+          null);
       }
     }
 
@@ -186,10 +186,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           methodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, methodName, ex),
-          new DataPortalResult());
+          obj);
 
       }
     }
@@ -216,14 +216,10 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        //throw new DataPortalException(
-        //    context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
-        //    ex, new DataPortalResult());
-
-        throw new DataPortalException(
+        throw DataPortal.NewDataPortalException(
           context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler().InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
-          new DataPortalResult());
+          null);
       }
     }
 

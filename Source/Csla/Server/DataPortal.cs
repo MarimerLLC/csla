@@ -9,6 +9,9 @@ using System;
 #if !NETFX_CORE
 using System.Configuration;
 #endif
+#if NETFX_CORE
+using Csla.Reflection;
+#endif
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Csla.Properties;
@@ -24,7 +27,6 @@ namespace Csla.Server
   public class DataPortal : IDataPortalServer
   {
     #region Constructors
-#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -74,8 +76,11 @@ namespace Csla.Server
 
       if (null == _authorizer)//not yet instantiated
       {
+#if SILVERLIGHT || NETFX_CORE
+        string authProvider = string.Empty;
+#else
         var authProvider = ConfigurationManager.AppSettings[cslaAuthorizationProviderAppSettingName];
-
+#endif
         return string.IsNullOrEmpty(authProvider) ?
           typeof(NullAuthorizer) :
           Type.GetType(authProvider, true);
@@ -85,7 +90,6 @@ namespace Csla.Server
         return _authorizer.GetType();
 
     }
-#endif
 
     #endregion
 
@@ -522,7 +526,6 @@ namespace Csla.Server
 
     #region Authorize
 
-#if !SILVERLIGHT && !NETFX_CORE
     private static object _syncRoot = new object();
     private static IAuthorizeDataPortal _authorizer = null;
 
@@ -560,7 +563,6 @@ namespace Csla.Server
       public void Authorize(AuthorizeRequest clientRequest)
       { /* default is to allow all requests */ }
     }
-#endif
 
     #endregion
 

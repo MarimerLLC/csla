@@ -398,6 +398,9 @@
     <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
       <Link>Serialization\Mobile\ICslaWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\AuthorizeRequest.cs">
+      <Link>Server\AuthorizeRequest.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\ChildDataPortal.cs">
       <Link>Server\ChildDataPortal.cs</Link>
     </Compile>
@@ -430,6 +433,9 @@
     </Compile>
     <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
       <Link>Server\FactoryDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
+      <Link>Server\IAuthorizeDataPortal.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
       <Link>Server\IDataPortalExceptionInspector.cs</Link>

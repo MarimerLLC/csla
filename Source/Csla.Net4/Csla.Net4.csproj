@@ -825,6 +825,9 @@
     <Compile Include="..\Csla\Server\IDataPortalTarget.cs">
       <Link>Server\IDataPortalTarget.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\IInterceptDataPortal.cs">
+      <Link>Server\IInterceptDataPortal.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\IObjectFactoryLoader.cs">
       <Link>Server\IObjectFactoryLoader.cs</Link>
     </Compile>

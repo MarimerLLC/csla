@@ -279,6 +279,7 @@
     <Compile Include="Server\Hosts\Mobile\MobileUpdateRequest.cs" />
     <Compile Include="Server\IAuthorizeDataPortal.cs" />
     <Compile Include="Server\IDataPortalExceptionInspector.cs" />
+    <Compile Include="Server\IInterceptDataPortal.cs" />
     <Compile Include="Server\MobileFactoryAttribute.cs" />
     <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">

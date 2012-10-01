@@ -449,6 +449,7 @@ namespace Csla
           if (!string.IsNullOrEmpty(setting))
             DataPortalReturnObjectOnException = bool.Parse(setting);
 #endif
+          _dataPortalReturnObjectOnExceptionSet = true;
         }
         return _dataPortalReturnObjectOnException;
       }

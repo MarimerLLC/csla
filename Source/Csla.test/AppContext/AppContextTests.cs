@@ -373,12 +373,11 @@ namespace Csla.Test.AppContext
       }
       catch (DataPortalException ex)
       {
-        root = (ExceptionRoot)ex.BusinessObject;
+        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
         Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
       }
 
-      Assert.AreEqual("<new>", root.Data, "Business object not returned");
       Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
     }
     #endregion
@@ -396,7 +395,7 @@ namespace Csla.Test.AppContext
       }
       catch (DataPortalException ex)
       {
-        root = (ExceptionRoot)ex.BusinessObject;
+        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
         Assert.AreEqual("Fail fetch", ex.GetBaseException().Message, "Base exception message incorrect");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Fetch failed"), "Exception message incorrect");
       }
@@ -405,7 +404,6 @@ namespace Csla.Test.AppContext
         Assert.Fail("Unexpected exception: " + ex.ToString());
       }
 
-      Assert.AreEqual("fail", root.Data, "Business object not returned");
       Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
     }
     #endregion
@@ -414,37 +412,45 @@ namespace Csla.Test.AppContext
     [TestMethod()]
     public void FailUpdateContext()
     {
-      ApplicationContext.GlobalContext.Clear();
-
-      ExceptionRoot root;
       try
       {
-        root = ExceptionRoot.NewExceptionRoot();
-        Assert.Fail("Create exception didn't occur");
-      }
-      catch (DataPortalException ex)
-      {
-        root = (ExceptionRoot)ex.BusinessObject;
-        Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
-        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
-      }
+        ApplicationContext.GlobalContext.Clear();
+        ApplicationContext.DataPortalReturnObjectOnException = true;
 
-      root.Data = "boom";
-      try
-      {
-        root = root.Save();
+        ExceptionRoot root;
+        try
+        {
+          root = ExceptionRoot.NewExceptionRoot();
+          Assert.Fail("Create exception didn't occur");
+        }
+        catch (DataPortalException ex)
+        {
+          root = (ExceptionRoot)ex.BusinessObject;
+          Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
+          Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
+        }
 
-        Assert.Fail("Insert exception didn't occur");
-      }
-      catch (DataPortalException ex)
-      {
-        root = (ExceptionRoot)ex.BusinessObject;
-        Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
-        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Exception message incorrect");
-      }
+        root.Data = "boom";
+        try
+        {
+          root = root.Save();
 
-      Assert.AreEqual("boom", root.Data, "Business object not returned");
-      Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+          Assert.Fail("Insert exception didn't occur");
+        }
+        catch (DataPortalException ex)
+        {
+          root = (ExceptionRoot)ex.BusinessObject;
+          Assert.AreEqual("Fail insert", ex.GetBaseException().Message, "Base exception message incorrect");
+          Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Exception message incorrect");
+        }
+
+        Assert.AreEqual("boom", root.Data, "Business object not returned");
+        Assert.AreEqual("create", ApplicationContext.GlobalContext["create"], "GlobalContext not preserved");
+      }
+      finally
+      {
+        ApplicationContext.DataPortalReturnObjectOnException = false;
+      }
     }
     #endregion
 

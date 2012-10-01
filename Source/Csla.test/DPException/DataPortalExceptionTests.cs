@@ -42,7 +42,6 @@ namespace Csla.Test.DPException
             string baseInnerException = string.Empty;
             string baseInnerInnerException = string.Empty;
             string exceptionSource = string.Empty;
-            string businessObjectType = string.Empty;
 
             try
             {
@@ -54,7 +53,7 @@ namespace Csla.Test.DPException
                 baseInnerException = ex.InnerException.Message;
                 baseInnerInnerException = ex.InnerException.InnerException.Message;
                 exceptionSource = ex.InnerException.InnerException.Source;
-                businessObjectType = ex.BusinessObject.GetType().ToString();
+                Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
             }
 
             //check base exception
@@ -68,8 +67,6 @@ namespace Csla.Test.DPException
 
             //check what caused inner exception's inner exception (i.e. the root exception)
             Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
-
-            Assert.AreEqual("Csla.Test.DataPortal.TransactionalRoot", businessObjectType);
 
             //verify that the implemented method, DataPortal_OnDataPortal 
             //was called for the business object that threw the exception

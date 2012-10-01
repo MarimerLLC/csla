@@ -111,9 +111,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
-#endif
         DataPortalResult result;
 
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
@@ -185,9 +183,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
-#endif
         DataPortalResult result;
 
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
@@ -268,9 +264,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
-#endif
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
@@ -378,9 +372,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-#if !SILVERLIGHT && !NETFX_CORE
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
-#endif
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);

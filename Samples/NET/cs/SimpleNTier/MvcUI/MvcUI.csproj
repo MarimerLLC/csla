@@ -47,6 +47,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Csla, Version=4.5.3.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.dll</HintPath>
+    </Reference>
     <Reference Include="Csla.Web">
       <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.dll</HintPath>
     </Reference>
@@ -153,10 +157,6 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Source\Csla\Csla.csproj">
-      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BusinessLibrary\BusinessLibrary.csproj">
       <Project>{2D2E0AC6-863C-4C52-88D4-B9CC79D5845C}</Project>
       <Name>BusinessLibrary</Name>

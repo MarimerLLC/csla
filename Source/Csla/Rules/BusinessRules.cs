@@ -24,7 +24,7 @@ namespace Csla.Rules
   /// </summary>
   [Serializable]
   public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
 , IUndoableObject
 #endif
   {
@@ -811,7 +811,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0) 
@@ -852,7 +852,7 @@ namespace Csla.Rules
 
     #endregion
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     #region IUndoableObject Members
 
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
@@ -935,7 +935,7 @@ namespace Csla.Rules
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
       //info.AddValue("_isBusy", _isBusy);
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
       if (mode == StateMode.Serialization)
       {
         if (_stateStack.Count > 0)
@@ -965,7 +965,7 @@ namespace Csla.Rules
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
       //_isBusy = info.GetValue<bool>("_isBusy");
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
       if (mode == StateMode.Serialization)
       {
         _stateStack.Clear();

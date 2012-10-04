@@ -19,12 +19,12 @@ namespace Csla.Security
   /// <summary>
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
-	/// </summary>
-#if !SILVERLIGHT
+  /// </summary>
+#if !SILVERLIGHT && !NETFX_CORE
 	[Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
   [Csla.Server.ObjectFactory("Csla.Web.Security.IdentityAppFactory,Csla.Web")]
 #endif
-	[Serializable]
+  [Serializable]
   public class MembershipIdentity : ReadOnlyBase<MembershipIdentity>, IIdentity, ICheckRoles
   {
     #region Constructor
@@ -34,7 +34,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     public MembershipIdentity()
 #else
     protected MembershipIdentity()
@@ -47,7 +47,7 @@ namespace Csla.Security
 
     #region OnDeserialized
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Method invoked when the object is deserialized.
     /// </summary>
@@ -72,7 +72,7 @@ namespace Csla.Security
 
     #region Factory Methods
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Gets a MembershipIdentity object by loading the
     /// object with membership data from the server.

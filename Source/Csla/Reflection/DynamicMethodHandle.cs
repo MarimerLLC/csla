@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#if !WINDOWS_PHONE
 using System;
 using System.Linq;
 using System.Reflection;
@@ -66,4 +65,3 @@ namespace Csla.Reflection
     }
   }
 }
-#endif

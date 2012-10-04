@@ -19,7 +19,7 @@ namespace Csla.Core
   /// </summary>
   public interface IObservableBindingList
   {
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Creates and adds a new item to the collection.
     /// </summary>

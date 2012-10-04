@@ -164,7 +164,7 @@ namespace Csla
       private K _key;
       private V _value;
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
       /// <summary>
       /// Creates an instance of the object.
       /// </summary>

@@ -64,7 +64,7 @@ namespace Csla.Rules.CommonRules
       this.Attribute = attribute;
       RuleUri.AddQueryParameter("a", attribute.GetType().FullName);
       if (primaryProperty != null)
-        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+        InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ namespace Csla.Rules.CommonRules
     public Required(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
 
@@ -185,7 +185,7 @@ namespace Csla.Rules.CommonRules
     {
       Max = max;
       this.RuleUri.AddQueryParameter("max", max.ToString());
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -256,7 +256,7 @@ namespace Csla.Rules.CommonRules
     {
       Min = min;
       this.RuleUri.AddQueryParameter("min", min.ToString());
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -333,7 +333,7 @@ namespace Csla.Rules.CommonRules
     {
       Min = min;
       this.RuleUri.AddQueryParameter("min", min.ToString());
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -421,7 +421,7 @@ namespace Csla.Rules.CommonRules
     {
       Max = max;
       this.RuleUri.AddQueryParameter("max", max.ToString());
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -542,7 +542,7 @@ namespace Csla.Rules.CommonRules
     {
       Expression = expression;
       RuleUri.AddQueryParameter("e", expression);
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>

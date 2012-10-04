@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Delegate for a dynamic constructor method.</summary>
 //-----------------------------------------------------------------------
-#if !WINDOWS_PHONE
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -230,4 +229,3 @@ namespace Csla.Reflection
 #endif
   }
 }
-#endif

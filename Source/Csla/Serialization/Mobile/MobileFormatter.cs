@@ -99,7 +99,7 @@ namespace Csla.Serialization.Mobile
             if (fieldType.IsEnum)
 #endif
             {
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
               fieldData.Value = Convert.ChangeType(fieldData.Value, Enum.GetUnderlyingType(fieldType), CultureInfo.CurrentCulture);
 #else
               fieldData.Value = Convert.ChangeType(fieldData.Value, Enum.GetUnderlyingType(fieldType));
@@ -164,7 +164,7 @@ namespace Csla.Serialization.Mobile
 
     private static bool IsSerializable(Type objectType)
     {
-#if SILVERLIGHT
+#if (SILVERLIGHT || NETFX_CORE) && !WINDOWS_PHONE
       return objectType.IsSerializable();
 #else
       return objectType.IsSerializable;
@@ -244,7 +244,7 @@ namespace Csla.Serialization.Mobile
         }
         else
         {
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
           IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);
 #else
           IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type, true);

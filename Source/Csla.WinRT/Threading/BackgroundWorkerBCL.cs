@@ -11,7 +11,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+#if NETFX_CORE
 using Windows.UI.Xaml;
+#else
+using System.Windows;
+#endif
 
 namespace System.ComponentModel
 {

@@ -6,10 +6,8 @@
 // <summary>Enables simple invocation of methods</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !WINDOWS_PHONE
 using System.Threading.Tasks;
 using Csla.Properties;
-#endif
 
 namespace Csla.Reflection
 {
@@ -109,7 +107,6 @@ namespace Csla.Reflection
       return MethodCaller.CallMethod(this.Instance, method, parameters);
     }
 
-#if !WINDOWS_PHONE
 //    /// <summary>
 //    /// Gets a value indicating whether the specified method
 //    /// returns a Task of object.
@@ -221,6 +218,5 @@ namespace Csla.Reflection
         throw new Csla.Reflection.CallMethodException(Instance.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, ex);
       }
     }
-#endif
   }
 }

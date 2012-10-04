@@ -26,8 +26,14 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
+#if WINDOWS_PHONE
+      global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
+      var value = temp.GetString("ms-resource:///Csla/Resources/" + resourceName);
+      return value;
+#else
       var value = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("ms-resource:///Csla/Resources/" + resourceName);
       return value.ValueAsString;
+#endif
     }
 
     /// <summary>

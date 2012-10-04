@@ -50,8 +50,8 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if SILVERLIGHT && !__ANDROID__ && !IOS
-    ,INotifyDataErrorInfo
+#if (SILVERLIGHT || NETFX_CORE) && !__ANDROID__ && !IOS
+, INotifyDataErrorInfo
 #else
 , IDataErrorInfo
 #endif
@@ -995,7 +995,7 @@ namespace Csla.Core
 
     #region BusinessRules, IsValid
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Event raised when validation is complete.
     /// </summary>
@@ -1311,7 +1311,7 @@ namespace Csla.Core
 
     #endregion
 
-#if !SILVERLIGHT || __ANDROID__ || IOS
+#if (!SILVERLIGHT && !NETFX_CORE) || __ANDROID__ || IOS
     #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -1408,7 +1408,7 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged += Child_PropertyChanged;
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged += Child_ListChanged;
@@ -1452,7 +1452,7 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged -= Child_ListChanged;
@@ -3001,7 +3001,7 @@ namespace Csla.Core
       OnChildChanged(args);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
@@ -3033,7 +3033,7 @@ namespace Csla.Core
       RaiseChildChanged(sender, e);
     }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Handles any ListChanged event from 
     /// a child list and echoes it up as

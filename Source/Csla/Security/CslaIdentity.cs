@@ -25,7 +25,7 @@ namespace Csla.Security
   [Serializable]
   public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>
   {
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Retrieves an instance of the identity
     /// object.

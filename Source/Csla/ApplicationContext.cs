@@ -578,7 +578,7 @@ namespace Csla
     }
 
     private static ExecutionLocations _executionLocation =
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
       ExecutionLocations.MobileClient;
 #else
       ExecutionLocations.Client;

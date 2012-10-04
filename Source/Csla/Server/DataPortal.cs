@@ -533,7 +533,7 @@ namespace Csla.Server
       {
         if (!_InterceptorTypeSet)
         {
-#if !SILVERLIGHT && !NET
+#if !SILVERLIGHT && !NETFX_CORE
           var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
           if (!string.IsNullOrWhiteSpace(typeName))
             InterceptorType = Type.GetType(typeName);

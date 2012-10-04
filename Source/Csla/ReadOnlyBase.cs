@@ -23,7 +23,7 @@ using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
 using Csla.Serialization;
 #endif
 

@@ -354,6 +354,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td>{949C7D8F-9D38-4CE3-BBC7-3A20E2488478}</td><td>PersonalFolder</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{EEE371EC-A027-4BD7-A80C-90F245E4C6FB}</td><td>BIN</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td>{118F480F-487F-4F05-96FA-2D16F56121A0}</td><td>CSLA_.NET</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT11</td><td>{4CFA747D-E764-4127-B947-C376F8FE3B36}</td><td>LOGOS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{FB0ED5ED-75C1-466F-A5BF-DBBCBDD3A786}</td><td>NET</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td>{03C98776-650A-4AC5-920E-24CEC2AEC6EA}</td><td>SILVERLIGHT</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td>{A0972906-7AD2-4994-8938-27CF314C9EED}</td><td>WINRT</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1170,11 +1171,12 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>_.5.2</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>_.5.3</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>ISYourDataBaseDir</td><td>CSLA_.NET</td><td>Database</td><td/><td>0</td><td/></row>
+		<row><td>LOGOS</td><td>SUPPORT</td><td>Logos</td><td/><td>0</td><td/></row>
 		<row><td>LocalAppDataFolder</td><td>TARGETDIR</td><td>.:LocalA~1|LocalAppData</td><td/><td>0</td><td/></row>
 		<row><td>MARIMER_LLC</td><td>ProgramFilesFolder</td><td>MARIME~1|Marimer LLC</td><td/><td>0</td><td/></row>
 		<row><td>MY_PRODUCT_NAME</td><td>MARIMER_LLC</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1204,6 +1206,7 @@
 		<row><td>WindowsFolder</td><td>TARGETDIR</td><td>.:Windows</td><td/><td>0</td><td/></row>
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
 		<row><td>_.5.2</td><td>CSLA_.NET</td><td>4.5.2</td><td/><td>0</td><td/></row>
+		<row><td>_.5.3</td><td>CSLA_.NET</td><td>4.5.3</td><td/><td>0</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -1907,6 +1910,7 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT10</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT11</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT3</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT4</td></row>
@@ -1955,6 +1959,15 @@
 		<row><td>csla.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.XML</td><td>1</td><td/></row>
 		<row><td>csla.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>Csla.xml</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.xml</td><td>1</td><td/></row>
 		<row><td>csla.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.XML</td><td>1</td><td/></row>
+		<row><td>csla_win8.ai</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.AI|csla win8.ai</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8.ai</td><td>1</td><td/></row>
+		<row><td>csla_win8.eps</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.EPS|csla win8.eps</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8.eps</td><td>1</td><td/></row>
+		<row><td>csla_win8.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_compact.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_compact.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_compact.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_compact_s.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_compact_s.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_compact_s.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_full.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_full.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_full.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_full_big.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_full_big.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_full_big.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_full_sq.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_full_sq.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_full_sq.png</td><td>1</td><td/></row>
+		<row><td>csla_win8_mid.png</td><td>ISX_DEFAULTCOMPONENT11</td><td>CSLAWI~1.PNG|csla win8_mid.png</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Logos\csla win8_mid.png</td><td>1</td><td/></row>
 		<row><td>cslasamples.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASA~1.ZIP|CslaSamples.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSamples.zip</td><td>1</td><td/></row>
 		<row><td>cslasource.zip</td><td>ISX_DEFAULTCOMPONENT5</td><td>CSLASO~1.ZIP|CslaSource.zip</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Setup\CslaSource.zip</td><td>1</td><td/></row>
 		<row><td>defineacslaauthorizationrule</td><td>ISX_DEFAULTCOMPONENT9</td><td>DEFINE~1.SNI|DefineACslaAuthorizationRule.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\DefineACslaAuthorizationRule.snippet</td><td>1</td><td/></row>
@@ -2265,6 +2278,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT</td><td/><td/><td>_FD0B65CA_8A68_41BA_B36C_6B0E1108ADED_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_5FE346E4_2565_4718_A426_C76E07715FCC_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td/><td/><td>_B2FA0475_1528_4DF3_9120_1DE108DA7932_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT11</td><td/><td/><td>_EBFE10A5_92B0_4166_B1CF_29F89464713A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_C68CD93D_423E_40F7_93E6_4584563A5FDD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td/><td/><td>_722ACD26_AA2D_4F03_9B10_C3ED6CBFE309_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td/><td/><td>_5C3E9CDC_4330_461A_A615_D48F80B2380E_FILTER</td><td/><td/><td/><td/></row>
@@ -4667,7 +4681,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{5E49E98A-E901-47B5-BF08-11BC0AAB3C72}</td><td/></row>
 		<row><td>ProductName</td><td>CSLA .NET</td><td/></row>
-		<row><td>ProductVersion</td><td>4.5.2</td><td/></row>
+		<row><td>ProductVersion</td><td>4.5.3</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

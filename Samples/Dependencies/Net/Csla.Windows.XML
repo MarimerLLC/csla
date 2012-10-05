@@ -193,6 +193,11 @@
             Not in use - kept for backward  compatibility
             </summary>
         </member>
+        <member name="P:Csla.Windows.BindingSourceRefresh.RefreshOnException">
+            <summary>
+            Forces the binding to re-read after an exception is thrown when changing the binding value
+            </summary>
+        </member>
         <member name="T:Csla.Windows.BindingErrorEventHandler">
             <summary>
             BindingErrorEventHandler delegates is the event handling definition for handling data binding errors that occurred due to exceptions.
@@ -321,67 +326,80 @@
             <summary>
             Gets the action type.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <returns></returns>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.SetActionType(System.Windows.Forms.Control,Csla.Windows.CslaFormAction)">
             <summary>
             Sets the action type.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <param name="value">Value for property.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.GetPostSaveAction(System.Windows.Forms.Control)">
             <summary>
             Gets the post save action.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <returns></returns>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.SetPostSaveAction(System.Windows.Forms.Control,Csla.Windows.PostSaveActionType)">
             <summary>
             Sets the post save action.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <param name="value">Value for property.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.GetRebindAfterSave(System.Windows.Forms.Control)">
             <summary>
             Gets the rebind after save value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.SetRebindAfterSave(System.Windows.Forms.Control,System.Boolean)">
             <summary>
             Sets the rebind after save value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <param name="value">Value for property.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.GetDisableWhenClean(System.Windows.Forms.Control)">
             <summary>
             Gets the disable when clean value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.SetDisableWhenClean(System.Windows.Forms.Control,System.Boolean)">
             <summary>
             Sets the disable when clean value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtender.GetDisableWhenUseless(System.Windows.Forms.Control)">
+            <summary>
+            Gets the disable when useless value.
+            </summary>
+            <param name="ctl">Reference to Control.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtender.SetDisableWhenUseless(System.Windows.Forms.Control,System.Boolean)">
+            <summary>
+            Sets the disable when useless value.
+            </summary>
+            <param name="ctl">Reference to Control.</param>
             <param name="value">Value for property.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.GetCommandName(System.Windows.Forms.Control)">
             <summary>
             Gets the command name value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.SetCommandName(System.Windows.Forms.Control,System.String)">
             <summary>
             Sets the command name value.
             </summary>
-            <param name="ctl">Reference to control.</param>
+            <param name="ctl">Reference to Control.</param>
             <param name="value">Value for property.</param>
         </member>
         <member name="M:Csla.Windows.CslaActionExtender.OnClicking(Csla.Windows.CslaActionCancelEventArgs)">
@@ -480,14 +498,20 @@
             in a warn on cancel.
             </summary>
         </member>
+        <member name="P:Csla.Windows.CslaActionExtender.ObjectIsValidMessage">
+            <summary>
+            Gets or sets the message shown to the user when a button with a 
+            Validate ActionType is pressed when the object is valid.
+            </summary>
+        </member>
         <member name="E:Csla.Windows.CslaActionExtender.Clicking">
             <summary>
-            Event indicating the user is clicking on the control.
+            Event indicating the user is clicking on the Control.
             </summary>
         </member>
         <member name="E:Csla.Windows.CslaActionExtender.Clicked">
             <summary>
-            Event indicating the user clicked on the control.
+            Event indicating the user clicked on the Control.
             </summary>
         </member>
         <member name="E:Csla.Windows.CslaActionExtender.ErrorEncountered">
@@ -520,6 +544,240 @@
             Event indicating that the object has been saved.
             </summary>
         </member>
+        <member name="T:Csla.Windows.CslaActionExtenderToolStrip">
+            <summary>
+            Extender control (for ToolStripButton only) providing automation around
+            data binding to CSLA .NET business objects.
+            </summary>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.#ctor(System.ComponentModel.IContainer)">
+            <summary>
+            Creates an instance of the type.
+            </summary>
+            <param name="container">Container for the component.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetActionType(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the action type.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetActionType(System.Windows.Forms.ToolStripButton,Csla.Windows.CslaFormAction)">
+            <summary>
+            Sets the action type.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetPostSaveAction(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the post save action.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetPostSaveAction(System.Windows.Forms.ToolStripButton,Csla.Windows.PostSaveActionType)">
+            <summary>
+            Sets the post save action.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetRebindAfterSave(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the rebind after save value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetRebindAfterSave(System.Windows.Forms.ToolStripButton,System.Boolean)">
+            <summary>
+            Sets the rebind after save value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetDisableWhenClean(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the disable when clean value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetDisableWhenClean(System.Windows.Forms.ToolStripButton,System.Boolean)">
+            <summary>
+            Sets the disable when clean value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetDisableWhenUseless(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the disable when useless value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetDisableWhenUseless(System.Windows.Forms.ToolStripButton,System.Boolean)">
+            <summary>
+            Sets the disable when useless value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.GetCommandName(System.Windows.Forms.ToolStripButton)">
+            <summary>
+            Gets the command name value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.SetCommandName(System.Windows.Forms.ToolStripButton,System.String)">
+            <summary>
+            Sets the command name value.
+            </summary>
+            <param name="ctl">Reference to ToolStripButton.</param>
+            <param name="value">Value for property.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnClicking(Csla.Windows.CslaActionCancelEventArgs)">
+            <summary>
+            Raises the Clicking event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnClicked(Csla.Windows.CslaActionEventArgs)">
+            <summary>
+            Raises the Clicked event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnErrorEncountered(Csla.Windows.ErrorEncounteredEventArgs)">
+            <summary>
+            Raises the ErrorEncountered event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnSetForNew(Csla.Windows.CslaActionEventArgs)">
+            <summary>
+            Raises the SetForNew event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnBusinessObjectInvalid(Csla.Windows.CslaActionEventArgs)">
+            <summary>
+            Raises the BusinessObjectInvalid event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnHasBrokenRules(Csla.Windows.HasBrokenRulesEventArgs)">
+            <summary>
+            Raises the HasBrokenRules event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnObjectSaving(Csla.Windows.CslaActionCancelEventArgs)">
+            <summary>
+            Raises the ObjectSaving event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnObjectSaved(Csla.Windows.CslaActionEventArgs)">
+            <summary>
+            Raises the ObjectSaved event.
+            </summary>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.ResetActionBehaviors(Csla.Core.ISavable)">
+            <summary>
+            Resets all action behaviors.
+            </summary>
+            <param name="objectToBind">Target object.</param>
+        </member>
+        <member name="M:Csla.Windows.CslaActionExtenderToolStrip.OnClick(System.Object,System.EventArgs)">
+            <summary>
+            Method invoked when the target control is clicked.
+            </summary>
+            <param name="sender">Object originating action.</param>
+            <param name="e">Arguments.</param>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.DataSource">
+            <summary>
+            Gets or sets a reference to the data source object.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.AutoShowBrokenRules">
+            <summary>
+            Gets or sets a value indicating whether to automatically
+            show broken rules.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.WarnIfCloseOnDirty">
+            <summary>
+            Gets or sets a value indicating whether to warn the
+            user on close when the object is dirty.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.DirtyWarningMessage">
+            <summary>
+            Gets or sets the message shown to the user
+            in a close on dirty warning.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.WarnOnCancel">
+            <summary>
+            Gets or sets a value indicating whether to warn
+            the user on cancel.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.WarnOnCancelMessage">
+            <summary>
+            Gets or sets the message shown to the user
+            in a warn on cancel.
+            </summary>
+        </member>
+        <member name="P:Csla.Windows.CslaActionExtenderToolStrip.ObjectIsValidMessage">
+            <summary>
+            Gets or sets the message shown to the user when a button with a 
+            Validate ActionType is pressed when the object is valid.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.Clicking">
+            <summary>
+            Event indicating the user is clicking on the ToolStripButton.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.Clicked">
+            <summary>
+            Event indicating the user clicked on the ToolStripButton.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.ErrorEncountered">
+            <summary>
+            Event indicating an error was encountered.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.SetForNew">
+            <summary>
+            Event indicating the object is set for new.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.BusinessObjectInvalid">
+            <summary>
+            Event indicating the business object is in an invalid state.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.HasBrokenRules">
+            <summary>
+            Event indicating the business object has broken rules.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.ObjectSaving">
+            <summary>
+            Event indicating that the object is saving.
+            </summary>
+        </member>
+        <member name="E:Csla.Windows.CslaActionExtenderToolStrip.ObjectSaved">
+            <summary>
+            Event indicating that the object has been saved.
+            </summary>
+        </member>
         <member name="T:Csla.Windows.CslaFormAction">
             <summary>
             The possible form actions.
@@ -537,7 +795,7 @@
         </member>
         <member name="F:Csla.Windows.CslaFormAction.Cancel">
             <summary>
-            Perform a cancel.
+            Undo changes.
             </summary>
         </member>
         <member name="F:Csla.Windows.CslaFormAction.Close">
@@ -545,10 +803,14 @@
             Close the form.
             </summary>
         </member>
+        <member name="F:Csla.Windows.CslaFormAction.Validate">
+            <summary>
+            Display a message box with any broken rules
+            </summary>
+        </member>
         <member name="T:Csla.Windows.PostSaveActionType">
             <summary>
-            The possible options for posting
-            and saving.
+            The possible actions for post save.
             </summary>
         </member>
         <member name="F:Csla.Windows.PostSaveActionType.None">

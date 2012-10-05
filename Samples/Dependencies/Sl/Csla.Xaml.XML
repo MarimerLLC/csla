@@ -816,6 +816,18 @@
             executing an asynchronous process.
             </summary>
         </member>
+        <member name="P:Csla.Xaml.ViewModelBase`1.IsDirty">
+            <summary>
+            Gets a value indicating whether the Model
+            has been changed.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.ViewModelBase`1.IsValid">
+            <summary>
+            Gets a value indicating whether the Model
+            is currently valid (has no broken rules).
+            </summary>
+        </member>
         <member name="P:Csla.Xaml.ViewModelBase`1.CanSave">
             <summary>
             Gets a value indicating whether the Model

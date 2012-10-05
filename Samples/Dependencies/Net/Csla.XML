@@ -213,6 +213,14 @@
             method when using a local data portal configuration.
             </summary>
         </member>
+        <member name="P:Csla.ApplicationContext.DataPortalReturnObjectOnException">
+            <summary>
+            Gets or sets a value indicating whether the
+            server-side business object should be returned to
+            the client as part of the DataPortalException
+            (default is false).
+            </summary>
+        </member>
         <member name="P:Csla.ApplicationContext.SerializationFormatter">
             <summary>
             Gets the serialization formatter type used by CSLA .NET
@@ -12492,6 +12500,74 @@
             <param name="methodName">Name of the method.</param>
             <param name="ex">The exception.</param>
         </member>
+        <member name="T:Csla.Server.IInterceptDataPortal">
+            <summary>
+            Implement this interface to create a data
+            portal interceptor that is notified each
+            time the data portal is invoked and
+            completes processing.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.IInterceptDataPortal.Initialize(Csla.Server.InterceptArgs)">
+            <summary>
+            Invoked at the start of each server-side
+            data portal invocation, immediately after
+            the context has been set, and before
+            authorization.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:Csla.Server.IInterceptDataPortal.Complete(Csla.Server.InterceptArgs)">
+            <summary>
+            Invoked at the end of each server-side
+            data portal invocation for success
+            and exception scenarios.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="T:Csla.Server.InterceptArgs">
+            <summary>
+            Arguments parameter passed to the
+            interceptor methods.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.ObjectType">
+            <summary>
+            Gets or sets the business object type.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.Parameter">
+            <summary>
+            Gets or sets the criteria or business
+            object paramter provided to the
+            data portal from the client.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.Result">
+            <summary>
+            Gets or sets the business object
+            resulting from the data portal
+            operation.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.Exception">
+            <summary>
+            Gets or sets the exception that occurred
+            during data portal processing.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.Operation">
+            <summary>
+            Gets or sets the data portal operation
+            being performed.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.InterceptArgs.IsSync">
+            <summary>
+            Gets or sets a value indicating whether
+            the data portal was invoked synchronously.
+            </summary>
+        </member>
         <member name="T:Csla.Server.MobileFactoryAttribute">
             <summary>
             Specifies that the Silverlight WCF data portal
@@ -15155,7 +15231,7 @@
             call.
             </summary>
         </member>
-        <member name="M:Csla.DataPortalEventArgs.#ctor(Csla.Server.DataPortalContext,System.Type,Csla.DataPortalOperations)">
+        <member name="M:Csla.DataPortalEventArgs.#ctor(Csla.Server.DataPortalContext,System.Type,System.Object,Csla.DataPortalOperations)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -15164,12 +15240,15 @@
             </param>
             <param name="objectType">
             Business object type.
+            </param>
+            <param name="obj">
+            Criteria or business object for request.
             </param>
             <param name="operation">
             Data portal operation being performed.
             </param>
         </member>
-        <member name="M:Csla.DataPortalEventArgs.#ctor(Csla.Server.DataPortalContext,System.Type,Csla.DataPortalOperations,System.Exception)">
+        <member name="M:Csla.DataPortalEventArgs.#ctor(Csla.Server.DataPortalContext,System.Type,System.Object,Csla.DataPortalOperations,System.Exception)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -15178,6 +15257,9 @@
             </param>
             <param name="objectType">
             Business object type.
+            </param>
+            <param name="obj">
+            Criteria or business object for request.
             </param>
             <param name="operation">
             Data portal operation being performed.
@@ -15212,6 +15294,12 @@
             <summary>
             Gets the object type being processed by the 
             data portal.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalEventArgs.Object">
+            <summary>
+            Gets the criteria object or business object
+            being processed by the data portal.
             </summary>
         </member>
         <member name="T:Csla.DataPortalException">
@@ -15687,6 +15775,13 @@
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
             <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="P:Csla.Server.DataPortal.InterceptorType">
+            <summary>
+            Gets or sets the type of interceptor invoked
+            by the data portal for pre- and post-processing
+            of each data portal invocation.
+            </summary>
         </member>
         <member name="P:Csla.Server.DataPortal.Authorizer">
             <summary>
@@ -17327,6 +17422,16 @@
               Looks up a localized string similar to Object is currently in a dirty changed..
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderErrorCaption">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderInformationCaption">
+            <summary>
+              Looks up a localized string similar to Information.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.ActionExtenderInvalidBindingSourceCast">
             <summary>
               Looks up a localized string similar to DataSource does not cast to a BindingSource.
@@ -17335,6 +17440,11 @@
         <member name="P:Csla.Properties.Resources.ActionExtenderInvalidBusinessObjectBaseCast">
             <summary>
               Looks up a localized string similar to The underlying data source does not cast to a CSLA BusinessBase object.
+            </summary>
+        </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderObjectIsValidMessagePropertyDefault">
+            <summary>
+              Looks up a localized string similar to Object is valid.
             </summary>
         </member>
         <member name="P:Csla.Properties.Resources.ActionExtenderSourceMustBeBindingSource">

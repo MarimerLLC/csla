@@ -12,7 +12,7 @@ namespace RuleTutorial.Testing.Common
     public ObjectAccessor()
     { }
 
-    public object ReadProperty(object businessObject, IPropertyInfo property)
+    public new object ReadProperty(object businessObject, IPropertyInfo property)
     {
       return base.ReadProperty(businessObject, property);
     }

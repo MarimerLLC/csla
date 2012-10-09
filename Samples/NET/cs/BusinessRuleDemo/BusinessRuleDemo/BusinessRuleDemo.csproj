@@ -34,8 +34,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.2.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL" />
-    <Reference Include="Csla.Windows, Version=4.2.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL" />
+    <Reference Include="Csla">
+      <HintPath>..\..\..\..\Dependencies\Net4\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="Csla.Windows">
+      <HintPath>..\..\..\..\Dependencies\Net4\Csla.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CompilerServices.AsyncTargetingPack.Net4">
+      <HintPath>..\..\..\..\Dependencies\packages\Microsoft.CompilerServices.AsyncTargetingPack.1.0.0\lib\net40\Microsoft.CompilerServices.AsyncTargetingPack.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -76,6 +83,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\CountryNVL.datasource" />
     <None Include="Properties\DataSources\Root.datasource" />
     <None Include="Properties\DataSources\StatesNVL.datasource" />

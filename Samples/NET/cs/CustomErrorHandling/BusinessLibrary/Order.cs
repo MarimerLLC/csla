@@ -50,7 +50,7 @@ namespace BusinessLibrary
       return DataPortal.Fetch<Order>(id);
     }
 
-    public override Order Save()
+    public new Order Save()
     {
       return base.Save();
     }

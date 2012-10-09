@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinRTUI", "WinRTUI\WinRTUI.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLibrary.WinRT", "BusinessLibrary.WinRT\BusinessLibrary.WinRT.csproj", "{EC071DE7-B1DE-4685-A9F4-908CE8977C5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\..\..\..\Source\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -457,41 +455,6 @@ Global
 		{EC071DE7-B1DE-4685-A9F4-908CE8977C5F}.Testing|x64.Build.0 = Release|x64
 		{EC071DE7-B1DE-4685-A9F4-908CE8977C5F}.Testing|x86.ActiveCfg = Release|x86
 		{EC071DE7-B1DE-4685-A9F4-908CE8977C5F}.Testing|x86.Build.0 = Release|x86
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Any CPU.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Any CPU.Build.0 = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|ARM.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Mixed Platforms.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|Mixed Platforms.Build.0 = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|x64.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Debug|x86.ActiveCfg = Mono Debug|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Any CPU.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Any CPU.Build.0 = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|ARM.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Mixed Platforms.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|Mixed Platforms.Build.0 = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|x64.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Mono Release|x86.ActiveCfg = Mono Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|ARM.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|x64.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Release|x86.ActiveCfg = Release|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Any CPU.Build.0 = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|ARM.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Mixed Platforms.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|Mixed Platforms.Build.0 = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|x64.ActiveCfg = Testing|Any CPU
-		{9DA591ED-C570-47AC-8E5D-35B039E07973}.Testing|x86.ActiveCfg = Testing|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

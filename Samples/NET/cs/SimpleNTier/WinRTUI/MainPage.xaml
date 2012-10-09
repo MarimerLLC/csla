@@ -4,10 +4,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:WinRTUI"
+    xmlns:csla="using:Csla.Xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+  <Page.Resources>
+    <local:VisibilityConverter x:Key="VisibilityConverter" Invert="True"/>
+    <local:StringNullConverter x:Key="StringNullConverter"/>
+  </Page.Resources>
   <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
     <Grid.RowDefinitions>
       <RowDefinition Height="120"/>
@@ -38,8 +43,17 @@
         <TextBox Grid.Column="1" Grid.Row="0" x:Name="idTextBox" Text="{Binding Model.Id, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource TextBoxStyle}" />
 
         <TextBlock Text="Customer Name:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelTextStyle}" />
-        <TextBox Grid.Column="1" Grid.Row="1" x:Name="customerNameTextBox" Text="{Binding Model.CustomerName, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" />
-
+        <Grid Grid.Column="1" Grid.Row="1" >
+          <Rectangle Fill="Red" Margin="8" Visibility="{Binding ElementName=CustomerNameInfo, Path=IsValid,Converter={StaticResource VisibilityConverter}}" />
+          <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8 -5" Visibility="{Binding ElementName=CustomerNameInfo, Path=IsValid,Converter={StaticResource VisibilityConverter}}">
+            <Rectangle Fill="Red"/>
+            <TextBlock Text="{Binding ElementName=CustomerNameInfo, Path=RuleDescription}"/>
+          </Grid>
+          <TextBox x:Name="customerNameTextBox" Text="{Binding Model.CustomerName, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" 
+                   ToolTipService.ToolTip="{Binding ElementName=CustomerNameInfo, Path=RuleDescription, Converter={StaticResource StringNullConverter}}" />
+          <csla:PropertyInfo Name="CustomerNameInfo" Source="{Binding Path=Model}" Property="CustomerName"/>
+        </Grid>
+        
         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="orders" Style="{StaticResource SubHeadingTextStyle}" Margin="10,15,0,0" />
 
         <ListView Grid.Row="3" Grid.Column="1" Margin="10 15 0 0"  ItemsSource="{Binding Path=Model.LineItems}">

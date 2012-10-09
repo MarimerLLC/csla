@@ -108,6 +108,8 @@
     </Compile>
     <Compile Include="OrderVm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringNullConverter.cs" />
+    <Compile Include="VisibilityConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

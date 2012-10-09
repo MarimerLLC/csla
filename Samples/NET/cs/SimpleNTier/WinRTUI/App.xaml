@@ -31,7 +31,7 @@
 
       <Style x:Key="TextBoxStyle" TargetType="TextBox">
         <Setter Property="FontSize" Value="18.667" />
-        <Setter Property="Margin" Value="10,0,10,0"/>
+        <Setter Property="Margin" Value="10"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="Segoe WP"/>
       </Style>

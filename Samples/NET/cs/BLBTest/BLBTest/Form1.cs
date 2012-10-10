@@ -43,6 +43,9 @@ namespace BLBTest
 
     private void toolStripButton2_Click(object sender, EventArgs e)
     {
+      // this is the wrong way to perform a cancel / undo operation
+      // and an "Edit level mismatch in CopyState" exception will be thrown
+
       DataList list = (DataList)this.dataListBindingSource.DataSource;
       this.dataListBindingSource.CancelEdit();
       list.CancelEdit();

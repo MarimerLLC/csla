@@ -340,12 +340,17 @@
 		<col def="S0">ISDotNetInstallerArgsCommit</col>
 		<col def="S0">ISDotNetInstallerArgsUninstall</col>
 		<col def="S0">ISDotNetInstallerArgsRollback</col>
+		<row><td>Csla.Web.Mvc.dll</td><td>{CA76C36B-7C8D-4245-B830-92E9706F51C3}</td><td>NET4</td><td>2</td><td/><td>csla.web.mvc.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Web.Mvc.dll1</td><td>{61B62B14-6DE7-49E1-8E7B-8115D0B7AFF2}</td><td>NET</td><td>2</td><td/><td>csla.web.mvc.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Csla.Web.dll</td><td>{70BDA5D2-2534-4411-84E6-54B77A9199C4}</td><td>NET4</td><td>2</td><td/><td>csla.web.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Web.dll1</td><td>{C3015AE7-E359-4AE5-B4FF-1AFA0F95D35A}</td><td>NET</td><td>2</td><td/><td>csla.web.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Csla.Windows.dll</td><td>{42A05901-F304-48A9-AA8E-6AD689BA2A18}</td><td>NET4</td><td>2</td><td/><td>csla.windows.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Windows.dll1</td><td>{87058CA1-5B8B-4681-B737-3E5F62F1FD77}</td><td>NET</td><td>2</td><td/><td>csla.windows.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Csla.Xaml.dll</td><td>{CCB81EBF-4B62-423E-A34A-7203E00263BD}</td><td>NET4</td><td>2</td><td/><td>csla.xaml.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Xaml.dll1</td><td>{267F96C3-F080-4BCD-A53E-6B92A25B2BBC}</td><td>SILVERLIGHT</td><td>2</td><td/><td>csla.xaml.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Xaml.dll2</td><td>{CE91ED5D-1981-4A05-ACC2-9FB4B3AE50FC}</td><td>WINRT</td><td>2</td><td/><td>csla.xaml.dll2</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.Xaml.dll3</td><td>{0F731B23-4006-4A5E-B13B-7045196927B5}</td><td>NET</td><td>2</td><td/><td>csla.xaml.dll3</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>Csla.dll</td><td>{261B4101-D3E6-41B9-BA82-FFB863E4FCB6}</td><td>NET4</td><td>2</td><td/><td>csla.dll</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.dll1</td><td>{F4718EDA-A208-4FE4-BA22-A96C436DB5D0}</td><td>SILVERLIGHT</td><td>2</td><td/><td>csla.dll1</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.dll2</td><td>{F3B54540-DF04-49C1-8AB2-72AFB04C6771}</td><td>WINRT</td><td>2</td><td/><td>csla.dll2</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>Csla.dll3</td><td>{A6464DFB-8CC1-4345-8B54-3691E79D5AB7}</td><td>NET</td><td>2</td><td/><td>csla.dll3</td><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -355,6 +360,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td>{EEE371EC-A027-4BD7-A80C-90F245E4C6FB}</td><td>BIN</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td>{118F480F-487F-4F05-96FA-2D16F56121A0}</td><td>CSLA_.NET</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT11</td><td>{4CFA747D-E764-4127-B947-C376F8FE3B36}</td><td>LOGOS</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
+		<row><td>ISX_DEFAULTCOMPONENT12</td><td>{9F0F28F6-1770-4245-B979-184334D2A56F}</td><td>NET4</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td>{FB0ED5ED-75C1-466F-A5BF-DBBCBDD3A786}</td><td>NET</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td>{03C98776-650A-4AC5-920E-24CEC2AEC6EA}</td><td>SILVERLIGHT</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td>{A0972906-7AD2-4994-8938-27CF314C9EED}</td><td>WINRT</td><td>2</td><td/><td/><td>17</td><td/><td/><td/><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td><td>/LogFile=</td></row>
@@ -1182,6 +1188,7 @@
 		<row><td>MY_PRODUCT_NAME</td><td>MARIMER_LLC</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
 		<row><td>MyPicturesFolder</td><td>TARGETDIR</td><td>.:MyPict~1|MyPictures</td><td/><td>0</td><td/></row>
 		<row><td>NET</td><td>BIN</td><td>NET</td><td/><td>0</td><td/></row>
+		<row><td>NET4</td><td>BIN</td><td>NET4</td><td/><td>0</td><td/></row>
 		<row><td>NetHoodFolder</td><td>TARGETDIR</td><td>.:NetHood</td><td/><td>0</td><td/></row>
 		<row><td>PersonalFolder</td><td>TARGETDIR</td><td>.:Personal</td><td/><td>0</td><td/></row>
 		<row><td>PrimaryVolumePath</td><td>TARGETDIR</td><td>.:Primar~1|PrimaryVolumePath</td><td/><td>0</td><td/></row>
@@ -1898,12 +1905,17 @@
 	<table name="FeatureComponents">
 		<col key="yes" def="s38">Feature_</col>
 		<col key="yes" def="s72">Component_</col>
+		<row><td>AlwaysInstall</td><td>Csla.Web.Mvc.dll</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Web.Mvc.dll1</td></row>
+		<row><td>AlwaysInstall</td><td>Csla.Web.dll</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Web.dll1</td></row>
+		<row><td>AlwaysInstall</td><td>Csla.Windows.dll</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Windows.dll1</td></row>
+		<row><td>AlwaysInstall</td><td>Csla.Xaml.dll</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Xaml.dll1</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Xaml.dll2</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.Xaml.dll3</td></row>
+		<row><td>AlwaysInstall</td><td>Csla.dll</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.dll1</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.dll2</td></row>
 		<row><td>AlwaysInstall</td><td>Csla.dll3</td></row>
@@ -1911,6 +1923,7 @@
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT1</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT10</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT11</td></row>
+		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT12</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT2</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT3</td></row>
 		<row><td>AlwaysInstall</td><td>ISX_DEFAULTCOMPONENT4</td></row>
@@ -1941,21 +1954,31 @@
 		<row><td>adddataaccessregion.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDDAT~1.SNI|AddDataAccessRegion.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddDataAccessRegion.snippet</td><td>1</td><td/></row>
 		<row><td>addfactorymethods.snippet</td><td>ISX_DEFAULTCOMPONENT9</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\cs\AddFactoryMethods.snippet</td><td>1</td><td/></row>
 		<row><td>addfactorymethods.snippet1</td><td>ISX_DEFAULTCOMPONENT8</td><td>ADDFAC~1.SNI|AddFactoryMethods.snippet</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Support\Snippets\vb\AddFactoryMethods.snippet</td><td>1</td><td/></row>
+		<row><td>csla.dll</td><td>Csla.dll</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.dll</td><td>1</td><td/></row>
 		<row><td>csla.dll1</td><td>Csla.dll1</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.dll</td><td>1</td><td/></row>
 		<row><td>csla.dll2</td><td>Csla.dll2</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.dll</td><td>1</td><td/></row>
 		<row><td>csla.dll3</td><td>Csla.dll3</td><td>Csla.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.dll</td><td>Csla.Web.dll</td><td>CSLAWE~1.DLL|Csla.Web.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Web.dll</td><td>1</td><td/></row>
 		<row><td>csla.web.dll1</td><td>Csla.Web.dll1</td><td>CSLAWE~1.DLL|Csla.Web.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.mvc.dll</td><td>Csla.Web.Mvc.dll</td><td>CSLAWE~1.DLL|Csla.Web.Mvc.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Web.Mvc.dll</td><td>1</td><td/></row>
 		<row><td>csla.web.mvc.dll1</td><td>Csla.Web.Mvc.dll1</td><td>CSLAWE~1.DLL|Csla.Web.Mvc.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.dll</td><td>1</td><td/></row>
+		<row><td>csla.web.mvc.xml</td><td>ISX_DEFAULTCOMPONENT12</td><td>CSLAWE~1.XML|Csla.Web.Mvc.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Web.Mvc.XML</td><td>1</td><td/></row>
 		<row><td>csla.web.mvc.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.Mvc.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.Mvc.XML</td><td>1</td><td/></row>
+		<row><td>csla.web.xml</td><td>ISX_DEFAULTCOMPONENT12</td><td>CSLAWE~1.XML|Csla.Web.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Web.XML</td><td>1</td><td/></row>
 		<row><td>csla.web.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWE~1.XML|Csla.Web.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Web.XML</td><td>1</td><td/></row>
+		<row><td>csla.windows.dll</td><td>Csla.Windows.dll</td><td>CSLAWI~1.DLL|Csla.Windows.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Windows.dll</td><td>1</td><td/></row>
 		<row><td>csla.windows.dll1</td><td>Csla.Windows.dll1</td><td>CSLAWI~1.DLL|Csla.Windows.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.dll</td><td>1</td><td/></row>
+		<row><td>csla.windows.xml</td><td>ISX_DEFAULTCOMPONENT12</td><td>CSLAWI~1.XML|Csla.Windows.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Windows.XML</td><td>1</td><td/></row>
 		<row><td>csla.windows.xml1</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAWI~1.XML|Csla.Windows.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Windows.XML</td><td>1</td><td/></row>
+		<row><td>csla.xaml.dll</td><td>Csla.Xaml.dll</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Xaml.dll</td><td>1</td><td/></row>
 		<row><td>csla.xaml.dll1</td><td>Csla.Xaml.dll1</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.dll</td><td>1</td><td/></row>
 		<row><td>csla.xaml.dll2</td><td>Csla.Xaml.dll2</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.dll</td><td>1</td><td/></row>
 		<row><td>csla.xaml.dll3</td><td>Csla.Xaml.dll3</td><td>CSLAXA~1.DLL|Csla.Xaml.dll</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.dll</td><td>1</td><td/></row>
+		<row><td>csla.xaml.xml</td><td>ISX_DEFAULTCOMPONENT12</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.Xaml.XML</td><td>1</td><td/></row>
 		<row><td>csla.xaml.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.Xaml.XML</td><td>1</td><td/></row>
 		<row><td>csla.xaml.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.Xaml.XML</td><td>1</td><td/></row>
 		<row><td>csla.xaml.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>CSLAXA~1.XML|Csla.Xaml.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.Xaml.XML</td><td>1</td><td/></row>
+		<row><td>csla.xml</td><td>ISX_DEFAULTCOMPONENT12</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET4\Csla.XML</td><td>1</td><td/></row>
 		<row><td>csla.xml1</td><td>ISX_DEFAULTCOMPONENT3</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\Silverlight\Csla.XML</td><td>1</td><td/></row>
 		<row><td>csla.xml2</td><td>ISX_DEFAULTCOMPONENT4</td><td>Csla.xml</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\WinRT\Csla.xml</td><td>1</td><td/></row>
 		<row><td>csla.xml3</td><td>ISX_DEFAULTCOMPONENT2</td><td>Csla.XML</td><td>0</td><td/><td/><td/><td>1</td><td>C:\Users\Rocky\Documents\Visual Studio 2012\Projects\csla\trunk\Bin\Release\NET\Csla.XML</td><td>1</td><td/></row>
@@ -2264,12 +2287,17 @@
 		<col def="S0">FTPLocation</col>
 		<col def="S0">HTTPLocation</col>
 		<col def="S0">Miscellaneous</col>
+		<row><td>Csla.Web.Mvc.dll</td><td/><td/><td>_ACBED7D2_CC9E_4684_A6DA_58E84C457DB2_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Web.Mvc.dll1</td><td/><td/><td>_19E91DA4_5FED_4769_A02B_5BA6197C8508_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Csla.Web.dll</td><td/><td/><td>_D1ED610F_E2B7_4CE0_ABEB_0F536161EB9E_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Web.dll1</td><td/><td/><td>_E93732FA_B3BE_4CFA_83FD_7E2CF808E5FB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Csla.Windows.dll</td><td/><td/><td>_1804F589_6B18_411D_87F9_0792DB713993_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Windows.dll1</td><td/><td/><td>_3D1460C1_D23C_4202_A776_B2E212D81645_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Csla.Xaml.dll</td><td/><td/><td>_DC5CF199_718A_45B9_A3AA_B9C28D960C7A_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Xaml.dll1</td><td/><td/><td>_51DAFED3_FA31_4D7D_B66A_2118CFFB0F96_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Xaml.dll2</td><td/><td/><td>_21D8468B_4969_4E6E_88FE_A1B19CC3DBF6_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.Xaml.dll3</td><td/><td/><td>_79D3190B_D733_4604_B515_4F7097778CAB_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>Csla.dll</td><td/><td/><td>_8C4341BC_B086_4D42_BB27_A4259F617AA9_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.dll1</td><td/><td/><td>_B6F1577D_79BA_40D5_AE3B_8453D9C40A8B_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.dll2</td><td/><td/><td>_D41CFFDD_2EC0_4CFA_98C6_BC309725EEF4_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>Csla.dll3</td><td/><td/><td>_1539351C_D310_42AA_A723_CAA167C40B21_FILTER</td><td/><td/><td/><td/></row>
@@ -2279,6 +2307,7 @@
 		<row><td>ISX_DEFAULTCOMPONENT1</td><td/><td/><td>_5FE346E4_2565_4718_A426_C76E07715FCC_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT10</td><td/><td/><td>_B2FA0475_1528_4DF3_9120_1DE108DA7932_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT11</td><td/><td/><td>_EBFE10A5_92B0_4166_B1CF_29F89464713A_FILTER</td><td/><td/><td/><td/></row>
+		<row><td>ISX_DEFAULTCOMPONENT12</td><td/><td/><td>_80F5AD27_0688_4896_946B_63F45217E875_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT2</td><td/><td/><td>_C68CD93D_423E_40F7_93E6_4584563A5FDD_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT3</td><td/><td/><td>_722ACD26_AA2D_4F03_9B10_C3ED6CBFE309_FILTER</td><td/><td/><td/><td/></row>
 		<row><td>ISX_DEFAULTCOMPONENT4</td><td/><td/><td>_5C3E9CDC_4330_461A_A615_D48F80B2380E_FILTER</td><td/><td/><td/><td/></row>

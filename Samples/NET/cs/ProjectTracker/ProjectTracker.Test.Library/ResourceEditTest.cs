@@ -21,9 +21,9 @@ namespace ProjectTracker.Test.Library
     }
 
     [TestMethod]
-    public void GetResource()
+    public void GetResourceEdit()
     {
-      var obj = ResourceEdit.GetResource(1);
+      var obj = ResourceEdit.GetResourceEdit(1);
       Assert.IsNotNull(obj);
       Assert.AreEqual(1, obj.Id);
     }
@@ -32,7 +32,7 @@ namespace ProjectTracker.Test.Library
     public void GetResourceAsync()
     {
       var sync = new AutoResetEvent(false);
-      ResourceEdit.GetResource(1, (o, e) =>
+      ResourceEdit.GetResourceEdit(1, (o, e) =>
       {
         if (e.Error != null)
           Assert.Fail(e.Error.Message);
@@ -47,7 +47,7 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void InsertResource()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj = obj.Save();
@@ -57,18 +57,18 @@ namespace ProjectTracker.Test.Library
       Assert.IsFalse(obj.IsSavable);
       Assert.IsTrue(ResourceEdit.Exists(obj.Id));
 
-      ResourceEdit.DeleteResource(obj.Id);
+      ResourceEdit.DeleteResourceEdit(obj.Id);
     }
 
     [TestMethod]
     public void UpdateResource()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj = obj.Save();
 
-      obj = ResourceEdit.GetResource(obj.Id);
+      obj = ResourceEdit.GetResourceEdit(obj.Id);
       obj.FirstName = "Jonny";
       obj.LastName = "Bekkum";
       obj = obj.Save();
@@ -76,14 +76,14 @@ namespace ProjectTracker.Test.Library
       Assert.IsFalse(obj.IsDirty);
       Assert.IsFalse(obj.IsSavable);
 
-      ResourceEdit.DeleteResource(obj.Id);
+      ResourceEdit.DeleteResourceEdit(obj.Id);
     }
 
     [TestMethod]
     [ExpectedException(typeof(ProjectTracker.Dal.ConcurrencyException))]
     public void UpdateResource_ConcurrencyFail()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj = obj.Save();
@@ -107,12 +107,12 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void ImmediateDeleteResource()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj = obj.Save();
 
-      ResourceEdit.DeleteResource(obj.Id);
+      ResourceEdit.DeleteResourceEdit(obj.Id);
 
       Assert.IsFalse(ResourceEdit.Exists(obj.Id));
     }
@@ -120,7 +120,7 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void DeferredDeleteResource()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj = obj.Save();
@@ -135,13 +135,13 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void AddResourceAssignment()
     {
-      var obj = ResourceEdit.NewResource();
+      var obj = ResourceEdit.NewResourceEdit();
       obj.FirstName = "Rocky";
       obj.LastName = "Lhotka";
       obj.Assignments.AssignTo(1);
       obj = obj.Save();
 
-      obj = ResourceEdit.GetResource(obj.Id);
+      obj = ResourceEdit.GetResourceEdit(obj.Id);
       Assert.IsTrue(obj.Assignments.Count > 0);
       Assert.AreEqual(1, obj.Assignments[0].ProjectId);
 

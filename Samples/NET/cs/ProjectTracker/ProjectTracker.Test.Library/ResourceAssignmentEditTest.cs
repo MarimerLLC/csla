@@ -13,7 +13,7 @@ namespace ProjectTracker.Test.Library
     [TestMethod]
     public void RoleName()
     {
-      var resource = ResourceEdit.GetResource(1);
+      var resource = ResourceEdit.GetResourceEdit(1);
       var assignment = resource.Assignments[0];
       var role = RoleList.GetList().Where(r => r.Key == assignment.Role).First();
       Assert.AreEqual(role.Value, assignment.RoleName);

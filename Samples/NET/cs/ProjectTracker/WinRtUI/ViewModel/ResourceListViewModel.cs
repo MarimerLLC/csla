@@ -117,7 +117,7 @@ namespace WinRtUI.ViewModel
 
     protected override async Task<ProjectTracker.Library.ResourceEdit> DoInitAsync()
     {
-      var result = await ProjectTracker.Library.ResourceEdit.GetResourceAsync(_resourceId);
+      var result = await ProjectTracker.Library.ResourceEdit.GetResourceEditAsync(_resourceId);
       return result;
     }
 

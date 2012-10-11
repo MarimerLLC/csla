@@ -86,7 +86,7 @@ namespace WpfUI.ViewModels
       public void RemoveItem()
       {
         Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Getting item to delete..." });
-        ProjectTracker.Library.ResourceEdit.GetResource(Model.Id, (o, e) =>
+        ProjectTracker.Library.ResourceEdit.GetResourceEdit(Model.Id, (o, e) =>
         {
           if (e.Error != null)
           {

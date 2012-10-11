@@ -15,7 +15,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Index(int id)
     {
-      var resource = ResourceEdit.GetResource(id);
+      var resource = ResourceEdit.GetResourceEdit(id);
       ViewData.Add("ResourceId", resource.Id);
       ViewData.Add("Title", resource.FullName);
       ViewData.Model = resource.Assignments;
@@ -39,7 +39,7 @@ namespace Mvc3UI.Controllers
     {
       try
       {
-        var resource = ResourceEdit.GetResource(resourceId);
+        var resource = ResourceEdit.GetResourceEdit(resourceId);
         var projectId = int.Parse(collection["ProjectId"]);
         var model = resource.Assignments.AssignTo(projectId);
         model.Role = int.Parse(collection["Role"]);
@@ -60,7 +60,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Edit(int projectId, int resourceId)
     {
-      var resource = ResourceEdit.GetResource(resourceId);
+      var resource = ResourceEdit.GetResourceEdit(resourceId);
       ViewData.Add("ResourceId", resource.Id);
       ViewData.Model = resource.Assignments.Where(r => r.ProjectId == projectId).First();
       return View();
@@ -72,7 +72,7 @@ namespace Mvc3UI.Controllers
     [HttpPost]
     public ActionResult Edit(int projectId, int resourceId, FormCollection collection)
     {
-      var resource = ResourceEdit.GetResource(resourceId);
+      var resource = ResourceEdit.GetResourceEdit(resourceId);
       var model = resource.Assignments.Where(r => r.ProjectId == projectId).First();
       try
       {
@@ -93,7 +93,7 @@ namespace Mvc3UI.Controllers
 
     public ActionResult Delete(int projectId, int resourceId)
     {
-      var resource = ResourceEdit.GetResource(resourceId);
+      var resource = ResourceEdit.GetResourceEdit(resourceId);
       ViewData.Add("ResourceId", resource.Id);
       ViewData.Model = resource.Assignments.Where(r => r.ProjectId == projectId).First();
       return View();
@@ -105,7 +105,7 @@ namespace Mvc3UI.Controllers
     [HttpPost]
     public ActionResult Delete(int projectId, int resourceId, FormCollection collection)
     {
-      var resource = ResourceEdit.GetResource(resourceId);
+      var resource = ResourceEdit.GetResourceEdit(resourceId);
       var model = resource.Assignments.Where(r => r.ProjectId == projectId).First();
       try
       {

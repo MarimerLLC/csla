@@ -49,13 +49,13 @@ namespace ProjectTracker.Library
       });
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE && !WINDOWS_PHONE
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)
-        Resource = ResourceEdit.NewResource();
+        Resource = ResourceEdit.NewResourceEdit();
       else
-        Resource = ResourceEdit.GetResource(criteria.ResourceId);
+        Resource = ResourceEdit.GetResourceEdit(criteria.ResourceId);
       if (criteria.GetRoles)
         RoleList = RoleList.GetList();
     }

@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WpfUI\WpfUI.csproj">
-      <Project>{720FDE2C-0B06-434E-B7C4-798699CFE2D6}</Project>
+      <Project>{720fde2c-0b06-434e-b7c4-798699cfe2d6}</Project>
       <Name>WpfUI</Name>
     </ProjectReference>
   </ItemGroup>

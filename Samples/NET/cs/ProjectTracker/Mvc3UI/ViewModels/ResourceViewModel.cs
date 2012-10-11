@@ -11,12 +11,12 @@ namespace Mvc3UI.ViewModels
   {
     public ResourceViewModel()
     {
-      ModelObject = ResourceEdit.NewResource();
+      ModelObject = ResourceEdit.NewResourceEdit();
     }
 
     public ResourceViewModel(int resourceId)
     {
-      ModelObject = ResourceEdit.GetResource(resourceId);
+      ModelObject = ResourceEdit.GetResourceEdit(resourceId);
     }
   }
 }

@@ -152,7 +152,7 @@ namespace PTWin
     {
       using (StatusBusy busy = new StatusBusy("Creating resource..."))
       {
-        AddWinPart(new ResourceEdit(ProjectTracker.Library.ResourceEdit.NewResource()));
+        AddWinPart(new ResourceEdit(ProjectTracker.Library.ResourceEdit.NewResourceEdit()));
       }
     }
 
@@ -192,7 +192,7 @@ namespace PTWin
       {
         try
         {
-          AddWinPart(new ResourceEdit(ProjectTracker.Library.ResourceEdit.GetResource(resourceId)));
+          AddWinPart(new ResourceEdit(ProjectTracker.Library.ResourceEdit.GetResourceEdit(resourceId)));
         }
         catch (Csla.DataPortalException ex)
         {
@@ -228,7 +228,7 @@ namespace PTWin
           {
             try
             {
-              ProjectTracker.Library.ResourceEdit.DeleteResource(resourceId);
+              ProjectTracker.Library.ResourceEdit.DeleteResourceEdit(resourceId);
             }
             catch (Csla.DataPortalException ex)
             {

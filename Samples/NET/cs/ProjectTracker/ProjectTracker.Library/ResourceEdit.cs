@@ -6,6 +6,7 @@ using Csla.Security;
 using Csla.Data;
 using Csla.Serialization;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace ProjectTracker.Library
 {
@@ -117,57 +118,46 @@ namespace ProjectTracker.Library
       }
     }
 
-    public static void GetResource(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)
+    public static async Task<ResourceEdit> NewResourceEditAsync()
+    {
+      return await DataPortal.CreateAsync<ResourceEdit>();
+    }
+
+    public static async Task<ResourceEdit> GetResourceEditAsync(int id)
+    {
+      return await DataPortal.FetchAsync<ResourceEdit>(id);
+    }
+
+    public static async Task<bool> ExistsAsync(int id)
+    {
+      var cmd = new ResourceExistsCommand(id);
+      cmd = await DataPortal.ExecuteAsync(cmd);
+      return cmd.ResourceExists;
+    }
+
+    public static void NewResourceEdit(EventHandler<DataPortalResult<ResourceEdit>> callback)
+    {
+      DataPortal.BeginCreate<ResourceEdit>(callback);
+    }
+
+    public static void GetResourceEdit(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)
     {
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-    public static void Exists(int id, Action<bool> result)
-    {
-      var cmd = new ResourceExistsCommand(id);
-      DataPortal.BeginExecute<ResourceExistsCommand>(cmd, (o, e) =>
-      {
-        if (e.Error != null)
-          throw e.Error;
-        else
-          result(e.Object.ResourceExists);
-      });
-    }
+#if !SILVERLIGHT && !NETFX_CORE && !WINDOWS_PHONE
 
-    public static void DeleteResource(int id, EventHandler<DataPortalResult<ResourceEdit>> callback)
-    {
-      DataPortal.BeginDelete<ResourceEdit>(id, callback);
-    }
-
-#if !WINDOWS_PHONE
-    public async static System.Threading.Tasks.Task<ResourceEdit> GetResourceAsync(int id)
-    {
-      return await DataPortal.FetchAsync<ResourceEdit>(id);
-    }
-#endif
-#if SILVERLIGHT
-    public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
-    {
-      DataPortal.BeginCreate<ResourceEdit>(callback);
-    }
-#endif
-#if !SILVERLIGHT && !NETFX_CORE
-    public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
-    {
-      DataPortal.BeginCreate<ResourceEdit>(callback);
-    }
-
-    public static ResourceEdit NewResource()
+    public static ResourceEdit NewResourceEdit()
     {
       return DataPortal.Create<ResourceEdit>();
     }
 
-    public static ResourceEdit GetResource(int id)
+    public static ResourceEdit GetResourceEdit(int id)
     {
       return DataPortal.Fetch<ResourceEdit>(id);
     }
 
-    public static void DeleteResource(int id)
+    public static void DeleteResourceEdit(int id)
     {
       DataPortal.Delete<ResourceEdit>(id);
     }
@@ -175,9 +165,11 @@ namespace ProjectTracker.Library
     public static bool Exists(int id)
     {
       var cmd = new ResourceExistsCommand(id);
-      cmd = DataPortal.Execute<ResourceExistsCommand>(cmd);
+      cmd = DataPortal.Execute(cmd);
       return cmd.ResourceExists;
     }
+
+#endif
 
     [RunLocal]
     protected override void DataPortal_Create()
@@ -185,6 +177,7 @@ namespace ProjectTracker.Library
       base.DataPortal_Create();
     }
 
+#if !SILVERLIGHT && !NETFX_CORE
     private void DataPortal_Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

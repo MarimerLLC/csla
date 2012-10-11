@@ -104,12 +104,12 @@ namespace Mvc3UI.Controllers
     {
       try
       {
-        ResourceEdit.DeleteResource(id);
+        ResourceEdit.DeleteResourceEdit(id);
         return RedirectToAction("Index");
       }
       catch
       {
-        ViewData.Model = ResourceEdit.GetResource(id);
+        ViewData.Model = ResourceEdit.GetResourceEdit(id);
         return View();
       }
     }

@@ -26,6 +26,7 @@ namespace SilverlightUI
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+      Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
       Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:22627/SlPortal.svc";
 
       this.RootVisual = new MainPage();

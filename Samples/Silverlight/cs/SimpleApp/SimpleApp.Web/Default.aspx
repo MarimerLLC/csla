@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    
+    <h1>Set the SimpleApp as the startup project to run this sampe.</h1>
     </div>
     </form>
 </body>

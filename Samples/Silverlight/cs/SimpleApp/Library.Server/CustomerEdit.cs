@@ -51,6 +51,9 @@ namespace Library
       return base.SaveAsync(forceUpdate);
     }
 
+    /// <summary>
+    /// Example sync and local business rule
+    /// </summary>
     private class StringOnlyLetters : Csla.Rules.BusinessRule
     {
       protected override void Execute(Csla.Rules.RuleContext context)
@@ -66,38 +69,45 @@ namespace Library
       }
     }
 
+    /// <summary>
+    /// Example async business rule
+    /// </summary>
     private class StringOnlyLettersAsync : Csla.Rules.BusinessRule
     {
       public StringOnlyLettersAsync(Csla.Core.IPropertyInfo primaryProperty)
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<Csla.Core.IPropertyInfo> { primaryProperty };
+        InputProperties.Add(primaryProperty);
       }
 
-      protected override void Execute(Csla.Rules.RuleContext context)
+      protected async override void Execute(Csla.Rules.RuleContext context)
       {
-        var bw = new System.ComponentModel.BackgroundWorker();
-        bw.DoWork += (o, e) =>
+        var tcs = new TaskCompletionSource<bool>();
+        new Task(() =>
           {
-            System.Threading.Thread.Sleep(2500);
             var name = (string)context.InputPropertyValues[PrimaryProperty];
-            bool result = string.IsNullOrEmpty(name) ||
+            tcs.SetResult(string.IsNullOrEmpty(name) ||
               !(from c in name.ToCharArray()
                 where char.IsDigit(c)
                 select c)
-                .Any();
-            if (!result)
-              context.AddErrorResult("Name must consist of only letters.");
-          };
-        bw.RunWorkerCompleted += (o, e) =>
-          {
-            if (e.Error != null)
-              context.AddErrorResult(e.Error.Message);
-            context.Complete();
-          };
-        bw.RunWorkerAsync();
+                .Any());
+          }).Start();
+        var result = await tcs.Task;
+        if (!result)
+          context.AddErrorResult("Name must consist of only letters.");
+        context.Complete();
       }
+    }
+
+    public static async Task<CustomerEdit> NewCustomerEditAsync()
+    {
+      return await DataPortal.CreateAsync<CustomerEdit>();
+    }
+
+    public static async Task<CustomerEdit> GetCustomerEditAsync(int id)
+    {
+      return await DataPortal.FetchAsync<CustomerEdit>(id);
     }
 
     public static void NewCustomerEdit(EventHandler<DataPortalResult<CustomerEdit>> callback)
@@ -110,38 +120,25 @@ namespace Library
       DataPortal.BeginFetch<CustomerEdit>(id, callback);
     }
 
-#if !WINDOWS_PHONE
+#if !SILVERLIGHT && !NETFX_CORE && !WINDOWS_PHONE
 
-    public static async Task<CustomerEdit> NewCustomerEditAsync()
+    public static CustomerEdit NewCustomerEdit()
     {
-      return await DataPortal.CreateAsync<CustomerEdit>();
+      return DataPortal.Create<CustomerEdit>();
     }
 
-    public static async Task<CustomerEdit> GetCustomerEditAsync(int id)
+    public static CustomerEdit GetCustomerEdit(int id)
     {
-      return await DataPortal.FetchAsync<CustomerEdit>(id);
+      return DataPortal.Fetch<CustomerEdit>(id);
+    }
+
+    public static void DeleteCustomerEdit(int id)
+    {
+      DataPortal.Delete<CustomerEdit>(id);
     }
 
 #endif
 
-#if !SILVERLIGHT
-
-public static CustomerEdit NewCustomerEdit()
-{
-  return DataPortal.Create<CustomerEdit>();
-}
-
-public static CustomerEdit GetCustomerEdit(int id)
-{
-  return DataPortal.Fetch<CustomerEdit>(id);
-}
-
-public static void DeleteCustomerEdit(int id)
-{
-  DataPortal.Delete<CustomerEdit>(id);
-}
-
-#endif
     [RunLocal]
     protected override void DataPortal_Create()
     {

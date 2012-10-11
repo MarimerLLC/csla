@@ -148,7 +148,7 @@ namespace ProjectTracker.Library
 #if SILVERLIGHT
     public static void NewResource(EventHandler<DataPortalResult<ResourceEdit>> callback)
     {
-      DataPortal.BeginCreate<ResourceEdit>(callback, DataPortal.ProxyModes.LocalOnly);
+      DataPortal.BeginCreate<ResourceEdit>(callback);
     }
 #endif
 #if !SILVERLIGHT && !NETFX_CORE

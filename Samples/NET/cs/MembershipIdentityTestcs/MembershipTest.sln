@@ -1,9 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E5BBFA4-9235-4E2D-A96E-27DB50618D9E}"
 	ProjectSection(SolutionItems) = preProject
-		nuget.config = nuget.config
 		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject

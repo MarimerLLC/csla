@@ -1,1 +1,1 @@
-This project target CSLA 4.5 using Framework .NET 4.0
+This samples doesn't use a connection string and defaults to the SQL Server instance .\SQLEXPRESS

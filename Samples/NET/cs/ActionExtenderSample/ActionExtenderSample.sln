@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme.txt = Readme.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionExtenderSample", "ActionExtenderSample.csproj", "{BDF199CC-8DC7-4705-B139-2A500D4455D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionExtenderSample", "ActionExtenderSample\ActionExtenderSample.csproj", "{BDF199CC-8DC7-4705-B139-2A500D4455D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

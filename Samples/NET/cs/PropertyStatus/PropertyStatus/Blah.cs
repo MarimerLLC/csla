@@ -8,7 +8,7 @@ using Csla.Core;
 using Csla;
 using System.Threading;
 
-namespace Example
+namespace PropertyStatus
 {
   public class Blah : BusinessBase
   {

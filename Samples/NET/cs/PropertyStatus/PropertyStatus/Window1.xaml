@@ -1,7 +1,7 @@
-﻿<Window x:Class="Example.Window1"
+﻿<Window x:Class="PropertyStatus.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:cc="clr-namespace:Example"
+        xmlns:cc="clr-namespace:PropertyStatus"
         xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
         Title="Window1" Height="250" Width="250"
         Loaded="Window_Loaded" FontSize="16">

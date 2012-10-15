@@ -1,4 +1,11 @@
-﻿using System;
+﻿﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyRule.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class used to create property level rule</summary>
+//-----------------------------------------------------------------------
+using System;
 using Csla.Core;
 
 namespace Csla.Rules

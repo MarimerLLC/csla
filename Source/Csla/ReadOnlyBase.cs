@@ -130,13 +130,13 @@ namespace Csla
             try
             {
               AddBusinessRules();
+              rules.Initialized = true;
             }
             catch (Exception)
             {
               BusinessRuleManager.CleanupRulesForType(this.GetType());
               throw;  // and rethrow exception
             }
-            rules.Initialized = true;
           }
     }
 

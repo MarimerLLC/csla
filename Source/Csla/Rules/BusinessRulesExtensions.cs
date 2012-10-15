@@ -1,4 +1,11 @@
-﻿using System;
+﻿﻿//-----------------------------------------------------------------------
+// <copyright file="BusinessRulesExtensions.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Extension methods to simplify lambda business rules</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Text;
 using Csla.Core;
 

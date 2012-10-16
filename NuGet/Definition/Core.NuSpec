@@ -19,6 +19,15 @@ CSLA .NET is an application development framework that reduces the cost of build
 Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
     </summary>
     <language>en-US</language>
+    <dependencies>
+      <group targetFramework="net45" />
+      <group targetFramework="net40">
+        <dependency id="Microsoft.CompilerServices.AsyncTargetingPack" version="" />
+      </group>
+      <group targetFramework="sl50">
+        <dependency id="Microsoft.CompilerServices.AsyncTargetingPack" version="" />
+      </group>
+    </dependencies>
   </metadata>
   <files>
     <!-- .NET 4.0 Client -->

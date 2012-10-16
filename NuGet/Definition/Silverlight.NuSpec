@@ -18,6 +18,7 @@ CSLA .NET is an application development framework that reduces the cost of build
     <summary>
 Supports the creation of Silverlight applications.
     </summary>
+    <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.5.3-Beta2]" />
     </dependencies>

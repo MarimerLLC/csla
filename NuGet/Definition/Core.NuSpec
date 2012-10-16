@@ -49,18 +49,18 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\sl50" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.pdb*" target="lib\sl50" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\sl50" />
-    <!-- Windows Phone 7 Client
-    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\sl4-wp71" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.pdb*" target="lib\sl4-wp71" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\sl4-wp71" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.resources.pdb*" target="lib\sl4-wp71" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\sl4-wp71" />  -->
+    <!-- Windows Phone 8 Client
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.xml*" target="lib\wp8" />  -->
     <!-- Windows Runtime Client -->
-    <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\WinRT45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\WinRT45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.resources.dll*" target="lib\WinRT45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.resources.pdb*" target="lib\WinRT45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\WinRT45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.resources.dll*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.resources.pdb*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\*.cs" target="src" />
   </files>

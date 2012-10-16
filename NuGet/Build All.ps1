@@ -4,11 +4,13 @@
 ##  
 ##  “CSLA .NET - Core” NuGet
 ##  •	Contents:
-##      o	Csla.dll (.NET)
-##      o	Csla.dll (Silverlight 4)
-##      o	Csla.dll (WP)
+##      o	Csla.dll (.NET 4 and .NET 4.5)
+##      o	Csla.dll (Silverlight 5)
+##      o	Csla.dll (WinPRT - Windows Phone 8)
+##      o	Csla.dll (WinRT - Windows RT)
 ##  •	Dependencies
-##      o	(Has no dependencies on other NuPacks)
+##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
+##      o	(The rest has no dependencies on other NuPacks)
 ##  
 ##  “CSLA .NET - ASP.NET” NuGet
 ##  •	Contents:
@@ -24,7 +26,7 @@
 ##  
 ##  “CSLA .NET - Silverlight” NuGet
 ##  •	Contents:
-##      o	Csla.Xaml.dll (Silverlight 4)
+##      o	Csla.Xaml.dll (Silverlight 5)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##
@@ -36,7 +38,7 @@
 ##  
 ##  “CSLA .NET - Windows Phone” NuGet
 ##  •	Contents:
-##      o	Csla.Xaml.dll (WP)
+##      o	Csla.Xaml.dll (WinPrt)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
@@ -103,8 +105,9 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
+    ## Temporarily exclude "Windows Phone" until WP8 SDK arrives
     ## $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

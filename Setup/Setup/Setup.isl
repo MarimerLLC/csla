@@ -1177,7 +1177,7 @@
 		<row><td>FavoritesFolder</td><td>TARGETDIR</td><td>.:FAVORI~1|Favorites</td><td/><td>0</td><td/></row>
 		<row><td>FontsFolder</td><td>TARGETDIR</td><td>.:Fonts</td><td/><td>0</td><td/></row>
 		<row><td>GlobalAssemblyCache</td><td>TARGETDIR</td><td>.:Global~1|GlobalAssemblyCache</td><td/><td>0</td><td/></row>
-		<row><td>INSTALLDIR</td><td>_.5.3</td><td>.</td><td/><td>0</td><td/></row>
+		<row><td>INSTALLDIR</td><td>_.5.4</td><td>.</td><td/><td>0</td><td/></row>
 		<row><td>ISCommonFilesFolder</td><td>CommonFilesFolder</td><td>Instal~1|InstallShield</td><td/><td>0</td><td/></row>
 		<row><td>ISMyCompanyDir</td><td>ProgramFilesFolder</td><td>MYCOMP~1|My Company Name</td><td/><td>0</td><td/></row>
 		<row><td>ISMyProductDir</td><td>ISMyCompanyDir</td><td>MYPROD~1|My Product Name</td><td/><td>0</td><td/></row>
@@ -1214,6 +1214,7 @@
 		<row><td>WindowsVolume</td><td>TARGETDIR</td><td>.:WinRoot</td><td/><td>0</td><td/></row>
 		<row><td>_.5.2</td><td>CSLA_.NET</td><td>4.5.2</td><td/><td>0</td><td/></row>
 		<row><td>_.5.3</td><td>CSLA_.NET</td><td>4.5.3</td><td/><td>0</td><td/></row>
+		<row><td>_.5.4</td><td>CSLA_.NET</td><td>4.5.4</td><td/><td>0</td><td/></row>
 	</table>
 
 	<table name="DrLocator">
@@ -4710,7 +4711,7 @@ UwBpAG4AZwBsAGUASQBtAGEAZwBlAAEARQB4AHAAcgBlAHMAcwA=
 		<row><td>PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS</td><td>##IDS_PROGMSG_IIS_ROLLBACKWEBSERVICEEXTENSIONS##</td><td/></row>
 		<row><td>ProductCode</td><td>{5E49E98A-E901-47B5-BF08-11BC0AAB3C72}</td><td/></row>
 		<row><td>ProductName</td><td>CSLA .NET</td><td/></row>
-		<row><td>ProductVersion</td><td>4.5.3</td><td/></row>
+		<row><td>ProductVersion</td><td>4.5.4</td><td/></row>
 		<row><td>ProgressType0</td><td>install</td><td/></row>
 		<row><td>ProgressType1</td><td>Installing</td><td/></row>
 		<row><td>ProgressType2</td><td>installed</td><td/></row>

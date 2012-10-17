@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.Silverlight", "Cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.WinRT", "Csla.WinRT\Csla.WinRT.csproj", "{24C13E06-70A8-46C2-8351-987AF0780F78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.WinRt", "Csla.Xaml.WinRt\Csla.Xaml.WinRt.csproj", "{9072D136-8FFB-43F3-B166-CA9DC791FA1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Xaml.WinRT", "Csla.Xaml.WinRt\Csla.Xaml.WinRT.csproj", "{9072D136-8FFB-43F3-B166-CA9DC791FA1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Net4", "Csla.Net4\Csla.Net4.csproj", "{1FCE45FF-C391-4ED1-A9C4-F71CAF8773E6}"
 EndProject

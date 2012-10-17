@@ -158,10 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Security.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Security_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <DependentUpon>Security.mdf</DependentUpon>
     </Content>
   </ItemGroup>

@@ -26,8 +26,10 @@ namespace SimpleApp
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:1993/WcfPortal.svc";
+      //Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+      //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:1993/WcfPortal.svc";
+
+      Csla.DataPortal.ProxyTypeName = "Local";
 
       this.RootVisual = new Page();
     }

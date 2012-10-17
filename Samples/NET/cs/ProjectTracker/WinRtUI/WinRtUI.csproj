@@ -123,6 +123,7 @@
     <Compile Include="RoleList.xaml.cs">
       <DependentUpon>RoleList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\DashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectListViewModel.cs" />
     <Compile Include="ViewModel\ProjectTrackerDataSource.cs" />
     <Compile Include="ViewModel\ResourceListViewModel.cs" />

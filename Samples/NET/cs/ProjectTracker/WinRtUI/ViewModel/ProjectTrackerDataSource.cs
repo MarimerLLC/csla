@@ -27,21 +27,29 @@ namespace WinRtUI.ViewModel
       _itemGroups.Add(new DataGroup(
         "Projects",
         "Projects",
-        "Projects",
+        "",
         "Assets/MediumGray.png",
         "View or edit project information"));
       _itemGroups.Add(new DataGroup(
         "Resources",
         "Resources",
-        "Resources",
+        "",
         "Assets/DarkGray.png",
         "View or edit resource information"));
       _itemGroups.Add(new DataGroup(
         "Roles",
         "Roles",
-        "Roles",
+        "",
         "Assets/LightGray.png",
         "View or edit roles"));
+      LoadDashboard();
+    }
+
+    private async void LoadDashboard()
+    {
+      var db = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
+      _itemGroups.Where(r => r.UniqueId == "Projects").First().Subtitle = string.Format("{0} projects ({1} open)", db.ProjectCount, db.OpenProjectCount);
+      _itemGroups.Where(r => r.UniqueId == "Resources").First().Subtitle = string.Format("{0} resources", db.ResourceCount);
     }
   }
 

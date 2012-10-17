@@ -29,9 +29,13 @@ namespace Csla.Properties
 #if WINDOWS_PHONE
       global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
       var value = temp.GetString("ms-resource:///Csla/Resources/" + resourceName);
+      if (string.IsNullOrWhiteSpace(value))
+        throw new NullReferenceException(resourceName);
       return value;
 #else
       var value = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("ms-resource:///Csla/Resources/" + resourceName);
+      if (value == null)
+        throw new NullReferenceException(resourceName);
       return value.ValueAsString;
 #endif
     }

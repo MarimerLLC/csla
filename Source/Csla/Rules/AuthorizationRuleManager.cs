@@ -77,10 +77,10 @@ namespace Csla.Rules
         lock (mgr)
           if (!mgr.InitializedPerType)
           {
+            mgr.InitializedPerType = true;
             // Only call AddObjectAuthorizationRules when there are no rules for this type
             if (RulesExistForType(type))
             {
-              mgr.InitializedPerType = true;
               return;
             }
 
@@ -91,7 +91,7 @@ namespace Csla.Rules
               System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
               if (method != null)
                 method.Invoke(null, null);
-              mgr.InitializedPerType = true;
+
             }
             catch (Exception)
             {

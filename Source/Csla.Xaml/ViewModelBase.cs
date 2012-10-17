@@ -102,13 +102,16 @@ namespace Csla.Xaml
 #endif
         {
           var viewmodel = (ViewModelBase<T>)o;
-          viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
           if (viewmodel.ManageObjectLifetime)
           {
             var undo = e.NewValue as Csla.Core.ISupportUndo;
             if (undo != null)
               undo.BeginEdit();
           }
+          viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
+#if NETFX_CORE
+          viewmodel.OnPropertyChanged("Model");
+#endif
         }));
     /// <summary>
     /// Gets or sets the Model object.

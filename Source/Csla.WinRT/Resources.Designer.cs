@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
+
 namespace Csla.Properties
 {
   using System;
@@ -33,10 +34,8 @@ namespace Csla.Properties
         throw new NullReferenceException(resourceName);
       return value;
 #else
-      var value = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.MainResourceMap.GetValue("ms-resource:///Csla/Resources/" + resourceName);
-      if (value == null)
-        throw new NullReferenceException(resourceName);
-      return value.ValueAsString;
+      var loader = new Windows.ApplicationModel.Resources.ResourceLoader("Csla/Resources");
+      return loader.GetString(resourceName);
 #endif
     }
 

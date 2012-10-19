@@ -9,7 +9,7 @@ param($installPath, $toolsPath, $package, $project)
 	{
 		# VS Version test - Test if User's Visual Studio destination path exists and skip if it doesn't
 		$destinationUserVisualStudio = Join-Path $destinationDocumentsRoot "\Visual Studio $vsVersion"
-		if ((Test-Path $destinationUserVisualStudio) -ne $true) { break }
+		if ((Test-Path $destinationUserVisualStudio) -ne $true) { continue }
 		
 		$destinationSnippetsFolderCS = Join-Path $destinationUserVisualStudio "\Code Snippets\Visual C#\My Code Snippets\$cslaFolder"
 		$destinationSnippetsFolderVB = Join-Path $destinationUserVisualStudio "\Code Snippets\Visual Basic\My Code Snippets\$cslaFolder"

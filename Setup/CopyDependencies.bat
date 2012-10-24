@@ -19,3 +19,4 @@ copy ..\bin\release\Silverlight\Csla*.xml ..\Samples\Dependencies\sl
 copy ..\bin\release\WinRT\Csla.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla.Xaml.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.xml ..\Samples\Dependencies\WinRT
+copy ..\bin\release\WinRT\Csla*.pri ..\Samples\Dependencies\WinRT

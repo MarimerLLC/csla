@@ -105,6 +105,12 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.WinPRT\Csla.WinPRT.csproj">
+      <Project>{3F5A774B-BE68-4D38-9C7F-2C59D4FE0BA0}</Project>
+      <Name>Csla.WinPRT</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>

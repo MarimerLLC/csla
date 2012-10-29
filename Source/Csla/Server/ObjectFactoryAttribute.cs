@@ -18,7 +18,7 @@ namespace Csla.Server
   /// should invoke a factory object rather than
   /// the business object.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false)]
   public class ObjectFactoryAttribute : Attribute
   {
     internal static ObjectFactoryAttribute GetObjectFactoryAttribute(Type objectType)

@@ -7,15 +7,11 @@
 //-----------------------------------------------------------------------
 #if !MONO
 using System;
-using System.Configuration;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Objects;
-using System.Data.SqlClient;
-using Csla.Properties;
 
-namespace Csla.Data
+namespace Csla.Data.EF4
 {
   /// <summary>
   /// Provides an automated way to reuse 

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Csla .NET Support classes for EF4 (server)")]
-[assembly: AssemblyDescription("CSLA .NET Entity Framework 4")]
+[assembly: AssemblyTitle("Csla.Data.EF4.Test")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marrimer LLC")]
-[assembly: AssemblyProduct("Csla.Data.EF4")]
-[assembly: AssemblyCopyright("Copyright © 2010-12 Marimer LLC")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Csla.Data.EF4.Test")]
+[assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7ba9640c-97ea-48e1-bacd-2b438c90d1c0")]
+[assembly: Guid("7ea620e7-db5b-4912-99dc-93ef0874ae4a")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.5.11.0")]
-[assembly: AssemblyFileVersion("4.5.11.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

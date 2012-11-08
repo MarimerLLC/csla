@@ -414,9 +414,6 @@
     <Compile Include="..\Csla\Data\DataServiceContextManager.cs">
       <Link>Data\DataServiceContextManager.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Data\DbContextManager.cs">
-      <Link>Data\DbContextManager.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\Data\ObjectAdapter.cs">
       <Link>Data\ObjectAdapter.cs</Link>
     </Compile>

@@ -17,6 +17,12 @@ namespace Polymorphism.Test
   [TestClass()]
   public class ChildBusinessListTest
   {
+    [TestInitialize]
+    public void Initialize()
+    {
+      if (!System.IO.Directory.Exists("c:\\temp"))
+        System.IO.Directory.CreateDirectory("c:\\temp");
+    }
 
     /// <summary>
     ///A test for GetEditableRootList

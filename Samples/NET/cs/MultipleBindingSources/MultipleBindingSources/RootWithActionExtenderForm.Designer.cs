@@ -30,18 +30,16 @@ namespace MultipleBindingSources
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.Label idLabel;
       System.Windows.Forms.Label nameLabel;
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RootWithActionExtenderForm));
       this.idTextBox = new System.Windows.Forms.TextBox();
-      this.rootBindingSource = new System.Windows.Forms.BindingSource();
       this.nameTextBox = new System.Windows.Forms.TextBox();
       this.childrenDataGridView = new System.Windows.Forms.DataGridView();
-      this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.childrenBindingSource = new System.Windows.Forms.BindingSource();
+      this.childrenBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.editButton = new System.Windows.Forms.Button();
-      this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator();
+      this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
       this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
       this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
       this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
@@ -54,9 +52,17 @@ namespace MultipleBindingSources
       this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
       this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.button1 = new System.Windows.Forms.Button();
+      this.cslaActionExtender1 = new Csla.Windows.CslaActionExtender(this.components);
+      this.rootBindingSource = new System.Windows.Forms.BindingSource(this.components);
+      this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
       idLabel = new System.Windows.Forms.Label();
       nameLabel = new System.Windows.Forms.Label();
+      ((System.ComponentModel.ISupportInitialize)(this.childrenDataGridView)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.childrenBindingSource)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
       this.bindingNavigator1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.rootBindingSource)).BeginInit();
       this.SuspendLayout();
       // 
       // idLabel
@@ -85,10 +91,6 @@ namespace MultipleBindingSources
       this.idTextBox.Size = new System.Drawing.Size(100, 20);
       this.idTextBox.TabIndex = 2;
       // 
-      // rootBindingSource
-      // 
-      this.rootBindingSource.DataSource = typeof(MultipleBindingSources.Root);
-      // 
       // nameTextBox
       // 
       this.nameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.rootBindingSource, "Name", true));
@@ -109,18 +111,6 @@ namespace MultipleBindingSources
       this.childrenDataGridView.Name = "childrenDataGridView";
       this.childrenDataGridView.Size = new System.Drawing.Size(424, 125);
       this.childrenDataGridView.TabIndex = 4;
-      // 
-      // dataGridViewTextBoxColumn1
-      // 
-      this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
-      this.dataGridViewTextBoxColumn1.HeaderText = "Id";
-      this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-      // 
-      // dataGridViewTextBoxColumn2
-      // 
-      this.dataGridViewTextBoxColumn2.DataPropertyName = "Name";
-      this.dataGridViewTextBoxColumn2.HeaderText = "Name";
-      this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
       // 
       // childrenBindingSource
       // 
@@ -164,7 +154,7 @@ namespace MultipleBindingSources
       this.bindingNavigator1.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
       this.bindingNavigator1.Name = "bindingNavigator1";
       this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
-      this.bindingNavigator1.Size = new System.Drawing.Size(256, 25);
+      this.bindingNavigator1.Size = new System.Drawing.Size(255, 25);
       this.bindingNavigator1.TabIndex = 6;
       this.bindingNavigator1.Text = "bindingNavigator1";
       // 
@@ -180,7 +170,7 @@ namespace MultipleBindingSources
       // bindingNavigatorCountItem
       // 
       this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-      this.bindingNavigatorCountItem.Size = new System.Drawing.Size(36, 22);
+      this.bindingNavigatorCountItem.Size = new System.Drawing.Size(35, 22);
       this.bindingNavigatorCountItem.Text = "of {0}";
       this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
       // 
@@ -255,6 +245,7 @@ namespace MultipleBindingSources
       // 
       // button1
       // 
+      this.cslaActionExtender1.SetActionType(this.button1, Csla.Windows.CslaFormAction.Save);
       this.button1.Location = new System.Drawing.Point(67, 233);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(76, 23);
@@ -263,11 +254,28 @@ namespace MultipleBindingSources
       this.button1.UseVisualStyleBackColor = true;
       this.button1.Click += new System.EventHandler(this.button1_Click);
       // 
-      // cslaActionExtender2
+      // cslaActionExtender1
       // 
-      this.cslaActionExtender2.DataSource = null;
+      this.cslaActionExtender1.DataSource = this.rootBindingSource;
+      this.cslaActionExtender1.ObjectIsValidMessage = "Object is valid";
       // 
-      // RootWithActionExtender
+      // rootBindingSource
+      // 
+      this.rootBindingSource.DataSource = typeof(MultipleBindingSources.Root);
+      // 
+      // dataGridViewTextBoxColumn1
+      // 
+      this.dataGridViewTextBoxColumn1.DataPropertyName = "Id";
+      this.dataGridViewTextBoxColumn1.HeaderText = "Id";
+      this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+      // 
+      // dataGridViewTextBoxColumn2
+      // 
+      this.dataGridViewTextBoxColumn2.DataPropertyName = "Name";
+      this.dataGridViewTextBoxColumn2.HeaderText = "Name";
+      this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+      // 
+      // RootWithActionExtenderForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -280,10 +288,14 @@ namespace MultipleBindingSources
       this.Controls.Add(this.nameTextBox);
       this.Controls.Add(idLabel);
       this.Controls.Add(this.idTextBox);
-      this.Name = "RootWithActionExtender";
+      this.Name = "RootWithActionExtenderForm";
       this.Text = "Form2";
+      ((System.ComponentModel.ISupportInitialize)(this.childrenDataGridView)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.childrenBindingSource)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
       this.bindingNavigator1.ResumeLayout(false);
       this.bindingNavigator1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.rootBindingSource)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -312,7 +324,6 @@ namespace MultipleBindingSources
     private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
     private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
     private System.Windows.Forms.Button button1;
-    private Csla.Windows.CslaActionExtender cslaActionExtender1;
-    private CslaActionExtender cslaActionExtender2;
+    private CslaActionExtender cslaActionExtender1;
   }
 }

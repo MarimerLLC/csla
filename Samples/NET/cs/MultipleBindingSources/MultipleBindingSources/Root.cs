@@ -105,13 +105,12 @@ namespace MultipleBindingSources
 
     public static Root GetEditableRoot(int id)
     {
-      return DataPortal.Fetch<Root>(
-        new SingleCriteria<Root, int>(id));
+      return DataPortal.Fetch<Root>(id);
     }
 
     public static void DeleteEditableRoot(int id)
     {
-      DataPortal.Delete<Root>(new SingleCriteria<Root, int>(id));
+      DataPortal.Delete<Root>(id);
     }
 
     private Root()
@@ -132,7 +131,7 @@ namespace MultipleBindingSources
       LoadProperty(ChildrenProperty, ChildList.NewChildList());
     }
 
-    private void DataPortal_Fetch(SingleCriteria<Root, int> criteria)
+    private void DataPortal_Fetch(int criteria)
     {
       // TODO: load values
     }
@@ -152,11 +151,11 @@ namespace MultipleBindingSources
     //[Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
-      DataPortal_Delete(new SingleCriteria<Root, int>(this.Id));
+      DataPortal_Delete(this.Id);
     }
 
     //[Transactional(TransactionalTypes.TransactionScope)]
-    private void DataPortal_Delete(SingleCriteria<Root, int> criteria)
+    private void DataPortal_Delete(int criteria)
     {
       // TODO: delete values
     }

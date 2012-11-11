@@ -54,5 +54,13 @@ namespace MultipleBindingSources
     {
       Application.Exit();
     }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      using (var form = new RootWithActionExtenderForm())
+      {
+        form.ShowDialog();
+      }
+    }
   }
 }

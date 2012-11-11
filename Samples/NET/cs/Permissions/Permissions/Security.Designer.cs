@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -117,6 +118,7 @@ namespace TestApp
         private ObjectSet<Users> _Users;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -144,11 +146,11 @@ namespace TestApp
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -175,7 +177,8 @@ namespace TestApp
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -194,7 +197,7 @@ namespace TestApp
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -219,7 +222,7 @@ namespace TestApp
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -229,7 +232,7 @@ namespace TestApp
         partial void OnNameChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -255,6 +258,7 @@ namespace TestApp
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -281,7 +285,8 @@ namespace TestApp
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -300,7 +305,7 @@ namespace TestApp
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -325,7 +330,7 @@ namespace TestApp
             {
                 OnNameChanging(value);
                 ReportPropertyChanging("Name");
-                _Name = StructuralObject.SetValidValue(value, false);
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
                 ReportPropertyChanged("Name");
                 OnNameChanged();
             }
@@ -335,7 +340,7 @@ namespace TestApp
         partial void OnNameChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -383,6 +388,7 @@ namespace TestApp
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -411,7 +417,8 @@ namespace TestApp
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -430,7 +437,7 @@ namespace TestApp
                 {
                     OnIdChanging(value);
                     ReportPropertyChanging("Id");
-                    _Id = StructuralObject.SetValidValue(value);
+                    _Id = StructuralObject.SetValidValue(value, "Id");
                     ReportPropertyChanged("Id");
                     OnIdChanged();
                 }
@@ -455,7 +462,7 @@ namespace TestApp
             {
                 OnUsernameChanging(value);
                 ReportPropertyChanging("Username");
-                _Username = StructuralObject.SetValidValue(value, false);
+                _Username = StructuralObject.SetValidValue(value, false, "Username");
                 ReportPropertyChanged("Username");
                 OnUsernameChanged();
             }
@@ -479,7 +486,7 @@ namespace TestApp
             {
                 OnPwHashChanging(value);
                 ReportPropertyChanging("PwHash");
-                _PwHash = StructuralObject.SetValidValue(value);
+                _PwHash = StructuralObject.SetValidValue(value, "PwHash");
                 ReportPropertyChanged("PwHash");
                 OnPwHashChanged();
             }
@@ -489,7 +496,7 @@ namespace TestApp
         partial void OnPwHashChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -515,8 +522,9 @@ namespace TestApp
         }
 
         #endregion
+
     }
 
     #endregion
-    
+
 }

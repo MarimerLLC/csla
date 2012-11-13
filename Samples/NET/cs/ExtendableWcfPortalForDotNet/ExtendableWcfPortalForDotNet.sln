@@ -1,6 +1,6 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendableWcfPortalForDotNet", "ExtendableWcfPortalForDotNet\ExtendableWcfPortalForDotNet.csproj", "{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolodexEF", "RolodexEF\RolodexEF.csproj", "{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}"

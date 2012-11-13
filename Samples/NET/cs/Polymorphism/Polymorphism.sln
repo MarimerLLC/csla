@@ -1,6 +1,6 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polymorphism.Business", "Polymorphism.Business\Polymorphism.Business.csproj", "{21F70728-C55E-48A3-9788-41E390C56B55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polymorphism.Test", "Polymorphism.Test\Polymorphism.Test.csproj", "{7FC95CC7-892C-4340-A587-441B0A1979DB}"

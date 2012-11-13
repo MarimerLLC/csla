@@ -1,6 +1,6 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.01 AuthzFactoryMethods", "AuthzFactoryMethods\1.01 AuthzFactoryMethods.csproj", "{6FCDCE11-1FFD-4FEF-9089-4C8653A79FAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Authz", "1. Authz", "{BB161AA7-3561-4C2F-93AF-E8AC0849B2B6}"

@@ -1,6 +1,6 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CAB67E5E-1385-4106-833C-045BAE7B230D}"
 	ProjectSection(SolutionItems) = preProject
 		CslaMVC.vsmdi = CslaMVC.vsmdi

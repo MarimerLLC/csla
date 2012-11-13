@@ -1,6 +1,6 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RootChildGrandchildWinFormTest", "RootChildGrandchildWinFormTest\RootChildGrandchildWinFormTest.csproj", "{303BD51A-7420-4441-B5F0-6A559B9F6BBE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{655FB363-2F37-4C63-950D-41327574925D}"

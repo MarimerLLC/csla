@@ -17,7 +17,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Data EF4", "Data EF5", "Templates")  # Leave out "Workflow" until Rocky is happy with it for the current version of CSLA
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

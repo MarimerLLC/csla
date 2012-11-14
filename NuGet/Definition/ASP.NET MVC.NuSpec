@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC</id>
     <title>CSLA .NET - ASP.NET MVC</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>4.5.10</version>
+    <version>4.5.11</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of ASP.NET MVC applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.10]" />
+      <dependency id="CSLA-Core" version="[4.5.11]" />
     </dependencies>
   </metadata>
   <files>
@@ -42,5 +42,6 @@ Supports the creation of ASP.NET MVC applications.
     <!-- > None -->
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Web.Mvc\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Web.Mvc.Net4\**\*.cs" target="src" />
   </files>
 </package>

@@ -1,6 +1,6 @@
 ##
-##	Create Modular CSLA NuGet based on UI Technology (Based on Discussions with Rocky & JH)
-##  =======================================================================================
+##	Create Modular CSLA NuGet based on UI Technology (Based on Discussions with Rocky & Jaans)
+##  ==========================================================================================
 ##  
 ##  “CSLA .NET - Core” NuGet
 ##  •	Contents:
@@ -10,6 +10,7 @@
 ##      o	Csla.dll (WinRT - Windows RT)
 ##  •	Dependencies
 ##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
+##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
 ##      o	(The rest has no dependencies on other NuPacks)
 ##  
 ##  “CSLA .NET - ASP.NET” NuGet
@@ -65,6 +66,20 @@
 ##      o	Snippets and Templates
 ##  •	Dependencies
 ##      o	None
+##  
+##  “CSLA .NET - Data EF4" NuGet
+##  •	Contents:
+##      o	Csla.Data.EF4.dll (WinRt)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##      o	“EntityFramework” (v4) NuGet
+##  
+##  “CSLA .NET - Data EF5" NuGet
+##  •	Contents:
+##      o	Csla.Data.EF5.dll (WinRt)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##      o	“EntityFramework” (v5) NuGet
 
 param( [System.String] $commandLineOptions )
 
@@ -105,9 +120,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    ## Temporarily exclude "Windows Phone" until WP8 SDK arrives
-    ## $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "WPF", "Windows Runtime", "Templates")  # Leave out "Workflow" until Rocky is happy with it for CSLA 4.x
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Data EF4", "Data EF5", "Templates")  # Leave out "Workflow" until Rocky is happy with it for the current version of CSLA
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

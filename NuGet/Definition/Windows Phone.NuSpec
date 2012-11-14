@@ -4,7 +4,7 @@
     <id>CSLA-WindowsPhone</id>
     <title>CSLA .NET - Windows Phone</title>
     <tags>CSLA WP8 Windows Phone</tags>
-    <version>4.5.2</version>
+    <version>4.5.11</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -16,11 +16,11 @@ Supports the creation of Windows Phone 8 (WP8) applications.
 CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
     </description>
     <summary>
-Supports the creation of Windows Phone 8 (WP8) "Mango" applications.
+Supports the creation of Windows Phone 8 (WP8) applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.2]" />
+      <dependency id="CSLA-Core" version="[4.5.11]" />
     </dependencies>
     <!--
     <frameworkAssemblies>
@@ -45,9 +45,9 @@ Supports the creation of Windows Phone 8 (WP8) "Mango" applications.
     <file src="..\..\Bin\Release\WinPRT\**\Csla.Xaml.pdb*" target="lib\wp8" />
     <file src="..\..\Bin\Release\WinPRT\**\Csla.Xaml.resources.dll*" target="lib\wp8" />
     <file src="..\..\Bin\Release\WinPRT\**\Csla.Xaml.resources.pdb*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Xaml.xml*" target="lib\wp8" /> 
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Xaml.xml*" target="lib\wp8" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Xaml.WinPRT\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Xaml.WinPRT\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml\**\*.cs" target="src" />
   </files>
 </package>

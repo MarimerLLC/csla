@@ -666,6 +666,7 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>

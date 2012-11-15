@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
       <Name>Csla</Name>
     </ProjectReference>
   </ItemGroup>

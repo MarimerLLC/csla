@@ -20,11 +20,17 @@ namespace Csla.Core
   /// </typeparam>
   public class AddedNewEventArgs<T> : EventArgs
   {
+    private T _newObject;
+
     /// <summary>
     /// Gets a reference to the newly added
     /// object.
     /// </summary>
-    public T NewObject { get; protected set; }
+    public T NewObject
+    {
+      get { return _newObject; }
+      protected set { _newObject = value; }
+    }
 
     /// <summary>
     /// Creates a new instance of the object.

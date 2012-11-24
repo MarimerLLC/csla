@@ -17,7 +17,12 @@ namespace Csla.Core.FieldManager
   /// </summary>
   public class PropertyInfoList : List<IPropertyInfo>
   {
-    internal bool IsLocked { get; set; }
+    private bool _isLocked;
+    internal bool IsLocked
+    {
+      get { return _isLocked; }
+      set { _isLocked = value; }
+    }
 
     /// <summary>
     /// Creates an instance of the object.

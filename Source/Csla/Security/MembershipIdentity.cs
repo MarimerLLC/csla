@@ -208,19 +208,36 @@ namespace Csla.Security
     [Serializable()]
     public class Criteria : Csla.Core.MobileObject
     {
+      private string _name;
+      private string _password;
+      private string _membershipIdentityType;
       private Criteria() { }
       /// <summary>
       /// Gets or sets the username.
       /// </summary>
-      public string Name { get; set; }
+      public string Name
+      {
+        get { return _name; }
+        set { _name = value; }
+      }
+
       /// <summary>
       /// Gets or sets the password.
       /// </summary>
-      public string Password { get; set; }
+      public string Password
+      {
+        get { return _password; }
+        set { _password = value; }
+      }
+
       /// <summary>
       /// Gets or sets the membership identity type.
       /// </summary>
-      public string MembershipIdentityType { get; set; }
+      public string MembershipIdentityType
+      {
+        get { return _membershipIdentityType; }
+        set { _membershipIdentityType = value; }
+      }
 
       /// <summary>
       /// Creates an instance of the class.

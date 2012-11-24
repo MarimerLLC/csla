@@ -53,22 +53,41 @@ namespace Csla.Core
     /// Gets or sets a value indicating whether data binding
     /// can automatically edit items in this collection.
     /// </summary>
-    public bool AllowEdit { get; set; }
+    public bool AllowEdit
+    {
+      get { return _allowEdit; }
+      set { _allowEdit = value; }
+    }
+
     /// <summary>
     /// Gets or sets a value indicating whether data binding
     /// can automatically add new items to this collection.
     /// </summary>
-    public bool AllowNew { get; set; }
+    public bool AllowNew
+    {
+      get { return _allowNew; }
+      set { _allowNew = value; }
+    }
+
     /// <summary>
     /// Gets or sets a value indicating whether data binding
     /// can automatically remove items from this collection.
     /// </summary>
-    public bool AllowRemove { get; set; }
+    public bool AllowRemove
+    {
+      get { return _allowRemove; }
+      set { _allowRemove = value; }
+    }
+
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// collection should raise changed events.
     /// </summary>
-    public bool RaiseListChangedEvents { get { return _raiseListChangedEvents; } set { _raiseListChangedEvents = value; } }
+    public bool RaiseListChangedEvents
+    {
+      get { return _raiseListChangedEvents; } 
+      set { _raiseListChangedEvents = value; }
+    }
 
 #if SILVERLIGHT || NETFX_CORE
     /// <summary>
@@ -466,6 +485,11 @@ namespace Csla.Core
     [NotUndoable]
     [NonSerialized]
     private EventHandler<AddedNewEventArgs<T>> _addedNewHandlers = null;
+
+    private bool _allowEdit;
+    private bool _allowNew;
+    private bool _allowRemove;
+
     /// <summary>
     /// Event raised when a new object has been 
     /// added to the collection.

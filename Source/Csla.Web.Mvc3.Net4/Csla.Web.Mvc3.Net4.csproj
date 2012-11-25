@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Web.Mvc</RootNamespace>
-    <AssemblyName>Csla.Web.Mvc</AssemblyName>
+    <AssemblyName>Csla.Web.Mvc3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\NET4\Csla.Web.Mvc.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET4\Csla.Web.Mvc3.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,14 +38,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\Bin\Release\NET4\Csla.Web.Mvc.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET4\Csla.Web.Mvc3.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\Bin\Debug\Mono\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>..\..\Bin\Debug\Mono\Csla.Web.Mvc.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\Mono\Csla.Web.Mvc3.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <CodeAnalysisLogFile>..\..\Bin\Debug\Server\Csla.Web.Mvc.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
@@ -103,25 +103,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Web.Mvc\Controller.cs">
+    <Compile Include="..\Csla.Web.Mvc3\Controller.cs">
       <Link>Controller.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\CslaModelBinder.cs">
+    <Compile Include="..\Csla.Web.Mvc3\CslaModelBinder.cs">
       <Link>CslaModelBinder.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\HasPermissionAttribute.cs">
+    <Compile Include="..\Csla.Web.Mvc3\HasPermissionAttribute.cs">
       <Link>HasPermissionAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\HtmlExtensions.cs">
+    <Compile Include="..\Csla.Web.Mvc3\HtmlExtensions.cs">
       <Link>HtmlExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\IModelCreator.cs">
+    <Compile Include="..\Csla.Web.Mvc3\IModelCreator.cs">
       <Link>IModelCreator.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\IViewModel.cs">
+    <Compile Include="..\Csla.Web.Mvc3\IViewModel.cs">
       <Link>IViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Web.Mvc\ViewModelBase.cs">
+    <Compile Include="..\Csla.Web.Mvc3\ViewModelBase.cs">
       <Link>ViewModelBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

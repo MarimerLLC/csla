@@ -4,17 +4,13 @@
         <name>Csla.Xaml</name>
     </assembly>
     <members>
-        <member name="T:Csla.Xaml.ErrorEventArgs">
+        <member name="T:Csla.Xaml.ViewModel`1">
             <summary>
-            Contains information about the error that
-            has occurred.
+            Base class used to create ViewModel objects,
+            with pre-existing verbs for use by
+            InvokeMethod or Invoke.
             </summary>
-        </member>
-        <member name="P:Csla.Xaml.ErrorEventArgs.Error">
-            <summary>
-            Gets the Exception object for the error
-            that occurred.
-            </summary>
+            <typeparam name="T">Type of the Model object.</typeparam>
         </member>
         <member name="T:Csla.Xaml.ViewModelBase`1">
             <summary>
@@ -274,14 +270,6 @@
             Event raised when a property changes.
             </summary>
         </member>
-        <member name="T:Csla.Xaml.ViewModel`1">
-            <summary>
-            Base class used to create ViewModel objects,
-            with pre-existing verbs for use by
-            InvokeMethod or Invoke.
-            </summary>
-            <typeparam name="T">Type of the Model object.</typeparam>
-        </member>
         <member name="M:Csla.Xaml.ViewModel`1.Save(System.Object,Csla.Xaml.ExecuteEventArgs)">
             <summary>
             Saves the Model, first committing changes
@@ -310,6 +298,94 @@
             <summary>
             Marks the Model for deletion (if it is an
             editable root object).
+            </summary>
+        </member>
+        <member name="T:Csla.Xaml.ErrorEventArgs">
+            <summary>
+            Contains information about the error that
+            has occurred.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.ErrorEventArgs.Error">
+            <summary>
+            Gets the Exception object for the error
+            that occurred.
+            </summary>
+        </member>
+        <member name="T:Csla.Xaml.TriggerAction">
+            <summary>
+            Control used to invoke a method on the DataContext
+            based on an event being raised by a UI control.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.TriggerAction.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Xaml.TriggerAction.CallMethod(System.Object,System.EventArgs)">
+            <summary>
+            Invokes target method.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.TriggerAction.TargetControlProperty">
+            <summary>
+            Gets or sets the target UI control.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.TriggerAction.TriggerEventProperty">
+            <summary>
+            Gets or sets the name of the event
+            that will trigger the action.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.TriggerAction.MethodNameProperty">
+            <summary>
+            Gets or sets the name of the method
+            to be invoked.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.TriggerAction.MethodParameterProperty">
+            <summary>
+            Gets or sets the value of a parameter to
+            be passed to the invoked method.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.TriggerAction.RebindParameterDynamicallyProperty">
+            <summary>
+            Gets or sets a value indicating whether the
+            MethodParameter value should be dynamically rebound
+            before invoking the target method.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.TriggerAction.TargetControl">
+            <summary>
+            Gets or sets the target UI control.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.TriggerAction.TriggerEvent">
+            <summary>
+            Gets or sets the name of the event
+            that will trigger the action.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.TriggerAction.MethodName">
+            <summary>
+            Gets or sets the name of the method
+            to be invoked.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.TriggerAction.MethodParameter">
+            <summary>
+            Gets or sets the value of a parameter to
+            be passed to the invoked method.
+            </summary>
+        </member>
+        <member name="P:Csla.Xaml.TriggerAction.RebindParameterDynamically">
+            <summary>
+            Gets or sets a value indicating whether the
+            MethodParameter value should be dynamically rebound
+            before invoking the target method.
             </summary>
         </member>
         <member name="T:Csla.Xaml.PropertyInfo">
@@ -461,82 +537,6 @@
         <member name="E:Csla.Xaml.PropertyInfo.PropertyChanged">
             <summary>
             Event raised when a property has changed.
-            </summary>
-        </member>
-        <member name="T:Csla.Xaml.TriggerAction">
-            <summary>
-            Control used to invoke a method on the DataContext
-            based on an event being raised by a UI control.
-            </summary>
-        </member>
-        <member name="M:Csla.Xaml.TriggerAction.#ctor">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-        </member>
-        <member name="M:Csla.Xaml.TriggerAction.CallMethod(System.Object,System.EventArgs)">
-            <summary>
-            Invokes target method.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.TriggerAction.TargetControlProperty">
-            <summary>
-            Gets or sets the target UI control.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.TriggerAction.TriggerEventProperty">
-            <summary>
-            Gets or sets the name of the event
-            that will trigger the action.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.TriggerAction.MethodNameProperty">
-            <summary>
-            Gets or sets the name of the method
-            to be invoked.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.TriggerAction.MethodParameterProperty">
-            <summary>
-            Gets or sets the value of a parameter to
-            be passed to the invoked method.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.TriggerAction.RebindParameterDynamicallyProperty">
-            <summary>
-            Gets or sets a value indicating whether the
-            MethodParameter value should be dynamically rebound
-            before invoking the target method.
-            </summary>
-        </member>
-        <member name="P:Csla.Xaml.TriggerAction.TargetControl">
-            <summary>
-            Gets or sets the target UI control.
-            </summary>
-        </member>
-        <member name="P:Csla.Xaml.TriggerAction.TriggerEvent">
-            <summary>
-            Gets or sets the name of the event
-            that will trigger the action.
-            </summary>
-        </member>
-        <member name="P:Csla.Xaml.TriggerAction.MethodName">
-            <summary>
-            Gets or sets the name of the method
-            to be invoked.
-            </summary>
-        </member>
-        <member name="P:Csla.Xaml.TriggerAction.MethodParameter">
-            <summary>
-            Gets or sets the value of a parameter to
-            be passed to the invoked method.
-            </summary>
-        </member>
-        <member name="P:Csla.Xaml.TriggerAction.RebindParameterDynamically">
-            <summary>
-            Gets or sets a value indicating whether the
-            MethodParameter value should be dynamically rebound
-            before invoking the target method.
             </summary>
         </member>
         <member name="T:Csla.Xaml.ExecuteEventArgs">

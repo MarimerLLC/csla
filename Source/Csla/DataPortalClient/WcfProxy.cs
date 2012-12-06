@@ -336,7 +336,9 @@ namespace Csla.DataPortalClient
             Csla.WcfPortal.WcfResponse response = null;
             if (e.Error == null)
               response = ConvertResponse(e.Result);
-            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            ContextDictionary globalContext = null;
+            if (response != null)
+              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
             if (e.Error == null && response != null && response.ErrorData == null)
             {
               var obj = MobileFormatter.Deserialize(response.ObjectData);
@@ -371,20 +373,18 @@ namespace Csla.DataPortalClient
       {
         var response = await proxy.CreateAsync(request);
         response = ConvertResponse(response);
+        if (response == null)
+          throw new DataPortalException("null response", null);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response != null && response.ErrorData == null)
+        if (response.ErrorData == null)
         {
           var obj = MobileFormatter.Deserialize(response.ObjectData);
           result = new DataPortalResult(obj, null, globalContext);
         }
-        else if (response != null && response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(null, ex, globalContext);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -495,7 +495,9 @@ namespace Csla.DataPortalClient
             Csla.WcfPortal.WcfResponse response = null;
             if (e.Error == null)
               response = ConvertResponse(e.Result);
-            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            ContextDictionary globalContext = null;
+            if (response != null)
+              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
             if (e.Error == null && response != null && response.ErrorData == null)
             {
               var obj = MobileFormatter.Deserialize(response.ObjectData);
@@ -531,20 +533,18 @@ namespace Csla.DataPortalClient
       {
         var response = await proxy.FetchAsync(request);
         response = ConvertResponse(response);
+        if (response == null)
+          throw new DataPortalException("null response", null);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response != null && response.ErrorData == null)
+        if (response.ErrorData == null)
         {
           var obj = MobileFormatter.Deserialize(response.ObjectData);
           result = new DataPortalResult(obj, null, globalContext);
         }
-        else if (response != null && response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(null, ex, globalContext);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -647,7 +647,9 @@ namespace Csla.DataPortalClient
             Csla.WcfPortal.WcfResponse response = null;
             if (e.Error == null)
               response = ConvertResponse(e.Result);
-            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            ContextDictionary globalContext = null;
+            if (response != null)
+              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
             if (e.Error == null && response != null && response.ErrorData == null)
             {
               var newobj = MobileFormatter.Deserialize(response.ObjectData);
@@ -682,20 +684,18 @@ namespace Csla.DataPortalClient
       {
         var response = await proxy.UpdateAsync(request);
         response = ConvertResponse(response);
+        if (response == null)
+          throw new DataPortalException("null response", null);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response != null && response.ErrorData == null)
+        if (response.ErrorData == null)
         {
           var newobj = MobileFormatter.Deserialize(response.ObjectData);
           result = new DataPortalResult(newobj, null, globalContext);
         }
-        else if (response != null && response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(null, ex, globalContext);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -804,7 +804,9 @@ namespace Csla.DataPortalClient
             Csla.WcfPortal.WcfResponse response = null;
             if (e.Error == null)
               response = ConvertResponse(e.Result);
-            var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
+            ContextDictionary globalContext = null;
+            if (response != null)
+              globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
             if (e.Error == null && response != null && response.ErrorData == null)
             {
               result = new DataPortalResult(null, null, globalContext);
@@ -838,19 +840,17 @@ namespace Csla.DataPortalClient
       {
         var response = await proxy.DeleteAsync(request);
         response = ConvertResponse(response);
+        if (response == null)
+          throw new DataPortalException("null response", null);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
-        if (response != null && response.ErrorData == null)
+        if (response.ErrorData == null)
         {
           result = new DataPortalResult(null, null, globalContext);
         }
-        else if (response != null && response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(null, ex, globalContext);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)

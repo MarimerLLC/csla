@@ -17,6 +17,18 @@ namespace Csla.Server
   /// </summary>
   public class TransactionalDataPortal : IDataPortalServer
   {
+    private readonly TransactionalAttribute _transactionalAttribute;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TransactionalDataPortal" /> class.
+    /// </summary>
+    /// <param name="transactionalAttribute">
+    /// The transactional attribute that defines transaction options to be used with transactions.
+    /// </param>
+    public TransactionalDataPortal(TransactionalAttribute transactionalAttribute)
+    {
+      _transactionalAttribute = transactionalAttribute;
+    }
     /// <summary>
     /// Wraps a Create call in a TransactionScope
     /// </summary>
@@ -37,16 +49,48 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     public async Task<DataPortalResult> Create(
-      System.Type objectType, object criteria, DataPortalContext context, bool isSync)
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      using (TransactionScope tr = new TransactionScope())
+      using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
         result = await portal.Create(objectType, criteria, context, isSync);
         tr.Complete();
       }
       return result;
+    }
+
+    private TransactionScope CreateTransactionScope()
+    {
+      return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions());
+    }
+
+    private TransactionOptions GetTransactionOptions()
+    {
+      var option = new TransactionOptions
+                     {
+                       IsolationLevel = GetIsolaionLevel(_transactionalAttribute.TransactionIsolationLevel),
+                       Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
+                     };
+      return option;
+    }
+
+    private IsolationLevel GetIsolaionLevel(TransactionIsolationLevel transactionIsolationLevel)
+    {
+      switch (transactionIsolationLevel)
+      {
+        case TransactionIsolationLevel.Serializable:
+          return IsolationLevel.Serializable;
+        case TransactionIsolationLevel.RepeatableRead:
+          return IsolationLevel.RepeatableRead;
+        case TransactionIsolationLevel.ReadCommitted:
+          return IsolationLevel.ReadCommitted;
+        case TransactionIsolationLevel.ReadUncommitted:
+          return IsolationLevel.ReadUncommitted;
+        default:
+          return IsolationLevel.Serializable;
+      }
     }
 
     /// <summary>
@@ -68,7 +112,7 @@ namespace Csla.Server
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      using (TransactionScope tr = new TransactionScope())
+      using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
         result = await portal.Fetch(objectType, criteria, context, isSync);
@@ -95,7 +139,7 @@ namespace Csla.Server
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      using (TransactionScope tr = new TransactionScope())
+      using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
         result = await portal.Update(obj, context, isSync);
@@ -122,7 +166,7 @@ namespace Csla.Server
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
-      using (TransactionScope tr = new TransactionScope())
+      using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
         result = await portal.Delete(objectType, criteria, context, isSync);

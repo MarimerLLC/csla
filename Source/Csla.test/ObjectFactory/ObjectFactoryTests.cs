@@ -153,10 +153,91 @@ namespace Csla.Test.ObjectFactory
       root.Data = "abc";
       root = Csla.DataPortal.Update<Root>(root);
       Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
+      Assert.AreEqual("Serializable", root.IsolationLevel, "Transactional isolation should match");
+      Assert.AreEqual(30, root.TransactionTimeout, "Transactional timeout should match");
+
       Assert.AreEqual("Update", root.Data, "Data should match");
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
+
+    [TestMethod]
+    public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader(4);
+      var root = new Root();
+      root.Data = "abc";
+      root = Csla.DataPortal.Update<Root>(root);
+      Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
+      Assert.AreEqual("ReadCommitted", root.IsolationLevel, "Transactional isolation should match");
+      Assert.AreEqual(100, root.TransactionTimeout, "Transactional timeout should match");
+
+      Assert.AreEqual("Update", root.Data, "Data should match");
+      Assert.IsFalse(root.IsNew, "Should not be new");
+      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
+
+
+    [TestMethod]
+    public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"] = "45";
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader(5);
+      var root = new Root();
+      root.Data = "abc";
+      root = Csla.DataPortal.Update<Root>(root);
+      Assert.AreEqual(TransactionalTypes.TransactionScope, root.TransactionalType, "Transactional type should match");
+      Assert.AreEqual("RepeatableRead", root.IsolationLevel, "Transactional isolation should match");
+      Assert.AreEqual(45, root.TransactionTimeout, "Transactional timeout should match");
+
+      Assert.AreEqual("Update", root.Data, "Data should match");
+      Assert.IsFalse(root.IsNew, "Should not be new");
+      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
+
+
+    [TestMethod]
+    public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader(6);
+      var root = new Root();
+      root.Data = "abc";
+      root = Csla.DataPortal.Update<Root>(root);
+      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
+      Assert.AreEqual("ReadCommitted", root.IsolationLevel, "Transactional isolation should match");
+
+      Assert.AreEqual("Update", root.Data, "Data should match");
+      Assert.IsFalse(root.IsNew, "Should not be new");
+      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
+
+    [TestMethod]
+    public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
+    {
+      ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
+
+      Csla.Server.FactoryDataPortal.FactoryLoader =
+        new ObjectFactoryLoader(7);
+      var root = new Root();
+      root.Data = "abc";
+      
+      root = Csla.DataPortal.Update<Root>(root);
+      Assert.AreEqual(TransactionalTypes.EnterpriseServices, root.TransactionalType, "Transactional type should match");
+      Assert.AreEqual("RepeatableRead", root.IsolationLevel, "Transactional isolation should match");
+
+      Assert.AreEqual("Update", root.Data, "Data should match");
+      Assert.IsFalse(root.IsNew, "Should not be new");
+      Assert.IsFalse(root.IsDirty, "Should not be dirty");
+    }
+
 
     [TestMethod]
     public void Delete()

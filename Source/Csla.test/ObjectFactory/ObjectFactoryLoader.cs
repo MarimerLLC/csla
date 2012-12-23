@@ -38,6 +38,14 @@ namespace Csla.Test.ObjectFactory
             return typeof(RootFactory2);
           case 3:
             return typeof(RootFactory3);
+          case 4:
+            return typeof(RootFactory4);
+          case 5:
+            return typeof(RootFactory5);
+          case 6:
+            return typeof(RootFactory6);
+          case 7:
+            return typeof(RootFactory7);
           default:
             return typeof(RootFactory);
         }
@@ -58,6 +66,14 @@ namespace Csla.Test.ObjectFactory
             return new RootFactory2();
           case 3:
             return new RootFactory3();
+          case 4:
+            return new RootFactory4();
+          case 5:
+            return new RootFactory5();
+          case 6:
+            return new RootFactory6();
+          case 7:
+            return new RootFactory7();
           default:
             return new RootFactory();
         }

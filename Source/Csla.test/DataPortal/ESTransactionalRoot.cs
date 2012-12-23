@@ -121,6 +121,7 @@ namespace Csla.Test.DataPortal
       BusinessRules.CheckRules();
     }
 
+    [Transactional(TransactionalTypes.EnterpriseServices)]
     protected override void DataPortal_Insert()
     {
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);

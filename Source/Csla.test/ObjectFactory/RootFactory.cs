@@ -93,6 +93,9 @@ namespace Csla.Test.ObjectFactory
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
+
+      obj.IsolationLevel = System.Transactions.Transaction.Current.IsolationLevel.ToString();
+      obj.TransactionTimeout = ApplicationContext.DefaultTransactionTimeoutInSeconds;
       obj.TransactionalType = _transactionalType;
       obj.Data = "Update";
       obj.MarkAsOld();
@@ -136,4 +139,91 @@ namespace Csla.Test.ObjectFactory
       return obj;
     }
   }
+
+  public class RootFactory4
+  {
+    [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, 100)]
+    public object Update(Root obj)
+    {
+
+      obj.IsolationLevel = System.Transactions.Transaction.Current.IsolationLevel.ToString();
+      obj.TransactionTimeout = 100;
+      obj.TransactionalType = _transactionalType;
+      obj.Data = "Update";
+      obj.MarkAsOld();
+      return obj;
+    }
+
+    private TransactionalTypes _transactionalType;
+
+    public void Invoke(Csla.DataPortalEventArgs args)
+    {
+      _transactionalType = args.DataPortalContext.TransactionalType;
+    }
+  }
+
+  public class RootFactory5
+  {
+    [Transactional(TransactionalTypes.TransactionScope)]
+    public object Update(Root obj)
+    {
+
+      obj.IsolationLevel = System.Transactions.Transaction.Current.IsolationLevel.ToString();
+      obj.TransactionTimeout = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+      obj.TransactionalType = _transactionalType;
+      obj.Data = "Update";
+      obj.MarkAsOld();
+      return obj;
+    }
+
+    private TransactionalTypes _transactionalType;
+
+    public void Invoke(Csla.DataPortalEventArgs args)
+    {
+      _transactionalType = args.DataPortalContext.TransactionalType;
+    }
+  }
+
+  public class RootFactory6
+  {
+    [Transactional(TransactionalTypes.EnterpriseServices, TransactionIsolationLevel.ReadCommitted)]
+    public object Update(Root obj)
+    {
+
+      obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
+      obj.TransactionalType = _transactionalType;
+      obj.Data = "Update";
+      obj.MarkAsOld();
+      return obj;
+    }
+
+    private TransactionalTypes _transactionalType;
+
+    public void Invoke(Csla.DataPortalEventArgs args)
+    {
+      _transactionalType = args.DataPortalContext.TransactionalType;
+    }
+  }
+
+  public class RootFactory7
+  {
+    [Transactional(TransactionalTypes.EnterpriseServices)]
+    public object Update(Root obj)
+    {
+      obj.IsolationLevel = System.EnterpriseServices.ContextUtil.SystemTransaction.IsolationLevel.ToString();
+      
+      obj.TransactionalType = _transactionalType;
+      obj.Data = "Update";
+      obj.MarkAsOld();
+      return obj;
+    }
+
+    private TransactionalTypes _transactionalType;
+
+    public void Invoke(Csla.DataPortalEventArgs args)
+    {
+      _transactionalType = args.DataPortalContext.TransactionalType;
+    }
+  }
+
 }

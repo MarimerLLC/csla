@@ -14,11 +14,20 @@ namespace Csla.Server
   internal class DataPortalMethodInfo
   {
     public bool RunLocal { get; private set; }
+#if !SILVERLIGHT && !NETFX_CORE
+    public TransactionalAttribute TransactionalAttribute { get; private set; }
+#else
     public TransactionalTypes TransactionalType { get; private set; }
+#endif
 
     public DataPortalMethodInfo()
-    { 
-      this.TransactionalType = TransactionalTypes.Manual;
+    {
+#if !SILVERLIGHT && !NETFX_CORE
+      TransactionalAttribute = new TransactionalAttribute(TransactionalTypes.Manual);
+#else
+      TransactionalType = TransactionalTypes.Manual;
+#endif
+
     }
 
     public DataPortalMethodInfo(System.Reflection.MethodInfo info)
@@ -26,8 +35,12 @@ namespace Csla.Server
     {
       if (info != null)
       {
-        this.RunLocal = IsRunLocal(info);
-        this.TransactionalType = GetTransactionalType(info);
+        RunLocal = IsRunLocal(info);
+#if !SILVERLIGHT && !NETFX_CORE
+        TransactionalAttribute = GetTransactionalAttribute(info);
+#else
+        TransactionalType = TransactionalTypes.Manual;
+#endif
       }
     }
 
@@ -46,24 +59,18 @@ namespace Csla.Server
       return Attribute.IsDefined(method, typeof(TransactionalAttribute));
     }
 
-    private static TransactionalTypes GetTransactionalType(System.Reflection.MethodInfo method)
+    private static TransactionalAttribute GetTransactionalAttribute(System.Reflection.MethodInfo method)
     {
-      TransactionalTypes result;
+      TransactionalAttribute result;
       if (IsTransactionalMethod(method))
       {
-        TransactionalAttribute attrib =
+        result =
           (TransactionalAttribute)Attribute.GetCustomAttribute(
           method, typeof(TransactionalAttribute));
-        result = attrib.TransactionType;
       }
       else
-        result = TransactionalTypes.Manual;
+        result = new TransactionalAttribute(TransactionalTypes.Manual);
       return result;
-    }
-#else
-    private static TransactionalTypes GetTransactionalType(System.Reflection.MethodInfo method)
-    {
-      return TransactionalTypes.Manual;
     }
 #endif
   }

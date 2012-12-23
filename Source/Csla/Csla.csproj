@@ -263,6 +263,9 @@
     <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
+    <Compile Include="Server\ServicedDataPortalReadUncommitted.cs" />
+    <Compile Include="Server\ServicedDataPortalReadCommitted.cs" />
+    <Compile Include="Server\ServicedDataPortalSerializable.cs" />
     <Compile Include="Server\DataPortalExceptionHandler.cs" />
     <Compile Include="Server\EmptyCriteria.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
@@ -351,7 +354,7 @@
     <Compile Include="Server\DataPortalException.cs" />
     <Compile Include="Server\DataPortalResult.cs" />
     <Compile Include="Server\IDataPortalServer.cs" />
-    <Compile Include="Server\ServicedDataPortal.cs" />
+    <Compile Include="Server\ServicedDataPortalRepeatableRead.cs" />
     <Compile Include="Server\SimpleDataPortal.cs" />
     <Compile Include="Server\TransactionalDataPortal.cs" />
     <Compile Include="Threading\BackgroundWorker.cs">
@@ -403,6 +406,7 @@
     <Compile Include="Serialization\SerializationFormatterFactory.cs" />
     <Compile Include="SmartDate.cs" />
     <Compile Include="SortedBindingList.cs" />
+    <Compile Include="TransactionIsolationLevel.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Rules\BrokenRule.cs" />
     <Compile Include="Rules\BrokenRulesCollection.cs" />

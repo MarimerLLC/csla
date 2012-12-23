@@ -109,6 +109,25 @@ namespace Csla.Server
 
     #region Data Access
 
+#if !SILVERLIGHT && !NETFX_CORE && !MONO
+    private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
+    {
+      switch (transactionalAttribute.TransactionIsolationLevel)
+      {
+        case TransactionIsolationLevel.Serializable:
+          return new ServicedDataPortalSerializable();
+        case TransactionIsolationLevel.RepeatableRead:
+          return new ServicedDataPortalRepeatableRead();
+        case TransactionIsolationLevel.ReadCommitted:
+          return new ServicedDataPortalReadCommitted();
+        case TransactionIsolationLevel.ReadUncommitted:
+          return new ServicedDataPortalReadUncommitted();
+        default:
+          throw new ArgumentOutOfRangeException("transactionalAttribute");
+      }
+    }
+#endif 
+
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -134,25 +153,25 @@ namespace Csla.Server
 
         IDataPortalServer portal;
 #if !SILVERLIGHT && !NETFX_CORE
-        switch (method.TransactionalType)
+        switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
           case TransactionalTypes.EnterpriseServices:
-            portal = new ServicedDataPortal();
+            portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
               result = await portal.Create(objectType, criteria, context, isSync);
             }
             finally
             {
-              ((ServicedDataPortal)portal).Dispose();
+              ((System.EnterpriseServices.ServicedComponent)portal).Dispose();
             }
 
             break;
 #endif
           case TransactionalTypes.TransactionScope:
 
-            portal = new TransactionalDataPortal();
+            portal = new TransactionalDataPortal(method.TransactionalAttribute);
             result = await portal.Create(objectType, criteria, context, isSync);
 
             break;
@@ -226,23 +245,23 @@ namespace Csla.Server
 
         IDataPortalServer portal;
 #if !SILVERLIGHT && !NETFX_CORE
-        switch (method.TransactionalType)
+        switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
           case TransactionalTypes.EnterpriseServices:
-            portal = new ServicedDataPortal();
+            portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
               result = await portal.Fetch(objectType, criteria, context, isSync);
             }
             finally
             {
-              ((ServicedDataPortal)portal).Dispose();
+              ((System.EnterpriseServices.ServicedComponent)portal).Dispose();
             }
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal();
+            portal = new TransactionalDataPortal(method.TransactionalAttribute);
             result = await portal.Fetch(objectType, criteria, context, isSync);
             break;
           default:
@@ -350,27 +369,30 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-
+#if !SILVERLIGHT && !NETFX_CORE
+        context.TransactionalType = method.TransactionalAttribute.TransactionType;
+#else
         context.TransactionalType = method.TransactionalType;
+#endif
         IDataPortalServer portal;
 #if !SILVERLIGHT && !NETFX_CORE
-        switch (method.TransactionalType)
+        switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
           case TransactionalTypes.EnterpriseServices:
-            portal = new ServicedDataPortal();
+            portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
               result = await portal.Update(obj, context, isSync);
             }
             finally
             {
-              ((ServicedDataPortal)portal).Dispose();
+              ((System.EnterpriseServices.ServicedComponent)portal).Dispose();
             }
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal();
+            portal = new TransactionalDataPortal(method.TransactionalAttribute);
             result = await portal.Update(obj, context, isSync);
             break;
           default:
@@ -453,23 +475,23 @@ namespace Csla.Server
 
         IDataPortalServer portal;
 #if !SILVERLIGHT && !NETFX_CORE
-        switch (method.TransactionalType)
+        switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
           case TransactionalTypes.EnterpriseServices:
-            portal = new ServicedDataPortal();
+            portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
               result = await portal.Delete(objectType, criteria, context, isSync);
             }
             finally
             {
-              ((ServicedDataPortal)portal).Dispose();
+              ((System.EnterpriseServices.ServicedComponent)portal).Dispose();
             }
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            portal = new TransactionalDataPortal();
+            portal = new TransactionalDataPortal(method.TransactionalAttribute);
             result = await portal.Delete(objectType, criteria, context, isSync);
             break;
           default:

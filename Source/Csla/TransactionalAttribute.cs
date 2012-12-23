@@ -6,7 +6,6 @@
 // <summary>Marks a DataPortal_XYZ method to run within</summary>
 //-----------------------------------------------------------------------
 using System;
-
 namespace Csla
 {
   /// <summary>
@@ -34,10 +33,9 @@ namespace Csla
   /// 2-phase distributed transactional support.
   /// </para>
   /// </remarks>
-  [AttributeUsage(AttributeTargets.Method)]
+  [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
   public sealed class TransactionalAttribute : Attribute
   {
-    private TransactionalTypes _type;
 
     /// <summary>
     /// Marks a method to run within a COM+
@@ -45,7 +43,7 @@ namespace Csla
     /// </summary>
     public TransactionalAttribute()
     {
-      _type = TransactionalTypes.TransactionScope;
+      TransactionType = TransactionalTypes.TransactionScope;
     }
 
     /// <summary>
@@ -57,16 +55,85 @@ namespace Csla
     /// method should run.</param>
     public TransactionalAttribute(TransactionalTypes transactionType)
     {
-      _type = transactionType;
+      TransactionType = transactionType;
+      if (transactionType == TransactionalTypes.TransactionScope || 
+        transactionType == TransactionalTypes.EnterpriseServices)
+      {
+        TransactionIsolationLevel = ApplicationContext.DefaultTransactionIsolationLevel;
+        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+      }
+    }
+
+    /// <summary>
+    /// Marks a method to run within the specified
+    /// type of transactional context.
+    /// </summary>
+    /// <param name="transactionType">
+    /// Specifies the transactional context within which the
+    /// method should run.</param>
+    /// <param name="transactionIsolationLevel">
+    /// Specifies override for transaction isolation level.
+    /// Default can be specified in .config file via CslaTransactionIsolationLevel setting
+    /// If none specified, Serializable level is used
+    /// </param>
+    /// <param name="timeoutInSeconds">
+    /// Timeout for transaction, in seconds
+    /// </param>
+    public TransactionalAttribute(
+      TransactionalTypes transactionType,
+      TransactionIsolationLevel transactionIsolationLevel,
+      int timeoutInSeconds)
+    {
+      TransactionType = transactionType;
+      TransactionIsolationLevel = transactionIsolationLevel;
+      TimeoutInSeconds = timeoutInSeconds;
+    }
+
+    /// <summary>
+    /// Marks a method to run within the specified
+    /// type of transactional context.
+    /// </summary>
+    /// <param name="transactionType">
+    /// Specifies the transactional context within which the
+    /// method should run.</param>
+    /// <param name="transactionIsolationLevel">
+    /// Specifies override for transaction isolation level.
+    /// Default can be specified in .config file via CslaTransactionIsolationLevel setting
+    /// If none specified, Serializable level is used
+    /// </param>
+    public TransactionalAttribute(
+      TransactionalTypes transactionType,
+      TransactionIsolationLevel transactionIsolationLevel)
+    {
+      TransactionType = transactionType;
+      TransactionIsolationLevel = transactionIsolationLevel;
+      if (transactionType == TransactionalTypes.TransactionScope ||
+        transactionType == TransactionalTypes.EnterpriseServices)
+      {
+        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+      }
     }
 
     /// <summary>
     /// Gets the type of transaction requested by the
     /// business object method.
     /// </summary>
-    public TransactionalTypes TransactionType
-    {
-      get { return _type; }
-    }
+    public TransactionalTypes TransactionType { get; private set; }
+
+    /// <summary>
+    /// Specifies override for transaction isolation level.
+    /// Default can be specified in .config file via CslaTransactionIsolationLevel setting
+    /// If none specified, Serializable level is used
+    /// </summary>
+    public TransactionIsolationLevel TransactionIsolationLevel { get; private set; }
+
+    /// <summary>
+    /// Timeout for transaction, in seconds
+    /// </summary>
+    /// <value>
+    /// The timeout for transaction, in seconds
+    /// </value>
+    public int TimeoutInSeconds { get; private set; }
+
   }
 }

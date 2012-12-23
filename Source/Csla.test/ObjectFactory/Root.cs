@@ -38,6 +38,20 @@ namespace Csla.Test.ObjectFactory
       set { SetProperty(TransactionalTypeProperty, value); }
     }
 
+    private static PropertyInfo<string> IsolationLevelProperty = RegisterProperty(new PropertyInfo<string>("IsolationLevel"));
+    public string IsolationLevel
+    {
+      get { return GetProperty(IsolationLevelProperty); }
+      set { SetProperty(IsolationLevelProperty, value); }
+    }
+
+    private static PropertyInfo<int> TransactionTimeoutProperty = RegisterProperty(new PropertyInfo<int>("TransactionTimeout"));
+    public int TransactionTimeout
+    {
+      get { return GetProperty(TransactionTimeoutProperty); }
+      set { SetProperty(TransactionTimeoutProperty, value); }
+    }
+
     public void MarkAsNew()
     {
       MarkNew();

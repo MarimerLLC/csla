@@ -11,6 +11,7 @@ using System.Security.Principal;
 using System.Collections.Specialized;
 #if !SILVERLIGHT && !NETFX_CORE
 using System.Configuration;
+using System.Transactions;
 using System.Web;
 #endif
 using Csla.Core;
@@ -628,6 +629,44 @@ namespace Csla
         ApplicationContext.ClientContext["__ruleSet"] = value;
       }
     }
+
+#if !SILVERLIGHT && !NETFX_CORE
+
+    /// <summary>
+    /// Gets the default transaction isolation level.
+    /// </summary>
+    /// <value>
+    /// The default transaction isolation level.
+    /// </value>
+    public static TransactionIsolationLevel DefaultTransactionIsolationLevel
+    {
+      get
+      {
+        string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
+        if (string.IsNullOrEmpty(tmp))
+        {
+          return TransactionIsolationLevel.Serializable;
+        }
+        return (TransactionIsolationLevel)Enum.Parse(typeof(IsolationLevel), tmp);
+      }
+    }
+
+    /// <summary>
+    /// Gets the default transaction timeout in seconds.
+    /// </summary>
+    /// <value>
+    /// The default transaction timeout in seconds.
+    /// </value>
+    public static int DefaultTransactionTimeoutInSeconds
+    {
+      get
+      {
+        var tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionTimeoutInSeconds"];
+        return string.IsNullOrEmpty(tmp) ? 30 : int.Parse(tmp);
+      }
+    }
+
+#endif
 
     #endregion
 

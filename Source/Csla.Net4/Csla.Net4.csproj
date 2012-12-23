@@ -851,8 +851,17 @@
     <Compile Include="..\Csla\Server\ObjectFactoryLoader.cs">
       <Link>Server\ObjectFactoryLoader.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Server\ServicedDataPortal.cs">
-      <Link>Server\ServicedDataPortal.cs</Link>
+    <Compile Include="..\Csla\Server\ServicedDataPortalReadCommitted.cs">
+      <Link>Server\ServicedDataPortalReadCommitted.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ServicedDataPortalReadUncommitted.cs">
+      <Link>Server\ServicedDataPortalReadUncommitted.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ServicedDataPortalRepeatableRead.cs">
+      <Link>Server\ServicedDataPortalRepeatableRead.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ServicedDataPortalSerializable.cs">
+      <Link>Server\ServicedDataPortalSerializable.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\SimpleDataPortal.cs">
       <Link>Server\SimpleDataPortal.cs</Link>
@@ -884,6 +893,9 @@
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\TransactionIsolationLevel.cs">
+      <Link>TransactionIsolationLevel.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Utilities.cs">
       <Link>Utilities.cs</Link>

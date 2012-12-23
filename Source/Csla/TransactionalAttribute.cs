@@ -42,8 +42,8 @@ namespace Csla
     /// transactional context.
     /// </summary>
     public TransactionalAttribute()
+      :this(TransactionalTypes.TransactionScope)
     {
-      TransactionType = TransactionalTypes.TransactionScope;
     }
 
     /// <summary>

@@ -11,7 +11,6 @@ using System.Security.Principal;
 using System.Collections.Specialized;
 #if !SILVERLIGHT && !NETFX_CORE
 using System.Configuration;
-using System.Transactions;
 using System.Web;
 #endif
 using Csla.Core;
@@ -647,7 +646,7 @@ namespace Csla
         {
           return TransactionIsolationLevel.Serializable;
         }
-        return (TransactionIsolationLevel)Enum.Parse(typeof(IsolationLevel), tmp);
+        return (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
       }
     }
 

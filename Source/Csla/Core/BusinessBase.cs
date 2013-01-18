@@ -2529,7 +2529,7 @@ namespace Csla.Core
             oldValue = (P)fieldData.Value;
         }
 
-        var valuesDiffer = !(oldValue.Equals(newValue));
+        var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
         if (valuesDiffer)
         {
 
@@ -2563,7 +2563,15 @@ namespace Csla.Core
       }
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
+    /// <summary>
+    /// Check if old and new values are different.
+    /// </summary>
+    /// <typeparam name="P"></typeparam>
+    /// <param name="propertyInfo">The property info.</param>
+    /// <param name="newValue">The new value.</param>
+    /// <param name="oldValue">The old value.</param>
+    /// <returns></returns>
+    private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
     {
       var valuesDiffer = false;
       if (oldValue == null)
@@ -2571,7 +2579,7 @@ namespace Csla.Core
       else
       {
         // use reference equals for objects that inherit from CSLA base class
-        if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type))
+        if (typeof (IBusinessObject).IsAssignableFrom(propertyInfo.Type))
         {
           valuesDiffer = !(ReferenceEquals(oldValue, newValue));
         }
@@ -2580,6 +2588,12 @@ namespace Csla.Core
           valuesDiffer = !(oldValue.Equals(newValue));
         }
       }
+      return valuesDiffer;
+    }
+
+    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
+    {
+      var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
 
       if (valuesDiffer)
       {

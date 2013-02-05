@@ -185,9 +185,21 @@ namespace Csla
       if (IsDirty)
       {
         if (isSync)
+        {
           result = DataPortal.Update<T>((T)this);
+        }
         else
-          result = await DataPortal.UpdateAsync<T>((T)this);
+        {
+          MarkBusy();
+          try
+          {
+            result = await DataPortal.UpdateAsync<T>((T)this);
+          }
+          finally
+          {
+            MarkIdle();
+          }
+        }
       }
       else
       {

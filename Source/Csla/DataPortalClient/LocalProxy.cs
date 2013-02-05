@@ -34,7 +34,28 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Create(objectType, criteria, context, isSync);
+      if (isSync)
+      {
+        return await _portal.Create(objectType, criteria, context, isSync);
+      }
+      else
+      {
+        var tcs = new TaskCompletionSource<DataPortalResult>();
+        var bw = new Csla.Threading.BackgroundWorker();
+        bw.DoWork += (s, o) =>
+        {
+          o.Result = _portal.Create(objectType, criteria, context, isSync).Result;
+        };
+        bw.RunWorkerCompleted += (s, o) =>
+        {
+          if (o.Error == null)
+            tcs.TrySetResult((DataPortalResult)o.Result);
+          else
+            tcs.TrySetException(o.Error);
+        };
+        bw.RunWorkerAsync();
+        return await tcs.Task;
+      }
     }
 
     /// <summary>
@@ -49,7 +70,28 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Fetch(objectType, criteria, context, isSync);
+      if (isSync)
+      {
+        return await _portal.Fetch(objectType, criteria, context, isSync);
+      }
+      else
+      {
+        var tcs = new TaskCompletionSource<DataPortalResult>();
+        var bw = new Csla.Threading.BackgroundWorker();
+        bw.DoWork += (s, o) =>
+        {
+          o.Result = _portal.Fetch(objectType, criteria, context, isSync).Result;
+        };
+        bw.RunWorkerCompleted += (s, o) =>
+        {
+          if (o.Error == null)
+            tcs.TrySetResult((DataPortalResult)o.Result);
+          else
+            tcs.TrySetException(o.Error);
+        };
+        bw.RunWorkerAsync();
+        return await tcs.Task;
+      }
     }
 
     /// <summary>
@@ -63,7 +105,28 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      return await _portal.Update(obj, context, isSync);
+      if (isSync)
+      {
+        return await _portal.Update(obj, context, isSync);
+      }
+      else
+      {
+        var tcs = new TaskCompletionSource<DataPortalResult>();
+        var bw = new Csla.Threading.BackgroundWorker();
+        bw.DoWork += (s, o) =>
+        {
+          o.Result = _portal.Update(obj, context, isSync).Result;
+        };
+        bw.RunWorkerCompleted += (s, o) =>
+        {
+          if (o.Error == null)
+            tcs.TrySetResult((DataPortalResult)o.Result);
+          else
+            tcs.TrySetException(o.Error);
+        };
+        bw.RunWorkerAsync();
+        return await tcs.Task;
+      }
     }
 
     /// <summary>
@@ -78,7 +141,28 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return await _portal.Delete(objectType, criteria, context, isSync);
+      if (isSync)
+      {
+        return await _portal.Delete(objectType, criteria, context, isSync);
+      }
+      else
+      {
+        var tcs = new TaskCompletionSource<DataPortalResult>();
+        var bw = new Csla.Threading.BackgroundWorker();
+        bw.DoWork += (s, o) =>
+        {
+          o.Result = _portal.Delete(objectType, criteria, context, isSync).Result;
+        };
+        bw.RunWorkerCompleted += (s, o) =>
+        {
+          if (o.Error == null)
+            tcs.TrySetResult((DataPortalResult)o.Result);
+          else
+            tcs.TrySetException(o.Error);
+        };
+        bw.RunWorkerAsync();
+        return await tcs.Task;
+      }
     }
 
     /// <summary>

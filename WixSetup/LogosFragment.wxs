@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- Logos Fragment-->
+  <Fragment>
+    <ComponentGroup Id="LogosComponent">
+      <ComponentRef Id="comp_CslaWin8ai" />
+      <ComponentRef Id="comp_CslaWin8eps" />
+      <ComponentRef Id="comp_CslaWin8png" />
+      <ComponentRef Id="comp_CslaWin8Compactpng" />
+      <ComponentRef Id="comp_CslaWin8CompactSpng" />
+      <ComponentRef Id="comp_CslaWin8Fullpng" />
+      <ComponentRef Id="comp_CslaWin8FullBigpng" />
+      <ComponentRef Id="comp_CslaWin8FullSqpng" />
+      <ComponentRef Id="comp_CslaWin8Midpng" />
+    </ComponentGroup>
+    <DirectoryRef Id="Logos">
+      <Component Id="comp_CslaWin8ai" Guid="{29b32c43-4729-41d4-b702-4f33d383363d}">
+        <File Id="file_CslaWin8ai" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.ai" />
+      </Component>
+      <Component Id="comp_CslaWin8eps" Guid="{14f83951-9a96-428d-aa7c-bddcc999520e}">
+        <File Id="file_CslaWin8eps" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.eps" />
+      </Component>
+      <Component Id="comp_CslaWin8png" Guid="{94dcb007-98c2-4e03-9e80-10b3b1fd7103}">
+        <File Id="file_CslaWin8png" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.png" />
+      </Component>
+      <Component Id="comp_CslaWin8Compactpng" Guid="{cdcdbcb9-11a1-4d37-9bb4-b57cb2e50841}">
+        <File Id="file_CslaWin8Compactpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact.png" />
+      </Component>
+      <Component Id="comp_CslaWin8CompactSpng" Guid="{182be09f-a257-44f6-b480-c12fa91a89db}">
+        <File Id="file_CslaWin8CompactSpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact_s.png" />
+      </Component>
+      <Component Id="comp_CslaWin8Fullpng" Guid="{8cc0af26-31ce-41ef-a578-a0ad312e0c3b}">
+        <File Id="file_CslaWin8Fullpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full.png" />
+      </Component>
+      <Component Id="comp_CslaWin8FullBigpng" Guid="{86bdb60f-33fe-44cd-8d68-a5533dc95a28}">
+        <File Id="file_CslaWin8FullBigpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_big.png" />
+      </Component>
+      <Component Id="comp_CslaWin8FullSqpng" Guid="{1db77329-4e66-4731-8460-cd23de06e421}">
+        <File Id="file_CslaWin8FullSqpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_sq.png" />
+      </Component>
+      <Component Id="comp_CslaWin8Midpng" Guid="{0fbc16c2-31fc-4b86-817d-7dba686f1d24}">
+        <File Id="file_CslaWin8Midpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_mid.png" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

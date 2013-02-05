@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- WinPRT Fragment-->
+  <Fragment>
+    <ComponentGroup Id="WinPRTComponenets">
+      <ComponentRef Id="comp_WinPRT_CslaDLL" />
+      <ComponentRef Id="comp_WinPRT_CslaPDB" />
+      <ComponentRef Id="comp_WinPRT_CslaXML" />
+      <ComponentRef Id="comp_WinPRT_CslaXamlDLL" />
+      <ComponentRef Id="comp_WinPRT_CslaXamlPDB" />
+      <ComponentRef Id="comp_WinPRT_CslaXamlXML" />
+    </ComponentGroup>
+    <DirectoryRef Id="WinPRT">
+      <Component Id="comp_WinPRT_CslaDLL" Guid="{030CC4CF-6098-424E-A3A7-E7B46340D79F}">
+        <File Id="file_WinPRT_CslaDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.DLL" />
+      </Component>
+      <Component Id="comp_WinPRT_CslaPDB" Guid="{A1A1B017-7407-4100-98D8-20E40A539BC0}">
+        <File Id="file_WinPRT_CslaPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.pdb" />
+      </Component>
+      <Component Id="comp_WinPRT_CslaXML" Guid="{BC716C6E-6B53-45A8-938D-A9109FA03F5A}">
+        <File Id="file_WinPRT_CslaXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.xml" />
+      </Component>
+      <Component Id="comp_WinPRT_CslaXamlDLL" Guid="{A3FCCFA6-81B5-4328-A7AC-29FA47EC00EC}">
+        <File Id="file_WinPRT_CslaXamlDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.DLL" />
+      </Component>
+      <Component Id="comp_WinPRT_CslaXamlPDB" Guid="{2A6A6809-1DF3-4654-A359-D904AAA6356D}">
+        <File Id="file_WinPRT_CslaXamlPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.pdb" />
+      </Component>
+      <Component Id="comp_WinPRT_CslaXamlXML" Guid="{B3764FFD-9019-4FF2-A7CD-495F0AB4F744}">
+        <File Id="file_WinPRT_CslaXamlXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.xml" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!--Fragment for NET folder-->
+  <Fragment>
+    <ComponentGroup Id="NetComponenets">
+      <ComponentRef Id="comp_net_CslaDLL" />
+      <ComponentRef Id="comp_net_CslaPDB" />
+      <ComponentRef Id="comp_net_CslaXML" />
+      <ComponentRef Id="comp_net_CslaWebDLL" />
+      <ComponentRef Id="comp_net_CslaWebPDB" />
+      <ComponentRef Id="comp_net_CslaWebXML" />
+      <ComponentRef Id="comp_net_CslaWebMvc3DLL" />
+      <ComponentRef Id="comp_net_CslaWebMvc3PDB" />
+      <ComponentRef Id="comp_net_CslaWebMvc3XML" />
+      <ComponentRef Id="comp_net_CslaWebMvc4DLL" />
+      <ComponentRef Id="comp_net_CslaWebMvc4PDB" />
+      <ComponentRef Id="comp_net_CslaWebMvc4XML" />
+      <ComponentRef Id="comp_net_cslaWindowsDLL" />
+      <ComponentRef Id="comp_net_CslaWindowsPDB" />
+      <ComponentRef Id="comp_net_CslaWindowsXML" />
+      <ComponentRef Id="comp_net_CslaXamlDLL" />
+      <ComponentRef Id="comp_net_CslaXamlPDB" />
+      <ComponentRef Id="comp_net_CslaXamlXML" />
+    </ComponentGroup>
+    <DirectoryRef Id="Net">
+      <Component Id="comp_net_CslaDLL" Guid="{2de65273-c81b-4d66-99ed-d6537b2ae5d6}">
+        <File Id="file_net_CslaDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaPDB" Guid="{50f5932c-713e-401e-8287-cbbd1f02bf85}">
+        <File Id="file_net_CslaPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaXML" Guid="{68513174-a04d-4fdf-b6f3-963f0b5ddc87}">
+        <File Id="file_net_CslaXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.xml" />
+      </Component>
+      <Component Id="comp_net_CslaWebDLL" Guid="{eeed6092-e76b-40ae-8b4c-586b3f6bfe39}">
+        <File Id="file_net_CslaWebDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaWebPDB" Guid="{2e60ed2f-4086-432c-b616-aaa5b6147060}">
+        <File Id="file_net_CslaWebPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaWebXML" Guid="{5d326bf7-2042-4f69-9183-82b8c17c63c4}">
+        <File Id="file_net_CslaWebXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.xml" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc3DLL" Guid="{fd1fde5e-7161-4cb0-a89e-a62247913637}">
+        <File Id="file_net_CslaWebMvc3DLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.Mvc3.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc3PDB" Guid="{908d18b1-eb2f-4013-87bc-b3309fd32df2}">
+        <File Id="file_net_CslaWebMvc3PDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.Mvc3.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc3XML" Guid="{b9c9fe80-a96d-4f62-99ed-34cac367ff4a}">
+        <File Id="file_net_CslaWebMvc3XML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.Mvc3.xml" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc4DLL" Guid="{FA7FBC85-66FD-4C8B-A3BA-55DF57E4173F}">
+        <File Id="file_net_CslaWebmvc4DLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.mvc4.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc4PDB" Guid="{C105BB14-2259-4B00-9B3C-73E3AC5D666B}">
+        <File Id="file_net_CslaWebmvc4PDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.mvc4.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaWebMvc4XML" Guid="{AC59A755-2600-4201-97FE-39B425B4B5F0}">
+        <File Id="file_net_CslaWebmvc4XML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Web.mvc4.xml" />
+      </Component>
+      <Component Id="comp_net_cslaWindowsDLL" Guid="{48294176-761d-405f-977a-d00e49adf66e}">
+        <File Id="file_net_CslaWindowsDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Windows.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaWindowsPDB" Guid="{bb4c5b1b-337e-4069-96bf-069a217ba3c8}">
+        <File Id="file_net_CslaWindowsPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Windows.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaWindowsXML" Guid="{f7ec420b-d5fd-4a86-b8d3-265e7c0c01dd}">
+        <File Id="file_net_CslaWindowsXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Windows.xml" />
+      </Component>
+      <Component Id="comp_net_CslaXamlDLL" Guid="{72dccbd0-5bc2-4ed7-9b64-7180b3f60e59}">
+        <File Id="file_net_CslaXamlDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Xaml.DLL" />
+      </Component>
+      <Component Id="comp_net_CslaXamlPDB" Guid="{c6d7d7c0-bf61-4922-b627-682c6516866a}">
+        <File Id="file_net_CslaXamlPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Xaml.pdb" />
+      </Component>
+      <Component Id="comp_net_CslaXamlXML" Guid="{55212d4a-4836-4abb-b0cf-b92e11eeb523}">
+        <File Id="file_net_CslaXamlXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\NET\Csla.Xaml.xml" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

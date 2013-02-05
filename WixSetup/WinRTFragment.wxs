@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- WinRT Fragment-->
+  <Fragment>
+    <ComponentGroup Id="WinRTComponenets">
+      <ComponentRef Id="comp_WinRT_CslaDLL" />
+      <ComponentRef Id="comp_WinRT_CslaPDB" />
+      <ComponentRef Id="comp_WinRT_CslaPRI" />
+      <ComponentRef Id="comp_WinRT_CslaXML" />
+      <ComponentRef Id="comp_WinRT_CslaXamlDLL" />
+      <ComponentRef Id="comp_WinRT_CslaXamlPDB" />
+      <ComponentRef Id="comp_WinRT_CslaXamlPRI" />
+      <ComponentRef Id="comp_WinRT_CslaXamlXML" />
+    </ComponentGroup>
+    <DirectoryRef Id="WinRT">
+      <Component Id="comp_WinRT_CslaDLL" Guid="{ca30a92a-5dea-4bbf-ba3b-3d6cd1c60eb0}">
+        <File Id="file_WinRT_CslaDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.DLL" />
+      </Component>
+      <Component Id="comp_WinRT_CslaPDB" Guid="{477700bd-d2b1-4bcc-bf4a-27465a8cc2b1}">
+        <File Id="file_WinRT_CslaPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.pdb" />
+      </Component>
+      <Component Id="comp_WinRT_CslaPRI" Guid="{8329476c-9583-4c12-a5c5-b8ad34875e92}">
+        <File Id="file_WinRT_CslaPRI" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.pri" />
+      </Component>
+      <Component Id="comp_WinRT_CslaXML" Guid="{4b55fc78-c4fa-4ec8-ae78-c18186b6a72b}">
+        <File Id="file_WinRT_CslaXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.xml" />
+      </Component>
+      <Component Id="comp_WinRT_CslaXamlDLL" Guid="{71cb3099-39d8-4926-b924-0d3bf3115226}">
+        <File Id="file_WinRT_CslaXamlDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.Xaml.DLL" />
+      </Component>
+      <Component Id="comp_WinRT_CslaXamlPDB" Guid="{0a72c4ee-b13e-4494-b574-1b77fd65da76}">
+        <File Id="file_WinRT_CslaXamlPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.Xaml.pdb" />
+      </Component>
+      <Component Id="comp_WinRT_CslaXamlPRI" Guid="{ab625a45-d825-4df1-b8b2-c60399c43114}">
+        <File Id="file_WinRT_CslaXamlPRI" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.Xaml.pri" />
+      </Component>
+      <Component Id="comp_WinRT_CslaXamlXML" Guid="{f882550c-bc6d-4cfe-a6d4-288b06f7ab8f}">
+        <File Id="file_WinRT_CslaXamlXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT\Csla.Xaml.xml" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

@@ -68,7 +68,7 @@ namespace Csla.Xaml
       catch (Exception ex)
       {
         IsBusy = false;
-        OnError(ex);
+        this.Error = ex;
       }
       return this;
     }

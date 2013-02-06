@@ -19,9 +19,15 @@
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
-##  “CSLA .NET - ASP.NET MVC” NuGet
+##  “CSLA .NET - ASP.NET MVC 3” NuGet
 ##  •	Contents:
-##      o	Csla.Web.Mvc.dll (.NET)
+##      o	Csla.Web.Mvc3.dll (.NET)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##  
+##  “CSLA .NET - ASP.NET MVC 4” NuGet
+##  •	Contents:
+##      o	Csla.Web.Mvc4.dll (.NET)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
@@ -120,14 +126,17 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Data EF4", "Data EF5", "Templates")  # Leave out "Workflow" until Rocky is happy with it for the current version of CSLA
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC 3", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Data EF4", "Data EF5", "Templates")  # Leave out "Workflow" until Rocky is happy with it for the current version of CSLA
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
     
     Write-Host "Build All CLSA .NET NuGet packages" -ForegroundColor White
     Write-Host "==================================" -ForegroundColor White
-    
+
+    Write-Host "Creating Packages folder" -ForegroundColor Yellow
+    mkdir Packages
+
     ## NB - Cleanup destination package folder
     ## ---------------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow

@@ -2238,6 +2238,16 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Core.BusinessBase.ValuesDiffer``1(Csla.PropertyInfo{``0},``0,``0)">
+            <summary>
+            Check if old and new values are different.
+            </summary>
+            <typeparam name="P"></typeparam>
+            <param name="propertyInfo">The property info.</param>
+            <param name="newValue">The new value.</param>
+            <param name="oldValue">The old value.</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Core.BusinessBase.LoadPropertyMarkDirty(Csla.Core.IPropertyInfo,System.Object)">
             <summary>
             Loads a property's managed field with the 

@@ -246,6 +246,22 @@
             </summary>
             <value>The rule set.</value>
         </member>
+        <member name="P:Csla.ApplicationContext.DefaultTransactionIsolationLevel">
+            <summary>
+            Gets the default transaction isolation level.
+            </summary>
+            <value>
+            The default transaction isolation level.
+            </value>
+        </member>
+        <member name="P:Csla.ApplicationContext.DefaultTransactionTimeoutInSeconds">
+            <summary>
+            Gets the default transaction timeout in seconds.
+            </summary>
+            <value>
+            The default transaction timeout in seconds.
+            </value>
+        </member>
         <member name="P:Csla.ApplicationContext.LogicalExecutionLocation">
             <summary>
             Return Logical Execution Location - Client or Server
@@ -2284,6 +2300,16 @@
             Loading values does not cause validation rules to be
             invoked.
             </remarks>
+        </member>
+        <member name="M:Csla.Core.BusinessBase.ValuesDiffer``1(Csla.PropertyInfo{``0},``0,``0)">
+            <summary>
+            Check if old and new values are different.
+            </summary>
+            <typeparam name="P"></typeparam>
+            <param name="propertyInfo">The property info.</param>
+            <param name="newValue">The new value.</param>
+            <param name="oldValue">The old value.</param>
+            <returns></returns>
         </member>
         <member name="M:Csla.Core.BusinessBase.LoadPropertyMarkDirty(Csla.Core.IPropertyInfo,System.Object)">
             <summary>
@@ -6070,104 +6096,6 @@
             <summary>
             Gets the WCF endpoint name for the data portal
             server used by this proxy instance.
-            </summary>
-        </member>
-        <member name="T:Csla.Data.DbContextManager`1">
-            <summary>
-            Provides an automated way to reuse 
-            Entity Framework DbContext objects 
-            within the context
-            of a single data portal operation.
-            </summary>
-            <typeparam name="C">
-            Type of database 
-            DbContext object to use.
-            </typeparam>
-            <remarks>
-            This type stores the object context object 
-            in <see cref="P:Csla.ApplicationContext.LocalContext"/>
-            and uses reference counting through
-            <see cref="T:System.IDisposable"/> to keep the data context object
-            open for reuse by child objects, and to automatically
-            dispose the object when the last consumer
-            has called Dispose."
-            </remarks>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager">
-            <summary>
-            Gets the ObjectContextManager object for the     /// specified database.
-            </summary>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.String)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="database">Database name as shown in the config file.</param>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.String,System.String)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="database">Database name as shown in the config file.</param>
-            <param name="label">Label for this context.</param>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.String,System.Data.Entity.Infrastructure.DbCompiledModel)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="database">Database name as shown in the config file.</param>
-            <param name="model">Database compiled model.</param>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.String,System.String,System.Data.Entity.Infrastructure.DbCompiledModel)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="database">
-            The database name or connection string.
-            </param>
-            <param name="label">Label for this context.</param>
-            <param name="model">Database Compiled model.</param>
-            <returns>ContextManager object for the name.</returns>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.Data.Objects.ObjectContext)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="context">
-            The ObjectContext to wrap in DbContext
-            </param>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.GetManager(System.Data.Objects.ObjectContext,System.String)">
-            <summary>
-            Gets the ObjectContextManager object for the 
-            specified database.
-            </summary>
-            <param name="context">
-            The ObjectContext to wrap in DbContext
-            </param>
-            <param name="label">Label for this context.</param>
-        </member>
-        <member name="M:Csla.Data.DbContextManager`1.Dispose">
-            <summary>
-            Dispose object, dereferencing or
-            disposing the context it is
-            managing.
-            </summary>
-        </member>
-        <member name="P:Csla.Data.DbContextManager`1.DbContext">
-            <summary>
-            Gets the DbContext object.
-            </summary>
-        </member>
-        <member name="P:Csla.Data.DbContextManager`1.RefCount">
-            <summary>
-            Gets the current reference count for this
-            object.
             </summary>
         </member>
         <member name="T:Csla.DynamicBindingListBase`1">
@@ -11949,6 +11877,219 @@
             by the client.
             </summary>
         </member>
+        <member name="T:Csla.Server.ServicedDataPortalReadUncommitted">
+            <summary>
+            Implements the server-side Serviced 
+            DataPortal described in Chapter 4.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadUncommitted.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Create call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">A <see cref="T:System.Type">Type</see> object
+            indicating the type of business object to be created.</param>
+            <param name="criteria">A custom criteria object providing any
+            extra information that may be required to properly create
+            the object.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadUncommitted.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Fetch call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to retrieve.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Object containing context data from client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadUncommitted.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps an Update call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="obj">A reference to the object being updated.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A reference to the newly updated object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadUncommitted.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Delete call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="T:Csla.Server.ServicedDataPortalReadCommitted">
+            <summary>
+            Implements the server-side Serviced 
+            DataPortal described in Chapter 4.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadCommitted.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Create call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">A <see cref="T:System.Type">Type</see> object
+            indicating the type of business object to be created.</param>
+            <param name="criteria">A custom criteria object providing any
+            extra information that may be required to properly create
+            the object.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadCommitted.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Fetch call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to retrieve.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Object containing context data from client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadCommitted.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps an Update call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="obj">A reference to the object being updated.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A reference to the newly updated object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalReadCommitted.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Delete call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="T:Csla.Server.ServicedDataPortalSerializable">
+            <summary>
+            Implements the server-side Serviced 
+            DataPortal described in Chapter 4.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalSerializable.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Create call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">A <see cref="T:System.Type">Type</see> object
+            indicating the type of business object to be created.</param>
+            <param name="criteria">A custom criteria object providing any
+            extra information that may be required to properly create
+            the object.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalSerializable.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Fetch call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to retrieve.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Object containing context data from client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A populated business object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalSerializable.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps an Update call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="obj">A reference to the object being updated.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+            <returns>A reference to the newly updated object.</returns>
+        </member>
+        <member name="M:Csla.Server.ServicedDataPortalSerializable.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Wraps a Delete call in a ServicedComponent.
+            </summary>
+            <remarks>
+            This method delegates to 
+            <see cref="T:Csla.Server.SimpleDataPortal">SimpleDataPortal</see>
+            but wraps that call within a COM+ transaction
+            to provide transactional support.
+            </remarks>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="context">Context data from the client.</param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
         <member name="T:Csla.Server.DataPortalExceptionHandler">
             <summary>
             This class provides a hoook for developers to add custom error handling in the DataPortal. 
@@ -15965,13 +16106,13 @@
             the server.
             </summary>
         </member>
-        <member name="T:Csla.Server.ServicedDataPortal">
+        <member name="T:Csla.Server.ServicedDataPortalRepeatableRead">
             <summary>
             Implements the server-side Serviced 
             DataPortal described in Chapter 4.
             </summary>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+        <member name="M:Csla.Server.ServicedDataPortalRepeatableRead.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Create call in a ServicedComponent.
             </summary>
@@ -15990,7 +16131,7 @@
             <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+        <member name="M:Csla.Server.ServicedDataPortalRepeatableRead.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Fetch call in a ServicedComponent.
             </summary>
@@ -16006,7 +16147,7 @@
             <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A populated business object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+        <member name="M:Csla.Server.ServicedDataPortalRepeatableRead.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps an Update call in a ServicedComponent.
             </summary>
@@ -16021,7 +16162,7 @@
             <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
             <returns>A reference to the newly updated object.</returns>
         </member>
-        <member name="M:Csla.Server.ServicedDataPortal.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+        <member name="M:Csla.Server.ServicedDataPortalRepeatableRead.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
             Wraps a Delete call in a ServicedComponent.
             </summary>
@@ -16090,6 +16231,14 @@
             Implements the server-side Serviced 
             DataPortal described in Chapter 4.
             </summary>
+        </member>
+        <member name="M:Csla.Server.TransactionalDataPortal.#ctor(Csla.TransactionalAttribute)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Csla.Server.TransactionalDataPortal"/> class.
+            </summary>
+            <param name="transactionalAttribute">
+            The transactional attribute that defines transaction options to be used with transactions.
+            </param>
         </member>
         <member name="M:Csla.Server.TransactionalDataPortal.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
             <summary>
@@ -16390,11 +16539,57 @@
             Specifies the transactional context within which the
             method should run.</param>
         </member>
+        <member name="M:Csla.TransactionalAttribute.#ctor(Csla.TransactionalTypes,Csla.TransactionIsolationLevel,System.Int32)">
+            <summary>
+            Marks a method to run within the specified
+            type of transactional context.
+            </summary>
+            <param name="transactionType">
+            Specifies the transactional context within which the
+            method should run.</param>
+            <param name="transactionIsolationLevel">
+            Specifies override for transaction isolation level.
+            Default can be specified in .config file via CslaTransactionIsolationLevel setting
+            If none specified, Serializable level is used
+            </param>
+            <param name="timeoutInSeconds">
+            Timeout for transaction, in seconds
+            </param>
+        </member>
+        <member name="M:Csla.TransactionalAttribute.#ctor(Csla.TransactionalTypes,Csla.TransactionIsolationLevel)">
+            <summary>
+            Marks a method to run within the specified
+            type of transactional context.
+            </summary>
+            <param name="transactionType">
+            Specifies the transactional context within which the
+            method should run.</param>
+            <param name="transactionIsolationLevel">
+            Specifies override for transaction isolation level.
+            Default can be specified in .config file via CslaTransactionIsolationLevel setting
+            If none specified, Serializable level is used
+            </param>
+        </member>
         <member name="P:Csla.TransactionalAttribute.TransactionType">
             <summary>
             Gets the type of transaction requested by the
             business object method.
             </summary>
+        </member>
+        <member name="P:Csla.TransactionalAttribute.TransactionIsolationLevel">
+            <summary>
+            Specifies override for transaction isolation level.
+            Default can be specified in .config file via CslaTransactionIsolationLevel setting
+            If none specified, Serializable level is used
+            </summary>
+        </member>
+        <member name="P:Csla.TransactionalAttribute.TimeoutInSeconds">
+            <summary>
+            Timeout for transaction, in seconds
+            </summary>
+            <value>
+            The timeout for transaction, in seconds
+            </value>
         </member>
         <member name="T:Csla.TransactionalTypes">
             <summary>
@@ -20152,6 +20347,36 @@
         <member name="M:Csla.SortedBindingList`1.SortedEnumerator.Finalize">
             <summary>
             Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
+            </summary>
+        </member>
+        <member name="T:Csla.TransactionIsolationLevel">
+            <summary>
+            Specifies an isolation level for transactions
+            controlled by <see cref="T:Csla.TransactionalAttribute"/>
+            </summary>
+        </member>
+        <member name="F:Csla.TransactionIsolationLevel.Serializable">
+            <summary>
+            Prevents updating or inserting until the transaction is complete.
+            </summary>
+        </member>
+        <member name="F:Csla.TransactionIsolationLevel.RepeatableRead">
+            <summary>
+            Locks are placed on all data that is used in a query, 
+            preventing other users from updating the data. 
+            Prevents non-repeatable reads, but phantom rows are still possible.
+            </summary>
+        </member>
+        <member name="F:Csla.TransactionIsolationLevel.ReadCommitted">
+            <summary>
+            Shared locks are held while the data is being read to avoid reading modified data, 
+            but the data can be changed before the end of the transaction, 
+            resulting in non-repeatable reads or phantom data.
+            </summary>
+        </member>
+        <member name="F:Csla.TransactionIsolationLevel.ReadUncommitted">
+            <summary>
+            Shared locks are issued and no exclusive locks are honored.
             </summary>
         </member>
         <member name="T:Csla.Utilities">

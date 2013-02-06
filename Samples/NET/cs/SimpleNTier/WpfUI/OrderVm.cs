@@ -21,7 +21,6 @@ namespace WpfUI
       return await BusinessLibrary.Order.GetOrderAsync(441);
     }
 
-
     protected override void OnError(Exception error)
     {
       Bxf.Shell.Instance.ShowError(error.Message, "Error");

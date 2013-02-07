@@ -34,7 +34,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync)
+      if (isSync || Csla.ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         return await _portal.Create(objectType, criteria, context, isSync);
       }
@@ -70,7 +70,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync)
+      if (isSync || Csla.ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         return await _portal.Fetch(objectType, criteria, context, isSync);
       }
@@ -105,7 +105,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (isSync)
+      if (isSync || Csla.ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         return await _portal.Update(obj, context, isSync);
       }
@@ -141,7 +141,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (isSync)
+      if (isSync || Csla.ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
       {
         return await _portal.Delete(objectType, criteria, context, isSync);
       }

@@ -1,5 +1,6 @@
 CSLA .NET
 ====
+![](https://github.com/MarimerLLC/csla/blob/master/Support/Logos/csla%20win8_mid.png)
 
 A software development framework that helps you build a reusable, maintainable object-oriented business layer for your app.
 
@@ -16,7 +17,7 @@ CSLA .NET allows great flexibility in object persistence, so business objects ca
 * Silverlight 5
 
 **Resources**
-* CSLA .NET home page (http://www.lhotka.net/cslanet)
-* CSLA .NET frequently asked questions (http://www.lhotka.net/cslanet/faq/)
-* Books and videos (http://store.lhotka.net)
+* [CSLA .NET home page](http://www.lhotka.net/cslanet)
+* [CSLA .NET frequently asked questions](http://www.lhotka.net/cslanet/faq/)
+* [Books and videos](http://store.lhotka.net)
 

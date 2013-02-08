@@ -1,0 +1,1 @@
+http://compositewpf.codeplex.com/license

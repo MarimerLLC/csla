@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla ReadWrite SmartDate Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla ReadWrite SmartDate property</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropdt</Shortcut>
+    </Header>
+    <Snippet>
+      <References />
+      <Imports />
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(Function(c) c.$PropertyName$, Nothing, New SmartDate())
+Public Property $PropertyName$() As String
+    Get
+        Return GetPropertyConvert(Of SmartDate, String)($PropertyName$Property)
+    End Get
+    Set(ByVal value As String)
+        SetPropertyConvert(Of SmartDate, String)($PropertyName$Property, value)
+    End Set
+End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

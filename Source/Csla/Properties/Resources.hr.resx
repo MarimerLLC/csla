@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BusinessPrincipalException" xml:space="preserve">
+    <value>Principal objekt mora biti tipa BusinessPrincipal, a ne</value>
+  </data>
+  <data name="ChangeInvalidException" xml:space="preserve">
+    <value>Izmjena nije dozvoljena</value>
+  </data>
+  <data name="ChildDeleteException" xml:space="preserve">
+    <value>Objekti "djeca" se ne mogu direktno označiti za brisanje - koristite "roditelj" kolekciju</value>
+  </data>
+  <data name="ClearInvalidException" xml:space="preserve">
+    <value>Čišćenje nije dozvoljeno</value>
+  </data>
+  <data name="CreateNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - kreiranje</value>
+  </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Ime Baze podataka nije nađeno u kofiguracijskoj datoteci</value>
+  </data>
+  <data name="DeleteNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - brisanje</value>
+  </data>
+  <data name="ErrorReadingValueException" xml:space="preserve">
+    <value>Greška pri čitanju vrijednosti:</value>
+  </data>
+  <data name="ExecuteNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - izvršavanje</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>neuspješno</value>
+  </data>
+  <data name="FailedOnServer" xml:space="preserve">
+    <value>neuspješno na serveru</value>
+  </data>
+  <data name="FetchNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - učitavanje</value>
+  </data>
+  <data name="InsertInvalidException" xml:space="preserve">
+    <value>Dodavanje nije dozvoljeno</value>
+  </data>
+  <data name="InsertNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - dodavanje</value>
+  </data>
+  <data name="MethodCallFailed" xml:space="preserve">
+    <value>neuspješan poziv metoda</value>
+  </data>
+  <data name="MethodNotImplemented" xml:space="preserve">
+    <value>metod nije implementiran</value>
+  </data>
+  <data name="NoApplyEditChildException" xml:space="preserve">
+    <value>ApplyEdit nije važeći na "dijete" objektu</value>
+  </data>
+  <data name="NoBeginEditChildException" xml:space="preserve">
+    <value>BeginEdit nije važeći na "dijete" objektu</value>
+  </data>
+  <data name="NoCancelEditChildException" xml:space="preserve">
+    <value>CancelEdit nije važeći na "dijete" objektu</value>
+  </data>
+  <data name="NoDeleteRootException" xml:space="preserve">
+    <value>Nedozvoljena operacija za osnovne objekte - koristite Delete</value>
+  </data>
+  <data name="NoPrincipalAllowedException" xml:space="preserve">
+    <value>Principal objekt ne može biti proslijeđen DataPortal-u kada se koristi integrisana Windows sigurnost</value>
+  </data>
+  <data name="NoSaveChildException" xml:space="preserve">
+    <value>"Dijete" objekt se ne može direktno sačuvati</value>
+  </data>
+  <data name="NoSaveEditingException" xml:space="preserve">
+    <value>Objekt se još uvijek uređuje i ne može biti sačuvan</value>
+  </data>
+  <data name="NoSaveInvalidException" xml:space="preserve">
+    <value>Objekt nije ispravan i ne može biti sačuvan</value>
+  </data>
+  <data name="NoSuchValueExistsException" xml:space="preserve">
+    <value>Ne postoji vrijednost:</value>
+  </data>
+  <data name="NothingNotValid" xml:space="preserve">
+    <value>Argument ne smije biti Nothing</value>
+  </data>
+  <data name="PropertyCopyFailed" xml:space="preserve">
+    <value>Kopiranje osobine nije uspjelo</value>
+  </data>
+  <data name="PropertyGetNotAllowed" xml:space="preserve">
+    <value>Uzimanje osobine objekta (Property get) nije dopušteno</value>
+  </data>
+  <data name="PropertySetNotAllowed" xml:space="preserve">
+    <value>Podešavanje osobine objekta (Property set) nije dopušteno</value>
+  </data>
+  <data name="RemoveInvalidException" xml:space="preserve">
+    <value>Uklanjanje nije dozvoljeno</value>
+  </data>
+  <data name="SmartDateT" xml:space="preserve">
+    <value>t</value>
+  </data>
+  <data name="SmartDateToday" xml:space="preserve">
+    <value>today</value>
+  </data>
+  <data name="SmartDateTom" xml:space="preserve">
+    <value>tom</value>
+  </data>
+  <data name="SmartDateTomorrow" xml:space="preserve">
+    <value>tomorrow</value>
+  </data>
+  <data name="SmartDateY" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="SmartDateYesterday" xml:space="preserve">
+    <value>yesterday</value>
+  </data>
+  <data name="StringToDateException" xml:space="preserve">
+    <value>String vrijednost ne može biti konvertovana u datum</value>
+  </data>
+  <data name="UpdateNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - ažuriranje</value>
+  </data>
+  <data name="ValueNotSmartDateException" xml:space="preserve">
+    <value>Vrijednost nije tipa SmartDate</value>
+  </data>
+</root>

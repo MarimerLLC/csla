@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Add a private Authorization Rule class</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Add a private Authorization Rule class.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslarulea</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>ClassName</ID>
+          <ToolTip>Enter authorization rule name </ToolTip>
+          <Default>RuleName</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Kind="type decl">
+      <![CDATA[  public class $ClassName$ : Csla.Rules.AuthorizationRule
+  {
+    // TODO: Add additional parameters to your rule to the constructor
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizationRule"/> class.
+    /// </summary>
+    /// <param name="action">Action this rule will enforce.</param>
+    /// <param name="element">Method or property.</param>
+    public $ClassName$ (AuthorizationActions action, IMemberInfo element)
+      : base(action, element)
+    {
+      // TODO: Set CacheResult to false if rule should run and never cache 
+      // CacheResult = false;
+    
+      // TODO: Add additional constructor code here 
+
+    }
+
+
+    // TODO: Add additional parameters to your rule to the constructor
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AuthorizationRule"/> class.
+    /// </summary>
+    /// <param name="action">The action.</param>
+    public $ClassName$ (AuthorizationActions action)
+      : base(action)
+    {
+      // TODO: Set CacheResult to false if rule should run and never cache 
+      // CacheResult = false;
+      
+      // TODO: Add additional constructor code here 
+
+    }
+
+    protected override void Execute(AuthorizationContext context)
+    {
+      // TODO: Add actual rule code here. 
+      //if (!access_condition)
+      //{
+      //  context.HasPermission = false;
+      //}
+    }
+  }
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

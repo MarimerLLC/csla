@@ -1,0 +1,38 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtendableWcfPortalForDotNet", "ExtendableWcfPortalForDotNet\ExtendableWcfPortalForDotNet.csproj", "{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RolodexEF", "RolodexEF\RolodexEF.csproj", "{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rolodex.Server", "Rolodex.Server\Rolodex.Server.csproj", "{CB0F48B0-0350-44F7-A743-DA5D7838DB44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rolodex.WPF", "Rolodex.WPF\Rolodex.WPF.csproj", "{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF559F9C-232C-4E43-99B8-C6EABC41F8CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C752D3F4-6CA9-4434-B4CB-F1116D997C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB0F48B0-0350-44F7-A743-DA5D7838DB44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACEEFDB1-6FF0-40F6-9AD4-D44032D00661}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

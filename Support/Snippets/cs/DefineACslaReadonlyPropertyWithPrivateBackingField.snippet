@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Readonly Property with Private Backing Field</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla ReadOnly property with private backing field.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropgp</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>ClassName</ID>
+          <ToolTip>Replace with class name.</ToolTip>
+          <Default>BusinessClass</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>FriendlyName</ID>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>string</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the private field name.</ToolTip>
+          <Default>_name</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$PropertyType$> $PropertyName$Property = RegisterProperty<$PropertyType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
+private $PropertyType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
+public $PropertyType$ $PropertyName$
+{
+  get { return GetProperty($PropertyName$Property, $PrivateFieldName$); }
+  private set { $PrivateFieldName$ = value; }
+}]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

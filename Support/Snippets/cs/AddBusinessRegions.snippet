@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Insert business regions</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Insert CSLA .NET business regions.</Description>
+      <Shortcut>cslabiz</Shortcut>
+    </Header>
+    <Snippet>
+      <Code Language="CSharp">
+    <![CDATA[
+  // TODO: add public properties and methods
+
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    
+    // TODO: add business rules
+  }
+
+  [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+  public static void AddObjectAuthorizationRules()
+  {
+    // TODO: add object-level authorization rules
+  }
+    ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

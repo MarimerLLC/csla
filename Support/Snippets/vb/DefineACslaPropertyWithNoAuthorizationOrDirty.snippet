@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla ReadWrite Property No Authorization or Rules</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla ReadWrite property with no authorization or rules.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropna</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>String</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
+Public Property $PropertyName$() As $PropertyType$
+    Get
+        Return ReadProperty($PropertyName$Property)
+    End Get
+    Set(ByVal value As $PropertyType$)
+        LoadProperty($PropertyName$Property, value)
+	OnPropertyChanged($PropertyName$Property)
+    End Set
+End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

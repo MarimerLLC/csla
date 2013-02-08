@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Keywords />
+      <Title>Define a Csla ReadWrite Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla ReadWrite property.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslaprop</Shortcut>
+    </Header>
+    <Snippet>
+      <References />
+      <Imports />
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>NewProperty</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>FriendlyName</ID>
+          <ToolTip>Replace with friendly property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>DeclaringType</ID>
+          <ToolTip>Replace with the type that is declaring this property.</ToolTip>
+          <Default>BusinessObject</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PropertyType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>String</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Object Editable="true">
+          <ID>PrivateVariable</ID>
+          <ToolTip>Replace this with the private variable name.</ToolTip>
+          <Default>newPropertyValue</Default>
+          <Function>
+          </Function>
+          <Type>Object</Type>
+        </Object>
+      </Declarations>
+      <Code Language="vb" Kind="method decl" Delimiter="$"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $PropertyType$) = RegisterProperty(Of $PropertyType$)(Function(c) c.$PropertyName$)
+Public Property $PropertyName$() As $PropertyType$
+    Get
+        Return GetProperty($PropertyName$Property)
+    End Get
+    Set(ByVal value As $PropertyType$)
+        SetProperty($PropertyName$Property, value)
+    End Set
+End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

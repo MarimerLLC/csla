@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- C# Snippets Fragment-->
+  <Fragment>
+    <ComponentGroup Id="CSSnippetsComp">
+      <ComponentRef Id="comp_CSAddCriteriaClass" />
+      <ComponentRef Id="comp_CSAddBusinessRegions" />
+      <ComponentRef Id="comp_CSAddDataAccessRegion" />
+      <ComponentRef Id="comp_CSAddFactoryMethods" />
+      <ComponentRef Id="comp_CSAddAuthorizationRule" />
+      <ComponentRef Id="comp_CSACslaBusinessRule" />
+      <ComponentRef Id="comp_CSACslaChildProperty" />
+      <ComponentRef Id="comp_CSACslaChildPropertyWithAsyncLazyLoad" />
+      <ComponentRef Id="comp_CSACslaChildPropertyWithSyncLazyLoad" />
+      <ComponentRef Id="comp_CSACslaIntergraphReference" />
+      <ComponentRef Id="comp_CSACslaMethod" />
+      <ComponentRef Id="comp_CSACslaProperty" />
+      <ComponentRef Id="comp_CSACslaPropertyWithConversion" />
+      <ComponentRef Id="comp_CSACslaPropertyWithNoAuthorizationOnDirty" />
+      <ComponentRef Id="comp_CSACslaPropertyWithPrivateBackingField" />
+      <ComponentRef Id="comp_CSACslaReadOnlyProperty" />
+      <ComponentRef Id="comp_CSACslaReadOnlyPropertyWithConversion" />
+      <ComponentRef Id="comp_CSACslaReadOnlyPropertyWithNoAuthorization" />
+      <ComponentRef Id="comp_CSACslaReadOnlyPropertyWithPrivateBackingField" />
+      <ComponentRef Id="comp_CSDefineACslaSmartDateProperty" />
+      <ComponentRef Id="comp_CSACslaUsingReference" />
+    </ComponentGroup>
+    <DirectoryRef Id="CSSnippets">
+      <Component Id="comp_CSAddCriteriaClass" Guid="{33f925e4-df97-4b27-b992-a9f041eadc1b}">
+        <File Id="file_CSAddCriteriaClass" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\AddACriteriaClass.snippet" />
+      </Component>
+      <Component Id="comp_CSAddBusinessRegions" Guid="{718e02c0-ff17-4d28-a5dc-b7aab54c443a}">
+        <File Id="file_CSAddBusinessRegions" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\AddBusinessRegions.snippet" />
+      </Component>
+      <Component Id="comp_CSAddDataAccessRegion" Guid="{71677e39-7bad-4516-b636-ac0cf30e6102}">
+        <File Id="file_CSAddDataAccessRegion" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\AddDataAccessRegion.snippet" />
+      </Component>
+      <Component Id="comp_CSAddFactoryMethods" Guid="{11f1c4b4-e52d-4c92-b3a6-57d50a16f889}">
+        <File Id="file_CSAddFactoryMethods" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\AddFactoryMethods.snippet" />
+      </Component>
+      <Component Id="comp_CSAddAuthorizationRule" Guid="{942568b1-839c-4ca2-8575-0c3bb83316f7}">
+        <File Id="file_CSAddAuthorizationRule" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaAuthorizationRule.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaBusinessRule" Guid="{7501df56-68c1-4d70-9855-a0c46b6b78b2}">
+        <File Id="file_CSACslaBusinessRule" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaBusinessRule.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaChildProperty" Guid="{973119ce-5491-4895-b866-baa7ba9dd9dc}">
+        <File Id="file_CSACslaChildProperty" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaChildProperty.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaChildPropertyWithAsyncLazyLoad" Guid="{0a7aa1d6-f725-46bc-968c-c25f007946e5}">
+        <File Id="file_CSACslaChildPropertyWithAsyncLazyLoad" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaChildPropertyWithAsyncLazyLoad.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaChildPropertyWithSyncLazyLoad" Guid="{1a10d031-20d4-4189-b53b-79c107171646}">
+        <File Id="file_CSACslaChildPropertyWithSyncLazyLoad" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaChildPropertyWithSyncLazyLoad.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaIntergraphReference" Guid="{c7f344da-12fc-4da3-a611-5ac45c0174cd}">
+        <File Id="file_CSACslaIntergraphReference" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaIntergraphReference.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaMethod" Guid="{29d39af4-97f9-44dd-ab46-5d23c9d7eb38}">
+        <File Id="file_CSACslaMethod" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaMethod.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaProperty" Guid="{94671d54-787d-4d0f-95dc-15f661e8c5b2}">
+        <File Id="file_CSACslaProperty" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaProperty.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaPropertyWithConversion" Guid="{e4434c12-9487-463b-b177-473211af5234}">
+        <File Id="file_CSACslaPropertyWithConversion" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaPropertyWithConversion.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaPropertyWithNoAuthorizationOnDirty" Guid="{67ecbe6f-9430-4a70-aefc-9b133c6b172b}">
+        <File Id="file_CSACslaPropertyWithNoAuthorizationOnDirty" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaPropertyWithPrivateBackingField" Guid="{395766da-26a3-4905-b7de-d8f1b03d4f11}">
+        <File Id="file_CSACslaPropertyWithPrivateBackingField" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaPropertyWithPrivateBackingField.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaReadOnlyProperty" Guid="{5e7da53f-bdea-473c-8b03-dd7c0219d8d5}">
+        <File Id="file_CSACslaReadOnlyProperty" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaReadOnlyProperty.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaReadOnlyPropertyWithConversion" Guid="{91458ae0-b4db-4a5c-a97c-37c51088dd86}">
+        <File Id="file_CSACslaReadOnlyPropertyWithConversion" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaReadOnlyPropertyWithConversion.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaReadOnlyPropertyWithNoAuthorization" Guid="{275600d5-3184-411f-b8b2-9d607e0ac231}">
+        <File Id="file_CSACslaReadOnlyPropertyWithNoAuthorization" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaReadOnlyPropertyWithNoAuthorization.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaReadOnlyPropertyWithPrivateBackingField" Guid="{493cf8a8-453e-4f67-8fff-087bff4e1d03}">
+        <File Id="file_CSACslaReadOnlyPropertyWithPrivateBackingField" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaReadOnlyPropertyWithPrivateBackingField.snippet" />
+      </Component>
+      <Component Id="comp_CSDefineACslaSmartDateProperty" Guid="{ecf17e79-f0b8-4e83-8b9a-aabc416f421b}">
+        <File Id="file_CSDefineACslaSmartDateProperty" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaSmartDateProperty.snippet" />
+      </Component>
+      <Component Id="comp_CSACslaUsingReference" Guid="{045c0436-7658-4e38-8a4d-a318767c1831}">
+        <File Id="file_CSACslaUsingReference" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\cs\DefineACslaUsingReference.snippet" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

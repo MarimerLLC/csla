@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-Core</id>
+    <title>CSLA .NET - Core</title>
+    <tags>CSLA Business Core</tags>
+    <version>4.5.11-Beta</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="net45" />
+      <group targetFramework="net40">
+        <dependency id="Microsoft.Bcl.Async" version="" />
+      </group>
+      <group targetFramework="sl50">
+        <dependency id="Microsoft.Bcl.Async" version="" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <file src="..\..\Bin\Release\NET4\**\Csla.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Client -->
+    <file src="..\..\Bin\Release\NET\**\Csla.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.xml*" target="lib\net45" />
+    <!-- Silverlight 4.0 Client -->
+    <!-- Silverlight 5.0 Client -->
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\sl50" />
+    <!-- Windows Phone 8 Client -->
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.xml*" target="lib\wp8" />
+    <!-- Windows Runtime Client -->
+    <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.pri*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\*.cs" target="src" />
+  </files>
+</package>

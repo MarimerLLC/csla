@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Intergraph Reference Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla Intergraph Reference Property.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropir</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>ReferencedType</ID>
+          <ToolTip>Replace with the referenced object type.</ToolTip>
+          <Default>Typename</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the referenced object type.</ToolTip>
+          <Default>_name</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ReferencedType$) = RegisterProperty(Of $ReferencedType$)(Function(c) c.$PropertyName$, RelationshipTypes.PrivateField)
+<NotUndoable> _
+Private $PrivateFieldName$ As $ReferencedType$ = $PropertyName$Property.DefaultValue
+Public Property $PropertyName$() As $ReferencedType$
+	Get
+		Return GetProperty($PropertyName$Property, PrivateFieldName)
+	End Get
+	Set(ByRef value as $eferenceType$)
+		SetProperty($PropertyName$Property, PrivateFieldName, value)
+	End Set
+End Property
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

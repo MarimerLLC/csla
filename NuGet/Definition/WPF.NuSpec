@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-WPF</id>
+    <title>CSLA .NET - WPF</title>
+    <tags>CSLA WPF UI</tags>
+    <version>4.5.11-Beta</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of WPF applications.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of WPF applications.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CSLA-Core" version="[4.5.11-Beta]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Xaml.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Client -->
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Xaml.xml*" target="lib\net45" />
+    <!-- Silverlight 4.0 Client -->
+    <!-- > None -->
+    <!-- Windows Phone 7 Client -->
+    <!-- > None -->
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Xaml\**\*.cs" target="src" />
+  </files>
+</package>

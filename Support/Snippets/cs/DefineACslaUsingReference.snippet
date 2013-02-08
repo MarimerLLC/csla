@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Using reference Property</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla Using reference property.</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslapropur</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>UsingType</ID>
+          <ToolTip>Replace with the referenced type.</ToolTip>
+          <Default>UsingTypeName</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>PrivateFieldName</ID>
+          <ToolTip>Replace with the referenced object type.</ToolTip>
+          <Default>_name</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="csharp" Kind="method decl"><![CDATA[public static readonly PropertyInfo<$UsingType$> $PropertyName$Property = RegisterProperty<$UsingType$>(c => c.$PropertyName$, RelationshipTypes.PrivateField);
+[NotUndoable, NonSerialized]
+private $UsingType$ $PrivateFieldName$ = $PropertyName$Property.DefaultValue;
+public $UsingType$ $PropertyName$
+{
+  get { 
+        if ($PrivateFieldName$ == null) 
+          $PrivateFieldName$ = $UsingType$.New$UsingType$(); 
+        return GetProperty($PropertyName$Property,  $PrivateFieldName$); 
+      } 
+}]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

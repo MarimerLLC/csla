@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios", "Csla.Ios\Csla.Ios.csproj", "{F35F6026-DA97-4993-B9BC-DE935FDCDA23}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhone.Build.0 = Debug|iPhone
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhone.ActiveCfg = Release|iPhone
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhone.Build.0 = Release|iPhone
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Csla.Ios\Csla.Ios.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.TextStylePolicy = $2
+		$2.inheritsSet = null
+		$2.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $3
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/x-csharp
+		$3.scope = text/x-csharp
+		$0.StandardHeader = $4
+		$4.Text = 
+		$4.IncludeInNewFiles = True
+		version = 4.2.0
+		outputpath = ..\bin
+	EndGlobalSection
+EndGlobal

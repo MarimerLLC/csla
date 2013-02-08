@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<CodeSnippets xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+      <Title>Define a Csla Child Property with async lazy load</Title>
+      <Author>Rockford Lhotka</Author>
+      <Description>Define a Csla Child property with async lazy load</Description>
+      <HelpUrl>
+      </HelpUrl>
+      <Shortcut>cslachildla</Shortcut>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal Editable="true">
+          <ID>PropertyName</ID>
+          <ToolTip>Replace with property name.</ToolTip>
+          <Default>Name</Default>
+          <Function>
+          </Function>
+        </Literal>
+        <Literal Editable="true">
+          <ID>ChildType</ID>
+          <ToolTip>Replace with the property type.</ToolTip>
+          <Default>ChildTypeName</Default>
+          <Function>
+          </Function>
+        </Literal>
+      </Declarations>
+      <Code Language="vb" Kind="method decl"><![CDATA[Public Shared ReadOnly $PropertyName$Property As PropertyInfo(Of $ChildType$) = RegisterProperty(Of $ChildType$)(Function(p) p.$PropertyName$, RelationshipTypes.Child)
+    Property Property $PropertyName$() As $ChildType$
+    Public Get
+      If Not FieldManager.FieldExists($PropertyName$Property) Then
+        $ChildType$.BeginGet$ChildType$(Function (ByVal o As Object, ByVal e As DataPortalResult(Of $ChildType$)) 
+          If (Not e.Error Is Nothing) Then
+            Throw e.Error
+          End If
+          If Not FieldManager.FieldExists($PropertyName$Property) Then
+            $PropertyName$ = e.Object
+          End If
+        End Function)
+        Return Nothing
+      End If
+      Return GetProperty(Of $ChildType$)($PropertyName$)
+    End Get
+    Private Set(ByRef value As $ChildType$)
+      LoadProperty(Of $ChildType$)($PropertyName$, value)
+      OnPropertyChanged($PropertyName$)
+    End Set
+  End Property]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

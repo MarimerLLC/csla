@@ -1,0 +1,1 @@
+<% @ServiceHost Service="Csla.Server.Hosts.WcfPortal" %>

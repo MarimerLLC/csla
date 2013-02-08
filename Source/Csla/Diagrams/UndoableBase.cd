@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Csla.BusinessBase&lt;T&gt;" Collapsed="true">
+    <Position X="0.75" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAEAAAAAEAAAIAQMAAAABEAAAAAAAAAAAgBA=</HashCode>
+      <FileName>BusinessBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.BusinessBase" Collapsed="true">
+    <Position X="1.75" Y="3.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>VNipAI0ICiQTv6XJEQlISEuWhJnoAMFAJPCDAcAoa0A=</HashCode>
+      <FileName>Core\BusinessBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.Core.UndoableBase" Collapsed="true">
+    <Position X="0.75" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgGIAAIAAAgAAIwAAAKBEAAAAAARAAAAAgBCEAAAAAA=</HashCode>
+      <FileName>Core\UndoableBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Csla.NotUndoableAttribute" Collapsed="true">
+    <Position X="3" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NotUndoableAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Csla.BusinessListBase&lt;T, C&gt;" Collapsed="true">
+    <Position X="4" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>kgoghIlIikQUP+JbkQgI3xkWwQChEMFUraBB0EFoTNI=</HashCode>
+      <FileName>BusinessListBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Csla.Core.IUndoableObject" Collapsed="true">
+    <Position X="9.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAABAEAAAAAA=</HashCode>
+      <FileName>Core\IUndoableObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Csla.Core.IEditableCollection" Collapsed="true">
+    <Position X="7.25" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Core\IEditableCollection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="System.ComponentModel.IEditableObject" Collapsed="true">
+    <Position X="9.75" Y="3.75" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Csla.Core.IBusinessObject" Collapsed="true">
+    <Position X="7.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Core\IBusinessObject.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

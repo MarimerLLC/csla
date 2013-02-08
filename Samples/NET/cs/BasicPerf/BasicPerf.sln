@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F88363B8-6EC9-49DE-BB7E-046DA5FDEAC7}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+		Readme.txt = Readme.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicPerf", "BasicPerf\BasicPerf.csproj", "{FFDF4D99-79B8-4F87-B823-BA41805FB875}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Testing|Any CPU = Testing|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{FFDF4D99-79B8-4F87-B823-BA41805FB875}.Testing|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

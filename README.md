@@ -19,5 +19,7 @@ CSLA .NET allows great flexibility in object persistence, so business objects ca
 **Resources**
 * [CSLA .NET home page](http://www.lhotka.net/cslanet)
 * [CSLA .NET frequently asked questions](http://www.lhotka.net/cslanet/faq/)
-* [Books and videos](http://store.lhotka.net)
+* [Getting started with CSLA .NET](http://www.lhotka.net/cslanet/faq/Getting%20started.ashx)
+* [Using CSLA 4 ebook series](http://store.lhotka.net/Default.aspx?tabid=1560&ProductID=22)
+* [Other books and videos](http://www.lhotka.net/cslanet/faq/Books%20and%20videos.ashx)
 

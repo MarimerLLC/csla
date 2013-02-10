@@ -10,16 +10,21 @@ The framework enables developers to leverage the power of object-oriented design
  
 CSLA .NET allows great flexibility in object persistence, so business objects can use virtually any data sources available. The framework supports 1-, 2- and n-tier models through the concept of mobile objects. This provides the flexibility to optimize performance, scalability, security and fault tolerance with no changes to code in the UI or business objects. 
 
-**Supported platforms**
-* .NET 4.5 and .NET 4
+Supported platforms
+-------------------
+* Microsoft .NET 1.x through 4.5
 * Windows Runtime (WinRT for Windows 8)
 * Windows Phone 8 (WinPRT)
 * Silverlight 5
 
-**Resources**
+Resources
+---------
 * [CSLA .NET home page](http://www.lhotka.net/cslanet)
 * [CSLA .NET frequently asked questions](http://www.lhotka.net/cslanet/faq/)
 * [Getting started with CSLA .NET](http://www.lhotka.net/cslanet/faq/Getting%20started.ashx)
 * [Using CSLA 4 ebook series](http://store.lhotka.net/Default.aspx?tabid=1560&ProductID=22)
 * [Other books and videos](http://www.lhotka.net/cslanet/faq/Books%20and%20videos.ashx)
 
+License
+-------
+CSLA .NET is copyright Marimer LLC, and its use is governed by the open source license found at http://www.lhotka.net/clanet/license.aspx

@@ -135,9 +135,6 @@
     <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
       <Link>ViewModelBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Xaml\VisibilityMode.cs">
-      <Link>VisibilityMode.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

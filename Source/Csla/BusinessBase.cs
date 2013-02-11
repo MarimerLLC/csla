@@ -446,7 +446,6 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
-      MarkIdle();
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
 #if !SILVERLIGHT && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)

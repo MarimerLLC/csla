@@ -10,4 +10,5 @@ Find more information on the [CSLA .NET home page](http://www.cslanet.com).
 
 License
 -------
-CSLA .NET is copyright Marimer LLC, and its use is governed by the open source license found at http://www.lhotka.net/clanet/license.aspx
+CSLA .NET is copyright Marimer LLC.
+Its use is governed by the [CSLA .NET license](http://www.lhotka.net/clanet/license.aspx).

@@ -801,14 +801,13 @@ namespace Csla.Xaml
       return result;
     }
 #endif
-#if !WINDOWS_PHONE
+
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    protected virtual System.Threading.Tasks.Task<T> SaveAsync()
+    protected virtual async System.Threading.Tasks.Task<T> SaveAsync()
     {
-      var tcs = new System.Threading.Tasks.TaskCompletionSource<T>();
       try
       {
         var savable = Model as Csla.Core.ISavable;
@@ -825,27 +824,12 @@ namespace Csla.Xaml
             undoable.ApplyEdit();
         }
 
-        savable.Saved += (o, e) =>
-        {
-          IsBusy = false;
-          if (e.Error == null)
-          {
-            var result = e.NewObject;
-            var model = (T)result;
-            OnSaving(model);
-            Model = model;
-            tcs.SetResult(model);
-          }
-          else
-          {
-            Error = e.Error;
-            tcs.SetException(e.Error);
-          }
-          OnSaved();
-        };
         Error = null;
         IsBusy = true;
-        savable.BeginSave();
+        OnSaving(Model);
+        Model = (T) await savable.SaveAsync();
+        IsBusy = false;
+        OnSaved();
       }
       catch (Exception ex)
       {
@@ -853,9 +837,9 @@ namespace Csla.Xaml
         Error = ex;
         OnSaved();
       }
-      return tcs.Task;
+      return Model;
     }
-#endif
+
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.

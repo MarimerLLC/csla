@@ -38,7 +38,8 @@ namespace Csla.Server
       try
       {
         // create an instance of the business object.
-        obj = new LateBoundObject(objectType);
+        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         target = obj.Instance as IDataPortalTarget;
 
@@ -109,7 +110,8 @@ namespace Csla.Server
       try
       {
         // create an instance of the business object.
-        obj = new LateBoundObject(objectType);
+        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         target = obj.Instance as IDataPortalTarget;
 
@@ -178,6 +180,7 @@ namespace Csla.Server
       Type objectType = obj.GetType();
       var target = obj as IDataPortalTarget;
       LateBoundObject lb = new LateBoundObject(obj);
+      ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
       try
       {
         if (target != null)
@@ -288,7 +291,8 @@ namespace Csla.Server
       try
       {
         // create an instance of the business objet
-        obj = new LateBoundObject(objectType);
+        obj = new LateBoundObject(ApplicationContext.DataPortalActivator.CreateInstance(objectType));
+        ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         target = obj.Instance as IDataPortalTarget;
 

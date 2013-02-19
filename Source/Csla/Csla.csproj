@@ -263,6 +263,8 @@
     <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
+    <Compile Include="Server\DefaultDataPortalActivator.cs" />
+    <Compile Include="Server\IDataPortalActivator.cs" />
     <Compile Include="Server\ServicedDataPortalReadUncommitted.cs" />
     <Compile Include="Server\ServicedDataPortalReadCommitted.cs" />
     <Compile Include="Server\ServicedDataPortalSerializable.cs" />

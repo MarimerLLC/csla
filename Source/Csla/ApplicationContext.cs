@@ -230,6 +230,38 @@ namespace Csla
 
     #region Settings
 
+    private static Csla.Server.IDataPortalActivator _dataPortalActivator = null;
+
+    /// <summary>
+    /// Gets or sets an instance of the IDataPortalActivator provider.
+    /// </summary>
+    public static Csla.Server.IDataPortalActivator DataPortalActivator
+    {
+      get
+      {
+#if !SILVERLIGHT && !NETFX_CORE
+        if (_dataPortalActivator == null)
+        {
+          var typeName = ConfigurationManager.AppSettings["CslaDataPortalActivator"];
+          if (!string.IsNullOrWhiteSpace(typeName))
+          {
+            var type = Type.GetType(typeName);
+            _dataPortalActivator = (Csla.Server.IDataPortalActivator)Activator.CreateInstance(type);
+          }
+          else
+          {
+            _dataPortalActivator = new Csla.Server.DefaultDataPortalActivator();
+          }
+        }
+#endif
+        return _dataPortalActivator;
+      }
+      set
+      {
+        _dataPortalActivator = value;
+      }
+    }
+
     private static string _dataPortalUrl = null;
 
     /// <summary>

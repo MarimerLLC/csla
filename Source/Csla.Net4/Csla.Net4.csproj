@@ -744,6 +744,9 @@
     <Compile Include="..\Csla\Server\DataPortalSelector.cs">
       <Link>Server\DataPortalSelector.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\DefaultDataPortalActivator.cs">
+      <Link>Server\DefaultDataPortalActivator.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -824,6 +827,9 @@
     </Compile>
     <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
       <Link>Server\IAuthorizeDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalActivator.cs">
+      <Link>Server\IDataPortalActivator.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
       <Link>Server\IDataPortalExceptionInspector.cs</Link>

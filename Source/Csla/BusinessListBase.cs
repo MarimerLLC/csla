@@ -39,7 +39,8 @@ namespace Csla
 #endif
       IEditableCollection, Core.IUndoableObject, ICloneable,
       ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
-      INotifyBusy
+      INotifyBusy,
+      IBusinessListBase<C>
     where T : BusinessListBase<T, C>
     where C : Core.IEditableBusinessObject
   {

@@ -29,7 +29,6 @@ using Csla.Serialization;
 
 namespace Csla
 {
-
   /// <summary>
   /// This is a base class from which readonly business classes
   /// can be derived.
@@ -49,7 +48,8 @@ namespace Csla
     IDataPortalTarget,
     IManageProperties,
     INotifyBusy,
-    IHostRules
+    IHostRules,
+    IReadOnlyBase
     where T : ReadOnlyBase<T>
   {
     #region Object ID Value

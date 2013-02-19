@@ -405,8 +405,20 @@
     <Compile Include="..\Csla\IBusinessBase.cs">
       <Link>IBusinessBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\IBusinessListBase.cs">
+      <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICommandBase.cs">
+      <Link>ICommandBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\IDataPortal.cs">
       <Link>IDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyBase.cs">
+      <Link>IReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyListBase.cs">
+      <Link>IReadOnlyListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\LazySingleton.cs">
       <Link>LazySingleton.cs</Link>
@@ -470,6 +482,9 @@
     </Compile>
     <Compile Include="..\Csla\Security\CslaPrincipal.cs">
       <Link>Security\CslaPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\ICslaIdentity.cs">
+      <Link>Security\ICslaIdentity.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Security\SecurityException.cs">
       <Link>Security\SecurityException.cs</Link>

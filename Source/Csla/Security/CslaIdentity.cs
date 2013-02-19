@@ -23,7 +23,8 @@ namespace Csla.Security
   /// a .NET identity object for use with CslaPrincipal.
   /// </summary>
   [Serializable]
-  public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>
+  public abstract class CslaIdentity : CslaIdentityBase<CslaIdentity>,
+    ICslaIdentity
   {
 #if SILVERLIGHT || NETFX_CORE
     /// <summary>
@@ -73,7 +74,8 @@ namespace Csla.Security
   /// </summary>
   [Serializable]
   public abstract class CslaIdentityBase<T> :
-    ReadOnlyBase<T>, IIdentity, ICheckRoles
+    ReadOnlyBase<T>, IIdentity, ICheckRoles,
+    ICslaIdentity
     where T : CslaIdentityBase<T>
   {
     #region UnauthenticatedIdentity

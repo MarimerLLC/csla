@@ -15,6 +15,7 @@ namespace Csla
     IEditableBusinessObject,
     IEditableObject,
     ICloneable,
+    ISavable,
     IAuthorizeReadWrite,
     IParent,
     IHostRules,

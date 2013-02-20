@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="CSLA.NET" Language="1033" Version="4.5.11.0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6427">
+  <Product Id="*" Name="CSLA.NET" Language="1033" Version="4.5.12.0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
@@ -22,7 +22,7 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="ManufacturerFolder" Name="Marimer LLC">
           <Directory Id="CSLAFolder" Name="CSLA .NET">
-            <Directory Id="INSTALLDIR" Name="4.5.11">
+            <Directory Id="INSTALLDIR" Name="4.5.12">
               <Directory Id="Bin" Name="Bin">
                 <Directory Id="Net" Name="NET" />
                 <Directory Id="Net4" Name="NET4" />
@@ -57,19 +57,15 @@
   <!-- Fragment for files in Root -->
   <Fragment>
     <ComponentGroup Id="ProductComponents">
-      <ComponentRef Id="comp_CSLASamplesZIP" />
-      <ComponentRef Id="comp_CSLASourceZIP" />
+      <ComponentRef Id="comp_CslaZIP" />
       <ComponentRef Id="comp_LicenseRTF" />
       <ComponentRef Id="comp_LicenseTXT" />
       <ComponentRef Id="comp_ReadmeRTF" />
-      <ComponentRef Id="comp_ReadmeTXT" />
+      <ComponentRef Id="comp_ReadmeMD" />
     </ComponentGroup>
     <DirectoryRef Id="INSTALLDIR">
-      <Component Id="comp_CSLASamplesZIP" Guid="{5797F598-B6D1-491C-A9F7-FC1A4186BADD}">
-        <File Id="file_CSLASamplesZIP" KeyPath="yes" Source="CSLASamples.Zip" />
-      </Component>
-      <Component Id="comp_CSLASourceZIP" Guid="{ACCB460F-E9D8-4D33-8392-D68BE4E844BE}">
-        <File Id="file_CSLASourceZIP" KeyPath="yes" Source="CSLASource.Zip" />
+      <Component Id="comp_CslaZIP" Guid="{5797F598-B6D1-491C-A9F7-FC1A4186BADD}">
+        <File Id="file_CslaZIP" KeyPath="yes" Source="Csla.zip" />
       </Component>
       <Component Id="comp_LicenseRTF" Guid="{FCCAD9FD-F8FA-4EFF-8FB3-FD0803488125}">
         <File Id="file_LicenseRTF" KeyPath="yes" Source="$(var.SolutionDir)..\License.RTF" />
@@ -80,8 +76,8 @@
       <Component Id="comp_ReadmeRTF" Guid="{FAD1A2F5-D32C-4266-8351-FE3A6EEF5431}">
         <File Id="file_ReadmeRTF" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.RTF" />
       </Component>
-      <Component Id="comp_ReadmeTXT" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33B}">
-        <File Id="file_ReadmeTXT" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.TXT" />
+      <Component Id="comp_ReadmeMD" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33B}">
+        <File Id="file_ReadmeMD" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.md" />
       </Component>
     </DirectoryRef>
   </Fragment>

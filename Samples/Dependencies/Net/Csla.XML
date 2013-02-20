@@ -113,6 +113,11 @@
             </para>
             </remarks>
         </member>
+        <member name="P:Csla.ApplicationContext.DataPortalActivator">
+            <summary>
+            Gets or sets an instance of the IDataPortalActivator provider.
+            </summary>
+        </member>
         <member name="P:Csla.ApplicationContext.DataPortalUrlString">
             <summary>
             Gets or sets the data portal URL string.
@@ -4226,6 +4231,13 @@
             </summary>
             <typeparam name="TC">The type of the C.</typeparam>
         </member>
+        <member name="T:Csla.IBusinessListBase`1">
+            <summary>
+            This is the base class from which most business collections
+            or lists will be derived.
+            </summary>
+            <typeparam name="C">Type of the child objects contained in the list.</typeparam>
+        </member>
         <member name="M:Csla.BusinessListBase`2.#ctor">
             <summary>
             Creates an instance of the object.
@@ -4885,6 +4897,12 @@
             <summary>
             This interface is implemented by all
             Command objects.
+            </summary>
+        </member>
+        <member name="T:Csla.ICommandBase">
+            <summary>
+            This is the base class from which command 
+            objects will be derived.
             </summary>
         </member>
         <member name="M:Csla.CommandBase`1.#ctor">
@@ -6794,6 +6812,37 @@
             Event indicating an execute operation is complete.
             </summary>
         </member>
+        <member name="T:Csla.IReadOnlyBase">
+            <summary>
+            This is a base class from which readonly business classes
+            can be derived.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.IReadOnlyObject">
+            <summary>
+            Specifies that the object is a readonly
+            business object.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.IReadOnlyObject.CanReadProperty(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            calling property.
+            </summary>
+            <param name="propertyName">Name of the property to read.</param>
+        </member>
+        <member name="T:Csla.IReadOnlyListBase`1">
+            <summary>
+            This is the base class from which readonly collections
+            of readonly objects should be derived.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.IReadOnlyCollection">
+            <summary>
+            Interface implemented by all read-only collection
+            classes.
+            </summary>
+        </member>
         <member name="T:Csla.LazySingleton`1">
             <summary>
             An alternative to Lazy&lt;T&gt; that works on .NET, Silverlight and Windows Phone
@@ -8081,12 +8130,6 @@
             </summary>
             <typeparam name="T">Type of the list class.</typeparam>
             <typeparam name="C">Type of child objects contained in the list.</typeparam>
-        </member>
-        <member name="T:Csla.Core.IReadOnlyCollection">
-            <summary>
-            Interface implemented by all read-only collection
-            classes.
-            </summary>
         </member>
         <member name="M:Csla.ReadOnlyListBase`2.#ctor">
             <summary>
@@ -10271,19 +10314,6 @@
             </remarks>
             <typeparam name="T">Type of the business object.</typeparam>
         </member>
-        <member name="T:Csla.Core.IReadOnlyObject">
-            <summary>
-            Specifies that the object is a readonly
-            business object.
-            </summary>
-        </member>
-        <member name="M:Csla.Core.IReadOnlyObject.CanReadProperty(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            calling property.
-            </summary>
-            <param name="propertyName">Name of the property to read.</param>
-        </member>
         <member name="M:Csla.ReadOnlyBase`1.GetIdValue">
             <summary>
             Override this method to return a unique identifying
@@ -10991,6 +11021,12 @@
             <param name="role">
             Role to check.
             </param>
+        </member>
+        <member name="T:Csla.Security.ICslaIdentity">
+            <summary>
+            Provides a base class to simplify creation of
+            a .NET identity object for use with CslaPrincipal.
+            </summary>
         </member>
         <member name="M:Csla.Security.CslaIdentityBase`1.UnauthenticatedIdentity">
             <summary>
@@ -11876,6 +11912,25 @@
             Gets the data portal operation requested
             by the client.
             </summary>
+        </member>
+        <member name="T:Csla.Server.IDataPortalActivator">
+            <summary>
+            Defines a type used to activate concrete business
+            instances.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.IDataPortalActivator.CreateInstance(System.Type)">
+            <summary>
+            Gets a new instance of the requested type.
+            </summary>
+            <param name="requestedType">Requested business type (class or interface).</param>
+            <returns>Business object instance.</returns>
+        </member>
+        <member name="M:Csla.Server.IDataPortalActivator.InitializeInstance(System.Object)">
+            <summary>
+            Initializes an existing business object instance.
+            </summary>
+            <param name="obj">Reference to the business object.</param>
         </member>
         <member name="T:Csla.Server.ServicedDataPortalReadUncommitted">
             <summary>

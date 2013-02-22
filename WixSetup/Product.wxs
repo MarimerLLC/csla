@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="CSLA.NET" Language="1033" Version="4.5.12.0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
+  <?define VERSION="4.5.12"?>
+  <Product Id="*" Name="CSLA.NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property Id="ARPPRODUCTICON" Value="favicon.ico" />
     <Feature Id="ProductFeature" Title="WixSetup" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
-      <ComponentGroupRef Id="NetComponenets"/>
-      <ComponentGroupRef Id="Net4Componenets"/>
-      <ComponentGroupRef Id="SilverlightComponenets"/>
-      <ComponentGroupRef Id="WinRTComponenets"/>
-      <ComponentGroupRef Id="WinPRTComponenets"/>
-      <ComponentGroupRef Id="LogosComponent"/>
+      <ComponentGroupRef Id="NetComponents"/>
+      <ComponentGroupRef Id="Net4Components"/>
+      <ComponentGroupRef Id="SilverlightComponents"/>
+      <ComponentGroupRef Id="WinRTComponents"/>
+      <ComponentGroupRef Id="WinPRTComponents"/>
+      <ComponentGroupRef Id="LogosComponents"/>
       <ComponentGroupRef Id="CSSnippetsComp"/>
       <ComponentGroupRef Id="VBSnippetsComp"/>
+      <ComponentGroupRef Id="SilverlightComponents"/>
     </Feature>
   </Product>
   <Fragment>
@@ -22,7 +24,7 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="ManufacturerFolder" Name="Marimer LLC">
           <Directory Id="CSLAFolder" Name="CSLA .NET">
-            <Directory Id="INSTALLDIR" Name="4.5.12">
+            <Directory Id="INSTALLDIR" Name="$(var.VERSION)">
               <Directory Id="Bin" Name="Bin">
                 <Directory Id="Net" Name="NET" />
                 <Directory Id="Net4" Name="NET4" />
@@ -81,37 +83,4 @@
       </Component>
     </DirectoryRef>
   </Fragment>
-  <!-- Silverlight Fragment-->
-  <Fragment>
-    <ComponentGroup Id="SilverlightComponenets">
-      <ComponentRef Id="comp_Silverlight_CslaDLL" />
-      <ComponentRef Id="comp_Silverlight_CslaPDB" />
-      <ComponentRef Id="comp_Silverlight_CslaXML" />
-      <ComponentRef Id="comp_Silverlight_CslaXamlDLL" />
-      <ComponentRef Id="comp_Silverlight_CslaXamlPDB" />
-      <ComponentRef Id="comp_Silverlight_CslaXamlXML" />
-    </ComponentGroup>
-    <DirectoryRef Id="Silverlight">
-      <Component Id="comp_Silverlight_CslaDLL" Guid="{631ffeb6-549a-44a9-b861-522b91a4f85b}">
-        <File Id="file_Silverlight_CslaDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.DLL" />
-      </Component>
-      <Component Id="comp_Silverlight_CslaPDB" Guid="{458f8e1f-93d5-42b9-8355-3d7ad00e56c3}">
-        <File Id="file_Silverlight_CslaPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.pdb" />
-      </Component>
-      <Component Id="comp_Silverlight_CslaXML" Guid="{0718e992-2b6e-453c-9b27-112aaeff1749}">
-        <File Id="file_Silverlight_CslaXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.xml" />
-      </Component>
-      <Component Id="comp_Silverlight_CslaXamlDLL" Guid="{b172b9b4-de68-441d-9b6e-af808d748a46}">
-        <File Id="file_Silverlight_CslaXamlDLL" KeyPath="yes" Checksum="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.DLL" />
-      </Component>
-      <Component Id="comp_Silverlight_CslaXamlPDB" Guid="{82f0a389-34d3-4551-a36a-bd50747ac17c}">
-        <File Id="file_Silverlight_CslaXamlPDB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.pdb" />
-      </Component>
-      <Component Id="comp_Silverlight_CslaXamlXML" Guid="{5ef972bd-9a9d-48f3-9c59-b5c37463951d}">
-        <File Id="file_Silverlight_CslaXamlXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.xml" />
-      </Component>
-    </DirectoryRef>
-  </Fragment>
-
-
-</Wix>
+ </Wix>

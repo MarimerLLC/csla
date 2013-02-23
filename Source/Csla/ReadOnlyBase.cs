@@ -260,6 +260,11 @@ namespace Csla
       return false;
     }
 
+    bool Csla.Security.IAuthorizeReadWrite.CanWriteProperty(IPropertyInfo property)
+    {
+      return false;
+    }
+
     private void VerifyAuthorizationCache()
     {
       if (_readResultCache == null)

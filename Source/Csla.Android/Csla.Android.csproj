@@ -83,6 +83,12 @@
     <Compile Include="..\Csla.Wp\DataAnnotations\ValidationResult.cs">
       <Link>DataAnnotations\ValidationResult.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\IBusinessBase.cs">
+      <Link>IBusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IDataPortal.cs">
+      <Link>IDataPortal.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\LazySingleton.cs">
       <Link>LazySingleton.cs</Link>
     </Compile>

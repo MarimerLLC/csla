@@ -30,8 +30,8 @@ namespace Csla.Web.Mvc
     /// <returns>true the Save() succeeds, false if not.</returns>
     protected virtual bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
     {
-      return SaveObject(item, 
-        (i) => UpdateModel(i),
+      return SaveObject(item,
+        null,
         forceUpdate);
     }
 

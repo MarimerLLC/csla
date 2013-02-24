@@ -31,12 +31,14 @@ namespace Csla.Windows
     #region Fields
     private readonly Dictionary<BindingSource, bool> _sources = new Dictionary<BindingSource, bool>();
     #endregion
+
     #region Events
     /// <summary>
     /// BindingError event is raised when a data binding error occurs due to a exception.
     /// </summary>
     public event BindingErrorEventHandler BindingError = null;
     #endregion
+
     #region Constructors
     /// <summary>
     /// Constructor creates a new BindingSourceRefresh component then initialises all the different sub components.
@@ -84,6 +86,7 @@ namespace Csla.Windows
     }
     #endregion
     #endregion
+
     #region Public Methods
 
     /// <summary>
@@ -136,6 +139,13 @@ namespace Csla.Windows
     [Browsable(false)]
     [DefaultValue(null)]
     public ContainerControl Host {get; set;}
+
+    /// <summary>
+    /// Forces the binding to re-read after an exception is thrown when changing the binding value
+    /// </summary>
+    [Browsable(true)]
+    [DefaultValue(false)]
+    public bool RefreshOnException { get; set; }
 
     #endregion 
 
@@ -195,6 +205,7 @@ namespace Csla.Windows
       }
     }
     #endregion
+
     #region Event Methods
 
     /// <summary>
@@ -261,8 +272,14 @@ namespace Csla.Windows
       switch (e.BindingCompleteState)
       {
         case BindingCompleteState.Exception:
-          if (BindingError != null)
-          {
+           if ((RefreshOnException)
+                  && e.Binding.DataSource is BindingSource
+                  && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
+            {
+              e.Binding.ReadValue();
+            }         
+            if (BindingError != null)
+          {                        
             BindingError(this, new BindingErrorEventArgs(e.Binding, e.Exception));
           }
           break;
@@ -278,6 +295,7 @@ namespace Csla.Windows
     }
 
     #endregion
+
     #region ISupportInitialize Interface
     private bool _isInitialising = false;
     /// <summary>

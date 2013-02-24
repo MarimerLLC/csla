@@ -4,7 +4,7 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.3.10.0</version>
+    <version>4.3.13</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -22,20 +22,30 @@ Supports the creation of Class Library projects containing business domain class
   </metadata>
   <files>
     <!-- .NET 4.0 Client -->
-    <file src="..\..\Bin\Release\Client\**\Csla.dll*" target="lib\NET4.0" />
-    <file src="..\..\Bin\Release\Client\**\Csla.resources.dll*" target="lib\NET4.0" />
-    <file src="..\..\Bin\Release\Client\**\Csla.xml*" target="lib\NET4.0" />
+    <file src="..\..\Bin\Release\Client\**\Csla.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\Client\**\Csla.xml*" target="lib\net40" />
     <!-- Silverlight 4.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.dll*" target="lib\SL4.0" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.resources.dll*" target="lib\SL4.0" />
-    <file src="..\..\Bin\Release\Silverlight4\**\Csla.xml*" target="lib\SL4.0" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.dll*" target="lib\sl40" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.pdb*" target="lib\sl40" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.resources.dll*" target="lib\sl40" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.resources.pdb*" target="lib\sl40" />
+    <file src="..\..\Bin\Release\Silverlight4\**\Csla.xml*" target="lib\sl40" />
     <!-- Silverlight 5.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.dll*" target="lib\SL5.0" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\SL5.0" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\SL5.0" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\sl50" />
     <!-- Windows Phone 7 Client -->
-    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\WP7.1" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\WP7.1" />
-    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\WP7.1" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.pdb*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.resources.dll*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.resources.pdb*" target="lib\sl4-wp71" />
+    <file src="..\..\Bin\Release\Wp\**\Csla.xml*" target="lib\sl4-wp71" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\*.cs" target="src" />
   </files>
 </package>

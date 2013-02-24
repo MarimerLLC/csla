@@ -5,18 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-#region Namespace imports
-
 using System;
-using System.Data;
-using System.ComponentModel;
-using System.Configuration;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Xml;
-using Csla;
-
-#endregion
 
 namespace Csla.Windows
 {
@@ -28,6 +17,7 @@ namespace Csla.Windows
     static internal PostSaveActionType PostSaveActionDefault = PostSaveActionType.None;
     static internal bool RebindAfterSaveDefault = true;
     static internal bool DisableWhenCleanDefault = false;
+    static internal bool DisableWhenUselessDefault = false;
     static internal string CommandNameDefault = string.Empty;
 
     #endregion
@@ -38,6 +28,7 @@ namespace Csla.Windows
     protected PostSaveActionType _postSaveAction = PostSaveActionDefault;
     protected bool _rebindAfterSave = RebindAfterSaveDefault;
     protected bool _disableWhenClean = DisableWhenCleanDefault;
+    protected bool _disableWhenUseless = DisableWhenUselessDefault;
     protected string _commandName = CommandNameDefault;
 
     #endregion
@@ -62,10 +53,17 @@ namespace Csla.Windows
       set { _rebindAfterSave = value; }
     }
 
+    [Obsolete("Use DisableWhenUseless instead.")]
     public bool DisableWhenClean
     {
       get { return _disableWhenClean; }
       set { _disableWhenClean = value; }
+    }
+
+    public bool DisableWhenUseless
+    {
+      get { return _disableWhenUseless; }
+      set { _disableWhenUseless = value; }
     }
 
     public string CommandName

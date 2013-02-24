@@ -23,7 +23,8 @@ namespace Csla
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
-  public class DataPortal<T> : DataPortalClient.IDataPortalProxy<T> where T : IMobileObject
+  public class DataPortal<T> : DataPortalClient.IDataPortalProxy<T>, IDataPortal<T>
+    where T : IMobileObject
   {
     #region GlobalContext
 

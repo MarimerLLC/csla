@@ -62,7 +62,14 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(obj.GetType().FullName, info.Name, GetParameterTypes(parameters));
       DynamicMethodHandle mh = null;
-      if (!_methodCache.TryGetValue(key, out mh))
+      var found = false;
+      try
+      {
+        found = _methodCache.TryGetValue(key, out mh);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_methodCache)
         {
@@ -114,7 +121,14 @@ namespace Csla.Reflection
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType)
     {
       DynamicCtorDelegate result = null;
-      if (!_ctorCache.TryGetValue(objectType, out result))
+      var found = false;
+      try
+      {
+        found = _ctorCache.TryGetValue(objectType, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_ctorCache)
         {
@@ -215,7 +229,7 @@ namespace Csla.Reflection
 #else
       var ctor = GetCachedConstructor(objectType);
       if (ctor == null)
-        throw new NotImplementedException(Resources.DefaultConstructor + Resources.MethodNotImplemented);
+        throw new NotImplementedException(objectType.Name + " " + Resources.DefaultConstructor + Resources.MethodNotImplemented);
       return ctor.Invoke();
 #endif
     }
@@ -473,13 +487,13 @@ namespace Csla.Reflection
 #if WINDOWS_PHONE
       System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, hasParameters, parameters);
       if (info == null)
-        throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
 
       return CallMethod(obj, info, hasParameters, parameters);
 #else
       var mh = GetCachedMethod(obj, method, hasParameters, parameters);
       if (mh == null || mh.DynamicMethod == null)
-        throw new NotImplementedException(method + " " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, hasParameters, parameters);
 #endif
     }
@@ -543,13 +557,13 @@ namespace Csla.Reflection
           inner = e;
         else
           inner = e.InnerException;
-        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+        throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;
 #else
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
-        throw new NotImplementedException(info.Name + " " + Resources.MethodNotImplemented);
+        throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, hasParameters, parameters);
 #endif
     }
@@ -607,7 +621,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        throw new CallMethodException(methodHandle.MethodName + " " + Resources.MethodCallFailed, ex);
+        throw new CallMethodException(obj.GetType().Name + "." + methodHandle.MethodName + " " + Resources.MethodCallFailed, ex);
       }
       return result;
     }
@@ -964,7 +978,7 @@ namespace Csla.Reflection
           inner = e;
         else
           inner = e.InnerException;
-        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+        throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;
     }
@@ -989,7 +1003,7 @@ namespace Csla.Reflection
           inner = e;
         else
           inner = e.InnerException;
-        throw new CallMethodException(info.Name + " " + Resources.MethodCallFailed, inner);
+        throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;
     }
@@ -1040,7 +1054,7 @@ namespace Csla.Reflection
           inner = ex;
         else
           inner = ex.InnerException;
-        throw new CallMethodException(factory.Name + " " + Resources.MethodCallFailed, inner);
+        throw new CallMethodException(objectType.Name + "." + factory.Name + " " + Resources.MethodCallFailed, inner);
       }
       return returnValue;
     }

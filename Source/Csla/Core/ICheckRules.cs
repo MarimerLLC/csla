@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using Csla.Rules;
 
 namespace Csla.Core
 {
@@ -30,5 +31,11 @@ namespace Csla.Core
     /// Invokes all rules for the business type.
     /// </summary>
     void CheckRules();
+
+    /// <summary>
+    /// Gets the broken rules collection
+    /// </summary>
+    /// <returns></returns>
+    BrokenRulesCollection GetBrokenRules();
   }
 }

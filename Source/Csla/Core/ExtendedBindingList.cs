@@ -397,5 +397,41 @@ namespace Csla.Core
     }
 
     #endregion
+
+    #region SuppressListChanged
+
+    /// <summary>
+    /// Use this object to suppress ListChangedEvents for an entire code block.
+    /// May be nested in multiple levels for the same object.
+    /// </summary>
+    public IDisposable SuppressListChangedEvents
+    {
+      get { return new SuppressListChangedEventsClass<T>(this); }
+    }
+
+    /// <summary>
+    /// Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.
+    /// Will be instanciated by a factory property on the ObservableBindingList implementation.
+    /// </summary>
+    /// <typeparam name="TC">The type of the C.</typeparam>
+    class SuppressListChangedEventsClass<TC> : IDisposable
+    {
+      private readonly BindingList<TC> _businessObject;
+      private readonly bool _initialRaiseListChangedEvents;
+
+      public SuppressListChangedEventsClass(BindingList<TC> businessObject)
+      {
+        this._businessObject = businessObject;
+        _initialRaiseListChangedEvents = businessObject.RaiseListChangedEvents;
+        businessObject.RaiseListChangedEvents = false;
+      }
+
+      public void Dispose()
+      {
+        _businessObject.RaiseListChangedEvents = _initialRaiseListChangedEvents;
+      }
+    }
+
+    #endregion
   }
 }

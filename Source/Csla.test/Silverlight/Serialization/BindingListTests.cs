@@ -72,5 +72,33 @@ namespace cslalighttest.Serialization
 
       Assert.AreEqual(expected.RaiseListChangedEvents, actual.RaiseListChangedEvents);
     }
+
+    [TestMethod]
+    public void VerifyDeserializingListDoesNotRaiseListChangedEvent()
+    {
+      var original = new MockMobileList();
+      original.RaiseListChangedEvents = true;
+      original.Add(new MockReadOnly(0));
+      original.Add(new MockReadOnly(1));
+      original.Add(new MockReadOnly(2));
+
+      Assert.IsTrue(original.HasRaisedOnListChanged, "ListChanged event should have been raised.");
+
+      byte[] buffer = MobileFormatter.Serialize(original);
+      var deserialized = (MockMobileList)MobileFormatter.Deserialize(buffer);
+
+      Assert.IsTrue(deserialized.Count > 0);
+      Assert.IsTrue(deserialized.RaiseListChangedEvents, "Deserializing list should leave RaiseListChangedEvents unchanged.");
+      Assert.IsFalse(deserialized.HasRaisedOnListChanged, "Deserializing list should not have raised ListChanged event.");
+
+      original.RaiseListChangedEvents = false;
+      byte[] buffer2 = MobileFormatter.Serialize(original);
+      var deserialized2 = (MockMobileList)MobileFormatter.Deserialize(buffer2);
+
+      Assert.IsTrue(deserialized2.Count > 0);
+      Assert.IsFalse(deserialized2.RaiseListChangedEvents, "Deserializing list should leave RaiseListChangedEvents unchanged 2.");
+      Assert.IsFalse(deserialized2.HasRaisedOnListChanged, "Deserializing list should not have raised ListChanged event 2.");
+    }
+
   }
 }

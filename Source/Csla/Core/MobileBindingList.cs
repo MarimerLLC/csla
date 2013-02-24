@@ -119,14 +119,25 @@ namespace Csla.Core
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
         throw new InvalidOperationException(Resources.CannotSerializeCollectionsNotOfIMobileObject);
 
-      if (info.Values.ContainsKey("$list"))
+      bool originalRaiseListChangedEvents = this.RaiseListChangedEvents;
+
+      try
       {
-        List<int> references = (List<int>)info.Values["$list"].Value;
-        foreach (int reference in references)
+        this.RaiseListChangedEvents = false;
+
+        if (info.Values.ContainsKey("$list"))
         {
-          T child = (T)formatter.GetObject(reference);
-          this.Add(child);
+          List<int> references = (List<int>)info.Values["$list"].Value;
+          foreach (int reference in references)
+          {
+            T child = (T)formatter.GetObject(reference);
+            this.Add(child);
+          }
         }
+      }
+      finally
+      {
+        this.RaiseListChangedEvents = originalRaiseListChangedEvents;
       }
     }
 

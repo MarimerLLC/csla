@@ -26,7 +26,7 @@ namespace Csla
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class BusinessBase<T> : BusinessBase, ISavable
+  public class BusinessBase<T> : BusinessBase, ISavable, IBusinessBase
     where T : BusinessBase<T>
   {
     #region Object ID Value
@@ -128,7 +128,7 @@ namespace Csla
     /// <param name="error">Exception object.</param>
     /// <param name="userState">User state object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception error, object userState)
+    protected virtual void OnSaved(T newObject, Exception error, object userState)
     {
       MarkIdle();
       if (Saved != null)
@@ -222,30 +222,30 @@ namespace Csla
       if (this.IsChild)
       {
         var error = new InvalidOperationException(Resources.NoSaveChildException);
+        OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
-        OnSaved(null, error, userState);
       }
       else if (EditLevel > 0)
       {
         var error = new InvalidOperationException(Resources.NoSaveEditingException);
+        OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
-        OnSaved(null, error, userState);
       }
       else if (!IsValid && !IsDeleted)
       {
         ValidationException error = new ValidationException(Resources.NoSaveInvalidException);
+        OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
-        OnSaved(null, error, userState);
       }
       else if (IsBusy)
       {
         var error = new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+        OnSaved(null, error, userState);
         if (handler != null)
           handler(this, new SavedEventArgs(null, error, userState));
-        OnSaved(null, error, userState);
       }
       else
       {
@@ -257,9 +257,9 @@ namespace Csla
             DataPortal.BeginUpdate<T>(this, (o, e) =>
             {
               T result = e.Object;
+              OnSaved(result, e.Error, userState);
               if (handler != null)
                 handler(result, new SavedEventArgs(result, e.Error, userState));
-              OnSaved(result, e.Error, userState);
             });
           }
           else
@@ -267,17 +267,17 @@ namespace Csla
             DataPortal.BeginUpdate<T>(this, (o, e) =>
             {
               T result = e.Object;
+              OnSaved(result, e.Error, e.UserState);
               if (handler != null)
                 handler(result, new SavedEventArgs(result, e.Error, e.UserState));
-              OnSaved(result, e.Error, e.UserState);
             }, userState);
           }
         }
         else
         {
+          OnSaved((T)this, null, userState);
           if (handler != null)
             handler(this, new SavedEventArgs(this, null, userState));
-          OnSaved((T)this, null, userState);
         }
       }
     }

@@ -126,10 +126,10 @@ namespace Csla
         lock (rules)
           if (!rules.Initialized)
           {
-            rules.Initialized = true;
             try
             {
               AddBusinessRules();
+              rules.Initialized = true;
             }
             catch (Exception)
             {
@@ -237,9 +237,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
-      if (prop == null)
-        throw new ArgumentOutOfRangeException("propertyName");
+      var prop = FieldManager.GetRegisteredProperty(propertyName);
       return CanReadProperty(prop);
     }
 
@@ -252,9 +250,7 @@ namespace Csla
     /// result should cause an exception.</param>
     private bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
-      if (prop == null)
-        throw new ArgumentOutOfRangeException("propertyName");
+      var prop = FieldManager.GetRegisteredProperty(propertyName);
       return CanReadProperty(prop, throwOnFalse);
     }
 
@@ -731,9 +727,7 @@ namespace Csla
     {
       #region Check to see if the property is marked with RelationshipTypes.PrivateField
 
-      var propertyInfo = FieldManager.GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
-      if (propertyInfo == null)
-        throw new ArgumentOutOfRangeException("propertyName");
+      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PrivateFieldException);

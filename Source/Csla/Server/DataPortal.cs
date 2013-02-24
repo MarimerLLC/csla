@@ -333,59 +333,69 @@ namespace Csla.Server
         /// </param>
         public DataPortalResult Delete(Type objectType, object criteria, DataPortalContext context)
         {
-            try
+          try
+          {
+            SetContext(context);
+
+            Authorize(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
+
+            DataPortalResult result;
+            DataPortalMethodInfo method;
+            var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
+            if (factoryInfo != null)
             {
-                SetContext(context);
+              var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+              string methodName = factoryInfo.DeleteMethodName;
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
+            }
+            else
+            {
+              method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
+            }
 
-                AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
-
-                DataPortalResult result;
-
-                var method = DataPortalMethodCache.GetMethodInfo(objectType, "DataPortal_Delete", criteria);
-
-                IDataPortalServer portal;
-                switch (method.TransactionalType)
-                {
+            IDataPortalServer portal;
+            switch (method.TransactionalType)
+            {
 #if !MONO
-                    case TransactionalTypes.EnterpriseServices:
-                        portal = new ServicedDataPortal();
-                        try
-                        {
-                            result = portal.Delete(objectType, criteria, context);
-                        }
-                        finally
-                        {
-                            ((ServicedDataPortal)portal).Dispose();
-                        }
-                        break;
-#endif
-                    case TransactionalTypes.TransactionScope:
-                        portal = new TransactionalDataPortal();
-                        result = portal.Delete(objectType, criteria, context);
-                        break;
-                    default:
-                        portal = new DataPortalSelector();
-                        result = portal.Delete(objectType, criteria, context);
-                        break;
+              case TransactionalTypes.EnterpriseServices:
+                portal = new ServicedDataPortal();
+                try
+                {
+                  result = portal.Delete(objectType, criteria, context);
                 }
-                return result;
+                finally
+                {
+                  ((ServicedDataPortal)portal).Dispose();
+                }
+                break;
+#endif
+              case TransactionalTypes.TransactionScope:
+                portal = new TransactionalDataPortal();
+                result = portal.Delete(objectType, criteria, context);
+                break;
+              default:
+                portal = new DataPortalSelector();
+                result = portal.Delete(objectType, criteria, context);
+                break;
             }
-            catch (Csla.Server.DataPortalException ex)
-            {
-                Exception tmp = ex;
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new DataPortalException(
-                    "DataPortal.Delete " + Resources.FailedOnServer,
-                    new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", ex),
-                    new DataPortalResult());
-            }
-            finally
-            {
-                ClearContext(context);
-            }
+            return result;
+          }
+          catch (Csla.Server.DataPortalException ex)
+          {
+            Exception tmp = ex;
+            throw;
+          }
+          catch (Exception ex)
+          {
+            throw new DataPortalException(
+                "DataPortal.Delete " + Resources.FailedOnServer,
+                new DataPortalExceptionHandler().InspectException(objectType, criteria, "DataPortal.Delete", ex),
+                new DataPortalResult());
+          }
+          finally
+          {
+            ClearContext(context);
+          }
         }
 
         #endregion

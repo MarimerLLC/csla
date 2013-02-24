@@ -17,7 +17,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 #endif
+using Csla;
 using Csla.Core;
+using Csla.Testing.Business.EditableRootTests;
 using UnitDriven;
 
 #if NUNIT
@@ -275,7 +277,7 @@ namespace cslalighttest.Serialization
 
       p.BeginEdit();
       a.ApplyEdit();
-      context.Assert.Try( p.ApplyEdit );
+      context.Assert.Try(p.ApplyEdit);
       context.Complete();
     }
 
@@ -337,5 +339,23 @@ namespace cslalighttest.Serialization
         context.Assert.Try(p.CancelEdit);
       }
     }
+#if SILVERLIGHT
+    [TestMethod]
+    public void UndoWithNullabeProperty()
+    {
+      UnitTestContext context = GetContext();
+
+      DataPortal.BeginCreate<RootWithNullableProperty>((s, r) =>
+      {
+        var root = r.Object;
+
+        root.BeginEdit();
+        root.CancelEdit();
+        context.Assert.Success();
+        context.Complete();
+      }, Csla.DataPortal.ProxyModes.LocalOnly);
+    }
+#endif
+
   }
 }

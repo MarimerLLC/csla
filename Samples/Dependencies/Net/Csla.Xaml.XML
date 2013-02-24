@@ -503,6 +503,11 @@
             Used to monitor for changes in the binding path.
             </summary>
         </member>
+        <member name="F:Csla.Xaml.PropertyInfo.RelativeBindingProperty">
+            <summary>
+            Used to monitor for changes in the binding path.
+            </summary>
+        </member>
         <member name="F:Csla.Xaml.PropertyInfo.PropertyProperty">
             <summary>
             Gets or sets the source business

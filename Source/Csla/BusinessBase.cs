@@ -33,7 +33,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable()]
   public abstract class BusinessBase<T> :
-    Core.BusinessBase, Core.ISavable where T : BusinessBase<T>
+    Core.BusinessBase, Core.ISavable, IBusinessBase where T : BusinessBase<T>
   {
 
     #region Object ID Value
@@ -401,7 +401,7 @@ namespace Csla
     /// <param name="e">Exception that occurred during operation.</param>
     /// <param name="userState">User state object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       MarkIdle();
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);

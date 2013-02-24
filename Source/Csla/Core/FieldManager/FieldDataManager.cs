@@ -6,6 +6,7 @@
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using Csla.Serialization;
@@ -84,6 +85,22 @@ namespace Csla.Core.FieldManager
     }
 
     /// <summary>
+    /// Returns the IPropertyInfo object corresponding to the
+    /// property name.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the
+    /// property name doesn't correspond to a registered property.</exception>
+    public IPropertyInfo GetRegisteredProperty(string propertyName)
+    {
+      var result = GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      if (result == null)
+        throw new ArgumentOutOfRangeException(string.Format(Resources.PropertyNameNotRegisteredException, propertyName));
+      return result;
+    }
+
+    /// <summary>
     /// Gets a value indicating whether there
     /// are any managed fields available.
     /// </summary>
@@ -99,7 +116,14 @@ namespace Csla.Core.FieldManager
     private static List<IPropertyInfo> GetConsolidatedList(Type type)
     {
       List<IPropertyInfo> result = null;
-      if (!_consolidatedLists.TryGetValue(type, out result))
+      var found = false;
+      try
+      {
+        found = _consolidatedLists.TryGetValue(type, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_consolidatedLists)
         {
@@ -737,8 +761,8 @@ namespace Csla.Core.FieldManager
           IFieldData data = GetOrCreateFieldData(property);
           if (value.Value != null &&
             mode == StateMode.Undo &&
-            typeof(IMobileObject).IsAssignableFrom(property.Type) &&
-            !typeof(IUndoableObject).IsAssignableFrom(property.Type))
+            typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
+            !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
             data.Value = MobileFormatter.Deserialize((byte[])value.Value);
           }

@@ -363,6 +363,30 @@ namespace Csla.Test.Basic
           Assert.AreEqual(3, root.Children.Count);
 
         }
+
+        [TestMethod]
+        public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
+        {
+
+          bool changed = false;
+          var obj = new RootList();
+          obj.ListChanged += (o, e) =>
+          {
+            changed = true;
+          };
+          var child = new RootListChild(); // object is marked as child
+
+          Assert.IsTrue(obj.RaiseListChangedEvents);
+          using (obj.SuppressListChangedEvents)
+          {
+            Assert.IsFalse(obj.RaiseListChangedEvents);
+
+            obj.Add(child);
+          }
+          Assert.IsFalse(changed, "Should not raise ListChanged event");
+          Assert.IsTrue(obj.RaiseListChangedEvents);
+          Assert.AreEqual(child, obj[0]);
+        }
       }
 
     public class FormSimulator

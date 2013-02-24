@@ -306,7 +306,6 @@ namespace Csla.Rules.CommonRules
       }
     }
   }
-
   /// <summary>
   /// Business rule for a minimum value.
   /// </summary>
@@ -328,8 +327,8 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="min">Min value.</param>
-    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min) 
-      : base(primaryProperty) 
+    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min)
+      : base(primaryProperty)
     {
       Min = min;
       this.RuleUri.AddQueryParameter("min", min.ToString());
@@ -342,7 +341,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="min">Min value.</param>
     /// <param name="message">The message.</param>
-    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min,  string message)
+    public MinValue(Csla.Core.IPropertyInfo primaryProperty, T min, string message)
       : this(primaryProperty, min)
     {
       MessageText = message;
@@ -375,8 +374,13 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      var value = (T)context.InputPropertyValues[PrimaryProperty];
-      int result = value.CompareTo(Min);
+      var value = context.InputPropertyValues[PrimaryProperty] != null
+                      ? (T)context.InputPropertyValues[PrimaryProperty]
+                      : PrimaryProperty.DefaultValue != null
+                        ? (T)PrimaryProperty.DefaultValue
+                        : default(T);
+
+      var result = value.CompareTo(Min);
       if (result <= -1)
       {
         string outValue;
@@ -458,8 +462,13 @@ namespace Csla.Rules.CommonRules
     /// <param name="context">Rule context.</param>
     protected override void Execute(RuleContext context)
     {
-      var value = (T)context.InputPropertyValues[PrimaryProperty];
-      int result = value.CompareTo(Max);
+      var value = context.InputPropertyValues[PrimaryProperty] != null
+                      ? (T)context.InputPropertyValues[PrimaryProperty]
+                      : PrimaryProperty.DefaultValue != null
+                        ? (T)PrimaryProperty.DefaultValue
+                        : default(T);
+
+      var result = value.CompareTo(Max);
       if (result >= 1)
       {
         string outValue;

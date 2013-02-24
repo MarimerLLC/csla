@@ -164,5 +164,29 @@ namespace Csla.Test.BusinessListBase
       Assert.IsTrue(changed);
       Assert.AreEqual(nonChild, obj[0]);
     }
+
+    [TestMethod]
+    public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
+    {
+
+      bool changed = false;
+      var obj = Csla.DataPortal.CreateChild<ChildList>();
+      obj.CollectionChanged += (o, e) =>
+      {
+        changed = true;
+      };
+      var child = Csla.DataPortal.CreateChild<Child>(); // object is marked as child
+
+      Assert.IsTrue(obj.RaiseListChangedEvents);
+      using (obj.SuppressListChangedEvents)
+      {
+        Assert.IsFalse(obj.RaiseListChangedEvents);
+
+        obj.Insert(0, child);
+      }
+      Assert.IsFalse(changed, "Should not raise ListChanged event");
+      Assert.IsTrue(obj.RaiseListChangedEvents);
+      Assert.AreEqual(child, obj[0]);
+    }
   }
 }

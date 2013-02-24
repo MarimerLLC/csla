@@ -30,7 +30,10 @@ namespace Csla.Core.FieldManager
     }
   }
 
-  internal static class PropertyInfoManager
+  /// <summary>
+  /// Manages the PropertyInfo data for business object types.
+  /// </summary>
+  public static class PropertyInfoManager
   {
     private static object _cacheLock = new object();
     private static Dictionary<Type, PropertyInfoList> _propertyInfoCache;
@@ -51,11 +54,18 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    public static PropertyInfoList GetPropertyListCache(Type objectType)
+    internal static PropertyInfoList GetPropertyListCache(Type objectType)
     {
       var cache = PropertyInfoCache;
       PropertyInfoList list = null;
-      if (!(cache.TryGetValue(objectType, out list)))
+      var found = false;
+      try
+      {
+        found = cache.TryGetValue(objectType, out list);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (cache)
         {
@@ -85,7 +95,7 @@ namespace Csla.Core.FieldManager
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    public static PropertyInfo<T> RegisterProperty<T>(Type objectType, PropertyInfo<T> info)
+    internal static PropertyInfo<T> RegisterProperty<T>(Type objectType, PropertyInfo<T> info)
     {
       var list = GetPropertyListCache(objectType);
       lock (list)
@@ -129,6 +139,10 @@ namespace Csla.Core.FieldManager
     /// <param name="objectType">
     /// The business object type.
     /// </param>
+    /// <remarks>
+    /// Registered property information is only available after at least one instannce
+    /// of the object type has been created within the current AppDomain.
+    /// </remarks>
     public static PropertyInfoList GetRegisteredProperties(Type objectType)
     {
       // return a copy of the list to avoid

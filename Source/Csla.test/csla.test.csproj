@@ -278,6 +278,7 @@
     <Compile Include="Silverlight\Serialization\CustomerContact.cs" />
     <Compile Include="Silverlight\Serialization\CustomerWithEnum.cs" />
     <Compile Include="Silverlight\Serialization\CustomMobileList.cs" />
+    <Compile Include="Silverlight\Serialization\MockMobileList.cs" />
     <Compile Include="Silverlight\Serialization\MockNonBusinessObject.cs" />
     <Compile Include="Silverlight\Serialization\MockReadOnly.cs" />
     <Compile Include="Silverlight\Serialization\MockReadOnlyList.cs" />
@@ -331,6 +332,8 @@
     <Compile Include="ValidationRules\ValidationTests.cs" />
     <Compile Include="ViewModelTests\TestViewModel.cs" />
     <Compile Include="ViewModelTests\ViewModelTests.cs" />
+    <Compile Include="Windows\BindingRefreshTests.cs" />
+    <Compile Include="Windows\ActionExtenderTests.cs" />
     <Compile Include="Windows\EditablePerson.cs" />
     <Compile Include="Windows\PersonForm.cs">
       <SubType>Form</SubType>

@@ -1595,6 +1595,19 @@
             Event raised when a child object has been changed.
             </summary>
         </member>
+        <member name="P:Csla.Core.ExtendedBindingList`1.SuppressListChangedEvents">
+            <summary>
+            Use this object to suppress ListChangedEvents for an entire code block.
+            May be nested in multiple levels for the same object.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.ExtendedBindingList`1.SuppressListChangedEventsClass`1">
+            <summary>
+            Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.
+            Will be instanciated by a factory property on the ObservableBindingList implementation.
+            </summary>
+            <typeparam name="TC">The type of the C.</typeparam>
+        </member>
         <member name="T:Csla.Core.IEditableCollection">
             <summary>
             Defines the common methods required by all
@@ -2514,6 +2527,12 @@
             <summary>
             Invokes all rules for the business type.
             </summary>
+        </member>
+        <member name="M:Csla.Core.ICheckRules.GetBrokenRules">
+            <summary>
+            Gets the broken rules collection
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Csla.Core.BusinessBase.#ctor">
             <summary>
@@ -3806,6 +3825,11 @@
             Invokes all rules for the business type.
             </summary>
         </member>
+        <member name="M:Csla.Core.BusinessBase.GetBrokenRules">
+            <summary>
+            Gets the broken rules for this object
+            </summary>
+        </member>
         <member name="P:Csla.Core.BusinessBase.Parent">
             <summary>
             Provide access to the parent reference for use
@@ -4064,6 +4088,12 @@
             <summary>
             Gets the current reference count for this
             object.
+            </summary>
+        </member>
+        <member name="T:Csla.IBusinessBase">
+            <summary>
+            Consolidated interface of public elements from the
+            BusinessBase type.
             </summary>
         </member>
         <member name="M:Csla.BusinessBase`1.GetIdValue">
@@ -6141,6 +6171,196 @@
             operation.
             </summary>
         </member>
+        <member name="T:Csla.IDataPortal`1">
+            <summary>
+            Interface defining the members of the data portal type.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginCreate(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to create a new object, which is loaded 
+            with default values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginFetch(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to retrieve an existing object, which is loaded 
+            with values from the database.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginUpdate(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to update an object.
+            </summary>
+            <param name="obj">Object to update.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginDelete(System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginDelete(System.Object,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to delete an object.
+            </summary>
+            <param name="criteria">Object-specific criteria.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginExecute(`0)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
+        </member>
+        <member name="M:Csla.IDataPortal`1.BeginExecute(`0,System.Object)">
+            <summary>
+            Called by a factory method in a business class or
+            by the UI to execute a command object.
+            </summary>
+            <param name="command">Command object to execute.</param>
+            <param name="userState">User state data.</param>
+        </member>
+        <member name="P:Csla.IDataPortal`1.GlobalContext">
+            <summary>
+            Gets a reference to the global context returned from
+            the background thread and/or server.
+            </summary>
+        </member>
+        <member name="E:Csla.IDataPortal`1.CreateCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.FetchCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.UpdateCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.DeleteCompleted">
+            <summary>
+            Event raised when the operation has completed.
+            </summary>
+            <remarks>
+            <para>
+            If your application is running in WPF, this event
+            will be raised on the UI thread automatically.
+            </para><para>
+            If your application is running in Windows Forms,
+            this event will be raised on a background thread.
+            If you also set DataPortal.SynchronizationObject
+            to a Windows Forms form or control, then the event
+            will be raised on the UI thread automatically.
+            </para><para>
+            In any other environment (such as ASP.NET), this
+            event will be raised on a background thread.
+            </para>
+            </remarks>
+        </member>
+        <member name="E:Csla.IDataPortal`1.ExecuteCompleted">
+            <summary>
+            Event indicating an execute operation is complete.
+            </summary>
+        </member>
         <member name="M:Csla.DataPortal`1.#ctor">
             <summary>
             Creates an instance of the data portal
@@ -8159,6 +8379,19 @@
             Event raised when a new object has been 
             added to the collection.
             </summary>
+        </member>
+        <member name="P:Csla.Core.ObservableBindingList`1.SuppressListChangedEvents">
+            <summary>
+            Use this object to suppress ListChangedEvents for an entire code block.
+            May be nested in multiple levels for the same object.
+            </summary>
+        </member>
+        <member name="T:Csla.Core.ObservableBindingList`1.SuppressListChangedEventsClass`1">
+            <summary>
+            Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.
+            Will be instanciated by a factory property on the ObservableBindingList implementation.
+            </summary>
+            <typeparam name="TC">The type of the C.</typeparam>
         </member>
         <member name="M:Csla.Core.ReadOnlyObservableBindingList`1.#ctor">
             <summary>
@@ -10913,6 +11146,11 @@
             Compare to propertyinfo x with y for sorting
             </summary>
         </member>
+        <member name="T:Csla.Core.FieldManager.PropertyInfoManager">
+            <summary>
+            Manages the PropertyInfo data for business object types.
+            </summary>
+        </member>
         <member name="M:Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty``1(System.Type,Csla.PropertyInfo{``0})">
             <summary>
             Indicates that the specified property belongs
@@ -10941,6 +11179,10 @@
             <param name="objectType">
             The business object type.
             </param>
+            <remarks>
+            Registered property information is only available after at least one instannce
+            of the object type has been created within the current AppDomain.
+            </remarks>
         </member>
         <member name="T:Csla.Rules.ObjectRule">
             <summary>
@@ -12849,6 +13091,16 @@
               Looks up a localized string similar to Object is currently in a dirty changed..
             </summary>
         </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderErrorCaption">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderInformationCaption">
+            <summary>
+              Looks up a localized string similar to Information.
+            </summary>
+        </member>
         <member name="P:Csla.Properties.Resources.ActionExtenderInvalidBindingSourceCast">
             <summary>
               Looks up a localized string similar to DataSource does not cast to a BindingSource.
@@ -12857,6 +13109,11 @@
         <member name="P:Csla.Properties.Resources.ActionExtenderInvalidBusinessObjectBaseCast">
             <summary>
               Looks up a localized string similar to The underlying data source does not cast to a CSLA BusinessBase object.
+            </summary>
+        </member>
+        <member name="P:Csla.Properties.Resources.ActionExtenderObjectIsValidMessagePropertyDefault">
+            <summary>
+              Looks up a localized string similar to Object is valid.
             </summary>
         </member>
         <member name="P:Csla.Properties.Resources.ActionExtenderSourceMustBeBindingSource">
@@ -13222,6 +13479,11 @@
         <member name="P:Csla.Properties.Resources.PropertyNameDoesNotExist">
             <summary>
               Looks up a localized string similar to The specified property name &apos;{0}&apos; does not exist.
+            </summary>
+        </member>
+        <member name="P:Csla.Properties.Resources.PropertyNameNotRegisteredException">
+            <summary>
+              Looks up a localized string similar to Property name &apos;{0}&apos; not registered..
             </summary>
         </member>
         <member name="P:Csla.Properties.Resources.PropertyNotInAffectedPropertiesException">
@@ -14048,6 +14310,23 @@
             <param name="objType">Type of object.</param>
             <param name="method">Name of the method.</param>
             <param name="flags">Flag values.</param>
+        </member>
+        <member name="T:Csla.Core.FieldManager.PropertyInfoList">
+            <summary>
+            List of IPropertyInfo objects for a business object type.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoList.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoList.#ctor(System.Collections.Generic.IList{Csla.Core.IPropertyInfo})">
+            <summary>
+            Creates an instance of the object that
+            contains the items in 'list'.
+            </summary>
+            <param name="list">Source list.</param>
         </member>
         <member name="T:Csla.Core.FieldManager.DefaultPropertyInfoFactory">
             <summary>
@@ -15346,6 +15625,16 @@
             null if there are no properties registered
             for this object.
             </summary>
+        </member>
+        <member name="M:Csla.Core.FieldManager.FieldDataManager.GetRegisteredProperty(System.String)">
+            <summary>
+            Returns the IPropertyInfo object corresponding to the
+            property name.
+            </summary>
+            <param name="propertyName">Name of the property.</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">Thrown if the
+            property name doesn't correspond to a registered property.</exception>
         </member>
         <member name="M:Csla.Core.FieldManager.FieldDataManager.GetFieldData(Csla.Core.IPropertyInfo)">
             <summary>

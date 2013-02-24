@@ -1,9 +1,18 @@
-param($package) 
+param( $package, [System.String] $commandLineOptions )
 
-function Pause ($Message="Press any key to continue...")
+function OutputCommandLineUsageHelp()
+{
+    Write-Host "Create a NuGet build output."
+    Write-Host "============================"
+    Write-Host "Usage: Create.ps1 ""<NuGet Package Name>"" [/PreRelease:<PreReleaseVersion>]"
+    Write-Host ">E.g.: Create.ps1 ""Core"""
+    Write-Host ">E.g.: Create.ps1 ""Core"" /PreRelease:RC1"
+}
+
+function Pause ( $Message="Press any key to continue..." )
 {
     Write-Host -NoNewLine $Message
-    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    $null = $Host.UI.RawUI.ReadKey( "NoEcho,IncludeKeyDown" )
     Write-Host ""
 }
 
@@ -53,19 +62,32 @@ function CopyMaintainingSubDirectories( $basePath, $includes, $targetBasePath )
         $targetDirectory = Join-Path $targetBasePath $file.Directory.FullName.Substring( $basePathLength )
         if ( (Test-Path $targetDirectory) -ne $true)
         { 
-            [System.IO.Directory]::CreateDirectory($targetDirectory) | Out-Null
+            [System.IO.Directory]::CreateDirectory( $targetDirectory ) | Out-Null
         }
         Copy-Item $file -Destination $targetDirectory
     }
 }
 
-if ($package -eq $null)
+## Validate input parameters
+## -------------------------
+if ( $package -eq $null )
 {
-    Write-Host "Create a NuGet build output."
-    Write-Host "============================"
-    Write-Host "Usage: Create.ps1 ""<NuGet Package Name>"""
-    Write-Host ">E.g.: Create.ps1 ""Core"""
+    OutputCommandLineUsageHelp
     return
+}
+
+## Process CommandLine options
+if ( [System.String]::IsNullOrEmpty($commandLineOptions) -ne $true )
+{
+    if ( $commandLineOptions.StartsWith("/PreRelease:", [System.StringComparison]::OrdinalIgnoreCase) )
+    {
+        $preRelease = $commandLineOptions.Substring( "/PreRelease:".Length )
+    }
+    else
+    {
+        OutputCommandLineUsageHelp
+        return
+    }
 }
 
 try 
@@ -86,6 +108,10 @@ try
     Write-Host "Build NuGet packages for: " -ForegroundColor White -NoNewLine
     Write-Host $package -ForegroundColor Cyan
     Write-Host "=========================" -ForegroundColor White
+    if ( [System.String]::IsNullOrEmpty( $preRelease ) -ne $true )
+    {
+        Write-Host "Option: /PreRelease:$preRelease" -ForegroundColor Yellow
+    }
 
     ## Update Package Version
     ## ----------------------    
@@ -93,12 +119,21 @@ try
     ## - JH: Not sure if I should get direct from source code file or from file version of compiled library instead.
     ## - JH: Going with product version in assembly for now
     $cslaAssembly = Get-ChildItem "$pathToBin\Client\Csla.dll" | Select-Object -First 1
-    $productVersion = $cslaAssembly.VersionInfo.ProductVersion
+    ## - JH: If $preRelease is specified, then append it with a dash following the 3rd component of the quad-dotted-version number
+    ##       Refer: http://docs.nuget.org/docs/Reference/Versioning 
+    if ( [System.String]::IsNullOrEmpty( $preRelease ) -ne $true )
+    {
+        $productVersion = [System.String]::Format( "{0}.{1}.{2}-{3}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart, $preRelease )
+    }
+    else
+    {
+        $productVersion = [System.String]::Format( "{0}.{1}.{2}", $cslaAssembly.VersionInfo.ProductMajorPart, $cslaAssembly.VersionInfo.ProductMinorPart, $cslaAssembly.VersionInfo.ProductBuildPart )
+    }
     ChangeNuSpecVersion "$basePath\$package.NuSpec" $productVersion
     
     ## Launch NuGet.exe to build package
-    Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow -NoNewLine
-    & $pathToNuGetPackager pack "$basePath\$package.NuSpec"
+    Write-Host "Build NuGet package: $package..." -ForegroundColor Yellow
+    & $pathToNuGetPackager pack "$basePath\$package.NuSpec" -Symbols
     
     ## Publish package to Gallery using API Key
     ## JH - TODO

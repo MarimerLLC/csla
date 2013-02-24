@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
       base.AddBusinessRules();
     }
 
-    public Rules.BrokenRulesCollection GetBrokenRules()
+    public new Rules.BrokenRulesCollection GetBrokenRules()
     {
       return BusinessRules.GetBrokenRules();
     }

@@ -87,7 +87,7 @@ namespace Csla
     /// <param name="error">Exception returned as a result
     /// of the save operation.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected void OnSaved(T newObject, Exception error)
+    protected virtual void OnSaved(T newObject, Exception error)
     {
       if (Saved != null)
         Saved(this, new SavedEventArgs(newObject, error, null));

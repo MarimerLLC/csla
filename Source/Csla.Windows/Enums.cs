@@ -21,18 +21,21 @@ namespace Csla.Windows
     /// </summary>
     Save,
     /// <summary>
-    /// Perform a cancel.
+    /// Undo changes.
     /// </summary>
     Cancel,
     /// <summary>
     /// Close the form.
     /// </summary>
-    Close
+    Close,
+    /// <summary>
+    /// Display a message box with any broken rules
+    /// </summary>
+    Validate
   }
 
   /// <summary>
-  /// The possible options for posting
-  /// and saving.
+  /// The possible actions for post save.
   /// </summary>
   public enum PostSaveActionType
   {

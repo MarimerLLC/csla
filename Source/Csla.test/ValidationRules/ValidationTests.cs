@@ -439,6 +439,30 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void MinMaxNullableValue()
+    {
+      var context = GetContext();
+      var root = Csla.DataPortal.Create<MinMaxNullableRules>();
+      context.Assert.IsNull(root.DataNullable);
+
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
+
+
+      root.DataNullable = 0;
+      context.Assert.IsFalse(root.IsValid);
+
+      root.DataNullable = 20;
+      context.Assert.IsFalse(root.IsValid);
+
+      root.DataNullable = 15;
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
     public void MinMaxLength()
     {
       var context = GetContext();
@@ -578,7 +602,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
 
-    public Rules.BrokenRulesCollection GetBrokenRules()
+    public new Rules.BrokenRulesCollection GetBrokenRules()
     {
       return BusinessRules.GetBrokenRules();
     }
@@ -661,6 +685,25 @@ namespace Csla.Test.ValidationRules
 
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MinLength(MinCheckProperty, 5));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(MaxCheckProperty, 5));
+    }
+  }
+
+  [Serializable]
+  public class MinMaxNullableRules : BusinessBase<MinMaxNullableRules>
+  {
+    private static PropertyInfo<int?> DataNullableProperty = RegisterProperty<int?>(c => c.DataNullable);
+    public int? DataNullable
+    {
+      get { return GetProperty(DataNullableProperty); }
+      set { SetProperty(DataNullableProperty, value); }
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MinValue<int>(DataNullableProperty, 5));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxValue<int>(DataNullableProperty, 15));
     }
   }
 

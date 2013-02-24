@@ -6,16 +6,11 @@
 // <summary>Extender control providing automation around</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Data;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
-using System.Drawing;
 using System.Windows.Forms;
-using System.Xml;
-using Csla;
 using Csla.Core;
-using Csla.Rules;
+using Csla.Core.FieldManager;
 using Csla.Properties;
 
 namespace Csla.Windows
@@ -25,11 +20,12 @@ namespace Csla.Windows
   /// data binding to CSLA .NET business objects.
   /// </summary>
   [ToolboxItem(true)]
-  [ProvideProperty("ActionType", typeof(Control))]
-  [ProvideProperty("PostSaveAction", typeof(Control))]
-  [ProvideProperty("RebindAfterSave", typeof(Control))]
-  [ProvideProperty("DisableWhenClean", typeof(Control))]
-  [ProvideProperty("CommandName", typeof(Control))]
+  [ProvideProperty("ActionType", typeof (Control))]
+  [ProvideProperty("PostSaveAction", typeof (Control))]
+  [ProvideProperty("RebindAfterSave", typeof (Control))]
+  [ProvideProperty("DisableWhenClean", typeof (Control))]
+  [ProvideProperty("DisableWhenUseless", typeof (Control))]
+  [ProvideProperty("CommandName", typeof (Control))]
   public class CslaActionExtender : Component, IExtenderProvider
   {
     #region Constructors
@@ -39,7 +35,6 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="container">Container for the component.</param>
     public CslaActionExtender(IContainer container)
-      : base()
     {
       _container = container;
       container.Add(this);
@@ -49,7 +44,7 @@ namespace Csla.Windows
 
     #region Member variables
 
-    private Dictionary<Control, CslaActionExtenderProperties> _Sources = 
+    private Dictionary<Control, CslaActionExtenderProperties> _sources =
       new Dictionary<Control, CslaActionExtenderProperties>();
 
     private object _dataSource = null;
@@ -58,6 +53,7 @@ namespace Csla.Windows
     private string _dirtyWarningMessage = Resources.ActionExtenderDirtyWarningMessagePropertyDefault;
     private bool _warnOnCancel = false;
     private string _warnOnCancelMessage = Resources.ActionExtenderWarnOnCancelMessagePropertyDefault;
+    private string _objectIsValidMessage = Resources.ActionExtenderObjectIsValidMessagePropertyDefault;
     private IContainer _container = null;
     private BindingSourceNode _bindingSourceTree = null;
     private bool _closeForm = false;
@@ -68,10 +64,7 @@ namespace Csla.Windows
 
     bool IExtenderProvider.CanExtend(object extendee)
     {
-      bool ret = false;
-      if (extendee is IButtonControl)
-        ret = true;
-      return ret;
+      return extendee is IButtonControl;
     }
 
     #endregion
@@ -83,7 +76,7 @@ namespace Csla.Windows
     /// </summary>
     [Category("Data")]
     [Description("Gets or sets the data source to which this button is bound for action purposes.")]
-    [AttributeProvider(typeof(IListSource))]
+    [AttributeProvider(typeof (IListSource))]
     public object DataSource
     {
       get { return _dataSource; }
@@ -171,6 +164,21 @@ namespace Csla.Windows
       set { _warnOnCancelMessage = value; }
     }
 
+    /// <summary>
+    /// Gets or sets the message shown to the user when a button with a 
+    /// Validate ActionType is pressed when the object is valid.
+    /// </summary>
+    [Category("Behavior")]
+    [Description("When a button with a Validate ActionType is pressed when the object is valid, this is the message to be displayed.")]
+    [Bindable(true)]
+    [DefaultValue("Object is valid.")]
+    [Localizable(true)]
+    public string ObjectIsValidMessage
+    {
+      get { return _objectIsValidMessage; }
+      set { _objectIsValidMessage = value; }
+    }
+
     #endregion
 
     #region Property accessor methods
@@ -180,38 +188,38 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the action type.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <returns></returns>
     [Category("Csla")]
-    [Description("Gets or sets the type for this button.")]
+    [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
     [DefaultValue(CslaFormAction.None)]
     public CslaFormAction GetActionType(Control ctl)
     {
-      if (_Sources.ContainsKey(ctl))
-        return ((CslaActionExtenderProperties)_Sources[ctl]).ActionType;
-      else
-        return CslaActionExtenderProperties.ActionTypeDefault;
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].ActionType;
+
+      return CslaActionExtenderProperties.ActionTypeDefault;
     }
 
     /// <summary>
     /// Sets the action type.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <param name="value">Value for property.</param>
     [Category("Csla")]
-    [Description("Gets or sets the type for this button.")]
+    [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
     [DefaultValue(CslaFormAction.None)]
     public void SetActionType(Control ctl, CslaFormAction value)
     {
-      if (_Sources.ContainsKey(ctl))
-        _Sources[ctl].ActionType = value;
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].ActionType = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
         props.ActionType = value;
-        _Sources.Add(ctl, props);
+        _sources.Add(ctl, props);
       }
     }
 
@@ -222,7 +230,7 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the post save action.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <returns></returns>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
@@ -230,16 +238,16 @@ namespace Csla.Windows
     [DefaultValue(PostSaveActionType.None)]
     public PostSaveActionType GetPostSaveAction(Control ctl)
     {
-      if (_Sources.ContainsKey(ctl))
-        return ((CslaActionExtenderProperties)_Sources[ctl]).PostSaveAction;
-      else
-        return CslaActionExtenderProperties.PostSaveActionDefault;
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].PostSaveAction;
+
+      return CslaActionExtenderProperties.PostSaveActionDefault;
     }
 
     /// <summary>
     /// Sets the post save action.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
@@ -247,13 +255,13 @@ namespace Csla.Windows
     [DefaultValue(PostSaveActionType.None)]
     public void SetPostSaveAction(Control ctl, PostSaveActionType value)
     {
-      if (_Sources.ContainsKey(ctl))
-        _Sources[ctl].PostSaveAction = value;
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].PostSaveAction = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
         props.PostSaveAction = value;
-        _Sources.Add(ctl, props);
+        _sources.Add(ctl, props);
       }
     }
 
@@ -264,23 +272,23 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the rebind after save value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     [Category("Csla")]
     [Description("Determines if the binding source will rebind after business object saves.")]
     [Bindable(true)]
     [DefaultValue(true)]
     public bool GetRebindAfterSave(Control ctl)
     {
-      if (_Sources.ContainsKey(ctl))
-        return ((CslaActionExtenderProperties)_Sources[ctl]).RebindAfterSave;
-      else
-        return CslaActionExtenderProperties.RebindAfterSaveDefault;
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].RebindAfterSave;
+
+      return CslaActionExtenderProperties.RebindAfterSaveDefault;
     }
 
     /// <summary>
     /// Sets the rebind after save value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description("Determines if the binding source will rebind after business object saves.")]
@@ -288,13 +296,13 @@ namespace Csla.Windows
     [DefaultValue(true)]
     public void SetRebindAfterSave(Control ctl, bool value)
     {
-      if (_Sources.ContainsKey(ctl))
-        _Sources[ctl].RebindAfterSave = value;
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].RebindAfterSave = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
         props.RebindAfterSave = value;
-        _Sources.Add(ctl, props);
+        _sources.Add(ctl, props);
       }
     }
 
@@ -305,37 +313,82 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the disable when clean value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     [Category("Csla")]
-    [Description("If True, then the dirtiness of the underlying business object will cause this button to enable or disable.")]
+    [Description("If True, then the dirtiness of the underlying business object will cause this button to be enabled or disabled.")]
     [Bindable(true)]
     [DefaultValue(false)]
+    [Obsolete("Use instead DisableWhenUseless")]
+    [Browsable(false)]
     public bool GetDisableWhenClean(Control ctl)
     {
-      if (_Sources.ContainsKey(ctl))
-        return ((CslaActionExtenderProperties)_Sources[ctl]).DisableWhenClean;
-      else
-        return CslaActionExtenderProperties.DisableWhenCleanDefault;
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].DisableWhenClean;
+
+      return CslaActionExtenderProperties.DisableWhenCleanDefault;
     }
 
     /// <summary>
     /// Sets the disable when clean value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <param name="value">Value for property.</param>
     [Category("Csla")]
-    [Description("If True, then the dirtiness of the underlying business object will cause this button to enable or disable.")]
+    [Description("If True, then the dirtiness of the underlying business object will cause this button to be enabled or disabled.")]
     [Bindable(true)]
     [DefaultValue(true)]
+    [Obsolete("Use instead DisableWhenUseless")]
+    [Browsable(false)]
     public void SetDisableWhenClean(Control ctl, bool value)
     {
-      if (_Sources.ContainsKey(ctl))
-        _Sources[ctl].DisableWhenClean = value;
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].DisableWhenClean = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
         props.DisableWhenClean = value;
-        _Sources.Add(ctl, props);
+        _sources.Add(ctl, props);
+      }
+    }
+
+    #endregion
+
+    #region DisableWhenUseless
+
+    /// <summary>
+    /// Gets the disable when useless value.
+    /// </summary>
+    /// <param name="ctl">Reference to Control.</param>
+    [Category("Csla")]
+    [Description("If True, then the status of the underlying business object will cause this button to be enabled or disabled.")]
+    [Bindable(true)]
+    [DefaultValue(false)]
+    public bool GetDisableWhenUseless(Control ctl)
+    {
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].DisableWhenUseless;
+
+      return CslaActionExtenderProperties.DisableWhenUselessDefault;
+    }
+
+    /// <summary>
+    /// Sets the disable when useless value.
+    /// </summary>
+    /// <param name="ctl">Reference to Control.</param>
+    /// <param name="value">Value for property.</param>
+    [Category("Csla")]
+    [Description("If True, then the status of the underlying business object will cause this button to be enabled or disabled.")]
+    [Bindable(true)]
+    [DefaultValue(true)]
+    public void SetDisableWhenUseless(Control ctl, bool value)
+    {
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].DisableWhenUseless = value;
+      else
+      {
+        CslaActionExtenderProperties props = new CslaActionExtenderProperties();
+        props.DisableWhenUseless = value;
+        _sources.Add(ctl, props);
       }
     }
 
@@ -346,23 +399,23 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the command name value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     [Category("Csla")]
     [Description("Gets or sets the name of this command control for unique identification purposes.")]
     [Bindable(true)]
     [DefaultValue("")]
     public string GetCommandName(Control ctl)
     {
-      if (_Sources.ContainsKey(ctl))
-        return ((CslaActionExtenderProperties)_Sources[ctl]).CommandName;
-      else
-        return CslaActionExtenderProperties.CommandNameDefault;
+      if (_sources.ContainsKey(ctl))
+        return _sources[ctl].CommandName;
+
+      return CslaActionExtenderProperties.CommandNameDefault;
     }
 
     /// <summary>
     /// Sets the command name value.
     /// </summary>
-    /// <param name="ctl">Reference to control.</param>
+    /// <param name="ctl">Reference to Control.</param>
     /// <param name="value">Value for property.</param>
     [Category("Csla")]
     [Description("Gets or sets the name of this command control for unique identification purposes.")]
@@ -370,13 +423,13 @@ namespace Csla.Windows
     [DefaultValue("")]
     public void SetCommandName(Control ctl, string value)
     {
-      if (_Sources.ContainsKey(ctl))
-        _Sources[ctl].CommandName = value;
+      if (_sources.ContainsKey(ctl))
+        _sources[ctl].CommandName = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
         props.CommandName = value;
-        _Sources.Add(ctl, props);
+        _sources.Add(ctl, props);
       }
     }
 
@@ -387,14 +440,14 @@ namespace Csla.Windows
     #region Event declarations
 
     /// <summary>
-    /// Event indicating the user is clicking on the control.
+    /// Event indicating the user is clicking on the Control.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires just before the attempted action.")]
     public event EventHandler<CslaActionCancelEventArgs> Clicking;
 
     /// <summary>
-    /// Event indicating the user clicked on the control.
+    /// Event indicating the user clicked on the Control.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires after a successful action.  When button is set to Save, this event will only fire upon a successful save.  If button is set to Close, this event will never fire.")]
@@ -542,32 +595,52 @@ namespace Csla.Windows
 
       if (rootSource != null)
       {
-        INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
-        if (propChangedObjParent != null)
-        {
-          propChangedObjParent.PropertyChanged -= propChangedObj_PropertyChanged;
-          propChangedObjParent.PropertyChanged += propChangedObj_PropertyChanged;
-        }
-
-        INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
-        if (propChangedObjChild != null)
-        {
-          propChangedObjChild.ChildChanged -= propChangedObj_ChildChanged;
-          propChangedObjChild.ChildChanged += propChangedObj_ChildChanged;
-        }
+        AddEventHooks(objectToBind);
       }
 
       _bindingSourceTree = BindingSourceHelper.InitializeBindingSourceTree(_container, rootSource);
       _bindingSourceTree.Bind(objectToBind);
-
     }
 
-    void propChangedObj_ChildChanged(object sender, ChildChangedEventArgs e)
+    private void AddEventHooks(ISavable objectToBind)
+    {
+      // make sure to not attach many times
+      RemoveEventHooks(objectToBind);
+
+      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
+      if (propChangedObjParent != null)
+      {
+        propChangedObjParent.PropertyChanged += propChangedObj_PropertyChanged;
+      }
+
+      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
+      if (propChangedObjChild != null)
+      {
+        propChangedObjChild.ChildChanged += propChangedObj_ChildChanged;
+      }
+    }
+
+    private void RemoveEventHooks(ISavable objectToBind)
+    {
+      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
+      if (propChangedObjParent != null)
+      {
+        propChangedObjParent.PropertyChanged -= propChangedObj_PropertyChanged;
+      }
+
+      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
+      if (propChangedObjChild != null)
+      {
+        propChangedObjChild.ChildChanged -= propChangedObj_ChildChanged;
+      }
+    }
+
+    private void propChangedObj_ChildChanged(object sender, ChildChangedEventArgs e)
     {
       ResetControls();
     }
 
-    void propChangedObj_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void propChangedObj_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       ResetControls();
     }
@@ -581,10 +654,10 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="sender">Object originating action.</param>
     /// <param name="e">Arguments.</param>
-    protected void OnClick(object sender, System.EventArgs e)
+    protected void OnClick(object sender, EventArgs e)
     {
-      Control ctl = (Control)sender;
-      CslaActionExtenderProperties props = _Sources[ctl] as CslaActionExtenderProperties;
+      Control ctl = (Control) sender;
+      CslaActionExtenderProperties props = _sources[ctl];
       if (props.ActionType != CslaFormAction.None)
       {
         try
@@ -594,214 +667,281 @@ namespace Csla.Windows
           OnClicking(args);
           if (!args.Cancel)
           {
-            // perform action
-            Csla.Core.ISavable savableObject = null;
-            Csla.Core.ITrackStatus trackableObject = null;
-
+            ISavable savableObject = null;
+            ITrackStatus trackableObject = null;
             BindingSource source = null;
+
+            var sourceObjectError = false;
             if (_dataSource != null)
             {
               source = _dataSource as BindingSource;
 
               if (source != null)
               {
-                savableObject = source.DataSource as Csla.Core.ISavable;
-                trackableObject = source.DataSource as Csla.Core.ITrackStatus;
+                savableObject = source.DataSource as ISavable;
+                trackableObject = source.DataSource as ITrackStatus;
               }
               else
-                OnErrorEncountered(new ErrorEncounteredEventArgs(
-                  props.CommandName, new InvalidCastException(Resources.ActionExtenderInvalidBindingSourceCast)));
+              {
+                OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, new InvalidCastException(Resources.ActionExtenderInvalidBindingSourceCast)));
+                sourceObjectError = true;
+              }
 
               if (savableObject == null || trackableObject == null)
-                OnErrorEncountered(new ErrorEncounteredEventArgs(
-                  props.CommandName, new InvalidCastException(Resources.ActionExtenderInvalidBusinessObjectBaseCast)));
+              {
+                OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, new InvalidCastException(Resources.ActionExtenderInvalidBusinessObjectBaseCast)));
+                sourceObjectError = true;
+              }
             }
 
-            DialogResult diagResult;
-
-            switch (props.ActionType)
+            if (!sourceObjectError)
             {
-              case CslaFormAction.Save:
+              DialogResult diagResult;
 
-                bool okToContinue = true;
+              switch (props.ActionType)
+              {
+                case CslaFormAction.Save:
+                  raiseClicked = ExecuteSaveAction(savableObject, trackableObject, props);
+                  break;
+                // case CslaFormAction.Save
 
-                if (savableObject is Csla.Core.BusinessBase)
-                {
-                  Csla.Core.BusinessBase businessObject = savableObject as Csla.Core.BusinessBase;
-                  if (businessObject.BrokenRulesCollection.Count > 0)
+                case CslaFormAction.Cancel:
+
+                  diagResult = DialogResult.Yes;
+                  if (_warnOnCancel && trackableObject.IsDirty)
+                    diagResult = MessageBox.Show(
+                      _warnOnCancelMessage, Resources.Warning,
+                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                  if (diagResult == DialogResult.Yes)
+                    _bindingSourceTree.Cancel(savableObject);
+
+                  break;
+                // case CslaFormAction.Cancel
+
+                case CslaFormAction.Close:
+
+                  diagResult = DialogResult.Yes;
+                  if (trackableObject.IsDirty || trackableObject.IsNew)
                   {
-                    HasBrokenRulesEventArgs argsHasBrokenRules = new HasBrokenRulesEventArgs(
-                      props.CommandName,
-                      businessObject.BrokenRulesCollection.ErrorCount > 0,
-                      businessObject.BrokenRulesCollection.WarningCount > 0,
-                      businessObject.BrokenRulesCollection.InformationCount > 0,
-                      _autoShowBrokenRules);
-
-                    OnHasBrokenRules(argsHasBrokenRules);
-
-                    okToContinue = !argsHasBrokenRules.Cancel;
-                    //in case the client changed it
-                    _autoShowBrokenRules = argsHasBrokenRules.AutoShowBrokenRules;
+                    if (_warnIfCloseOnDirty)
+                      diagResult = MessageBox.Show(
+                        _dirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation,
+                        Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                   }
-                }
 
-                if (okToContinue)
-                {
-                  if (savableObject is Csla.Core.BusinessBase)
+                  if (diagResult == DialogResult.Yes)
                   {
-                    Csla.Core.BusinessBase businessObject = savableObject as Csla.Core.BusinessBase;
-                    if (_autoShowBrokenRules && businessObject.BrokenRulesCollection.Count > 0)
-                      MessageBox.Show(businessObject.BrokenRulesCollection.ToString());
+                    _bindingSourceTree.Close();
+                    _closeForm = true;
                   }
 
-                  bool objectValid = trackableObject.IsValid;
+                  break;
+                // case CslaFormAction.Close
 
-                  if (objectValid)
+                case CslaFormAction.Validate:
+
+                  if (savableObject is BusinessBase)
                   {
-                    CslaActionCancelEventArgs savingArgs = new CslaActionCancelEventArgs(
-                      false, props.CommandName);
-                    OnObjectSaving(savingArgs);
-
-                    if (!args.Cancel)
+                    BusinessBase businessObject = savableObject as BusinessBase;
+                    if (!businessObject.IsValid)
                     {
-                      _bindingSourceTree.Apply();
-
-                      //save
-                      Csla.Core.ISavable objectToSave = savableObject;
-
-                      if (Csla.ApplicationContext.AutoCloneOnUpdate)
-                        objectToSave = ((ICloneable)savableObject).Clone() as Csla.Core.ISavable;
-
-                      if (objectToSave != null)
+                      // todo: add child broken rules
+                      string brokenRules = string.Empty;
+                      foreach (var brokenRule in businessObject.GetBrokenRules())
                       {
-                        Csla.Core.ISavable saveableObject = objectToSave as Csla.Core.ISavable;
-
-                        try
-                        {
-                          savableObject = savableObject.Save() as Csla.Core.ISavable;
-
-                          OnObjectSaved(new CslaActionEventArgs(props.CommandName));
-
-                          switch (props.PostSaveAction)
-                          {
-                            case PostSaveActionType.None:
-
-                              if (source != null && props.RebindAfterSave)
-                                _bindingSourceTree.Bind(savableObject);
-
-                              break;
-
-                            case PostSaveActionType.AndClose:
-
-                              CloseForm();
-                              break;
-
-                            case PostSaveActionType.AndNew:
-
-                              OnSetForNew(new CslaActionEventArgs(props.CommandName));
-                              break;
-                          }
-                        }
-                        catch (Exception ex)
-                        {
-                          OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, new ObjectSaveException(ex)));
-                          raiseClicked = false;
-                        }
+                        var lambdaBrokenRule = brokenRule;
+                        var friendlyName =
+                          PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
+                            c => c.Name == lambdaBrokenRule.Property).FriendlyName;
+                        brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
                       }
-                      else
-                      {
-                        // did not find bound object so don't bother raising the Clicked event
-                        raiseClicked = false;
-                      }
-
-                      _bindingSourceTree.SetEvents(true);
+                      MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                      MessageBox.Show(_objectIsValidMessage, Resources.ActionExtenderInformationCaption,
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                   }
-                  else
-                  {
-                    OnBusinessObjectInvalid(new CslaActionEventArgs(props.CommandName));
-                    // object not valid or has broken rules set to invalidate it due to this control's properties
-                    raiseClicked = false;
-                  }
-                }
-                else
-                {
-                  // process was canceled from the HasBrokenRules event
-                  raiseClicked = false;
-                }
 
-                break;
+                  break;
+                //case CslaFormAction.Validate
 
-              case CslaFormAction.Cancel:
+              } // switch (props.ActionType)
 
-                diagResult = System.Windows.Forms.DialogResult.Yes;
-                if (_warnOnCancel && trackableObject.IsDirty)
-                  diagResult = MessageBox.Show(
-                    _warnOnCancelMessage, Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                if (diagResult == System.Windows.Forms.DialogResult.Yes)
-                  _bindingSourceTree.Cancel(savableObject);
-
-                break;
-
-              case CslaFormAction.Close:
-
-                diagResult = System.Windows.Forms.DialogResult.Yes;
-                if (trackableObject.IsDirty || trackableObject.IsNew)
-                {
-                  if (_warnIfCloseOnDirty)
-                    diagResult = MessageBox.Show(
-                      _dirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation, Resources.Warning,
-                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                }
-
-                if (diagResult == System.Windows.Forms.DialogResult.Yes)
-                {
-                  _bindingSourceTree.Close();
-                  _closeForm = true;
-                }
-
-                break;
-            }
-
-            if (raiseClicked)
-            {
-              if (props.ActionType == CslaFormAction.Save && source != null)
+              // raiseClicked is true if
+              // ActionType == CslaFormAction.Save and everything is ok
+              if (raiseClicked)
               {
-                if (props.RebindAfterSave)
+                if (props.ActionType == CslaFormAction.Save && source != null)
                 {
+                  if (props.RebindAfterSave)
+                  {
                     // For some strange reason, this has to be done down here.
                     // Putting it in the Select Case AfterSave... does not work.
                     _bindingSourceTree.ResetBindings(false);
                     InitializeControls(true);
+                  }
                 }
-              }
-              else
-              {
-                if (props.ActionType == CslaFormAction.Cancel)
-                  InitializeControls(true);
+                else
+                {
+                  if (props.ActionType == CslaFormAction.Cancel)
+                    InitializeControls(true);
+                }
+
+                OnClicked(new CslaActionEventArgs(props.CommandName));
               }
 
-              OnClicked(new CslaActionEventArgs(props.CommandName));
-            }
+            } // if (!sourceObjectError)
 
-          }
+          } // if (!args.Cancel)
 
           if (_closeForm)
             CloseForm();
-          
         }
         catch (Exception ex)
         {
           OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, ex));
         }
-      }
-
+      } // if (props.ActionType != CslaFormAction.None)
     }
 
     #endregion
 
     #region Private methods
+
+    private bool ExecuteSaveAction(ISavable savableObject, ITrackStatus trackableObject, CslaActionExtenderProperties props)
+    {
+      var result = true;
+      bool okToContinue = true;
+
+      BusinessBase businessObject = null;
+      bool savableObjectIsBusinessBase = savableObject is BusinessBase;
+      if (savableObjectIsBusinessBase)
+        businessObject = savableObject as BusinessBase;
+
+      if (savableObjectIsBusinessBase)
+      {
+        if (!businessObject.IsValid)
+        {
+          HasBrokenRulesEventArgs argsHasBrokenRules = new HasBrokenRulesEventArgs(
+            props.CommandName,
+            businessObject.GetBrokenRules().ErrorCount > 0,
+            businessObject.GetBrokenRules().WarningCount > 0,
+            businessObject.GetBrokenRules().InformationCount > 0,
+            _autoShowBrokenRules);
+
+          OnHasBrokenRules(argsHasBrokenRules);
+
+          okToContinue = !argsHasBrokenRules.Cancel;
+          //in case the client changed it
+          _autoShowBrokenRules = argsHasBrokenRules.AutoShowBrokenRules;
+        }
+      }
+
+      if (okToContinue)
+      {
+        if (savableObjectIsBusinessBase)
+        {
+          if (_autoShowBrokenRules && !businessObject.IsValid)
+          {
+            // todo: add child broken rules
+            string brokenRules = string.Empty;
+            foreach (var brokenRule in businessObject.GetBrokenRules())
+            {
+              var lambdaBrokenRule = brokenRule;
+              var friendlyName =
+                PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
+                  c => c.Name == lambdaBrokenRule.Property).FriendlyName;
+              brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+            }
+            MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
+              MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+
+        if (trackableObject.IsValid)
+        {
+          CslaActionCancelEventArgs savingArgs = new CslaActionCancelEventArgs(false, props.CommandName);
+          OnObjectSaving(savingArgs);
+
+          if (!savingArgs.Cancel)
+          {
+            _bindingSourceTree.Apply();
+            ISavable objectToSave;
+
+            if (Csla.ApplicationContext.AutoCloneOnUpdate == false)
+              objectToSave = ((ICloneable)savableObject).Clone() as ISavable;// if not AutoClone, clone manually
+            else
+              objectToSave = savableObject;
+
+            if (objectToSave != null)
+            {
+              try
+              {
+                RemoveEventHooks(savableObject);
+                savableObject = savableObject.Save() as ISavable;
+
+                OnObjectSaved(new CslaActionEventArgs(props.CommandName));
+
+                switch (props.PostSaveAction)
+                {
+                  case PostSaveActionType.None:
+
+                    if (props.RebindAfterSave)
+                    {
+                      _bindingSourceTree.Bind(savableObject);
+                      AddEventHooks(savableObject);
+                    }
+                    break;
+
+                  case PostSaveActionType.AndClose:
+
+                    CloseForm();
+                    break;
+
+                  case PostSaveActionType.AndNew:
+
+                    OnSetForNew(new CslaActionEventArgs(props.CommandName));
+                    AddEventHooks(savableObject);
+                    break;
+                }
+              }
+              catch (Exception ex)
+              {
+                _bindingSourceTree.Bind(objectToSave);
+                AddEventHooks(objectToSave);
+                OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, new ObjectSaveException(ex)));
+                // there was some problem
+                result = false;
+              }
+            }
+            else
+            {
+              // did not find bound object so don't bother raising the Clicked event
+              result = false;
+            }
+
+            _bindingSourceTree.SetEvents(true);
+          }
+        }
+        else
+        {
+          OnBusinessObjectInvalid(new CslaActionEventArgs(props.CommandName));
+          // object not valid or has broken rules set to invalidate it due to this control's properties
+          result = false;
+        }
+      }
+      else
+      {
+        // process was canceled from the HasBrokenRules event (okToContinue = false)
+        result = false;
+      }
+
+      return result;
+    }
 
     private void ResetControls()
     {
@@ -812,33 +952,40 @@ namespace Csla.Windows
     {
       // controls will not be enabled until the BusinessObjectPropertyChanged event fires or if it's in an appropriate state now
       List<Control> extendedControls = new List<Control>();
-      foreach (KeyValuePair<Control, CslaActionExtenderProperties> pair in _Sources)
+      foreach (KeyValuePair<Control, CslaActionExtenderProperties> pair in _sources)
       {
         if (pair.Value.ActionType != CslaFormAction.None)
         {
           Control ctl = pair.Key;
           if (initialEnabling)
           {
-            ChangeEnabled(ctl, !pair.Value.DisableWhenClean);
+            if (pair.Value.DisableWhenUseless || pair.Value.DisableWhenClean)
+              ChangeEnabled(ctl, !(pair.Value.DisableWhenUseless || pair.Value.DisableWhenClean));
             pair.Key.Click -= OnClick;
             pair.Key.Click += OnClick;
           }
-          InitializeControl(ctl);
+          InitializeControl(ctl, pair);
           extendedControls.Add(ctl);
         }
       }
     }
 
-    private void InitializeControl(Control ctl)
+    private void InitializeControl(Control ctl, KeyValuePair<Control, CslaActionExtenderProperties> pair)
     {
-      if (!ctl.Enabled)
+      if (pair.Value.DisableWhenUseless || (pair.Value.DisableWhenClean && !ctl.Enabled))
       {
-        Csla.Core.ISavable businessObject = GetBusinessObject();
+        ISavable businessObject = GetBusinessObject();
         if (businessObject != null)
         {
-          Csla.Core.ITrackStatus trackableObject = businessObject as ITrackStatus;
+          ITrackStatus trackableObject = businessObject as ITrackStatus;
           if (trackableObject != null)
-            ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
+          {
+            if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
+              ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
+            if (pair.Value.ActionType == CslaFormAction.Save)
+              ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
+                && trackableObject.IsValid);
+          }
         }
       }
     }
@@ -852,9 +999,9 @@ namespace Csla.Windows
 
     private void CloseForm()
     {
-      if (_Sources.Count > 0)
+      if (_sources.Count > 0)
       {
-        Dictionary<Control, CslaActionExtenderProperties>.Enumerator enumerator = _Sources.GetEnumerator();
+        Dictionary<Control, CslaActionExtenderProperties>.Enumerator enumerator = _sources.GetEnumerator();
         if (enumerator.MoveNext())
         {
           Control ctl = enumerator.Current.Key;
@@ -867,36 +1014,26 @@ namespace Csla.Windows
 
     private Form GetParentForm(Control thisControl)
     {
-      Form frm = null;
+      Form frm;
 
       if (thisControl.Parent is Form)
-        frm = (Form)thisControl.Parent;
+        frm = (Form) thisControl.Parent;
       else
         frm = GetParentForm(thisControl.Parent);
 
       return frm;
     }
 
-    private Csla.Core.ISavable GetBusinessObject()
+    private ISavable GetBusinessObject()
     {
-      Csla.Core.ISavable businessObject = null;
+      ISavable businessObject = null;
       BindingSource source = _dataSource as BindingSource;
       if (source != null)
-        businessObject = source.DataSource as Csla.Core.ISavable;
+        businessObject = source.DataSource as ISavable;
 
       return businessObject;
     }
 
     #endregion
-
-    #region Event methods
-
-    private void BusinessObject_PropertyChanged(object sender, EventArgs e)
-    {
-      ResetControls();
-    }
-
-    #endregion
-
   }
 }

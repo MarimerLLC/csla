@@ -43,7 +43,14 @@ namespace Csla.Rules
 
       AuthorizationRuleManager result = null;
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
-      if (!_perTypeRules.TryGetValue(key, out result))
+      var found = false;
+      try
+      {
+        found = _perTypeRules.TryGetValue(key, out result);
+      }
+      catch
+      { /* failure will drop into !found block */ }
+      if (!found)
       {
         lock (_perTypeRules)
         {
@@ -70,10 +77,15 @@ namespace Csla.Rules
         lock (mgr)
           if (!mgr.InitializedPerType)
           {
-            mgr.InitializedPerType = true;
+
 
             // Only call AddObjectAuthorizationRules when there are no rules for this type
-            if (RulesExistForType(type)) return;
+            if (RulesExistForType(type))
+            {
+              mgr.InitializedPerType = true;
+              return;
+            }
+
             try
             {
               // invoke method to add auth roles
@@ -81,6 +93,7 @@ namespace Csla.Rules
               System.Reflection.MethodInfo method = type.GetMethod("AddObjectAuthorizationRules", flags);
               if (method != null)
                 method.Invoke(null, null);
+              mgr.InitializedPerType = true;
             }
             catch (Exception)
             {

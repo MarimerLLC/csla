@@ -133,6 +133,7 @@
     <Compile Include="EditableRootListTests\SingleItem.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.cs" />
     <Compile Include="EditableRootTests\MockEditableRoot.partial.cs" />
+    <Compile Include="EditableRootTests\RootWithNullableProperty.cs" />
     <Compile Include="NameValueList\BasicNameValueList.cs" />
     <Compile Include="ObjectFactory\BusinessItem.cs" />
     <Compile Include="ObjectFactory\ObjectFactoryBusinessItem.cs" />

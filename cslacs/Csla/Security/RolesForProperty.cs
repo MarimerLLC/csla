@@ -14,12 +14,12 @@ namespace Csla.Security
   [Serializable()]
   internal class RolesForProperty
   {
-    private List<string> _readAllowed = new List<string>();
-    private List<string> _readDenied = new List<string>();
-    private List<string> _writeAllowed = new List<string>();
-    private List<string> _writeDenied = new List<string>();
-    private List<string> _executeAllowed = new List<string>();
-    private List<string> _executeDenied = new List<string>();
+    private List<string> _readAllowed;
+    private List<string> _readDenied;
+    private List<string> _writeAllowed;
+    private List<string> _writeDenied;
+    private List<string> _executeAllowed;
+    private List<string> _executeDenied;
 
     /// <summary>
     /// Returns a List(Of string) containing the list
@@ -27,7 +27,15 @@ namespace Csla.Security
     /// </summary>
     public List<string> ReadAllowed
     {
-      get { return _readAllowed; }
+      get
+      {
+        if (_readAllowed == null)
+        {
+          _readAllowed = new List<string>();
+        }
+
+        return _readAllowed;
+      }
     }
 
     /// <summary>
@@ -36,7 +44,15 @@ namespace Csla.Security
     /// </summary>
     public List<string> ReadDenied
     {
-      get { return _readDenied; }
+      get
+      {
+        if (_readDenied == null)
+        {
+          _readDenied = new List<string>();
+        }
+
+        return _readDenied;
+      }
     }
 
     /// <summary>
@@ -45,7 +61,15 @@ namespace Csla.Security
     /// </summary>
     public List<string> WriteAllowed
     {
-      get { return _writeAllowed; }
+      get
+      {
+        if (_writeAllowed == null)
+        {
+          _writeAllowed = new List<string>();
+        }
+
+        return _writeAllowed;
+      }
     }
 
     /// <summary>
@@ -54,7 +78,15 @@ namespace Csla.Security
     /// </summary>
     public List<string> WriteDenied
     {
-      get { return _writeDenied; }
+      get
+      {
+        if (_writeDenied == null)
+        {
+          _writeDenied = new List<string>();
+        }
+
+        return _writeDenied;
+      }
     }
 
     /// <summary>
@@ -65,6 +97,11 @@ namespace Csla.Security
     {
       get
       {
+        if (_executeAllowed == null)
+        {
+          _executeAllowed = new List<string>();
+        }
+
         return _executeAllowed;
       }
     }
@@ -77,6 +114,11 @@ namespace Csla.Security
     {
       get
       {
+        if (_executeDenied == null)
+        {
+          _executeDenied = new List<string>();
+        }
+
         return _executeDenied;
       }
     }

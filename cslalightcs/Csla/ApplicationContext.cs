@@ -292,6 +292,26 @@ namespace Csla
       }
     }
 
+
+    /// <summary>
+    /// Gets the method name that implements the IsInRole() behavior
+    ///  used for authorization.
+    /// </summary>
+    /// <returns>
+    /// Returns a value in the form
+    /// "MethodName".
+    /// </returns>
+    public static string IsInRoleMethodName
+    {
+      get
+      {
+        string result = null; //ConfigurationManager.AppSettings["CslaIsInRoleMethodName"];
+        if (string.IsNullOrEmpty(result))
+          result = string.Empty;
+        return result;
+      }
+    }
+
     private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should

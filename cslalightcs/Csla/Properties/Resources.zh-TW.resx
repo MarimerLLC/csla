@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ClearInvalidException" xml:space="preserve">
+    <value>清除操作無效</value>
+  </data>
+  <data name="InsertInvalidException" xml:space="preserve">
+    <value>插入操作無效</value>
+  </data>
+  <data name="RemoveInvalidException" xml:space="preserve">
+    <value>移除操作無效</value>
+  </data>
+  <data name="ChangeInvalidException" xml:space="preserve">
+    <value>元素變更操作無效</value>
+  </data>
+  <data name="ParentSetException" xml:space="preserve">
+    <value>只允許為子物件設定值(Parent value)</value>
+  </data>
+  <data name="ChildDeleteException" xml:space="preserve">
+    <value>無法直接將子物件標記為刪除 - 請經由母集合</value>
+  </data>
+  <data name="NoSaveChildException" xml:space="preserve">
+    <value>無法直接儲存子物件</value>
+  </data>
+  <data name="NoSaveEditingException" xml:space="preserve">
+    <value>物件正在編輯中，因此無法儲存</value>
+  </data>
+  <data name="NoSaveInvalidException" xml:space="preserve">
+    <value>物件非有效，因此無法儲存</value>
+  </data>
+  <data name="CreateNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許新增</value>
+  </data>
+  <data name="FetchNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許讀取</value>
+  </data>
+  <data name="UpdateNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許更新</value>
+  </data>
+  <data name="DeleteNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許刪除</value>
+  </data>
+  <data name="NoBeginEditChildException" xml:space="preserve">
+    <value>BeginEdit 在子物件中無效</value>
+  </data>
+  <data name="NoCancelEditChildException" xml:space="preserve">
+    <value>CancelEdit 在子物件中無效</value>
+  </data>
+  <data name="NoApplyEditChildException" xml:space="preserve">
+    <value>ApplyEdit 在子物件中無效</value>
+  </data>
+  <data name="NoSuchValueExistsException" xml:space="preserve">
+    <value>不存在值</value>
+  </data>
+  <data name="ErrorReadingValueException" xml:space="preserve">
+    <value>讀取錯誤</value>
+  </data>
+  <data name="StringToDateException" xml:space="preserve">
+    <value>字串值無法轉換為日期</value>
+  </data>
+  <data name="ValueNotSmartDateException" xml:space="preserve">
+    <value>非 SmartDate 的值</value>
+  </data>
+  <data name="NoPrincipalAllowedException" xml:space="preserve">
+    <value>使用Windows 整合保全時不能將 principal object 傳到 DataPortal</value>
+  </data>
+  <data name="BusinessPrincipalException" xml:space="preserve">
+    <value>Principal 必須為 BusinessPrincipal 型別</value>
+  </data>
+  <data name="SmartDateT" xml:space="preserve">
+    <value>t</value>
+  </data>
+  <data name="SmartDateToday" xml:space="preserve">
+    <value>今天</value>
+  </data>
+  <data name="SmartDateY" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="SmartDateYesterday" xml:space="preserve">
+    <value>昨天</value>
+  </data>
+  <data name="SmartDateTom" xml:space="preserve">
+    <value>tom</value>
+  </data>
+  <data name="SmartDateTomorrow" xml:space="preserve">
+    <value>明天</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="FailedOnServer" xml:space="preserve">
+    <value>伺服器失敗</value>
+  </data>
+  <data name="MethodCallFailed" xml:space="preserve">
+    <value>呼叫方法錯誤</value>
+  </data>
+  <data name="MethodNotImplemented" xml:space="preserve">
+    <value>未實作</value>
+  </data>
+  <data name="ExecuteNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許執行</value>
+  </data>
+  <data name="InsertNotSupportedException" xml:space="preserve">
+    <value>操作無效 - 不允許插入</value>
+  </data>
+  <data name="GetIdValueCantBeNull" xml:space="preserve">
+    <value>商業物件必須在GetIdValue提供一個非空值的ID值</value>
+  </data>
+  <data name="PropertyGetNotAllowed" xml:space="preserve">
+    <value>不允許讀取的屬性</value>
+  </data>
+  <data name="PropertySetNotAllowed" xml:space="preserve">
+    <value>不允許設定的屬性</value>
+  </data>
+  <data name="NoDeleteRootException" xml:space="preserve">
+    <value>對根物件為無效 - 使用 Delete 替代</value>
+  </data>
+  <data name="NothingNotValid" xml:space="preserve">
+    <value>引數不可為空值</value>
+  </data>
+  <data name="PrimitiveTypeRequired" xml:space="preserve">
+    <value>參數型別必須為基礎型別</value>
+  </data>
+  <data name="PropertyCopyFailed" xml:space="preserve">
+    <value>屬性複製失敗</value>
+  </data>
+  <data name="MaxValueRule" xml:space="preserve">
+    <value>{0} 不可大於 {1}</value>
+  </data>
+  <data name="MinValueRule" xml:space="preserve">
+    <value>{0} 不可小於 {1}</value>
+  </data>
+  <data name="StringMaxLengthRule" xml:space="preserve">
+    <value>{0} 不可多於 {1} 個字</value>
+  </data>
+  <data name="StringRequiredRule" xml:space="preserve">
+    <value>{0} 不可空白</value>
+  </data>
+  <data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} 未符合正規表示法</value>
+  </data>
+  <data name="InvalidRuleMethodException" xml:space="preserve">
+    <value>無效的規則方法 (目標物件 instance methods 不被允許)</value>
+  </data>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>載入「{0}」型別失敗 </value>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} 不可少於 {1} 個字</value>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>方法不允許執行</value>
+  </data>
+  <data name="ValidationRuleException" xml:space="preserve">
+    <value>驗證規則 {1} 於屬性 {0}驗證失敗</value>
+  </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>不存在的工廠方法:{0}</value>
+  </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>編輯層級不符於第 {0} 層</value>
+  </data>
+</root>

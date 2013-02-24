@@ -83,7 +83,8 @@ namespace Csla.Wpf
     public static readonly DependencyProperty TargetControlProperty = DependencyProperty.Register(
       "TargetControl",
       typeof(DependencyObject),
-      typeof(PropertyStatus));
+      typeof(PropertyStatus),
+      new PropertyMetadata(null, (o, e) => { ((PropertyStatus)o).HandleTarget(); }));
 
     /// <summary>
     /// Reference to the template for the validation rule popup.
@@ -189,7 +190,7 @@ namespace Csla.Wpf
 
     private object GetRealSource(object source, string bindingPath)
     {
-      if (bindingPath.IndexOf('.') > 0)
+      if (source != null && bindingPath.IndexOf('.') > 0)
       {
         var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
@@ -273,13 +274,13 @@ namespace Csla.Wpf
         if (worst != null)
           _worst = worst.Severity;
 
-        _isValid = BrokenRules.Count == 0;
+        IsValid = BrokenRules.Count == 0;
         GoToState(true);
       }
       else
       {
         BrokenRules.Clear();
-        _isValid = true;
+        IsValid = true;
         GoToState(true);
       }
     }
@@ -446,7 +447,7 @@ namespace Csla.Wpf
 
         if (root != null)
         {
-          if (_isValid)
+          if (IsValid)
           {
             Storyboard validStoryboard = (Storyboard)Template.Resources["Valid"];
             validStoryboard.Begin(root);

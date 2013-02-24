@@ -97,7 +97,7 @@
     </Reference>
     <Reference Include="System.Windows.Interactivity, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <HintPath>..\..\Dependencies\Expression\Silverlight\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Windows.Browser" />
@@ -151,6 +151,12 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyChildChanged.cs">
       <Link>Core\INotifyChildChanged.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\DataServiceContextManager.cs">
+      <Link>Data\DataServiceContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Data\ServiceClientManager.cs">
+      <Link>Data\ServiceClientManager.cs</Link>
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Core\INotifyUnhandledAsyncException.cs">
       <Link>Core\INotifyUnhandledAsyncException.cs</Link>
@@ -356,6 +362,9 @@
     <Compile Include="..\..\cslacs\Csla\Validation\SharedValidationRules.cs">
       <Link>Validation\SharedValidationRules.cs</Link>
     </Compile>
+    <Compile Include="..\..\cslacs\Csla\Validation\UriUtilities.cs">
+      <Link>Validation\UriUtilities.cs</Link>
+    </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\ValidationException.cs">
       <Link>Validation\ValidationException.cs</Link>
     </Compile>
@@ -364,6 +373,15 @@
     </Compile>
     <Compile Include="..\..\cslacs\Csla\Validation\ValidationRulesManager.cs">
       <Link>Validation\ValidationRulesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\ErrorEventArgs.cs">
+      <Link>Silverlight\ErrorEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\IErrorDialog.cs">
+      <Link>Silverlight\IErrorDialog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\cslacs\Csla\Wpf\TriggerAction.cs">
+      <Link>Silverlight\TriggerAction.cs</Link>
     </Compile>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="BusinessBase.cs" />
@@ -412,8 +430,6 @@
     <Compile Include="DataPortalEventArgs.cs" />
     <Compile Include="DataPortalException.cs" />
     <Compile Include="DataPortalT.cs" />
-    <Compile Include="Data\DataServiceContextManager.cs" />
-    <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="EditableRootListBase.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="ICriteria.cs" />
@@ -513,11 +529,36 @@
     <None Include="Service References\WcfPortal\WcfPortal2.xsd" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources-il.resx" />
+    <EmbeddedResource Include="Properties\Resources.ar.resx" />
+    <EmbeddedResource Include="Properties\Resources.bs.resx" />
+    <EmbeddedResource Include="Properties\Resources.ca-ES.resx" />
+    <EmbeddedResource Include="Properties\Resources.da.resx" />
+    <EmbeddedResource Include="Properties\Resources.de.resx" />
+    <EmbeddedResource Include="Properties\Resources.el.resx" />
+    <EmbeddedResource Include="Properties\Resources.es-ES.resx" />
+    <EmbeddedResource Include="Properties\Resources.es.resx" />
+    <EmbeddedResource Include="Properties\Resources.fr.resx" />
+    <EmbeddedResource Include="Properties\Resources.hr.resx" />
+    <EmbeddedResource Include="Properties\Resources.hu.resx" />
+    <EmbeddedResource Include="Properties\Resources.it.resx" />
+    <EmbeddedResource Include="Properties\Resources.km-KH.resx" />
+    <EmbeddedResource Include="Properties\Resources.nl.resx" />
+    <EmbeddedResource Include="Properties\Resources.no.resx" />
+    <EmbeddedResource Include="Properties\Resources.pt-br.resx" />
+    <EmbeddedResource Include="Properties\Resources.pt.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ro.resx" />
+    <EmbeddedResource Include="Properties\Resources.ru.resx" />
+    <EmbeddedResource Include="Properties\Resources.sr.resx" />
+    <EmbeddedResource Include="Properties\Resources.sv.resx" />
+    <EmbeddedResource Include="Properties\Resources.vi.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-CHS.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="themes\Generic.xaml">

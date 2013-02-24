@@ -830,7 +830,7 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          dp.Update(child, parameters);
+          if (child.IsDirty) dp.Update(child, parameters);
       }
       finally
       {

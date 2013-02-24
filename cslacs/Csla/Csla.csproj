@@ -113,7 +113,8 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Expression\WPF\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Workflow.Runtime, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
@@ -230,6 +231,11 @@
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\FactoryDataPortal.cs" />
+    <Compile Include="Server\Hosts\Silverlight\ISilverlightRequest.cs" />
+    <Compile Include="Server\Hosts\Silverlight\SilverlightCriteriaRequest.cs" />
+    <Compile Include="Server\Hosts\Silverlight\SilverlightRequestProcessor.cs" />
+    <Compile Include="Server\Hosts\Silverlight\SilverlightResponse.cs" />
+    <Compile Include="Server\Hosts\Silverlight\SilverlightUpdateRequest.cs" />
     <Compile Include="Server\IAuthorizeDataPortal.cs" />
     <Compile Include="Server\ObjectFactory.cs" />
     <Compile Include="Silverlight\Security\WindowsIdentity.cs" />
@@ -404,6 +410,7 @@
     <Compile Include="Validation\RuleSeverity.cs" />
     <Compile Include="Validation\RulesList.cs" />
     <Compile Include="Validation\SharedValidationRules.cs" />
+    <Compile Include="Validation\UriUtilities.cs" />
     <Compile Include="Validation\ValidationException.cs" />
     <Compile Include="Validation\ValidationRules.cs" />
     <Compile Include="Validation\ValidationRules.partial.cs" />
@@ -465,12 +472,15 @@
     <Compile Include="Wpf\CslaDataProviderCommandManager.cs" />
     <Compile Include="Wpf\DataDecoratorBase.cs" />
     <Compile Include="Wpf\ErrorDialog.cs" />
+    <Compile Include="Wpf\ErrorEventArgs.cs" />
     <Compile Include="Wpf\Execute.cs" />
     <Compile Include="Wpf\ExecuteEventArgs.cs" />
+    <Compile Include="Wpf\IErrorDialog.cs" />
     <Compile Include="Wpf\InvokeMethod.cs" />
     <Compile Include="Wpf\ObjectStatus.cs" />
     <Compile Include="Wpf\IdentityConverter.cs" />
     <Compile Include="Wpf\PropertyStatus.cs" />
+    <Compile Include="Wpf\TriggerAction.cs" />
     <Compile Include="Wpf\ViewModel.cs" />
     <Compile Include="Wpf\ViewModelBase.cs" />
     <Compile Include="Wpf\VisibilityMode.cs" />

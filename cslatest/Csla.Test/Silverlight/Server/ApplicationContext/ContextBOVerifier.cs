@@ -12,7 +12,7 @@ namespace Csla.Testing.Business.ApplicationContext
   [Serializable]
   public abstract class ContextBOVerifier<T> : BusinessBase<T> where T : ContextBOVerifier<T> 
   {
-    static int _dummy;
+    static int _dummy = 0;
     public ContextBOVerifier() :this(true){}
     public ContextBOVerifier(bool isNew)
     {
@@ -22,13 +22,13 @@ namespace Csla.Testing.Business.ApplicationContext
       else
         MarkOld();
 
-      _dummy = 0;
+      _dummy = _dummy + 0;
     }
 
     #if !SILVERLIGHT
     protected override void OnDeserialized(StreamingContext context)
     {
-      _dummy = 0;
+      _dummy = _dummy + 0;
       base.OnDeserialized(context);
     }
     #endif

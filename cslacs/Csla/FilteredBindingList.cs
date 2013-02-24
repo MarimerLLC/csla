@@ -280,6 +280,52 @@ namespace Csla
     }
 
     /// <summary>
+    /// Sorts the list if the original list
+    /// supports sorting.
+    /// </summary>
+    /// <param name="propertyName">PropertyName on which to sort.</param>
+    /// <param name="direction">Direction of the sort.</param>
+    public void ApplySort(
+      string propertyName, ListSortDirection direction)
+    {
+      if (SupportsSorting)
+      {
+        var property = GetPropertyDescriptor(propertyName);
+        _bindingList.ApplySort(property, direction);
+      }
+      else
+        throw new NotSupportedException(Resources.SortingNotSupported);
+    }
+
+    /// <summary>
+    /// Gets the property descriptor.
+    /// </summary>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <returns>PropertyDescriptor</returns>
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    {
+      PropertyDescriptor property = null;
+
+      if (!String.IsNullOrEmpty(propertyName))
+      {
+        Type itemType = typeof(T);
+        foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(itemType))
+        {
+          if (prop.Name == propertyName)
+          {
+            property = prop;
+            break;
+          }
+        }
+
+        // throw exception if propertyDescriptor could not be found
+        if (property == null)
+          throw new ArgumentException(string.Format("Property {0} not found", propertyName), propertyName);
+      }
+
+      return property;
+    }
+    /// <summary>
     /// Finds an item in the view
     /// </summary>
     /// <param name="propertyName">Name of the property to search</param>

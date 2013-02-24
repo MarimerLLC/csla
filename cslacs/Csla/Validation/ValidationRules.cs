@@ -1138,10 +1138,10 @@ namespace Csla.Validation
     {
       bool previousRuleBroken = false;
       bool shortCircuited = false;
+      var asyncRulesToInvoke = new List<IAsyncRuleMethod>();
 
       // Lock the rules here to ensure that all rules are run before allowing
       // async rules to notify that they have completed.
-
       for (int index = 0; index < list.Count; index++)
       {
         IRuleMethod rule = list[index];
@@ -1164,9 +1164,13 @@ namespace Csla.Validation
           IAsyncRuleMethod asyncRule = rule as IAsyncRuleMethod;
           if (asyncRule != null)
           {
+            // add rule to rulesToInvoke list 
+            // ValidationRules may already contain asyn running/rules to run when this method is called 
+            // so using separate list for rules to invoke here.
+            asyncRulesToInvoke.Add(asyncRule);
+
             lock (SyncRoot)
               ValidatingRules.Add(asyncRule);
-
             lock (SyncRoot)
               BrokenRulesList.Remove(rule);
           }
@@ -1213,14 +1217,10 @@ namespace Csla.Validation
         }
       }
 
-      IAsyncRuleMethod[] asyncRules = null;
-      lock (SyncRoot)
-        asyncRules = ValidatingRules.ToArray();
-      
       // They must all be added to the ValidatingRules list before you can invoke them.
       // Otherwise you have a race condition, where if a rule completes before the next one is invoked
       // then you may have the ValidationComplete event fire multiple times invalidly.
-      foreach (IAsyncRuleMethod rule in asyncRules)
+      foreach (IAsyncRuleMethod rule in asyncRulesToInvoke)
       {
         try
         {
@@ -1232,7 +1232,16 @@ namespace Csla.Validation
           throw new ValidationException(
             string.Format(Properties.Resources.ValidationRulesException, rule.RuleArgs.PropertyName, rule.RuleName), ex);
         }
-      }      
+      }
+
+      // if no async rules started in this CheckRules and no async rules running then call OnValidationComplete
+      // if we started async rules or async tules is running then OnValidationComplete will be called when the last async rule is finished.
+      if ((asyncRulesToInvoke.Count == 0) && (ValidatingRules.Count == 0))
+      {
+        var target = _target as Csla.Core.BusinessBase;
+        if (target != null)
+          target.OnValidationComplete();
+      }
     }
 
     void asyncRule_Complete(object target, AsyncRuleResult e)

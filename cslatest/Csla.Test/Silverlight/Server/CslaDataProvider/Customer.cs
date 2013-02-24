@@ -9,6 +9,12 @@ using Csla.Serialization;
 
 namespace cslalighttest.CslaDataProvider
 {
+  public enum CustomeType
+  {
+    Active,
+    Inactive
+  }
+
   [Serializable]
   public class Customer : BusinessBase<Customer>
   {
@@ -98,6 +104,59 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(new PropertyInfo<DateTimeOffset>("DateTimeOffsetNull", "DateTimeOffsetNull"));
+    public DateTimeOffset DateTimeOffsetNull
+    {
+      get
+      {
+        return GetProperty(DateTimeOffsetNullProperty);
+      }
+      set
+      {
+        LoadProperty(DateTimeOffsetNullProperty, value);
+      }
+    }
+
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(new PropertyInfo<DateTimeOffset>("DateTimeOffsetNotNull", "DateTimeOffsetNotNull", DateTimeOffset.Now));
+    public DateTimeOffset DateTimeOffsetNotNull
+    {
+      get
+      {
+        return GetProperty(DateTimeOffsetNotNullProperty);
+      }
+      set
+      {
+        LoadProperty(DateTimeOffsetNotNullProperty, value);
+      }
+    }
+
+    private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(new PropertyInfo<DateTimeOffset?>("DateTimeOffsetNullable", "DateTimeOffsetNullable"));
+    public DateTimeOffset? DateTimeOffsetNullable
+    {
+      get
+      {
+        return GetProperty(DateTimeOffsetNullableProperty);
+      }
+      set
+      {
+        LoadProperty(DateTimeOffsetNullableProperty, value);
+      }
+    }
+
+    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(new PropertyInfo<CustomeType>("Type", "Customer Type", CustomeType.Active));
+    public CustomeType Type
+    {
+      get
+      {
+        return GetProperty(TypeProperty);
+      }
+      set
+      {
+        SetProperty(TypeProperty, value);
+      }
+    }
+
+
     private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(new PropertyInfo<CustomerContactList>("Contacts", "Contacts List"));
     public CustomerContactList Contacts
     {
@@ -119,7 +178,7 @@ namespace cslalighttest.CslaDataProvider
       public FetchCriteria() { }
 
       public FetchCriteria(int customerID)
-        : base(typeof(Customer))
+        : base()
       {
         _customerId = customerID;
       }
@@ -193,6 +252,8 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(NameProperty, "Customer Name for Id: " + criteria.Value.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(new DateTime(2000 + criteria.Value, 1, 1)));
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(criteria.Value));
+      LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
+      LoadProperty(TypeProperty, CustomeType.Inactive);
 
       if (criteria.Value == customerIDThrowsException)
         throw new ApplicationException("Test for Silverlight DataSource Error!");
@@ -203,6 +264,7 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(IdProperty, criteria.Value);
       LoadProperty(NameProperty, "New Customer for Id: " + criteria.Value.ToString());
       LoadProperty(DateCreatedProperty, new SmartDate(DateTime.Today));
+      LoadProperty(DateTimeOffsetNotNullProperty, DateTimeOffset.Now);
       LoadProperty(ContactsProperty, CustomerContactList.GetCustomerContactList(0));
     }
 

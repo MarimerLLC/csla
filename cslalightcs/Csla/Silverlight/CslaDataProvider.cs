@@ -59,6 +59,11 @@ namespace Csla.Silverlight
         Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
     }
 
+    private void dataObject_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      RefreshCanOperationsValues();
+    }
+
     private void dataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       RefreshCanOperationsValues();
@@ -165,6 +170,9 @@ namespace Csla.Silverlight
         var npc = oldValue as INotifyPropertyChanged;
         if (npc != null)
           npc.PropertyChanged -= dataObject_PropertyChanged;
+        var nclc = oldValue as System.Collections.Specialized.INotifyCollectionChanged;
+        if (nclc != null)
+          nclc.CollectionChanged -= dataObject_CollectionChanged;
         var ncc = oldValue as INotifyChildChanged;
         if (ncc != null)
           ncc.ChildChanged -= dataObject_ChildChanged;
@@ -186,6 +194,9 @@ namespace Csla.Silverlight
         var npc = newValue as INotifyPropertyChanged;
         if (npc != null)
           npc.PropertyChanged += dataObject_PropertyChanged;
+        var nclc = newValue as System.Collections.Specialized.INotifyCollectionChanged;
+        if (nclc != null)
+          nclc.CollectionChanged += dataObject_CollectionChanged;
         var ncc = newValue as INotifyChildChanged;
         if (ncc != null)
           ncc.ChildChanged += dataObject_ChildChanged;
@@ -366,7 +377,7 @@ namespace Csla.Silverlight
     /// </summary>
     /// <remarks>
     /// This property is designed to 
-    /// reference an ErrorDialog control.
+    /// reference an IErrorDialog control.
     /// </remarks>
     public object DataChangedHandler
     {
@@ -377,7 +388,7 @@ namespace Csla.Silverlight
       set
       {
         _dataChangedHandler = value;
-        var dialog = value as ErrorDialog;
+        var dialog = value as IErrorDialog;
         if (dialog != null)
           dialog.Register(this);
         OnPropertyChanged("DataChangedHandler");
@@ -578,13 +589,16 @@ namespace Csla.Silverlight
     /// Removes an item from an editable list
     /// business object.
     /// </summary>
-    /// <param name="item">
-    /// Reference to the child item to remove.
+    /// <param name="sender">Object invoking this method.</param>
+    /// <param name="e">
+    /// ExecuteEventArgs, where MethodParameter contains 
+    /// the item to be removed from the list.
     /// </param>
-    public void RemoveItem(object item)
+    public void RemoveItem(object sender, ExecuteEventArgs e)
     {
       try
       {
+        var item = e.MethodParameter;
         SetError(null);
         var obj = ObjectInstance as System.Collections.IList;
         if (obj != null)
@@ -985,8 +999,8 @@ namespace Csla.Silverlight
     /// <summary>
     /// Raises the PropertyChanged event.
     /// </summary>
-    /// <param name="e">
-    /// Arguments for event.
+    /// <param name="propertyName">
+    /// Name of the changed property
     /// </param>
     protected virtual void OnPropertyChanged(string propertyName)
     {

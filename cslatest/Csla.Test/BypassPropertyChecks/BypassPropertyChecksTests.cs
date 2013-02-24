@@ -131,13 +131,13 @@ namespace Csla.Test.BypassPropertyChecks
     {
       UnitTestContext context = GetContext();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
-      bool propertyChangedFired = false;
       BypassBusinessBase testObj = new BypassBusinessBase();
+#if !SILVERLIGHT
+      bool propertyChangedFired = false;
       testObj.PropertyChanged += (o, e) =>
       {
         propertyChangedFired = true;
       };
-#if !SILVERLIGHT
       testObj.LoadId2(1);
       context.Assert.AreEqual(1, testObj.ReadId2ByPass());
       context.Assert.AreEqual(true, propertyChangedFired);
@@ -223,13 +223,13 @@ namespace Csla.Test.BypassPropertyChecks
     {
       UnitTestContext context = GetContext();
       Csla.Test.Security.TestPrincipal.SimulateLogin();
-      bool propertyChangedFired = false;
       BypassBusinessBase testObj = new BypassBusinessBase();
+#if !SILVERLIGHT
+      bool propertyChangedFired = false;
       testObj.PropertyChanged += (o, e) =>
       {
         propertyChangedFired = true;
       };
-#if !SILVERLIGHT
       testObj.LoadId4(1);
        context.Assert.AreEqual(true, testObj.IsDirty);
       context.Assert.AreEqual(1, testObj.ReadId4ByPass());

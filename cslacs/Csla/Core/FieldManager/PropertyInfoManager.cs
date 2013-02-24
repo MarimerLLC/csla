@@ -1,9 +1,31 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="PropertyInfoManager.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Indicates that the specified property belongs</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using Csla.Properties;
+using System.Linq;
+using Csla.Reflection;
 
 namespace Csla.Core.FieldManager
 {
+
+
+  /// <summary>
+  /// Compare to propertyinfo x with y for sorting
+  /// </summary>
+  internal class PropertyComparer : Comparer<IPropertyInfo>
+  {
+    public override int Compare(IPropertyInfo x, IPropertyInfo y)
+    {
+      return StringComparer.InvariantCultureIgnoreCase.Compare(x.Name, y.Name);
+    }
+  }
+
   internal static class PropertyInfoManager
   {
     private static object _cacheLock = new object();
@@ -66,11 +88,29 @@ namespace Csla.Core.FieldManager
       {
         if (list.IsLocked)
           throw new InvalidOperationException(string.Format(Resources.PropertyRegisterNotAllowed, info.Name, objectType.Name));
-        list.Add(info);
-        list.Sort();
+
+        // This is the semantic code for RegisterProperty
+        //if (list.Any(pi => pi.Name == info.Name))
+        //  throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
+        //list.Add(info);
+        //list.Sort();
+
+        // Optimized code
+        // BinarySearch uses the same comparer as list.Sort() to find the item in a sorted list.
+        // If not found then returns the negative index for item in sorted list (to insert). 
+        // This allows us to insert the item right away with no need for explicit Sort on the list.
+        var index = list.BinarySearch(info, new PropertyComparer());
+        // if found then throw DuplicateNotAllowed
+        if (index >= 0)
+          throw new InvalidOperationException(string.Format(Resources.PropertyRegisterDuplicateNotAllowed, info.Name));
+
+        // insert info at correct sorted index
+        list.Insert(~index, info);
       }
       return info;
     }
+
+
 
     /// <summary>
     /// Returns a copy of the property list for

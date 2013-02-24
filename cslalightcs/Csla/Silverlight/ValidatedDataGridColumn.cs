@@ -12,15 +12,29 @@ using System.Windows.Data;
 
 namespace Csla.Silverlight
 {
-
+  /// <summary>
+  /// Implements a column for the datagrid
+  /// that uses PropertyStatus for validation display.
+  /// </summary>
   public abstract class ValidatedDataGridColumn : DataGridBoundColumn
   {
     #region Abstract members
 
+    /// <summary>
+    /// Creates the UI element.
+    /// </summary>
     protected abstract FrameworkElement CreateElement();
+    /// <summary>
+    /// Creates the UI editing element.
+    /// </summary>
     protected abstract FrameworkElement CreateEditingElement();
-
+    /// <summary>
+    /// Gets the element property value.
+    /// </summary>
     protected abstract DependencyProperty ElementProperty { get; }
+    /// <summary>
+    /// Gets the element editing property value.
+    /// </summary>
     protected abstract DependencyProperty EditingElementProperty { get; }
 
     private FrameworkElement _editControl;
@@ -28,6 +42,11 @@ namespace Csla.Silverlight
     
     #region Generate elements
 
+    /// <summary>
+    /// Generates the editing element.
+    /// </summary>
+    /// <param name="cell">Cell for content</param>
+    /// <param name="dataItem">Data item for binding</param>
     protected override FrameworkElement GenerateEditingElement(DataGridCell cell, object dataItem)
     {
       StackPanel panel = new StackPanel();
@@ -54,8 +73,12 @@ namespace Csla.Silverlight
       return panel;
     }
 
+    /// <summary>
+    /// Generates the display element.
+    /// </summary>
+    /// <param name="cell">Cell for content</param>
+    /// <param name="dataItem">Data item for binding</param>
     protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
-   
     {
       StackPanel panel = new StackPanel();
       panel.Orientation = Orientation.Horizontal;
@@ -81,6 +104,11 @@ namespace Csla.Silverlight
       return panel;
     }
 
+    /// <summary>
+    /// Cancels edits on the cell.
+    /// </summary>
+    /// <param name="editingElement">Editing element</param>
+    /// <param name="uneditedValue">Unedited value</param>
     protected override void CancelCellEdit(FrameworkElement editingElement, object uneditedValue)
     {
       _editControl.SetValue(EditingElementProperty, uneditedValue);

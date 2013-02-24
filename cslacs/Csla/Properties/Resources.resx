@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClearInvalidException" xml:space="preserve">
     <value>Clear is an invalid operation</value>
@@ -387,9 +387,16 @@
   <data name="BindingSourceNotProvided" xml:space="preserve">
     <value>A root binding source has not been provided.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\favicon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="favicon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAA////AAN+9wCtc1MAAQrLAIW49gAfYzEAvsa0AJZHGQBTW9gAdqKAAGI0VwAZb68ANZz8AK3I
+        9gAnM9AAiIMziMIiIiKIMXc4zVIl0og3iIjC7u4iiDeIiMJVVSKIN4iIwi7tIog3iIjCJeIiiDOIiMIt
+        0iK7u7u7zMzMzERE9ERmZmZmRJ5e9GZ3emZE6U+UZqZnpk9URERmandmT+9PlGZ6ZmZEnp6UZnqnZkRJ
+        n0RmaqZmRERERGZmZmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAA
+</value>
   </data>
   <data name="MemberNotFoundException" xml:space="preserve">
     <value>Member not found on object ({0})</value>
@@ -423,5 +430,14 @@
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>
+  </data>
+  <data name="ExecuteBadParams" xml:space="preserve">
+    <value>Method to be executed must have 0 or 2 parameters</value>
+  </data>
+  <data name="ExecuteBadTriggerEvent" xml:space="preserve">
+    <value>Trigger event has an unsupported signature</value>
+  </data>
+  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
+    <value>Cannot register property {0}, a PropertyInfo with the same name already exists.</value>
   </data>
 </root>

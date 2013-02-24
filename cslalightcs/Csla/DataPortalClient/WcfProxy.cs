@@ -625,7 +625,7 @@ namespace Csla.DataPortalClient
     /// Override this method to manipulate the message
     /// request data returned from the server.
     /// </summary>
-    /// <param name="request">Response data.</param>
+    /// <param name="response">Response data.</param>
     protected virtual WcfPortal.WcfResponse ConvertResponse(WcfPortal.WcfResponse response)
     {
       return response;

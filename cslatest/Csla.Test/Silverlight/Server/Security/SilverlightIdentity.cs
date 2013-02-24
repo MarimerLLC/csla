@@ -15,7 +15,17 @@ namespace Csla.Testing.Business.Security
 
     public SilverlightIdentity() {}
 
-    private void DataPortal_Fetch(object criteria)
+#if SILVERLIGHT
+    public void DataPortal_Fetch(object criteria, LocalProxy<SilverlightIdentity>.CompletedHandler completed)
+    {
+      Roles = new MobileList<string>(new string[] { "Admin Role", "User Role" });
+      IsAuthenticated = true;
+      Name = "SilverlightIdentity";
+      AuthenticationType = "SilverLight";
+      completed(this, null);
+    }
+#else
+    protected override void DataPortal_Fetch(object criteria)
     {
       if (((SilverlightPrincipal.Criteria)criteria).Name == "invalidusername")
       {
@@ -26,20 +36,11 @@ namespace Csla.Testing.Business.Security
       }
       else
       {
-        Roles = new MobileList<string>( new string[]{"Admin Role", "User Role" });
+        Roles = new MobileList<string>(new string[] { "Admin Role", "User Role" });
         IsAuthenticated = true;
         Name = "SilverlightIdentity";
         AuthenticationType = "SilverLight";
       }
-    }
-#if SILVERLIGHT
-    public void DataPortal_Fetch(object criteria, LocalProxy<SilverlightIdentity>.CompletedHandler completed)
-    {
-      Roles = new MobileList<string>(new string[] { "Admin Role", "User Role" });
-      IsAuthenticated = true;
-      Name = "SilverlightIdentity";
-      AuthenticationType = "SilverLight";
-      completed(this, null);
     }
 #endif
   }

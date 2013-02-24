@@ -129,6 +129,11 @@ namespace Csla
       return result;
     }
 
+    object ISavable.Save(bool forceUpdate)
+    {
+      return Save(forceUpdate);
+    }
+
     /// <summary>
     /// Saves the object to the database, forcing
     /// IsNew to <see langword="false"/> and IsDirty to True.

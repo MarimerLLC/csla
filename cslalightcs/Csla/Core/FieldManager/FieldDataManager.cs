@@ -27,6 +27,9 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public FieldDataManager() { }
 
     internal FieldDataManager(Type businessObjectType)
@@ -508,13 +511,24 @@ namespace Csla.Core.FieldManager
 
     #region IMobileObject Members
 
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       info.AddValue("_businessObjectType", _businessObjectType);
 
       if (mode == StateMode.Serialization && _stateStack.Count > 0)
       {
-        byte[] xml = Utilities.XmlSerialize(_stateStack.ToArray());
+        MobileList<SerializationInfo> list = new MobileList<SerializationInfo>(_stateStack.ToArray());
+        byte[] xml = MobileFormatter.Serialize(list);
         info.AddValue("_stateStack", xml);
       }
 
@@ -535,6 +549,11 @@ namespace Csla.Core.FieldManager
       base.OnGetState(info, mode);
     }
 
+    /// <summary>
+    /// Serializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="formatter">Serializer instance</param>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (IFieldData data in _fieldData)
@@ -553,6 +572,16 @@ namespace Csla.Core.FieldManager
       base.OnGetChildren(info, formatter);
     }
 
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value;
@@ -566,7 +595,8 @@ namespace Csla.Core.FieldManager
         {
           //string xml = info.GetValue<string>("_stateStack");
           byte[] xml = info.GetValue<byte[]>("_stateStack");
-          SerializationInfo[] layers = Utilities.XmlDeserialize<SerializationInfo[]>(xml);
+          MobileList<SerializationInfo> list = (MobileList<SerializationInfo>)MobileFormatter.Deserialize(xml);
+          SerializationInfo[] layers = list.ToArray();
           Array.Reverse(layers);
           foreach (SerializationInfo layer in layers)
             _stateStack.Push(layer);
@@ -615,6 +645,11 @@ namespace Csla.Core.FieldManager
       base.OnSetState(info, mode);
     }
 
+    /// <summary>
+    /// Deserializes child objects.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="formatter">Serializer instance</param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       foreach (IPropertyInfo property in _propertyList)
@@ -641,7 +676,7 @@ namespace Csla.Core.FieldManager
     /// Forces initialization of the static fields declared
     /// by a type, and any of its base class types.
     /// </summary>
-    /// <param name="obj">Object to initialize.</param>
+    /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
       var attr =

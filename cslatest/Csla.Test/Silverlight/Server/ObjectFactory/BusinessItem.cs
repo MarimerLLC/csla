@@ -92,7 +92,7 @@ namespace Csla.Testing.Business.ObjectFactory
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Create(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
@@ -116,7 +116,7 @@ namespace Csla.Testing.Business.ObjectFactory
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
@@ -124,7 +124,7 @@ namespace Csla.Testing.Business.ObjectFactory
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Update(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
+    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<BusinessItem>.CompletedHandler completed)
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

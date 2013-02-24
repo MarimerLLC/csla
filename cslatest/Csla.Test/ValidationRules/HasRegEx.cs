@@ -10,16 +10,14 @@ namespace Csla.Test.ValidationRules
 
     public string Ssn
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get { CanReadProperty(true); return _ssn; }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+      get { CanReadProperty("Ssn", true); return _ssn; }
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Ssn", true);
         if (_ssn != value)
         {
           _ssn = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Ssn");
         }
       }
     }
@@ -28,16 +26,14 @@ namespace Csla.Test.ValidationRules
 
     public string Ssn2
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get { CanReadProperty(true); return _ssn2; }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+      get { CanReadProperty("Ssn2", true); return _ssn2; }
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Ssn2", true);
         if (_ssn2 != value)
         {
           _ssn2 = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Ssn2");
         }
       }
     }

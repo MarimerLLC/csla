@@ -39,6 +39,10 @@ namespace Csla.Core
       protected set { IsReadOnlyCore = value; }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether
+    /// the list is readonly.
+    /// </summary>
     protected virtual bool IsReadOnlyCore
     {
       get { return _isReadOnly; }
@@ -135,17 +139,18 @@ namespace Csla.Core
     protected override void SetItem(int index, C item)
     {
       if (!IsReadOnly)
-      {
-        //RemoveIndexItem(this[index]);
         base.SetItem(index, item);
-        //InsertIndexItem(item);
-      }
       else
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
     #region ITrackStatus
 
+    /// <summary>
+    /// Gets a value indicating whether this
+    /// object or any child object is currently
+    /// executing an async operation.
+    /// </summary>
     public override bool IsBusy
     {
       get
@@ -168,17 +173,31 @@ namespace Csla.Core
 
     #region MobileObject overrides
 
+    /// <summary>
+    /// Gets the state of the object for serialization.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
     protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly);
       base.OnGetState(info);
     }
+
+    /// <summary>
+    /// Sets the state of the object from serialization.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
     protected override void OnSetState(SerializationInfo info)
     {
       _isReadOnly = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
       base.OnSetState(info);
     }
 
+    /// <summary>
+    /// Serializes any child objects.
+    /// </summary>
+    /// <param name="info">Serialization state</param>
+    /// <param name="formatter">Serializer instance</param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       IsReadOnlyCore = false;

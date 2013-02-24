@@ -69,13 +69,24 @@ namespace Csla.Security
       if (mIsInRoleProvider == null)
       {
         string provider = ApplicationContext.IsInRoleProvider;
+        string method = ApplicationContext.IsInRoleMethodName;
+
+        // if only provider is specified 
+        if ((!string.IsNullOrEmpty(provider)) && String.IsNullOrEmpty(method))
+        {
+          // try to get method name from last split og ',' separated values in provider
+          // this is to prevent legacy settings to be broken 
+          var arr1 = provider.Split(',');
+          method = arr1[arr1.Length - 1].Trim();
+          provider = string.Join(",", arr1, 0, arr1.Length - 1).Trim();
+        }
+
         if (string.IsNullOrEmpty(provider))
           mIsInRoleProvider = IsInRoleDefault;
         else
         {
-          string[] items = provider.Split(',');
-          Type containingType = Csla.Reflection.MethodCaller.GetType(items[0] + "," + items[1]);
-          mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, items[2]));
+          Type containingType = Csla.Reflection.MethodCaller.GetType(provider);
+          mIsInRoleProvider = (IsInRoleProvider)(Delegate.CreateDelegate(typeof(IsInRoleProvider), containingType, method));
         }
       }
       return mIsInRoleProvider(principal, role);

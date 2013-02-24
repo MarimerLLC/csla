@@ -30,6 +30,11 @@ namespace Csla.Silverlight
   {
     private bool _isReadOnly = false;
     private FrameworkElement _lastImage;
+    private Point _lastPosition;
+    private Point _popupLastPosition;
+    private Size _lastAppSize;
+    private Size _lastPopupSize;
+
 
     #region Constructors
 
@@ -67,7 +72,7 @@ namespace Csla.Silverlight
       "Property",
       typeof(object),
       typeof(PropertyStatus),
-      new PropertyMetadata((o, e) => ((PropertyStatus)o).SetSource()));
+      new PropertyMetadata(new object(), (o, e) => ((PropertyStatus)o).SetSource()));
 
     /// <summary>
     /// Gets or sets the source business
@@ -114,7 +119,7 @@ namespace Csla.Silverlight
 
     private object GetRealSource(object source, string bindingPath)
     {
-      if (bindingPath.IndexOf('.') > 0)
+      if (source != null && bindingPath.IndexOf('.') > 0)
       {
         var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
@@ -142,6 +147,9 @@ namespace Csla.Silverlight
 
     private void DetachSource(object source)
     {
+      var p = source as INotifyPropertyChanged;
+      if (p != null)
+        p.PropertyChanged -= source_PropertyChanged;
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged -= source_BusyChanged;
@@ -149,9 +157,18 @@ namespace Csla.Silverlight
 
     private void AttachSource(object source)
     {
+      var p = source as INotifyPropertyChanged;
+      if (p != null)
+        p.PropertyChanged += source_PropertyChanged;
       INotifyBusy busy = source as INotifyBusy;
       if (busy != null)
         busy.BusyChanged += source_BusyChanged;
+    }
+
+    void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      if (e.PropertyName == _bindingPath)
+        UpdateState();
     }
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
@@ -182,7 +199,7 @@ namespace Csla.Silverlight
       "TargetControl",
       typeof(object),
       typeof(PropertyStatus),
-      null);
+      new PropertyMetadata(null, (o, e) => { ((PropertyStatus)o).HandleTarget(); }));
 
     /// <summary>
     /// Gets or sets the target control to which this control is bound.
@@ -265,7 +282,7 @@ namespace Csla.Silverlight
     public bool IsBusy
     {
       get { return _isBusy; }
-      private set 
+      private set
       {
         if (value != _isBusy)
         {
@@ -356,8 +373,10 @@ namespace Csla.Silverlight
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null && sender is UIElement)
+      if (popup != null && sender is UIElement && Application.Current.RootVisual != null)
       {
+        _lastPosition = e.GetPosition(Application.Current.RootVisual);
+        _lastAppSize = Application.Current.RootVisual.RenderSize;
         Point p = e.GetPosition((UIElement)sender);
         Size size = ((UIElement)sender).DesiredSize;
         // ensure events are attached only once.
@@ -367,7 +386,31 @@ namespace Csla.Silverlight
 
         popup.VerticalOffset = p.Y + size.Height;
         popup.HorizontalOffset = p.X + size.Width;
+        _popupLastPosition = new Point();
+        _popupLastPosition.X = popup.HorizontalOffset;
+        _popupLastPosition.Y = popup.VerticalOffset;
+        popup.Loaded += popup_Loaded;
         popup.IsOpen = true;
+      }
+    }
+
+    void popup_Loaded(object sender, RoutedEventArgs e)
+    {
+      (sender as Popup).Loaded -= popup_Loaded;
+      if (((sender as Popup).Child as UIElement).DesiredSize.Height > 0)
+      {
+        _lastPopupSize = ((sender as Popup).Child as UIElement).DesiredSize;
+      }
+      if (_lastAppSize != null && _lastPosition != null && _popupLastPosition != null && _lastPopupSize != null)
+      {
+        if (_lastAppSize.Width < _lastPosition.X + _popupLastPosition.X + _lastPopupSize.Width)
+        {
+          (sender as Popup).HorizontalOffset = _lastAppSize.Width - _lastPosition.X - _popupLastPosition.X - _lastPopupSize.Width;
+        }
+        if (_lastAppSize.Height < _lastPosition.Y + _popupLastPosition.Y + _lastPopupSize.Height)
+        {
+          (sender as Popup).VerticalOffset = _lastAppSize.Height - _lastPosition.Y - _popupLastPosition.Y - _lastPopupSize.Height;
+        }
       }
     }
 

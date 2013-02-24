@@ -172,23 +172,44 @@ namespace Csla.Data
       }
     }
 
+    private bool _commit = false;
+
+    public void Commit()
+    {
+      if (RefCount == 1)
+        _commit = true;
+    }
+
     #region  Reference counting
 
-    private int mRefCount;
+    private int _refCount;
+
+    /// <summary>
+    /// Gets the current reference count for this
+    /// object.
+    /// </summary>
+    public int RefCount
+    {
+      get { return _refCount; }
+    }
 
     private void AddRef()
     {
-      mRefCount += 1;
+      _refCount += 1;
     }
 
     private void DeRef()
     {
-
       lock (_lock)
       {
-        mRefCount -= 1;
-        if (mRefCount == 0)
+        _refCount -= 1;
+        if (_refCount == 0)
         {
+          if (_commit)
+            _transaction.Commit();
+          else
+            _transaction.Rollback();
+
           _transaction.Dispose();
           _connection.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));

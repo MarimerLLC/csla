@@ -540,7 +540,7 @@ namespace Csla.Core
             result = false;
         }
         // store value in cache
-        _readResultCache.Add(propertyName, result);
+        _readResultCache[propertyName] = result;
       }
       
       return result;
@@ -990,7 +990,6 @@ namespace Csla.Core
     {
       _neverCommitted = false;
       AcceptChanges(this.EditLevel - 1);
-      BindingEdit = false;
     }
 
     /// <summary>
@@ -999,9 +998,12 @@ namespace Csla.Core
     /// </summary>
     protected override void AcceptChangesComplete()
     {
-      if (Parent != null)
-        Parent.ApplyEditChild(this);
+      BindingEdit = false;
       base.AcceptChangesComplete();
+
+      // !!!! Will trigger Save here when using DynamicListBase template
+      if (Parent != null)
+        Parent.ApplyEditChild(this);    
     }
 
     #endregion
@@ -1126,7 +1128,8 @@ namespace Csla.Core
 
     private Validation.ValidationRules _validationRules;
 
-    [NonSerialized()]
+    [NonSerialized]
+    [NotUndoable]
     private EventHandler _validationCompleteHandlers;
 
     /// <summary>
@@ -1150,7 +1153,7 @@ namespace Csla.Core
     /// Raises the ValidationComplete event
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void OnValidationComplete()
+    internal protected virtual void OnValidationComplete()
     {
       if (_validationCompleteHandlers != null)
         _validationCompleteHandlers(this, EventArgs.Empty);
@@ -2509,7 +2512,18 @@ namespace Csla.Core
       if (oldValue == null)
         valuesDiffer = newValue != null;
       else
-        valuesDiffer = !(oldValue.Equals(newValue));
+      {
+        // use reference equals for objects that inherit from CSLA base class
+        if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type)) 
+        {
+          valuesDiffer = !(ReferenceEquals(oldValue, newValue));
+        }
+        else
+        {
+          valuesDiffer = !(oldValue.Equals(newValue));
+        }
+      }
+
 
       if (valuesDiffer)
       {
@@ -2517,7 +2531,7 @@ namespace Csla.Core
         IBusinessObject old = oldValue as IBusinessObject;
         if (old != null)
           RemoveEventHooks(old);
-        IBusinessObject @new = newValue as IBusinessObject;
+        IBusinessObject @new = newValue as IBusinessObject;  
         if (@new != null)
           AddEventHooks(@new);
 

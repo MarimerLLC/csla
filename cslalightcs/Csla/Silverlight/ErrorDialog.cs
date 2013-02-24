@@ -15,7 +15,7 @@ namespace Csla.Silverlight
   /// Displays an error dialog for any exceptions
   /// that occur in a CslaDataProvider.
   /// </summary>
-  public class ErrorDialog : Control
+  public class ErrorDialog : Control, IErrorDialog
   {
     /// <summary>
     /// Creates an instance of the control.
@@ -118,11 +118,6 @@ namespace Csla.Silverlight
       set { SetValue(ShowExceptionDetailProperty, value); }
     }
 
-    internal void Register(object source)
-    {
-      AttachSource(source);
-    }
-
     private void AttachSource(object source)
     {
       var dp = source as CslaDataProvider;
@@ -160,5 +155,14 @@ namespace Csla.Silverlight
           MessageBoxButton.OK);
       }
     }
+
+    #region IErrorDialog Members
+
+    void IErrorDialog.Register(object source)
+    {
+      AttachSource(source);
+    }
+
+    #endregion
   }
 }

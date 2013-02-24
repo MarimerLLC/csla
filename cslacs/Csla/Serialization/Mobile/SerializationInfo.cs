@@ -14,15 +14,17 @@ namespace Csla.Serialization.Mobile
 #if TESTING
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
+  [Serializable]
   [DataContract]
-  public class SerializationInfo
+  public class SerializationInfo : IMobileObject
   {
     /// <summary>
     /// Object that contains information about
     /// a single field.
     /// </summary>
+    [Serializable]
     [DataContract]
-    public class FieldData
+    public class FieldData : IMobileObject
     {
       /// <summary>
       /// Field value.
@@ -43,14 +45,41 @@ namespace Csla.Serialization.Mobile
       /// </summary>
       [DataMember]
       public bool IsDirty { get; set; }
+
+      #region IMobileObject Members
+      public FieldData() { }
+      public void GetState(SerializationInfo info)
+      {
+        info.AddValue("FieldData.Value", Value);
+        info.AddValue("FieldData.EnumTypeName", EnumTypeName);
+        info.AddValue("FieldData.IsDirty", IsDirty);
+      }
+
+      public void GetChildren(SerializationInfo info, MobileFormatter formatter)
+      {
+      }
+
+      public void SetState(SerializationInfo info)
+      {
+        Value = info.GetValue<object>("FieldData.Value");
+        EnumTypeName = info.GetValue<string>("FieldData.EnumTypeName");
+        IsDirty = info.GetValue<bool>("FieldData.IsDirty");
+      }
+
+      public void SetChildren(SerializationInfo info, MobileFormatter formatter)
+      {
+      }
+
+      #endregion
     }
 
     /// <summary>
     /// Object that contains information about
     /// a single child reference.
     /// </summary>
+    [Serializable]
     [DataContract]
-    public class ChildData
+    public class ChildData : IMobileObject
     {
       /// <summary>
       /// Reference number for the child.
@@ -62,6 +91,30 @@ namespace Csla.Serialization.Mobile
       /// </summary>
       [DataMember]
       public bool IsDirty { get; set; }
+
+      #region IMobileObject Members
+      public ChildData() { }
+      public void GetState(SerializationInfo info)
+      {
+        info.AddValue("ChildData.ReferenceId", ReferenceId);
+        info.AddValue("ChildData.IsDirty", IsDirty);
+      }
+
+      public void GetChildren(SerializationInfo info, MobileFormatter formatter)
+      {
+      }
+
+      public void SetState(SerializationInfo info)
+      {
+        ReferenceId = info.GetValue<int>("ChildData.ReferenceId");
+        IsDirty = info.GetValue<bool>("ChildData.IsDirty");
+      }
+
+      public void SetChildren(SerializationInfo info, MobileFormatter formatter)
+      {
+      }
+
+      #endregion
     }
 
     private Dictionary<string, ChildData> _children = new Dictionary<string, ChildData>();
@@ -180,5 +233,56 @@ namespace Csla.Serialization.Mobile
     {
       _children.Add(name, new ChildData { ReferenceId = referenceId, IsDirty = isDirty });
     }
+
+    #region IMobileObject Members
+
+    public SerializationInfo() { }
+
+    public void GetState(SerializationInfo info)
+    {
+      info.AddValue("SerializationInfo.ReferenceId", ReferenceId);
+      info.AddValue("SerializationInfo.TypeName", TypeName);
+    }
+
+    public void GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (string key in _children.Keys)
+      {
+        ChildData value = _children[key];
+        SerializationInfo si = formatter.SerializeObject(value);
+        info.AddChild(key, si.ReferenceId);
+      }
+      foreach (string key in _values.Keys)
+      {
+        FieldData value = _values[key];
+        SerializationInfo si = formatter.SerializeObject(value);
+        info.AddChild(key, si.ReferenceId);
+      }
+    }
+
+    public void SetState(SerializationInfo info)
+    {
+      ReferenceId = info.GetValue<int>("SerializationInfo.ReferenceId");
+      TypeName = info.GetValue<string>("SerializationInfo.TypeName");
+    }
+
+    public void SetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      foreach (string key in info.Children.Keys)
+      {
+        int referenceId = info.Children[key].ReferenceId;
+        object serialized = formatter.GetObject(referenceId);
+        if (serialized is ChildData)
+        {
+          _children.Add(key, (ChildData)serialized);
+        }
+        else
+        {
+          _values.Add(key, (FieldData)serialized);
+        }
+      }
+    }
+
+    #endregion
   }
 }

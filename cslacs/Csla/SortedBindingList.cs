@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -13,7 +14,7 @@ namespace Csla
   /// Type of child object contained by
   /// the original list or collection.
   /// </typeparam>
-  public class SortedBindingList<T> : 
+  public class SortedBindingList<T> :
     IList<T>, IBindingList, IEnumerable<T>, ICancelAddNew
   {
 
@@ -60,8 +61,11 @@ namespace Csla
           }
           else if (Key.Equals(target))
             return 0;
-          else
-            return Key.ToString().CompareTo(target.ToString());
+          
+          else if (target == null)
+            return 1;
+          
+          return Key.ToString().CompareTo(target.ToString());
         }
       }
 
@@ -84,8 +88,8 @@ namespace Csla
       private int _index;
 
       public SortedEnumerator(
-        IList<T> list, 
-        List<ListItem> sortIndex, 
+        IList<T> list,
+        List<ListItem> sortIndex,
         ListSortDirection direction)
       {
         _list = list;
@@ -162,6 +166,9 @@ namespace Csla
         GC.SuppressFinalize(this);
       }
 
+      /// <summary>
+      /// Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
+      /// </summary>
       ~SortedEnumerator()
       {
         Dispose(false);
@@ -316,24 +323,9 @@ namespace Csla
     /// <param name="direction">The direction to sort the data.</param>
     public void ApplySort(string propertyName, ListSortDirection direction)
     {
-      _sortBy = null;
+      _sortBy = GetPropertyDescriptor(propertyName);
 
-      if (!String.IsNullOrEmpty(propertyName))
-      {
-        Type itemType = typeof(T);
-        foreach (PropertyDescriptor prop in 
-          TypeDescriptor.GetProperties(itemType))
-        {
-          if (prop.Name == propertyName)
-          {
-            _sortBy = prop;
-            break;
-          }
-        }
-      }
-      
       ApplySort(_sortBy, direction);
-
     }
 
     /// <summary>
@@ -356,7 +348,15 @@ namespace Csla
     /// <param name="key">Value to find</param>
     public int Find(string propertyName, object key)
     {
-      PropertyDescriptor findProperty = null;
+      PropertyDescriptor findProperty = GetPropertyDescriptor(propertyName);
+
+      return Find(findProperty, key);
+
+    }
+
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    {
+      PropertyDescriptor property = null;
 
       if (!String.IsNullOrEmpty(propertyName))
       {
@@ -365,14 +365,17 @@ namespace Csla
         {
           if (prop.Name == propertyName)
           {
-            findProperty = prop;
+            property = prop;
             break;
           }
         }
+
+        // throw exception if propertyDescriptor could not be found
+        if (property == null)
+          throw new ArgumentException(string.Format("Property {0} not found", propertyName), propertyName);
       }
 
-      return Find(findProperty, key);
-
+      return property;
     }
 
     /// <summary>
@@ -384,7 +387,10 @@ namespace Csla
     public int Find(PropertyDescriptor property, object key)
     {
       if (_supportsBinding)
-        return SortedIndex(_bindingList.Find(property, key));
+      {
+        var originalIndex = _bindingList.Find(property, key);
+        return originalIndex > -1 ? SortedIndex(originalIndex) : -1;
+      }
       else
         return -1;
     }
@@ -651,26 +657,10 @@ namespace Csla
       {
         _initiatedLocally = true;
         int baseIndex = OriginalIndex(index);
-        
+
         // remove the item from the source list
         _list.RemoveAt(baseIndex);
 
-        if (_list.Count != _sortIndex.Count)
-        {
-          // delete the corresponding value in the sort index
-          if (_sortOrder == ListSortDirection.Ascending)
-            _sortIndex.RemoveAt(index);
-          else
-            _sortIndex.RemoveAt(_sortIndex.Count - 1 - index);
-
-          // now fix up all index pointers in the sort index
-          foreach (ListItem item in _sortIndex)
-            if (item.BaseIndex > baseIndex)
-              item.BaseIndex -= 1;
-        }
-
-        OnListChanged(new ListChangedEventArgs(
-          ListChangedType.ItemDeleted, index));
         _initiatedLocally = false;
       }
       else
@@ -725,9 +715,9 @@ namespace Csla
     private bool _sorted;
     private bool _initiatedLocally;
     private PropertyDescriptor _sortBy;
-    private ListSortDirection _sortOrder = 
+    private ListSortDirection _sortOrder =
       ListSortDirection.Ascending;
-    private List<ListItem> _sortIndex = 
+    private List<ListItem> _sortIndex =
       new List<ListItem>();
 
 
@@ -743,7 +733,7 @@ namespace Csla
       {
         _supportsBinding = true;
         _bindingList = (IBindingList)_list;
-        _bindingList.ListChanged += 
+        _bindingList.ListChanged +=
           new ListChangedEventHandler(SourceChanged);
       }
     }
@@ -790,8 +780,22 @@ namespace Csla
             break;
 
           case ListChangedType.ItemDeleted:
-            if (!_initiatedLocally)
-              DoSort();
+            var internalIndex = InternalIndex(e.NewIndex);
+            var sortedIndex = internalIndex;
+            if ((_sorted) && (_sortOrder == ListSortDirection.Descending))
+              sortedIndex = _sortIndex.Count - 1 - internalIndex;
+
+            // remove from internal list 
+            _sortIndex.RemoveAt(internalIndex);
+
+            // now fix up all index pointers in the sort index
+            foreach (ListItem item in _sortIndex)
+              if (item.BaseIndex > e.NewIndex)
+                item.BaseIndex -= 1;
+
+            OnListChanged(
+               new ListChangedEventArgs(
+              ListChangedType.ItemDeleted, sortedIndex, e.PropertyDescriptor));
             break;
 
           default:
@@ -811,6 +815,8 @@ namespace Csla
 
     private int OriginalIndex(int sortedIndex)
     {
+      if (sortedIndex == -1) return -1;
+
       if (_sorted)
       {
         if (_sortOrder == ListSortDirection.Ascending)
@@ -824,6 +830,8 @@ namespace Csla
 
     private int SortedIndex(int originalIndex)
     {
+      if (originalIndex == -1) return -1;
+
       int result = 0;
       if (_sorted)
       {
@@ -841,13 +849,34 @@ namespace Csla
       else
         result = originalIndex;
       return result;
-       
     }
+
+    private int InternalIndex(int originalIndex)
+    {
+      int result = 0;
+      if (_sorted)
+      {
+        for (int index = 0; index < _sortIndex.Count; index++)
+        {
+          if (_sortIndex[index].BaseIndex == originalIndex)
+          {
+            result = index;
+            break;
+          }
+        }
+      }
+      else
+        result = originalIndex;
+      return result;
+    }
+
 
     #region ICancelAddNew Members
 
     void ICancelAddNew.CancelNew(int itemIndex)
     {
+      if (itemIndex > -1) return;
+
       ICancelAddNew can = _list as ICancelAddNew;
       if (can != null)
         can.CancelNew(OriginalIndex(itemIndex));

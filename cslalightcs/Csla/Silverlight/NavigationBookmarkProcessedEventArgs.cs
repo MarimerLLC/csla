@@ -14,9 +14,6 @@ namespace Csla.Silverlight
     /// <summary>
     /// New instance of event arguments
     /// </summary>
-    /// <param name="bookmarkId">
-    /// Id of the bookmakr that was processed
-    /// </param>
     /// <param name="success">
     /// True if bookamrk was processed successfully.
     /// </param>
@@ -30,7 +27,5 @@ namespace Csla.Silverlight
     /// and control is displayed.
     /// </summary>
     public bool Success { get { return _success; } }
-
-
   }
 }

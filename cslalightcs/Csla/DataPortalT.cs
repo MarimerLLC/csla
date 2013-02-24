@@ -20,6 +20,10 @@ namespace Csla
   {
     #region GlobalContext
 
+    /// <summary>
+    /// Gets the global context value returned by
+    /// the async operation.
+    /// </summary>
     public Csla.Core.ContextDictionary GlobalContext
     {
       get
@@ -123,6 +127,14 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Starts an asynchronous create operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Create() method.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginCreate(object criteria, object userState)
     {
       try
@@ -200,6 +212,14 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Starts an asynchronous fetch operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Fetch() method.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginFetch(object criteria, object userState)
     {
       try
@@ -259,6 +279,13 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Starts an asynchronous update operation.
+    /// </summary>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginUpdate(object obj, object userState)
     {
       try
@@ -319,6 +346,14 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Starts an asynchronous delete operation.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria object provided to the
+    /// DataPortal_Delete() method.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginDelete(object criteria, object userState)
     {
       try
@@ -341,8 +376,17 @@ namespace Csla
 
     #region Execute
 
+    /// <summary>
+    /// Event raised when an execute operation completes.
+    /// </summary>
     public event EventHandler<DataPortalResult<T>> ExecuteCompleted;
 
+    /// <summary>
+    /// Starts an asynchronous execute operation.
+    /// </summary>
+    /// <param name="command">
+    /// Object to execute
+    /// </param>
     public void BeginExecute(T command)
     {
       try
@@ -356,6 +400,13 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Starts an asynchronous execute operation.
+    /// </summary>
+    /// <param name="command">
+    /// Object to execute
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public void BeginExecute(T command, object userState)
     {
       try
@@ -374,6 +425,10 @@ namespace Csla
       OnExecuteCompleted(e);
     }
 
+    /// <summary>
+    /// Raises the ExecuteCompleted event.
+    /// </summary>
+    /// <param name="e">Event args</param>
     protected virtual void OnExecuteCompleted(DataPortalResult<T> e)
     {
       if (ExecuteCompleted != null)

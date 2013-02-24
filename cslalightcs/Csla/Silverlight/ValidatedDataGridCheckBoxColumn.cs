@@ -11,9 +11,18 @@ using System.Windows.Shapes;
 
 namespace Csla.Silverlight
 {
-
+  /// <summary>
+  /// Implements a checkbox column for the datagrid
+  /// that uses PropertyStatus for validation display.
+  /// </summary>
   public class ValidatedDataGridCheckBoxColumn : ValidatedDataGridColumn
   {
+    /// <summary>
+    /// Prepares a cell for edit.
+    /// </summary>
+    /// <param name="editingElement">Editing element</param>
+    /// <param name="editingEventArgs">Event args</param>
+    /// <returns></returns>
     protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
     {
       StackPanel panel = editingElement as StackPanel;
@@ -29,21 +38,35 @@ namespace Csla.Silverlight
       return isChecked;
     }
 
+    /// <summary>
+    /// Creates an element.
+    /// </summary>
+    /// <returns></returns>
     protected override FrameworkElement CreateElement()
     {
       return new CheckBox { IsEnabled = false };
     }
 
+    /// <summary>
+    /// Gets the IsChecked property value.
+    /// </summary>
     protected override DependencyProperty ElementProperty
     {
       get { return CheckBox.IsCheckedProperty; }
     }
 
+    /// <summary>
+    /// Creates the editing element.
+    /// </summary>
+    /// <returns></returns>
     protected override FrameworkElement CreateEditingElement()
     {
       return new CheckBox();
     }
 
+    /// <summary>
+    /// Gets the IsChecked property value.
+    /// </summary>
     protected override DependencyProperty EditingElementProperty
     {
       get { return CheckBox.IsCheckedProperty; }

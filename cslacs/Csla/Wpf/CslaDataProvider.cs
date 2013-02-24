@@ -28,7 +28,18 @@ namespace Csla.Wpf
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
 
+    /// <summary>
+    /// Event raised when the object has been saved.
+    /// </summary>
     public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+    /// <summary>
+    /// Raise the Saved event when the object has been saved.
+    /// </summary>
+    /// <param name="newObject">New object reference as a result
+    /// of the save operation.</param>
+    /// <param name="error">Reference to an exception object if
+    /// an error occurred.</param>
+    /// <param name="userState">Reference to a userstate object.</param>
     protected void OnSaved(object newObject, Exception error, object userState)
     {
       if (Saved != null)
@@ -109,7 +120,7 @@ namespace Csla.Wpf
     /// </summary>
     /// <remarks>
     /// This property is designed to 
-    /// reference an ErrorDialog control.
+    /// reference an IErrorDialog control.
     /// </remarks>
     public object DataChangedHandler
     {
@@ -120,7 +131,7 @@ namespace Csla.Wpf
       set
       {
         _dataChangedHandler = value;
-        var dialog = value as ErrorDialog;
+        var dialog = value as IErrorDialog;
         if (dialog != null)
           dialog.Register(this);
         OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
@@ -526,11 +537,14 @@ namespace Csla.Wpf
     /// Removes an item from the list if the object
     /// implements IBindingList and AllowRemove is true.
     /// </summary>
-    /// <param name="item">
-    /// The item to be removed from the list.
+    /// <param name="sender">Object invoking this method.</param>
+    /// <param name="e">
+    /// ExecuteEventArgs, where MethodParameter contains 
+    /// the item to be removed from the list.
     /// </param>
-    public void RemoveItem(object item)
+    public void RemoveItem(object sender, ExecuteEventArgs e)
     {
+      var item = e.MethodParameter;
       // only do something if the object implements
       // IBindingList
       IBindingList list;

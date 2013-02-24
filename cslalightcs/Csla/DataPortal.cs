@@ -83,12 +83,13 @@ namespace Csla
     {
       get
       {
-        if (Application.Current != null && Application.Current.RootVisual != null)
-        {
-          return DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
-        }
-        else
-          return false;
+        return false;
+        //if (Application.Current != null && Application.Current.RootVisual != null)
+        //{
+        //  return DesignerProperties.GetIsInDesignMode(Application.Current.RootVisual);
+        //}
+        //else
+        //  return false;
       }
     }
 
@@ -116,6 +117,17 @@ namespace Csla
       dp.BeginCreate();
     }
 
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object</param>
     public static void BeginCreate<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -141,6 +153,20 @@ namespace Csla
       BeginCreate<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Creates and initializes a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Create().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object</param>
     public static void BeginCreate<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -190,11 +216,37 @@ namespace Csla
       BeginFetch<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Retrieves an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginFetch<T>(EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
       BeginFetch<T>(null, callback, userState);
     }
+
+    /// <summary>
+    /// Retrieves an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Fetch().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginFetch<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
      where T : IMobileObject
     {
@@ -226,6 +278,20 @@ namespace Csla
       BeginUpdate<T>(obj, callback, null);
     }
 
+    /// <summary>
+    /// Updates a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="obj">
+    /// Business object to update.
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginUpdate<T>(object obj, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -257,6 +323,20 @@ namespace Csla
       BeginDelete<T>(criteria, callback, null);
     }
 
+    /// <summary>
+    /// Deletes an existing business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="criteria">
+    /// Criteria object passed to DataPortal_Delete().
+    /// </param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginDelete<T>(object criteria, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : IMobileObject
     {
@@ -276,6 +356,7 @@ namespace Csla
     /// <typeparam name="T">
     /// Type of business object.
     /// </typeparam>
+    /// <param name="command">Object to execute.</param>
     /// <param name="callback">
     /// Delegate reference to a method that is invoked
     /// when the async operation is complete.
@@ -286,6 +367,18 @@ namespace Csla
       BeginExecute<T>(command, callback, null);
     }
 
+    /// <summary>
+    /// Updates a business object.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Type of business object.
+    /// </typeparam>
+    /// <param name="command">Object to execute.</param>
+    /// <param name="callback">
+    /// Delegate reference to a method that is invoked
+    /// when the async operation is complete.
+    /// </param>
+    /// <param name="userState">User state object.</param>
     public static void BeginExecute<T>(T command, EventHandler<DataPortalResult<T>> callback, object userState)
       where T : CommandBase
     {

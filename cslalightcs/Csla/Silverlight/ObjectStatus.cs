@@ -11,6 +11,9 @@ using Csla.Core;
 
 namespace Csla.Silverlight
 {
+  /// <summary>
+  /// Object status control.
+  /// </summary>
   [TemplateVisualState(Name = "Busy", GroupName = "IsBusy")]
   [TemplateVisualState(Name = "Idle", GroupName = "IsBusy")]
   [TemplateVisualState(Name = "AllowEdit", GroupName = "CanEdit")]
@@ -25,18 +28,27 @@ namespace Csla.Silverlight
   [TemplateVisualState(Name = "DenySave", GroupName = "CanSave")]
   public class ObjectStatus : Control
   {
+    /// <summary>
+    /// Source property.
+    /// </summary>
     public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
       "Source",
       typeof(object),
       typeof(ObjectStatus),
       new PropertyMetadata((o, e) => ((ObjectStatus)o).Source = e.NewValue));
 
+    /// <summary>
+    /// IsBusy property.
+    /// </summary>
     public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register(
       "IsBusy",
       typeof(bool),
       typeof(ObjectStatus),
       new PropertyMetadata((o, e) => ((ObjectStatus)o).IsBusy = (bool)e.NewValue));
 
+    /// <summary>
+    /// Gets the IsBusy value.
+    /// </summary>
     public bool IsBusy
     {
       get { return (bool)GetValue(IsBusyProperty); }
@@ -45,6 +57,9 @@ namespace Csla.Silverlight
 
     private object _source;
 
+    /// <summary>
+    /// Gets or sets the source object.
+    /// </summary>
     public object Source
     {
       get { return _source; }
@@ -57,6 +72,9 @@ namespace Csla.Silverlight
       }
     }
 
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
     public ObjectStatus()
     {
       DefaultStyleKey = typeof(ObjectStatus);
@@ -102,6 +120,9 @@ namespace Csla.Silverlight
       OnSourceChanged();
     }
 
+    /// <summary>
+    /// Invoked when the source changes.
+    /// </summary>
     protected virtual void OnSourceChanged()
     {
       GoToState(true);

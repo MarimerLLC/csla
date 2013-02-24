@@ -208,7 +208,8 @@ namespace cslalighttest.BusyStatus
               context.Assert.IsNull(e4.Error);
               context.Assert.IsNotNull(e4.NewObject);
               item = (ItemWithAsynchRule)e4.NewObject;
-              context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
+              if (item != null)
+                context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
               context.Assert.Success();
             });
         };

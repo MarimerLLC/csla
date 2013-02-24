@@ -12,11 +12,18 @@ using System.Threading;
 
 namespace Csla.Threading
 {
+  /// <summary>
+  /// Implements a semaphore style lock
+  /// using a busy wait technique (user mode).
+  /// </summary>
   public class Semaphore : IDisposable
   {
-    private static object _lock = typeof(Semaphore); // Use the type to lock across processes (if SL respects this...)
+    private static object _lock = typeof(Semaphore); // Use the type to lock across threads (if SL respects this...)
     private static int _active;
     private static int _max = 1;
+    /// <summary>
+    /// Gets or sets the max value.
+    /// </summary>
     public static int Max
     {
       get { return _max; }
@@ -27,11 +34,20 @@ namespace Csla.Threading
       }
     }
 
+    /// <summary>
+    /// Gets a the number of active locks.
+    /// </summary>
     public static int Active
     {
       get { return _active; }
     }
 
+    /// <summary>
+    /// Creates an instance of the object,
+    /// placing a lock on the semaphore,
+    /// blocking the caller if the active
+    /// locks is at the Max value.
+    /// </summary>
     public Semaphore()
     {
       bool okToRun = false;
@@ -53,6 +69,10 @@ namespace Csla.Threading
       while (!okToRun);
     }
 
+    /// <summary>
+    /// Disposes the object, releasing
+    /// a lock on the semaphore.
+    /// </summary>
     public void Dispose()
     {
       lock (_lock)

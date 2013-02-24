@@ -21,23 +21,13 @@ namespace Csla.Core
     /// <para>The serialization is performed using the formatter
     /// specified in the application's configuration file
     /// using the CslaSerializationFormatter key.</para>
-    /// <para>The default is to use the 
-    /// <see cref="System.Runtime.Serialization.Formatters.Binary.BinaryFormatter" />
-    /// </para>. You may also choose to use the Microsoft .NET 3.0
-    /// <see cref="System.Runtime.Serialization.NetDataContractSerializer">
-    /// NetDataContractSerializer</see> provided as part of WCF.
+    /// <para>The default is to use the BinaryFormatter.
+    /// </para>. You may also choose to use the 
+    /// NetDataContractSerializer provided as part of WCF.
     /// </remarks>
     public static object Clone(object obj)
     {
-      using (MemoryStream buffer = new MemoryStream())
-      {
-        ISerializationFormatter formatter =
-          SerializationFormatterFactory.GetFormatter();
-        formatter.Serialize(buffer, obj);
-        buffer.Position = 0;
-        object temp = formatter.Deserialize(buffer);
-        return temp;
-      }
+      return MobileFormatter.DeserializeFromDTO(MobileFormatter.SerializeToDTO(obj));
     }
   }
 }

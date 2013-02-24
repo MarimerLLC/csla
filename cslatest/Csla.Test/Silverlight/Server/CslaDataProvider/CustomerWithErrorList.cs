@@ -37,7 +37,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    protected void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
 
     }

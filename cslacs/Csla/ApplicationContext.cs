@@ -415,23 +415,45 @@ namespace Csla
     }
 
     /// <summary>
-    /// Gets a qualified name for a method that implements
+    /// Gets a fully qualified name for a class that implements
     /// the IsInRole() behavior used for authorization.
     /// </summary>
     /// <returns>
     /// Returns a value in the form
-    /// "Namespace.Class, Assembly, MethodName".
+    /// "Namespace.Class, Assembly".
     /// </returns>
     /// <remarks>
     /// The default is to use a simple IsInRole() call against
-    /// the current principal. If another method is supplied
-    /// it must conform to the IsInRoleProvider delegate.
+    /// the current principal. If another fylly qualified class name 
+    /// and method is supplied it must conform to the IsInRoleProvider 
+    /// delegate. See also IsInRoleProviderName that must give the methodname 
+    /// that implements the IsInRole method.
     /// </remarks>
+    /// <seealso cref="Csla.ApplicationContext.IsInRoleMethodName"/>
     public static string IsInRoleProvider
     {
       get
       {
         string result = ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
+        if (string.IsNullOrEmpty(result))
+          result = string.Empty;
+        return result;
+      }
+    }
+
+    /// <summary>
+    /// Gets the method name that implements the IsInRole() behavior
+    ///  used for authorization.
+    /// </summary>
+    /// <returns>
+    /// Returns a value in the form
+    /// "MethodName".
+    /// </returns>
+    public static string IsInRoleMethodName
+    {
+      get
+      {
+        string result = ConfigurationManager.AppSettings["CslaIsInRoleMethodName"];
         if (string.IsNullOrEmpty(result))
           result = string.Empty;
         return result;

@@ -71,10 +71,16 @@ namespace Csla.Validation
     {
       _handler = handler;
       _args = args;
-      _ruleName = string.Format(@"rule://{0}/{1}/{2}", 
-        Uri.EscapeDataString(_handler.Method.DeclaringType.FullName),
-        _handler.Method.Name, 
+
+      _ruleName = string.Format(@"rule://{0}/{1}/{2}",
+        UriUtilities.FormatHostName(_handler.Method.DeclaringType),
+        UriUtilities.EncodeString(handler.Method.Name),
         _args.ToString());
+
+      //_ruleName = string.Format(@"rule://{0}/{1}/{2}", 
+      //  UriUtilities.FormatHostName(_handler.Method.DeclaringType),
+      //  UriUtilities.EncodeString(_handler.Method.Name), 
+      //  _args.ToString());
     }
 
     /// <summary>
@@ -199,8 +205,8 @@ namespace Csla.Validation
       _handler = handler;
       _args = args;
       _ruleName = string.Format(@"rule://{0}/{1}/{2}",
-        Uri.EscapeDataString(_handler.Method.DeclaringType.FullName),
-        _handler.Method.Name,
+        UriUtilities.FormatHostName(_handler.Method.DeclaringType),
+        UriUtilities.EncodeString(_handler.Method.Name),
         _args.ToString());
     }
 

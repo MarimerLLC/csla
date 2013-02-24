@@ -109,12 +109,16 @@ namespace Csla.Test.ValidationRules
         context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
         context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
+        bool validationComplete = false;
+        root.ValidationComplete += (vo, ve) => { validationComplete = true; };
+
         root.BeginEdit();
         root.Name = "";
         context.Assert.AreEqual("", root.Name);
         context.Assert.AreEqual(false, root.IsValid);
         context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
         context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+        context.Assert.IsTrue(validationComplete, "ValidationComplete should have run");
         root.BeginEdit();
         root.Name = "Begin 1";
         context.Assert.AreEqual("Begin 1", root.Name);

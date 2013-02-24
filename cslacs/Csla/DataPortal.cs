@@ -1021,7 +1021,14 @@ namespace Csla
     /// </summary>
     public static bool IsInDesignMode
     {
-      get { return DesignerProperties.GetIsInDesignMode(new DependencyObject()); }
+      get 
+      {
+        return false;
+        //if (System.Web.HttpContext.Current != null || System.Windows.Application.Current == null)
+        //  return false;
+        //else
+        //  return DesignerProperties.GetIsInDesignMode(new DependencyObject()); 
+      }
     }
 
 

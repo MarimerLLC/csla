@@ -14,39 +14,8 @@ namespace Csla.Server.Hosts.Silverlight
   /// through WCF.
   /// </summary>
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
-   public class WcfPortal : IWcfPortal
+  public class WcfPortal : IWcfPortal
   {
-    #region Factory Loader
-
-    private static IMobileFactoryLoader _factoryLoader;
-    /// <summary>
-    /// Gets or sets a delegate reference to the method
-    /// called to create instances of factory objects
-    /// as requested by the MobileFactory attribute on
-    /// a CSLA Light business object.
-    /// </summary>
-    public static IMobileFactoryLoader FactoryLoader 
-    {
-      get
-      {
-        if (_factoryLoader == null)
-        {
-          string setting = ConfigurationManager.AppSettings["CslaMobileFactoryLoader"];
-          if (!string.IsNullOrEmpty(setting))
-            _factoryLoader = 
-              (IMobileFactoryLoader)Activator.CreateInstance(Type.GetType(setting, true, true));
-          else
-            _factoryLoader = new MobileFactoryLoader();
-        }
-        return _factoryLoader;
-      }
-      set
-      {
-        _factoryLoader = value;
-      }
-    }
-
-    #endregion
 
     #region IWcfPortal Members
 
@@ -60,46 +29,25 @@ namespace Csla.Server.Hosts.Silverlight
       try
       {
         request = ConvertRequest(request);
+
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
 
-        // load type for business object
-        var t = Type.GetType(request.TypeName);
-        if (t == null)
-          throw new InvalidOperationException(
-            string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
+        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
+        SilverlightCriteriaRequest createRequest = new SilverlightCriteriaRequest(
+          request.TypeName,
+          criteria,
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
 
-        SetContext(request);
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
-        if (factoryInfo == null)
+        SilverlightResponse createResponse = processor.Create(createRequest);
+        if (createResponse.Error != null)
         {
-          if (criteria != null)
-          {
-            o = Csla.DataPortal.Create(t, criteria);
-          }
-          else
-          {
-            o = Csla.DataPortal.Create(t);
-          }
+          result.ErrorData = new WcfErrorInfo(createResponse.Error);
         }
-        else
-        {
-          if (string.IsNullOrEmpty(factoryInfo.CreateMethodName))
-            throw new InvalidOperationException(Resources.CreateMethodNameNotSpecified);
-
-          object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          if (criteria != null)
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName, criteria);
-          else
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName);
-        }
-        result.ObjectData = MobileFormatter.Serialize(o);
-        result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      }
-      catch (Csla.Reflection.CallMethodException ex)
-      {
-        result.ErrorData = new WcfErrorInfo(ex.InnerException);
+        result.GlobalContext = MobileFormatter.Serialize(createResponse.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(createResponse.Object);
       }
       catch (Exception ex)
       {
@@ -107,9 +55,10 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        ClearContext();
+        SilverlightRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
+
     }
 
     /// <summary>
@@ -124,39 +73,21 @@ namespace Csla.Server.Hosts.Silverlight
         request = ConvertRequest(request);
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
+        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
+        SilverlightCriteriaRequest fetchRequest = new SilverlightCriteriaRequest(
+          request.TypeName,
+          criteria,
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
 
-        // load type for business object
-        var t = Type.GetType(request.TypeName);
-        if (t == null)
-          throw new InvalidOperationException(
-            string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
-        SetContext(request);
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
-        if (factoryInfo == null)
+        SilverlightResponse fetchResponse = processor.Fetch(fetchRequest);
+        if (fetchResponse.Error != null)
         {
-          if (criteria == null)
-            o = Csla.DataPortal.Fetch(t);
-          else
-            o = Csla.DataPortal.Fetch(t, criteria);
+          result.ErrorData = new WcfErrorInfo(fetchResponse.Error);
         }
-        else
-        {
-          if (string.IsNullOrEmpty(factoryInfo.FetchMethodName))
-            throw new InvalidOperationException(Resources.FetchMethodNameNotSpecified);
-
-          object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          if (criteria != null)
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName, criteria);
-          else
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName);
-        }
-        result.ObjectData = MobileFormatter.Serialize(o);
-        result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      }
-      catch (Csla.Reflection.CallMethodException ex)
-      {
-        result.ErrorData = new WcfErrorInfo(ex.InnerException);
+        result.GlobalContext = MobileFormatter.Serialize(fetchResponse.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(fetchResponse.Object);
       }
       catch (Exception ex)
       {
@@ -164,7 +95,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        ClearContext();
+        SilverlightRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -182,31 +113,20 @@ namespace Csla.Server.Hosts.Silverlight
         // unpack object
         object obj = GetCriteria(request.ObjectData);
 
-        // load type for business object
-        var t = obj.GetType();
+        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
+        SilverlightUpdateRequest updateRequest = new SilverlightUpdateRequest(
+          obj,
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
 
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
-        if (factoryInfo == null)
+        SilverlightResponse updateResponse = processor.Update(updateRequest);
+        if (updateResponse.Error != null)
         {
-          SetContext(request);
-          o = Csla.DataPortal.Update(obj);
+          result.ErrorData = new WcfErrorInfo(updateResponse.Error);
         }
-        else
-        {
-          if (string.IsNullOrEmpty(factoryInfo.UpdateMethodName))
-            throw new InvalidOperationException(Resources.UpdateMethodNameNotSpecified);
-
-          SetContext(request);
-          object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.UpdateMethodName, obj);
-        }
-        result.ObjectData = MobileFormatter.Serialize(o);
-        result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      }
-      catch (Csla.Reflection.CallMethodException ex)
-      {
-        result.ErrorData = new WcfErrorInfo(ex.InnerException);
+        result.GlobalContext = MobileFormatter.Serialize(updateResponse.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(updateResponse.Object);
       }
       catch (Exception ex)
       {
@@ -214,7 +134,7 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        ClearContext();
+        SilverlightRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -232,35 +152,21 @@ namespace Csla.Server.Hosts.Silverlight
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
 
-        // load type for business object
-        var t = Type.GetType(request.TypeName);
-        if (t == null)
-          throw new InvalidOperationException(
-            string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
+        SilverlightRequestProcessor processor = new SilverlightRequestProcessor();
+        SilverlightCriteriaRequest deleteRequest = new SilverlightCriteriaRequest(
+          request.TypeName,
+          criteria,
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext));
 
-        SetContext(request);
-
-        var factoryInfo = GetMobileFactoryAttribute(t);
-        if (factoryInfo == null)
+        SilverlightResponse deleteResponse = processor.Delete(deleteRequest);
+        if (deleteResponse.Error != null)
         {
-          Csla.DataPortal.Delete(criteria);
+          result.ErrorData = new WcfErrorInfo(deleteResponse.Error);
         }
-        else
-        {
-          if (string.IsNullOrEmpty(factoryInfo.DeleteMethodName))
-            throw new InvalidOperationException(Resources.DeleteMethodNameNotSpecified);
-
-          object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          if (criteria != null)
-            Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.DeleteMethodName, criteria);
-          else
-            Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.DeleteMethodName);
-        }
-        result.GlobalContext = MobileFormatter.Serialize(ApplicationContext.GlobalContext);
-      }
-      catch (Csla.Reflection.CallMethodException ex)
-      {
-        result.ErrorData = new WcfErrorInfo(ex.InnerException);
+        result.GlobalContext = MobileFormatter.Serialize(deleteResponse.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(deleteResponse.Object);
       }
       catch (Exception ex)
       {
@@ -268,32 +174,14 @@ namespace Csla.Server.Hosts.Silverlight
       }
       finally
       {
-        ClearContext();
+        SilverlightRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
 
     #endregion
 
-    #region Context and Criteria
-    private void SetContext(CriteriaRequest request)
-    {
-      ApplicationContext.SetContext((ContextDictionary)MobileFormatter.Deserialize(request.ClientContext), (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
-      ApplicationContext.User = (IPrincipal)MobileFormatter.Deserialize(request.Principal);
-    }
-
-    private void SetContext(UpdateRequest request)
-    {
-      ApplicationContext.SetContext((ContextDictionary)MobileFormatter.Deserialize(request.ClientContext), (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
-      ApplicationContext.User = (IPrincipal)MobileFormatter.Deserialize(request.Principal); ;
-    }
-
-    private static void ClearContext()
-    {
-      ApplicationContext.Clear();
-      if (ApplicationContext.AuthenticationType != "Windows")
-        ApplicationContext.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(string.Empty),new string[]{});
-    }
+    #region Criteria
 
     private static object GetCriteria(byte[] criteriaData)
     {
@@ -302,17 +190,7 @@ namespace Csla.Server.Hosts.Silverlight
         criteria = MobileFormatter.Deserialize(criteriaData);
       return criteria;
     }
-    #endregion
 
-    #region Mobile Factory
-    private static Csla.Silverlight.MobileFactoryAttribute GetMobileFactoryAttribute(Type objectType)
-    {
-      var result = objectType.GetCustomAttributes(typeof(Csla.Silverlight.MobileFactoryAttribute), true);
-      if (result != null && result.Length > 0)
-        return result[0] as Csla.Silverlight.MobileFactoryAttribute;
-      else
-        return null;
-    }
     #endregion
 
     #region Extention Method for Requests

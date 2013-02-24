@@ -321,10 +321,30 @@ namespace Csla
     public void CopyTo(T[] array, int arrayIndex)
     {
       int pos = arrayIndex;
-      foreach (ListItem listItem in _filterIndex)
+      foreach (var listItem in _filterIndex.Where(li => li.BaseIndex != -1))
       {
         array[pos] = _list[listItem.BaseIndex];
         pos++;
+      }
+      //This handles a special case where we have added something, and we are doing some sort of
+      //outbound assignment in the Added event
+      if (_filterIndex.Count(li => li.BaseIndex == -1) > 0)
+      {
+        //keys either are the HashCode itself prior to a filter being set, or they go through the filter
+        //after a filter is set
+        Func<T, object> keyFunction = item => _filterBy == null ? (object)item.GetHashCode() : _filterBy.GetValue(item);
+        //this returns the items from the base list that both match the key function and yield a base index of -1, which means they were recently added
+        var items =
+          from key in
+            from k in _filterIndex where k.BaseIndex == -1 select k.Key
+          join item in _list on key equals keyFunction(item)
+          select item;
+        //on the results, make sure the filter matches, if there is a relevant filter    
+        foreach (var item in items.Where(i => ItemShouldBeInList(i)))
+        {
+          array[pos] = item;
+          pos++;
+        }
       }
     }
 
@@ -932,6 +952,9 @@ namespace Csla
 
     #region IDisposable Members
 
+    /// <summary>
+    /// Disposes the object.
+    /// </summary>
     public void Dispose()
     {
       //AE: Added removal of event handler in the disposal

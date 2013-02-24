@@ -8,7 +8,7 @@ namespace Csla.Wpf
   /// Displays an error dialog for any exceptions
   /// that occur in a CslaDataProvider.
   /// </summary>
-  public class ErrorDialog : Control
+  public class ErrorDialog : Control, IErrorDialog
   {
     /// <summary>
     /// Creates a new instance of the control.
@@ -110,11 +110,6 @@ namespace Csla.Wpf
       set { SetValue(DialogIconProperty, value); }
     }
 
-    internal void Register(object source)
-    {
-      AttachSource(source);
-    }
-
     private void AttachSource(object source)
     {
       var dp = source as System.Windows.Data.DataSourceProvider;
@@ -153,5 +148,14 @@ namespace Csla.Wpf
           this.DialogIcon);
       }
     }
+
+    #region IErrorDialog Members
+
+    void IErrorDialog.Register(object source)
+    {
+      AttachSource(source);
+    }
+
+    #endregion
   }
 }

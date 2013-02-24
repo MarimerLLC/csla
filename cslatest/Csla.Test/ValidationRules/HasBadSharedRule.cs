@@ -15,20 +15,18 @@ namespace Csla.Test.ValidationRules
     int _data;
     public int Data
     {
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       get
       {
-        CanReadProperty(true);
+        CanReadProperty("Data", true);
         return _data;
       }
-      [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
       set
       {
-        CanWriteProperty(true);
+        CanWriteProperty("Data", true);
         if (!_data.Equals(value))
         {
           _data = value;
-          PropertyHasChanged();
+          PropertyHasChanged("Data");
         }
       }
     }

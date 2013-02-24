@@ -187,6 +187,31 @@ namespace Csla.Test.CslaQueryProvider
   [TestClass]
   public class CslaQueryProviderTests
   {
+    private class TestEqualityComparer : IEqualityComparer<RandomThing>
+    {
+      public bool Equals(RandomThing x, RandomThing y)
+      {
+        return x.SomeVal == y.SomeVal;
+      }
+
+      public int GetHashCode(RandomThing obj)
+      {
+        return 0;
+      }
+    }
+    
+    [TestMethod]
+    public void group_by_query_case_returns_correctly_with_custom_equality_comparison()
+    {
+      var random = new CollectionExtendingIQueryable<RandomThing>();
+      var rnd = new Random();
+      for (var i = 0; i < 42; i++)
+        random.Add(new RandomThing(rnd.Next(300)) { SomeOtherVal = 0 });
+      var groupByQuery = random.GroupBy(x => x, new TestEqualityComparer());
+      var iteratedResult = groupByQuery.ToArray();
+      Assert.IsNotNull(iteratedResult);
+    }
+    
     [TestMethod]
     public void query_returning_nothing_gives_back_empty_set_not_null()
     {
@@ -392,7 +417,7 @@ namespace Csla.Test.CslaQueryProvider
                               where r.SomeVal < 50
                               select r.SomeVal;
       foreach (var result in subFilteredResult)
-        Assert.IsTrue(result is int);    
+        Assert.Less(result, 50);
     }
 
     [TestMethod]
@@ -416,7 +441,7 @@ namespace Csla.Test.CslaQueryProvider
                               where r.SomeVal < 50
                               select r.SomeVal;
       foreach (var result in subFilteredResult)
-        Assert.IsTrue(result is int);
+        Assert.Less(result, 50);
     }
 
     [TestMethod]

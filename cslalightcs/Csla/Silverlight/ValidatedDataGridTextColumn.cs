@@ -11,9 +11,18 @@ using System.Windows.Shapes;
 
 namespace Csla.Silverlight
 {
-
+  /// <summary>
+  /// Implements a datagrid text column that
+  /// uses PropertyStatus to display validation messages.
+  /// </summary>
   public class ValidatedDataGridTextColumn : ValidatedDataGridColumn
   {
+    /// <summary>
+    /// Prepares a cell for edit.
+    /// </summary>
+    /// <param name="editingElement">Editing element</param>
+    /// <param name="editingEventArgs">Event args</param>
+    /// <returns></returns>
     protected override object PrepareCellForEdit(FrameworkElement editingElement, RoutedEventArgs editingEventArgs)
     {
       StackPanel panel = editingElement as StackPanel;
@@ -38,21 +47,33 @@ namespace Csla.Silverlight
       return text;
     }
 
+    /// <summary>
+    /// Creates an element.
+    /// </summary>
     protected override FrameworkElement CreateElement()
     {
       return new TextBlock();
     }
 
+    /// <summary>
+    /// Gets the Text property value.
+    /// </summary>
     protected override DependencyProperty ElementProperty
     {
       get { return TextBlock.TextProperty; }
     }
 
+    /// <summary>
+    /// Creates the editing element.
+    /// </summary>
     protected override FrameworkElement CreateEditingElement()
     {
       return new TextBox();
     }
 
+    /// <summary>
+    /// Gets the Text property value.
+    /// </summary>
     protected override DependencyProperty EditingElementProperty
     {
       get { return TextBox.TextProperty; }

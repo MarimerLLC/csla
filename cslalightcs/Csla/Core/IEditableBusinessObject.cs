@@ -15,18 +15,6 @@ namespace Csla.Core
   public interface IEditableBusinessObject : IBusinessObject, ISupportUndo, IUndoableObject, ITrackStatus
   {
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
-    /// </summary>
-    /// <remarks>
-    /// An object is considered dirty (changed) if 
-    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
-    /// considered valid if IsValid
-    /// returns <see langword="true" />. The IsSavable property is
-    /// a combination of these two properties. 
-    /// </remarks>
-    /// <returns>A value indicating if this object is both dirty and valid.</returns>
-    bool IsSavable { get; }
-    /// <summary>
     /// For internal use only!!
     /// </summary>
     /// <remarks>

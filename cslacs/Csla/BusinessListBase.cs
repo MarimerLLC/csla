@@ -963,7 +963,7 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          DataPortal.UpdateChild(child, parameters);
+          if (child.IsDirty) DataPortal.UpdateChild(child, parameters);
       }
       finally
       {
@@ -974,6 +974,11 @@ namespace Csla
     #endregion
 
     #region Data Access
+
+    object ISavable.Save(bool forceUpdate)
+    {
+      return Save();
+    }
 
     /// <summary>
     /// Saves the object to the database.

@@ -120,7 +120,7 @@ namespace Csla.Testing.Business.BusyStatus
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Create(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
@@ -128,7 +128,7 @@ namespace Csla.Testing.Business.BusyStatus
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public override void DataPortal_Insert(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
@@ -136,7 +136,7 @@ namespace Csla.Testing.Business.BusyStatus
       completed.Invoke(this, null);
     }
 
-    public void DataPortal_Update(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
+    public override void DataPortal_Update(Csla.DataPortalClient.LocalProxy<ItemWithAsynchRule>.CompletedHandler completed)
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";
@@ -159,21 +159,28 @@ namespace Csla.Testing.Business.BusyStatus
       this.MarkOld();
     }
 
-    internal void DataPortal_Create()
+    protected override void DataPortal_Create()
     {
       this.Id = "random_create";
       this.OperationResult = "DataPortal_Create/no parameters";
       this.MarkNew();
     }
 
-    internal void DataPortal_Insert()
+    protected override void DataPortal_Insert()
     {
       this.Id = "random_insert";
       this.OperationResult = "DataPortal_Insert";
       this.MarkOld();
     }
 
-    internal void DataPortal_Update()
+    protected override void DataPortal_Update()
+    {
+      this.Id = "random_update";
+      this.OperationResult = "DataPortal_Update";
+      this.MarkOld();
+    }
+
+    internal void Update()
     {
       this.Id = "random_update";
       this.OperationResult = "DataPortal_Update";

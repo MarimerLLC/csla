@@ -76,16 +76,20 @@ namespace Csla.Linq
     {
       if (_theProp != null)
       {
-        int hashCode = _theProp.GetValue(item, null).GetHashCode();
-        if (_index.ContainsKey(hashCode))
-          _index[hashCode].Add(item);
-        else
+        object value = _theProp.GetValue(item, null);
+        if (value != null)
         {
-          List<T> newList = new List<T>(1);
-          newList.Add(item);
-          _index.Add(hashCode, newList);
+          int hashCode = value.GetHashCode();
+          if (_index.ContainsKey(hashCode))
+            _index[hashCode].Add(item);
+          else
+          {
+            List<T> newList = new List<T>(1);
+            newList.Add(item);
+            _index.Add(hashCode, newList);
+          }
+          _countCache++;
         }
-        _countCache++;
       }
     }
 

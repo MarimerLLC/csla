@@ -57,7 +57,10 @@ namespace Csla.Wpf
       new FrameworkPropertyMetadata(
         false,
         FrameworkPropertyMetadataOptions.AffectsRender,
-        (o, e) => ((BusyAnimation)o).SetState((bool)e.NewValue)));
+        (o, e) => 
+          (
+            (BusyAnimation)o).SetState((bool)e.NewValue))
+          );
 
     /// <summary>
     /// Gets or sets the state duration for the animation.
@@ -68,11 +71,7 @@ namespace Csla.Wpf
       typeof(BusyAnimation),
       new FrameworkPropertyMetadata(
         TimeSpan.FromMilliseconds(150),
-        FrameworkPropertyMetadataOptions.AffectsRender,
-        (o, e) =>
-        {
-          ((BusyAnimation)o)._timer.Interval = (TimeSpan)e.NewValue;
-        }));
+        FrameworkPropertyMetadataOptions.AffectsRender));
 
     #endregion
 
@@ -92,7 +91,6 @@ namespace Csla.Wpf
       set
       {
         SetValue(StateDurationProperty, value);
-        _timer.Interval = value;
       }
     }
 
@@ -116,17 +114,37 @@ namespace Csla.Wpf
         {
           if (isRunning)
           {
-            _timer.Start();
+            StopTimer();
+            StartTimer();
           }
           else
           {
-            _timer.Stop();
+            StopTimer();
             if (_root == null)
               _root = (Canvas)Template.FindName("root", this);
             if (_root != null)
               _normalStoryboard.Begin(_root);
           }
         }
+    }
+
+    private void StartTimer()
+    {
+      StopTimer();
+      _timer = new DispatcherTimer();
+      _timer.Interval = StateDuration;
+      _timer.Tick += new EventHandler(timer_Tick);
+      _timer.Start();
+    }
+
+    private void StopTimer()
+    {
+      if (_timer != null)
+      {
+        _timer.Stop();
+        _timer.Tick -= new EventHandler(timer_Tick);
+        _timer = null;
+      }
     }
 
     private int _frame = 0;
@@ -148,10 +166,6 @@ namespace Csla.Wpf
     /// </summary>
     public BusyAnimation()
     {
-      _timer = new DispatcherTimer();
-      _timer.Interval = StateDuration;
-      _timer.Tick += new EventHandler(timer_Tick);
-
       DefaultStyleKey = typeof(BusyAnimation);
 
       Loaded += (o, e) =>

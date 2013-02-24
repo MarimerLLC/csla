@@ -21,6 +21,16 @@ namespace Csla.Core
   [Serializable()]
   public class ContextDictionary : Dictionary<string, object>, IMobileObject
   {
+    /// <summary>
+    /// Gets a value indicating whether the
+    /// dictionary contains a matching key value.
+    /// </summary>
+    /// <param name="key">Key value.</param>
+    public bool Contains(string key)
+    {
+      return ContainsKey(key);
+    }
+
     #region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)

@@ -70,6 +70,7 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <param name="mode">Serialization mode</param>
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
       base.OnGetState(info, mode);
@@ -83,6 +84,7 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <param name="mode">Serialization mode</param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       base.OnSetState(info, mode);

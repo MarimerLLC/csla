@@ -24,6 +24,10 @@ namespace Csla.Silverlight
     /// Parameters that will be passed to control.  Single string is passed
     /// in, and controls assumes responcibility for parsing it.
     /// </param>
+    /// <param name="isInitiatedByBrowserButton">
+    /// Flag indicating whether the action was initiated by a
+    /// browser button.
+    /// </param>
     public NavigationEventArgs(string controlTypeName, string parameters, bool isInitiatedByBrowserButton)
     {
       _controlTypeName = controlTypeName;

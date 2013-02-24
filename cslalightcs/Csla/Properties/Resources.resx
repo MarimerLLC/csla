@@ -354,4 +354,10 @@
   <data name="IEditableCollectionRequiredException" xml:space="preserve">
     <value>Target must implement IEditableCollection</value>
   </data>
+  <data name="ExecuteBadParams" xml:space="preserve">
+    <value>Method to be executed must have 0 or 2 parameters</value>
+  </data>
+  <data name="ExecuteBadTriggerEvent" xml:space="preserve">
+    <value>Trigger event has an unsupported signature</value>
+  </data>
 </root>

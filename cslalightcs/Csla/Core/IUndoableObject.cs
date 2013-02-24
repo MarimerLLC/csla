@@ -21,6 +21,9 @@ namespace Csla.Core
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
     /// </param>
+    /// <param name="parentBindingEdit">
+    /// Is the parent data bound?
+    /// </param>
     void CopyState(int parentEditLevel, bool parentBindingEdit);
     /// <summary>
     /// Restores the object's state to the most recently
@@ -35,6 +38,9 @@ namespace Csla.Core
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
     /// </param>
+    /// <param name="parentBindingEdit">
+    /// Is the parent data bound?
+    /// </param>
     void UndoChanges(int parentEditLevel, bool parentBindingEdit);
     /// <summary>
     /// Accepts any changes made to the object since the last
@@ -47,6 +53,9 @@ namespace Csla.Core
     /// </remarks>
     /// <param name="parentEditLevel">
     /// Parent object's edit level.
+    /// </param>
+    /// <param name="parentBindingEdit">
+    /// Is the parent data bound?
     /// </param>
     void AcceptChanges(int parentEditLevel, bool parentBindingEdit);
   }

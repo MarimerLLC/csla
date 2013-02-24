@@ -88,7 +88,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public bool IsSelfDirty
+    public virtual bool IsSelfDirty
     {
       get { return IsDirty; }
     }
@@ -97,7 +97,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public bool IsDirty
+    public virtual bool IsDirty
     {
       get
       {
@@ -181,6 +181,11 @@ namespace Csla.Core.FieldManager
       remove { throw new NotImplementedException(); }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this object
+    /// or any child object is executing an async
+    /// operation.
+    /// </summary>
     public bool IsBusy
     {
       get
@@ -206,18 +211,31 @@ namespace Csla.Core.FieldManager
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
 
+    /// <summary>
+    /// Event raised when an unhandled exception occurs
+    /// during async processing.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
+    /// <summary>
+    /// Raise the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="error">Event args</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
       if (_unhandledAsyncException != null)
         _unhandledAsyncException(this, error);
     }
 
+    /// <summary>
+    /// Raise the UnhandledAsyncException event.
+    /// </summary>
+    /// <param name="originalSender">Object that threw the exception</param>
+    /// <param name="error">Exception object</param>
     protected void OnUnhandledAsyncException(object originalSender, Exception error)
     {
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));

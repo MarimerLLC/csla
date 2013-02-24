@@ -1779,7 +1779,17 @@ namespace Csla.Core
       if (oldValue == null)
         valuesDiffer = newValue != null;
       else
-        valuesDiffer = !(oldValue.Equals(newValue));
+      {
+        // use reference equals for objects that inherit from CSLA base class
+        if (typeof(IBusinessObject).IsAssignableFrom(propertyInfo.Type))
+        {
+          valuesDiffer = !(ReferenceEquals(oldValue, newValue));
+        }
+        else
+        {
+          valuesDiffer = !(oldValue.Equals(newValue));
+        }
+      }
 
       if (valuesDiffer)
       {
@@ -2433,7 +2443,7 @@ namespace Csla.Core
     /// Raises the ValidationComplete event.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnValidationComplete()
+    internal protected virtual void OnValidationComplete()
     {
       if (ValidationComplete != null)
         ValidationComplete(this, EventArgs.Empty);

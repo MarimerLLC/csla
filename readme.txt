@@ -1,4 +1,4 @@
-CSLA .NET is copyright (c) 2012 Marimer LLC. Use of this software is 
+CSLA .NET is copyright (c) 2009-2010 Marimer LLC. Use of this software is 
 governed by the attached license file. The license can also be found
 at http://www.lhotka.net/cslanet/license.aspx.
 

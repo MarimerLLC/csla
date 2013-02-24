@@ -324,6 +324,21 @@ namespace Csla.Test.SmartDate
       Assert.IsFalse(d3.Equals(d2), "d2 and d3 should not be the same");
       Assert.IsFalse(Csla.SmartDate.Equals(d3, d2), "d2 and d3 should not be the same");
     }
+
+    [TestMethod]
+    public void MaxDateMaxValue()
+    {
+      // test for maxDateValue
+
+      Csla.SmartDate target = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MaxDate);
+
+      DateTime expected = DateTime.MaxValue;
+
+      DateTime actual = target.Date;
+
+      Assert.AreEqual(expected, actual);
+    }
+
     #endregion
 
     #region Comparison Operators

@@ -850,6 +850,13 @@
             This value will be Nothing for root objects.
             </remarks>
         </member>
+        <member name="T:Csla.IBusinessListBase`1">
+            <summary>
+            This is the base class from which most business collections
+            or lists will be derived.
+            </summary>
+            <typeparam name="C">Type of the child objects contained in the list.</typeparam>
+        </member>
         <member name="M:Csla.BusinessListBase`2.#ctor">
             <summary>
             Creates an instance of the object.
@@ -2138,6 +2145,12 @@
             <typeparam name="T">Type of the list class.</typeparam>
             <typeparam name="C">Type of child objects contained in the list.</typeparam>
         </member>
+        <member name="T:Csla.IReadOnlyListBase`1">
+            <summary>
+            This is the base class from which readonly collections
+            of readonly objects should be derived.
+            </summary>
+        </member>
         <member name="M:Csla.ReadOnlyListBase`2.#ctor">
             <summary>
             Creates an instance of the object.
@@ -3185,6 +3198,11 @@
             will be transferred bi-directionally across the network.
             </para>
             </remarks>
+        </member>
+        <member name="P:Csla.ApplicationContext.DataPortalActivator">
+            <summary>
+            Gets or sets an instance of the IDataPortalActivator provider.
+            </summary>
         </member>
         <member name="P:Csla.ApplicationContext.DataPortalUrlString">
             <summary>
@@ -6055,6 +6073,12 @@
         <member name="E:Csla.Core.ManagedObjectBase.PropertyChanged">
             <summary>
             Event raised when a property has changed.
+            </summary>
+        </member>
+        <member name="T:Csla.ICommandBase">
+            <summary>
+            This is the base class from which command 
+            objects will be derived.
             </summary>
         </member>
         <member name="M:Csla.CommandBase`1.#ctor">
@@ -8972,6 +8996,12 @@
             referenced object.</param>
             <returns></returns>
         </member>
+        <member name="T:Csla.IReadOnlyBase">
+            <summary>
+            This is a base class from which readonly business classes
+            can be derived.
+            </summary>
+        </member>
         <member name="T:Csla.LazySingleton`1">
             <summary>
             An alternative to Lazy&lt;T&gt; that works on .NET, Silverlight and Windows Phone
@@ -10463,6 +10493,27 @@
             Returns the user's identity object.
             </summary>
         </member>
+        <member name="T:Csla.Security.ICslaIdentity">
+            <summary>
+            Provides a base class to simplify creation of
+            a .NET identity object for use with CslaPrincipal.
+            </summary>
+        </member>
+        <member name="T:Csla.Security.ICheckRoles">
+            <summary>
+            Interface defining an object that
+            checks IsInRole.
+            </summary>
+        </member>
+        <member name="M:Csla.Security.ICheckRoles.IsInRole(System.String)">
+            <summary>
+            Returns a value indicating whether the current
+            user is in the specified security role.
+            </summary>
+            <param name="role">
+            Role to check.
+            </param>
+        </member>
         <member name="T:Csla.Security.SecurityException">
             <summary>
             Security exception.
@@ -11275,6 +11326,25 @@
             <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
             </param>
             <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="T:Csla.Server.IDataPortalActivator">
+            <summary>
+            Defines a type used to activate concrete business
+            instances.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.IDataPortalActivator.CreateInstance(System.Type)">
+            <summary>
+            Gets a new instance of the requested type.
+            </summary>
+            <param name="requestedType">Requested business type (class or interface).</param>
+            <returns>Business object instance.</returns>
+        </member>
+        <member name="M:Csla.Server.IDataPortalActivator.InitializeInstance(System.Object)">
+            <summary>
+            Initializes an existing business object instance.
+            </summary>
+            <param name="obj">Reference to the business object.</param>
         </member>
         <member name="T:Csla.Server.EmptyCriteria">
             <summary>
@@ -14027,21 +14097,6 @@
             Event raised when an exception occurs on a background
             thread during an asynchronous operation.
             </summary>
-        </member>
-        <member name="T:Csla.Security.ICheckRoles">
-            <summary>
-            Interface defining an object that
-            checks IsInRole.
-            </summary>
-        </member>
-        <member name="M:Csla.Security.ICheckRoles.IsInRole(System.String)">
-            <summary>
-            Returns a value indicating whether the current
-            user is in the specified security role.
-            </summary>
-            <param name="role">
-            Role to check.
-            </param>
         </member>
         <member name="M:Csla.Security.CslaIdentityBase`1.UnauthenticatedIdentity">
             <summary>

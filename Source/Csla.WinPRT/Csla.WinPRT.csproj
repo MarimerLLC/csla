@@ -382,8 +382,20 @@
     <Compile Include="..\Csla\IBusinessBase.cs">
       <Link>IBusinessBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\IBusinessListBase.cs">
+      <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICommandBase.cs">
+      <Link>ICommandBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\IDataPortal.cs">
       <Link>IDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyBase.cs">
+      <Link>IReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyListBase.cs">
+      <Link>IReadOnlyListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\LazySingleton.cs">
       <Link>LazySingleton.cs</Link>
@@ -447,6 +459,9 @@
     </Compile>
     <Compile Include="..\Csla\Security\CslaPrincipal.cs">
       <Link>Security\CslaPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\ICslaIdentity.cs">
+      <Link>Security\ICslaIdentity.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Security\SecurityException.cs">
       <Link>Security\SecurityException.cs</Link>
@@ -517,6 +532,9 @@
     <Compile Include="..\Csla\Server\DataPortalSelector.cs">
       <Link>Server\DataPortalSelector.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\DefaultDataPortalActivator.cs">
+      <Link>Server\DefaultDataPortalActivator.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -525,6 +543,9 @@
     </Compile>
     <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
       <Link>Server\IAuthorizeDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalActivator.cs">
+      <Link>Server\IDataPortalActivator.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
       <Link>Server\IDataPortalExceptionInspector.cs</Link>

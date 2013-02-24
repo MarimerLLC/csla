@@ -29,7 +29,8 @@ namespace Csla
     Core.ReadOnlyObservableBindingList<C>, 
 #endif
     Csla.Core.IReadOnlyCollection,
-    ICloneable, Server.IDataPortalTarget
+    ICloneable, Server.IDataPortalTarget,
+    IReadOnlyListBase<C>
     where T : ReadOnlyListBase<T, C>
   {
     #region Constructors

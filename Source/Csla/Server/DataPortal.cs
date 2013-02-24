@@ -69,15 +69,13 @@ namespace Csla.Server
 
       if (InterceptorType != null)
       {
-        try
+        if (_interceptor == null)
         {
-          _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
-        }
-        catch (Exception ex)
-        {
-          throw new TypeLoadException(
-            string.Format("InterceptorType ({0})", InterceptorType.FullName), 
-            ex);
+          lock (_syncRoot)
+          {
+            if (_interceptor == null)
+              _interceptor = (IInterceptDataPortal)Activator.CreateInstance(InterceptorType);
+          }
         }
       }
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>EntityFramework</id>
     <version>5.0.0</version>
@@ -14,5 +14,8 @@
       <frameworkAssembly assemblyName="System.Data.Entity" targetFramework="" />
       <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="" />
     </frameworkAssemblies>
+    <references>
+      <reference file="EntityFramework.dll" />
+    </references>
   </metadata>
 </package>

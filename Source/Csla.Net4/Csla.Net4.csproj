@@ -111,16 +111,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Threading.Tasks">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.14-rc\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.14-rc\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.14.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.14-rc\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -468,11 +465,23 @@
     <Compile Include="..\Csla\IBusinessBase.cs">
       <Link>IBusinessBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\IBusinessListBase.cs">
+      <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICommandBase.cs">
+      <Link>ICommandBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\IDataPortal.cs">
       <Link>IDataPortal.cs</Link>
     </Compile>
     <Compile Include="..\Csla\IDataPortalResult.cs">
       <Link>IDataPortalResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyBase.cs">
+      <Link>IReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyListBase.cs">
+      <Link>IReadOnlyListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\LazySingleton.cs">
       <Link>LazySingleton.cs</Link>
@@ -630,6 +639,9 @@
     <Compile Include="..\Csla\Security\ICheckRoles.cs">
       <Link>Security\ICheckRoles.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Security\ICslaIdentity.cs">
+      <Link>Security\ICslaIdentity.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Security\MembershipIdentity.cs">
       <Link>Security\MembershipIdentity.cs</Link>
     </Compile>
@@ -747,6 +759,9 @@
     <Compile Include="..\Csla\Server\DataPortalSelector.cs">
       <Link>Server\DataPortalSelector.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\DefaultDataPortalActivator.cs">
+      <Link>Server\DefaultDataPortalActivator.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
@@ -827,6 +842,9 @@
     </Compile>
     <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
       <Link>Server\IAuthorizeDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalActivator.cs">
+      <Link>Server\IDataPortalActivator.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
       <Link>Server\IDataPortalExceptionInspector.cs</Link>

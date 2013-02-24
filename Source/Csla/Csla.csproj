@@ -181,7 +181,11 @@
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
     <Compile Include="IBusinessBase.cs" />
+    <Compile Include="IBusinessListBase.cs" />
+    <Compile Include="ICommandBase.cs" />
     <Compile Include="IDataPortal.cs" />
+    <Compile Include="IReadOnlyBase.cs" />
+    <Compile Include="IReadOnlyListBase.cs" />
     <Compile Include="LazySingleton.cs" />
     <Compile Include="MethodInfo.cs" />
     <Compile Include="Core\MobileBindingList.cs" />
@@ -242,6 +246,7 @@
     <Compile Include="Security\CslaIdentity.cs" />
     <Compile Include="Security\CslaPrincipal.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
+    <Compile Include="Security\ICslaIdentity.cs" />
     <Compile Include="Security\MembershipIdentity.cs" />
     <Compile Include="Security\NoAccessBehavior.cs" />
     <Compile Include="Security\SecurityException.cs" />
@@ -263,6 +268,8 @@
     <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
+    <Compile Include="Server\DefaultDataPortalActivator.cs" />
+    <Compile Include="Server\IDataPortalActivator.cs" />
     <Compile Include="Server\ServicedDataPortalReadUncommitted.cs" />
     <Compile Include="Server\ServicedDataPortalReadCommitted.cs" />
     <Compile Include="Server\ServicedDataPortalSerializable.cs" />

@@ -20,7 +20,6 @@ using System.Reflection;
 
 namespace Csla
 {
-
   /// <summary>
   /// This is the base class from which command 
   /// objects will be derived.
@@ -46,7 +45,8 @@ namespace Csla
   [Serializable]
   public abstract class CommandBase<T> : ManagedObjectBase, 
       ICommandObject, ICloneable,
-      Csla.Server.IDataPortalTarget, Csla.Core.IManageProperties
+      Csla.Server.IDataPortalTarget, Csla.Core.IManageProperties,
+      ICommandBase
     where T : CommandBase<T>
   {
     #region Constructors

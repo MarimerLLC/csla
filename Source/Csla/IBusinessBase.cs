@@ -15,6 +15,7 @@ namespace Csla
     IEditableBusinessObject,
     IEditableObject,
     ICloneable,
+    ISavable,
     IAuthorizeReadWrite,
     IParent,
     IHostRules,
@@ -22,12 +23,10 @@ namespace Csla
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if !NETFX_CORE
 #if (SILVERLIGHT || NETFX_CORE) && !__ANDROID__ && !IOS
     ,INotifyDataErrorInfo
 #else
     , IDataErrorInfo
-#endif
 #endif
   {
   }

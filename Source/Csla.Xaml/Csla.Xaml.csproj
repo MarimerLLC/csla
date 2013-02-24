@@ -76,7 +76,6 @@
     <Compile Include="TriggerAction.cs" />
     <Compile Include="ViewModel.cs" />
     <Compile Include="ViewModelBase.cs" />
-    <Compile Include="VisibilityMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />

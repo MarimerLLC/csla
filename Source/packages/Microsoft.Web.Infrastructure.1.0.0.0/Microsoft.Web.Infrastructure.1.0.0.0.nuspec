@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>Microsoft.Web.Infrastructure</id>
     <version>1.0.0.0</version>
@@ -13,5 +13,8 @@
     <description>This package contains the Microsoft.Web.Infrastructure assembly that lets you dynamically register HTTP modules at run time.</description>
     <summary>This package contains the Microsoft.Web.Infrastructure assembly that lets you dynamically register HTTP modules at run time.</summary>
     <tags>ASPNETWEBPAGES</tags>
+    <references>
+      <reference file="Microsoft.Web.Infrastructure.dll" />
+    </references>
   </metadata>
 </package>

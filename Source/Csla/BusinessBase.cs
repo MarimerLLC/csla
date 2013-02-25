@@ -149,7 +149,7 @@ namespace Csla
     /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
     /// If <see langword="false"/> then it is the same as calling Save().
     /// </param>
-    public async virtual System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
+    public async System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
     {
       return await SaveAsync(forceUpdate, null, false);
     }

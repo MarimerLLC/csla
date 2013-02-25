@@ -72,13 +72,15 @@ namespace Csla
               case NotifyCollectionChangedAction.Remove:
                 item = (T)e.OldItems[0];
                 index = _filteredCollection.IndexOf(item);
-                _filteredCollection.Remove(item);
-                newE = new NotifyCollectionChangedEventArgs(
-                  e.Action, item, index);
+                if (index > -1)
+                {
+                  _filteredCollection.Remove(item);
+                  newE = new NotifyCollectionChangedEventArgs(e.Action, item, index);
+                }
                 break;
               case NotifyCollectionChangedAction.Replace:
                 index = _filteredCollection.IndexOf((T)e.OldItems[0]);
-                if (index >= 0)
+                if (index > -1)
                 {
                   _filteredCollection[index] = (T)e.NewItems[0];
                   newE = new NotifyCollectionChangedEventArgs(

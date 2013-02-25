@@ -112,6 +112,34 @@ namespace Csla.Test.Linq
     }
 
     [TestMethod]
+    public void Blb2Loc_RemoveOriginal()
+    {
+      var source = new TestList();
+      var query = from r in source
+                  where r.Id > 100
+                  select r;
+      var synced = source.ToSyncList(query);
+      int count = 0;
+      foreach (var item in synced)
+        count++;
+      Assert.AreEqual(3, count, "Calculated count wrong (br)");
+      Assert.AreEqual(3, synced.Count, "Synced count wrong (br)");
+      Assert.AreEqual(4, source.Count, "source count wrong (br)");
+      Assert.AreEqual(0, synced.Where(_ => _.Id == 12).Count(), "synced contains 12");
+
+      source.RemoveAt(3);
+
+      count = 0;
+      foreach (var item in synced)
+        count++;
+
+      Assert.AreEqual(3, count, "Calculated count wrong");
+      Assert.AreEqual(3, synced.Count, "Synced count wrong");
+      Assert.AreEqual(3, source.Count, "source count wrong");
+      Assert.AreEqual(0, synced.Where(_ => _.Id == 12).Count(), "synced contains 12");
+    }
+
+    [TestMethod]
     public void Create()
     {
       var source = new ObservableCollection<string>() { "a", "b", "c" };

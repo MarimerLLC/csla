@@ -22,7 +22,7 @@ namespace Csla
   /// and server DataPortal objects. 
   /// </summary>
   public static class ApplicationContext
-  {
+  { 
     #region Context Manager
 
     private static IContextManager _contextManager;

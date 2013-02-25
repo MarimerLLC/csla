@@ -26,6 +26,13 @@ CSLA .NET is developed and maintained by a [global development team](http://www.
     #99999 Make the example in CONTRIBUTING imperative and concrete
 ````
 
+or
+
+````
+   Fixes #99999 Describe the change made in a concise manner
+   Closes #9999 Describe the change made in a concise manner
+````
+
 * Make sure you have added the necessary tests for your changes.
 * Run _all_ the tests to assure nothing else was accidentally broken. This is
   particularly important because CSLA .NET is cross-platform (WinRT, .NET, Silverlight,

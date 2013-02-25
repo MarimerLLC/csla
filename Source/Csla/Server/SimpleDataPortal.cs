@@ -56,9 +56,9 @@ namespace Csla.Server
 
         // tell the business object to create its data
         if (criteria is EmptyCriteria)
-          await obj.CallMethodTryAsync("DataPortal_Create");
+          await obj.CallMethodTryAsync("DataPortal_Create").ConfigureAwait(false);
         else
-          await obj.CallMethodTryAsync("DataPortal_Create", criteria);
+          await obj.CallMethodTryAsync("DataPortal_Create", criteria).ConfigureAwait(false);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
@@ -128,9 +128,9 @@ namespace Csla.Server
 
         // tell the business object to fetch its data
         if (criteria is EmptyCriteria)
-          await obj.CallMethodTryAsync("DataPortal_Fetch");
+          await obj.CallMethodTryAsync("DataPortal_Fetch").ConfigureAwait(false);
         else
-          await obj.CallMethodTryAsync("DataPortal_Fetch", criteria);
+          await obj.CallMethodTryAsync("DataPortal_Fetch", criteria).ConfigureAwait(false);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
@@ -200,7 +200,7 @@ namespace Csla.Server
             if (!busObj.IsNew)
             {
               // tell the object to delete itself
-              await lb.CallMethodTryAsync("DataPortal_DeleteSelf");
+              await lb.CallMethodTryAsync("DataPortal_DeleteSelf").ConfigureAwait(false);
             }
             if (target != null)
               target.MarkNew();
@@ -212,12 +212,12 @@ namespace Csla.Server
             if (busObj.IsNew)
             {
               // tell the object to insert itself
-              await lb.CallMethodTryAsync("DataPortal_Insert");
+              await lb.CallMethodTryAsync("DataPortal_Insert").ConfigureAwait(false);
             }
             else
             {
               // tell the object to update itself
-              await lb.CallMethodTryAsync("DataPortal_Update");
+              await lb.CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
             }
             if (target != null)
               target.MarkOld();
@@ -229,14 +229,14 @@ namespace Csla.Server
         {
           operation = DataPortalOperations.Execute;
           // tell the object to update itself
-          await lb.CallMethodTryAsync("DataPortal_Execute");
+          await lb.CallMethodTryAsync("DataPortal_Execute").ConfigureAwait(false);
         }
         else
         {
           // this is an updatable collection or some other
           // non-BusinessBase type of object
           // tell the object to update itself
-          await lb.CallMethodTryAsync("DataPortal_Update");
+          await lb.CallMethodTryAsync("DataPortal_Update").ConfigureAwait(false);
           if (target != null)
             target.MarkOld();
           else
@@ -302,7 +302,7 @@ namespace Csla.Server
           obj.CallMethodIfImplemented("DataPortal_OnDataPortalInvoke", eventArgs);
 
         // tell the business object to delete itself
-        await obj.CallMethodTryAsync("DataPortal_Delete", criteria);
+        await obj.CallMethodTryAsync("DataPortal_Delete", criteria).ConfigureAwait(false);
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);

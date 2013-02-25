@@ -158,7 +158,7 @@ namespace Csla.Server
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
-              result = await portal.Create(objectType, criteria, context, isSync);
+              result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             }
             finally
             {
@@ -170,17 +170,17 @@ namespace Csla.Server
           case TransactionalTypes.TransactionScope:
 
             portal = new TransactionalDataPortal(method.TransactionalAttribute);
-            result = await portal.Create(objectType, criteria, context, isSync);
+            result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Create(objectType, criteria, context, isSync);
+            result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Create(objectType, criteria, context, isSync);
+        result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
         return result;
@@ -250,7 +250,7 @@ namespace Csla.Server
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
-              result = await portal.Fetch(objectType, criteria, context, isSync);
+              result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             }
             finally
             {
@@ -260,16 +260,16 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal(method.TransactionalAttribute);
-            result = await portal.Fetch(objectType, criteria, context, isSync);
+            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Fetch(objectType, criteria, context, isSync);
+            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Fetch(objectType, criteria, context, isSync);
+        result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
         return result;
@@ -381,7 +381,7 @@ namespace Csla.Server
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
-              result = await portal.Update(obj, context, isSync);
+              result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             }
             finally
             {
@@ -391,16 +391,16 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal(method.TransactionalAttribute);
-            result = await portal.Update(obj, context, isSync);
+            result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Update(obj, context, isSync);
+            result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Update(obj, context, isSync);
+        result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { Parameter = obj, Result = result, Operation = DataPortalOperations.Update, IsSync = isSync });
         return result;
@@ -480,7 +480,7 @@ namespace Csla.Server
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
             {
-              result = await portal.Delete(objectType, criteria, context, isSync);
+              result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             }
             finally
             {
@@ -490,16 +490,16 @@ namespace Csla.Server
 #endif
           case TransactionalTypes.TransactionScope:
             portal = new TransactionalDataPortal(method.TransactionalAttribute);
-            result = await portal.Delete(objectType, criteria, context, isSync);
+            result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
             portal = new DataPortalSelector();
-            result = await portal.Delete(objectType, criteria, context, isSync);
+            result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
         portal = new DataPortalSelector();
-        result = await portal.Delete(objectType, criteria, context, isSync);
+        result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });
         return result;

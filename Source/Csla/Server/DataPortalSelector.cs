@@ -40,12 +40,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Create(objectType, criteria, context, isSync);
+          return await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Create(objectType, criteria, context, isSync);
+          return await dp.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -77,12 +77,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Fetch(objectType, criteria, context, isSync);
+          return await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Fetch(objectType, criteria, context, isSync);
+          return await dp.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -113,12 +113,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Update(obj, context, isSync);
+          return await dp.Update(obj, context, isSync).ConfigureAwait(false);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Update(obj, context, isSync);
+          return await dp.Update(obj, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -150,12 +150,12 @@ namespace Csla.Server
         if (context.FactoryInfo == null)
         {
           var dp = new SimpleDataPortal();
-          return await dp.Delete(objectType, criteria, context, isSync);
+          return await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
           var dp = new FactoryDataPortal();
-          return await dp.Delete(objectType, criteria, context, isSync);
+          return await dp.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)

@@ -55,7 +55,7 @@ namespace Csla.Server
       using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = await portal.Create(objectType, criteria, context, isSync);
+        result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
       return result;
@@ -115,7 +115,7 @@ namespace Csla.Server
       using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = await portal.Fetch(objectType, criteria, context, isSync);
+        result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
       return result;
@@ -142,7 +142,7 @@ namespace Csla.Server
       using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = await portal.Update(obj, context, isSync);
+        result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
       return result;
@@ -169,7 +169,7 @@ namespace Csla.Server
       using (TransactionScope tr = CreateTransactionScope())
       {
         var portal = new DataPortalSelector();
-        result = await portal.Delete(objectType, criteria, context, isSync);
+        result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         tr.Complete();
       }
       return result;

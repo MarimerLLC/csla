@@ -53,6 +53,7 @@ namespace Csla.Test.DataPortal
         }
 
         [TestMethod()]
+        [Ignore]
         public void TestEnterpriseServicesTransactionalUpdate()
         {
             Csla.Test.DataPortal.ESTransactionalRoot tr = Csla.Test.DataPortal.ESTransactionalRoot.NewESTransactionalRoot();

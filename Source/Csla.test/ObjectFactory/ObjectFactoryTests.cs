@@ -203,6 +203,7 @@ namespace Csla.Test.ObjectFactory
 
 
     [TestMethod]
+    [Ignore]
     public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
     {
       ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";
@@ -220,6 +221,7 @@ namespace Csla.Test.ObjectFactory
     }
 
     [TestMethod]
+    [Ignore]
     public void UpdateEnerpriseServicesTransactionDefaultTransactionLevel()
     {
       ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"] = "RepeatableRead";

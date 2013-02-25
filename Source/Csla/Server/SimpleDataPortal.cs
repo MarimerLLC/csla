@@ -60,6 +60,10 @@ namespace Csla.Server
         else
           await obj.CallMethodTryAsync("DataPortal_Create", criteria).ConfigureAwait(false);
 
+        var busy = obj.Instance as Csla.Core.ITrackStatus;
+        if (busy != null && busy.IsBusy)
+          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
+
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
         else
@@ -131,6 +135,10 @@ namespace Csla.Server
           await obj.CallMethodTryAsync("DataPortal_Fetch").ConfigureAwait(false);
         else
           await obj.CallMethodTryAsync("DataPortal_Fetch", criteria).ConfigureAwait(false);
+
+        var busy = obj.Instance as Csla.Core.ITrackStatus;
+        if (busy != null && busy.IsBusy)
+          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
@@ -243,6 +251,10 @@ namespace Csla.Server
             lb.CallMethodIfImplemented("MarkOld");
         }
 
+        var busy = busObj as Csla.Core.ITrackStatus;
+        if (busy != null && busy.IsBusy)
+          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
+
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(
             new DataPortalEventArgs(context, objectType, obj, operation));
@@ -303,6 +315,10 @@ namespace Csla.Server
 
         // tell the business object to delete itself
         await obj.CallMethodTryAsync("DataPortal_Delete", criteria).ConfigureAwait(false);
+
+        var busy = obj.Instance as Csla.Core.ITrackStatus;
+        if (busy != null && busy.IsBusy)
+          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
 
         if (target != null)
           target.DataPortal_OnDataPortalInvokeComplete(eventArgs);

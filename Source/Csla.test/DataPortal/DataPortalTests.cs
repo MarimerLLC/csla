@@ -227,6 +227,36 @@ namespace Csla.Test.DataPortal
             Assert.AreEqual(567, Csla.ApplicationContext.GlobalContext["StronglyTypedDP_Criteria"]);
         }
 
+        [TestMethod]
+        public void EncapsulatedIsBusyFails()
+        {
+          try
+          {
+            var obj = Csla.DataPortal.Fetch<EncapsulatedBusy>();
+          }
+          catch (DataPortalException ex)
+          {
+            Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
+            return;
+          }
+          Assert.Fail("Expected exception");
+        }
+
+        [TestMethod]
+        public void FactoryIsBusyFails()
+        {
+          try
+          {
+            var obj = Csla.DataPortal.Fetch<FactoryBusy>();
+          }
+          catch (DataPortalException ex)
+          {
+            Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
+            return;
+          }
+          Assert.Fail("Expected exception");
+        }
+
         [TestMethod()]
         public void DataPortalEvents()
         {
@@ -317,4 +347,40 @@ namespace Csla.Test.DataPortal
         }
         
     }
+
+  [Serializable]
+  public class EncapsulatedBusy : BusinessBase<EncapsulatedBusy>
+  {
+    protected override void DataPortal_Create()
+    {
+      base.DataPortal_Create();
+      MarkBusy();
+    }
+
+    private void DataPortal_Fetch()
+    {
+      MarkBusy();
+    }
+  }
+
+  [Serializable]
+  [Csla.Server.ObjectFactory(typeof(FactoryBusyFactory))]
+  public class FactoryBusy : BusinessBase<FactoryBusy>
+  {
+    public void MarkObjectBusy()
+    {
+      MarkBusy();
+    }
+  }
+
+  public class FactoryBusyFactory : Csla.Server.ObjectFactory
+  {
+    public FactoryBusy Fetch()
+    {
+      var obj = new FactoryBusy();
+      MarkOld(obj);
+      obj.MarkObjectBusy();
+      return obj;
+    }
+  }
 }

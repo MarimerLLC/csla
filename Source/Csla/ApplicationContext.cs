@@ -261,7 +261,7 @@ namespace Csla
           }
         }
 #else
-        _dataPortalActivator = new Csla.Server.DefaultDataPortalActivator();
+        _dataPortalActivator = new Csla.Server.DefaultDataPortalActivator(); 
 #endif
         return _dataPortalActivator;
       }

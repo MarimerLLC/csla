@@ -34,6 +34,14 @@ namespace CSLA.Core
     }
 
     /// <summary>
+    /// This method is invoked after the CopyState
+    /// operation is complete.
+    /// </summary>
+    protected virtual void CopyStateComplete()
+    {
+    }
+
+    /// <summary>
     /// Copies the state of the object and places the copy
     /// onto the state stack.
     /// </summary>
@@ -71,7 +79,6 @@ namespace CSLA.Core
                   // this is a child collection, cascade the call
                   BusinessCollectionBase tmp = (BusinessCollectionBase)value;
                   tmp.CopyState();
-                  Serialization.SerializationNotification.OnSerializing(tmp);
                 }
               }
               else
@@ -84,7 +91,6 @@ namespace CSLA.Core
                     // this is a child object, cascade the call
                     BusinessBase tmp = (BusinessBase)value;
                     tmp.CopyState();
-                    Serialization.SerializationNotification.OnSerializing(tmp);
                   }
                 }
                 else
@@ -117,53 +123,15 @@ namespace CSLA.Core
       {
         Serialization.SerializationNotification.OnSerialized(child);
       }
+      CopyStateComplete();
+    }
 
-      currentType = this.GetType();
-      do
-      {
-        // get the list of fields in this type
-        fields = currentType.GetFields( 
-          BindingFlags.NonPublic | 
-          BindingFlags.Instance | 
-          BindingFlags.Public);
-
-        foreach(FieldInfo field in fields)
-        {
-          // make sure we process only our variables
-          if(field.DeclaringType == currentType)
-          {
-            // see if this field is marked as not undoable
-            if(!NotUndoableField(field))
-            {
-              // the field is undoable, so it needs to be processed
-              object value = field.GetValue(this);
-
-              if(field.FieldType.IsSubclassOf(typeof(BusinessCollectionBase)))
-              {
-                // make sure the variable has a value
-                if(!(value == null))
-                {
-                  // this is a child collection, cascade the call
-                  Serialization.SerializationNotification.OnSerialized(value);
-                }
-              }
-              else
-              {
-                if(field.FieldType.IsSubclassOf(typeof(BusinessBase)))
-                {
-                  // make sure the variable has a value
-                  if(!(value == null))
-                  {
-                    // this is a child object, cascade the call
-                    Serialization.SerializationNotification.OnSerialized(value);
-                  }
-                }
-              }
-            }
-          }
-        }
-        currentType = currentType.BaseType;
-      } while(currentType != typeof(UndoableBase));
+    /// <summary>
+    /// This method is invoked after the UndoChanges
+    /// operation is complete.
+    /// </summary>
+    protected virtual void UndoChangesComplete()
+    {
     }
 
     /// <summary>
@@ -224,7 +192,6 @@ namespace CSLA.Core
                     // this is a child collection, cascade the call
                     BusinessCollectionBase tmp = (BusinessCollectionBase)value;
                     tmp.UndoChanges();
-                    Serialization.SerializationNotification.OnDeserialized(tmp);
                   }
                 }
                 else
@@ -237,7 +204,6 @@ namespace CSLA.Core
                       // this is a child object, cascade the call
                       BusinessBase tmp = (BusinessBase)value;
                       tmp.UndoChanges();
-                      Serialization.SerializationNotification.OnDeserialized(tmp);
                     }
                   }
                   else
@@ -253,6 +219,15 @@ namespace CSLA.Core
           currentType = currentType.BaseType;
         } while(currentType != typeof(UndoableBase));
       }
+      UndoChangesComplete();
+    }
+
+    /// <summary>
+    /// This method is invoked after the AcceptChanges
+    /// operation is complete.
+    /// </summary>
+    protected virtual void AcceptChangesComplete()
+    {
     }
 
     /// <summary>
@@ -321,6 +296,7 @@ namespace CSLA.Core
         } 
         while(currentType != typeof(UndoableBase));
       }
+      AcceptChangesComplete();
     }
 
     #region Helper Functions

@@ -204,14 +204,6 @@ Public MustInherit Class BusinessCollectionBase
 
     UndoChanges()
 
-    ' make sure the child objects re-add their business rules
-    For Each child As BusinessBase In list
-      child.AddBusinessRules()
-    Next
-    For Each child As BusinessBase In deletedList
-      child.AddBusinessRules()
-    Next
-
   End Sub
 
   ''' <summary>
@@ -400,8 +392,8 @@ Public MustInherit Class BusinessCollectionBase
     For Each item As BusinessBase In List
       If ReferenceEquals(sender, item) Then
         Exit For
-        pos += 1
       End If
+      pos += 1
     Next
     Me.OnListChanged(New System.ComponentModel.ListChangedEventArgs( _
       System.ComponentModel.ListChangedType.ItemChanged, pos))
@@ -684,12 +676,12 @@ Public MustInherit Class BusinessCollectionBase
   Protected Overridable Sub Deserialized() _
     Implements CSLA.Serialization.ISerializationNotification.Deserialized
 
-    Dim child As Serialization.ISerializationNotification
-    For Each child In list
+    For Each child As Serialization.ISerializationNotification In list
       child.Deserialized()
       DirectCast(child, BusinessBase).SetParent(Me)
+      AddHandler CType(child, BusinessBase).IsDirtyChanged, AddressOf OnChildIsDirty
     Next
-    For Each child In deletedList
+    For Each child As Serialization.ISerializationNotification In deletedList
       child.Deserialized()
       DirectCast(child, BusinessBase).SetParent(Me)
     Next

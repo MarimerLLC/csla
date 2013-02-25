@@ -164,7 +164,7 @@ namespace CSLA.Core
       {
         get
         {
-          if(IsNumeric(_key) || _key is string)
+          if (_key is IComparable)
             return _key;
           else
             return _key.ToString();

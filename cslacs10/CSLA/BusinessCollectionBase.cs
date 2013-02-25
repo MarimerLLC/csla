@@ -194,11 +194,6 @@ namespace CSLA
         throw new NotSupportedException(Strings.GetResourceString("NoCancelEditChildException"));
 
       UndoChanges();
-
-      foreach(BusinessBase child in List)
-        child.AddBusinessRules();
-      foreach(BusinessBase child in deletedList)
-        child.AddBusinessRules();
     }
 
     /// <summary>
@@ -393,11 +388,9 @@ namespace CSLA
     {
       int pos = 0;
       foreach(BusinessBase item in List)
-      {
         if (ReferenceEquals(sender,item))
           break;
-        pos++;
-      }
+      pos++;
       this.OnListChanged(new System.ComponentModel.ListChangedEventArgs(System.ComponentModel.ListChangedType.ItemChanged,pos));
     }
 
@@ -674,6 +667,7 @@ namespace CSLA
       {
         child.Deserialized();
         ((BusinessBase)child).SetParent(this);
+        ((BusinessBase)child).IsDirtyChanged += new EventHandler(OnChildIsDirty);
       }
       foreach(Serialization.ISerializationNotification child in deletedList)
       {

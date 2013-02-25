@@ -92,8 +92,7 @@ Public Class ApplicationContext
 
   Public Shared Sub Clear()
 
-    Thread.FreeNamedDataSlot("CSLA.ClientContext")
-    Thread.FreeNamedDataSlot("CSLA.GlobalContext")
+    SetContext(Nothing, Nothing)
 
   End Sub
 

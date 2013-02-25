@@ -36,13 +36,21 @@ Namespace Core
     End Property
 
     ''' <summary>
+    ''' This method is invoked after the CopyState
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub CopyStateComplete()
+
+    End Sub
+
+    ''' <summary>
     ''' Copies the state of the object and places the copy
     ''' onto the state stack.
     ''' </summary>
     Protected Friend Sub CopyState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable()
+      Dim state As New Hashtable
       Dim fields() As FieldInfo
       Dim field As FieldInfo
       Dim fieldName As String
@@ -67,7 +75,6 @@ Namespace Core
                 If Not value Is Nothing Then
                   ' this is a child collection, cascade the call
                   CType(value, BusinessCollectionBase).CopyState()
-                  Serialization.SerializationNotification.OnSerializing(value)
                 End If
 
               ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
@@ -75,7 +82,6 @@ Namespace Core
                 If Not value Is Nothing Then
                   ' this is a child object, cascade the call
                   CType(value, BusinessBase).CopyState()
-                  Serialization.SerializationNotification.OnSerializing(value)
                 End If
 
               Else
@@ -109,47 +115,15 @@ Namespace Core
       For Each child As Object In state
         Serialization.SerializationNotification.OnSerialized(child)
       Next
+      CopyStateComplete()
 
-      currentType = Me.GetType
-      Do
-        ' get the list of fields in this type
-        fields = currentType.GetFields( _
-                                BindingFlags.NonPublic Or _
-                                BindingFlags.Instance Or _
-                                BindingFlags.Public)
+    End Sub
 
-        For Each field In fields
-          ' make sure we process only our variables
-          If field.DeclaringType Is currentType Then
-            ' see if this field is marked as not undoable
-            If Not NotUndoableField(field) Then
-              ' the field is undoable, so it needs to be processed
-              Dim value As Object = field.GetValue(Me)
-
-              If field.FieldType.IsSubclassOf(GetType(BusinessCollectionBase)) Then
-                ' make sure the variable has a value
-                If Not value Is Nothing Then
-                  ' this is a child collection, cascade the call
-                  Serialization.SerializationNotification.OnSerializing(value)
-                End If
-
-              ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
-                ' make sure the variable has a value
-                If Not value Is Nothing Then
-                  ' this is a child object, cascade the call
-                  Serialization.SerializationNotification.OnSerializing(value)
-                End If
-
-              End If
-
-            End If
-
-          End If
-        Next
-
-        currentType = currentType.BaseType
-
-      Loop Until currentType Is GetType(UndoableBase)
+    ''' <summary>
+    ''' This method is invoked after the UndoChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub UndoChangesComplete()
 
     End Sub
 
@@ -170,7 +144,7 @@ Namespace Core
       If EditLevel > 0 Then
         Dim buffer As New MemoryStream(CType(mStateStack.Pop(), Byte()))
         buffer.Position = 0
-        Dim formatter As New BinaryFormatter()
+        Dim formatter As New BinaryFormatter
         Dim state As Hashtable = CType(formatter.Deserialize(buffer), Hashtable)
 
         ' tell child objects they've been deserialized
@@ -203,7 +177,6 @@ Namespace Core
                   If Not value Is Nothing Then
                     ' this is a child collection, cascade the call
                     CType(value, BusinessCollectionBase).UndoChanges()
-                    Serialization.SerializationNotification.OnDeserialized(value)
                   End If
 
                 ElseIf field.FieldType.IsSubclassOf(GetType(BusinessBase)) Then
@@ -211,7 +184,6 @@ Namespace Core
                   If Not value Is Nothing Then
                     ' this is a child object, cascade the call
                     CType(value, BusinessBase).UndoChanges()
-                    Serialization.SerializationNotification.OnDeserialized(value)
                   End If
 
                 Else
@@ -231,6 +203,15 @@ Namespace Core
         Loop Until currentType Is GetType(UndoableBase)
 
       End If
+      UndoChangesComplete()
+
+    End Sub
+
+    ''' <summary>
+    ''' This method is invoked after the AcceptChanges
+    ''' operation is complete.
+    ''' </summary>
+    Protected Overridable Sub AcceptChangesComplete()
 
     End Sub
 
@@ -289,8 +270,9 @@ Namespace Core
           currentType = currentType.BaseType
 
         Loop Until currentType Is GetType(UndoableBase)
-
       End If
+      AcceptChangesComplete()
+
     End Sub
 
 #Region " Helper Functions "
@@ -318,7 +300,7 @@ Namespace Core
     Public Sub DumpState()
 
       Dim currentType As Type = Me.GetType
-      Dim state As New Hashtable()
+      Dim state As New Hashtable
       Dim field As FieldInfo
       Dim fieldName As String
 

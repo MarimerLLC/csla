@@ -133,7 +133,7 @@ Namespace Core
 
       Public ReadOnly Property Key() As Object
         Get
-          If IsNumeric(mKey) OrElse TypeOf mKey Is String Then
+          If TypeOf mKey Is IComparable Then
             Return mKey
           Else
             Return mKey.ToString

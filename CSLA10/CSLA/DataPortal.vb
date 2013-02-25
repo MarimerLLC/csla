@@ -223,9 +223,7 @@ Public Class DataPortal
 #Region " Server-side DataPortal "
 
   Private Shared mPortal As Server.DataPortal
-  Private Shared mServicedPortal As Server.ServicedDataPortal.DataPortal
   Private Shared mRemotePortal As Server.DataPortal
-  Private Shared mRemoteServicedPortal As Server.ServicedDataPortal.DataPortal
 
   Private Shared Function Portal(ByVal forceLocal As Boolean) As Server.DataPortal
 
@@ -251,20 +249,14 @@ Public Class DataPortal
 
     If Not forceLocal AndAlso mPortalRemote Then
       ' return remote instance
-      If mRemoteServicedPortal Is Nothing Then
-        mRemoteServicedPortal = _
-          CType(Activator.GetObject(GetType(Server.ServicedDataPortal.DataPortal), _
-                                    SERVICED_PORTAL_SERVER), _
-          Server.ServicedDataPortal.DataPortal)
-      End If
-      Return mRemoteServicedPortal
+      Return CType(Activator.GetObject( _
+        GetType(Server.ServicedDataPortal.DataPortal), _
+        SERVICED_PORTAL_SERVER), _
+        Server.ServicedDataPortal.DataPortal)
 
     Else
       ' return local instance
-      If mServicedPortal Is Nothing Then
-        mServicedPortal = New Server.ServicedDataPortal.DataPortal
-      End If
-      Return mServicedPortal
+      Return New Server.ServicedDataPortal.DataPortal
     End If
 
   End Function
@@ -283,6 +275,10 @@ Public Class DataPortal
 
   Private Shared Function AUTHENTICATION() As String
     Return ConfigurationSettings.AppSettings("Authentication")
+  End Function
+
+  Private Shared Function ALWAYS_IMPERSONATE() As String
+    Return ConfigurationSettings.AppSettings("AlwaysImpersonate").ToLower
   End Function
 
   Private Shared Function GetPrincipal() As System.Security.Principal.IPrincipal
@@ -351,7 +347,7 @@ Public Class DataPortal
       Dim properties As New Hashtable
       properties("name") = "HttpBinary"
 
-      If AUTHENTICATION() = "Windows" Then
+      If AUTHENTICATION() = "Windows" OrElse ALWAYS_IMPERSONATE() = "true" Then
         ' make sure we pass the user's Windows credentials
         ' to the server
         properties("useDefaultCredentials") = True

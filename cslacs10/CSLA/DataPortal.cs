@@ -233,9 +233,7 @@ namespace CSLA
     #region Server-side DataPortal
 
     static Server.DataPortal _portal;
-    static Server.ServicedDataPortal.DataPortal _servicedPortal;
     static Server.DataPortal _remotePortal;
-    static Server.ServicedDataPortal.DataPortal _remoteServicedPortal;
 
     private static Server.DataPortal Portal(bool forceLocal)
     {
@@ -255,22 +253,21 @@ namespace CSLA
       }
     }
 
-    private static Server.ServicedDataPortal.DataPortal ServicedPortal(bool forceLocal)
+    private static Server.ServicedDataPortal.DataPortal 
+      ServicedPortal(bool forceLocal)
     {
       if(!forceLocal & _portalRemote)
       {
         // return remote instance
-        if(_remoteServicedPortal == null)
-          _remoteServicedPortal = (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
-            typeof(Server.ServicedDataPortal.DataPortal), SERVICED_PORTAL_SERVER);
-        return _remoteServicedPortal;
+        return 
+          (Server.ServicedDataPortal.DataPortal)Activator.GetObject(
+            typeof(Server.ServicedDataPortal.DataPortal), 
+            SERVICED_PORTAL_SERVER);
       }
       else
       {
         // return local instance
-        if(_servicedPortal == null)
-          _servicedPortal = new Server.ServicedDataPortal.DataPortal();
-        return _servicedPortal;
+        return new Server.ServicedDataPortal.DataPortal();
       }
     }
 
@@ -299,6 +296,18 @@ namespace CSLA
       get
       {
         return ConfigurationSettings.AppSettings["Authentication"];
+      }
+    }
+
+    static private string ALWAYS_IMPERSONATE
+    {
+      get
+      {
+        string tmp = ConfigurationSettings.AppSettings["AlwaysImpersonate"];
+        if (tmp != null)
+          return tmp.ToLower();
+        else
+          return "false";
       }
     }
 
@@ -367,7 +376,7 @@ namespace CSLA
         // that uses the binary formatter
         Hashtable properties = new Hashtable();
         properties["name"] = "HttpBinary";
-        if(AUTHENTICATION == "Windows")
+        if(AUTHENTICATION == "Windows" || ALWAYS_IMPERSONATE == "true")
         {
           // make sure we pass the user's Windows credentials
           // to the server

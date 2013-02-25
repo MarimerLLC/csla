@@ -59,37 +59,27 @@ namespace Csla.Xaml
       }
 
       var pCount = targetMethod.GetParameters().Length;
-      try
+      if (pCount == 0)
       {
-        if (pCount == 0)
-        {
-          targetMethod.Invoke(target, null);
-        }
-        else if (pCount == 2)
-        {
-          object parameterValue = null;
-          if (RebindParameterDynamically)
-            parameterValue = GetMethodParameter();
-          else
-            parameterValue = MethodParameter;
+        targetMethod.Invoke(target, null);
+      }
+      else if (pCount == 2)
+      {
+        object parameterValue = null;
+        if (RebindParameterDynamically)
+          parameterValue = GetMethodParameter();
+        else
+          parameterValue = MethodParameter;
 
-          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
+        targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
             {
               MethodParameter = parameterValue,
               TriggerParameter = e,
               TriggerSource = TargetControl
             }});
-        }
-        else
-          throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
       }
-      catch (System.Reflection.TargetInvocationException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+      else
+        throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
     }
 
     private void HookEvent(FrameworkElement oldTarget, string oldEvent, FrameworkElement newTarget, string newEvent)

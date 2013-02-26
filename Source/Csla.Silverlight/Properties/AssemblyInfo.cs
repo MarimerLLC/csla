@@ -18,7 +18,7 @@ using System.Diagnostics;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-12 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-13 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

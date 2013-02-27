@@ -751,6 +751,7 @@
       <SubType>Designer</SubType>
     </PRIResource>
     <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
     <PRIResource Include="Resources\it\Resources.resw" />
     <PRIResource Include="Resources\km-KH\Resources.resw" />
     <PRIResource Include="Resources\nl\Resources.resw" />

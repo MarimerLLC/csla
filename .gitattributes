@@ -1,16 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Explicitly declare text files we want to always be normalized and converted 
-# to native line endings on checkout.
-*.cs text
-*.vb text
-*.csproj text
-*.vbproj text
-*.xml text
-*.txt text
-*.md text
-
 # Custom for Visual Studio
 *.cs     diff=csharp
 *.sln    merge=union
@@ -30,4 +20,3 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
- 

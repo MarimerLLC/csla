@@ -84,13 +84,14 @@ namespace Csla.Reflection
       System.Reflection.MethodInfo result = null;
       while (ti != null)
       {
-        result = ti.DeclaredMethods.
+        var potentials = ti.DeclaredMethods.
           Where(r => r.Name == methodName &&
-                     r.GetParameters().Count() == parameterTypes.Count()).FirstOrDefault();
-        if (result != null)
+                     r.GetParameters().Count() == parameterTypes.Count());
+        foreach (var item in potentials)
         {
+          result = item;
           var resultParameters = result.GetParameters();
-          for (int i = 0; i < resultParameters.Count() - 1; i++)
+          for (int i = 0; i < resultParameters.Count(); i++)
           {
             if (resultParameters[i].ParameterType != parameterTypes[i])
             {
@@ -98,6 +99,8 @@ namespace Csla.Reflection
               break;
             }
           }
+          if (result != null)
+            break;
         }
         if (result != null)
           break;

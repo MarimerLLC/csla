@@ -25,31 +25,19 @@ namespace Csla.Test.DataPortalTest
   [Serializable]
   public class Single : BusinessBase<Single>
   {
-    #region Business Methods
-
-    private static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
+    public readonly static PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
     public int Id
     {
       get { return GetProperty(IdProperty); }
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<string> MethodCalledProperty = RegisterProperty(new PropertyInfo<string>("MethodCalled", "MethodCalled"));
+    public readonly static PropertyInfo<string> MethodCalledProperty = RegisterProperty(new PropertyInfo<string>("MethodCalled", "MethodCalled"));
     public string MethodCalled
     {
       get { return GetProperty(MethodCalledProperty); }
       set { SetProperty(MethodCalledProperty, value); }
     }
-
-    protected override object GetIdValue()
-    {
-      return Id;
-    }
-
-    #endregion
-
-
-    #region Factory Methods
 
 #if !SILVERLIGHT
     public static Single NewObject()
@@ -59,73 +47,37 @@ namespace Csla.Test.DataPortalTest
 
     public static Single GetObject(int id)
     {
-      return Csla.DataPortal.Fetch<Single>(new Criteria(id));
+      return Csla.DataPortal.Fetch<Single>(id);
     }
 
     public static void DeleteObject(int id)
     {
-      Csla.DataPortal.Delete<Single>(new Criteria(id));
+      Csla.DataPortal.Delete<Single>(id);
     }
 #endif
 
-
     public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler)
     {
-      Csla.DataPortal.BeginDelete<Single>(new Criteria(id), handler);
+      Csla.DataPortal.BeginDelete<Single>(id, handler);
     }
 
     public static void DeleteObject(int id, EventHandler<DataPortalResult<Single>> handler, object userState)
     {
-      Csla.DataPortal.BeginDelete<Single>(new Criteria(id), handler, userState);
+      Csla.DataPortal.BeginDelete<Single>(id, handler, userState);
     }
 
     public Single()
     { }
 
-    #endregion
-
-    #region Data Access
-
-#if TESTING
-    [System.Diagnostics.DebuggerNonUserCode]
-#endif
-    [Serializable]
-    public class Criteria : CriteriaBase<Criteria>
-    {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-        private set { _id = value; }
-      }
-
-      public Criteria(){}
-      public Criteria(int id)
-      { Id = id; }
-
-      protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
-      {
-        base.OnGetState(info, mode);
-        info.AddValue("_id", _id);
-      }
-      protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
-      {
-        base.OnSetState(info, mode);
-        _id = info.GetValue<int>("_id");
-      }
-    }
-
 #if !SILVERLIGHT
-
-    #region DataPortal_Create
 
     protected override void DataPortal_Create()
     {
       DoCreate(0);
     }
-    protected void DataPortal_Create(Criteria criteria)
+    protected void DataPortal_Create(int id)
     {
-      DoCreate(criteria.Id);
+      DoCreate(id);
     }
 
     private void DoCreate(int id)
@@ -138,17 +90,14 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("Bad data");
     }
 
-    #endregion
-
-    #region DataPortal_Fetch
-
-    protected void DataPortal_Fetch()
+    private void DataPortal_Fetch()
     {
       DoFetch(0);
     }
-    private void DataPortal_Fetch(Criteria criteria)
+
+    private void DataPortal_Fetch(int id)
     {
-      DoFetch(criteria.Id);
+      DoFetch(id);
     }
 
     private void DoFetch(int id)
@@ -160,12 +109,6 @@ namespace Csla.Test.DataPortalTest
       if (id == 9999)
         throw new Exception("Bad data");
     }
-
-    #endregion
-
-
-
-    #region DataPortal_Insert / DataPortal_Update / DataPortal_Delete
 
     protected override void DataPortal_Insert()
     {
@@ -186,11 +129,6 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = insertOrUpdate;
     }
 
-
-
-    #endregion
-
-
     protected override void DataPortal_DeleteSelf()
     {
       Csla.ApplicationContext.GlobalContext.Clear();
@@ -198,21 +136,13 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = "SelfDeleted";
     }
 
-
-
-
-    private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(int id)
     {
       Csla.ApplicationContext.GlobalContext.Clear();
       ApplicationContext.GlobalContext.Add("Single", "Deleted");
       MethodCalled = "Deleted";
     }
 #endif
-
-
-
-
-    #endregion
   }
 
   [Serializable]

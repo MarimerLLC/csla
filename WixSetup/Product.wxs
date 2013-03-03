@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define VERSION="4.5.12"?>
-  <Product Id="*" Name="CSLA.NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
+  <Product Id="*" Name="CSLA. NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property Id="ARPPRODUCTICON" Value="favicon.ico" />
     <Feature Id="ProductFeature" Title="WixSetup" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
-      <ComponentGroupRef Id="NetComponents"/>
-      <ComponentGroupRef Id="Net4Components"/>
-      <ComponentGroupRef Id="SilverlightComponents"/>
-      <ComponentGroupRef Id="WinRTComponents"/>
-      <ComponentGroupRef Id="WinPRTComponents"/>
-      <ComponentGroupRef Id="LogosComponents"/>
+      <ComponentGroupRef Id="NetComponenets"/>
+      <ComponentGroupRef Id="Net4Componenets"/>
+      <ComponentGroupRef Id="SilverlightComponenets"/>
+      <ComponentGroupRef Id="WinRTComponenets"/>
+      <ComponentGroupRef Id="WinPRTComponenets"/>
+      <ComponentGroupRef Id="LogosComponent"/>
       <ComponentGroupRef Id="CSSnippetsComp"/>
       <ComponentGroupRef Id="VBSnippetsComp"/>
-      <ComponentGroupRef Id="SilverlightComponents"/>
     </Feature>
   </Product>
   <Fragment>
@@ -24,7 +23,7 @@
       <Directory Id="ProgramFilesFolder">
         <Directory Id="ManufacturerFolder" Name="Marimer LLC">
           <Directory Id="CSLAFolder" Name="CSLA .NET">
-            <Directory Id="INSTALLDIR" Name="$(var.VERSION)">
+             <Directory Id="INSTALLDIR" Name="$(var.VERSION)">
               <Directory Id="Bin" Name="Bin">
                 <Directory Id="Net" Name="NET" />
                 <Directory Id="Net4" Name="NET4" />
@@ -53,7 +52,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="..\License.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="CSLABanner.BMP" />
     <WixVariable Id="WixUIDialogBmp" Value="CSLADialog.BMP" />
-  
+
   </Fragment>
 
   <!-- Fragment for files in Root -->
@@ -83,4 +82,4 @@
       </Component>
     </DirectoryRef>
   </Fragment>
- </Wix>
+</Wix>

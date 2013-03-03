@@ -21,6 +21,31 @@
       <ComponentRef Id="comp_Net4_CslaXamlDLL" />
       <ComponentRef Id="comp_Net4_CslaXamlPDB" />
       <ComponentRef Id="comp_Net4_CslaXamlXML" />
+      <ComponentRef Id="comp_BD5923FEE1F8425D9F1D5319A1E9B424" />
+      <ComponentRef Id="comp_384BC570444C414F85A12AF2515D9738" />
+      <ComponentRef Id="comp_18743B11F3BF4B58BDE10DC2D02A076B" />
+      <ComponentRef Id="comp_11CF7FF2439D43158E7642DBBFA769D9" />
+      <ComponentRef Id="comp_07B8B4BCFE4441BDAA62B75338C110AB" />
+      <ComponentRef Id="comp_0396B8D8F50E411B83EF2789F3A3EE58" />
+      <ComponentRef Id="comp_CFC474B7141D4746983289E8EB22BBBD" />
+      <ComponentRef Id="comp_9428E0BCDBA0410A99091BD7AE86DA71" />
+      <ComponentRef Id="comp_2A4C02D54BE14602A4A2E0EA9F7ED228" />
+      <ComponentRef Id="comp_5871DB35F7C7409590514DA2C350322E" />
+      <ComponentRef Id="comp_F829D91301F742ECBD60021A6B1E39A4" />
+      <ComponentRef Id="comp_4A8231121AD74EA5A62A94DC7E0CA236" />
+      <ComponentRef Id="comp_D76D354302674FC2B2EB84CFCFA4104A" />
+      <ComponentRef Id="comp_F464E64B5CC24BBDADBF11A9C169CEDE" />
+      <ComponentRef Id="comp_0005345BF8EF40ECBB988CE1CA2081E0" />
+      <ComponentRef Id="comp_E0D58FB8106E433999DBF4549DE09545" />
+      <ComponentRef Id="comp_7F655DE604404C53BE94D0C451F2D169" />
+      <ComponentRef Id="comp_43E9B7978AFC40738BC452B52F597D02" />
+      <ComponentRef Id="comp_ADDC824A16804308A1CC4DB906B10294" />
+      <ComponentRef Id="comp_EAD323F6A814454AB4505BE42515C3CF" />
+      <ComponentRef Id="comp_227B142C7EC24A7AB365E9AE1FC81F5F" />
+      <ComponentRef Id="comp_E8828874638C4920A3F1A0B8FB9B9903" />
+      <ComponentRef Id="comp_7CF6D89C26924BAD9A513B6B21B51659" />
+      <ComponentRef Id="comp_1199D57D43B348AC9EA82F591B0C9477" />
+      <ComponentRef Id="comp_228F14C93464433EB6743A9904ACC58C" />
     </ComponentGroup>
     <DirectoryRef Id="Net4">
       <Component Id="comp_Net4_CslaDLL" Guid="{2bed75dd-123f-42ee-b10c-3a114a09ac02}">
@@ -77,6 +102,131 @@
       <Component Id="comp_Net4_CslaXamlXML" Guid="{45673430-f8fc-4dc5-86c1-a80a2e83f6aa}">
         <File Id="file_Net4_CslaXamlXML" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\Csla.Xaml.xml" />
       </Component>
+      <Directory Id="dir_19762122A8034B8293CFDBF47B81217A" Name="ar">
+        <Component Id="comp_BD5923FEE1F8425D9F1D5319A1E9B424" Guid="40DD367D-6F2A-4037-B8D3-347B4F0CAD07">
+          <File Id="file_A3F3A128813146808EA878B819AF3651" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\ar\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_DF48D37A3B024A128D0B71037486B4A4" Name="bs">
+        <Component Id="comp_384BC570444C414F85A12AF2515D9738" Guid="4A9C2B29-F0BC-4CD4-867E-3BDA82910E3D">
+          <File Id="file_C02A422C0D7C4073B40F1F5EF0C67063" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\bs\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_26317D373F71421E9DCD2400A16E63C4" Name="ca-ES">
+        <Component Id="comp_18743B11F3BF4B58BDE10DC2D02A076B" Guid="81F58BD8-FE41-43DC-8E0A-C3AA3C5DE4A9">
+          <File Id="file_0BA5CC3424934E10807F949EE53FD9E8" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\ca-ES\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_A32513DD1BC844B089A3FCCEBDD63D65" Name="da">
+        <Component Id="comp_11CF7FF2439D43158E7642DBBFA769D9" Guid="490A436E-9CD3-45A5-8C16-633A6E6623A7">
+          <File Id="file_60B9D0A4FEDB48EB8EE6CCAD121A6610" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\da\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_5748626A138844C1AA1357F2C71E5971" Name="de">
+        <Component Id="comp_07B8B4BCFE4441BDAA62B75338C110AB" Guid="7C3454EE-E2E2-4798-807A-8EF2B9BBD85C">
+          <File Id="file_DBB6CA3E6E984711983672D6E80E638E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\de\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_7DFBA463D37A46E3830571565FDCD9DD" Name="el">
+        <Component Id="comp_0396B8D8F50E411B83EF2789F3A3EE58" Guid="FE9D0D07-12F0-445C-ABB2-E67F2736A57D">
+          <File Id="file_6CBCCAF624024080B0123FA6FEDCEE6B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\el\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_C927F0C31F9440338FE18651A595EB49" Name="es">
+        <Component Id="comp_CFC474B7141D4746983289E8EB22BBBD" Guid="EED1BC30-1F25-49FB-8C13-3C9E612F015B">
+          <File Id="file_3661D9FBDA964FAE85816A61920A740E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\es\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_4C950AF974A34B968DFE82E4A1656E1B" Name="es-ES">
+        <Component Id="comp_9428E0BCDBA0410A99091BD7AE86DA71" Guid="14D3773E-B79D-4105-9EB4-2759DF1C32F0">
+          <File Id="file_F58AEF8615B74F3C83070AC3B675D50C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\es-ES\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_9A8A918FFEB74B79A88F9DB45F233B41" Name="fr">
+        <Component Id="comp_2A4C02D54BE14602A4A2E0EA9F7ED228" Guid="0AAFD34B-05B8-4513-9DA2-0109F39E5891">
+          <File Id="file_679A1E028F7B4CB8BEB1FF2DEEBB41BA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\fr\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_EE97F5551E0E46D181A9287643043BC2" Name="hr">
+        <Component Id="comp_5871DB35F7C7409590514DA2C350322E" Guid="1CF0BBB0-BE76-41AD-BF20-13AD5EAA1FF4">
+          <File Id="file_D2F34255E9654870A2A0591814D03F0E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\hr\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_4574152B98034377915B7CE0DEAAB513" Name="hu">
+        <Component Id="comp_F829D91301F742ECBD60021A6B1E39A4" Guid="71D0D1B9-15AB-47E4-8AFE-0E9F89A49214">
+          <File Id="file_79DA9B77A24E43C5847EA77881404313" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\hu\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_48AB2A283E764713A3905FBD0F7C8F67" Name="it">
+        <Component Id="comp_4A8231121AD74EA5A62A94DC7E0CA236" Guid="9F98253C-32D2-413D-8781-427E642EE2C6">
+          <File Id="file_6B2A89EC175C4792A93CE54EE4968895" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\it\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_170411EA4FAB48B480108333458F1379" Name="km-KH">
+        <Component Id="comp_D76D354302674FC2B2EB84CFCFA4104A" Guid="9B99CC80-E054-4A82-BAF0-D057FB98EAD7">
+          <File Id="file_B89F5655909048BBAFEFCD0CA1D2D11A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\km-KH\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_ED2C659D3661430383E87BC5D83E42D5" Name="nl">
+        <Component Id="comp_F464E64B5CC24BBDADBF11A9C169CEDE" Guid="49B8F37E-9725-44BD-A471-AE46EFC03D4E">
+          <File Id="file_CA9A265D120F410F9E31D9367025B2FA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\nl\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_1DEAB26EE79F49F5B5438A25E0E5D0CC" Name="no">
+        <Component Id="comp_0005345BF8EF40ECBB988CE1CA2081E0" Guid="DDDE6D09-1C78-43A4-8CDF-DB1395050F3D">
+          <File Id="file_9858E6B3A9CA406B9BD42423E772FAB4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\no\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_CE74B5954375473C8B7CB3617D0A5A4D" Name="pt">
+        <Component Id="comp_E0D58FB8106E433999DBF4549DE09545" Guid="C52EA839-8560-41D2-9302-3095445D247F">
+          <File Id="file_37E74223313D468DA45C8ECB8F750D5B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\pt\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_AF0DE47C34D24F0E86AA1AA72F18CFCE" Name="pt-br">
+        <Component Id="comp_7F655DE604404C53BE94D0C451F2D169" Guid="29A94C49-73B2-4069-9999-AC1A25938B36">
+          <File Id="file_43821D7FE37A41F9864BDADE96AF8F07" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\pt-br\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_9D47C9CD56B34ED0AA90FDD58921E0B7" Name="ro">
+        <Component Id="comp_43E9B7978AFC40738BC452B52F597D02" Guid="6DC96818-27DE-4905-B6C0-77AE60D60188">
+          <File Id="file_7FCC33A371D241389EED4972A61BF3B0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\ro\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_56655520768C4698A2F9EA32A71112BE" Name="ru">
+        <Component Id="comp_ADDC824A16804308A1CC4DB906B10294" Guid="730B1532-93D4-4EB5-9CCA-52130CB525E3">
+          <File Id="file_EDAC070EDD244368AEAA00DB30EC19A4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\ru\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_BFBF34212B704F14AA860AE5A1FE4A9D" Name="sr">
+        <Component Id="comp_EAD323F6A814454AB4505BE42515C3CF" Guid="91EE8266-720F-4114-A3CB-07C3E5D7F5F4">
+          <File Id="file_64E5A5B9C2CC4FAEAEDE748233E742D2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\sr\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_DA8DA6E125EA4B4780A65855D1A20FCB" Name="sv">
+        <Component Id="comp_227B142C7EC24A7AB365E9AE1FC81F5F" Guid="1CACC5DF-40B8-451A-A91D-5404CDAB146C">
+          <File Id="file_B0CC2B59F47A4C17AC996915F254E8AF" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\sv\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_8FEE5471096B4E2F972785897EDA5613" Name="tr">
+        <Component Id="comp_E8828874638C4920A3F1A0B8FB9B9903" Guid="A100DD1C-B238-4536-ACD1-F4877D730DBE">
+          <File Id="file_A9079AAA4B644A6ABCB5B8A078B034BC" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\tr\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_E0B6187FFD154BA4AC312E0E14CB7F70" Name="vi">
+        <Component Id="comp_7CF6D89C26924BAD9A513B6B21B51659" Guid="87667389-BE9E-4E93-A572-974141B55AB8">
+          <File Id="file_BD5C04B317854FBD958FCB58274B23AE" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\vi\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_D3EC361DD1794756A8515FF8CF169548" Name="zh-Hans">
+        <Component Id="comp_1199D57D43B348AC9EA82F591B0C9477" Guid="DCC9A77C-9D98-4EEE-BA60-E50AF7C8218B">
+          <File Id="file_BF03F4C224A1431AABB81AEEDC998D62" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\zh-Hans\Csla.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_F9EF43B0512549ECB5F81948942FF3EF" Name="zh-TW">
+        <Component Id="comp_228F14C93464433EB6743A9904ACC58C" Guid="B01F4398-245F-4E06-8E5C-D9BF5E2C6542">
+          <File Id="file_D7949A77C97849589713036BDBC5C5C0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Net4\zh-TW\Csla.resources.dll" />
+        </Component>
+      </Directory>
     </DirectoryRef>
   </Fragment>
 </Wix>

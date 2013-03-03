@@ -26,6 +26,7 @@
     <Compile Include="Net4Fragment.wxs" />
     <Compile Include="NetFragment.wxs" />
     <Compile Include="Product.wxs" />
+    <Compile Include="SilverlightFragment.wxs" />
     <Compile Include="VBSnippetsFragment.wxs" />
     <Compile Include="WinPRTFragment.wxs" />
     <Compile Include="WinRTFragment.wxs" />

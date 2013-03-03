@@ -12,6 +12,8 @@
       <ComponentRef Id="comp_CslaWin8FullBigpng" />
       <ComponentRef Id="comp_CslaWin8FullSqpng" />
       <ComponentRef Id="comp_CslaWin8Midpng" />
+      <ComponentRef Id="comp_21B2CBDDC9C549FFB82DCE185335BC99" />
+      <ComponentRef Id="comp_556F6B44EC2541C287EE55CC721DE2D2" />
     </ComponentGroup>
     <DirectoryRef Id="Logos">
       <Component Id="comp_CslaWin8ai" Guid="{29b32c43-4729-41d4-b702-4f33d383363d}">
@@ -40,6 +42,12 @@
       </Component>
       <Component Id="comp_CslaWin8Midpng" Guid="{0fbc16c2-31fc-4b86-817d-7dba686f1d24}">
         <File Id="file_CslaWin8Midpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_mid.png" />
+      </Component>
+      <Component Id="comp_21B2CBDDC9C549FFB82DCE185335BC99" Guid="41320387-CB5F-49B3-9A2D-BCAD840A27B4">
+        <File Id="file_6034F9C14D0440A18C92913FA496D9F7" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla-icon.xcf" />
+      </Component>
+      <Component Id="comp_556F6B44EC2541C287EE55CC721DE2D2" Guid="A7750E25-2154-4ED1-AD0F-0606B8D1D360">
+        <File Id="file_CF00ACB4634C428887DFFEEE6055286A" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla.png" />
       </Component>
     </DirectoryRef>
   </Fragment>

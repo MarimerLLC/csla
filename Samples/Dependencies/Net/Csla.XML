@@ -1102,7 +1102,15 @@
             to the specified property.
             </summary>
             <returns><see langword="true" /> if write is allowed.</returns>
-            <param name="propertyName">Name of the property to read.</param>
+            <param name="propertyName">Name of the property to write.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanWriteProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to write the
+            to the specified property.
+            </summary>
+            <returns><see langword="true" /> if write is allowed.</returns>
+            <param name="property">Property to write.</param>
         </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(System.String)">
             <summary>
@@ -1112,6 +1120,14 @@
             <returns><see langword="true" /> if read is allowed.</returns>
             <param name="propertyName">Name of the property to read.</param>
         </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <returns><see langword="true" /> if read is allowed.</returns>
+            <param name="property">Property to read.</param>
+        </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(System.String)">
             <summary>
             Returns <see langword="true" /> if the user is allowed to execute 
@@ -1119,6 +1135,14 @@
             </summary>
             <returns><see langword="true" /> if execute is allowed.</returns>
             <param name="methodName">Name of the method to execute.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(Csla.Core.IMemberInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute 
+            the specified method.
+            </summary>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+            <param name="method">Method to execute.</param>
         </member>
         <member name="T:Csla.Core.IParent">
             <summary>

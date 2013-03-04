@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define VERSION="4.5.12"?>
-  <Product Id="*" Name="CSLA. NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
+  <Product Id="*" Name="CSLA .NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="2C93FD71-92AF-4D89-8026-21536CEC6428">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />

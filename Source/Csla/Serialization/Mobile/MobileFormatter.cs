@@ -164,10 +164,15 @@ namespace Csla.Serialization.Mobile
 
     private static bool IsSerializable(Type objectType)
     {
-#if (SILVERLIGHT || NETFX_CORE) && !WINDOWS_PHONE
+#if WINDOWS_PHONE
+      var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
+      return (result != null && result.Length > 0);
+#else 
+#if (SILVERLIGHT || NETFX_CORE)
       return objectType.IsSerializable();
 #else
       return objectType.IsSerializable;
+#endif
 #endif
     }
 

@@ -196,8 +196,11 @@
     <Compile Include="..\Csla.WinRT\PortedAttributes.cs">
       <Link>PortedAttributes.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.WinRT\Resources.Designer.cs">
-      <Link>Resources.Designer.cs</Link>
+    <Compile Include="..\Csla\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="..\Csla\ApplicationContext.cs">
       <Link>ApplicationContext.cs</Link>
@@ -758,6 +761,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\WcfPortal\Reference.svcmap">

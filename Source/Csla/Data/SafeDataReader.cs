@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Csla.Data
 {
@@ -17,6 +19,9 @@ namespace Csla.Data
   public class SafeDataReader : IDataReader
   {
     private IDataReader _dataReader;
+#if !NET40
+    private SqlDataReader _sqlDataReader;
+#endif
 
     /// <summary>
     /// Get a reference to the underlying data reader
@@ -36,7 +41,111 @@ namespace Csla.Data
     public SafeDataReader(IDataReader dataReader)
     {
       _dataReader = dataReader;
+#if !NET40
+      _sqlDataReader = _dataReader as SqlDataReader;
+#endif
     }
+
+#if !NET40
+    /// <summary>
+    /// Asynchronously gets the data value as a type.
+    /// </summary>
+    /// <typeparam name="T">Type of value</typeparam>
+    /// <param name="ordinal">Ordinal position of value</param>
+    /// <returns></returns>
+    public Task<T> GetFieldValueAsync<T>(int ordinal)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("GetFieldValueAsync");
+      return _sqlDataReader.GetFieldValueAsync<T>(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets the data value as a type.
+    /// </summary>
+    /// <typeparam name="T">Type of value</typeparam>
+    /// <param name="ordinal">Ordinal position of value</param>
+    /// <param name="cancellationToken">Async cancellation token</param>
+    public Task<T> GetFieldValueAsync<T>(int ordinal, System.Threading.CancellationToken cancellationToken)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("GetFieldValueAsync");
+      return _sqlDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the column has a null
+    /// or missing value.
+    /// </summary>
+    /// <param name="ordinal">Ordinal position of value</param>
+    /// <returns></returns>
+    public Task<bool> IsDbNullAsync(int ordinal)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("IsDbNullAsync");
+      return _sqlDataReader.IsDBNullAsync(ordinal);
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the column has a null
+    /// or missing value.
+    /// </summary>
+    /// <param name="ordinal">Ordinal position of value</param>
+    /// <param name="cancellationToken">Async cancellation token</param>
+    /// <returns></returns>
+    public Task<bool> IsDbNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("IsDbNullAsync");
+      return _sqlDataReader.IsDBNullAsync(ordinal, cancellationToken);
+    }
+
+    /// <summary>
+    /// Advances the reader to the next result.
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> NextResultAsync()
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("NextResultAsync");
+      return _sqlDataReader.NextResultAsync();
+    }
+
+    /// <summary>
+    /// Advances the reader to the next result.
+    /// </summary>
+    /// <param name="cancellationToken">Async cancellation token</param>
+    /// <returns></returns>
+    public Task<bool> NextResultAsync(System.Threading.CancellationToken cancellationToken)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("NextResultAsync");
+      return _sqlDataReader.NextResultAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Advances to the next record in a recordset.
+    /// </summary>
+    /// <returns></returns>
+    public Task<bool> ReadAsync()
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("NextResultAsync");
+      return _sqlDataReader.ReadAsync();
+    }
+
+    /// <summary>
+    /// Advances to the next record in a recordset.
+    /// </summary>
+    /// <param name="cancellationToken">Async cancellation token</param>
+    /// <returns></returns>
+    public Task<bool> ReadAsync(System.Threading.CancellationToken cancellationToken)
+    {
+      if (_sqlDataReader == null)
+        throw new NotSupportedException("NextResultAsync");
+      return _sqlDataReader.ReadAsync(cancellationToken);
+    }
+#endif
 
     /// <summary>
     /// Gets a string value from the datareader.

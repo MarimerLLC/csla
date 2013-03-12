@@ -289,8 +289,7 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static System.Reflection.MethodInfo[] GetMethods(this Type t, BindingFlags flags)
     {
-      var ti = t.GetTypeInfo();
-      var methods = ti.DeclaredMethods.Where(_ => !_.IsSpecialName);
+      var methods = t.GetRuntimeMethods().Where(_ => !_.IsSpecialName);
       if ((flags & BindingFlags.Static) == BindingFlags.Static)
       {
         methods = methods.Where(_ => _.IsStatic);
@@ -299,11 +298,6 @@ namespace Csla.Reflection
       else
       {
         methods = methods.Where(_ => !_.IsStatic);
-      }
-      if ((flags & BindingFlags.Instance) == BindingFlags.Instance)
-      {
-        methods = methods.Where(_ => _.DeclaringType.Equals(t));
-        flags = flags | BindingFlags.Instance;
       }
       if (flags == BindingFlags.Public)
       {

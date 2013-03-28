@@ -1,9 +1,4 @@
-﻿/*
- * Created by: Велижанин Николай Александрович
- * Created: 28 марта 2013 г.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using Csla.Reflection;
@@ -17,7 +12,7 @@ namespace Csla.Xaml
   public abstract class CancelableViewModel<T> : ViewModel<T>
   {
     private CslaOperation<T> _lastOperation;
-    private Action<CslaOperation<T>> m_nextOperationExecutor = null;
+    private Action<CslaOperation<T>> _nextOperationExecutor = null;
 
     /// <summary>
     /// </summary>
@@ -57,11 +52,11 @@ namespace Csla.Xaml
     }
 
     /// <summary>
-    /// Clear operations "queue".
+    /// Cancel refresh operation.
     /// </summary>
-    public virtual void Clear()
+    public virtual void CancelRefresh()
     {
-      m_nextOperationExecutor = null;
+      _nextOperationExecutor = null;
       if (_lastOperation != null)
       {
         _lastOperation.Cancel();
@@ -80,7 +75,7 @@ namespace Csla.Xaml
 
         if (!IsConcurentRefreshesAllowed && _lastOperation != null)
         {
-          m_nextOperationExecutor = operationExecutor;
+          _nextOperationExecutor = operationExecutor;
           return;
         }
 
@@ -101,10 +96,10 @@ namespace Csla.Xaml
     {
       _lastOperation = null;
 
-      if (!IsConcurentRefreshesAllowed && m_nextOperationExecutor != null)
+      if (!IsConcurentRefreshesAllowed && _nextOperationExecutor != null)
       {
-        var executor = m_nextOperationExecutor;
-        m_nextOperationExecutor = null;
+        var executor = _nextOperationExecutor;
+        _nextOperationExecutor = null;
         ExecuteOperation(executor);
         return;
       }
@@ -131,24 +126,24 @@ namespace Csla.Xaml
 
   internal class CslaOperation<T>
   {
-    private readonly Action<DataPortalResult<T>, bool> m_OnCompletedQuery;
-    private bool m_IsCanceled;
+    private readonly Action<DataPortalResult<T>, bool> _onCompletedQuery;
+    private bool _isCanceled;
 
     public CslaOperation(Action<DataPortalResult<T>, bool> onCompletedQuery)
     {
       if (onCompletedQuery == null) throw new ArgumentNullException("onCompletedQuery");
 
-      m_OnCompletedQuery = onCompletedQuery;
+      _onCompletedQuery = onCompletedQuery;
     }
 
     public void Cancel()
     {
-      m_IsCanceled = true;
+      _isCanceled = true;
     }
 
     public void Execute(Action<EventHandler<DataPortalResult<T>>> factoryMethod)
     {
-      EventHandler<DataPortalResult<T>> handler = (sender, result) => m_OnCompletedQuery(result, m_IsCanceled);
+      EventHandler<DataPortalResult<T>> handler = (sender, result) => _onCompletedQuery(result, _isCanceled);
       factoryMethod(handler);
     }
 
@@ -169,7 +164,7 @@ namespace Csla.Xaml
     private void QueryCompleted(object sender, EventArgs e)
     {
       DataPortalResult<T> result = (DataPortalResult<T>)e;
-      m_OnCompletedQuery(result, m_IsCanceled);
+      _onCompletedQuery(result, _isCanceled);
     }
   }
 }

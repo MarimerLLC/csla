@@ -275,7 +275,7 @@ namespace Csla.Serialization.Mobile
 		/// <param name="enumTypeName">
 		/// Name of the enumeration
 		/// </param>
-		internal void AddValue(string name, object value, bool isDirty, string enumTypeName)
+		public void AddValue(string name, object value, bool isDirty, string enumTypeName)
 		{
 			_values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
 		}

@@ -917,8 +917,17 @@ namespace Csla.Xaml
         var undo = Model as Csla.Core.ISupportUndo;
         if (undo != null)
         {
-          undo.CancelEdit();
-          undo.BeginEdit();
+          UnhookChangedEvents(Model);
+          try
+          {
+            undo.CancelEdit();
+            undo.BeginEdit();
+          }
+          finally
+          {
+            HookChangedEvents(Model);
+            OnSetProperties();
+          }
         }
       }
     }
@@ -1025,38 +1034,54 @@ namespace Csla.Xaml
       // unhook events from old value
       if (oldValue != null)
       {
-        var npc = oldValue as INotifyPropertyChanged;
-        if (npc != null)
-          npc.PropertyChanged -= Model_PropertyChanged;
-        var ncc = oldValue as INotifyChildChanged;
-        if (ncc != null)
-          ncc.ChildChanged -= Model_ChildChanged;
+        UnhookChangedEvents(oldValue);
+
         var nb = oldValue as INotifyBusy;
         if (nb != null)
           nb.BusyChanged -= Model_BusyChanged;
-        var cc = oldValue as INotifyCollectionChanged;
-        if (cc != null)
-          cc.CollectionChanged -= Model_CollectionChanged;
       }
 
       // hook events on new value
       if (newValue != null)
       {
-        var npc = newValue as INotifyPropertyChanged;
-        if (npc != null)
-          npc.PropertyChanged += Model_PropertyChanged;
-        var ncc = newValue as INotifyChildChanged;
-        if (ncc != null)
-          ncc.ChildChanged += Model_ChildChanged;
+        HookChangedEvents(newValue);
+
         var nb = newValue as INotifyBusy;
         if (nb != null)
           nb.BusyChanged += Model_BusyChanged;
-        var cc = newValue as INotifyCollectionChanged;
-        if (cc != null)
-          cc.CollectionChanged += Model_CollectionChanged;
       }
 
       OnSetProperties();
+    }
+
+    private void UnhookChangedEvents(T model)
+    {
+      var npc = model as INotifyPropertyChanged;
+      if (npc != null)
+        npc.PropertyChanged -= Model_PropertyChanged;
+
+      var ncc = model as INotifyChildChanged;
+      if (ncc != null)
+        ncc.ChildChanged -= Model_ChildChanged;
+
+      var cc = model as INotifyCollectionChanged;
+      if (cc != null)
+        cc.CollectionChanged -= Model_CollectionChanged;
+    }
+
+    private void HookChangedEvents(T model)
+    {
+      var npc = model as INotifyPropertyChanged;
+      if (npc != null)
+        npc.PropertyChanged += Model_PropertyChanged;
+
+      var ncc = model as INotifyChildChanged;
+      if (ncc != null)
+        ncc.ChildChanged += Model_ChildChanged;
+
+      var cc = model as INotifyCollectionChanged;
+      if (cc != null)
+        cc.CollectionChanged += Model_CollectionChanged;
     }
 
     /// <summary>

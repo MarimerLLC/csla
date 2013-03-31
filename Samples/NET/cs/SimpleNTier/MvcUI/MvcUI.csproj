@@ -56,7 +56,7 @@
       <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Web.Mvc3">
-      <HintPath>C:\Visual Studio Projects\csla\trunk\Samples\Dependencies\Net\Csla.Web.Mvc3.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.Mvc3.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

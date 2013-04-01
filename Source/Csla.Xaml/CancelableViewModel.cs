@@ -1,4 +1,11 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CancelableViewModel.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Base class used to create CancelableViewModel objects,</summary>
+//-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 
 using Csla.Reflection;

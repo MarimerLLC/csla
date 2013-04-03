@@ -247,6 +247,7 @@
     <Compile Include="Security\CslaPrincipal.cs" />
     <Compile Include="Security\ICheckRoles.cs" />
     <Compile Include="Security\ICslaIdentity.cs" />
+    <Compile Include="Security\ICslaPrincipal.cs" />
     <Compile Include="Security\MembershipIdentity.cs" />
     <Compile Include="Security\NoAccessBehavior.cs" />
     <Compile Include="Security\SecurityException.cs" />

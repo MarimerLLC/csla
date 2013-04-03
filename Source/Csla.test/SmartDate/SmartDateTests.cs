@@ -133,6 +133,15 @@ namespace Csla.Test.SmartDate
       d = new Csla.SmartDate(now, false);
       Assert.AreEqual(now, d.Date);
       Assert.IsFalse(d.EmptyIsMin);
+
+      d = new Csla.SmartDate((DateTime?)null, true);
+      Assert.AreEqual(DateTime.MinValue, d.Date);
+      d = new Csla.SmartDate((DateTime?)null, false);
+      Assert.AreEqual(DateTime.MaxValue, d.Date);
+      d = new Csla.SmartDate((DateTime?)null, Csla.SmartDate.EmptyValue.MinDate);
+      Assert.AreEqual(DateTime.MinValue, d.Date);
+      d = new Csla.SmartDate((DateTime?)null, Csla.SmartDate.EmptyValue.MaxDate);
+      Assert.AreEqual(DateTime.MaxValue, d.Date);
     }
     #endregion
 

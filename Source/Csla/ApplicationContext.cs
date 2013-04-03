@@ -240,9 +240,9 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
         if (_dataPortalActivator == null)
         {
+#if !SILVERLIGHT && !NETFX_CORE
           lock (_dataPortalActivatorSync)
           {
             if (_dataPortalActivator == null)
@@ -259,10 +259,10 @@ namespace Csla
               }
             }
           }
-        }
 #else
         _dataPortalActivator = new Csla.Server.DefaultDataPortalActivator(); 
 #endif
+        }
         return _dataPortalActivator;
       }
       set

@@ -18,7 +18,7 @@ namespace Csla.Security
   /// properly with the data portal.
   /// </summary>
   [Serializable()]
-  public class CslaPrincipal : Csla.Core.MobileObject, IPrincipal
+  public class CslaPrincipal : Csla.Core.MobileObject, IPrincipal, ICslaPrincipal
   {
     private IIdentity _identity;
 

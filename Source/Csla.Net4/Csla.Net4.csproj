@@ -644,6 +644,9 @@
     <Compile Include="..\Csla\Security\ICslaIdentity.cs">
       <Link>Security\ICslaIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Security\ICslaPrincipal.cs">
+      <Link>Security\ICslaPrincipal.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Security\MembershipIdentity.cs">
       <Link>Security\MembershipIdentity.cs</Link>
     </Compile>

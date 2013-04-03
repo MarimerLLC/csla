@@ -825,7 +825,7 @@ namespace Csla
     {
       try
       {
-        return SaveAsync().Result;
+        return SaveAsync(null, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -839,7 +839,17 @@ namespace Csla
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
-    public virtual async Task<T> SaveAsync()
+    public async Task<T> SaveAsync()
+    {
+      return await SaveAsync(null, false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="userState">User state data.</param>
+    /// <param name="isSync">True if the save operation should be synchronous.</param>
+    protected virtual async Task<T> SaveAsync(object userState, bool isSync)
     {
       T result;
       if (this.IsChild)
@@ -852,14 +862,24 @@ namespace Csla
         throw new Rules.ValidationException(Resources.NoSaveInvalidException);
 
       if (IsBusy)
-        // TODO: Review this resource text
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
 
       if (IsDirty)
-        result = await DataPortal.UpdateAsync<T>((T)this);
+      {
+        if (isSync)
+        {
+          result = DataPortal.Update<T>((T)this);
+        }
+        else
+        {
+          result = await DataPortal.UpdateAsync<T>((T)this);
+        }
+      }
       else
+      {
         result = (T)this;
-      OnSaved(result, null, null);
+      }
+      OnSaved(result, null, userState);
       return result;
     }
 
@@ -904,7 +924,7 @@ namespace Csla
       Exception error = null;
       try
       {
-        result = await SaveAsync();
+        result = await SaveAsync(userState, false);
       }
       catch (AggregateException ex)
       {

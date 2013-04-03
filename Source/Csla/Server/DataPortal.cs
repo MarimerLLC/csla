@@ -323,7 +323,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-        Initialize(new InterceptArgs { Parameter = obj, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Initialize(new InterceptArgs { ObjectType = obj.GetType(), Parameter = obj, Operation = DataPortalOperations.Update, IsSync = isSync });
 
         AuthorizeRequest(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
         DataPortalResult result;
@@ -402,12 +402,12 @@ namespace Csla.Server
         portal = new DataPortalSelector();
         result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
 #endif
-        Complete(new InterceptArgs { Parameter = obj, Result = result, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = obj.GetType(), Parameter = obj, Result = result, Operation = DataPortalOperations.Update, IsSync = isSync });
         return result;
       }
       catch (Csla.Server.DataPortalException ex)
       {
-        Complete(new InterceptArgs { Parameter = obj, Exception = ex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = obj.GetType(), Parameter = obj, Exception = ex, Operation = DataPortalOperations.Update, IsSync = isSync });
         throw;
       }
       catch (AggregateException ex)
@@ -421,7 +421,7 @@ namespace Csla.Server
             "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
             obj);
-        Complete(new InterceptArgs { Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = obj.GetType(), Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
         throw fex;
       }
       catch (Exception ex)
@@ -430,7 +430,7 @@ namespace Csla.Server
             "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj);
-        Complete(new InterceptArgs { Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = obj.GetType(), Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
         throw fex;
       }
       finally

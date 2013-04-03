@@ -407,7 +407,7 @@ namespace Csla
       {
         if (!_initialized)
         {
-          _date = DateTime.MinValue;
+          _date = _emptyValue == SmartDate.EmptyValue.MinDate ? DateTime.MinValue : DateTime.MaxValue;
           _initialized = true;
         }
         return _date;

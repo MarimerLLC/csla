@@ -58,6 +58,7 @@
     <Compile Include="ApplicationContextManager.cs" />
     <Compile Include="BrokenRulesSeverityConverter.cs" />
     <Compile Include="BusyAnimation.cs" />
+    <Compile Include="CancellableViewModel.cs" />
     <Compile Include="CslaDataProvider.cs" />
     <Compile Include="CslaDataProviderCommandManager.cs" />
     <Compile Include="DataDecoratorBase.cs" />

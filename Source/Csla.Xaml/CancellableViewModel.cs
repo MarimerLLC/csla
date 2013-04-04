@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="CancelableViewModel.cs" company="Marimer LLC">
+// <copyright file="CancellableViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
-// <summary>Base class used to create CancelableViewModel objects,</summary>
+// <summary>Base class used to create CancellableViewModel objects,</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
@@ -16,14 +16,14 @@ namespace Csla.Xaml
   /// ViewModel without multithreading (concurrency) bugs.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public abstract class CancelableViewModel<T> : ViewModel<T>
+  public abstract class CancellableViewModel<T> : ViewModel<T>
   {
     private CslaOperation<T> _lastOperation;
     private Action<CslaOperation<T>> _nextOperationExecutor = null;
 
     /// <summary>
     /// </summary>
-    protected CancelableViewModel()
+    protected CancellableViewModel()
     {
       IsConcurentRefreshesAllowed = true;
     }

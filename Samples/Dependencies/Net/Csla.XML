@@ -3721,6 +3721,13 @@
             Saves the object to the database.
             </summary>
         </member>
+        <member name="M:Csla.BusinessBindingListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
+        </member>
         <member name="M:Csla.BusinessBindingListBase`2.BeginSave">
             <summary>
             Starts an async operation to save the object to the database.
@@ -4526,6 +4533,13 @@
             <summary>
             Saves the object to the database.
             </summary>
+        </member>
+        <member name="M:Csla.BusinessListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
         </member>
         <member name="M:Csla.BusinessListBase`2.BeginSave">
             <summary>
@@ -11119,6 +11133,12 @@
             properly with the data portal.
             </summary>
         </member>
+        <member name="T:Csla.Security.ICslaPrincipal">
+            <summary>
+            Defines the base requirements for the interface of any
+            CSLA principal object.
+            </summary>
+        </member>
         <member name="M:Csla.Security.CslaPrincipal.#ctor">
             <summary>
             Creates an instance of the object.
@@ -16720,6 +16740,18 @@
             Type of target object.
             </param>
         </member>
+        <member name="M:Csla.Data.DataMap.#ctor(System.Type,System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Initializes an instance of the type.
+            </summary>
+            <param name="sourceType">
+            Type of source object.
+            </param>
+            <param name="targetType">
+            Type of target object.
+            </param>
+            <param name="includedPropertyNames">List of property names to map 1:1.</param>
+        </member>
         <member name="M:Csla.Data.DataMap.AddPropertyMapping(System.String,System.String)">
             <summary>
             Adds a property to property
@@ -17029,6 +17061,65 @@
             the provided DataReader object.
             </summary>
             <param name="dataReader">The source DataReader object containing the data.</param>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.GetFieldValueAsync``1(System.Int32)">
+            <summary>
+            Asynchronously gets the data value as a type.
+            </summary>
+            <typeparam name="T">Type of value</typeparam>
+            <param name="ordinal">Ordinal position of value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.GetFieldValueAsync``1(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously gets the data value as a type.
+            </summary>
+            <typeparam name="T">Type of value</typeparam>
+            <param name="ordinal">Ordinal position of value</param>
+            <param name="cancellationToken">Async cancellation token</param>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.IsDbNullAsync(System.Int32)">
+            <summary>
+            Gets a value indicating whether the column has a null
+            or missing value.
+            </summary>
+            <param name="ordinal">Ordinal position of value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.IsDbNullAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Gets a value indicating whether the column has a null
+            or missing value.
+            </summary>
+            <param name="ordinal">Ordinal position of value</param>
+            <param name="cancellationToken">Async cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.NextResultAsync">
+            <summary>
+            Advances the reader to the next result.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.NextResultAsync(System.Threading.CancellationToken)">
+            <summary>
+            Advances the reader to the next result.
+            </summary>
+            <param name="cancellationToken">Async cancellation token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.ReadAsync">
+            <summary>
+            Advances to the next record in a recordset.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.ReadAsync(System.Threading.CancellationToken)">
+            <summary>
+            Advances to the next record in a recordset.
+            </summary>
+            <param name="cancellationToken">Async cancellation token</param>
+            <returns></returns>
         </member>
         <member name="M:Csla.Data.SafeDataReader.GetString(System.String)">
             <summary>

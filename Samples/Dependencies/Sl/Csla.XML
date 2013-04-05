@@ -9348,6 +9348,12 @@
             properly with the data portal.
             </summary>
         </member>
+        <member name="T:Csla.Security.ICslaPrincipal">
+            <summary>
+            Defines the base requirements for the interface of any
+            CSLA principal object.
+            </summary>
+        </member>
         <member name="M:Csla.Security.CslaPrincipal.#ctor">
             <summary>
             Creates an instance of the object.
@@ -14953,6 +14959,13 @@
             <summary>
             Saves the object to the database.
             </summary>
+        </member>
+        <member name="M:Csla.BusinessListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
         </member>
         <member name="M:Csla.BusinessListBase`2.BeginSave">
             <summary>

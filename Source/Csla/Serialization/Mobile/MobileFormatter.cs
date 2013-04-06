@@ -209,7 +209,10 @@ namespace Csla.Serialization.Mobile
     /// <returns></returns>
     public object Deserialize(Stream serializationStream)
     {
-    	ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      if (serializationStream == null)
+        return null;
+
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
     	var data = reader.Read(serializationStream);
     	return DeserializeAsDTO(data);
     }

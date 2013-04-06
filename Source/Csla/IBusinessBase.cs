@@ -12,6 +12,7 @@ namespace Csla
   /// BusinessBase type.
   /// </summary>
   public interface IBusinessBase : IBusinessObject,
+    IMobileObject,
     IEditableBusinessObject,
     IEditableObject,
     ICloneable,

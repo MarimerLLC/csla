@@ -21,7 +21,7 @@ Supports the creation of ASP.NET MVC 3 applications.
     <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.5.21-Beta]" />
-      <dependency id="CSLA-ASP.NET" version="[4.5.20]" />
+      <dependency id="CSLA-ASP.NET" version="[4.5.21-Beta]" />
     </dependencies>
   </metadata>
   <files>

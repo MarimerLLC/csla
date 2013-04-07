@@ -203,7 +203,11 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        var response = await proxy.CreateAsync(request);
+        Csla.WcfPortal.WcfResponse response = null;
+        if (isSync)
+          response = proxy.Create(request);
+        else
+          response = await proxy.CreateAsync(request).ConfigureAwait(false);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -258,7 +262,11 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        var response = await proxy.FetchAsync(request);
+        Csla.WcfPortal.WcfResponse response = null;
+        if (isSync)
+          response = proxy.Fetch(request);
+        else
+          response = await proxy.FetchAsync(request).ConfigureAwait(false);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -306,7 +314,11 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        var response = await proxy.UpdateAsync(request);
+        Csla.WcfPortal.WcfResponse response = null;
+        if (isSync)
+          response = proxy.Update(request);
+        else
+          response = await proxy.UpdateAsync(request).ConfigureAwait(false);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -360,7 +372,11 @@ namespace Csla.DataPortalClient
       DataPortalResult result = null;
       try
       {
-        var response = await proxy.DeleteAsync(request);
+        Csla.WcfPortal.WcfResponse response = null;
+        if (isSync)
+          response = proxy.Delete(request);
+        else
+          response = await proxy.DeleteAsync(request).ConfigureAwait(false);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)

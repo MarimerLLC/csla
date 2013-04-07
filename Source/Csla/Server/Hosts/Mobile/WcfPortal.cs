@@ -14,6 +14,7 @@ using Csla.Core;
 using System.Security.Principal;
 using Csla.Properties;
 using Csla.Silverlight;
+using System.Threading.Tasks;
 
 namespace Csla.Server.Hosts.Mobile
 {
@@ -21,6 +22,7 @@ namespace Csla.Server.Hosts.Mobile
   /// Exposes server-side DataPortal functionality
   /// through WCF.
   /// </summary>
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
   [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
   public class WcfPortal : IWcfPortal
   {
@@ -32,7 +34,7 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
-    public WcfResponse Create(CriteriaRequest request)
+    public async Task<WcfResponse> Create(CriteriaRequest request)
     {
       var result = new WcfResponse();
       try
@@ -56,7 +58,7 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
-        var createResponse = processor.Create(createRequest);
+        var createResponse = await processor.Create(createRequest).ConfigureAwait(false);
         if (createResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(createResponse.Error);
@@ -81,7 +83,7 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
-    public WcfResponse Fetch(CriteriaRequest request)
+    public async Task<WcfResponse> Fetch(CriteriaRequest request)
     {
       var result = new WcfResponse();
       try
@@ -103,7 +105,7 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
-        var fetchResponse = processor.Fetch(fetchRequest);
+        var fetchResponse = await processor.Fetch(fetchRequest).ConfigureAwait(false);
         if (fetchResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(fetchResponse.Error);
@@ -127,7 +129,7 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
-    public WcfResponse Update(UpdateRequest request)
+    public async Task<WcfResponse> Update(UpdateRequest request)
     {
       var result = new WcfResponse();
       try
@@ -145,7 +147,7 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
-        var updateResponse = processor.Update(updateRequest);
+        var updateResponse = await processor.Update(updateRequest).ConfigureAwait(false);
         if (updateResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(updateResponse.Error);
@@ -169,7 +171,7 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
-    public WcfResponse Delete(CriteriaRequest request)
+    public async Task<WcfResponse> Delete(CriteriaRequest request)
     {
       var result = new WcfResponse();
       try
@@ -192,7 +194,7 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
-        var deleteResponse = processor.Delete(deleteRequest);
+        var deleteResponse = await processor.Delete(deleteRequest).ConfigureAwait(false);
         if (deleteResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(deleteResponse.Error);

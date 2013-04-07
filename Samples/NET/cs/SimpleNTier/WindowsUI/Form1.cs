@@ -14,13 +14,22 @@ namespace WindowsUI
     public Form1()
     {
       InitializeComponent();
+
+      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
     }
 
     private void Form1_Load(object sender, EventArgs e)
     {
-      //var obj = BusinessLibrary.Order.NewOrder();
-      var obj =  BusinessLibrary.Order.GetOrder(441);
-      this.cslaActionExtender1.ResetActionBehaviors(obj);
+      try
+      {
+        //var obj = BusinessLibrary.Order.NewOrder();
+        var obj = BusinessLibrary.Order.GetOrder(441);
+        this.cslaActionExtender1.ResetActionBehaviors(obj);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show(ex.ToString());
+      }
     }
   }
 }

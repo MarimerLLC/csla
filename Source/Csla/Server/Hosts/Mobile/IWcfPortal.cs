@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace Csla.Server.Hosts.Mobile
 {
@@ -22,24 +23,24 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationContract]
-    WcfResponse Create(CriteriaRequest request);
+    Task<WcfResponse> Create(CriteriaRequest request);
     /// <summary>
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationContract]
-    WcfResponse Fetch(CriteriaRequest request);
+    Task<WcfResponse> Fetch(CriteriaRequest request);
     /// <summary>
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationContract]
-    WcfResponse Update(UpdateRequest request);
+    Task<WcfResponse> Update(UpdateRequest request);
     /// <summary>
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationContract]
-    WcfResponse Delete(CriteriaRequest request);
+    Task<WcfResponse> Delete(CriteriaRequest request);
   }
 }

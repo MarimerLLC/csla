@@ -9437,6 +9437,24 @@
             </remarks>
             <param name="i">Ordinal column position of the value.</param>
         </member>
+        <member name="M:Csla.Data.SafeDataReader.GetDateTimeOffset(System.String)">
+            <summary>
+            Gets an UTC date value from the datareader.
+            </summary>
+            <remarks>
+            Returns DateTimeOffset.MinValue for null.
+            </remarks>
+            <param name="name">Name of the column containing the value.</param>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.GetDateTimeOffset(System.Int32)">
+            <summary>
+            Gets an UTC date value from the datareader.
+            </summary>
+            <remarks>
+            Returns DateTimeOffset.MinValue for null.
+            </remarks>
+            <param name="i">Ordinal column position of the value.</param>
+        </member>
         <member name="M:Csla.Data.SafeDataReader.GetDecimal(System.String)">
             <summary>
             Gets a decimal value from the datareader.

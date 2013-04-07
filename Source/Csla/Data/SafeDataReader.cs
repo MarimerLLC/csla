@@ -606,6 +606,33 @@ namespace Csla.Data
     }
 
     /// <summary>
+    /// Gets an UTC date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTimeOffset.MinValue for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    public virtual DateTimeOffset GetDateTimeOffset(string name)
+    {
+      return GetDateTimeOffset(_dataReader.GetOrdinal(name));
+    }
+
+    /// <summary>
+    /// Gets an UTC date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTimeOffset.MinValue for null.
+    /// </remarks>
+    /// <param name="i">Ordinal column position of the value.</param>
+    public virtual DateTimeOffset GetDateTimeOffset(int i)
+    {
+      if (_dataReader.IsDBNull(i))
+        return DateTimeOffset.MinValue;
+      else
+        return (DateTimeOffset)_dataReader.GetValue(i);
+    }
+
+    /// <summary>
     /// Gets a decimal value from the datareader.
     /// </summary>
     /// <remarks>

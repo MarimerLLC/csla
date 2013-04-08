@@ -1,20 +1,25 @@
 ﻿using System;
-using Csla.Xaml;
 using System.Windows;
 using Csla;
+using Csla.Xaml;
 
 namespace SimpleApp
 {
-  public class CustomerViewModel : ViewModel<Library.CustomerEdit>
+  public class CustomerViewModel : Csla.Xaml.ViewModelBase<Library.CustomerEdit>
   {
     public CustomerViewModel()
     {
-      BeginRefresh("BeginNewCustomer", DataPortal.ProxyModes.LocalOnly);
+      BeginRefresh(c => Library.CustomerEdit.NewCustomerEdit(c));
     }
 
     public CustomerViewModel(int id)
     {
-      BeginRefresh("BeginGetCustomer", DataPortal.ProxyModes.LocalOnly);
+      BeginRefresh(c => Library.CustomerEdit.GetCustomerEdit(id, c));
+    }
+
+    public async void Save()
+    {
+      await base.SaveAsync();
     }
 
     protected override void OnError(Exception error)

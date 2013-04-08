@@ -46,11 +46,6 @@ namespace Library
           Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
     }
 
-    public override System.Threading.Tasks.Task<CustomerEdit> SaveAsync(bool forceUpdate)
-    {
-      return base.SaveAsync(forceUpdate);
-    }
-
     private class StringOnlyLetters : Csla.Rules.BusinessRule
     {
       protected override void Execute(Csla.Rules.RuleContext context)

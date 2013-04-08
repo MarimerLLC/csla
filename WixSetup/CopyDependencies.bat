@@ -25,3 +25,7 @@ copy ..\bin\release\WinRT\Csla.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla.Xaml.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.xml ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.pri ..\Samples\Dependencies\WinRT
+
+copy ..\bin\release\WinPRT\Csla.dll ..\Samples\Dependencies\WinPRT
+copy ..\bin\release\WinPRT\Csla.Xaml.dll ..\Samples\Dependencies\WinPRT
+copy ..\bin\release\WinPRT\Csla*.xml ..\Samples\Dependencies\WinPRT

@@ -34,7 +34,11 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
+#if NET40
+    public WcfResponse Create(CriteriaRequest request)
+#else
     public async Task<WcfResponse> Create(CriteriaRequest request)
+#endif
     {
       var result = new WcfResponse();
       try
@@ -58,7 +62,11 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
+#if NET40
+        var createResponse = processor.Create(createRequest);
+#else
         var createResponse = await processor.Create(createRequest).ConfigureAwait(false);
+#endif
         if (createResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(createResponse.Error);
@@ -83,7 +91,11 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
+#if NET40
+    public WcfResponse Fetch(CriteriaRequest request)
+#else
     public async Task<WcfResponse> Fetch(CriteriaRequest request)
+#endif
     {
       var result = new WcfResponse();
       try
@@ -105,7 +117,11 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
+#if NET40
+        var fetchResponse = processor.Fetch(fetchRequest);
+#else
         var fetchResponse = await processor.Fetch(fetchRequest).ConfigureAwait(false);
+#endif
         if (fetchResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(fetchResponse.Error);
@@ -129,7 +145,11 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
+#if NET40
+    public WcfResponse Update(UpdateRequest request)
+#else
     public async Task<WcfResponse> Update(UpdateRequest request)
+#endif
     {
       var result = new WcfResponse();
       try
@@ -147,7 +167,11 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
+#if NET40
+        var updateResponse = processor.Update(updateRequest);
+#else
         var updateResponse = await processor.Update(updateRequest).ConfigureAwait(false);
+#endif
         if (updateResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(updateResponse.Error);
@@ -171,7 +195,11 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
+#if NET40
+    public WcfResponse Delete(CriteriaRequest request)
+#else
     public async Task<WcfResponse> Delete(CriteriaRequest request)
+#endif
     {
       var result = new WcfResponse();
       try
@@ -194,7 +222,11 @@ namespace Csla.Server.Hosts.Mobile
           request.ClientCulture,
           request.ClientUICulture);
 
+#if NET40
+        var deleteResponse = processor.Delete(deleteRequest);
+#else
         var deleteResponse = await processor.Delete(deleteRequest).ConfigureAwait(false);
+#endif
         if (deleteResponse.Error != null)
         {
           result.ErrorData = new WcfErrorInfo(deleteResponse.Error);

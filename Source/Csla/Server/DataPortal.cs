@@ -575,13 +575,13 @@ namespace Csla.Server
       }
     }
 
-    private void Complete(InterceptArgs e)
+    internal void Complete(InterceptArgs e)
     {
       if (_interceptor != null)
         _interceptor.Complete(e);
     }
 
-    private void Initialize(InterceptArgs e)
+    internal void Initialize(InterceptArgs e)
     {
       if (_interceptor != null)
         _interceptor.Initialize(e);

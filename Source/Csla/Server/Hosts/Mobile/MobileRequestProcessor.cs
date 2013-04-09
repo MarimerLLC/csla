@@ -10,6 +10,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Threading;
 using Csla.Properties;
+using System.Threading.Tasks;
 
 namespace Csla.Server.Hosts.Mobile
 {
@@ -58,36 +59,45 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Resulf of the create operation - an instance of a business object</returns>
+#if NET40
     public MobileResponse Create(MobileCriteriaRequest request)
+#else
+    public async Task<MobileResponse> Create(MobileCriteriaRequest request)
+#endif
     {
+      var serverDataPortal = new Csla.Server.DataPortal();
       var result = new MobileResponse();
-      Type t = null;
+      Type businessObjectType = null;
       object criteria = null;
       try
       {
         criteria = request.Criteria;
         // load type for business object
-        t = Type.GetType(request.TypeName);
-        if (t == null)
+        businessObjectType = Type.GetType(request.TypeName);
+        if (businessObjectType == null)
           throw new InvalidOperationException(
             string.Format(Csla.Properties.Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
 
         SetContext(request);
 
-        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Create));
+        serverDataPortal.Initialize(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create });
+        serverDataPortal.Authorize(new AuthorizeRequest(businessObjectType, criteria, DataPortalOperations.Create));
 
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
+        object newObject = null;
+        var factoryInfo = GetMobileFactoryAttribute(businessObjectType);
         if (factoryInfo == null)
         {
+#if NET40
           if (criteria != null)
-          {
-            o = Csla.DataPortal.Create(t, criteria);
-          }
+            newObject = Csla.DataPortal.Create(businessObjectType, criteria);
           else
-          {
-            o = Csla.DataPortal.Create(t, new EmptyCriteria());
-          }
+            newObject = Csla.DataPortal.Create(businessObjectType, new EmptyCriteria());
+#else
+          if (criteria != null)
+            newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "CreateAsync", new Type[] { businessObjectType }, true, criteria).ConfigureAwait(false);
+          else
+            newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "CreateAsync", new Type[] { businessObjectType }, false, null).ConfigureAwait(false);
+#endif
         }
         else
         {
@@ -95,26 +105,37 @@ namespace Csla.Server.Hosts.Mobile
             throw new InvalidOperationException(Resources.CreateMethodNameNotSpecified);
 
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
+#if NET40
           if (criteria != null)
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName, criteria);
+            newObject = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName, criteria);
           else
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName);
+            newObject = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.CreateMethodName);
+#else
+          if (criteria != null)
+            newObject = await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.CreateMethodName, criteria).ConfigureAwait(false);
+          else
+            newObject = await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.CreateMethodName).ConfigureAwait(false);
+#endif
         }
-        result.Object = o;
+        result.Object = newObject;
         result.GlobalContext = ApplicationContext.GlobalContext;
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Create", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Create", ex);
         result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Create", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Create", ex);
         result.Error = inspected;
       }
       finally
       {
+        if (result.Error != null)
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+        else
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Create, Result = new DataPortalResult(result.Object, result.GlobalContext) });
         ClearContext();
       }
       return result;
@@ -125,10 +146,15 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the fetch operation - an instance of a business object</returns>
+#if NET40
     public MobileResponse Fetch(MobileCriteriaRequest request)
+#else
+    public async Task<MobileResponse> Fetch(MobileCriteriaRequest request)
+#endif
     {
+      var serverDataPortal = new Csla.Server.DataPortal();
       var result = new MobileResponse();
-      Type t = null;
+      Type businessObjectType = null;
       object criteria = null;
       try
       {
@@ -136,22 +162,31 @@ namespace Csla.Server.Hosts.Mobile
         criteria = request.Criteria;
 
         // load type for business object
-        t = Type.GetType(request.TypeName);
-        if (t == null)
+        businessObjectType = Type.GetType(request.TypeName);
+        if (businessObjectType == null)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
+
         SetContext(request);
 
-        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Fetch));
+        serverDataPortal.Initialize(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch });
+        serverDataPortal.Authorize(new AuthorizeRequest(businessObjectType, criteria, DataPortalOperations.Fetch));
 
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
+        object newObject = null;
+        var factoryInfo = GetMobileFactoryAttribute(businessObjectType);
         if (factoryInfo == null)
         {
+#if NET40
           if (criteria == null)
-            o = Csla.DataPortal.Fetch(t, new EmptyCriteria());
+            newObject = Csla.DataPortal.Fetch(businessObjectType, new EmptyCriteria());
           else
-            o = Csla.DataPortal.Fetch(t, criteria);
+            newObject = Csla.DataPortal.Fetch(businessObjectType, criteria);
+#else
+          if (criteria != null)
+            newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "FetchAsync", new Type[] { businessObjectType }, true, criteria).ConfigureAwait(false);
+          else
+            newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "FetchAsync", new Type[] { businessObjectType }, false, null).ConfigureAwait(false);
+#endif
         }
         else
         {
@@ -159,26 +194,37 @@ namespace Csla.Server.Hosts.Mobile
             throw new InvalidOperationException(Resources.FetchMethodNameNotSpecified);
 
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
+#if NET40
           if (criteria != null)
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName, criteria);
+            newObject = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName, criteria);
           else
-            o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName);
+            newObject = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.FetchMethodName);
+#else
+          if (criteria != null)
+            newObject = await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.FetchMethodName, criteria).ConfigureAwait(false);
+          else
+            newObject = await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.FetchMethodName).ConfigureAwait(false);
+#endif
         }
-        result.Object = o;
+        result.Object = newObject;
         result.GlobalContext = ApplicationContext.GlobalContext;
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Fetch", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Fetch", ex);
         result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Fetch", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Fetch", ex);
         result.Error = inspected;
       }
       finally
       {
+        if (result.Error != null)
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+        else
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, Result = new DataPortalResult(result.Object, result.GlobalContext) });
         ClearContext();
       }
       return result;
@@ -189,56 +235,74 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the update operation - updated object</returns>
+#if NET40
     public MobileResponse Update(MobileUpdateRequest request)
+#else
+    public async Task<MobileResponse> Update(MobileUpdateRequest request)
+#endif
     {
+      var serverDataPortal = new Csla.Server.DataPortal();
       var result = new MobileResponse();
-      Type t = null;
+      Type businessObjectType = null;
       object obj = null;
+      var operation = DataPortalOperations.Update;
       try
       {
         // unpack object
         obj = request.ObjectToUpdate;
 
-        // load type for business object
-        t = obj.GetType();
+        if (obj is Csla.Core.ICommandObject)
+          operation = DataPortalOperations.Execute;
 
-        object o = null;
-        var factoryInfo = GetMobileFactoryAttribute(t);
+        // load type for business object
+        businessObjectType = obj.GetType();
+
+        SetContext(request);
+
+        serverDataPortal.Initialize(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation });
+        serverDataPortal.Authorize(new AuthorizeRequest(businessObjectType, obj, operation));
+
+        object newObject = null;
+        var factoryInfo = GetMobileFactoryAttribute(businessObjectType);
         if (factoryInfo == null)
         {
-          SetContext(request);
-
-          new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, obj, DataPortalOperations.Update));
-
-          o = Csla.DataPortal.Update(obj);
+#if NET40
+          newObject = Csla.DataPortal.Update(obj);
+#else
+          newObject = await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "UpdateAsync", new Type[] { businessObjectType }, true, obj).ConfigureAwait(false);
+#endif
         }
         else
         {
           if (string.IsNullOrEmpty(factoryInfo.UpdateMethodName))
             throw new InvalidOperationException(Resources.UpdateMethodNameNotSpecified);
 
-          SetContext(request);
-
-          new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, obj, DataPortalOperations.Update));
-
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          o = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.UpdateMethodName, obj);
+#if NET40
+          newObject = Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.UpdateMethodName, obj);
+#else
+          newObject = await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.UpdateMethodName, obj).ConfigureAwait(false);
+#endif
         }
-        result.Object = o;
+        result.Object = newObject;
         result.GlobalContext = ApplicationContext.GlobalContext;
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, obj, "DataPortal.Update", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, obj, "DataPortal.Update", ex);
         result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, obj, "DataPortal.Update", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, obj, "DataPortal.Update", ex);
         result.Error = inspected;
       }
       finally
       {
+        if (result.Error != null)
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+        else
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = obj, Operation = operation, Result = new DataPortalResult(result.Object, result.GlobalContext) });
         ClearContext();
       }
       return result;
@@ -249,10 +313,15 @@ namespace Csla.Server.Hosts.Mobile
     /// </summary>
     /// <param name="request">The request parameter object.</param>
     /// <returns>Result of the delete operation</returns>
+#if NET40
     public MobileResponse Delete(MobileCriteriaRequest request)
+#else
+    public async Task<MobileResponse> Delete(MobileCriteriaRequest request)
+#endif
     {
+      var serverDataPortal = new Csla.Server.DataPortal();
       var result = new MobileResponse();
-      Type t = null;
+      Type businessObjectType = null;
       object criteria = null;
       try
       {
@@ -260,19 +329,24 @@ namespace Csla.Server.Hosts.Mobile
         criteria = request.Criteria;
 
         // load type for business object
-        t = Type.GetType(request.TypeName);
-        if (t == null)
+        businessObjectType = Type.GetType(request.TypeName);
+        if (businessObjectType == null)
           throw new InvalidOperationException(
             string.Format(Resources.ObjectTypeCouldNotBeLoaded, request.TypeName));
 
         SetContext(request);
 
-        new Csla.Server.DataPortal().Authorize(new AuthorizeRequest(t, criteria, DataPortalOperations.Delete));
+        serverDataPortal.Initialize(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete });
+        serverDataPortal.Authorize(new AuthorizeRequest(businessObjectType, criteria, DataPortalOperations.Delete));
 
-        var factoryInfo = GetMobileFactoryAttribute(t);
+        var factoryInfo = GetMobileFactoryAttribute(businessObjectType);
         if (factoryInfo == null)
         {
-          Csla.DataPortal.Delete(t, criteria);
+#if NET40
+          Csla.DataPortal.Delete(businessObjectType, criteria);
+#else
+          await Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(typeof(Csla.DataPortal), "DeleteAsync", new Type[] { businessObjectType }, true, criteria).ConfigureAwait(false);
+#endif
         }
         else
         {
@@ -280,25 +354,30 @@ namespace Csla.Server.Hosts.Mobile
             throw new InvalidOperationException(Resources.DeleteMethodNameNotSpecified);
 
           object f = FactoryLoader.GetFactory(factoryInfo.FactoryTypeName);
-          if (criteria != null)
-            Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.DeleteMethodName, criteria);
-          else
-            Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.DeleteMethodName);
+#if NET40
+          Csla.Reflection.MethodCaller.CallMethod(f, factoryInfo.DeleteMethodName, criteria);
+#else
+          await Csla.Reflection.MethodCaller.CallMethodTryAsync(f, factoryInfo.DeleteMethodName, criteria).ConfigureAwait(false);
+#endif
         }
         result.GlobalContext = ApplicationContext.GlobalContext;
       }
       catch (Csla.Reflection.CallMethodException ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Delete", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Delete", ex);
         result.Error = inspected.InnerException;
       }
       catch (Exception ex)
       {
-        var inspected = new DataPortalExceptionHandler().InspectException(t, criteria, "DataPortal.Delete", ex);
+        var inspected = new DataPortalExceptionHandler().InspectException(businessObjectType, criteria, "DataPortal.Delete", ex);
         result.Error = inspected;
       }
       finally
       {
+        if (result.Error != null)
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Exception = result.Error, Result = new DataPortalResult(result.Object, result.Error, result.GlobalContext) });
+        else
+          serverDataPortal.Complete(new InterceptArgs { ObjectType = businessObjectType, Parameter = criteria, Operation = DataPortalOperations.Delete, Result = new DataPortalResult(result.Object, result.GlobalContext) });
         ClearContext();
       }
       return result;

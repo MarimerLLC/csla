@@ -321,7 +321,9 @@ namespace Csla.Test.DataPortal
 
     #region BeginSave
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_NewObject_without_parameters_Results_in_UserState_dafaulted_to_Null_and_MethodCalled_Inserted()
     {
       var context = GetContext();
@@ -350,7 +352,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_NewObject_with_callback_parameter_set_Results_in_UserState_defaulted_to_Null_and_id_to_0_and_MethodCalled_Inserted()
     {
       var context = GetContext();
@@ -380,7 +384,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_NewObject_with_UserState_parameter_set_Results_in_UserState_set_and_MethodCalled_Inserted()
     {
       var userState = "user";
@@ -411,7 +417,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_NewObject_with_UserState_and_calllback_Results_in_UserState_set_and_MethodCalled_Inserted()
     {
       var context = GetContext();
@@ -442,7 +450,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_NewObject_with_ForceUpdate_callback_and_UserState_Parameters_set_Results_in_those_params_set_on_server()
     {
       var userState = "user";
@@ -474,7 +484,9 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_FetchedObject_without_parameters_Results_in_UserState_defaulted_to_Null_and_MethodCalled_Updated()
     {
       var context = GetContext();
@@ -503,7 +515,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_FetchedObject_with_UserState_results_in_UserState_set_and_MethodCalled_Updated()
     {
       var context = GetContext();
@@ -537,7 +551,9 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void BeginSave_overload_called_on_DeletedObject_with_UserState_results_in_UserState_set_on_server()
     {
       var context = GetContext();

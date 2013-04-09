@@ -7,8 +7,8 @@
     <ProjectGuid>{3E5BAEF2-FBAB-4662-8109-1FB986548762}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Csla.Data.EF5.Net4</RootNamespace>
-    <AssemblyName>Csla.Data.EF5.Net4</AssemblyName>
+    <RootNamespace>Csla.Data.EF5</RootNamespace>
+    <AssemblyName>Csla.Data.EF5</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\NET4\Csla.Data.EF5.Net4.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET4\Csla.Data.EF5.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\NET4\Csla.Data.EF5.Net4.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET4\Csla.Data.EF5.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

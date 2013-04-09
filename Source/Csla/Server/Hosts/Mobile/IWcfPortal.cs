@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace Csla.Server.Hosts.Mobile
 {
@@ -17,6 +18,7 @@ namespace Csla.Server.Hosts.Mobile
   [ServiceContract(Namespace = "http://ws.lhotka.net/WcfDataPortal")]
   public interface IWcfPortal
   {
+#if NET40
     /// <summary>
     /// Create a new business object.
     /// </summary>
@@ -41,5 +43,31 @@ namespace Csla.Server.Hosts.Mobile
     /// <param name="request">The request parameter object.</param>
     [OperationContract]
     WcfResponse Delete(CriteriaRequest request);
+#else
+    /// <summary>
+    /// Create a new business object.
+    /// </summary>
+    /// <param name="request">The request parameter object.</param>
+    [OperationContract]
+    Task<WcfResponse> Create(CriteriaRequest request);
+    /// <summary>
+    /// Get an existing business object.
+    /// </summary>
+    /// <param name="request">The request parameter object.</param>
+    [OperationContract]
+    Task<WcfResponse> Fetch(CriteriaRequest request);
+    /// <summary>
+    /// Update a business object.
+    /// </summary>
+    /// <param name="request">The request parameter object.</param>
+    [OperationContract]
+    Task<WcfResponse> Update(UpdateRequest request);
+    /// <summary>
+    /// Delete a business object.
+    /// </summary>
+    /// <param name="request">The request parameter object.</param>
+    [OperationContract]
+    Task<WcfResponse> Delete(CriteriaRequest request);
+#endif
   }
 }

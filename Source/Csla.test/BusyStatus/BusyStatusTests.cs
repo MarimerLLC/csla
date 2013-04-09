@@ -194,7 +194,9 @@ namespace cslalighttest.BusyStatus
     }
 
     [TestMethod]
+#if !SILVERLIGHT
     [Ignore]
+#endif
     public void TestSaveWhileNotBusy()
     {
 #if SILVERLIGHT

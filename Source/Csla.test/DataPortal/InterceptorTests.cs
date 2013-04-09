@@ -33,6 +33,18 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void CreateWithIntercept()
+    {
+      Csla.ApplicationContext.GlobalContext.Clear();
+
+      var obj = Csla.DataPortal.Create<InitializeRoot>("abc");
+      Assert.AreEqual("Initialize", Csla.ApplicationContext.GlobalContext["Intercept1+InitializeRoot"].ToString(), "Initialize should have run");
+      Assert.AreEqual("Complete", Csla.ApplicationContext.GlobalContext["Intercept2+InitializeRoot"].ToString(), "Complete should have run");
+      Assert.AreEqual("CreateInstance", Csla.ApplicationContext.GlobalContext["Activate1+InitializeRoot"].ToString(), "CreateInstance should have run");
+      Assert.AreEqual("InitializeInstance", Csla.ApplicationContext.GlobalContext["Activate2+InitializeRoot"].ToString(), "InitializeInstance should have run");
+    }
+
+    [TestMethod]
     public void FetchWithIntercept()
     {
       Csla.ApplicationContext.GlobalContext.Clear();

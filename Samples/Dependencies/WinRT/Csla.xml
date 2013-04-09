@@ -12170,6 +12170,15 @@
             </summary>
             <param name="objectType">Type of object to create.</param>
         </member>
+        <member name="M:Csla.Reflection.MethodCaller.CreateGenericInstance(System.Type,System.Type[])">
+            <summary>
+            Creates an instance of a generic type
+            using its default constructor.
+            </summary>
+            <param name="type">Generic type to create</param>
+            <param name="paramTypes">Type parameters</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Reflection.MethodCaller.CallPropertyGetter(System.Object,System.String)">
             <summary>
             Invokes a property getter using dynamic

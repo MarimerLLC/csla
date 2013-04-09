@@ -46,11 +46,6 @@ namespace Library
           Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
     }
 
-    public override System.Threading.Tasks.Task<CustomerEdit> SaveAsync(bool forceUpdate)
-    {
-      return base.SaveAsync(forceUpdate);
-    }
-
     /// <summary>
     /// Example sync and local business rule
     /// </summary>

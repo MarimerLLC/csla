@@ -11,8 +11,6 @@ namespace Library
   [Serializable]
   public class CustomerEdit : BusinessBase<CustomerEdit>
   {
-    #region Business Methods
-
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c =>c.Id);
     public int Id
     {
@@ -35,10 +33,6 @@ namespace Library
       set { SetProperty(StatusProperty, value); }
     }
 
-    #endregion
-
-    #region Business Rules
-
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
@@ -49,11 +43,6 @@ namespace Library
       BusinessRules.AddRule(
         new Csla.Rules.CommonRules.IsInRole(
           Csla.Rules.AuthorizationActions.WriteProperty, IdProperty, "None"));
-    }
-
-    public override void BeginSave(bool forceUpdate, EventHandler<Csla.Core.SavedEventArgs> handler, object userState)
-    {
-      base.BeginSave(forceUpdate, handler, userState);
     }
 
     private class StringOnlyLetters : Csla.Rules.BusinessRule
@@ -105,74 +94,16 @@ namespace Library
       }
     }
 
-    #endregion
-
-    #region Factory Methods
-
-#if SILVERLIGHT
-    public static void BeginNewCustomer(
-      DataPortal.ProxyModes proxyMode,
-      EventHandler<DataPortalResult<CustomerEdit>> callback)
+    public static void NewCustomerEdit(EventHandler<DataPortalResult<CustomerEdit>> callback)
     {
-      var dp = new DataPortal<CustomerEdit>(DataPortal.ProxyModes.LocalOnly);
-      dp.CreateCompleted += callback;
-      dp.BeginCreate();
+      DataPortal.BeginCreate<CustomerEdit>(callback);
     }
 
-    public static void BeginGetCustomer(
-      DataPortal.ProxyModes proxyMode,
-      EventHandler<DataPortalResult<CustomerEdit>> callback)
+    public static void GetCustomerEdit(int id, EventHandler<DataPortalResult<CustomerEdit>> callback)
     {
-      var dp = new DataPortal<CustomerEdit>();
-      dp.FetchCompleted += callback;
-      dp.BeginFetch();
+      DataPortal.BeginFetch<CustomerEdit>(id, callback);
     }
 
-    [Obsolete("For use by MobileFormatter")]
-    public CustomerEdit()
-    { /* required by MobileFormatter */ }
-
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-    public override void DataPortal_Create(Csla.DataPortalClient.LocalProxy<CustomerEdit>.CompletedHandler handler)
-    {
-      var bw = new System.ComponentModel.BackgroundWorker();
-      bw.DoWork += (s, e) =>
-        { e.Result = e.Argument; };
-      bw.RunWorkerCompleted += (s, e) =>
-        {
-          try
-          {
-            using (BypassPropertyChecks)
-              Status = "Created " + ApplicationContext.ExecutionLocation.ToString();
-            CreateComplete(handler);
-          }
-          catch (Exception ex)
-          {
-            handler(this, ex);
-          }
-        };
-      bw.RunWorkerAsync();
-    }
-
-    private void CreateComplete(Csla.DataPortalClient.LocalProxy<CustomerEdit>.CompletedHandler handler)
-    {
-      base.DataPortal_Create(handler);
-    }
-#else
-    public static CustomerEdit GetCustomer(int id)
-    {
-      return DataPortal.Fetch<CustomerEdit>(new SingleCriteria<CustomerEdit, int>(id));
-    }
-
-    private CustomerEdit()
-    {	/* require use of factory methods */ }
-#endif
-
-    #endregion
-
-    #region Data Access
-
-#if !SILVERLIGHT
     protected override void DataPortal_Create()
     {
       using (BypassPropertyChecks)
@@ -215,8 +146,5 @@ namespace Library
       using (BypassPropertyChecks)
         Status = "Deleted " + ApplicationContext.ExecutionLocation.ToString();
     }
-#endif
-
-    #endregion
   }
 }

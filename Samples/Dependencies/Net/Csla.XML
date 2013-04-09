@@ -18771,6 +18771,15 @@
             </summary>
             <param name="objectType">Type of object to create.</param>
         </member>
+        <member name="M:Csla.Reflection.MethodCaller.CreateGenericInstance(System.Type,System.Type[])">
+            <summary>
+            Creates an instance of a generic type
+            using its default constructor.
+            </summary>
+            <param name="type">Generic type to create</param>
+            <param name="paramTypes">Type parameters</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Reflection.MethodCaller.CallPropertyGetter(System.Object,System.String)">
             <summary>
             Invokes a property getter using dynamic
@@ -19000,6 +19009,17 @@
             <param name="method">
             Name of the method.
             </param>
+        </member>
+        <member name="M:Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(System.Type,System.String,System.Type[],System.Boolean,System.Object[])">
+            <summary>
+            Invokes a generic async static method by name
+            </summary>
+            <param name="objectType">Class containing static method</param>
+            <param name="method">Method to invoke</param>
+            <param name="typeParams">Type parameters for method</param>
+            <param name="hasParameters">Flag indicating whether method accepts parameters</param>
+            <param name="parameters">Parameters for method</param>
+            <returns></returns>
         </member>
         <member name="M:Csla.Reflection.MethodCaller.CallFactoryMethod(System.Type,System.String,System.Object[])">
             <summary>

@@ -249,6 +249,8 @@
     <Compile Include="PropertyGetSet\EditableGetSetTopBase.cs" />
     <Compile Include="PropertyGetSet\EditableGetSetRuleValidation.cs" />
     <Compile Include="PropertyGetSet\EditableGetSetRuleValidationTests.cs" />
+    <Compile Include="PropertyGetSet\NullStringEditableRoot.cs" />
+    <Compile Include="PropertyGetSet\NullStringPropertyGetSetTests.cs" />
     <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
     <Compile Include="PropertyInfo\PropertyInfoRoot.cs" />
     <Compile Include="PropertyInfo\PropertyInfoTests.cs" />

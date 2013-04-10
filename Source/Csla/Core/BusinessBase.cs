@@ -2157,6 +2157,9 @@ namespace Csla.Core
 
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.NoAccessBehavior.ThrowException))
         {
+          if (typeof(V) == typeof(string) && newValue == null)
+            newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
+
           bool doChange = false;
           if (field == null)
           {
@@ -2165,8 +2168,6 @@ namespace Csla.Core
           }
           else
           {
-            if (typeof(V) == typeof(string) && newValue == null)
-              newValue = Utilities.CoerceValue<V>(typeof(string), null, string.Empty);
             if (!field.Equals(newValue))
               doChange = true;
           }
@@ -2319,8 +2320,6 @@ namespace Csla.Core
             else
               oldValue = (P)fieldData.Value;
           }
-          if (typeof(P) == typeof(string) && newValue == null)
-            newValue = Utilities.CoerceValue<P>(typeof(string), null, string.Empty);
           LoadPropertyValue<P>(propertyInfo, oldValue, newValue, !_bypassPropertyChecks);
         }
         catch (Exception ex)
@@ -2428,6 +2427,8 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
+        if (typeof(F) == typeof(string) && newValue == null)
+          newValue = Utilities.CoerceValue<F>(typeof(string), null, string.Empty);
         LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), false);
       }
       catch (Exception ex)
@@ -2529,6 +2530,9 @@ namespace Csla.Core
             oldValue = (P)fieldData.Value;
         }
 
+        if (typeof(P) == typeof(string) && newValue == null)
+          newValue = Utilities.CoerceValue<P>(typeof(string), null, string.Empty);
+
         var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
         if (valuesDiffer)
         {
@@ -2593,6 +2597,9 @@ namespace Csla.Core
 
     private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
     {
+      if (typeof(P) == typeof(string) && newValue == null)
+        newValue = Utilities.CoerceValue<P>(typeof(string), null, string.Empty);
+      
       var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
 
       if (valuesDiffer)

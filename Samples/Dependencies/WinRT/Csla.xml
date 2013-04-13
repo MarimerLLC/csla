@@ -1093,6 +1093,13 @@
             Saves the object to the database.
             </summary>
         </member>
+        <member name="M:Csla.BusinessListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
+        </member>
         <member name="M:Csla.BusinessListBase`2.BeginSave">
             <summary>
             Starts an async operation to save the object to the database.
@@ -3503,7 +3510,15 @@
             to the specified property.
             </summary>
             <returns><see langword="true" /> if write is allowed.</returns>
-            <param name="propertyName">Name of the property to read.</param>
+            <param name="propertyName">Name of the property to write.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanWriteProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to write the
+            to the specified property.
+            </summary>
+            <returns><see langword="true" /> if write is allowed.</returns>
+            <param name="property">Property to write.</param>
         </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(System.String)">
             <summary>
@@ -3513,6 +3528,14 @@
             <returns><see langword="true" /> if read is allowed.</returns>
             <param name="propertyName">Name of the property to read.</param>
         </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <returns><see langword="true" /> if read is allowed.</returns>
+            <param name="property">Property to read.</param>
+        </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(System.String)">
             <summary>
             Returns <see langword="true" /> if the user is allowed to execute 
@@ -3520,6 +3543,14 @@
             </summary>
             <returns><see langword="true" /> if execute is allowed.</returns>
             <param name="methodName">Name of the method to execute.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(Csla.Core.IMemberInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute 
+            the specified method.
+            </summary>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+            <param name="method">Method to execute.</param>
         </member>
         <member name="T:Csla.Rules.IHostRules">
             <summary>
@@ -10454,6 +10485,12 @@
             properly with the data portal.
             </summary>
         </member>
+        <member name="T:Csla.Security.ICslaPrincipal">
+            <summary>
+            Defines the base requirements for the interface of any
+            CSLA principal object.
+            </summary>
+        </member>
         <member name="M:Csla.Security.CslaPrincipal.#ctor">
             <summary>
             Creates an instance of the object.
@@ -12132,6 +12169,15 @@
             default constructor.
             </summary>
             <param name="objectType">Type of object to create.</param>
+        </member>
+        <member name="M:Csla.Reflection.MethodCaller.CreateGenericInstance(System.Type,System.Type[])">
+            <summary>
+            Creates an instance of a generic type
+            using its default constructor.
+            </summary>
+            <param name="type">Generic type to create</param>
+            <param name="paramTypes">Type parameters</param>
+            <returns></returns>
         </member>
         <member name="M:Csla.Reflection.MethodCaller.CallPropertyGetter(System.Object,System.String)">
             <summary>

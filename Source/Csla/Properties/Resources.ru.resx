@@ -207,4 +207,19 @@
   <data name="FailedOnServer" xml:space="preserve">
     <value>потерпел неудачу на сервере</value>
   </data>
+  <data name="MaxValueRule" xml:space="preserve">
+    <value>{0} не может превышать {1}</value>
+  </data>
+  <data name="MinValueRule" xml:space="preserve">
+    <value>{0} не может быть меньше {1}</value>
+  </data>
+  <data name="StringMaxLengthRule" xml:space="preserve">
+    <value>Значение "{0}" не может превышать {1} символов(а)</value>
+  </data>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>Значение "{0}" должно быть больше {1} символов(а)</value>
+  </data>
+  <data name="StringRequiredRule" xml:space="preserve">
+    <value>Значение "{0}" не может быть пустым</value>
+  </data>
 </root>

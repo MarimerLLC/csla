@@ -14,6 +14,7 @@ using Csla.Properties;
 using Csla.Server;
 using Csla;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Csla.Reflection
 {
@@ -224,6 +225,20 @@ namespace Csla.Reflection
       if (ctor == null)
         throw new NotImplementedException(objectType.Name + " " + Resources.DefaultConstructor + Resources.MethodNotImplemented);
       return ctor.Invoke();
+    }
+
+    /// <summary>
+    /// Creates an instance of a generic type
+    /// using its default constructor.
+    /// </summary>
+    /// <param name="type">Generic type to create</param>
+    /// <param name="paramTypes">Type parameters</param>
+    /// <returns></returns>
+    public static object CreateGenericInstance(Type type, params Type[] paramTypes)
+    {
+      var genericType = type.GetGenericTypeDefinition();
+      var gt = genericType.MakeGenericType(paramTypes);
+      return Activator.CreateInstance(gt);
     }
 
     #endregion
@@ -956,6 +971,53 @@ namespace Csla.Reflection
           ex);
       }
     }
+
+#if !NETFX_CORE
+    /// <summary>
+    /// Invokes a generic async static method by name
+    /// </summary>
+    /// <param name="objectType">Class containing static method</param>
+    /// <param name="method">Method to invoke</param>
+    /// <param name="typeParams">Type parameters for method</param>
+    /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
+    /// <param name="parameters">Parameters for method</param>
+    /// <returns></returns>
+    public static Task<object> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
+    {
+      var tcs = new TaskCompletionSource<object>();
+      try
+      {
+        Task task = null;
+        if (hasParameters)
+        {
+          var pTypes = GetParameterTypes(parameters);
+          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, pTypes, null);
+          if (methodReference == null)
+            methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public);
+          if (methodReference == null)
+            throw new InvalidOperationException(objectType.Name + "." + method);
+          var gr = methodReference.MakeGenericMethod(typeParams);
+          task = (Task)gr.Invoke(null, parameters);
+        }
+        else
+        {
+          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+          var gr = methodReference.MakeGenericMethod(typeParams);
+          task = (Task)gr.Invoke(null, null);
+        }
+        task.Wait();
+        if (task.Exception != null)
+          tcs.SetException(task.Exception);
+        else
+          tcs.SetResult(Csla.Reflection.MethodCaller.CallPropertyGetter(task, "Result"));
+      }
+      catch (Exception ex)
+      {
+        tcs.SetException(ex);
+      }
+      return tcs.Task;
+    }
+#endif
 
     /// <summary>
     /// Invokes a static factory method.

@@ -319,16 +319,22 @@ namespace Csla.Server
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      Type objectType = null;
+      DataPortalOperations operation = DataPortalOperations.Update;
       try
       {
         SetContext(context);
 
-        Initialize(new InterceptArgs { Parameter = obj, Operation = DataPortalOperations.Update, IsSync = isSync });
+        objectType = obj.GetType();
 
-        AuthorizeRequest(new AuthorizeRequest(obj.GetType(), obj, DataPortalOperations.Update));
+        if (obj is Core.ICommandObject)
+          operation = DataPortalOperations.Execute;
+        Initialize(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
+
+        AuthorizeRequest(new AuthorizeRequest(objectType, obj, DataPortalOperations.Update));
         DataPortalResult result;
         DataPortalMethodInfo method;
-        var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
+        var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
           string methodName;
@@ -402,12 +408,12 @@ namespace Csla.Server
         portal = new DataPortalSelector();
         result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
 #endif
-        Complete(new InterceptArgs { Parameter = obj, Result = result, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
         return result;
       }
       catch (Csla.Server.DataPortalException ex)
       {
-        Complete(new InterceptArgs { Parameter = obj, Exception = ex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = ex, Operation = operation, IsSync = isSync });
         throw;
       }
       catch (AggregateException ex)
@@ -421,7 +427,7 @@ namespace Csla.Server
             "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
             obj);
-        Complete(new InterceptArgs { Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
         throw fex;
       }
       catch (Exception ex)
@@ -430,7 +436,7 @@ namespace Csla.Server
             "DataPortal.Update " + Resources.FailedOnServer,
             new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj);
-        Complete(new InterceptArgs { Parameter = obj, Exception = fex, Operation = DataPortalOperations.Update, IsSync = isSync });
+        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
         throw fex;
       }
       finally
@@ -569,13 +575,13 @@ namespace Csla.Server
       }
     }
 
-    private void Complete(InterceptArgs e)
+    internal void Complete(InterceptArgs e)
     {
       if (_interceptor != null)
         _interceptor.Complete(e);
     }
 
-    private void Initialize(InterceptArgs e)
+    internal void Initialize(InterceptArgs e)
     {
       if (_interceptor != null)
         _interceptor.Initialize(e);

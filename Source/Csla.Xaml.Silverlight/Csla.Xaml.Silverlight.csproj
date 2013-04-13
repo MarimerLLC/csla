@@ -99,6 +99,9 @@
     <Compile Include="..\Csla.Xaml\BusyAnimation.cs">
       <Link>BusyAnimation.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\CancellableViewModel.cs">
+      <Link>CancellableViewModel.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
       <Link>ErrorEventArgs.cs</Link>
     </Compile>

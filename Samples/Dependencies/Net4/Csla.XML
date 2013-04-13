@@ -1102,7 +1102,15 @@
             to the specified property.
             </summary>
             <returns><see langword="true" /> if write is allowed.</returns>
-            <param name="propertyName">Name of the property to read.</param>
+            <param name="propertyName">Name of the property to write.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanWriteProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to write the
+            to the specified property.
+            </summary>
+            <returns><see langword="true" /> if write is allowed.</returns>
+            <param name="property">Property to write.</param>
         </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(System.String)">
             <summary>
@@ -1112,6 +1120,14 @@
             <returns><see langword="true" /> if read is allowed.</returns>
             <param name="propertyName">Name of the property to read.</param>
         </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanReadProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <returns><see langword="true" /> if read is allowed.</returns>
+            <param name="property">Property to read.</param>
+        </member>
         <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(System.String)">
             <summary>
             Returns <see langword="true" /> if the user is allowed to execute 
@@ -1119,6 +1135,14 @@
             </summary>
             <returns><see langword="true" /> if execute is allowed.</returns>
             <param name="methodName">Name of the method to execute.</param>
+        </member>
+        <member name="M:Csla.Security.IAuthorizeReadWrite.CanExecuteMethod(Csla.Core.IMemberInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute 
+            the specified method.
+            </summary>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+            <param name="method">Method to execute.</param>
         </member>
         <member name="T:Csla.Core.IParent">
             <summary>
@@ -3697,6 +3721,13 @@
             Saves the object to the database.
             </summary>
         </member>
+        <member name="M:Csla.BusinessBindingListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
+        </member>
         <member name="M:Csla.BusinessBindingListBase`2.BeginSave">
             <summary>
             Starts an async operation to save the object to the database.
@@ -4502,6 +4533,13 @@
             <summary>
             Saves the object to the database.
             </summary>
+        </member>
+        <member name="M:Csla.BusinessListBase`2.SaveAsync(System.Object,System.Boolean)">
+            <summary>
+            Saves the object to the database.
+            </summary>
+            <param name="userState">User state data.</param>
+            <param name="isSync">True if the save operation should be synchronous.</param>
         </member>
         <member name="M:Csla.BusinessListBase`2.BeginSave">
             <summary>
@@ -8648,6 +8686,18 @@
             Type of target object.
             </param>
         </member>
+        <member name="M:Csla.Data.DataMap.#ctor(System.Type,System.Type,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Initializes an instance of the type.
+            </summary>
+            <param name="sourceType">
+            Type of source object.
+            </param>
+            <param name="targetType">
+            Type of target object.
+            </param>
+            <param name="includedPropertyNames">List of property names to map 1:1.</param>
+        </member>
         <member name="M:Csla.Data.DataMap.AddPropertyMapping(System.String,System.String)">
             <summary>
             Adds a property to property
@@ -9384,6 +9434,24 @@
             </summary>
             <remarks>
             Returns DateTime.MinValue for null.
+            </remarks>
+            <param name="i">Ordinal column position of the value.</param>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.GetDateTimeOffset(System.String)">
+            <summary>
+            Gets an UTC date value from the datareader.
+            </summary>
+            <remarks>
+            Returns DateTimeOffset.MinValue for null.
+            </remarks>
+            <param name="name">Name of the column containing the value.</param>
+        </member>
+        <member name="M:Csla.Data.SafeDataReader.GetDateTimeOffset(System.Int32)">
+            <summary>
+            Gets an UTC date value from the datareader.
+            </summary>
+            <remarks>
+            Returns DateTimeOffset.MinValue for null.
             </remarks>
             <param name="i">Ordinal column position of the value.</param>
         </member>
@@ -12677,6 +12745,15 @@
             </summary>
             <param name="objectType">Type of object to create.</param>
         </member>
+        <member name="M:Csla.Reflection.MethodCaller.CreateGenericInstance(System.Type,System.Type[])">
+            <summary>
+            Creates an instance of a generic type
+            using its default constructor.
+            </summary>
+            <param name="type">Generic type to create</param>
+            <param name="paramTypes">Type parameters</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Reflection.MethodCaller.CallPropertyGetter(System.Object,System.String)">
             <summary>
             Invokes a property getter using dynamic
@@ -12906,6 +12983,17 @@
             <param name="method">
             Name of the method.
             </param>
+        </member>
+        <member name="M:Csla.Reflection.MethodCaller.CallGenericStaticMethodAsync(System.Type,System.String,System.Type[],System.Boolean,System.Object[])">
+            <summary>
+            Invokes a generic async static method by name
+            </summary>
+            <param name="objectType">Class containing static method</param>
+            <param name="method">Method to invoke</param>
+            <param name="typeParams">Type parameters for method</param>
+            <param name="hasParameters">Flag indicating whether method accepts parameters</param>
+            <param name="parameters">Parameters for method</param>
+            <returns></returns>
         </member>
         <member name="M:Csla.Reflection.MethodCaller.CallFactoryMethod(System.Type,System.String,System.Object[])">
             <summary>
@@ -15453,6 +15541,12 @@
             Base class from which custom principal
             objects should inherit to operate
             properly with the data portal.
+            </summary>
+        </member>
+        <member name="T:Csla.Security.ICslaPrincipal">
+            <summary>
+            Defines the base requirements for the interface of any
+            CSLA principal object.
             </summary>
         </member>
         <member name="M:Csla.Security.CslaPrincipal.#ctor">

@@ -108,20 +108,30 @@ namespace Csla.Testing.Business.BusyStatus
 
       protected override void Execute(RuleContext context)
       {
-        BackgroundWorker worker = new BackgroundWorker();
-
-        worker.DoWork += (s, e) =>
+        if (Csla.ApplicationContext.LogicalExecutionLocation == Csla.ApplicationContext.LogicalExecutionLocations.Client)
         {
-          System.Threading.Thread.Sleep(2000);
+          BackgroundWorker worker = new BackgroundWorker();
+
+          worker.DoWork += (s, e) =>
+          {
+            System.Threading.Thread.Sleep(2000);
+            var value = context.InputPropertyValues[PrimaryProperty];
+            if (value == null || value.ToString().ToUpper() == "ERROR")
+              context.AddErrorResult("error detected");
+          };
+
+          worker.RunWorkerCompleted += (s, e) => context.Complete();
+
+          // simulating an asynchronous process.
+          worker.RunWorkerAsync();
+        }
+        else
+        {
           var value = context.InputPropertyValues[PrimaryProperty];
           if (value == null || value.ToString().ToUpper() == "ERROR")
             context.AddErrorResult("error detected");
-        };
-
-        worker.RunWorkerCompleted += (s, e) => context.Complete();
-
-        // simulating an asynchronous process.
-        worker.RunWorkerAsync();
+          context.Complete();
+        }
       }
     }
 

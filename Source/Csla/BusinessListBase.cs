@@ -930,7 +930,7 @@ namespace Csla
     {
       try
       {
-        return SaveAsync().Result;
+        return SaveAsync(null, true).Result;
       }
       catch (AggregateException ex)
       {
@@ -945,35 +945,48 @@ namespace Csla
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
-    public virtual async Task<T> SaveAsync()
+    public async Task<T> SaveAsync()
     {
-      try
+      return await SaveAsync(null, false);
+    }
+
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <param name="userState">User state data.</param>
+    /// <param name="isSync">True if the save operation should be synchronous.</param>
+    protected virtual async Task<T> SaveAsync(object userState, bool isSync)
+    {
+      T result;
+      if (this.IsChild)
+        throw new InvalidOperationException(Resources.NoSaveChildException);
+
+      if (_editLevel > 0)
+        throw new InvalidOperationException(Resources.NoSaveEditingException);
+
+      if (!IsValid)
+        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
+
+      if (IsBusy)
+        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
+
+      if (IsDirty)
       {
-        T result;
-        if (this.IsChild)
-          throw new InvalidOperationException(Resources.NoSaveChildException);
-
-        if (_editLevel > 0)
-          throw new InvalidOperationException(Resources.NoSaveEditingException);
-
-        if (!IsValid)
-          throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-
-        if (IsBusy)
-          throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-
-        if (IsDirty)
-          result = await DataPortal.UpdateAsync<T>((T)this);
+        if (isSync)
+        {
+          result = DataPortal.Update<T>((T)this);
+        }
         else
-          result = (T)this;
-        OnSaved(result, null, null);
-        return result;
+        {
+          result = await DataPortal.UpdateAsync<T>((T)this);
+        }
       }
-      catch (Exception ex)
+      else
       {
-        OnSaved(null, ex, null);
-        throw;
+        result = (T)this;
       }
+      OnSaved(result, null, userState);
+      return result;
     }
 
     /// <summary>
@@ -1017,7 +1030,7 @@ namespace Csla
       T result = default(T);
       try
       {
-        result = await SaveAsync();
+        result = await SaveAsync(userState, false);
       }
       catch (AggregateException ex)
       {

@@ -53,6 +53,22 @@ namespace Csla.Data
       _targetType = targetType;
     }
 
+    /// <summary>
+    /// Initializes an instance of the type.
+    /// </summary>
+    /// <param name="sourceType">
+    /// Type of source object.
+    /// </param>
+    /// <param name="targetType">
+    /// Type of target object.
+    /// </param>
+    /// <param name="includedPropertyNames">List of property names to map 1:1.</param>
+    public DataMap(Type sourceType, Type targetType, IEnumerable<string> includedPropertyNames)
+    {
+      foreach (var item in includedPropertyNames)
+        AddPropertyMapping(item, item);
+    }
+
     internal List<MemberMapping> GetMap()
     {
       return _map;

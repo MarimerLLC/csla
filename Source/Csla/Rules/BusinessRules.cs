@@ -573,6 +573,8 @@ namespace Csla.Rules
 
       BrokenRules.ClearRules(property);
       var firstResult = RunRules(rules, cascade, executionContext);
+      if (CascadeOnDirtyProperties)
+          cascade = cascade || firstResult.DirtyProperties.Any();
       if (cascade)
       {
         // get properties affected by all rules

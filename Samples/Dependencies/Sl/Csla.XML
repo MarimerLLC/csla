@@ -11269,11 +11269,11 @@
             <summary>
             Invokes a generic async static method by name
             </summary>
-            <param name="objectType"></param>
-            <param name="method"></param>
-            <param name="typeParams"></param>
-            <param name="hasParameters"></param>
-            <param name="parameters"></param>
+            <param name="objectType">Class containing static method</param>
+            <param name="method">Method to invoke</param>
+            <param name="typeParams">Type parameters for method</param>
+            <param name="hasParameters">Flag indicating whether method accepts parameters</param>
+            <param name="parameters">Parameters for method</param>
             <returns></returns>
         </member>
         <member name="M:Csla.Reflection.MethodCaller.CallFactoryMethod(System.Type,System.String,System.Object[])">

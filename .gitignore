@@ -108,3 +108,4 @@ Backup*/
 UpgradeLog*.XML
 
 Desktop.ini
+/Source/Csla.Silverlight.test/UnitTest/CslaLight.Testing/Generated_Code

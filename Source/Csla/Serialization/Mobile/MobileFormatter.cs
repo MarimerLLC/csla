@@ -44,8 +44,8 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(Stream serializationStream, object graph)
     {
-    	ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter();
-			writer.Write(serializationStream, SerializeToDTO(graph));
+      ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter();
+      writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
 
@@ -217,9 +217,9 @@ namespace Csla.Serialization.Mobile
       if (serializationStream == null)
         return null;
 
-    	ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
-    	var data = reader.Read(serializationStream);
-    	return DeserializeAsDTO(data);
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader();
+      var data = reader.Read(serializationStream);
+      return DeserializeAsDTO(data);
     }
 
 

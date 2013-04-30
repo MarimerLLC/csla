@@ -502,7 +502,7 @@
       <Link>NotUndoableAttribute.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\CslaPrivate.Designer.cs">
-      <Link>CslaPrivate.Designer.cs</Link>
+      <Link>Properties\CslaPrivate.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\Resources.Designer.cs">
       <Link>Properties\Resources.Designer.cs</Link>
@@ -992,7 +992,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">
-      <Link>CslaPrivate.resx</Link>
+      <Link>Properties\CslaPrivate.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.ar.resx">
       <Link>Properties\Resources.ar.resx</Link>

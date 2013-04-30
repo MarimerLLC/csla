@@ -150,6 +150,61 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Csla\*.cs" />
+    <Compile Include="..\Csla\Core\*.cs">
+      <Link>Core\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\FieldManager\*.cs">
+      <Link>Core\FieldManager\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\*.cs">
+      <Link>Core\LoadManager\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\TypeConverters\*.cs">
+      <Link>Core\TypeConverters\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Data\*.cs">
+      <Link>Data\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\*.cs">
+      <Link>DataPortalClient\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Reflection\*.cs">
+      <Link>Reflection\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\*.cs">
+      <Link>Rules\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\*.cs">
+      <Link>Security\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\*.cs">
+      <Link>Serialization\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\*.cs">
+      <Link>Serialization\Mobile\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\*.cs">
+      <Link>Server\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\*.cs">
+      <Link>Server\Hosts\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\Mobile\*.cs">
+      <Link>Server\Hosts\Mobile\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\WcfChannel\*.cs">
+      <Link>Server\Hosts\WcfChannel\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Silverlight\*.cs">
+      <Link>Silverlight\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Silverlight\Security\*.cs">
+      <Link>Silverlight\Security\%(FileName)</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\*.cs">
+      <Link>Threading\%(FileName)</Link>
+    </Compile>
     <Compile Include="..\Csla\Properties\CslaPrivate.Designer.cs">
       <Link>Properties\CslaPrivate.Designer.cs</Link>
     </Compile>

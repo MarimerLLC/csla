@@ -14,7 +14,7 @@
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
     <DocumentationFile>..\..\Bin\Debug\Server\Csla.XML</DocumentationFile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
@@ -508,7 +508,7 @@
       <Link>Properties\Resources.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\Settings.Designer.cs">
-      <Link>Settings.Designer.cs</Link>
+      <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
@@ -611,9 +611,6 @@
     </Compile>
     <Compile Include="..\Csla\Rules\RuleContext.cs">
       <Link>Rules\RuleContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Rules\RuleMethod.cs">
-      <Link>Rules\RuleMethod.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\RuleResult.cs">
       <Link>Rules\RuleResult.cs</Link>
@@ -940,7 +937,7 @@
       <Link>CslaKey.snk</Link>
     </None>
     <None Include="..\Csla\Properties\Settings.settings">
-      <Link>Settings.settings</Link>
+      <Link>Properties\Settings.settings</Link>
     </None>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -985,10 +982,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="favicon.ico" />
+    <Content Include="Resources\favicon.ico" />
     <None Include="Service References\WcfPortal\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1026,6 +1020,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.fr.resx">
       <Link>Properties\Resources.fr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.he-IL.resx">
+      <Link>Properties\Resources.he-IL.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.hr.resx">
       <Link>Properties\Resources.hr.resx</Link>

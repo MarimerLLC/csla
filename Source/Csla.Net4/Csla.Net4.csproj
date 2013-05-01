@@ -233,14 +233,14 @@
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\WcfPortal\SlPortal.wsdl" />
-    <None Include="Service References\WcfPortal\SlPortal.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal.wsdl" />
+    <None Include="Service References\WcfPortal\MobilePortal.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\SlPortal1.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\SlPortal2.xsd">
+    <None Include="Service References\WcfPortal\MobilePortal2.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />

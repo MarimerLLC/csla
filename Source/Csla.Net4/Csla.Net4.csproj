@@ -502,13 +502,13 @@
       <Link>NotUndoableAttribute.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\CslaPrivate.Designer.cs">
-      <Link>CslaPrivate.Designer.cs</Link>
+      <Link>Properties\CslaPrivate.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\Resources.Designer.cs">
       <Link>Properties\Resources.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\Settings.Designer.cs">
-      <Link>Settings.Designer.cs</Link>
+      <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\PropertyInfo.cs">
       <Link>PropertyInfo.cs</Link>
@@ -937,7 +937,7 @@
       <Link>CslaKey.snk</Link>
     </None>
     <None Include="..\Csla\Properties\Settings.settings">
-      <Link>Settings.settings</Link>
+      <Link>Properties\Settings.settings</Link>
     </None>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -995,7 +995,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">
-      <Link>CslaPrivate.resx</Link>
+      <Link>Properties\CslaPrivate.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.ar.resx">
       <Link>Properties\Resources.ar.resx</Link>
@@ -1023,6 +1023,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.fr.resx">
       <Link>Properties\Resources.fr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.HE-il.resx">
+      <Link>Properties\Resources.HE-il.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.hr.resx">
       <Link>Properties\Resources.hr.resx</Link>

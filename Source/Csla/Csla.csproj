@@ -446,6 +446,7 @@
     <EmbeddedResource Include="Properties\Resources.fr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.HE-il.resx" />
     <EmbeddedResource Include="Properties\Resources.hr.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>

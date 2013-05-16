@@ -53,41 +53,104 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\SynchronizedWcfProxy.cs">
-      <Link>DataPortalClient\SynchronizedWcfProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\WcfProxy.cs">
-      <Link>DataPortalClient\WcfProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\DisplayAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\DisplayAttribute.cs">
       <Link>DataAnnotations\DisplayAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RangeAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RangeAttribute.cs">
       <Link>DataAnnotations\RangeAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RegularExpressionAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RegularExpressionAttribute.cs">
       <Link>DataAnnotations\RegularExpressionAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RequiredAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RequiredAttribute.cs">
       <Link>DataAnnotations\RequiredAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\StringLengthAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\StringLengthAttribute.cs">
       <Link>DataAnnotations\StringLengthAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationAttribute.cs">
       <Link>DataAnnotations\ValidationAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationContext.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationContext.cs">
       <Link>DataAnnotations\ValidationContext.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationResult.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationResult.cs">
       <Link>DataAnnotations\ValidationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.WinPRT\Service References\WcfPortal\Reference.cs">
+      <Link>Service References\WfcPortal\Reference.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ApplicationContext.cs">
+      <Link>ApplicationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\BusinessBase.cs">
+      <Link>BusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IContextManager.cs">
+      <Link>Core\IContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISavable.cs">
+      <Link>Core\ISavable.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISavableT.cs">
+      <Link>Core\ISavableT.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\AsyncLoadException.cs">
+      <Link>Core\LoadManager\AsyncLoadException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\IAsyncLoader.cs">
+      <Link>Core\LoadManager\IAsyncLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\TaskLoader.cs">
+      <Link>Core\LoadManager\TaskLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortal.cs">
+      <Link>DataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\DefaultPortalProxyFactory.cs">
+      <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\IDataPortalProxy.cs">
+      <Link>DataPortalClient\IDataPortalProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\IDataPortalProxyFactory.cs">
+      <Link>DataPortalClient\IDataPortalProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\LocalProxy.cs">
+      <Link>DataPortalClient\LocalProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\PrimitiveCriteria.cs">
+      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\WcfProxy.cs">
+      <Link>DataPortalClient\WcfProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalEventArgs.cs">
+      <Link>DataPortalEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalException.cs">
+      <Link>DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalT.cs">
+      <Link>DataPortalT.cs</Link>
     </Compile>
     <Compile Include="..\Csla\IBusinessBase.cs">
       <Link>IBusinessBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\IBusinessListBase.cs">
+      <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICommandBase.cs">
+      <Link>ICommandBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\IDataPortal.cs">
       <Link>IDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyBase.cs">
+      <Link>IReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyListBase.cs">
+      <Link>IReadOnlyListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\LazySingleton.cs">
       <Link>LazySingleton.cs</Link>
@@ -100,6 +163,18 @@
     </Compile>
     <Compile Include="..\Csla\Rules\PropertyRule.cs">
       <Link>Rules\PropertyRule.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\RunLocalAttribute.cs">
+      <Link>RunLocalAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\ICslaIdentity.cs">
+      <Link>Security\ICslaIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\ICslaPrincipal.cs">
+      <Link>Security\ICslaPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\SecurityException.cs">
+      <Link>Security\SecurityException.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryReader.cs">
       <Link>Serialization\Mobile\CslaBinaryReader.cs</Link>
@@ -137,11 +212,73 @@
     <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
       <Link>Serialization\Mobile\ICslaWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\AuthorizeRequest.cs">
+      <Link>Server\AuthorizeRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ChildDataPortal.cs">
+      <Link>Server\ChildDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortal.cs">
+      <Link>Server\DataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalContext.cs">
+      <Link>Server\DataPortalContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalException.cs">
+      <Link>Server\DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalExceptionHandler.cs">
+      <Link>Server\DataPortalExceptionHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalMethodCache.cs">
+      <Link>Server\DataPortalMethodCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalMethodInfo.cs">
+      <Link>Server\DataPortalMethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalResult.cs">
+      <Link>Server\DataPortalResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalSelector.cs">
+      <Link>Server\DataPortalSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DefaultDataPortalActivator.cs">
+      <Link>Server\DefaultDataPortalActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
+      <Link>Server\FactoryDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
+      <Link>Server\IAuthorizeDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalActivator.cs">
+      <Link>Server\IDataPortalActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
+      <Link>Server\IDataPortalExceptionInspector.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalServer.cs">
+      <Link>Server\IDataPortalServer.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IInterceptDataPortal.cs">
+      <Link>Server\IInterceptDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IObjectFactoryLoader.cs">
+      <Link>Server\IObjectFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ObjectFactoryLoader.cs">
+      <Link>Server\ObjectFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\SimpleDataPortal.cs">
+      <Link>Server\SimpleDataPortal.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
       <Link>Threading\BackgroundWorker.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\TransactionalTypes.cs">
+      <Link>TransactionalTypes.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\WfcPortal\Reference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
@@ -327,9 +464,6 @@
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\PrimitiveCriteria.cs">
-      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\SingleCriteria.cs">
       <Link>SingleCriteria.cs</Link>
     </Compile>
@@ -474,12 +608,6 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\ApplicationContext.cs">
-      <Link>ApplicationContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
       <Link>BusinessBindingListBase.cs</Link>
     </Compile>
@@ -522,9 +650,6 @@
     <Compile Include="..\Csla.Silverlight\Core\IReadOnlyCollection.cs">
       <Link>Core\IReadOnlyCollection.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ISavable.cs">
-      <Link>Core\ISavable.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\Core\ISmartField.cs">
       <Link>Core\ISmartField.cs</Link>
     </Compile>
@@ -557,33 +682,6 @@
     </Compile>
     <Compile Include="..\Csla.Silverlight\Core\UndoException.cs">
       <Link>Core\UndoException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortal.cs">
-      <Link>DataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\ChildDataPortal.cs">
-      <Link>DataPortalClient\ChildDataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\FactoryProxy.cs">
-      <Link>DataPortalClient\FactoryProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\IDataPortalProxy.cs">
-      <Link>DataPortalClient\IDataPortalProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\LocalProxy.cs">
-      <Link>DataPortalClient\LocalProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\ProxyFactory.cs">
-      <Link>DataPortalClient\ProxyFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalEventArgs.cs">
-      <Link>DataPortalEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalException.cs">
-      <Link>DataPortalException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalT.cs">
-      <Link>DataPortalT.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\DynamicBindingListBase.cs">
       <Link>DynamicBindingListBase.cs</Link>

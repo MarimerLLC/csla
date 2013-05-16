@@ -1,20 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
-using Android.Widget;
 
-namespace SimpleApp
+namespace Csla.Axml.Binding
 {
   public class BindingManager
   {
-    private Activity _activity;
+    private readonly Activity _activity;
 
     public BindingManager(Activity activity)
     {
@@ -43,11 +37,10 @@ namespace SimpleApp
 
     public void Remove(View target, string targetProperty, object source, string sourceProperty)
     {
-      var binding = Bindings.Where(r =>
-        ReferenceEquals(r.Target, target) &&
-        r.TargetProperty.Name == targetProperty &&
-        ReferenceEquals(r.Source, source) &&
-        r.SourceProperty.Name == sourceProperty).FirstOrDefault();
+      var binding = Bindings.FirstOrDefault(r => ReferenceEquals(r.Target, target) &&
+                                                 r.TargetProperty.Name == targetProperty &&
+                                                 ReferenceEquals(r.Source, source) &&
+                                                 r.SourceProperty.Name == sourceProperty);
       if (binding != null)
         Remove(binding);
     }
@@ -56,6 +49,14 @@ namespace SimpleApp
     {
       binding.Dispose();
       Bindings.Remove(binding);
+    }
+
+    public void RemoveAll()
+    {
+        for (var i = Bindings.Count - 1; i >= 0; i--)
+        {
+            Remove(Bindings[i]);
+        }
     }
 
     public IEnumerable<Binding> GetBindingsForView(View view)

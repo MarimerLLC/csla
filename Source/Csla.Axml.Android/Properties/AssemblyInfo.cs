@@ -1,11 +1,4 @@
-//-----------------------------------------------------------------------
-// <copyright file="AssemblyInfo.cs" company="Marimer LLC">
-//     Copyright (c) Marimer LLC. All rights reserved.
-//     Website: http://www.lhotka.net/cslanet/
-// </copyright>
-// <summary>no summary</summary>
-//-----------------------------------------------------------------------
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -16,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright � 2010-13 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-13 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -33,4 +26,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("4.5.24.0")]
 [assembly: AssemblyFileVersion("4.5.24.0")]
-[assembly: AssemblyKeyFileAttribute("CslaKey.snk")]

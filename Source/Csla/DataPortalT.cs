@@ -840,7 +840,7 @@ namespace Csla
     {
       try
       {
-        var result = await DoUpdateAsync(obj, true);
+        var result = await UpdateAsync(obj);
         OnUpdateCompleted(new DataPortalResult<T>(result, null, userState));
       }
       catch (AggregateException ex)
@@ -1104,7 +1104,7 @@ namespace Csla
     {
       try
       {
-        var result = await DoUpdateAsync(command, true);
+        var result = await UpdateAsync(command);
         OnExecuteCompleted(new DataPortalResult<T>(result, null, userState));
       }
       catch (AggregateException ex)

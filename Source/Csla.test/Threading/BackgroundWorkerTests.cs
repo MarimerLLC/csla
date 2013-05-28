@@ -31,9 +31,9 @@ namespace Csla.Test.Threading
     #region Additional test attributes
     // 
     //You can use the following additional attributes as you write your tests:
-    private static IPrincipal _originalPrincipal;
-    private static CultureInfo _originalCulture;
-    private static CultureInfo _originalUICulture;
+    private IPrincipal _originalPrincipal;
+    private CultureInfo _originalCulture;
+    private CultureInfo _originalUICulture;
 
     [ClassInitialize]
     public static void ClassInit(TestContext context)
@@ -97,9 +97,6 @@ namespace Csla.Test.Threading
 
           var UIThreadid = Thread.CurrentThread.ManagedThreadId;
 
-          _originalPrincipal = Csla.ApplicationContext.User;
-          _originalCulture = Thread.CurrentThread.CurrentCulture;
-          _originalUICulture = Thread.CurrentThread.CurrentUICulture;
           Csla.ApplicationContext.User = new MyPrincipal();
           Csla.ApplicationContext.ClientContext["BWTEST"] = "TEST";
           Csla.ApplicationContext.GlobalContext["BWTEST"] = "TEST";

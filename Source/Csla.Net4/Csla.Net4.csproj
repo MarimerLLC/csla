@@ -916,6 +916,12 @@
     <Compile Include="..\Csla\Threading\BusyLock.cs">
       <Link>Threading\BusyLock.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Threading\ContextParams.cs">
+      <Link>Threading\ContextParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
+      <Link>Threading\CslaTaskScheduler.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\TransactionalAttribute.cs">
       <Link>TransactionalAttribute.cs</Link>
     </Compile>

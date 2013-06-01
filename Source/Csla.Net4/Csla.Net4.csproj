@@ -14,7 +14,7 @@
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
     <DocumentationFile>..\..\Bin\Debug\Server\Csla.XML</DocumentationFile>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PublishUrl>publish\</PublishUrl>
@@ -991,10 +991,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="favicon.ico" />
+    <Content Include="Resources\favicon.ico" />
     <None Include="Service References\WcfPortal\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -1033,8 +1030,8 @@
     <EmbeddedResource Include="..\Csla\Properties\Resources.fr.resx">
       <Link>Properties\Resources.fr.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.HE-il.resx">
-      <Link>Properties\Resources.HE-il.resx</Link>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.he-IL.resx">
+      <Link>Properties\Resources.he-IL.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\Csla\Properties\Resources.hr.resx">
       <Link>Properties\Resources.hr.resx</Link>

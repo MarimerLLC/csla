@@ -110,51 +110,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Web\ApplicationContextManager.cs">
-      <Link>ApplicationContextManager.cs</Link>
+    <Compile Include="..\Csla.Web\*.cs" />
+    <Compile Include="..\Csla.Web\Design\*.cs">
+      <Link>Design\%(FileName)</Link>
     </Compile>
-    <Compile Include="..\Csla.Web\CslaDataSource.cs">
-      <Link>CslaDataSource.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\CslaDataSourceView.cs">
-      <Link>CslaDataSourceView.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\DeleteObjectArgs.cs">
-      <Link>DeleteObjectArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceConfiguration.cs">
-      <Link>Design\CslaDataSourceConfiguration.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceConfiguration.designer.cs">
-      <Link>Design\CslaDataSourceConfiguration.designer.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceDesigner.cs">
-      <Link>Design\CslaDataSourceDesigner.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDesignerDataSourceView.cs">
-      <Link>Design\CslaDesignerDataSourceView.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectFieldInfo.cs">
-      <Link>Design\ObjectFieldInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectSchema.cs">
-      <Link>Design\ObjectSchema.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectViewSchema.cs">
-      <Link>Design\ObjectViewSchema.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\InsertObjectArgs.cs">
-      <Link>InsertObjectArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Security\IdentityFactory.cs">
-      <Link>Security\IdentityFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\SelectObjectArgs.cs">
-      <Link>SelectObjectArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\UpdateObjectArgs.cs">
-      <Link>UpdateObjectArgs.cs</Link>
+    <Compile Include="..\Csla.Web\Security\*.cs">
+      <Link>Security\%(FileName)</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

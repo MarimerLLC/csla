@@ -55,7 +55,7 @@
     </Reference>
     <Reference Include="Csla.Web.Mvc, Version=4.2.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.Mvc.dll</HintPath>
+      <HintPath>..\..\..\..\Dependencies\Net\Csla.Web.Mvc3.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.DataSetExtensions" />

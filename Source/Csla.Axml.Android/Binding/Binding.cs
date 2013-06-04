@@ -1,17 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using System.ComponentModel;
+using Android.Views;
 
-namespace SimpleApp
+namespace Csla.Axml.Binding
 {
   public class Binding : IDisposable
   {
@@ -64,7 +55,7 @@ namespace SimpleApp
       var value = TargetProperty.GetValue(Target, null);
       if (ConvertBack != null)
         value = ConvertBack(value);
-      var converted = Csla.Utilities.CoerceValue(
+      var converted = Utilities.CoerceValue(
         SourceProperty.PropertyType, TargetProperty.PropertyType, null, value);
       SourceProperty.SetValue(Source, 
         converted, 
@@ -76,7 +67,7 @@ namespace SimpleApp
       var value = SourceProperty.GetValue(Source, null);
       if (Convert != null)
         value = Convert(value);
-      var converted = Csla.Utilities.CoerceValue(
+      var converted = Utilities.CoerceValue(
         TargetProperty.PropertyType, SourceProperty.PropertyType, null, value);
       TargetProperty.SetValue(Target,
         converted,

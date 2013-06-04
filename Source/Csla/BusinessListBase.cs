@@ -119,12 +119,6 @@ namespace Csla
       // set child edit level
       Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
 
-      // TODO: Implement i4o
-      // remove from the index
-      //RemoveIndexItem(child);
-      // remove from the position map
-      //RemoveFromMap(child);
-
       // mark the object as deleted
       child.DeleteChild();
       // and add it to the deleted collection for storage
@@ -141,9 +135,6 @@ namespace Csla
       // we need to preserve the object's editleveladded value
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
-
-      // TODO: implement i4o
-      //InsertIndexItem(child);
 
       Add(child);
       child.EditLevelAdded = saveLevel;

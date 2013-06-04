@@ -1271,7 +1271,6 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      // TODO: Review resource string
       if (_isBusy)
         throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
 

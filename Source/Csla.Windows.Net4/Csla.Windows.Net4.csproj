@@ -108,59 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Windows\BindingSourceHelper.cs">
-      <Link>BindingSourceHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\BindingSourceNode.cs">
-      <Link>BindingSourceNode.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\BindingSourceRefresh.cs">
-      <Link>BindingSourceRefresh.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Windows\BusyAnimation.cs">
-      <Link>BusyAnimation.cs</Link>
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Windows\BusyAnimation.designer.cs">
-      <Link>BusyAnimation.designer.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\CslaActionCancelEventArgs.cs">
-      <Link>CslaActionCancelEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\CslaActionEventArgs.cs">
-      <Link>CslaActionEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\CslaActionExtender.cs">
-      <Link>CslaActionExtender.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Windows\CslaActionExtenderProperties.cs">
-      <Link>CslaActionExtenderProperties.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\CslaActionExtenderToolStrip.cs">
-      <Link>CslaActionExtenderToolStrip.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Windows\Enums.cs">
-      <Link>Enums.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\ErrorEncounteredEventArgs.cs">
-      <Link>ErrorEncounteredEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\HasBrokenRulesEventArgs.cs">
-      <Link>HasBrokenRulesEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\HostPropertyAttribute.cs">
-      <Link>HostPropertyAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\ObjectSaveException.cs">
-      <Link>ObjectSaveException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Windows\ReadWriteAuthorization.cs">
-      <Link>ReadWriteAuthorization.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="..\Csla.Windows\*.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

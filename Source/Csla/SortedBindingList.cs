@@ -158,9 +158,9 @@ namespace Csla
         {
           if (disposing)
           {
-            // TODO: free unmanaged resources when explicitly called
+            // free unmanaged resources when explicitly called
           }
-          // TODO: free shared unmanaged resources
+          // free shared unmanaged resources
         }
         _disposedValue = true;
       }

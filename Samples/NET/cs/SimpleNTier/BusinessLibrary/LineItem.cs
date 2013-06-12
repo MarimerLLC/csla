@@ -30,5 +30,22 @@ namespace BusinessLibrary
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }
     }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+
+      BusinessRules.AddRule(new ChangeIfNew { PrimaryProperty = IdProperty });
+    }
+
+    private class ChangeIfNew : Csla.Rules.BusinessRule
+    {
+      protected override void Execute(Csla.Rules.RuleContext context)
+      {
+        var target = (LineItem)context.Target;
+        if (!target.IsNew)
+          context.AddErrorResult("Value may only be changed if item is new");
+      }
+    }
   }
 }

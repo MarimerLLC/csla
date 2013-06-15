@@ -8,6 +8,7 @@
 #define DEBUG
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
@@ -54,7 +55,7 @@ namespace Csla.Xaml
       var targetMethod = target.GetType().GetMethod(MethodName);
       if (targetMethod == null)
       {
-        System.Diagnostics.Debug.WriteLine("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), this.DataContext.GetType());
+        Trace.TraceError("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), this.DataContext.GetType());
         throw new MissingMethodException(MethodName);
       }
 

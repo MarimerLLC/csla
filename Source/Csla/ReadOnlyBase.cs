@@ -238,8 +238,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperty(propertyName);
-      return CanReadProperty(prop);
+      return CanReadProperty(propertyName, false);
     }
 
     /// <summary>
@@ -251,8 +250,16 @@ namespace Csla
     /// result should cause an exception.</param>
     private bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperty(propertyName);
-      return CanReadProperty(prop, throwOnFalse);
+      var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
+      if (propertyInfo == null)
+      {
+#if NETFX_CORE || SILVERLIGHT
+#else
+        Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
+#endif
+        return true;
+      }
+      return CanReadProperty(propertyInfo, throwOnFalse);
     }
 
     bool Csla.Security.IAuthorizeReadWrite.CanWriteProperty(string propertyName)

@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -44,6 +45,21 @@ namespace WinRTUI
     private void CancelEdit(object sender, RoutedEventArgs e)
     {
       ((OrderVm)this.DataContext).Cancel();
+    }
+
+    private void EditLineItem(object sender, ItemClickEventArgs e)
+    {
+      var lineItem = e.ClickedItem as BusinessLibrary.LineItem;
+      if (lineItem != null)
+      {
+        var uc = new LineItemEditor(sender, lineItem);
+        uc.Closed += (o, a) =>
+          {
+            SaveCancelRegion.Visibility = Windows.UI.Xaml.Visibility.Visible;
+          };
+        SaveCancelRegion.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+        uc.Show();
+      }
     }
   }
 }

@@ -43,7 +43,7 @@
         <TextBox Grid.Column="1" Grid.Row="0" x:Name="idTextBox" Text="{Binding Model.Id, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource TextBoxStyle}" />
 
         <TextBlock Text="Customer Name:" Grid.Column="0" Grid.Row="1" Style="{StaticResource LabelTextStyle}" />
-        <Grid Grid.Column="1" Grid.Row="1" >
+        <Grid Grid.Column="1" Margin="0,51,0,1" Grid.RowSpan="2" >
           <Rectangle Fill="Red" Margin="8" Visibility="{Binding ElementName=CustomerNameInfo, Path=IsValid,Converter={StaticResource VisibilityConverter}}" />
           <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="8 -5" Visibility="{Binding ElementName=CustomerNameInfo, Path=IsValid,Converter={StaticResource VisibilityConverter}}">
             <Rectangle Fill="Red"/>
@@ -56,7 +56,11 @@
         
         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="orders" Style="{StaticResource SubHeadingTextStyle}" Margin="10,15,0,0" />
 
-        <ListView Grid.Row="3" Grid.Column="1" Margin="10 15 0 0"  ItemsSource="{Binding Path=Model.LineItems}">
+        <ListView Grid.Row="3" Grid.Column="1" Margin="10 15 0 0"  
+                  ItemsSource="{Binding Path=Model.LineItems}"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True"
+                  ItemClick="EditLineItem">
           <ListView.HeaderTemplate>
             <DataTemplate>
               <StackPanel Orientation="Horizontal">
@@ -75,7 +79,7 @@
           </ListView.ItemTemplate>
         </ListView>
 
-        <StackPanel Grid.Row="4" x:Name="stackPanel1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Margin="0 0 20 20">
+        <StackPanel Grid.Row="4" x:Name="SaveCancelRegion" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="1" Margin="0 0 20 20">
           <Button Content="cancel" x:Name="CancelButton" IsEnabled="{Binding Path=CanCancel}" Margin="3" Style="{StaticResource ButtonStyle}" Click="CancelEdit" />
           <Button Content="save" x:Name="SaveButton" IsEnabled="{Binding Path=CanSave}" Margin="3" Style="{StaticResource ButtonStyle}" Click="SaveObject" />
         </StackPanel>

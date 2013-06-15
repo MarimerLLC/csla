@@ -6,6 +6,7 @@
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -507,8 +508,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
-      var prop = FieldManager.GetRegisteredProperty(propertyName);
-      return CanReadProperty(prop);
+      return CanReadProperty(propertyName, false);
     }
 
     /// <summary>
@@ -520,8 +520,16 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     private bool CanReadProperty(string propertyName, bool throwOnFalse)
     {
-      var prop = FieldManager.GetRegisteredProperty(propertyName);
-      return CanReadProperty(prop, throwOnFalse);
+      var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
+      if (propertyInfo == null)
+      {
+#if NETFX_CORE || SILVERLIGHT
+#else
+        Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
+#endif
+        return true;
+      }
+      return CanReadProperty(propertyInfo, throwOnFalse);
     }
 
     /// <summary>
@@ -577,8 +585,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanWriteProperty(string propertyName)
     {
-      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
-      return CanWriteProperty(propertyInfo);
+      return CanWriteProperty(propertyName, false);
     }
 
     /// <summary>
@@ -590,7 +597,15 @@ namespace Csla.Core
     /// result should cause an exception.</param>
     private bool CanWriteProperty(string propertyName, bool throwOnFalse)
     {
-      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
+      var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
+      if (propertyInfo == null)
+      {
+#if NETFX_CORE || SILVERLIGHT
+#else
+        Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
+#endif        
+        return true;
+      }
       return CanWriteProperty(propertyInfo, throwOnFalse);
     }
 

@@ -123,7 +123,7 @@ namespace Csla.Server
               factoryInfo.FetchMethodName);
           else
             method = GetMethodInfo(
-              FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName),
+              factoryType,
               factoryInfo.FetchMethodName,
               criteria);
         }
@@ -133,6 +133,34 @@ namespace Csla.Server
       return method;
     }
 
+    internal static DataPortalMethodInfo GetDeleteMethod(Type objectType, object criteria)
+    {
+      // an "Integer" criteria is a special flag indicating
+      // that criteria is empty and should not be used
+      DataPortalMethodInfo method = null;
+      var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
+      if (factoryInfo == null)
+      {
+        if (criteria is EmptyCriteria)
+          method = GetMethodInfo(objectType, "DataPortal_Delete");
+        else
+          method = GetMethodInfo(objectType, "DataPortal_Delete", criteria);
+      }
+      else
+      {
+        var factoryType = FactoryDataPortal.FactoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
+        if (factoryType != null)
+        {
+          if (criteria is EmptyCriteria)
+            method = GetMethodInfo(factoryType, factoryInfo.DeleteMethodName);
+          else
+            method = GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, criteria);
+        }
+        else
+          method = new DataPortalMethodInfo();
+      }
+      return method;
+    }
     #endregion
 
 

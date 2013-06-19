@@ -883,8 +883,7 @@ namespace Csla
             "delete",
             objectType.Name));
 
-        var method = Server.DataPortalMethodCache.GetMethodInfo(
-          objectType, "DataPortal_Delete", criteria);
+        var method = Server.DataPortalMethodCache.GetDeleteMethod(objectType, criteria);
 
         DataPortalClient.IDataPortalProxy proxy;
         proxy = GetDataPortalProxy(objectType, method.RunLocal);

@@ -603,6 +603,9 @@
     <Compile Include="..\Csla\Rules\IBusinessRule.cs">
       <Link>Rules\IBusinessRule.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\IBusinessRules.cs">
+      <Link>Rules\IBusinessRules.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\IHostRules.cs">
       <Link>Rules\IHostRules.cs</Link>
     </Compile>
@@ -947,6 +950,7 @@
     </None>
     <None Include="..\Csla\Properties\Settings.settings">
       <Link>Properties\Settings.settings</Link>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
     <None Include="app.config" />
     <None Include="packages.config" />

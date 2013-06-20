@@ -55,7 +55,10 @@ namespace Csla.Xaml
       var targetMethod = target.GetType().GetMethod(MethodName);
       if (targetMethod == null)
       {
+#if NETFX_CORE || SILVERLIGHT
+#else
         Trace.TraceError("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), this.DataContext.GetType());
+#endif
         throw new MissingMethodException(MethodName);
       }
 

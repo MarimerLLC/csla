@@ -235,6 +235,7 @@
     <Compile Include="Rules\CommonRules.cs" />
     <Compile Include="Rules\IAuthorizationRule.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
+    <Compile Include="Rules\IBusinessRules.cs" />
     <Compile Include="Rules\IHostRules.cs" />
     <Compile Include="Rules\ObjectRule.cs" />
     <Compile Include="Rules\PropertyRule.cs" />

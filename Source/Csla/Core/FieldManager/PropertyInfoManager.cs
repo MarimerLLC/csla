@@ -151,5 +151,16 @@ namespace Csla.Core.FieldManager
       lock (list)
         return new PropertyInfoList(list);
     }
+
+    /// <summary>
+    /// Returns a registered property for a given type and property name.
+    /// </summary>
+    /// <param name="objectType">The business object type.</param>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <returns></returns>
+    public static IPropertyInfo GetRegisteredProperty(Type objectType, string propertyName)
+    {
+      return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
+    }
   }
 }

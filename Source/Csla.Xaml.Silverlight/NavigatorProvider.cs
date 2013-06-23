@@ -152,7 +152,6 @@ namespace Csla.Xaml
       NavigatorProvider target = (NavigatorProvider)element.GetValue(NavigatorProviderProperty);
       if (target == null)
       {
-        //TODO: review resource text
         throw new ArgumentException(Resources.NavigatorProviderSetPriorToTriggerEvent);
       }
       else

@@ -26,7 +26,7 @@ namespace Csla.Security
       {
         if (_maxCacheSize == 0)
         {
-          string tmp = null; //TODO: System.Configuration.ConfigurationManager.AppSettings["CslaPrincipalCacheSize"];
+          string tmp = null;
           if (string.IsNullOrEmpty(tmp))
             _maxCacheSize = 10;
           else

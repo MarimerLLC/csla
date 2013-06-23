@@ -462,6 +462,9 @@
     <Compile Include="..\Csla\Rules\IAuthorizationRule.cs">
       <Link>Rules\IAuthorizationRule.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\IBusinessRules.cs">
+      <Link>Rules\IBusinessRules.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\IHostRules.cs">
       <Link>Rules\IHostRules.cs</Link>
     </Compile>

@@ -43,7 +43,7 @@ namespace CompareFieldsRules.Rules
     {
       CompareTo = compareToProperty;
       InputProperties = new List<IPropertyInfo>() { primaryProperty, compareToProperty };
-      this.RuleUri.AddQueryParameter("compareTo", compareToProperty.Name);
+      this.RuleUri.AddQueryParameter("compareto", compareToProperty.Name);
     }
 
     /// <summary>

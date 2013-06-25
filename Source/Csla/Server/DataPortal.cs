@@ -331,7 +331,7 @@ namespace Csla.Server
           operation = DataPortalOperations.Execute;
         Initialize(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, obj, DataPortalOperations.Update));
+        AuthorizeRequest(new AuthorizeRequest(objectType, obj, operation));
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);

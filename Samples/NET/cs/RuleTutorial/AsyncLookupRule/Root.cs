@@ -47,6 +47,7 @@ namespace AsyncLookupRule
     /// <summary>
     /// Gets or sets Name.
     /// </summary>
+    [Required]
     public string Name
     {
       get { return GetProperty(NameProperty); }

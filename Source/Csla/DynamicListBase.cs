@@ -240,13 +240,17 @@ namespace Csla
     private void SafeSetItem(int index, T newObject)
     {
       //This is needed because we cannot call base.SetItem from lambda expression
+      this[index].SetParent(null);
+      base.OnRemoveEventHooks(this[index]);
       newObject.SetParent(this);
       base.SetItem(index, newObject);
+      base.OnAddEventHooks(newObject);
     }
 
     private void SafeRemoveItem(int index)
     {
       this[index].SetParent(null);
+      base.OnRemoveEventHooks(this[index]);
       base.RemoveItem(index);
     }
 

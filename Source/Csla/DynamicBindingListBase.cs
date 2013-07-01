@@ -293,8 +293,8 @@ namespace Csla
 
     void Csla.Core.IParent.RemoveChild(Core.IEditableBusinessObject child)
     {
-      // do nothing, removal of a child is handled by
-      // the RemoveItem override
+      if (child.IsNew)
+        Remove((T)child);
     }
 
     IParent Csla.Core.IParent.Parent

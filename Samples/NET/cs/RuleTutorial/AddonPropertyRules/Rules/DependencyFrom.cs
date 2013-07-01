@@ -28,6 +28,7 @@ namespace AddonPropertyRules.Rules
       if (InputProperties == null) 
         InputProperties = new List<IPropertyInfo>();
       InputProperties.AddRange(dependencyProperties);
+      RuleUri.AddQueryParameter("dependencyfrom", string.Join(",", dependencyProperties.Select(p => p.Name)));
     }
 
     /// <summary>

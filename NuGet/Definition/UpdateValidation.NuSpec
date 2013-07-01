@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-UpdateValidation</id>
+    <title>CSLA .NET - Legacy Validation</title>
+    <tags>CSLA Validation</tags>
+    <version>4.5.32-Beta</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports legacy CSLA .NET 3.8 style validation and business rules in newer versions of CSLA .NET.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports legacy CSLA .NET 3.8 style validation and business rules in newer versions of CSLA .NET.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CSLA-Core" version="[4.5.32-Beta]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <file src="..\..\Bin\Release\NET4\**\Csla.Validation.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Validation.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Validation.resources.dll*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Validation.resources.pdb*" target="lib\net40" />
+    <file src="..\..\Bin\Release\NET4\**\Csla.Validation.xml*" target="lib\net40" />
+    <!-- .NET 4.5 Client -->
+    <file src="..\..\Bin\Release\NET\**\Csla.Validation.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Validation.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET\**\Csla.Validation.xml*" target="lib\net45" />
+    <!-- Silverlight 4.0 Client -->
+    <!-- > None -->
+    <!-- Silverlight 5.0 Client -->
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.dll*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.pdb*" target="lib\sl50" />
+    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.xml*" target="lib\sl50" />
+    <!-- Windows Phone 7 Client -->
+    <!-- > None -->
+    <!-- Windows Phone 8 Client -->
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.dll*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.pdb*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.xml*" target="lib\wp8" />
+    <!-- Windows Runtime Client -->
+    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.dll*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pdb*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pri*" target="lib\NetCore45" />
+    <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.xml*" target="lib\NetCore45" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Validation\**\*.cs" target="src" />
+  </files>
+</package>

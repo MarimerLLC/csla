@@ -9,8 +9,10 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 namespace TransformationRules.Test
 {
 
+  
   public class ToUpperTest
   {
+
      public class TheCtor
     {
       private IBusinessRule Rule;

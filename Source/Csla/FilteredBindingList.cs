@@ -110,9 +110,9 @@ namespace Csla
         {
           if (disposing)
           {
-            // TODO: free unmanaged resources when explicitly called
+            // free unmanaged resources when explicitly called
           }
-          // TODO: free shared unmanaged resources
+          // free shared unmanaged resources
         }
         _disposedValue = true;
       }
@@ -1006,6 +1006,8 @@ namespace Csla
 
     void ICancelAddNew.CancelNew(int itemIndex)
     {
+      if (itemIndex <= -1) return;
+
       ICancelAddNew can = _list as ICancelAddNew;
       if (can != null)
         can.CancelNew(OriginalIndex(itemIndex));

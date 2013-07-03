@@ -23,7 +23,7 @@ namespace Csla.Rules
   /// Tracks the business rules for a business object.
   /// </summary>
   [Serializable]
-  public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification
+  public class BusinessRules : Csla.Core.MobileObject, ISerializationNotification, IBusinessRules
 #if SILVERLIGHT || NETFX_CORE
 , IUndoableObject
 #endif
@@ -1144,6 +1144,11 @@ namespace Csla.Rules
 
       public List<string> AffectedProperties { get; set; }
       public List<string> DirtyProperties { get; set; }
+    }
+
+    object IBusinessRules.Target
+    {
+      get { return Target; }
     }
   }
 }

@@ -75,9 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Data.EF5\DbContextManager.cs">
-      <Link>DbContextManager.cs</Link>
-    </Compile>
+    <Compile Include="..\Csla.Data.EF5\*.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

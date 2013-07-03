@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 #if NETFX_CORE
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources.Core;
 using System.Collections.Generic;
 #endif
@@ -41,7 +42,7 @@ namespace Csla.Threading
     private DoWorkEventHandler _myDoWork;
     private RunWorkerCompletedEventHandler _myWorkerCompleted;
     private ProgressChangedEventHandler _myWorkerProgressChanged;
-
+    
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
     /// </summary>
@@ -177,35 +178,13 @@ namespace Csla.Threading
 
     #region Worker Async Request
 
-    private class WorkerAsyncRequest
+    private class WorkerAsyncRequest : ContextParams
     {
       public object Argument { get; private set; }
-      public System.Security.Principal.IPrincipal Principal { get; private set; }
-      public Csla.Core.ContextDictionary ClientContext { get; private set; }
-      public Csla.Core.ContextDictionary GlobalContext { get; private set; }
-#if NETFX_CORE
-      public string CurrentUICulture { get; private set; }
-      public string CurrentCulture { get; private set; }
-#else
-      public CultureInfo CurrentUICulture { get; private set; }
-      public CultureInfo CurrentCulture { get; private set; }
-#endif
 
       public WorkerAsyncRequest(object argument)
       {
         this.Argument = argument;
-        this.Principal = Csla.ApplicationContext.User;
-        this.ClientContext = Csla.ApplicationContext.ClientContext;
-        this.GlobalContext = Csla.ApplicationContext.GlobalContext;
-#if NETFX_CORE
-        //var region = ResourceManager.Current.DefaultContext.HomeRegion;
-        var language = ResourceManager.Current.DefaultContext.Languages[0];
-        this.CurrentUICulture = language;
-        this.CurrentCulture = language;
-#else
-        this.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
-        this.CurrentCulture = Thread.CurrentThread.CurrentCulture;
-#endif
       }
     }
 
@@ -222,25 +201,6 @@ namespace Csla.Threading
         this.GlobalContext = globalContext;
         this.Error = error;
       }
-    }
-
-    #endregion
-
-    #region Set Background Thread Context
-
-    private void SetThreadContext(WorkerAsyncRequest request)
-    {
-      Csla.ApplicationContext.User = request.Principal;
-      Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
-#if NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
-      ResourceManager.Current.DefaultContext.Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });
-      ResourceManager.Current.DefaultContext.Languages = list;
-#else
-      Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
-      Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
-#endif
     }
 
     #endregion
@@ -301,7 +261,7 @@ namespace Csla.Threading
       var request = (WorkerAsyncRequest)e.Argument;
 
       // set the background worker thread context
-      SetThreadContext(request);
+      request.SetThreadContext();
 
       try
       {

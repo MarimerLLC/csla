@@ -235,6 +235,7 @@
     <Compile Include="Rules\CommonRules.cs" />
     <Compile Include="Rules\IAuthorizationRule.cs" />
     <Compile Include="Rules\IBusinessRule.cs" />
+    <Compile Include="Rules\IBusinessRules.cs" />
     <Compile Include="Rules\IHostRules.cs" />
     <Compile Include="Rules\ObjectRule.cs" />
     <Compile Include="Rules\PropertyRule.cs" />
@@ -369,6 +370,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Threading\BusyLock.cs" />
+    <Compile Include="Threading\ContextParams.cs" />
+    <Compile Include="Threading\CslaTaskScheduler.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />
     <Compile Include="Data\DataMap.cs" />
@@ -419,11 +422,6 @@
     <Compile Include="Rules\BrokenRule.cs" />
     <Compile Include="Rules\BrokenRulesCollection.cs" />
     <Compile Include="Rules\RuleSeverity.cs" />
-    <Compile Include="Web References\WebServiceHost\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
@@ -449,6 +447,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.fr.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.he-IL.resx" >
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.hr.resx">
@@ -501,22 +502,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <WebReferences Include="Web References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:4804/WSPortalcs/Service.asmx">
-      <UrlBehavior>Static</UrlBehavior>
-      <RelPath>Web References\WebServiceHost\</RelPath>
-      <UpdateFromURL>http://localhost:4804/WSPortalcs/Service.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Csla_WebServiceHost_WebServicePortal</CachedSettingsPropName>
-    </WebReferenceUrl>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -537,12 +522,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
-    <None Include="Web References\WebServiceHost\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Web References\WebServiceHost\Service.disco" />
-    <None Include="Web References\WebServiceHost\Service.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.el.resx">

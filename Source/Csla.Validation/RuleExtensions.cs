@@ -19,16 +19,16 @@ namespace Csla.Validation
   /// <summary>
   /// The delegate definition for CSLA 3.8 rule handler
   /// </summary>
-  /// <param name="target">The target object.</param>
-  /// <param name="e">The RuleArgs.</param>
+  /// <param name="target">Target object.</param>
+  /// <param name="e">RuleArgs parameter.</param>
   /// <returns>false if broken, true if passed</returns>
   public delegate bool RuleHandler(object target, RuleArgs e);
 
   /// <summary>
   /// The delegate definition for CSLA 3.8 generic rule handler
   /// </summary>
-  /// <param name="target">The target object.</param>
-  /// <param name="e">The RuleArgs.</param>
+  /// <param name="target">Target object.</param>
+  /// <param name="e">RuleArgs parameter.</param>
   /// <returns>false if broken, true if passed</returns>
   public delegate bool RuleHandler<T, R>(T target, R e) where R : RuleArgs;
 
@@ -42,11 +42,11 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryProperty">The primary property.</param>
-    /// <param name="ruleArgs">The rule args object.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules instance.</param>
+    /// <param name="ruleHandler">Rule method.</param>
+    /// <param name="primaryProperty">Primary property.</param>
+    /// <param name="ruleArgs">Rule args object.</param>
+    /// <param name="priority">Priority.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T,RuleArgs> ruleHandler, Csla.Core.IPropertyInfo primaryProperty, RuleArgs ruleArgs, int priority) where T : BusinessBase<T>
     {
@@ -87,9 +87,9 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryProperty">The primary property.</param>
+    /// <param name="businessRules">Business rules.</param>
+    /// <param name="ruleHandler">Rule method.</param>
+    /// <param name="primaryProperty">Primary property.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T, RuleArgs> ruleHandler, Csla.Core.IPropertyInfo primaryProperty) where T : BusinessBase<T>
     {
@@ -100,10 +100,10 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryProperty">The primary property.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules.</param>
+    /// <param name="ruleHandler">Rule method.</param>
+    /// <param name="primaryProperty">Primary property.</param>
+    /// <param name="priority">Priority.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules,  RuleHandler<T,RuleArgs> ruleHandler , Csla.Core.IPropertyInfo primaryProperty, int priority) where T : BusinessBase<T>
     {
@@ -114,10 +114,10 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryPropertyName">The primary property name.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="primaryPropertyName">Primary Property name</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T, RuleArgs> ruleHandler, string primaryPropertyName, int priority) where T : BusinessBase<T>
     {
@@ -131,9 +131,9 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="args">The args.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="args">RuleArgs argument.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T, RuleArgs> ruleHandler, RuleArgs args) where T : BusinessBase<T>
     {
@@ -145,10 +145,10 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="args">The args.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="args">RuleArgs argument.</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T, RuleArgs> ruleHandler, RuleArgs args, int priority) where T : BusinessBase<T>
     {
@@ -160,10 +160,10 @@ namespace Csla.Validation
     /// Adds a lambda property level rule to business rules.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
     /// <param name="primaryPropertyName">Name of the primary property.</param>
-    ///// <param name="primaryPropertyName">The primary property name.</param>
+    ///// <param name="primaryPropertyName">Primary Property name</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule<T>(this BusinessRules businessRules, RuleHandler<T, RuleArgs> ruleHandler, string primaryPropertyName) where T : BusinessBase<T>
     {
@@ -177,11 +177,11 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
     /// <param name="primaryProperty">The primary property.</param>
     /// <param name="ruleArgs">The rule args object.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, Csla.Core.IPropertyInfo primaryProperty, RuleArgs ruleArgs, int priority) 
     {
@@ -221,8 +221,8 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
     /// <param name="primaryProperty">The primary property.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, Csla.Core.IPropertyInfo primaryProperty) 
@@ -233,10 +233,10 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
     /// <param name="primaryProperty">The primary property.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, Csla.Core.IPropertyInfo primaryProperty, int priority) 
     {
@@ -246,10 +246,10 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryPropertyName">The primary property name.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="primaryPropertyName">Primary Property name</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, string primaryPropertyName, int priority)
     {
@@ -262,9 +262,9 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="primaryPropertyName">The primary property name.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="primaryPropertyName">Primary Property name</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, string primaryPropertyName)
     {
@@ -277,9 +277,9 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="args">The args.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="args">RuleArgs argument.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, RuleArgs args) 
     {
@@ -290,10 +290,10 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a lambda property level rule to business rules.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="ruleHandler">The rule handler.</param>
-    /// <param name="args">The args.</param>
-    /// <param name="priority">The priority.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="ruleHandler">Rule method</param>
+    /// <param name="args">RuleArgs argument.</param>
+    /// <param name="priority">Priority</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
     public static void AddRule(this BusinessRules businessRules, RuleHandler ruleHandler, RuleArgs args, int priority) 
     {
@@ -305,7 +305,7 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a dependency between two properties.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">The property.</param>
     /// <param name="dependentPropertyInfo">The dependent property.</param>
     /// <param name="isBidirectional">if set to <c>true</c> then dependency is bidirectional.</param>
@@ -323,7 +323,7 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a dependency between two properties from first property to second proerty
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">The property.</param>
     /// <param name="dependentPropertyInfo">The dependent property.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
@@ -335,7 +335,7 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a dependency between two properties from first property to second proerty
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="dependentPropertyName">Name of the dependent property.</param>
     //[Obsolete("For migration of older apps to Csla 4.x only")]
@@ -347,7 +347,7 @@ namespace Csla.Validation
     /// <summary>
     /// Adds a dependency between two properties from first property to second proerty
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="dependentPropertyName">Name of the dependent property.</param>
     /// <param name="isBidirectional">if set to <c>true</c> [is bidirectional].</param>
@@ -366,7 +366,7 @@ namespace Csla.Validation
     /// Specify the roles allowed to read a given
     /// property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">PropertyInfo for the property.</param>
     /// <param name="roles">List of roles granted read access.</param>
     /// <remarks>
@@ -384,7 +384,7 @@ namespace Csla.Validation
     /// Specify the roles allowed to read a given
     /// property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="roles">List of roles granted read access.</param>
     /// <remarks>
@@ -403,7 +403,7 @@ namespace Csla.Validation
     /// Specify the roles denied read access to
     /// a given property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">PropertyInfo for the property.</param>
     /// <param name="roles">List of roles denied read access.</param>
     /// <remarks>
@@ -421,7 +421,7 @@ namespace Csla.Validation
     /// Specify the roles denied read access to
     /// a given property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="roles">List of roles denied read access.</param>
     /// <remarks>
@@ -440,7 +440,7 @@ namespace Csla.Validation
     /// Specify the roles allowed to write a given
     /// property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">PropertyInfo for the property.</param>
     /// <param name="roles">List of roles granted write access.</param>
     /// <remarks>
@@ -458,7 +458,7 @@ namespace Csla.Validation
     /// Specify the roles allowed to write a given
     /// property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="roles">List of roles granted write access.</param>
     /// <remarks>
@@ -477,7 +477,7 @@ namespace Csla.Validation
     /// Specify the roles denied write access to
     /// a given property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyInfo">PropertyInfo for the property.</param>
     /// <param name="roles">List of roles denied write access.</param>
     /// <remarks>
@@ -495,7 +495,7 @@ namespace Csla.Validation
     /// Specify the roles denied write access to
     /// a given property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="roles">List of roles denied write access.</param>
     /// <remarks>
@@ -514,7 +514,8 @@ namespace Csla.Validation
     /// Specify the roles allowed to execute a given
     /// method.
     /// </summary>
-    /// <param name="propertyInfo">PropertyInfo for the method.</param>
+    /// <param name="businessRules">Business rules</param>
+    /// <param name="memberInfo">The member info.</param>
     /// <param name="roles">List of roles granted execute access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -531,7 +532,7 @@ namespace Csla.Validation
     /// Specify the roles allowed to execute a given
     /// method.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="roles">List of roles granted execute access.</param>
     /// <remarks>
@@ -550,8 +551,8 @@ namespace Csla.Validation
     /// Specify the roles denied the right to execute
     /// a given method.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
-    /// <param name="propertyInfo">PropertyInfo for the method.</param>
+    /// <param name="businessRules">Business rules.</param>
+    /// <param name="methodInfo">Method info for themethod.</param>
     /// <param name="roles">List of roles denied execute access.</param>
     /// <remarks>
     /// This method may be called multiple times, with the roles in
@@ -568,7 +569,7 @@ namespace Csla.Validation
     /// Specify the roles denied the right to execute
     /// a given method.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="roles">List of roles denied execute access.</param>
     /// <remarks>
@@ -591,7 +592,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles granted read access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [has read allowed roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -606,7 +607,7 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly allowed to read the property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [is read allowed] [the specified business rules]; otherwise, <c>false</c>.
@@ -621,7 +622,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles denied read access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [has read denied roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -636,7 +637,11 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly denied read access to the property.
     /// </summary>
+    /// <param name="businessRules">Business rules list.</param>
     /// <param name="propertyName">Name of the property.</param>
+    /// <returns>
+    ///   <c>true</c> if [is read denied] [the specified business rules]; otherwise, <c>false</c>.
+    /// </returns>
     public static bool IsReadDenied(this BusinessRules businessRules, string propertyName)
     {
       var propertyInfo = PropertyHelper.GetRegisteredProperty(businessRules, propertyName);
@@ -647,7 +652,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles granted write access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [has write allowed roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -662,7 +667,7 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly allowed to set the property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [is write allowed] [the specified business rules]; otherwise, <c>false</c>.
@@ -677,7 +682,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles denied write access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [has write denied roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -692,7 +697,7 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly denied write access to the property.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>
     ///   <c>true</c> if [is write denied] [the specified business rules]; otherwise, <c>false</c>.
@@ -707,7 +712,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles granted execute access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <returns>
     ///   <c>true</c> if [has execute allowed roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -722,7 +727,7 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly allowed to execute the method.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <returns>
     ///   <c>true</c> if [is execute allowed] [the specified business rules]; otherwise, <c>false</c>.
@@ -737,7 +742,7 @@ namespace Csla.Validation
     /// Indicates whether the property has a list
     /// of roles denied execute access.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <returns>
     ///   <c>true</c> if [has execute denied roles] [the specified business rules]; otherwise, <c>false</c>.
@@ -752,7 +757,7 @@ namespace Csla.Validation
     /// <see cref="Csla.ApplicationContext.User" />
     /// is explicitly denied execute access to the method.
     /// </summary>
-    /// <param name="businessRules">The business rules.</param>
+    /// <param name="businessRules">Business rules</param>
     /// <param name="methodName">Name of the method.</param>
     /// <returns>
     ///   <c>true</c> if [is execute denied] [the specified business rules]; otherwise, <c>false</c>.

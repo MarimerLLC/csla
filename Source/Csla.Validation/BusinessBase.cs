@@ -32,6 +32,9 @@ namespace Csla.Validation
       get { return base.BusinessRules;  }
     }
 
+    /// <summary>
+    /// AuthorizationRules for CSLA 3.x compatibility
+    /// </summary>
     protected BusinessRules AuthorizationRules
     {
       get { return base.BusinessRules; }

@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CD6CAB84-80A9-48B3-A600-B62A728A3909}</ProjectGuid>
+    <ProjectGuid>{282A2FC6-46FF-4831-A735-9445C5625BDF}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Csla.Axml</RootNamespace>
-    <AssemblyName>Csla.Axml</AssemblyName>
+    <RootNamespace>Csla.Validation</RootNamespace>
+    <AssemblyName>Csla.Validation</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -20,19 +20,19 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\Android\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\Android\Csla.Axml.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\Android\Csla.Validation.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Android\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;__ANDROID__,SILVERLIGHT,WINDOWS_PHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\Android\Csla.Axml.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\Android\Csla.Validation.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -43,8 +43,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Binding\Binding.cs" />
-    <Compile Include="Binding\BindingManager.cs" />
+    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
+      <Link>AuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\BusinessBase.cs">
+      <Link>BusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\CommonRules.cs">
+      <Link>CommonRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
+      <Link>DecoratedRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
+      <Link>ObjectAccessor.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
+      <Link>PropertyHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
+      <Link>ReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\RuleArgs.cs">
+      <Link>RuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
+      <Link>RuleExtensions.cs</Link>
+    </Compile>
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -4,7 +4,7 @@
     <id>CSLA-UpdateValidation</id>
     <title>CSLA .NET - Legacy Validation</title>
     <tags>CSLA Validation</tags>
-    <version>4.5.32-Beta</version>
+    <version>4.5.32</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.32-Beta]" />
+      <dependency id="CSLA-Core" version="[4.5.32]" />
     </dependencies>
   </metadata>
   <files>
@@ -57,6 +57,10 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pdb*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pri*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.xml*" target="lib\NetCore45" />
+    <!-- Xamarin Android Client -->
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.dll*" target="lib\MonoAndroid" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.pdb*" target="lib\MonoAndroid" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Validation.xml*" target="lib\MonoAndroid" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Validation\**\*.cs" target="src" />
   </files>

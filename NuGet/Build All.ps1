@@ -8,6 +8,7 @@
 ##      o	Csla.dll (Silverlight 5)
 ##      o	Csla.dll (WinPRT - Windows Phone 8)
 ##      o	Csla.dll (WinRT - Windows RT)
+##      o	Csla.dll (MonoAndroid - Xamarin Android)
 ##  •	Dependencies
 ##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
 ##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
@@ -61,6 +62,12 @@
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
+##  “CSLA .NET - MonoAndroid” NuGet
+##  •	Contents:
+##      o	Csla.Axml.dll (MonoAndroid)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##
 ##  “CSLA Workflow” NuGet
 ##  •	Contents:
 ##      o	Csla.Workflow.dll (.NET)
@@ -93,6 +100,7 @@
 ##      o	Csla.Validation.dll (Silverlight 5)
 ##      o	Csla.Validation.dll (WinPRT - Windows Phone 8)
 ##      o	Csla.Validation.dll (WinRT - Windows RT)
+##      o	Csla.Validation.dll (MonoAndroid - Xamarin Android)
 ##  •	Dependencies
 ##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
 ##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
@@ -137,7 +145,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC 3", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "Data EF4", "Data EF5", "Templates", "UpdateValidation")  
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC 3", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "MonoAndroid", "Data EF4", "Data EF5", "Templates", "UpdateValidation")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White
@@ -176,4 +184,4 @@ finally
     $host.UI.RawUI.ForegroundColor = $originalForeground
     Set-Location $originalLocation
 }
-Pause # For debugging purposes
+Pause # For debugging purpose

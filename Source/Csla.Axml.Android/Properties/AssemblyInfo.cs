@@ -4,8 +4,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for Android")]
-[assembly: AssemblyDescription("CSLA .NET for Android")]
+[assembly: AssemblyTitle("CSLA .NET for Android Axml")]
+[assembly: AssemblyDescription("CSLA .NET for Android Axml")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

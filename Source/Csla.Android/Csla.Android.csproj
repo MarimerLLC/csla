@@ -35,7 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\Android\Csla.XML</DocumentationFile>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <RegisterForComInterop>false</RegisterForComInterop>
     <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
@@ -158,6 +158,9 @@
     <Compile Include="..\Csla\Rules\BusinessRulesExtensions.cs">
       <Link>Rules\BusinessRulesExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Rules\IBusinessRules.cs">
+      <Link>Rules\IBusinessRules.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\ObjectRule.cs">
       <Link>Rules\ObjectRule.cs</Link>
     </Compile>
@@ -274,6 +277,9 @@
     </Compile>
     <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
       <Link>Threading\BackgroundWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\ContextParams.cs">
+      <Link>Threading\ContextParams.cs</Link>
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>

@@ -39,10 +39,9 @@ namespace Csla.Threading
       this.ClientContext = Csla.ApplicationContext.ClientContext;
       this.GlobalContext = Csla.ApplicationContext.GlobalContext;
 #if NETFX_CORE
-  //var region = ResourceManager.Current.DefaultContext.HomeRegion;
-        var language = ResourceManager.Current.DefaultContext.Languages[0];
-        this.UICulture = language;
-        this.Culture = language;
+      var language = ResourceContext.GetForCurrentView().Languages[0];
+      this.UICulture = language;
+      this.Culture = language;
 #else
       this.UICulture = Thread.CurrentThread.CurrentUICulture;
       this.Culture = Thread.CurrentThread.CurrentCulture;

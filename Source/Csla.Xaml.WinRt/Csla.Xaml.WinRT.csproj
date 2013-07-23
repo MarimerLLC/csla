@@ -122,11 +122,13 @@
     <Compile Include="..\Csla.Xaml\IViewModel.cs">
       <Link>IViewModel.cs</Link>
     </Compile>
+    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
+      <Link>PropertyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
       <Link>ViewModelBase.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Csla\CslaKey.snk">

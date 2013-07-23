@@ -25,7 +25,7 @@
         </Grid>
         <TextBox x:Name="IdTextBox" Text="{Binding Id, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" 
                     ToolTipService.ToolTip="{Binding ElementName=IdInfo, Path=RuleDescription, Converter={StaticResource StringNullConverter}}" />
-        <csla:PropertyInfo Name="IdInfo" Source="{Binding}" Property="Id"/>
+        <csla:PropertyInfo Name="IdInfo" Property="{Binding Id}"/>
       </Grid>
       <TextBlock Text="Product name" Style="{StaticResource LabelTextStyle}" />
       <Grid>
@@ -36,7 +36,7 @@
         </Grid>
         <TextBox Text="{Binding Name, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" 
                  ToolTipService.ToolTip="{Binding ElementName=NameInfo, Path=RuleDescription, Converter={StaticResource StringNullConverter}}" />
-        <csla:PropertyInfo Name="NameInfo" Source="{Binding}" Property="Name"/>
+        <csla:PropertyInfo Name="NameInfo" Property="{Binding Name}"/>
       </Grid>
       <StackPanel Orientation="Horizontal">
         <Button Content="Cancel" Click="CancelItem" Style="{StaticResource ButtonStyle}"/>

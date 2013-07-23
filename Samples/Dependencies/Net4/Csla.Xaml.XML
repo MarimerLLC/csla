@@ -1543,5 +1543,61 @@
             before invoking the target method.
             </summary>
         </member>
+        <member name="T:Csla.Xaml.VisibilityMode">
+            <summary>
+            Options controlling how the Authorizer
+            control alters the visibility of a control
+            when read access to the property is not allowed.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.VisibilityMode.Collapsed">
+            <summary>
+            Specifies that the non-readable control
+            should be collapsed.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.VisibilityMode.Hidden">
+            <summary>
+            Specifies that the non-readable control
+            should be hidden.
+            </summary>
+        </member>
+        <member name="F:Csla.Xaml.VisibilityMode.Ignore">
+            <summary>
+            Specifies that the visibility of the 
+            non-readable control should not be
+            altered by the Authorizer control.
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
     </members>
 </doc>

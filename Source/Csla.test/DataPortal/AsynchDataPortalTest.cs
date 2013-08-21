@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Create is an exception - called with SingleCriteria, if BO does not have DP_Create() overload</summary>
 //-----------------------------------------------------------------------
+
+using System.Data;
 #if SILVERLIGHT
 using Csla.DataPortalClient;
 #else
@@ -320,6 +322,54 @@ namespace Csla.Test.DataPortal
     #endregion
 
     #region BeginSave
+
+    [TestMethod]
+    public void BeginSave_must_call_OnSaved_when_exception_in_dal()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
+      {
+        var test = e.Object;
+        context.Assert.IsNotNull(test);
+        context.Assert.AreEqual("Created", e.Object.MethodCalled);
+        test.Saved += ((o1, e1) =>
+        {
+          var error = e1.Error;
+          context.Assert.IsNotNull(error);
+          context.Assert.AreEqual(typeof(DataPortalException), error.GetType());
+          var dpe = (DataPortalException)error;
+          context.Assert.AreEqual(typeof(DataException), dpe.BusinessException.GetType());
+          context.Assert.Success();
+        });
+        test.BeginSave();
+
+      });
+      context.Complete();
+    }
+
+    [TestMethod]
+    public void BeginSave_must_call_OnSaved_when_object_is_child_and_throws_error()
+    {
+      var context = GetContext();
+      Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
+      {
+        var test = e.Object;
+        test.SetAsChild();
+        context.Assert.IsNotNull(test);
+        context.Assert.AreEqual("Created", e.Object.MethodCalled);
+        test.Saved += ((o1, e1) =>
+        {
+          var error = e1.Error;
+          context.Assert.IsNotNull(error);
+          context.Assert.AreEqual(typeof(InvalidOperationException), error.GetType());
+          context.Assert.Success();
+        });
+        test.BeginSave();
+
+      });
+      context.Complete();
+    }
+
     [TestMethod]
 #if !SILVERLIGHT
     [Ignore]

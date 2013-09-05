@@ -24,15 +24,23 @@ using Windows.UI.Xaml;
 using System.Linq.Expressions;
 #endif
 
+#if __ANDROID__
+namespace Csla.Axml
+#else
 namespace Csla.Xaml
+#endif
 {
   /// <summary>
   /// Base class used to create ViewModel objects that
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
+#if __ANDROID__
+    public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
+#else
   public abstract class ViewModelBase<T> : DependencyObject,
     INotifyPropertyChanged, IViewModel
+#endif
   {
     #region Constructor
 
@@ -90,16 +98,22 @@ namespace Csla.Xaml
 
     #region Properties
 
-    /// <summary>
-    /// Gets or sets the Model object.
-    /// </summary>
+      /// <summary>
+      /// Gets or sets the Model object.
+      /// </summary>
+#if __ANDROID__
+    public object ModelProperty;
+#else
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+#endif
 #if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
+#elif __ANDROID__
 #else
         new PropertyMetadata((o, e) =>
 #endif
+#if !__ANDROID__
         {
           var viewmodel = (ViewModelBase<T>)o;
           if (viewmodel.ManageObjectLifetime)
@@ -109,17 +123,36 @@ namespace Csla.Xaml
               undo.BeginEdit();
           }
           viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
+#endif
 #if NETFX_CORE
           viewmodel.OnPropertyChanged("Model");
 #endif
-        }));
+#if !__ANDROID__
+  }));
+#endif
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
     public T Model
     {
+#if __ANDROID__
+      get { return (T)ModelProperty; }
+      set
+      {
+        var oldValue = ModelProperty;
+        ModelProperty = value;
+        if (this.ManageObjectLifetime)
+        {
+            var undo = value as ISupportUndo;
+            if (undo != null)
+                undo.BeginEdit();
+        }
+        this.OnModelChanged((T)oldValue, (T)ModelProperty);
+      }
+#else
       get { return (T)GetValue(ModelProperty); }
       set { SetValue(ModelProperty, value); }
+#endif
     }
 
     /// <summary>
@@ -127,9 +160,13 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
+#if __ANDROID__
+    public bool ManageObjectLifetimeProperty;
+#else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
         DependencyProperty.Register("ManageObjectLifetime", typeof(bool),
         typeof(ViewModelBase<T>), new PropertyMetadata(true));
+#endif
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// ViewManageObjectLifetime should automatically managed the
@@ -139,8 +176,13 @@ namespace Csla.Xaml
     [Display(AutoGenerateField = false)]
     public bool ManageObjectLifetime
     {
+#if __ANDROID__
+      get { return (bool)ManageObjectLifetimeProperty; }
+      set { ManageObjectLifetimeProperty = value; }
+#else
       get { return (bool)GetValue(ManageObjectLifetimeProperty); }
       set { SetValue(ManageObjectLifetimeProperty, value); }
+#endif
     }
 
     private Exception _error;
@@ -179,7 +221,11 @@ namespace Csla.Xaml
     protected virtual void OnError(Exception error)
     {
       if (ErrorOccurred != null)
+#if __ANDROID__
+        ErrorOccurred(this, new ErrorEventArgs(this, error));
+#else
         ErrorOccurred(this, new ErrorEventArgs { Error = error });
+#endif
     }
 
     private bool _isBusy;
@@ -940,7 +986,11 @@ namespace Csla.Xaml
     protected virtual void BeginAddNew()
     {
       // In SL (for Csla 4.0.x) it will always be an IBindingList 
+#if __ANDROID__
+      var ibl = (Model as System.ComponentModel.IBindingList);
+#else
       var ibl = (Model as IBindingList);
+#endif
       if (ibl != null)
       {
         ibl.AddNew();

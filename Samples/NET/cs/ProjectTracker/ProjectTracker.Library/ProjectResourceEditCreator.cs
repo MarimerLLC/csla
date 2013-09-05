@@ -34,6 +34,15 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ProjectResourceEditCreator>(
         new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
     }
+#if __ANDROID__
+    /// <summary>
+    /// Creates a new ProjectResourceEdit object.
+    /// </summary>
+    public static async System.Threading.Tasks.Task<ProjectResourceEditCreator> GetProjectResourceEditCreatorAsync(int resourceId)
+    {
+      return await DataPortal.FetchAsync<ProjectResourceEditCreator>(resourceId);
+    }
+#endif
 
 #if !SILVERLIGHT && !NETFX_CORE
     /// <summary>

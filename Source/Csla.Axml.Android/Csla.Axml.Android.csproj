@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\Android\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\Android\Csla.Axml.XML</DocumentationFile>
@@ -45,6 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
+      <Link>ExecuteEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\IViewModel.cs">
+      <Link>IViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ViewModel.cs">
+      <Link>ViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
+      <Link>ViewModelBase.cs</Link>
+    </Compile>
+    <Compile Include="ActivityBase.cs" />
     <Compile Include="Binding\Binding.cs" />
     <Compile Include="Binding\BindingManager.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

@@ -35,6 +35,7 @@ namespace ProjectTracker.Library
       get { return _list != null; }
     }
 
+#if !__ANDROID__
     public static void GetList(EventHandler<DataPortalResult<RoleList>> callback)
     {
       if (_list == null)
@@ -46,6 +47,14 @@ namespace ProjectTracker.Library
       else
         callback(null, new DataPortalResult<RoleList>(_list, null, null));
     }
+#else
+    public static async System.Threading.Tasks.Task<RoleList> GetListAsync()
+    {
+        var roleList = await DataPortal.FetchAsync<RoleList>();
+        SetCache(roleList);
+        return roleList;
+    }
+#endif
 
 #if SILVERLIGHT || NETFX_CORE
     public static int DefaultRole()
@@ -54,7 +63,11 @@ namespace ProjectTracker.Library
       if (list == null)
       {
         // cache is empty
+#if __ANDROID__
+        GetListAsync();
+#else
         GetList((o, e) => { }); // call factory to initialize cache for next time
+#endif
         return 0; 
       }
       else

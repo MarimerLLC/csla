@@ -12,7 +12,11 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
+#if __ANDROID__
+namespace Csla.Axml
+#else
 namespace Csla.Xaml
+#endif
 {
   /// <summary>
   /// Base class used to create ViewModel objects,

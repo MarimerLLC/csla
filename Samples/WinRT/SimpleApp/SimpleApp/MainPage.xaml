@@ -35,15 +35,14 @@
     <TextBox Grid.Row="1" Grid.Column="2" x:Name="IdTextBox" Text="{Binding Id, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource BodyInputStyle}" />
 
     <TextBlock Grid.Row="2" Grid.Column="1" Text="Customer Name" Style="{StaticResource BodyTextStyle}" />
-    <Grid Grid.Column="2" Margin="5" Grid.Row="2">
+    <Grid Grid.Column="2" Grid.Row="2">
       <Grid>
-        <Rectangle Fill="Red" Margin="-1,-1,1,9" Visibility="{Binding IsValid, ElementName=NamePropertyInfo, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"/>
-        <TextBox x:Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}" Style="{StaticResource BodyInputStyle}" Margin="1,1,-1,9" />
+        <Rectangle Fill="Red" 
+                   Visibility="{Binding IsValid, ElementName=NamePropertyInfo, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}"/>
+        <TextBox x:Name="NameTextBox" Text="{Binding Name, Mode=TwoWay}" Style="{StaticResource BodyInputStyle}" 
+                 ToolTipService.ToolTip="{Binding Path=RuleDescription, ElementName=NamePropertyInfo, Mode=OneWay}"/>
+        <csla:PropertyInfo Property="{Binding Name}" Name="NamePropertyInfo"/>
       </Grid>
-      <ToolTip Content="{Binding Path=RuleDescription, ElementName=NamePropertyInfo, Mode=OneWay}" 
-               Visibility="{Binding IsValid, ElementName=NamePropertyInfo, Mode=OneWay, Converter={StaticResource BoolVisibilityConverter}}" 
-               Margin="20 45 0 0" Background="Red" Foreground="White"/>
-      <csla:PropertyInfo Property="{Binding Name}" Name="NamePropertyInfo"/>
     </Grid>
 
     <ProgressRing Name="Progress" Grid.Row="3" Grid.Column="2" Height="40" Width="40"/>

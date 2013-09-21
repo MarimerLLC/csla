@@ -122,6 +122,7 @@
     <Compile Include="DataPortal\PrimitiveCriteriaSingle.cs" />
     <Compile Include="DataPortal\SetAppSettingValueCmd.cs" />
     <Compile Include="DataPortal\Single.cs" />
+    <Compile Include="DataPortal\SingleWithException.cs" />
     <Compile Include="DataPortal\TestableDataPortal.cs" />
     <Compile Include="DataPortal\TestBO.cs" />
     <Compile Include="EditableChildTests\GrandChild.cs" />

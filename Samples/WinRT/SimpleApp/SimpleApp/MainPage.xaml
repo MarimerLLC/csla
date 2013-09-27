@@ -45,7 +45,7 @@
       </Grid>
     </Grid>
 
-    <ProgressRing Name="Progress" Grid.Row="3" Grid.Column="2" Height="40" Width="40"/>
+    <ProgressRing Name="ProgressDisplay" Grid.Row="3" Grid.Column="2" Height="40" Width="40"/>
 
     <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,10">
       <TextBlock Text="STATUS" Style="{StaticResource CaptionTextStyle}" FontSize="24" Margin="5"/>

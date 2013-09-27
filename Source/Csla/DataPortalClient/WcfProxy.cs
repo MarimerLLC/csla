@@ -205,7 +205,7 @@ namespace Csla.DataPortalClient
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
 #if NETFX_CORE
-      var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
 #else
@@ -230,7 +230,7 @@ namespace Csla.DataPortalClient
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
 #if NETFX_CORE
-      var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
 #else

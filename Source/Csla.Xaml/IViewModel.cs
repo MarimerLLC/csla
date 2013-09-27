@@ -10,7 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+#if __ANDROID__
+namespace Csla.Axml
+#else
 namespace Csla.Xaml
+#endif
 {
   /// <summary>
   /// Defines a CSLA .NET viewmodel

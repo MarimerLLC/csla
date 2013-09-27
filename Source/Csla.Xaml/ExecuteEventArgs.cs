@@ -8,7 +8,11 @@
 using System;
 using System.Windows;
 
+#if __ANDROID__
+namespace Csla.Axml
+#else
 namespace Csla.Xaml
+#endif
 {
   /// <summary>
   /// Arguments passed to a method invoked
@@ -16,12 +20,14 @@ namespace Csla.Xaml
   /// </summary>
   public class ExecuteEventArgs : EventArgs
   {
+#if !__ANDROID__
     /// <summary>
     /// The control that raised the event that
     /// triggered invocation of this method.
     /// </summary>
     public FrameworkElement TriggerSource { get; set; }
-    /// <summary>
+#endif
+      /// <summary>
     /// The MethodParameter value provided by
     /// the designer.
     /// </summary>

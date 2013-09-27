@@ -341,6 +341,165 @@
             web page to use the values to identify the 
             object to be deleted.</remarks>
         </member>
+        <member name="T:Csla.Web.InsertObjectArgs">
+            <summary>
+            Argument object used in the InsertObject event.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.InsertObjectArgs.#ctor(System.Collections.IDictionary)">
+            <summary>
+            Create an instance of the object.
+            </summary>
+        </member>
+        <member name="P:Csla.Web.InsertObjectArgs.RowsAffected">
+            <summary>
+            Gets or sets the number of rows affected
+            while handling this event.
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks>
+            The code handling the event should set this
+            value to indicate the number of rows affected
+            by the operation.
+            </remarks>
+        </member>
+        <member name="P:Csla.Web.InsertObjectArgs.Values">
+            <summary>
+            The list of data values entered by the user.
+            </summary>
+            <remarks>It is up to the event handler in the
+            web page to take the list of values, put them
+            into a business object and to save that object
+            into the database.</remarks>
+        </member>
+        <member name="T:Csla.Web.SelectObjectArgs">
+            <summary>
+            Argument object used in the SelectObject event.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.SelectObjectArgs.#ctor(System.Web.UI.DataSourceSelectArguments)">
+            <summary>
+            Creates an instance of the object, initializing
+            it with values from data binding.
+            </summary>
+            <param name="args">Values provided from data binding.</param>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.BusinessObject">
+            <summary>
+            Get or set a reference to the business object
+            that is created and populated by the SelectObject
+            event handler in the web page.
+            </summary>
+            <value>A reference to a CSLA .NET business object.</value>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.SortExpression">
+            <summary>
+            Gets the sort expression that should be used to
+            sort the data being returned to the data source
+            control.
+            </summary>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.SortProperty">
+            <summary>
+            Gets the property name for the sort if only one
+            property/column name is specified.
+            </summary>
+            <remarks>
+            If multiple properties/columns are specified
+            for the sort, you must parse the value from
+            <see cref="P:Csla.Web.SelectObjectArgs.SortExpression"/> to find all the
+            property names and sort directions for the sort.
+            </remarks>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.SortDirection">
+            <summary>
+            Gets the sort direction for the sort if only
+            one property/column name is specified.
+            </summary>
+            <remarks>
+            If multiple properties/columns are specified
+            for the sort, you must parse the value from
+            <see cref="P:Csla.Web.SelectObjectArgs.SortExpression"/> to find all the
+            property names and sort directions for the sort.
+            </remarks>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.StartRowIndex">
+            <summary>
+            Gets the index for the first row that will be
+            displayed. This should be the first row in
+            the resulting collection set into the
+            <see cref="P:Csla.Web.SelectObjectArgs.BusinessObject"/> property.
+            </summary>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.MaximumRows">
+            <summary>
+            Gets the maximum number of rows that
+            should be returned as a result of this
+            query. For paged collections, this is the
+            page size.
+            </summary>
+        </member>
+        <member name="P:Csla.Web.SelectObjectArgs.RetrieveTotalRowCount">
+            <summary>
+            Gets a value indicating whether the
+            query should return the total row count
+            through the
+            <see cref="T:Csla.Core.IReportTotalRowCount"/>
+            interface.
+            </summary>
+        </member>
+        <member name="T:Csla.Web.UpdateObjectArgs">
+            <summary>
+            Argument object used in the UpdateObject event.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.UpdateObjectArgs.#ctor(System.Collections.IDictionary,System.Collections.IDictionary,System.Collections.IDictionary)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="P:Csla.Web.UpdateObjectArgs.RowsAffected">
+            <summary>
+            Gets or sets the number of rows affected
+            while handling this event.
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks>
+            The code handling the event should set this
+            value to indicate the number of rows affected
+            by the operation.
+            </remarks>
+        </member>
+        <member name="P:Csla.Web.UpdateObjectArgs.Keys">
+            <summary>
+            The list of key values entered by the user.
+            </summary>
+            <remarks>It is up to the event handler in the
+            web page to take the list of values, put them
+            into a business object and to save that object
+            into the database.</remarks>
+        </member>
+        <member name="P:Csla.Web.UpdateObjectArgs.Values">
+            <summary>
+            The list of data values entered by the user.
+            </summary>
+            <remarks>It is up to the event handler in the
+            web page to take the list of values, put them
+            into a business object and to save that object
+            into the database.</remarks>
+        </member>
+        <member name="P:Csla.Web.UpdateObjectArgs.OldValues">
+            <summary>
+            The list of old data values maintained by
+            data binding.
+            </summary>
+            <remarks>It is up to the event handler in the
+            web page to take the list of values, put them
+            into a business object and to save that object
+            into the database.</remarks>
+        </member>
         <member name="T:Csla.Web.Design.CslaDataSourceConfiguration">
             <summary>
             CslaDataSource configuration form.
@@ -691,38 +850,6 @@
             Returns the name of the schema.
             </summary>
         </member>
-        <member name="T:Csla.Web.InsertObjectArgs">
-            <summary>
-            Argument object used in the InsertObject event.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.InsertObjectArgs.#ctor(System.Collections.IDictionary)">
-            <summary>
-            Create an instance of the object.
-            </summary>
-        </member>
-        <member name="P:Csla.Web.InsertObjectArgs.RowsAffected">
-            <summary>
-            Gets or sets the number of rows affected
-            while handling this event.
-            </summary>
-            <value></value>
-            <returns></returns>
-            <remarks>
-            The code handling the event should set this
-            value to indicate the number of rows affected
-            by the operation.
-            </remarks>
-        </member>
-        <member name="P:Csla.Web.InsertObjectArgs.Values">
-            <summary>
-            The list of data values entered by the user.
-            </summary>
-            <remarks>It is up to the event handler in the
-            web page to take the list of values, put them
-            into a business object and to save that object
-            into the database.</remarks>
-        </member>
         <member name="T:Csla.Web.Security.IdentityWebFactory">
             <summary>
             Verifies user credentials and creates principal/identity based
@@ -762,133 +889,6 @@
             </summary>
             <param name="criteria">Criteria object.</param>
             <param name="identity">Instance of MembershipIdentity or subclass.</param>
-        </member>
-        <member name="T:Csla.Web.SelectObjectArgs">
-            <summary>
-            Argument object used in the SelectObject event.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.SelectObjectArgs.#ctor(System.Web.UI.DataSourceSelectArguments)">
-            <summary>
-            Creates an instance of the object, initializing
-            it with values from data binding.
-            </summary>
-            <param name="args">Values provided from data binding.</param>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.BusinessObject">
-            <summary>
-            Get or set a reference to the business object
-            that is created and populated by the SelectObject
-            event handler in the web page.
-            </summary>
-            <value>A reference to a CSLA .NET business object.</value>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.SortExpression">
-            <summary>
-            Gets the sort expression that should be used to
-            sort the data being returned to the data source
-            control.
-            </summary>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.SortProperty">
-            <summary>
-            Gets the property name for the sort if only one
-            property/column name is specified.
-            </summary>
-            <remarks>
-            If multiple properties/columns are specified
-            for the sort, you must parse the value from
-            <see cref="P:Csla.Web.SelectObjectArgs.SortExpression"/> to find all the
-            property names and sort directions for the sort.
-            </remarks>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.SortDirection">
-            <summary>
-            Gets the sort direction for the sort if only
-            one property/column name is specified.
-            </summary>
-            <remarks>
-            If multiple properties/columns are specified
-            for the sort, you must parse the value from
-            <see cref="P:Csla.Web.SelectObjectArgs.SortExpression"/> to find all the
-            property names and sort directions for the sort.
-            </remarks>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.StartRowIndex">
-            <summary>
-            Gets the index for the first row that will be
-            displayed. This should be the first row in
-            the resulting collection set into the
-            <see cref="P:Csla.Web.SelectObjectArgs.BusinessObject"/> property.
-            </summary>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.MaximumRows">
-            <summary>
-            Gets the maximum number of rows that
-            should be returned as a result of this
-            query. For paged collections, this is the
-            page size.
-            </summary>
-        </member>
-        <member name="P:Csla.Web.SelectObjectArgs.RetrieveTotalRowCount">
-            <summary>
-            Gets a value indicating whether the
-            query should return the total row count
-            through the
-            <see cref="T:Csla.Core.IReportTotalRowCount"/>
-            interface.
-            </summary>
-        </member>
-        <member name="T:Csla.Web.UpdateObjectArgs">
-            <summary>
-            Argument object used in the UpdateObject event.
-            </summary>
-        </member>
-        <member name="M:Csla.Web.UpdateObjectArgs.#ctor(System.Collections.IDictionary,System.Collections.IDictionary,System.Collections.IDictionary)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-        </member>
-        <member name="P:Csla.Web.UpdateObjectArgs.RowsAffected">
-            <summary>
-            Gets or sets the number of rows affected
-            while handling this event.
-            </summary>
-            <value></value>
-            <returns></returns>
-            <remarks>
-            The code handling the event should set this
-            value to indicate the number of rows affected
-            by the operation.
-            </remarks>
-        </member>
-        <member name="P:Csla.Web.UpdateObjectArgs.Keys">
-            <summary>
-            The list of key values entered by the user.
-            </summary>
-            <remarks>It is up to the event handler in the
-            web page to take the list of values, put them
-            into a business object and to save that object
-            into the database.</remarks>
-        </member>
-        <member name="P:Csla.Web.UpdateObjectArgs.Values">
-            <summary>
-            The list of data values entered by the user.
-            </summary>
-            <remarks>It is up to the event handler in the
-            web page to take the list of values, put them
-            into a business object and to save that object
-            into the database.</remarks>
-        </member>
-        <member name="P:Csla.Web.UpdateObjectArgs.OldValues">
-            <summary>
-            The list of old data values maintained by
-            data binding.
-            </summary>
-            <remarks>It is up to the event handler in the
-            web page to take the list of values, put them
-            into a business object and to save that object
-            into the database.</remarks>
         </member>
     </members>
 </doc>

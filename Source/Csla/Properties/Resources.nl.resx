@@ -282,7 +282,7 @@
     <comment>{0} can not be less than {1}</comment>
   </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
-    <value>{0} kan niet meer als {1} karakters hebben</value>
+    <value>{0} kan niet meer dan {1} karakters hebben</value>
     <comment>{0} can not exceed {1} characters</comment>
   </data>
   <data name="StringRequiredRule" xml:space="preserve">

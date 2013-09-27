@@ -15,6 +15,13 @@ namespace ProjectTracker.Library
       this.Add(resource);
       return resource;
     }
+#elif __ANDROID__
+      public async System.Threading.Tasks.Task<ProjectResourceEdit> AssignAsync(int resourceId)
+      {
+          var resource = (await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId)).Result;
+          this.Add(resource);
+          return resource;
+      }
 #endif
 
     public void Remove(int resourceId)

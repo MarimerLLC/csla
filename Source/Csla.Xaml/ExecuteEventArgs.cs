@@ -20,14 +20,14 @@ namespace Csla.Xaml
   /// </summary>
   public class ExecuteEventArgs : EventArgs
   {
+#if !__ANDROID__
     /// <summary>
     /// The control that raised the event that
     /// triggered invocation of this method.
     /// </summary>
-#if !__ANDROID__
     public FrameworkElement TriggerSource { get; set; }
 #endif
-    /// <summary>
+      /// <summary>
     /// The MethodParameter value provided by
     /// the designer.
     /// </summary>

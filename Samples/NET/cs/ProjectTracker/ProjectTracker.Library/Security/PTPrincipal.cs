@@ -1,5 +1,6 @@
 using System;
 using System.Security.Principal;
+using Csla;
 using Csla.Security;
 using Csla.Serialization;
 
@@ -15,6 +16,7 @@ namespace ProjectTracker.Library.Security
       : base(identity)
     { }
 
+#if !__ANDROID__
     public static void BeginLogin(string username, string password)
     {
       PTIdentity.GetPTIdentity(username, password, (o, e) =>
@@ -25,6 +27,30 @@ namespace ProjectTracker.Library.Security
             Logout();
         });
     }
+#else
+    public static System.Threading.Tasks.Task LoginAsync(string username, string password)
+    {
+        var tcs = new System.Threading.Tasks.TaskCompletionSource<PTPrincipal>();
+
+        PTIdentity.GetPTIdentity(username, password, (o, e) =>
+        {
+            if (e.Error == null && e.Object != null)
+            {
+                SetPrincipal(e.Object);
+                tcs.SetResult(null);
+            }
+            else
+            {
+                Logout();
+                if (e.Error != null) 
+                    tcs.SetException(e.Error.InnerException);
+                else
+                    tcs.SetCanceled();
+            }
+        });
+        return tcs.Task;
+    }
+#endif
 
 #if !SILVERLIGHT && !NETFX_CORE
     public static bool Login(string username, string password)

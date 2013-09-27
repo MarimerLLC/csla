@@ -5374,6 +5374,19 @@
             <param name="ruleHandler">The rule handler.</param>
             <param name="messageDelegate">The message delegate.</param>
         </member>
+        <member name="T:Csla.Rules.IBusinessRules">
+            <summary>
+            Public interfacefor IBusinessRules
+            </summary>
+        </member>
+        <member name="P:Csla.Rules.IBusinessRules.Target">
+            <summary>
+            Gets the target business object
+            </summary>
+            <value>
+            The business object.
+            </value>
+        </member>
         <member name="T:Csla.Rules.ObjectRule">
             <summary>
             Base class for object level rules.
@@ -6893,6 +6906,11 @@
             the background thread and/or server.
             </summary>
         </member>
+        <member name="T:Csla.Threading.ContextParams">
+            <summary>
+            Holds the CSLA Context values
+            </summary>
+        </member>
         <member name="T:Csla.TransactionalTypes">
             <summary>
             Provides a list of possible transactional
@@ -7298,6 +7316,14 @@
             Registered property information is only available after at least one instannce
             of the object type has been created within the current AppDomain.
             </remarks>
+        </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(System.Type,System.String)">
+            <summary>
+            Returns a registered property for a given type and property name.
+            </summary>
+            <param name="objectType">The business object type.</param>
+            <param name="propertyName">The name of the property.</param>
+            <returns></returns>
         </member>
         <member name="T:Csla.CommandBase`1">
             <summary>

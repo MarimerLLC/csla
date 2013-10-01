@@ -202,8 +202,17 @@
     <Compile Include="..\Csla\Silverlight\Security\*.cs">
       <Link>Silverlight\Security\%(FileName)</Link>
     </Compile>
-    <Compile Include="..\Csla\Threading\*.cs">
-      <Link>Threading\%(FileName)</Link>
+    <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
+      <Link>Threading\BackgroundWorker</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\BusyLock.cs">
+      <Link>Threading\BusyLock</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\ContextParams.cs">
+      <Link>Threading\ContextParams</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
+      <Link>Threading\CslaTaskScheduler</Link>
     </Compile>
     <Compile Include="..\Csla\Properties\CslaPrivate.Designer.cs">
       <Link>Properties\CslaPrivate.Designer.cs</Link>
@@ -243,7 +252,7 @@
     <None Include="Service References\WcfPortal\MobilePortal2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

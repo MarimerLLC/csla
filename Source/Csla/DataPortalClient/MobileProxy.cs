@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
+using Csla.WcfPortal;
 
 namespace Csla.DataPortalClient
 {
@@ -207,7 +208,24 @@ namespace Csla.DataPortalClient
         if (isSync)
           response = proxy.Create(request);
         else
+        {
+#if !NET40
           response = await proxy.CreateAsync(request).ConfigureAwait(false);
+#else
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          proxy.CreateCompleted += (o, e) =>
+          {
+            if (e.Error == null)
+              tcs.TrySetResult(e.Result);
+            else
+              tcs.TrySetException(e.Error);
+          };
+          proxy.CreateAsync(request);
+          await tcs.Task;
+          response = tcs.Task.Result;
+#endif
+        }
+
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -266,8 +284,24 @@ namespace Csla.DataPortalClient
         if (isSync)
           response = proxy.Fetch(request);
         else
+        {
+#if !NET40
           response = await proxy.FetchAsync(request).ConfigureAwait(false);
-        response = ConvertResponse(response);
+#else
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          proxy.FetchCompleted += (o, e) =>
+          {
+            if (e.Error == null)
+              tcs.TrySetResult(e.Result);
+            else
+              tcs.TrySetException(e.Error);
+          };
+          proxy.FetchAsync(request);
+          await tcs.Task;
+          response = tcs.Task.Result;
+#endif
+      }
+      response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
         {
@@ -318,7 +352,23 @@ namespace Csla.DataPortalClient
         if (isSync)
           response = proxy.Update(request);
         else
+        {
+#if !NET40
           response = await proxy.UpdateAsync(request).ConfigureAwait(false);
+#else
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          proxy.UpdateCompleted += (o, e) =>
+          {
+            if (e.Error == null)
+              tcs.TrySetResult(e.Result);
+            else
+              tcs.TrySetException(e.Error);
+          };
+          proxy.UpdateAsync(request);
+          await tcs.Task;
+          response = tcs.Task.Result;
+#endif
+        }
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -376,7 +426,23 @@ namespace Csla.DataPortalClient
         if (isSync)
           response = proxy.Delete(request);
         else
+        {
+#if !NET40
           response = await proxy.DeleteAsync(request).ConfigureAwait(false);
+#else
+          var tcs = new TaskCompletionSource<WcfResponse>();
+          proxy.DeleteCompleted += (o, e) =>
+          {
+            if (e.Error == null)
+              tcs.TrySetResult(e.Result);
+            else
+              tcs.TrySetException(e.Error);
+          };
+          proxy.DeleteAsync(request);
+          await tcs.Task;
+          response = tcs.Task.Result;
+#endif
+        }
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)

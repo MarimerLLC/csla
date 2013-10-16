@@ -205,7 +205,9 @@ namespace Csla.DataPortalClient
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
 #if NETFX_CORE
+#pragma warning disable
       var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+#pragma warning enable
       request.ClientCulture = language;
       request.ClientUICulture = language;
 #else

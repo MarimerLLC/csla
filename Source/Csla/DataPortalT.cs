@@ -60,7 +60,9 @@ namespace Csla
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
         this.UserState = userState;
 #if NETFX_CORE
+#pragma warning disable
         var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
+#pragma warning enable
         this.CurrentCulture = language;
         this.CurrentUICulture = language;
 #else

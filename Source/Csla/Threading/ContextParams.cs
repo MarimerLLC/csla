@@ -40,7 +40,9 @@ namespace Csla.Threading
       this.GlobalContext = Csla.ApplicationContext.GlobalContext;
 #if NETFX_CORE
   //var region = ResourceManager.Current.DefaultContext.HomeRegion;
+#pragma warning disable
         var language = ResourceManager.Current.DefaultContext.Languages[0];
+#pragma warning enable
         this.UICulture = language;
         this.Culture = language;
 #else

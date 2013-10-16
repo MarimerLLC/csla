@@ -51,7 +51,7 @@
           </Grid>
           <TextBox x:Name="customerNameTextBox" Text="{Binding Model.CustomerName, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" 
                    ToolTipService.ToolTip="{Binding ElementName=CustomerNameInfo, Path=RuleDescription, Converter={StaticResource StringNullConverter}}" />
-          <csla:PropertyInfo Name="CustomerNameInfo" Source="{Binding Path=Model}" Property="CustomerName"/>
+          <csla:PropertyInfo Name="CustomerNameInfo" Property="{Binding CustomerName}"/>
         </Grid>
         
         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Text="orders" Style="{StaticResource SubHeadingTextStyle}" Margin="10,15,0,0" />

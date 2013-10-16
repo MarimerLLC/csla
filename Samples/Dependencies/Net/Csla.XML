@@ -7959,6 +7959,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Csla.Properties.CslaPrivate.favicon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
         <member name="T:Csla.LinqObservableCollection`1">
             <summary>
             Synchronized view over a source list, 

@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using Csla;
 using Csla.Serialization;
+using System.Threading.Tasks;
 
 namespace Library
 {
-#if !SILVERLIGHT
   [Csla.Server.ObjectFactory("DataAccess.DataListDal, DataAccess")]
-#endif
   [Serializable]
   public class DataList : BusinessListBase<DataList, DataItem>
   {

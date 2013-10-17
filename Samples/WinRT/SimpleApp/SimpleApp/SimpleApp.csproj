@@ -15,6 +15,7 @@
     <PackageCertificateKeyFile>SimpleApp_TemporaryKey.pfx</PackageCertificateKeyFile>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
+    <PackageCertificateThumbprint>3E13E2135C1E7A64147E3897E86CA544AD5119F2</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

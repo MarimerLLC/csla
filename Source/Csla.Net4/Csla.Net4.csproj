@@ -243,7 +243,7 @@
     <None Include="Service References\WcfPortal\MobilePortal2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\WcfPortal\WcfPortal2.wsdl" />
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

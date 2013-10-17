@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest">
-  <Identity Name="1e033290-4ba4-418e-86b2-3efc2154cde4" Publisher="CN=Rocky" Version="1.1.0.0" />
+  <Identity Name="1e033290-4ba4-418e-86b2-3efc2154cde4" Publisher="CN=MarimerLLC" Version="1.1.0.0" />
   <Properties>
     <DisplayName>SimpleApp</DisplayName>
     <PublisherDisplayName>Rocky</PublisherDisplayName>

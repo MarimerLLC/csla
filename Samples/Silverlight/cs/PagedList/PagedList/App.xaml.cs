@@ -26,6 +26,9 @@ namespace PagedList
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:29082/WcfPortal.svc";
+
       this.RootVisual = new MainPage();
     }
 

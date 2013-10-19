@@ -5881,6 +5881,14 @@
             of the object type has been created within the current AppDomain.
             </remarks>
         </member>
+        <member name="M:Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(System.Type,System.String)">
+            <summary>
+            Returns a registered property for a given type and property name.
+            </summary>
+            <param name="objectType">The business object type.</param>
+            <param name="propertyName">The name of the property.</param>
+            <returns></returns>
+        </member>
         <member name="T:Csla.Core.IPropertyInfo">
             <summary>
             Maintains metadata about a property.
@@ -7951,6 +7959,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Csla.Properties.CslaPrivate.favicon">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+            </summary>
+        </member>
         <member name="T:Csla.LinqObservableCollection`1">
             <summary>
             Synchronized view over a source list, 
@@ -8860,6 +8873,19 @@
             <summary>
             Tracks the business rules for a business object.
             </summary>
+        </member>
+        <member name="T:Csla.Rules.IBusinessRules">
+            <summary>
+            Public interfacefor IBusinessRules
+            </summary>
+        </member>
+        <member name="P:Csla.Rules.IBusinessRules.Target">
+            <summary>
+            Gets the target business object
+            </summary>
+            <value>
+            The business object.
+            </value>
         </member>
         <member name="M:Csla.Rules.BusinessRules.GetRuleDescriptions">
             <summary>
@@ -16548,6 +16574,11 @@
             the background thread and/or server.
             </summary>
         </member>
+        <member name="T:Csla.Threading.ContextParams">
+            <summary>
+            Holds the CSLA Context values
+            </summary>
+        </member>
         <member name="T:Csla.Threading.BusyLock">
             <summary>
             Implementation of a lock that waits while
@@ -16595,6 +16626,41 @@
             <summary>
             Disposes the object.
             </summary>
+        </member>
+        <member name="T:Csla.Threading.CslaTaskScheduler">
+            <summary>
+            A TaskScheduler that sets CSLA context before task is executed.
+            </summary>
+        </member>
+        <member name="F:Csla.Threading.CslaTaskScheduler._currentThreadIsProcessingItems">
+            <summary>Whether the current thread is processing work items.</summary>
+        </member>
+        <member name="F:Csla.Threading.CslaTaskScheduler._tasks">
+            <summary>The list of tasks to be executed.</summary>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <summary>Queues a task to the scheduler.</summary>
+            <param name="task">The task to be queued.</param>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.NotifyThreadPoolOfPendingWork">
+            <summary>
+            Informs the ThreadPool that there's work to be executed for this scheduler.
+            </summary>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>Attempts to execute the specified task on the current thread.</summary>
+            <param name="task">The task to be executed.</param>
+            <param name="taskWasPreviouslyQueued"></param>
+            <returns>Whether the task could be executed on the current thread.</returns>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
+            <summary>Attempts to remove a previously scheduled task from the scheduler.</summary>
+            <param name="task">The task to be removed.</param>
+            <returns>Whether the task could be found and removed.</returns>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.GetScheduledTasks">
+            <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary>
+            <returns>An enumerable of the tasks currently scheduled.</returns>
         </member>
         <member name="T:Csla.TransactionalAttribute">
             <summary>
@@ -21020,99 +21086,6 @@
             and where the rule was
             successful.
             </summary>
-        </member>
-        <member name="T:Csla.WebServiceHost.WebServicePortal">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.#ctor">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.Create(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.CreateAsync(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.CreateAsync(System.Byte[],System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.Fetch(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.FetchAsync(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.FetchAsync(System.Byte[],System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.Update(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.UpdateAsync(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.UpdateAsync(System.Byte[],System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.Delete(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.DeleteAsync(System.Byte[])">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.DeleteAsync(System.Byte[],System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:Csla.WebServiceHost.WebServicePortal.CancelAsync(System.Object)">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WebServiceHost.WebServicePortal.CreateCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WebServiceHost.WebServicePortal.FetchCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WebServiceHost.WebServicePortal.UpdateCompleted">
-            <remarks/>
-        </member>
-        <member name="E:Csla.WebServiceHost.WebServicePortal.DeleteCompleted">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.CreateCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.CreateCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WebServiceHost.CreateCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.FetchCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.FetchCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WebServiceHost.FetchCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.UpdateCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.UpdateCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WebServiceHost.UpdateCompletedEventArgs.Result">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.DeleteCompletedEventHandler">
-            <remarks/>
-        </member>
-        <member name="T:Csla.WebServiceHost.DeleteCompletedEventArgs">
-            <remarks/>
-        </member>
-        <member name="P:Csla.WebServiceHost.DeleteCompletedEventArgs.Result">
-            <remarks/>
         </member>
     </members>
 </doc>

@@ -21,10 +21,19 @@ namespace ProjectTracker.Library
       InputProperties = new System.Collections.Generic.List<Csla.Core.IPropertyInfo> { primaryProperty };
     }
 
+#if __ANDROID__
+    protected override async void Execute(RuleContext context)
+#else
     protected override void Execute(RuleContext context)
+#endif
     {
-#if SILVERLIGHT
         int role = (int)context.InputPropertyValues[PrimaryProperty];
+#if __ANDROID__
+        var roles = await RoleList.GetListAsync();
+        if (!(await RoleList.GetListAsync()).ContainsKey(role))
+            context.AddErrorResult("Role must be in RoleList");
+        context.Complete();
+#elif SILVERLIGHT
         RoleList.GetList((o, e) =>
           {
             if (!e.Object.ContainsKey(role))
@@ -32,7 +41,6 @@ namespace ProjectTracker.Library
             context.Complete();
           });
 #else
-      int role = (int)context.InputPropertyValues[PrimaryProperty];
       if (!RoleList.GetList().ContainsKey(role))
         context.AddErrorResult("Role must be in RoleList");
 #endif

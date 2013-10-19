@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{282A2FC6-46FF-4831-A735-9445C5625BDF}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Validation</RootNamespace>
+    <AssemblyName>Csla.Validation</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\Android\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;__ANDROID__</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Debug\Android\Csla.Validation.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\Android\</OutputPath>
+    <DefineConstants>TRACE;__ANDROID__,SILVERLIGHT,WINDOWS_PHONE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Release\Android\Csla.Validation.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
+      <Link>AuthorizationRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\BusinessBase.cs">
+      <Link>BusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\CommonRules.cs">
+      <Link>CommonRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
+      <Link>DecoratedRuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
+      <Link>ObjectAccessor.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
+      <Link>PropertyHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
+      <Link>ReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\RuleArgs.cs">
+      <Link>RuleArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
+      <Link>RuleExtensions.cs</Link>
+    </Compile>
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.Android\Csla.Android.csproj">
+      <Project>{f38f7293-0b67-4f49-992b-b1a3036b7dd0}</Project>
+      <Name>Csla.Android</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

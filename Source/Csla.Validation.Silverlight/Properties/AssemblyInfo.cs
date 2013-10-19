@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Validation fro Silverlight")]
+[assembly: AssemblyTitle("CSLA .NET Validation for Silverlight")]
 [assembly: AssemblyDescription("CSLA .NET Validation from 3.5.x and newer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.5.30.0")]
-[assembly: AssemblyFileVersion("4.5.30.0")]
+[assembly: AssemblyVersion("4.5.491.0")]
+[assembly: AssemblyFileVersion("4.5.491.0")]

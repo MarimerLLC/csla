@@ -52,7 +52,7 @@ namespace Csla.Rules
       {
         IsReadOnly = false;
         base.Clear();
-        RecalculateCounts();
+        _errorCount = _warnCount = _infoCount = 0;
         IsReadOnly = true;
       }
     }
@@ -62,66 +62,119 @@ namespace Csla.Rules
       lock (_syncRoot)
       {
         this.IsReadOnly = false;
-        List<BrokenRule> brokenRules;
-        if (property == null)
-          brokenRules = this.Where(c => c.OriginProperty == null).ToList();
-        else
-          brokenRules = this.Where(c => c.OriginProperty == property.Name).ToList();
 
-        foreach (var item in brokenRules)
-          Remove(item);
-        RecalculateCounts();
+        var propertyName = property == null ? null : property.Name;
+        for (int i = 0, n = Count; i < n; i++)
+        {
+            var x = this[i];
+            if (x.OriginProperty == propertyName)
+            {
+                RemoveAt(i);
+                i--;
+                n--;
+            }
+        }
+
         this.IsReadOnly = true;
       }
     }
     
     internal void SetBrokenRules(List<RuleResult> results, string originPropertyName)
     {
-      var errRule = results.FirstOrDefault(p => p.Severity != RuleSeverity.Success && string.IsNullOrEmpty(p.Description));
-      if (errRule != null)
-        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, errRule.RuleName));
-
       lock (_syncRoot)
       {
         this.IsReadOnly = false;
 
-        var rulenames = results.Select(p => p.RuleName).Distinct();
-        var old = this.Where(c => rulenames.Contains(c.RuleName) && c.OriginProperty == originPropertyName).ToList();
-        foreach (var item in old)
-          Remove(item);
+        ISet<string> rulesDone = new HashSet<string>();
 
-        foreach (var result in results)
+        for(int i = 0, n = results.Count; i < n; i++)
         {
-          if (!result.Success)
-            if (result.PrimaryProperty == null)
-              Add(new BrokenRule
-                    {
-                      RuleName = result.RuleName,
-                      Description = result.Description,
-                      Property = null,
-                      Severity = result.Severity,
-                      OriginProperty = originPropertyName
-                    });
-            else
-              Add(new BrokenRule
-                    {
-                      RuleName = result.RuleName,
-                      Description = result.Description,
-                      Property = result.PrimaryProperty.Name,
-                      Severity = result.Severity,
-                      OriginProperty = originPropertyName
-                    });
+          var result = results[i];
+          var resultRuleName = result.RuleName;
+
+          if(!rulesDone.Contains(resultRuleName))
+          {
+            rulesDone.Add(resultRuleName);
+
+            ClearRules(resultRuleName, originPropertyName);
+          }
+
+          if(result.Success)
+            continue;
+
+          var resultDescription = result.Description;
+
+          if(string.IsNullOrEmpty(resultDescription))
+            throw new ArgumentException(string.Format(Resources.RuleMessageRequired,
+                                                      resultRuleName));
+
+          var resultPrimaryProperty = result.PrimaryProperty;
+
+          BrokenRule broken = new BrokenRule
+          {
+            RuleName = resultRuleName,
+            Description = resultDescription,
+            Property = resultPrimaryProperty == null
+                       ? null : resultPrimaryProperty.Name,
+            Severity = result.Severity,
+            OriginProperty = originPropertyName
+          };
+
+          Add(broken);
         }
-        RecalculateCounts();
+
         this.IsReadOnly = true;
       }
     }
 
-    private void RecalculateCounts()
+    /// <summary>
+    /// Remove the previous results for the given rule name and origin property.
+    /// </summary>
+    private void ClearRules(string ruleName, string originProperty)
     {
-      _errorCount = this.Count(c => c.Severity == RuleSeverity.Error);
-      _warnCount = this.Count(c => c.Severity == RuleSeverity.Warning);
-      _infoCount = this.Count(c => c.Severity == RuleSeverity.Information);
+      for(int i = 0, n = Count; i < n; i++)
+      {
+        var x = this[i];
+
+        if(x.RuleName == ruleName && x.OriginProperty == originProperty)
+        {
+          RemoveAt(i);
+          i--;
+          n--;
+        }
+      }
+    }
+
+    new void RemoveAt(int i)
+    {
+      CountOne(this[i].Severity, -1);
+
+      base.RemoveAt(i);
+    }
+
+    new void Add(BrokenRule item)
+    {
+      base.Add(item);
+
+      CountOne(item.Severity, 1);
+    }
+
+    private void CountOne(RuleSeverity severity, int one)
+    {
+        switch (severity)
+        {
+            case RuleSeverity.Error:
+                _errorCount += one;
+                break;
+            case RuleSeverity.Warning:
+                _warnCount += one;
+                break;
+            case RuleSeverity.Information:
+                _infoCount += one;
+                break;
+            default:
+                throw new Exception("unhandled severity=" + severity);
+        }
     }
 
     /// <summary>

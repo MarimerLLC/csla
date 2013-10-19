@@ -1006,6 +1006,8 @@ namespace Csla
 
     void ICancelAddNew.CancelNew(int itemIndex)
     {
+      if (itemIndex <= -1) return;
+
       ICancelAddNew can = _list as ICancelAddNew;
       if (can != null)
         can.CancelNew(OriginalIndex(itemIndex));

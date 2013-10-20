@@ -49,29 +49,27 @@ namespace ProjectTracker.AndroidUI
 
             try
             {
-                var parameter1 = Intent.GetByteArrayExtra(Constants.EditParameter);
-                if (parameter1 != null)
-                {
-                    var roleEditList = (Library.Admin.RoleEditList)this.DeserializeFromParameter(parameter1);
-                    this.viewModel.LoadFromExisting(roleEditList);
-                }
-                else
-                {
-                    await this.viewModel.LoadAsync();
-                }
+                await this.viewModel.LoadAsync();
 
                 var roleList = FindViewById<ListView>(Resource.Id.lstRoles);
-
-                var listAdapter = new Adapters.RoleEditListAdapter(this, this.viewModel.Model);
-                roleList.Adapter = listAdapter;
                 roleList.ItemClick += lstRoles_OnListItemClick;
 
-                this.Bindings.Add(Resource.Id.btnThree, "Enabled", this.viewModel.Model, "IsSavable");
+                this.LoadRoleList();
             }
             catch (Exception ex)
             {
-                ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
+        }
+
+        private void LoadRoleList()
+        {
+            var roleList = FindViewById<ListView>(Resource.Id.lstRoles);
+
+            var listAdapter = new Adapters.RoleEditListAdapter(this, this.viewModel.Model);
+            roleList.Adapter = listAdapter;
+
+            this.Bindings.Add(Resource.Id.btnThree, "Enabled", this.viewModel.Model, "IsSavable");
         }
 
         protected void lstRoles_OnListItemClick(object o, AdapterView.ItemClickEventArgs e)
@@ -83,11 +81,11 @@ namespace ProjectTracker.AndroidUI
                     var roleEditActivity = new Intent(this, typeof (RoleEdit));
                     roleEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter());
                     roleEditActivity.PutExtra(Constants.EditIdParameter, (int) e.Id);
-                    StartActivity(roleEditActivity);
+                    StartActivityForResult(roleEditActivity, Constants.RequestCodeRoleEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -110,7 +108,7 @@ namespace ProjectTracker.AndroidUI
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -124,11 +122,11 @@ namespace ProjectTracker.AndroidUI
                     var roleEditActivity = new Intent(this, typeof (RoleEdit));
                     roleEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter());
                     roleEditActivity.PutExtra(Constants.EditIdParameter, -1);
-                    StartActivity(roleEditActivity);
+                    StartActivityForResult(roleEditActivity, Constants.RequestCodeRoleEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -137,14 +135,36 @@ namespace ProjectTracker.AndroidUI
         {
             if (!this.viewModel.IsBusy)
             {
-                if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+                this.Finish();
+            }
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeRoleEditScreen)
+            {
+                switch (resultCode)
                 {
-                    StartActivity(typeof (MainPage));
+                    case Result.Ok:
+                        var parameter1 = data.GetByteArrayExtra(Constants.EditParameter);
+                        if (parameter1 != null)
+                        {
+                            var roleEditList = (Library.Admin.RoleEditList)this.DeserializeFromParameter(parameter1);
+                            this.viewModel.LoadFromExisting(roleEditList);
+                            this.LoadRoleList();
+                        }
+                        break;
+                    case Result.Canceled:
+                        break;
+                    default:
+                        Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                        break;
                 }
-                else
-                {
-                    StartActivity(typeof (Welcome));
-                }
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
             }
         }
     }

@@ -26,7 +26,7 @@ namespace ProjectTracker.AndroidUI
 		
 		public static void UpdateIdValues()
 		{
-			Csla.Axml.Resource.String.ApplicationName = ProjectTracker.AndroidUI.Resource.String.ApplicationName;
+			global::Csla.Axml.Resource.String.ApplicationName = global::ProjectTracker.AndroidUI.Resource.String.ApplicationName;
 		}
 		
 		public partial class Attribute

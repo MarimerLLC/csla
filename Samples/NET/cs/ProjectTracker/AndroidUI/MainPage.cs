@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Csla.Axml.Binding;
+using ProjectTracker.Library.Security;
 
 namespace ProjectTracker.AndroidUI
 {
@@ -65,7 +66,10 @@ namespace ProjectTracker.AndroidUI
 
         void btnLogout_Click(object sender, EventArgs e)
         {
-            GlobalActivities.Logout(this);
+            PTPrincipal.Logout();
+
+            StartActivity(typeof(Welcome));
+            this.Finish();
         }
 
         void btnRoles_Click(object sender, EventArgs e)

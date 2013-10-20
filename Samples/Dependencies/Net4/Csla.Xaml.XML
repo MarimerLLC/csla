@@ -1543,31 +1543,5 @@
             before invoking the target method.
             </summary>
         </member>
-        <member name="T:Csla.Xaml.VisibilityMode">
-            <summary>
-            Options controlling how the Authorizer
-            control alters the visibility of a control
-            when read access to the property is not allowed.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.VisibilityMode.Collapsed">
-            <summary>
-            Specifies that the non-readable control
-            should be collapsed.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.VisibilityMode.Hidden">
-            <summary>
-            Specifies that the non-readable control
-            should be hidden.
-            </summary>
-        </member>
-        <member name="F:Csla.Xaml.VisibilityMode.Ignore">
-            <summary>
-            Specifies that the visibility of the 
-            non-readable control should not be
-            altered by the Authorizer control.
-            </summary>
-        </member>
     </members>
 </doc>

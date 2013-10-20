@@ -57,16 +57,22 @@ namespace ProjectTracker.AndroidUI
                 }
 
                 var projectResourceList = FindViewById<ListView>(Resource.Id.lstProjectResources);
-
-                var listAdapter = new Adapters.ProjectResourceListAdapter(this, this.viewModel.Model);
-                projectResourceList.Adapter = listAdapter;
                 projectResourceList.ItemClick += lstProjectResources_OnListItemClick;
+
+                this.LoadProjectResourceList();
 
             }
             catch (Exception ex)
             {
-                ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
+        }
+
+        private void LoadProjectResourceList()
+        {
+            var projectResourceList = FindViewById<ListView>(Resource.Id.lstProjectResources);
+            var listAdapter = new Adapters.ProjectResourceListAdapter(this, this.viewModel.Model);
+            projectResourceList.Adapter = listAdapter;
         }
 
         protected void lstProjectResources_OnListItemClick(object o, AdapterView.ItemClickEventArgs e)
@@ -75,16 +81,21 @@ namespace ProjectTracker.AndroidUI
             {
                 try
                 {
-                    var projectResourceEditActivity = new Intent(this, typeof(ProjectResourceEdit));
-                    projectResourceEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                    projectResourceEditActivity.PutExtra(Constants.EditIdParameter, (int)e.Id);
-                    StartActivity(projectResourceEditActivity);
+                    this.NavigateToEditScreen((int)e.Id);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
+        }
+
+        private void NavigateToEditScreen(int id)
+        {
+            var projectResourceEditActivity = new Intent(this, typeof (ProjectResourceEdit));
+            projectResourceEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
+            projectResourceEditActivity.PutExtra(Constants.EditIdParameter, id);
+            StartActivityForResult(projectResourceEditActivity, Constants.RequestCodeProjectResourceEditScreen);
         }
 
         private void btnAddNew_Click(object sender, EventArgs e)
@@ -95,11 +106,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     var projectResourceAddActivity = new Intent(this, typeof(ProjectResourceAdd));
                     projectResourceAddActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                    StartActivity(projectResourceAddActivity);
+                    StartActivityForResult(projectResourceAddActivity, Constants.RequestCodeProjectResourceAddScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -108,11 +119,8 @@ namespace ProjectTracker.AndroidUI
         {
             if (!this.viewModel.IsBusy)
             {
-                var projectEditActivity = new Intent(this, typeof(ProjectEdit));
                 this.viewModel.ApplyEdit();
-                projectEditActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
-                projectEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectEditActivity);
+                this.FinishSavedActivity();
             }
         }
 
@@ -120,12 +128,86 @@ namespace ProjectTracker.AndroidUI
         {
             if (!this.viewModel.IsBusy)
             {
-                var projectEditActivity = new Intent(this, typeof(ProjectEdit));
                 this.viewModel.CancelEdit();
-                projectEditActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
-                projectEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectEditActivity);
+                this.FinishSavedActivity();
             }
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeProjectResourceEditScreen)
+            {
+                this.HandleEditResult(resultCode, data);
+            }
+            else if (requestCode == Constants.RequestCodeProjectResourceAddScreen)
+            {
+                this.HandleAddResult(resultCode, data);  
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
+            }
+        }
+
+        private void HandleAddResult(Result resultCode, Intent data)
+        {
+            switch (resultCode)
+            {
+                case Result.Ok:
+                    var projectResourceId = data.GetIntExtra(Constants.EditIdParameter, Constants.NewRecordId);
+                    var parameter1 = data.GetByteArrayExtra(Constants.EditParameter);
+                    if (parameter1 != null)
+                    {
+                        var projectEdit = (Library.ProjectEdit) this.DeserializeFromParameter(parameter1);
+                        this.viewModel.LoadFromExisting(projectEdit.Resources);
+                        this.LoadProjectResourceList();
+                        this.NavigateToEditScreen(projectResourceId);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                    break;
+                case Result.Canceled:
+                    break;
+                default:
+                    Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                    break;
+            }
+        }
+
+        private void HandleEditResult(Result resultCode, Intent data)
+        {
+            switch (resultCode)
+            {
+                case Result.Ok:
+                    var parameter1 = data.GetByteArrayExtra(Constants.EditParameter);
+                    if (parameter1 != null)
+                    {
+                        var projectEdit = (Library.ProjectEdit) this.DeserializeFromParameter(parameter1);
+                        this.viewModel.LoadFromExisting(projectEdit.Resources);
+                        this.LoadProjectResourceList();
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                    break;
+                case Result.Canceled:
+                    break;
+                default:
+                    Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                    break;
+            }
+        }
+
+        private void FinishSavedActivity()
+        {
+            var projectEditActivity = new Intent(this, typeof(ProjectEdit));
+            projectEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
+            this.SetResult(Result.Ok, projectEditActivity);
+            this.Finish();
         }
     }
 }

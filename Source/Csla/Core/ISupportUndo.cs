@@ -6,7 +6,6 @@
 // <summary>Define the common methods used by the UI to </summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
 
 namespace Csla.Core
 {

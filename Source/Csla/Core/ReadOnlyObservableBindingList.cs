@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using Csla.Properties;
@@ -32,7 +31,6 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// 
     public ReadOnlyObservableBindingList()
     {
       AllowEdit = false;
@@ -44,13 +42,6 @@ namespace Csla.Core
           if (IsReadOnly)
             throw new NotSupportedException(Resources.ChangeReadOnlyListInvalid);
         };
-    }
-
-    protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-    {
-      if (IsReadOnly)
-        throw new NotSupportedException(Resources.ChangeReadOnlyListInvalid);
-      base.OnCollectionChanged(e);
     }
 
     #region IsReadOnly

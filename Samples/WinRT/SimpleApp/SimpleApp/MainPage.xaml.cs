@@ -33,11 +33,11 @@ namespace SimpleApp
     /// property is typically used to configure the page.</param>
     protected async override void OnNavigatedTo(NavigationEventArgs e)
     {
-      ProgressDisplay.IsActive = true;
+      Progress.IsActive = true;
       var obj = await Library.CustomerEdit.GetCustomerEditAsync(441);
       obj.BeginEdit();
       this.DataContext = obj;
-      ProgressDisplay.IsActive = false;
+      Progress.IsActive = false;
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -56,11 +56,11 @@ namespace SimpleApp
       if (obj != null)
       {
         obj.ApplyEdit();
-        ProgressDisplay.IsActive = true;
+        Progress.IsActive = true;
         obj = await obj.SaveAsync();
         obj.BeginEdit();
         this.DataContext = obj;
-        ProgressDisplay.IsActive = false;
+        Progress.IsActive = false;
       }
     }
   }

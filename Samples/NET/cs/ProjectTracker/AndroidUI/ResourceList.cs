@@ -25,10 +25,10 @@ namespace ProjectTracker.AndroidUI
 
             this.LayoutInflater.Inflate(Resource.Layout.Menu, fraStatusContent, true);
 
-            var btnCancel = FindViewById<Button>(Resource.Id.btnFour);
-            btnCancel.Text = Resources.GetString(Resource.String.ButtonCancel);
-            btnCancel.Visibility = ViewStates.Visible;
-            btnCancel.Click += btnBack_Click;
+            var btnBack = FindViewById<Button>(Resource.Id.btnFour);
+            btnBack.Text = Resources.GetString(Resource.String.ButtonBack);
+            btnBack.Visibility = ViewStates.Visible;
+            btnBack.Click += btnBack_Click;
 
             if (this.viewModel.CanCreateObject)
             {
@@ -42,16 +42,22 @@ namespace ProjectTracker.AndroidUI
             {
                 await this.viewModel.LoadAsync();
 
-                var projectList = FindViewById<ListView>(Resource.Id.lstResources);
+                var resourceList = FindViewById<ListView>(Resource.Id.lstResources);
+                resourceList.ItemClick += lstResources_OnListItemClick;
 
-                var listAdapter = new Adapters.ResourceListAdapter(this, this.viewModel.Model);
-                projectList.Adapter = listAdapter;
-                projectList.ItemClick += lstResources_OnListItemClick;
+                this.LoadResourceList();
             }
             catch (Exception ex)
             {
-                ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
+        }
+
+        private void LoadResourceList()
+        {
+            var resourceList = FindViewById<ListView>(Resource.Id.lstResources);
+            var listAdapter = new Adapters.ResourceListAdapter(this, this.viewModel.Model);
+            resourceList.Adapter = listAdapter;
         }
 
         protected void lstResources_OnListItemClick(object o, AdapterView.ItemClickEventArgs e)
@@ -62,11 +68,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     var resourceEditActivity = new Intent(this, typeof(ResourceEdit));
                     resourceEditActivity.PutExtra(Constants.EditIdParameter, (int)e.Id);
-                    StartActivity(resourceEditActivity);
+                    StartActivityForResult(resourceEditActivity, Constants.RequestCodeResourceEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -79,27 +85,41 @@ namespace ProjectTracker.AndroidUI
                 {
                     var resourceEditActivity = new Intent(this, typeof(ResourceEdit));
                     resourceEditActivity.PutExtra(Constants.EditIdParameter, Constants.NewRecordId);
-                    StartActivity(resourceEditActivity);
+                    StartActivityForResult(resourceEditActivity, Constants.RequestCodeResourceEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            this.Finish();
+        }
+
+        protected async override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeResourceEditScreen)
             {
-                if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+                switch (resultCode)
                 {
-                    StartActivity(typeof(MainPage));
+                    case Result.Ok:
+                        await this.viewModel.LoadAsync();
+                        this.LoadResourceList();
+                        break;
+                    case Result.Canceled:
+                        break;
+                    default:
+                        Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                        break;
                 }
-                else
-                {
-                    StartActivity(typeof(Welcome));
-                }
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
             }
         }
     }

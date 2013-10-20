@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="2d7b80ba-f5f7-4ecb-93b6-9bf25e1e0791" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6706f493-fc24-49d2-9278-04678e958355" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
-    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
     <EnableDataBinding>true</EnableDataBinding>
     <ExcludedTypes />
     <ImportXmlTypes>false</ImportXmlTypes>
@@ -11,7 +12,6 @@
     <CollectionMappings />
     <GenerateSerializableTypes>true</GenerateSerializableTypes>
     <Serializer>Auto</Serializer>
-    <UseSerializerForFaults>true</UseSerializerForFaults>
     <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
     <ReferencedAssemblies />
     <ReferencedDataContractTypes />
@@ -21,11 +21,11 @@
     <MetadataSource Address="http://localhost:19454/MobilePortal.svc?wsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="e44fd6d9-df69-4901-a890-de4bd828909a" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl" />
-    <MetadataFile FileName="MobilePortal.xsd" MetadataType="Schema" ID="f5749948-d54f-462e-90fa-b490a2e8bb29" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd0" />
-    <MetadataFile FileName="MobilePortal1.xsd" MetadataType="Schema" ID="e7d79a5f-a552-4598-ab10-0cde5e7b7a86" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd1" />
-    <MetadataFile FileName="MobilePortal.wsdl" MetadataType="Wsdl" ID="ca622001-4a4b-4d63-8e99-f565ab6b3e3a" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="MobilePortal2.xsd" MetadataType="Schema" ID="7d2ebedf-1d3b-48c4-89c3-d3ba4c6421a8" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="WcfPortal2.wsdl" MetadataType="Wsdl" ID="e311544c-a404-4711-bd66-6948bc0e127f" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl" />
+    <MetadataFile FileName="MobilePortal.xsd" MetadataType="Schema" ID="0cf90529-cc76-48d9-8afc-3002355a3da5" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="MobilePortal1.xsd" MetadataType="Schema" ID="4212afeb-5df0-4919-a8ab-985d8ca485f7" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="MobilePortal.wsdl" MetadataType="Wsdl" ID="e07bb641-2c7e-48e6-897a-eb181356c0ff" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="MobilePortal2.xsd" MetadataType="Schema" ID="3edb0b1a-259d-4e0c-86df-e872ce723168" SourceId="1" SourceUrl="http://localhost:19454/MobilePortal.svc?xsd=xsd2" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

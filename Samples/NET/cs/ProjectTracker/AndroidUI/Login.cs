@@ -1,10 +1,10 @@
 using System;
 using System.Security.Principal;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Csla.Axml.Binding;
 
 namespace ProjectTracker.AndroidUI
 {
@@ -40,49 +40,67 @@ namespace ProjectTracker.AndroidUI
 
         async void btnLogin_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                var dialog = new ProgressDialog(this);
-                try
+                if (!this.viewModel.IsBusy)
                 {
-                    dialog.SetTitle(Resources.GetString(Resource.String.ButtonLogin));
-                    dialog.SetMessage(Resources.GetString(Resource.String.MessageValidatingLogin));
-                    dialog.Show();
+                    var dialog = new ProgressDialog(this);
+                    try
+                    {
+                        dialog.SetTitle(Resources.GetString(Resource.String.ButtonLogin));
+                        dialog.SetMessage(Resources.GetString(Resource.String.MessageValidatingLogin));
+                        dialog.Show();
 
-                    Bindings.UpdateSourceForLastView();
-                    await this.viewModel.LoginUserAsync();
-                    NavigateNext();
+                        Bindings.UpdateSourceForLastView();
+                        await this.viewModel.LoginUserAsync();
+
+                        this.NavigateNext();
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
+                    }
+                    finally
+                    {
+                        dialog.Dismiss();
+                    }
                 }
-                catch (Exception ex)
-                {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
-                    var alert = new AlertDialog.Builder(this);
-                }
-                finally
-                {
-                    dialog.Dismiss();
-                }
+
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
         void btnBack_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                this.NavigateNext();
+                if (!this.viewModel.IsBusy)
+                {
+                    this.NavigateNext();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
         private void NavigateNext()
         {
+            var myIntent = new Intent(this, typeof(Welcome));
+
             if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
             {
-                StartActivity(typeof(MainPage));
+                this.SetResult(Result.Ok, myIntent);
             }
             else
             {
-                this.Finish();
+                this.SetResult(Result.Canceled, myIntent);
             }
+            this.Finish();
         }
     }
 }

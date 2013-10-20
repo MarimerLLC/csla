@@ -5885,14 +5885,6 @@
             of the object type has been created within the current AppDomain.
             </remarks>
         </member>
-        <member name="M:Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(System.Type,System.String)">
-            <summary>
-            Returns a registered property for a given type and property name.
-            </summary>
-            <param name="objectType">The business object type.</param>
-            <param name="propertyName">The name of the property.</param>
-            <returns></returns>
-        </member>
         <member name="T:Csla.CommandBase`1">
             <summary>
             This is the base class from which command 
@@ -9688,19 +9680,6 @@
             <summary>
             Tracks the business rules for a business object.
             </summary>
-        </member>
-        <member name="T:Csla.Rules.IBusinessRules">
-            <summary>
-            Public interfacefor IBusinessRules
-            </summary>
-        </member>
-        <member name="P:Csla.Rules.IBusinessRules.Target">
-            <summary>
-            Gets the target business object
-            </summary>
-            <value>
-            The business object.
-            </value>
         </member>
         <member name="M:Csla.Rules.BusinessRules.GetRuleDescriptions">
             <summary>
@@ -15671,11 +15650,6 @@
             <summary>
             Gets a reference to the global context returned from
             the background thread and/or server.
-            </summary>
-        </member>
-        <member name="T:Csla.Threading.ContextParams">
-            <summary>
-            Holds the CSLA Context values
             </summary>
         </member>
         <member name="T:Csla.PropertyInfo`1">

@@ -6,21 +6,18 @@
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Windows.Controls;
+using System.Windows;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
 using Csla.Rules;
 using System.Collections.ObjectModel;
 using System.Reflection;
-#if NETFX_CORE
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
-#else
-using System.Windows.Controls;
-using System.Windows;
 using System.Windows.Data;
-#endif
 
 namespace Csla.Xaml
 {
@@ -37,7 +34,7 @@ namespace Csla.Xaml
     /// </summary>
     public PropertyInfo()
     {
-      Visibility = Visibility.Collapsed;
+      Visibility = System.Windows.Visibility.Collapsed;
       Height = 20;
       Width = 20;
       BrokenRules = new ObservableCollection<BrokenRule>();
@@ -92,11 +89,7 @@ namespace Csla.Xaml
     DependencyProperty.Register("MyDataContext",
                                 typeof(Object),
                                 typeof(PropertyInfo),
-#if NETFX_CORE
-                                new PropertyMetadata(null, MyDataContextPropertyChanged));
-#else
                                 new PropertyMetadata(MyDataContextPropertyChanged));
-#endif
 
     private static void MyDataContextPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -114,11 +107,7 @@ namespace Csla.Xaml
     DependencyProperty.Register("RelativeBinding",
                                 typeof(Object),
                                 typeof(PropertyInfo),
-#if NETFX_CORE
-                                new PropertyMetadata(null, RelativeBindingPropertyChanged));
-#else
                                 new PropertyMetadata(RelativeBindingPropertyChanged));
-#endif
 
     private static void RelativeBindingPropertyChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -225,11 +214,7 @@ namespace Csla.Xaml
         FieldInfo fi = null;
         while (type != null)
         {
-#if NETFX_CORE
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
-#else
           fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
-#endif
 
           if (fi != null)
           {
@@ -237,13 +222,7 @@ namespace Csla.Xaml
             return control.GetBindingExpression(mappedDP);
           }
           else
-          {
-#if NETFX_CORE
-            type = type.GetTypeInfo().BaseType;
-#else
             type = type.BaseType;
-#endif
-          }
         }
 
         return null;

@@ -294,9 +294,6 @@ namespace Csla
       {
         error = ex;
       }
-
-      if (error != null)
-        OnSaved(null, error, userState);
       if (handler != null)
         handler(this, new SavedEventArgs(result, error, userState));
     }

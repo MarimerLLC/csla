@@ -112,7 +112,7 @@ namespace Csla.Server
         _principal = principal;
         _remotePortal = isRemotePortal;
 #if NETFX_CORE
-        var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
+        var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
         _clientCulture = language;
         _clientUICulture = language;
 #else

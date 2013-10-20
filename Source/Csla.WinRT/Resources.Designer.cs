@@ -34,9 +34,7 @@ namespace Csla.Properties
         throw new NullReferenceException(resourceName);
       return value;
 #else
-#pragma warning disable
       var loader = new Windows.ApplicationModel.Resources.ResourceLoader("Csla/Resources");
-#pragma warning enable
       return loader.GetString(resourceName);
 #endif
     }

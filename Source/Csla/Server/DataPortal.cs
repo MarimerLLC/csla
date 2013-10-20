@@ -613,9 +613,9 @@ namespace Csla.Server
       // set the thread's culture to match the client
 #if NETFX_CORE
       var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
       list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
 #else
       System.Threading.Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Csla.Rules;
-using Csla.Testing.Business.Validation;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
@@ -64,14 +64,6 @@ namespace Csla.Test.ValidationRules
       var distinctUris = ruleUris.Distinct().ToArray();
       // must have same length
       Assert.AreEqual(ruleUris.Length, distinctUris.Length);
-    }
-
-    [TestMethod]
-    public void RuleWithCyrillicNameMustHaveValidURI()
-    {
-      var prop = new PropertyInfo<string>("Изилдр");
-      var rule = new ИзилдрRule(prop);
-      Assert.IsTrue(true);
     }
   }
 }

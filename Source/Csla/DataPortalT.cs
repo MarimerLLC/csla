@@ -60,7 +60,7 @@ namespace Csla
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
         this.UserState = userState;
 #if NETFX_CORE
-        var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
+        var language = Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages[0];
         this.CurrentCulture = language;
         this.CurrentUICulture = language;
 #else
@@ -97,9 +97,9 @@ namespace Csla
       // set culture info for background thread 
 #if NETFX_CORE
       var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
       list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });
-      Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
+      Windows.ApplicationModel.Resources.Core.ResourceManager.Current.DefaultContext.Languages = list;
 #else
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;

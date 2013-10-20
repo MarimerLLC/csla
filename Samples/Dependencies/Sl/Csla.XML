@@ -3568,14 +3568,6 @@
             of the object type has been created within the current AppDomain.
             </remarks>
         </member>
-        <member name="M:Csla.Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(System.Type,System.String)">
-            <summary>
-            Returns a registered property for a given type and property name.
-            </summary>
-            <param name="objectType">The business object type.</param>
-            <param name="propertyName">The name of the property.</param>
-            <returns></returns>
-        </member>
         <member name="T:Csla.CommandBase`1">
             <summary>
             This is the base class from which command 
@@ -8551,19 +8543,6 @@
             <summary>
             Tracks the business rules for a business object.
             </summary>
-        </member>
-        <member name="T:Csla.Rules.IBusinessRules">
-            <summary>
-            Public interfacefor IBusinessRules
-            </summary>
-        </member>
-        <member name="P:Csla.Rules.IBusinessRules.Target">
-            <summary>
-            Gets the target business object
-            </summary>
-            <value>
-            The business object.
-            </value>
         </member>
         <member name="M:Csla.Rules.BusinessRules.GetRuleDescriptions">
             <summary>
@@ -14547,11 +14526,6 @@
             the background thread and/or server.
             </summary>
         </member>
-        <member name="T:Csla.Threading.ContextParams">
-            <summary>
-            Holds the CSLA Context values
-            </summary>
-        </member>
         <member name="T:Csla.Threading.BusyLock">
             <summary>
             Implementation of a lock that waits while
@@ -14734,41 +14708,6 @@
             field storage behind the property. FOR
             INTERNAL CSLA .NET USE ONLY.
             </summary>
-        </member>
-        <member name="T:Csla.Threading.CslaTaskScheduler">
-            <summary>
-            A TaskScheduler that sets CSLA context before task is executed.
-            </summary>
-        </member>
-        <member name="F:Csla.Threading.CslaTaskScheduler._currentThreadIsProcessingItems">
-            <summary>Whether the current thread is processing work items.</summary>
-        </member>
-        <member name="F:Csla.Threading.CslaTaskScheduler._tasks">
-            <summary>The list of tasks to be executed.</summary>
-        </member>
-        <member name="M:Csla.Threading.CslaTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
-            <summary>Queues a task to the scheduler.</summary>
-            <param name="task">The task to be queued.</param>
-        </member>
-        <member name="M:Csla.Threading.CslaTaskScheduler.NotifyThreadPoolOfPendingWork">
-            <summary>
-            Informs the ThreadPool that there's work to be executed for this scheduler.
-            </summary>
-        </member>
-        <member name="M:Csla.Threading.CslaTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
-            <summary>Attempts to execute the specified task on the current thread.</summary>
-            <param name="task">The task to be executed.</param>
-            <param name="taskWasPreviouslyQueued"></param>
-            <returns>Whether the task could be executed on the current thread.</returns>
-        </member>
-        <member name="M:Csla.Threading.CslaTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
-            <summary>Attempts to remove a previously scheduled task from the scheduler.</summary>
-            <param name="task">The task to be removed.</param>
-            <returns>Whether the task could be found and removed.</returns>
-        </member>
-        <member name="M:Csla.Threading.CslaTaskScheduler.GetScheduledTasks">
-            <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary>
-            <returns>An enumerable of the tasks currently scheduled.</returns>
         </member>
         <member name="T:Csla.TransactionalTypes">
             <summary>

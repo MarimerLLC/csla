@@ -248,10 +248,7 @@ namespace Csla.Server
             if (!busObj.IsNew)
             {
               // tell the object to delete itself
-              if (hasParameters)
-                lb.CallMethod("Child_DeleteSelf", parameters);
-              else
-                lb.CallMethod("Child_DeleteSelf");
+              lb.CallMethod("Child_DeleteSelf", parameters);
             }
             if (target != null)
               target.MarkNew();
@@ -264,23 +261,13 @@ namespace Csla.Server
             if (busObj.IsNew)
             {
               // tell the object to insert itself
-              if (hasParameters)
-                lb.CallMethod("Child_Insert", parameters);
-              else
-              {
-                lb.CallMethod("Child_Insert");
-              }
+              lb.CallMethod("Child_Insert", parameters);
 
             }
             else
             {
               // tell the object to update itself
-              if (hasParameters)
-                lb.CallMethod("Child_Update", parameters);
-              else
-              {
-                lb.CallMethod("Child_Update");
-              }
+              lb.CallMethod("Child_Update", parameters);
             }
             if (target != null)
               target.MarkOld();

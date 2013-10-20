@@ -21,7 +21,7 @@ namespace ProjectTracker.AndroidUI
             PTPrincipal.Logout();
 
             StartActivity(typeof(Welcome));
-            
+            this.Finish();
         }
     }
 }

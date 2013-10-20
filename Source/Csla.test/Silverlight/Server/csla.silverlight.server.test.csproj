@@ -122,7 +122,6 @@
     <Compile Include="DataPortal\PrimitiveCriteriaSingle.cs" />
     <Compile Include="DataPortal\SetAppSettingValueCmd.cs" />
     <Compile Include="DataPortal\Single.cs" />
-    <Compile Include="DataPortal\SingleWithException.cs" />
     <Compile Include="DataPortal\TestableDataPortal.cs" />
     <Compile Include="DataPortal\TestBO.cs" />
     <Compile Include="EditableChildTests\GrandChild.cs" />
@@ -155,7 +154,6 @@
     <Compile Include="Security\SilverlightWindowsIdentity.cs" />
     <Compile Include="TestProxies\AppDomainProxy.cs" />
     <Compile Include="Validation\RootThrowsException.cs" />
-    <Compile Include="Validation\RuleWithCyrillic.cs" />
     <Compile Include="ViewModelTests\TestBindingList.cs" />
     <Compile Include="ViewModelTests\TestBusinessBindingList.cs" />
     <Compile Include="ViewModelTests\TestChild.cs" />

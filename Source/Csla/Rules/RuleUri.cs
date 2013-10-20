@@ -57,7 +57,7 @@ namespace Csla.Rules
     /// <param name="propertyName">Name of the business object property or the string literal "null".</param>
     public RuleUri(string typeName, string propertyName)
     {
-      var hostName = EncodeString(typeName).Replace(".-", ".");
+      var hostName = EncodeString(typeName);
       if (hostName.Length > 63)
       {
         var tmp = hostName;

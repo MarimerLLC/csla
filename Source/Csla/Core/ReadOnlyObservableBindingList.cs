@@ -46,6 +46,10 @@ namespace Csla.Core
         };
     }
 
+    /// <summary>
+    /// Method invoked when collection is changed.
+    /// </summary>
+    /// <param name="e">Arguments</param>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
       if (IsReadOnly)

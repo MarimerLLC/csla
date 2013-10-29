@@ -6,11 +6,15 @@
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
 
-using System.Data.Entity.Core.Objects;
 #if !MONO
 using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+#if EF6
+using System.Data.Objects;
+#else
+using System.Data.Entity.Core.Objects;
+#endif
 
 namespace Csla.Data.EF6
 {

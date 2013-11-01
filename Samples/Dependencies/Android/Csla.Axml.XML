@@ -336,5 +336,220 @@
             editable root object).
             </summary>
         </member>
+        <member name="T:Csla.Axml.ActivityBase`2">
+            <summary>
+            CSLA helper to be used in place of the normal Xamarin Android activity that contains a reference to a CSLA ViewModel and a BindingManager.
+            </summary>
+            <typeparam name="T">A type that inherits from the ViewModel.</typeparam>
+            <typeparam name="Z">The type that is defined as used by T.</typeparam>
+        </member>
+        <member name="F:Csla.Axml.ActivityBase`2.viewModel">
+            <summary>
+            A reference to the view model.
+            </summary>
+        </member>
+        <member name="F:Csla.Axml.ActivityBase`2.Bindings">
+            <summary>
+            The BindingManager for this Activity.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.ActivityBase`2.OnCreate(Android.OS.Bundle)">
+            <summary>
+            Event that occurs when the activity is created.
+            </summary>
+            <param name="bundle">Information about the activities creation.</param>
+        </member>
+        <member name="M:Csla.Axml.ActivityBase`2.SerilizeModelForParameter">
+            <summary>
+            Serializes the ViewModel's model property using the MobileFormatter.  Used to serialize and transfer models between activities.
+            </summary>
+            <returns>An array of bytes that contains the serialized model.</returns>
+        </member>
+        <member name="M:Csla.Axml.ActivityBase`2.SerilizeModelForParameter(System.Object)">
+            <summary>
+            Serialized the provided model using the MobileFormatter.  Used to serialize and transfer models between activities.
+            </summary>
+            <param name="model">A reference to the model to serialize.</param>
+            <returns>An array of bytes that contains the serialized model.</returns>
+        </member>
+        <member name="M:Csla.Axml.ActivityBase`2.DeserializeFromParameter(System.Byte[])">
+            <summary>
+            Takes a byte array and uses the MobileFormatter to reconstitute it into a model reference.
+            </summary>
+            <param name="parameter">An array of bytes to deserialized.</param>
+            <returns>A reference to the deserialized object.  An exception will be thrown if the supplied byte array is not valid for deserializaiton.</returns>
+        </member>
+        <member name="T:Csla.Axml.Binding.Binding">
+            <summary>
+            Contains an individual binding to tie a property on an Axml view to the property on a supplied object.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.#ctor(Android.Views.View,System.String,System.Object,System.String)">
+            <summary>
+            Creates a new instance of the Binding class.
+            </summary>
+            <param name="target">A reference to the control to bind to.</param>
+            <param name="targetProperty">The name of the property on the view to bind to.</param>
+            <param name="source">A reference to the object that will be bound to the control.</param>
+            <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.#ctor(Android.Views.View,System.String,System.Object,System.String,System.Func{System.Object,System.Object})">
+            <summary>
+            Creates a new instance of the Binding class.
+            </summary>
+            <param name="target">A reference to the control to bind to.</param>
+            <param name="targetProperty">The name of the property on the view to bind to.</param>
+            <param name="source">A reference to the object that will be bound to the control.</param>
+            <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
+            <param name="convert">A reference to a function to do a custom conversion from the source property to the target property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.#ctor(Android.Views.View,System.String,System.Object,System.String,System.Func{System.Object,System.Object},System.Func{System.Object,System.Object})">
+            <summary>
+            Creates a new instance of the Binding class.
+            </summary>
+            <param name="target">A reference to the control to bind to.</param>
+            <param name="targetProperty">The name of the property on the view to bind to.</param>
+            <param name="source">A reference to the object that will be bound to the control.</param>
+            <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
+            <param name="convert">A reference to a function to do a custom conversion from the source property to the target property.</param>
+            <param name="convertBack">A reference to a function to do a custom conversion from the target property to the source property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.Source_PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+            Event handler that is fired when the source property change event happens and the target needs to be updated.
+            </summary>
+            <param name="sender">A reference to the object that caused the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.Target_FocusChange(System.Object,Android.Views.View.FocusChangeEventArgs)">
+            <summary>
+            Event handler that is fired when the target property change event happens and the source needs to be updated.
+            </summary>
+            <param name="sender">A reference to the object that caused the event.</param>
+            <param name="e">Event arguments.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.UpdateSource">
+            <summary>
+            Updates the source with the current value in the target object.  Uses the ConvertBack function to convert the data if available.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.UpdateTarget">
+            <summary>
+            Updates the target with the current value in the source object.  Uses the Convert function to convert the data if available.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.Binding.Binding.Dispose">
+            <summary>
+            Clears the bindings, references and event handlers.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.Target">
+            <summary>
+            The Axml view that is used by the binding.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.Source">
+            <summary>
+            The object that the view is bound to.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.TargetProperty">
+            <summary>
+            The PropertyInfo for the property on the target view that is being bound to.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.SourceProperty">
+            <summary>
+            The PropertyInfo for the property on the source object that is being bound to.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.Convert">
+            <summary>
+            A reference to a function to do a custom conversion from the source property to the target property.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.Binding.ConvertBack">
+            <summary>
+            A reference to a function to do a custom conversion from the target property to the source property.
+            </summary>
+        </member>
+        <member name="T:Csla.Axml.Binding.BindingManager">
+            <summary>
+            Provides the ability to bing properties on Axml controls to properties on CSLA objects.  Bindinds update normally when the control looses focus.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.#ctor(Android.App.Activity)">
+            <summary>
+            Creates a new instance of the binding manager.
+            </summary>
+            <param name="activity">The Android activity that is using the view with the controls to bind to.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.Add(System.Int32,System.String,System.Object,System.String)">
+            <summary>
+            Adds a new binding to be managed.
+            </summary>
+            <param name="viewId">The id of the control to bind to.</param>
+            <param name="targetProperty">The name of the property on the view to bind to.</param>
+            <param name="source">A reference to the object that will be bound to the control.</param>
+            <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.Add(Android.Views.View,System.String,System.Object,System.String)">
+            <summary>
+            Adds a new binding to be managed.
+            </summary>
+            <param name="target">A reference to the control to bind to.</param>
+            <param name="targetProperty">The name of the property on the view to bind to.</param>
+            <param name="source">A reference to the object that will be bound to the control.</param>
+            <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.Add(Csla.Axml.Binding.Binding)">
+            <summary>
+            Adds a new binding to be managed.
+            </summary>
+            <param name="binding">The new binding to add.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.Remove(Android.Views.View,System.String,System.Object,System.String)">
+            <summary>
+            Removes the binding matching the supplied parameters from the binding manager.  If no bindings matched the method does nothing.
+            </summary>
+            <param name="target">A reference to the bound control.</param>
+            <param name="targetProperty">The name of the property on the view that is bound to.</param>
+            <param name="source">A reference to the object that is bound to.</param>
+            <param name="sourceProperty">The name of the property on the object that that is bound to the target property.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.Remove(Csla.Axml.Binding.Binding)">
+            <summary>
+            Removes the supplied binding from the binding manager.
+            </summary>
+            <param name="binding">The binding to remove.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.RemoveAll">
+            <summary>
+            Removes all bindings from the binding manager.
+            </summary>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.GetBindingsForView(Android.Views.View)">
+            <summary>
+            Returns all bindings for the supplied view.
+            </summary>
+            <param name="view">A reference to the view to return bindings for.</param>
+            <returns>A enumerable containing the bindings for the supplied view.</returns>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.UpdateSourceForView(Android.Views.View)">
+            <summary>
+            Updates bindings with the current values in the supplied view.
+            </summary>
+            <param name="view">The view to update bindings for.</param>
+        </member>
+        <member name="M:Csla.Axml.Binding.BindingManager.UpdateSourceForLastView">
+            <summary>
+            Updates bindings on the view that is in current focus on the activity supplied to the BindingManager.
+            </summary>
+        </member>
+        <member name="P:Csla.Axml.Binding.BindingManager.Bindings">
+            <summary>
+            A list of bindings that have been added to the manager.
+            </summary>
+        </member>
     </members>
 </doc>

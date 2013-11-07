@@ -21,7 +21,7 @@ Supports the use of ADO.NET Entity Framework 6.
     <language>en-US</language>
     <dependencies>
       <dependency id="CSLA-Core" version="[4.5.491-Beta]" />
-      <dependency id="EntityFramework" version="[5.0.0]" />
+      <dependency id="EntityFramework" version="[6.0]" />
     </dependencies>
   </metadata>
   <files>

@@ -21,6 +21,7 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AndroidFragment.wxs" />
     <Compile Include="CSSnippetsFragment.wxs" />
     <Compile Include="LogosFragment.wxs" />
     <Compile Include="Net4Fragment.wxs" />

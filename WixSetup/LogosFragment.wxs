@@ -1,53 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <!-- Logos Fragment-->
   <Fragment>
-    <ComponentGroup Id="LogosComponent">
-      <ComponentRef Id="comp_CslaWin8ai" />
-      <ComponentRef Id="comp_CslaWin8eps" />
-      <ComponentRef Id="comp_CslaWin8png" />
-      <ComponentRef Id="comp_CslaWin8Compactpng" />
-      <ComponentRef Id="comp_CslaWin8CompactSpng" />
-      <ComponentRef Id="comp_CslaWin8Fullpng" />
-      <ComponentRef Id="comp_CslaWin8FullBigpng" />
-      <ComponentRef Id="comp_CslaWin8FullSqpng" />
-      <ComponentRef Id="comp_CslaWin8Midpng" />
-      <ComponentRef Id="comp_21B2CBDDC9C549FFB82DCE185335BC99" />
-      <ComponentRef Id="comp_556F6B44EC2541C287EE55CC721DE2D2" />
+    <ComponentGroup Id="LogosComponents">
+      <ComponentRef Id="comp_CCC252B0D6F445258D01939BF4B3776A" />
+      <ComponentRef Id="comp_09515F0560F3438B8E4A59EBCB7A0B7A" />
+      <ComponentRef Id="comp_02A7D70DAF2E43E4BD0E7E43405A1C4E" />
+      <ComponentRef Id="comp_F27E67B05F6F4221BDE0C630AE6D1F0B" />
+      <ComponentRef Id="comp_2B53592F2796473EA285095D7F44B4CA" />
+      <ComponentRef Id="comp_05FF672549CE437BB8E1104D91CC9957" />
+      <ComponentRef Id="comp_54FDBEBF69F34F1B85A3B375C7B34B5C" />
+      <ComponentRef Id="comp_D48D701CCF074E4290AAA2AB0060DBEB" />
+      <ComponentRef Id="comp_C02E253F4F87482188A4278C1633161F" />
+      <ComponentRef Id="comp_9A1991C2086C4887970A1D9F44D3536B" />
+      <ComponentRef Id="comp_919568DC558348D785C8B854D60145F6" />
     </ComponentGroup>
     <DirectoryRef Id="Logos">
-      <Component Id="comp_CslaWin8ai" Guid="{29b32c43-4729-41d4-b702-4f33d383363d}">
-        <File Id="file_CslaWin8ai" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.ai" />
+      <Component Id="comp_CCC252B0D6F445258D01939BF4B3776A" Guid="5F8DF07D-3CA6-4374-82A0-BA64B1557E2C">
+        <File Id="file_5E887BC072C7496AA592B8971C0F3651" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.ai" />
       </Component>
-      <Component Id="comp_CslaWin8eps" Guid="{14f83951-9a96-428d-aa7c-bddcc999520e}">
-        <File Id="file_CslaWin8eps" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.eps" />
+      <Component Id="comp_09515F0560F3438B8E4A59EBCB7A0B7A" Guid="1013E7AD-F1E6-4071-9764-16C24C98F1D0">
+        <File Id="file_1C7D3E86D3CE4A34ABCEAE1C4D38BD77" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.eps" />
       </Component>
-      <Component Id="comp_CslaWin8png" Guid="{94dcb007-98c2-4e03-9e80-10b3b1fd7103}">
-        <File Id="file_CslaWin8png" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.png" />
+      <Component Id="comp_02A7D70DAF2E43E4BD0E7E43405A1C4E" Guid="6B7F2E68-3E5E-4019-89E3-2103AA45C1DD">
+        <File Id="file_5A7781CF10B740D2AE7E28DBB735AC54" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8.png" />
       </Component>
-      <Component Id="comp_CslaWin8Compactpng" Guid="{cdcdbcb9-11a1-4d37-9bb4-b57cb2e50841}">
-        <File Id="file_CslaWin8Compactpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact.png" />
+      <Component Id="comp_F27E67B05F6F4221BDE0C630AE6D1F0B" Guid="25D58ACD-10F0-4EEE-B676-62C77682C55C">
+        <File Id="file_77D4443320A94F81BDD5E8FE25334A30" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact.png" />
       </Component>
-      <Component Id="comp_CslaWin8CompactSpng" Guid="{182be09f-a257-44f6-b480-c12fa91a89db}">
-        <File Id="file_CslaWin8CompactSpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact_s.png" />
+      <Component Id="comp_2B53592F2796473EA285095D7F44B4CA" Guid="7D82DB08-7DE6-43C6-8058-BEDDAE79C7CF">
+        <File Id="file_F47854B6777A4DB08A9A9228E7404073" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_compact_s.png" />
       </Component>
-      <Component Id="comp_CslaWin8Fullpng" Guid="{8cc0af26-31ce-41ef-a578-a0ad312e0c3b}">
-        <File Id="file_CslaWin8Fullpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full.png" />
+      <Component Id="comp_05FF672549CE437BB8E1104D91CC9957" Guid="8540B712-B63F-4A4E-B56A-14B149E86C34">
+        <File Id="file_E4289568988C48BAB79DE80F54044560" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full.png" />
       </Component>
-      <Component Id="comp_CslaWin8FullBigpng" Guid="{86bdb60f-33fe-44cd-8d68-a5533dc95a28}">
-        <File Id="file_CslaWin8FullBigpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_big.png" />
+      <Component Id="comp_54FDBEBF69F34F1B85A3B375C7B34B5C" Guid="A30CB64D-994C-410A-8799-52F7A1E8D1BB">
+        <File Id="file_C0D6F948581D4AB9A80E53FEF7BB0271" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_big.png" />
       </Component>
-      <Component Id="comp_CslaWin8FullSqpng" Guid="{1db77329-4e66-4731-8460-cd23de06e421}">
-        <File Id="file_CslaWin8FullSqpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_sq.png" />
+      <Component Id="comp_D48D701CCF074E4290AAA2AB0060DBEB" Guid="CDB028EB-EFDB-4C39-B22F-7527010CEDD6">
+        <File Id="file_27A5CC2206794E1DB4AC11EDB41A6A82" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_full_sq.png" />
       </Component>
-      <Component Id="comp_CslaWin8Midpng" Guid="{0fbc16c2-31fc-4b86-817d-7dba686f1d24}">
-        <File Id="file_CslaWin8Midpng" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_mid.png" />
+      <Component Id="comp_C02E253F4F87482188A4278C1633161F" Guid="6FBDD023-BB2E-4421-948E-28C9E6B8308D">
+        <File Id="file_176B5EE17A6A44CE886089803E017735" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla win8_mid.png" />
       </Component>
-      <Component Id="comp_21B2CBDDC9C549FFB82DCE185335BC99" Guid="41320387-CB5F-49B3-9A2D-BCAD840A27B4">
-        <File Id="file_6034F9C14D0440A18C92913FA496D9F7" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla-icon.xcf" />
+      <Component Id="comp_9A1991C2086C4887970A1D9F44D3536B" Guid="8B93218F-D345-4830-8D9D-65AEB1AFF4FB">
+        <File Id="file_43FCF33FC94F41E4B029F50F5578A6EE" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla-icon.xcf" />
       </Component>
-      <Component Id="comp_556F6B44EC2541C287EE55CC721DE2D2" Guid="A7750E25-2154-4ED1-AD0F-0606B8D1D360">
-        <File Id="file_CF00ACB4634C428887DFFEEE6055286A" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla.png" />
+      <Component Id="comp_919568DC558348D785C8B854D60145F6" Guid="6FAC8582-0992-43A3-B5A5-EBF8BC3C94A2">
+        <File Id="file_A08976C9D427440E80F755581E6BF135" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Logos\csla.png" />
       </Component>
     </DirectoryRef>
   </Fragment>

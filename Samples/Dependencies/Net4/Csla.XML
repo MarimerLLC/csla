@@ -8993,6 +8993,13 @@
             <summary>
             Creates an instance of the object.
             </summary>
+            
+        </member>
+        <member name="M:Csla.Core.ReadOnlyObservableBindingList`1.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+            Method invoked when collection is changed.
+            </summary>
+            <param name="e">Arguments</param>
         </member>
         <member name="M:Csla.Core.ReadOnlyObservableBindingList`1.OnGetState(Csla.Serialization.Mobile.SerializationInfo)">
             <summary>
@@ -14375,6 +14382,11 @@
             <summary>
             Creates a read-write instance
             of the collection.
+            </summary>
+        </member>
+        <member name="M:Csla.Rules.BrokenRulesCollection.ClearRules(System.String,System.String)">
+            <summary>
+            Remove the previous results for the given rule name and origin property.
             </summary>
         </member>
         <member name="M:Csla.Rules.BrokenRulesCollection.GetFirstBrokenRule(Csla.Core.IPropertyInfo)">

@@ -5,6 +5,7 @@ using System.Text;
 using Csla;
 using Csla.Serialization;
 using Csla.Security;
+using System.Threading.Tasks;
 
 namespace ProjectTracker.Library.Security
 {
@@ -16,7 +17,13 @@ namespace ProjectTracker.Library.Security
       DataPortal.BeginFetch<PTIdentity>(new UsernameCriteria(username, password), callback);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+    public static async Task<PTIdentity> GetPTIdentityAsync(string username, string password)
+    {
+      return await DataPortal.FetchAsync<PTIdentity>(new UsernameCriteria(username, password));
+    }
+
+#if !SILVERLIGHT && !WINDOWS_PHONE && !NETFX_CORE
+
     public static PTIdentity GetPTIdentity(string username, string password)
     {
       return DataPortal.Fetch<PTIdentity>(new UsernameCriteria(username, password));

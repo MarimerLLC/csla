@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace MvcUI.Controllers
 {
+  [CustomAuthentication]
   public class HomeController : Controller
   {
     public ActionResult Index()

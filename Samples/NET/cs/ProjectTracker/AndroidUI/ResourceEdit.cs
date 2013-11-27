@@ -1,6 +1,6 @@
 using System;
-
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -44,7 +44,7 @@ namespace ProjectTracker.AndroidUI
             }
             catch (Exception ex)
             {
-                ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
@@ -58,11 +58,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     await this.viewModel.DeleteResource();
                     Toast.MakeText(this, Resources.GetString(Resource.String.MessageChangesSaved), ToastLength.Short).Show();
-                    StartActivity(typeof(ResourceList));
+                    this.FinishSavedActivity();
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace ProjectTracker.AndroidUI
             if (!this.viewModel.IsBusy)
             {
                 this.viewModel.Model.CancelEdit();
-                StartActivity(typeof(ResourceList));
+                this.FinishSavedActivity();
             }
         }
 
@@ -91,7 +91,7 @@ namespace ProjectTracker.AndroidUI
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -116,6 +116,13 @@ namespace ProjectTracker.AndroidUI
             this.Bindings.RemoveAll();
             Bindings.Add(Resource.Id.txtResourceFirstName, "Text", this.viewModel.Model, "FirstName");
             Bindings.Add(Resource.Id.txtResourceLastName, "Text", this.viewModel.Model, "LastName");
+        }
+
+        private void FinishSavedActivity()
+        {
+            var projectResourceListActivity = new Intent(this, typeof(ResourceList));
+            this.SetResult(Result.Ok, projectResourceListActivity);
+            this.Finish();
         }
 
         #endregion Methods

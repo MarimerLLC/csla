@@ -1,6 +1,7 @@
 using System;
 using System.Security.Principal;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -41,12 +42,37 @@ namespace ProjectTracker.AndroidUI
 
         void btnLogin_Click(object sender, EventArgs e)
         {
-            GlobalActivities.Login(this);
+            var loginActivity = new Intent(this, typeof(Login));
+            StartActivityForResult(loginActivity, Constants.RequestCodeLoginScreen);
         }
 
         void btnRoles_Click(object sender, EventArgs e)
         {
             GlobalActivities.Roles(this);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeLoginScreen)
+            {
+                switch (resultCode)
+                {
+                    case Result.Ok:
+                        StartActivity(typeof(MainPage));
+                        this.Finish();
+                        break;
+                    case Result.Canceled:
+                        break;
+                    default:
+                        Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                        break;
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
+            }
         }
     }
 }

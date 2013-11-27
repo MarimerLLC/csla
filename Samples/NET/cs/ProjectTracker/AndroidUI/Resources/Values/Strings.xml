@@ -9,7 +9,7 @@
     <string name="ProjectResourceAdd">Add Project Resource</string>
     <string name="phonetextextralargestyle">45sp</string>
     <string name="Error">An error has occurred: {0}</string>
-    <string name="DataPortalURL">http://10.0.2.2:22627/SlPortal.svc</string>
+    <string name="DataPortalURL">http://192.168.0.105:22627/SlPortal.svc</string>
     <string name="Welcome">Welcome:</string>
     <string name="WelcomeCreated">Created using CSLA .NET</string>
     <string name="Login">Login</string>

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
@@ -46,9 +45,8 @@ namespace ProjectTracker.AndroidUI
             if (!this.viewModel.IsBusy)
             {
                 this.viewModel.CancelEdit();
-                var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
-                projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectResourceListActivity);
+                this.SetResult(Result.Canceled);
+                this.Finish();
             }
         }
 
@@ -62,14 +60,15 @@ namespace ProjectTracker.AndroidUI
 
                     var newProjectResourceEdit = await this.viewModel.CreateProjectResourceAsync();
                     this.viewModel.ApplyEdit();
-                    var projectResourceEditActivity = new Intent(this, typeof(ProjectResourceEdit));
-                    projectResourceEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                    projectResourceEditActivity.PutExtra(Constants.EditIdParameter, newProjectResourceEdit.ResourceId);
-                    StartActivity(projectResourceEditActivity);
+                    var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
+                    projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
+                    projectResourceListActivity.PutExtra(Constants.EditIdParameter, newProjectResourceEdit.ResourceId);
+                    this.SetResult(Result.Ok, projectResourceListActivity);
+                    this.Finish();
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -90,6 +89,7 @@ namespace ProjectTracker.AndroidUI
 
             cboProjectAddResource.Adapter = resourceAdapter;
         }
+
         #endregion Methods
     }
 }

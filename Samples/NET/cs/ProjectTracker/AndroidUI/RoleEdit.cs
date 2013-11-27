@@ -49,42 +49,67 @@ namespace ProjectTracker.AndroidUI
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy && this.viewModel.CanDeleteObject)
+            try
             {
-                this.viewModel.DeleteFromParentList();
+                if (!this.viewModel.IsBusy && this.viewModel.CanDeleteObject)
+                {
+                    this.viewModel.DeleteFromParentList();
 
-                var roleListEditActivity = new Intent(this, typeof(RoleListEdit));
-                roleListEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.ParentList));
-                StartActivity(roleListEditActivity);
-                //Toast.MakeText(this, Resources.GetString(Resource.String.MessageChangesSaved), ToastLength.Short).Show();
+                    this.FinishSavedActivity();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                this.viewModel.Model.CancelEdit();
-                var roleListEditActivity = new Intent(this, typeof(RoleListEdit));
-                roleListEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.ParentList));
-                StartActivity(roleListEditActivity);
+                if (!this.viewModel.IsBusy)
+                {
+                    this.viewModel.Model.CancelEdit();
+                    this.SetResult(Result.Canceled);
+                    this.Finish();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                Bindings.UpdateSourceForLastView();
-                if (this.viewModel.Model.IsNew)
+                if (!this.viewModel.IsBusy)
                 {
-                    this.viewModel.ParentList.Add(this.viewModel.Model);
+                    Bindings.UpdateSourceForLastView();
+                    if (this.viewModel.Model.IsNew)
+                    {
+                        this.viewModel.ParentList.Add(this.viewModel.Model);
+                    }
+                    this.viewModel.Model.ApplyEdit();
+                    this.FinishSavedActivity();
                 }
-                this.viewModel.Model.ApplyEdit();
-                var roleListEditActivity = new Intent(this, typeof(RoleListEdit));
-                roleListEditActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.ParentList));
-                StartActivity(roleListEditActivity);
             }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
+            }
+        }
+
+        private void FinishSavedActivity()
+        {
+            var roleListEditIntent = new Intent(this, typeof (RoleListEdit));
+            roleListEditIntent.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.ParentList));
+            this.SetResult(Result.Ok, roleListEditIntent);
+            this.Finish();
         }
 
         private void ShowDeleteButton()

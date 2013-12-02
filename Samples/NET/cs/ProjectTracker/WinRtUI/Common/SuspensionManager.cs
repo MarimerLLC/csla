@@ -11,13 +11,13 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace WinRtUI.Common
+namespace WinRTUI.Common
 {
     /// <summary>
     /// SuspensionManager captures global session state to simplify process lifetime management
     /// for an application.  Note that session state will be automatically cleared under a variety
     /// of conditions and should only be used to store information that would be convenient to
-    /// carry across sessions, but that should be disacarded when an application crashes or is
+    /// carry across sessions, but that should be discarded when an application crashes or is
     /// upgraded.
     /// </summary>
     internal sealed class SuspensionManager
@@ -57,29 +57,35 @@ namespace WinRtUI.Common
         /// <returns>An asynchronous task that reflects when session state has been saved.</returns>
         public static async Task SaveAsync()
         {
-            // Save the navigation state for all registered frames
-            foreach (var weakFrameReference in _registeredFrames)
+            try
             {
-                Frame frame;
-                if (weakFrameReference.TryGetTarget(out frame))
+                // Save the navigation state for all registered frames
+                foreach (var weakFrameReference in _registeredFrames)
                 {
-                    SaveFrameNavigationState(frame);
+                    Frame frame;
+                    if (weakFrameReference.TryGetTarget(out frame))
+                    {
+                        SaveFrameNavigationState(frame);
+                    }
+                }
+
+                // Serialize the session state synchronously to avoid asynchronous access to shared
+                // state
+                MemoryStream sessionData = new MemoryStream();
+                DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
+                serializer.WriteObject(sessionData, _sessionState);
+
+                // Get an output stream for the SessionState file and write the state asynchronously
+                StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(sessionStateFilename, CreationCollisionOption.ReplaceExisting);
+                using (Stream fileStream = await file.OpenStreamForWriteAsync())
+                {
+                    sessionData.Seek(0, SeekOrigin.Begin);
+                    await sessionData.CopyToAsync(fileStream);
                 }
             }
-
-            // Serialize the session state synchronously to avoid asynchronous access to shared
-            // state
-            MemoryStream sessionData = new MemoryStream();
-            DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
-            serializer.WriteObject(sessionData, _sessionState);
-
-            // Get an output stream for the SessionState file and write the state asynchronously
-            StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(sessionStateFilename, CreationCollisionOption.ReplaceExisting);
-            using (Stream fileStream = await file.OpenStreamForWriteAsync())
+            catch (Exception e)
             {
-                sessionData.Seek(0, SeekOrigin.Begin);
-                await sessionData.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
+                throw new SuspensionManagerException(e);
             }
         }
 
@@ -96,24 +102,31 @@ namespace WinRtUI.Common
         {
             _sessionState = new Dictionary<String, Object>();
 
-            // Get the input stream for the SessionState file
-            StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(sessionStateFilename);
-            using (IInputStream inStream = await file.OpenSequentialReadAsync())
+            try
             {
-                // Deserialize the Session State
-                DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
-                _sessionState = (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
-            }
-
-            // Restore any registered frames to their saved state
-            foreach (var weakFrameReference in _registeredFrames)
-            {
-                Frame frame;
-                if (weakFrameReference.TryGetTarget(out frame))
+                // Get the input stream for the SessionState file
+                StorageFile file = await ApplicationData.Current.LocalFolder.GetFileAsync(sessionStateFilename);
+                using (IInputStream inStream = await file.OpenSequentialReadAsync())
                 {
-                    frame.ClearValue(FrameSessionStateProperty);
-                    RestoreFrameNavigationState(frame);
+                    // Deserialize the Session State
+                    DataContractSerializer serializer = new DataContractSerializer(typeof(Dictionary<string, object>), _knownTypes);
+                    _sessionState = (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
                 }
+
+                // Restore any registered frames to their saved state
+                foreach (var weakFrameReference in _registeredFrames)
+                {
+                    Frame frame;
+                    if (weakFrameReference.TryGetTarget(out frame))
+                    {
+                        frame.ClearValue(FrameSessionStateProperty);
+                        RestoreFrameNavigationState(frame);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new SuspensionManagerException(e);
             }
         }
 
@@ -183,7 +196,7 @@ namespace WinRtUI.Common
         /// that can still be useful when restoring pages that have been discarded from the
         /// navigation cache.
         /// </summary>
-        /// <remarks>Apps may choose to rely on <see cref="LayoutAwarePage"/> to manage
+        /// <remarks>Apps may choose to rely on <see cref="NavigationHelper"/> to manage
         /// page-specific state instead of working with frame session state directly.</remarks>
         /// <param name="frame">The instance for which session state is desired.</param>
         /// <returns>A collection of state subject to the same serialization mechanism as
@@ -227,6 +240,18 @@ namespace WinRtUI.Common
         {
             var frameState = SessionStateForFrame(frame);
             frameState["Navigation"] = frame.GetNavigationState();
+        }
+    }
+    public class SuspensionManagerException : Exception
+    {
+        public SuspensionManagerException()
+        {
+        }
+
+        public SuspensionManagerException(Exception e)
+            : base("SuspensionManager failed", e)
+        {
+
         }
     }
 }

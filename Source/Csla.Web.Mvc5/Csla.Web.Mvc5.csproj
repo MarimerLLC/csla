@@ -7,7 +7,7 @@
     <ProjectGuid>{46B51C1E-51A4-4BF5-ACA5-B13098712950}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Csla.Web.Mvc5</RootNamespace>
+    <RootNamespace>Csla.Web.Mvc</RootNamespace>
     <AssemblyName>Csla.Web.Mvc5</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\NET\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MVC5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\NET\Csla.Web.Mvc5.XML</DocumentationFile>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\NET\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;MVC5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\NET\Csla.Web.Mvc5.XML</DocumentationFile>
@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.0.0\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -72,6 +73,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Csla.Web.Mvc4\Controller.cs">
+      <Link>Controller.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\CslaModelBinder.cs">
+      <Link>CslaModelBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\HasPermissionAttribute.cs">
+      <Link>HasPermissionAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\HtmlExtensions.cs">
+      <Link>HtmlExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\IModelCreator.cs">
+      <Link>IModelCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\IViewModel.cs">
+      <Link>IViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\ViewModelBase.cs">
+      <Link>ViewModelBase.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

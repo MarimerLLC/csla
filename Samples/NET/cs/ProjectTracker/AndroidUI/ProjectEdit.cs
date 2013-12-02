@@ -12,6 +12,8 @@ namespace ProjectTracker.AndroidUI
     [Activity(Label = "Project Edit")]
     public class ProjectEdit :  ActivityBase<ViewModels.ProjectEdit, Library.ProjectEdit>
     {
+        #region Event Handlers
+
         protected async override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -26,16 +28,8 @@ namespace ProjectTracker.AndroidUI
                 this.viewModel = new ViewModels.ProjectEdit();
 
                 var projectId = Intent.GetIntExtra(Constants.EditIdParameter, Constants.NewRecordId);
-                var parameter1 = Intent.GetByteArrayExtra(Constants.EditParameter);
-                if (parameter1 != null)
-                {
-                    var projectEdit = (Library.ProjectEdit)this.DeserializeFromParameter(parameter1);
-                    this.viewModel.LoadFromExisting(projectEdit);
-                }
-                else
-                {
-                    await this.viewModel.LoadProjectAsync(projectId);
-                }
+                await this.viewModel.LoadProjectAsync(projectId);
+
                 if (projectId > Constants.NewRecordId)
                 {
                     this.ShowDeleteButton();
@@ -54,18 +48,16 @@ namespace ProjectTracker.AndroidUI
                 var startDate = FindViewById<Button>(Resource.Id.btnProjectStart);
                 startDate.Click += delegate { ShowDialog(Constants.StartDateDialogId); };
 
-                var EndDate = FindViewById<Button>(Resource.Id.btnProjectEnd);
-                EndDate.Click += delegate { ShowDialog(Constants.EndDateDialogId); };
+                var endDate = FindViewById<Button>(Resource.Id.btnProjectEnd);
+                endDate.Click += delegate { ShowDialog(Constants.EndDateDialogId); };
 
                 this.RefreshBindings();
             }
             catch (Exception ex)
             {
-               ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
-
-        #region Event Handlers
 
         private async void btnDelete_Click(object sender, EventArgs e)
         {
@@ -75,12 +67,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     await this.viewModel.DeleteProject();
                     Toast.MakeText(this, Resources.GetString(Resource.String.MessageChangesSaved), ToastLength.Short).Show();
-                    StartActivity(typeof(ProjectList));
-
+                    this.FinishSavedActivity();
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -90,7 +81,7 @@ namespace ProjectTracker.AndroidUI
             if (!this.viewModel.IsBusy)
             {
                 this.viewModel.Model.CancelEdit();
-                StartActivity(typeof(ProjectList));
+                this.FinishSavedActivity();
             }
         }
 
@@ -109,7 +100,7 @@ namespace ProjectTracker.AndroidUI
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -122,11 +113,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
                     projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter());
-                    StartActivity(projectResourceListActivity);
+                    StartActivityForResult(projectResourceListActivity, Constants.RequestCodeProjectResourceListScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -139,6 +130,35 @@ namespace ProjectTracker.AndroidUI
         void OnEndDateSet(object sender, DatePickerDialog.DateSetEventArgs e)
         {
             this.viewModel.Ended = e.Date.ToString();
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeProjectResourceListScreen)
+            {
+                switch (resultCode)
+                {
+                    case Result.Ok:
+                        var parameter1 = data.GetByteArrayExtra(Constants.EditParameter);
+                        if (parameter1 != null)
+                        {
+                            var projectEdit = (Library.ProjectEdit)this.DeserializeFromParameter(parameter1);
+                            this.viewModel.LoadFromExisting(projectEdit);
+                            this.RefreshBindings();
+                        }
+                        break;
+                    case Result.Canceled:
+                        break;
+                    default:
+                        Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                        break;
+                }
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
+            }
         }
 
         #endregion Event Handlers
@@ -187,7 +207,13 @@ namespace ProjectTracker.AndroidUI
             }
         }
 
-        #endregion Methods
+        private void FinishSavedActivity()
+        {
+            var projectListActivity = new Intent(this, typeof(ProjectList));
+            this.SetResult(Result.Ok, projectListActivity);
+            this.Finish();
+        }
 
+        #endregion Methods
     }
 }

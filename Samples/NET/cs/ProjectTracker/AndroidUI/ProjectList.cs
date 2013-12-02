@@ -44,14 +44,20 @@ namespace ProjectTracker.AndroidUI
 
                 var projectList = FindViewById<ListView>(Resource.Id.lstProjects);
 
-                var listAdapter = new Adapters.ProjectListAdapter(this, this.viewModel.Model);
-                projectList.Adapter = listAdapter;
+                this.LoadProjectList();
                 projectList.ItemClick += lstProjects_OnListItemClick;
             }
             catch (Exception ex)
             {
-                ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName);
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
+        }
+
+        private void LoadProjectList()
+        {
+            var projectList = FindViewById<ListView>(Resource.Id.lstProjects);
+            var listAdapter = new Adapters.ProjectListAdapter(this, this.viewModel.Model);
+            projectList.Adapter = listAdapter;
         }
 
         protected void lstProjects_OnListItemClick(object o, AdapterView.ItemClickEventArgs e)
@@ -62,11 +68,11 @@ namespace ProjectTracker.AndroidUI
                 {
                     var projectEditActivity = new Intent(this, typeof(ProjectEdit));
                     projectEditActivity.PutExtra(Constants.EditIdParameter, (int)e.Id);
-                    StartActivity(projectEditActivity);
+                    StartActivityForResult(projectEditActivity, Constants.RequestCodeProjectEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
@@ -79,27 +85,41 @@ namespace ProjectTracker.AndroidUI
                 {
                     var projectEditActivity = new Intent(this, typeof(ProjectEdit));
                     projectEditActivity.PutExtra(Constants.EditIdParameter, Constants.NewRecordId);
-                    StartActivity(projectEditActivity);
+                    StartActivityForResult(projectEditActivity, Constants.RequestCodeProjectEditScreen);
                 }
                 catch (Exception ex)
                 {
-                    ProgressDialog.Show(this, "Error", ex.Message + Csla.DataPortal.ProxyTypeName + Csla.DataPortalClient.WcfProxy.DefaultUrl);
+                    Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
                 }
             }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            this.Finish();
+        }
+
+        protected async override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (requestCode == Constants.RequestCodeProjectEditScreen)
             {
-                if (Csla.ApplicationContext.User.Identity.IsAuthenticated)
+                switch (resultCode)
                 {
-                    StartActivity(typeof(MainPage));
+                    case Result.Ok:
+                        await this.viewModel.LoadAsync();
+                        this.LoadProjectList();
+                        break;
+                    case Result.Canceled:
+                        break;
+                    default:
+                        Toast.MakeText(this, string.Format("Unexpected result code, received: {0}", resultCode), ToastLength.Long).Show();
+                        break;
                 }
-                else
-                {
-                    StartActivity(typeof(Welcome));
-                }
+            }
+            else
+            {
+                Toast.MakeText(this, string.Format("Unexpected request code, received: {0}", requestCode), ToastLength.Long).Show();
             }
         }
     }

@@ -43,40 +43,46 @@ namespace ProjectTracker.AndroidUI
             await this.RefreshBindingsAsync();
         }
 
-        private async void btnDelete_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             if (!this.viewModel.IsBusy)
             {
                 this.viewModel.Root.Resources.Remove(this.viewModel.Model);
                 this.viewModel.ApplyEdit();
-                var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
-                projectResourceListActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
-                projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectResourceListActivity);
+                this.FinishSavedActivity();
             }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                this.viewModel.CancelEdit();
-                var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
-                projectResourceListActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
-                projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectResourceListActivity);
+                if (!this.viewModel.IsBusy)
+                {
+                    this.viewModel.CancelEdit();
+                    this.SetResult(Result.Canceled);
+                    this.Finish();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
-        private async void btnOk_Click(object sender, EventArgs e)
+        private void btnOk_Click(object sender, EventArgs e)
         {
-            if (!this.viewModel.IsBusy)
+            try
             {
-                this.viewModel.ApplyEdit();
-                var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
-                projectResourceListActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
-                projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
-                StartActivity(projectResourceListActivity);
+                if (!this.viewModel.IsBusy)
+                {
+                    this.viewModel.ApplyEdit();
+                    this.FinishSavedActivity();
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.MakeText(this, string.Format(this.GetString(Resource.String.Error), ex.Message), ToastLength.Long).Show();
             }
         }
 
@@ -117,6 +123,15 @@ namespace ProjectTracker.AndroidUI
             var cboRole = FindViewById<Spinner>(Resource.Id.cboRole);
             var roles = await this.viewModel.GetRolesAsync();
             cboRole.SetSelection(roles.IndexOf(roles.Single(r => r.Key == this.viewModel.Model.Role)));
+        }
+
+        private void FinishSavedActivity()
+        {
+            var projectResourceListActivity = new Intent(this, typeof(ProjectResourceList));
+            projectResourceListActivity.PutExtra(Constants.EditIdParameter, this.viewModel.Root.Id);
+            projectResourceListActivity.PutExtra(Constants.EditParameter, this.SerilizeModelForParameter(this.viewModel.Root));
+            this.SetResult(Result.Ok, projectResourceListActivity);
+            this.Finish();
         }
 
         #endregion Methods

@@ -19,10 +19,10 @@ namespace SilverlightUI.ViewModels
       set { _password = value; OnPropertyChanged("Password"); }
     }
 
-    public void LoginUser()
+    public async void LoginUser()
     {
       Bxf.Shell.Instance.ShowStatus(new Bxf.Status { IsBusy = true, Text = "Validating credentials..." });
-      ProjectTracker.Library.Security.PTPrincipal.BeginLogin(Username, Password);
+      await ProjectTracker.Library.Security.PTPrincipal.LoginAsync(Username, Password);
       Bxf.Shell.Instance.ShowView(null, "Main");
     }
 

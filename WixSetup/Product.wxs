@@ -65,6 +65,8 @@
       <ComponentRef Id="comp_LicenseTXT" />
       <ComponentRef Id="comp_ReadmeRTF" />
       <ComponentRef Id="comp_ReadmeMD" />
+      <ComponentRef Id="comp_ReadmeMD" />
+      <ComponentRef Id="comp_HelpChm" />
     </ComponentGroup>
     <DirectoryRef Id="INSTALLDIR">
       <Component Id="comp_CslaZIP" Guid="{5797F598-B6D1-491C-A9F7-FC1A4186BADD}">
@@ -81,6 +83,9 @@
       </Component>
       <Component Id="comp_ReadmeMD" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33B}">
         <File Id="file_ReadmeMD" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.md" />
+      </Component>
+      <Component Id="comp_HelpChm" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33C}">
+        <File Id="file_HelpChm" KeyPath="yes" Source="$(var.SolutionDir)..\Csla.Help\Help\csla.chm" />
       </Component>
     </DirectoryRef>
   </Fragment>

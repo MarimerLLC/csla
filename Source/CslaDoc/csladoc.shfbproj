@@ -37,8 +37,8 @@
     <CopyrightHref>http://www.lhotka.net/cslanet/license.aspx</CopyrightHref>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Documents\GitHub\csla\Bin\Release\NET\Csla.dll" xmlns="" />
-      <DocumentationSource sourceFile="..\..\Documents\GitHub\csla\Bin\Release\NET\Csla.xml" xmlns="" />
+      <DocumentationSource sourceFile="..\..\Bin\Release\NET\Csla.dll" xmlns="" />
+      <DocumentationSource sourceFile="..\..\Bin\Release\NET\Csla.XML" xmlns="" />
     </DocumentationSources>
     <MissingTags>Summary, Parameter, AutoDocumentCtors, Namespace, TypeParameter, AutoDocumentDispose</MissingTags>
     <FooterText>Download and information at http://www.cslanet.com</FooterText>
@@ -48,6 +48,14 @@
 &amp;lt%3bp&amp;gt%3bThe framework enables developers to leverage the power of object-oriented design as the basis for creating powerful applications. Business objects based on CSLA automatically gain many advanced features that simplify the creation of Windows, web, service, and mobile interfaces. &amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3bCSLA .NET allows great flexibility in object persistence, so business objects can use virtually any data sources available. The framework supports 1-, 2- and n-tier models through the concept of mobile objects. This provides the flexibility to optimize performance, scalability, security and fault tolerance with no changes to code in the UI or business objects. &amp;lt%3b/p&amp;gt%3b
 &amp;lt%3bp&amp;gt%3bFor more information and downloads please visit the &amp;lt%3ba href=&amp;quot%3bhttp://www.cslanet.com&amp;quot%3b&amp;gt%3bCSLA .NET home page&amp;lt%3b/a&amp;gt%3b.&amp;lt%3b/p&amp;gt%3b</ProjectSummary>
+    <NamespaceSummaries>
+      <NamespaceSummaryItem name="Csla" isDocumented="True" xmlns="">&lt;h1&gt;CSLA .NET&lt;/h1&gt;
+&lt;p&gt;CSLA .NET is a software development framework that helps you build a reusable, maintainable object-oriented business layer for your app.&lt;/p&gt;
+&lt;p&gt;Created by &lt;a href="http://www.lhotka.net"&gt;Rockford Lhotka&lt;/a&gt;, this framework reduces the cost of building and maintaining applications. &lt;/p&gt;
+&lt;p&gt;The framework enables developers to leverage the power of object-oriented design as the basis for creating powerful applications. Business objects based on CSLA automatically gain many advanced features that simplify the creation of Windows, web, service, and mobile interfaces. &lt;/p&gt;
+&lt;p&gt;CSLA .NET allows great flexibility in object persistence, so business objects can use virtually any data sources available. The framework supports 1-, 2- and n-tier models through the concept of mobile objects. This provides the flexibility to optimize performance, scalability, security and fault tolerance with no changes to code in the UI or business objects. &lt;/p&gt;
+&lt;p&gt;For more information and downloads please visit the &lt;a href="http://www.cslanet.com"&gt;CSLA .NET home page&lt;/a&gt;.&lt;/p&gt;</NamespaceSummaryItem>
+    </NamespaceSummaries>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in
        order for Visual Studio to perform the build.  The others are optional

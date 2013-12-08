@@ -16,25 +16,25 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\ios\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\Debug\iOS\</OutputPath>
     <DefineConstants>DEBUG;__IOS__;__MOBILE__;SILVERLIGHT;IOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <DocumentationFile>..\..\Bin\ios\Debug\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\ios\Release\</OutputPath>
+    <OutputPath>..\..\Bin\Release\iOS\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <DefineConstants>IOS;SILVERLIGHT;__IOS__;__MOBILE__;</DefineConstants>
-    <DocumentationFile>..\..\Bin\ios\Release\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Csla.WinPRT\DataAnnotations\DisplayAttribute.cs">

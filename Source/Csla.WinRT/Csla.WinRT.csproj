@@ -880,7 +880,9 @@ copy "$(SolutionDir)Csla\Properties\resources.vi.resx" "$(ProjectDir)resources\v
 mkdir "$(ProjectDir)resources\zh-Hans"
 copy "$(SolutionDir)Csla\Properties\resources.zh-Hans.resx" "$(ProjectDir)resources\zh-Hans\Resources.resw"
 mkdir "$(ProjectDir)resources\zh-TW"
-copy "$(SolutionDir)Csla\Properties\resources.zh-TW.resx" "$(ProjectDir)resources\zh-TW\Resources.resw"</PreBuildEvent>
+copy "$(SolutionDir)Csla\Properties\resources.zh-TW.resx" "$(ProjectDir)resources\zh-TW\Resources.resw"
+mkdir "$(ProjectDir)resources\uk-ua"
+copy "$(SolutionDir)Csla\Properties\resources.uk-ua.resx" "$(ProjectDir)resources\uk-ua\Resources.resw"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

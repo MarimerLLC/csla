@@ -21,5 +21,10 @@ namespace Csla.Server
     {
       // do no work by default
     }
+
+    public void FinalizeInstance(object obj)
+    {
+      // do no work by default
+    }
   }
 }

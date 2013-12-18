@@ -101,7 +101,10 @@ namespace Csla.Server
         throw new Csla.DataPortalException(
           "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, bo);
       }
-
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+      }
     }
 
     /// <summary>
@@ -189,7 +192,10 @@ namespace Csla.Server
         throw new Csla.DataPortalException(
           "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, bo);
       }
-
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+      }
     }
 
     /// <summary>
@@ -340,7 +346,10 @@ namespace Csla.Server
         throw new Csla.DataPortalException(
           "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
-
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
+      }
     }
   }
 }

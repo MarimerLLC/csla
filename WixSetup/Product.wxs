@@ -85,7 +85,7 @@
         <File Id="file_ReadmeMD" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.md" />
       </Component>
       <Component Id="comp_HelpChm" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33C}">
-        <File Id="file_HelpChm" KeyPath="yes" Source="$(var.SolutionDir)..\Csla.Help\Help\csla.chm" />
+        <File Id="file_HelpChm" KeyPath="yes" Source="$(var.SolutionDir)..\Source\CslaDoc\Help\csla.chm" />
       </Component>
     </DirectoryRef>
   </Fragment>

@@ -12009,6 +12009,13 @@
             </summary>
             <param name="obj">Reference to the business object.</param>
         </member>
+        <member name="M:Csla.Server.IDataPortalActivator.FinalizeInstance(System.Object)">
+            <summary>
+            Finalizes an existing business object instance. Called
+            after a data portal operation is complete.
+            </summary>
+            <param name="obj">Reference to the business object.</param>
+        </member>
         <member name="T:Csla.Server.ServicedDataPortalReadUncommitted">
             <summary>
             Implements the server-side Serviced 

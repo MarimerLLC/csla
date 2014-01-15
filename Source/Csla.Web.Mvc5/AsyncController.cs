@@ -18,7 +18,7 @@ namespace Csla.Web.Mvc
     public class AsyncController : System.Web.Mvc.AsyncController
     {
         /// <summary>
-        /// Performs a Save() operation on an
+        /// Performs a SaveAsync() operation on an
         /// editable business object, with appropriate
         /// validation and exception handling.
         /// </summary>
@@ -34,15 +34,15 @@ namespace Csla.Web.Mvc
         }
 
         /// <summary>
-        /// Performs a Save() operation on an
+        /// Performs a SaveAsync() operation on an
         /// editable business object, with appropriate
         /// validation and exception handling.
         /// </summary>
         /// <typeparam name="T">Type of business object.</typeparam>
         /// <param name="item">The business object to insert.</param>
         /// <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
-        /// <param name="forceUpdate">true to force Save() to be an update.</param>
-        /// <returns>true the Save() succeeds, false if not.</returns>
+        /// <param name="forceUpdate">true to force SaveAsync() to be an update.</param>
+        /// <returns>true the SaveAsync() succeeds, false if not.</returns>
         protected virtual async Task<bool> SaveObjectAsync<T>(T item, Action<T> updateModel, bool forceUpdate) where T : class, Csla.Core.ISavable
         {
             try

@@ -11,6 +11,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Axml</RootNamespace>
     <AssemblyName>Csla.Axml</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>

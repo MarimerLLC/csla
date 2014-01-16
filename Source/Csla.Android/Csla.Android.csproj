@@ -11,6 +11,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla</RootNamespace>
     <AssemblyName>Csla</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

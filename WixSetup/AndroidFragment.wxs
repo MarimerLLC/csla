@@ -20,43 +20,43 @@
 </CommandLineOptions>-->
   <Fragment>
     <ComponentGroup Id="AndroidComponents">
-      <ComponentRef Id="comp_A4A2A11FD8E84B1FAB7B91FCAEB602BC" />
-      <ComponentRef Id="comp_AF7BC8C597F441E28DCBCBA8695976AD" />
-      <ComponentRef Id="comp_B2D944B945554582A789708A54E13DD8" />
-      <ComponentRef Id="comp_3479C479773D4FCB83AAEA116F785802" />
-      <ComponentRef Id="comp_9A5656D3B3564805B62F10AA0B123D9A" />
-      <ComponentRef Id="comp_C82C654A84CE4BCE97B9D246A71A4C45" />
-      <ComponentRef Id="comp_64E16EC1EB184127A031CF964FD9FCD8" />
-      <ComponentRef Id="comp_EAE1EA31AFB94F73AE59564FA576B73D" />
-      <ComponentRef Id="comp_C5E4D71B55B94AFB8B1BC0CA663C866D" />
+      <ComponentRef Id="comp_1B9E4262C99A4EC3AEAEC249B232FFCD" />
+      <ComponentRef Id="comp_10AF26FFD95A435D99DED150D62899AB" />
+      <ComponentRef Id="comp_AB3094ACE4CC463B96A53B60B2E4C1DA" />
+      <ComponentRef Id="comp_5A66AF20595541888A26460BF7B74094" />
+      <ComponentRef Id="comp_53541E7862CF490DAD823D44FEDE05A3" />
+      <ComponentRef Id="comp_1D899FCE9F8C4619AA690FA9DD480FC4" />
+      <ComponentRef Id="comp_5F755A6CF3824ABEB5A2536946E719D8" />
+      <ComponentRef Id="comp_CAE41FFC72D74281A92D0AB01A0916AB" />
+      <ComponentRef Id="comp_554E671D330B4F628D2C090D9152810A" />
     </ComponentGroup>
     <DirectoryRef Id="Android">
-      <Component Id="comp_A4A2A11FD8E84B1FAB7B91FCAEB602BC" Guid="32923FE6-3CCA-4189-85A6-5B57058FA2B4">
-        <File Id="file_053F97EE27484A6CB2BB2009EFC9156D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.dll" />
+      <Component Id="comp_1B9E4262C99A4EC3AEAEC249B232FFCD" Guid="0676465B-761B-4113-AF3D-9D83031832DC">
+        <File Id="file_A47C2172168C46C78D274F7733A28EA3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.dll" />
       </Component>
-      <Component Id="comp_AF7BC8C597F441E28DCBCBA8695976AD" Guid="6A44234C-C3CE-4446-B6A8-68695CCD20A8">
-        <File Id="file_01BDA514E6C040AF884CF19D51C40CCB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.pdb" />
+      <Component Id="comp_10AF26FFD95A435D99DED150D62899AB" Guid="F7E07CE9-57A6-4A5A-A10A-C7CEC0A26333">
+        <File Id="file_0CEDB935C06246B6BE1A15CEAD656D27" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.pdb" />
       </Component>
-      <Component Id="comp_B2D944B945554582A789708A54E13DD8" Guid="C020AB72-1978-400D-B2DF-CB86CA9922C4">
-        <File Id="file_CFDBE3A00FD947548735F4B78409489F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.XML" />
+      <Component Id="comp_AB3094ACE4CC463B96A53B60B2E4C1DA" Guid="D4206120-7C85-44E4-97CB-91E84EAAA8C0">
+        <File Id="file_2DE259E2DCFC4CF988DB8C48073ABDAA" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Axml.XML" />
       </Component>
-      <Component Id="comp_3479C479773D4FCB83AAEA116F785802" Guid="A11D2A8D-031E-429E-A9B3-A943702BB0D7">
-        <File Id="file_9187676BA551410581122FD0567E016E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.dll" />
+      <Component Id="comp_5A66AF20595541888A26460BF7B74094" Guid="98B9DD0C-FAF5-4DA4-8830-44F1E4F43866">
+        <File Id="file_7A80BD62F4EA4C3C8497010D26302724" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.dll" />
       </Component>
-      <Component Id="comp_9A5656D3B3564805B62F10AA0B123D9A" Guid="514BE886-A9D9-4CC9-8443-ADC456CC1C9D">
-        <File Id="file_4FE6125494CA443E808F7F7F29F0D9B5" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.pdb" />
+      <Component Id="comp_53541E7862CF490DAD823D44FEDE05A3" Guid="03F4429B-AD95-4683-844F-1CCF927F0E29">
+        <File Id="file_BC7A716E6F574DEC802EFD58DA8AD759" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.pdb" />
       </Component>
-      <Component Id="comp_C82C654A84CE4BCE97B9D246A71A4C45" Guid="A023FEF3-87C2-4922-994A-B8F280F18F24">
-        <File Id="file_0EF03DACA73C44D9AF049B735A589138" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.dll" />
+      <Component Id="comp_1D899FCE9F8C4619AA690FA9DD480FC4" Guid="865DC47B-D486-428C-BEFF-307B00A8947E">
+        <File Id="file_C9AA6DB414EC48C587D51929505DC545" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.dll" />
       </Component>
-      <Component Id="comp_64E16EC1EB184127A031CF964FD9FCD8" Guid="3B44A5B2-84E7-4030-B4CB-DC2C6F43EA3E">
-        <File Id="file_BC82FE57AA2043FDBD89AC9D37310388" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.pdb" />
+      <Component Id="comp_5F755A6CF3824ABEB5A2536946E719D8" Guid="48CF557F-C230-4D28-A724-6AAFDFF8EAB4">
+        <File Id="file_94255E11665E47A78B4B3A13CA0869CD" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.pdb" />
       </Component>
-      <Component Id="comp_EAE1EA31AFB94F73AE59564FA576B73D" Guid="27FE963D-28CB-4522-8828-7CF3715826A3">
-        <File Id="file_DFA004BB7B3348C4824A283003488475" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.xml" />
+      <Component Id="comp_CAE41FFC72D74281A92D0AB01A0916AB" Guid="0E71EE53-F75E-4334-B763-4EE62E99971E">
+        <File Id="file_4FC9997DD0324EEAB83E860EA4D9553F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.Validation.xml" />
       </Component>
-      <Component Id="comp_C5E4D71B55B94AFB8B1BC0CA663C866D" Guid="5C17F178-B37F-4B51-BC51-037C6B299A46">
-        <File Id="file_4EA448BFF2CE4AA5A187A74B837DBEE2" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.XML" />
+      <Component Id="comp_554E671D330B4F628D2C090D9152810A" Guid="D5C460FD-4503-4022-9CAD-E88BB6DFCEFF">
+        <File Id="file_88C3E17581AA44E2BD2F911ADF9FA5FC" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Android\Csla.XML" />
       </Component>
     </DirectoryRef>
   </Fragment>

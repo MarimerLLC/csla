@@ -69,5 +69,10 @@ namespace CustomActivator
     {
       Console.WriteLine("InitializeInstance");
     }
+
+    public void FinalizeInstance(object obj)
+    {
+      Console.WriteLine("FinalizeInstance");
+    }
   }
 }

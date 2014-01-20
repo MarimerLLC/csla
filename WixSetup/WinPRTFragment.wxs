@@ -20,43 +20,43 @@
 </CommandLineOptions>-->
   <Fragment>
     <ComponentGroup Id="WinPRTComponents">
-      <ComponentRef Id="comp_AB6FD50A4533470D8B41273D3E19D9D1" />
-      <ComponentRef Id="comp_2E4B52FF1B1547A79C81FF090DE394C1" />
-      <ComponentRef Id="comp_AED47E7BA4964507AC1D1F94305CF5C2" />
-      <ComponentRef Id="comp_F522E0935B59400A9F7632B4F5E0B729" />
-      <ComponentRef Id="comp_44DAD9320F294909915CA43DA79DF3B5" />
-      <ComponentRef Id="comp_5863D6063E174871AF5DB8E64CFF4EC5" />
-      <ComponentRef Id="comp_C036510E9C034ADEAFD8796F29311CF3" />
-      <ComponentRef Id="comp_1B7D6A9EB83D4E8687ADB63183D0B9B9" />
-      <ComponentRef Id="comp_355B5A3D240C4CA6A751D1225E94C909" />
+      <ComponentRef Id="comp_F092B4F445BD410EAE7D66BD2277C31D" />
+      <ComponentRef Id="comp_61FDE415BDF244F0BE010396EE81C439" />
+      <ComponentRef Id="comp_7335C27D112F4F798BFB0B0D4560E40F" />
+      <ComponentRef Id="comp_549E87D488CD4C1F8D8AD2D526E3DA25" />
+      <ComponentRef Id="comp_C62CA74C0F8C44EAAE7EACC3EB8EDDFD" />
+      <ComponentRef Id="comp_FB06D6CAA62C443C9405FAB9D2F19A58" />
+      <ComponentRef Id="comp_8BEF78FBE4294352AC0C2FCA99F7E844" />
+      <ComponentRef Id="comp_2906C5325B7E49EF93C1BAB02B102117" />
+      <ComponentRef Id="comp_EEF06D8E101244F59690DD7810DBE7B5" />
     </ComponentGroup>
     <DirectoryRef Id="WinPRT">
-      <Component Id="comp_AB6FD50A4533470D8B41273D3E19D9D1" Guid="21F03301-C387-4F4F-A017-43385B2FE43A">
-        <File Id="file_3E73A2E192B64829A5B4B97991B3E1C7" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.dll" />
+      <Component Id="comp_F092B4F445BD410EAE7D66BD2277C31D" Guid="95C212B2-CDC8-44A5-8D40-B9124406D550">
+        <File Id="file_D8AFF094E1F846C5A34505FAAFB56E50" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.dll" />
       </Component>
-      <Component Id="comp_2E4B52FF1B1547A79C81FF090DE394C1" Guid="F94F17F2-A716-4DA1-A260-095E761B1B1E">
-        <File Id="file_77B6A766A3344BEE9415BAA126265812" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.pdb" />
+      <Component Id="comp_61FDE415BDF244F0BE010396EE81C439" Guid="8BDFFFEA-A6E2-4B07-9834-56A96A290ACE">
+        <File Id="file_76AFC7C8BE304DF4A03B9CE402D30121" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.pdb" />
       </Component>
-      <Component Id="comp_AED47E7BA4964507AC1D1F94305CF5C2" Guid="31E20721-402F-4AE5-95EB-E3848D716615">
-        <File Id="file_360E1C78B8004C1D826A941C6D585828" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.dll" />
+      <Component Id="comp_7335C27D112F4F798BFB0B0D4560E40F" Guid="457B3A98-F582-4E17-9B4B-B9B9F85CE291">
+        <File Id="file_53D5236D38E24A4A90000821EDAD9003" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.dll" />
       </Component>
-      <Component Id="comp_F522E0935B59400A9F7632B4F5E0B729" Guid="12BD1C22-4B35-4CCA-B240-0D9CAAA0F0F8">
-        <File Id="file_743650392ADE4C7BACBB557A581F630F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.pdb" />
+      <Component Id="comp_549E87D488CD4C1F8D8AD2D526E3DA25" Guid="993B5ACB-9DC5-401D-8D4B-14BC331F87B8">
+        <File Id="file_B768D44ECAD8499CAD001F4223C2FBDE" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.pdb" />
       </Component>
-      <Component Id="comp_44DAD9320F294909915CA43DA79DF3B5" Guid="5B9A2718-D5F8-4733-AEE4-D03E8090CEC3">
-        <File Id="file_EB34C808B20942F9A6B125C2455B0E03" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.XML" />
+      <Component Id="comp_C62CA74C0F8C44EAAE7EACC3EB8EDDFD" Guid="D56C5A5B-E785-406F-B835-DEA1CFA3F614">
+        <File Id="file_ED6F4C29364B4E2AB8BC2E0DA133AF76" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Validation.XML" />
       </Component>
-      <Component Id="comp_5863D6063E174871AF5DB8E64CFF4EC5" Guid="BF1C3844-6B52-4F77-9067-8DF5EAC18568">
-        <File Id="file_619C049A232F4C5B9D37454B33CAD8A0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.dll" />
+      <Component Id="comp_FB06D6CAA62C443C9405FAB9D2F19A58" Guid="9D2D667F-3C13-4D6F-A58E-D0A39B3DC4E2">
+        <File Id="file_8D895CB4623E427F87BD89E104D7203A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.dll" />
       </Component>
-      <Component Id="comp_C036510E9C034ADEAFD8796F29311CF3" Guid="0D786475-A1E5-4D99-814B-95ED978EF7C0">
-        <File Id="file_81348AE42AF940A7BD631552A3F72EBD" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.pdb" />
+      <Component Id="comp_8BEF78FBE4294352AC0C2FCA99F7E844" Guid="CA9906EE-0771-4106-AAC3-B41A10770F8E">
+        <File Id="file_3ACD18AD106C406A87220F177F9977E4" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.pdb" />
       </Component>
-      <Component Id="comp_1B7D6A9EB83D4E8687ADB63183D0B9B9" Guid="3D943582-A8B1-4E44-B2C8-E733B0CB14CA">
-        <File Id="file_6E1D87441C834C53822AF5B99FE14646" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.XML" />
+      <Component Id="comp_2906C5325B7E49EF93C1BAB02B102117" Guid="2D3D469F-070D-44B9-BE2F-800B49168955">
+        <File Id="file_85A5EB23D097496D80EA107F81127C4F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.Xaml.XML" />
       </Component>
-      <Component Id="comp_355B5A3D240C4CA6A751D1225E94C909" Guid="42CFFC0C-17BD-4160-A793-44920DD48A81">
-        <File Id="file_F238B1936BBC45B7BF454A757939C79E" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.XML" />
+      <Component Id="comp_EEF06D8E101244F59690DD7810DBE7B5" Guid="AC80372A-B488-4153-B13B-48AA9117FF2F">
+        <File Id="file_51F548F313064BF686C0E506AA862577" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT\Csla.XML" />
       </Component>
     </DirectoryRef>
   </Fragment>

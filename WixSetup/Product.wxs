@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define VERSION="4.5.491"?>
-  <Product Id="*" Name="CSLA .NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="8824E2E6-B4C5-4033-BE03-0BB4378C0B55">
+  <?define VERSION="4.5.500"?>
+  <Product Id="*" Name="CSLA .NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="8824E2E6-B4C5-4033-BE03-0BB4378C0B58">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
@@ -85,7 +85,7 @@
         <File Id="file_ReadmeMD" KeyPath="yes" Source="$(var.SolutionDir)..\Readme.md" />
       </Component>
       <Component Id="comp_HelpChm" Guid="{FEBCDA23-79E9-4D15-A989-48B2697FB33C}">
-        <File Id="file_HelpChm" KeyPath="yes" Source="$(var.SolutionDir)..\Csla.Help\Help\csla.chm" />
+        <File Id="file_HelpChm" KeyPath="yes" Source="$(var.SolutionDir)..\Source\CslaDoc\Help\csla.chm" />
       </Component>
     </DirectoryRef>
   </Fragment>

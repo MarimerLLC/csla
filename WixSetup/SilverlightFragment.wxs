@@ -20,536 +20,544 @@
 </CommandLineOptions>-->
   <Fragment>
     <ComponentGroup Id="SilverlightComponents">
-      <ComponentRef Id="comp_80BB490811FC42CE9315DD0B68D48C3F" />
-      <ComponentRef Id="comp_C0162E9196CF402088D0969160A87FF4" />
-      <ComponentRef Id="comp_4B18A03C142D4B56A3CA94A50B0DBC7C" />
-      <ComponentRef Id="comp_6E3A76EE8A0B4797BD3136602925BD82" />
-      <ComponentRef Id="comp_1153D997E5864228A14CB7DC9C68FB49" />
-      <ComponentRef Id="comp_B570477FDD6C417DA025358A23A13DF3" />
-      <ComponentRef Id="comp_6C8F45FD69794B5FA2C00C1B7764FD76" />
-      <ComponentRef Id="comp_6332840F158E41DCA370DF8D8FBADAB9" />
-      <ComponentRef Id="comp_291C21A89D74451185B829F52D48C8DB" />
-      <ComponentRef Id="comp_11D70303A85147DFBEC8212EFB07037E" />
-      <ComponentRef Id="comp_2AF5CFCDDB574202AA6E12B010AB2E58" />
-      <ComponentRef Id="comp_C0575233EBE1401BBF75A76A92B18DA2" />
-      <ComponentRef Id="comp_6C964E12077B403295A82913221194BE" />
-      <ComponentRef Id="comp_4A5B19A2EB764583A61EAE6EC8C98A95" />
-      <ComponentRef Id="comp_932ACF5904194D6AAE89BB6B6B774675" />
-      <ComponentRef Id="comp_F0888CFB71294DED8FB63C3C93B0C398" />
-      <ComponentRef Id="comp_28ECE48795574AABBC2EE93EB2C16F6B" />
-      <ComponentRef Id="comp_5A7107300A654EA6A32DEAF3D0E80405" />
-      <ComponentRef Id="comp_FD6CA2A0AD424F8E939706118ADC7328" />
-      <ComponentRef Id="comp_04BE573FD6C84CFEA2D35B5DF5C31DA3" />
-      <ComponentRef Id="comp_435DA22F88664EBE931DE07DF3923AF8" />
-      <ComponentRef Id="comp_8457A154400C410EADCA775744BEEA1A" />
-      <ComponentRef Id="comp_BF54EF80408E48DE831CDEEF6D72D66F" />
-      <ComponentRef Id="comp_5E6156BBF5F74694B1C1C32BE0682D04" />
-      <ComponentRef Id="comp_347C9408BA64487D993E6FDF377E2A45" />
-      <ComponentRef Id="comp_B254C4BFB25C40A7BC1B9191F8E606E4" />
-      <ComponentRef Id="comp_46EBB7A10C04401DB50F93D2024E32A3" />
-      <ComponentRef Id="comp_5410AEFEE5E74B469BB0E3E075817359" />
-      <ComponentRef Id="comp_FE0975A1078F4A77B13348A8F318F72A" />
-      <ComponentRef Id="comp_CA4E46E2F99246EBA5B31952F34D104C" />
-      <ComponentRef Id="comp_531D29FC38074456BD4E4B9A9AD41385" />
-      <ComponentRef Id="comp_9C35E3EEF80F47C3B17E023136CD8E03" />
-      <ComponentRef Id="comp_D416A1EEE80746A4B1A37CC80DA70793" />
-      <ComponentRef Id="comp_BAEC37D9EEEB4BCEA5390CEAFC677435" />
-      <ComponentRef Id="comp_93A7C5228F1E42BB93D23F59AE9153DB" />
-      <ComponentRef Id="comp_17CC17EB8815499DBF5071EF25ABBF56" />
-      <ComponentRef Id="comp_96B06528F84546B9B13DD104C5D12426" />
-      <ComponentRef Id="comp_A692020B7E7C419A90D984AF34FC0185" />
-      <ComponentRef Id="comp_9BAA4D4AC49C4FC890DB7A78CABB4434" />
-      <ComponentRef Id="comp_E48B2BBE60D94610BFC6C631D9E71AFE" />
-      <ComponentRef Id="comp_79C0F5B991F249ADBBA6FD1E204B949C" />
-      <ComponentRef Id="comp_EC7C1D357EA448EDBC85731DB17C38EB" />
-      <ComponentRef Id="comp_EFC20EBB82454A6CB951E17B4CA4EF68" />
-      <ComponentRef Id="comp_97F0AEF73A48423BA3222F4CD734A9F0" />
-      <ComponentRef Id="comp_9A3EA48233444B56833ECE4CF6995533" />
-      <ComponentRef Id="comp_E60EBD4317DC4BDB8BCDC0C179B6300C" />
-      <ComponentRef Id="comp_09E79498D9ED4B3283FF8DE7AF4B2B65" />
-      <ComponentRef Id="comp_8D90F023F419443A84B774381A435791" />
-      <ComponentRef Id="comp_06381CA89E794857AC398750C78401F2" />
-      <ComponentRef Id="comp_586CF4D0DFD3466DAE7ABD5CA89A990D" />
-      <ComponentRef Id="comp_06A16754F2B044CF9A5BC5B71CABDC79" />
-      <ComponentRef Id="comp_5739F2D166A444F9ABCE4F51D8865B28" />
-      <ComponentRef Id="comp_B2DA1AA0241243669E4824D2C6BFC92C" />
-      <ComponentRef Id="comp_9298613602244FF1A49D2F1EF9ACEA38" />
-      <ComponentRef Id="comp_F6AD06F413A146EB8AC92CC08F7247FD" />
-      <ComponentRef Id="comp_1880FA048DD8478EBDD7C34FDAAE3C01" />
-      <ComponentRef Id="comp_58BCB312840F42969C213549B45D4DDA" />
-      <ComponentRef Id="comp_376CBF717E9C4166952089C116604A54" />
-      <ComponentRef Id="comp_1A3AABCCE255468EBE18F6FF21626C98" />
-      <ComponentRef Id="comp_B84C5A984DD548598FA7DED128EC6E8A" />
-      <ComponentRef Id="comp_3FBA643A34054C90B024D4A2BC778D01" />
-      <ComponentRef Id="comp_D90B205028184431BD6ECC716FF420EA" />
-      <ComponentRef Id="comp_B3736F123CF04F28B8A09DB6A741CBFE" />
-      <ComponentRef Id="comp_3A94E35D086C45A985CE53D7E6B62CE1" />
-      <ComponentRef Id="comp_E0AE1A113A914C6BA5AEB7B76F77FEB3" />
-      <ComponentRef Id="comp_D8C2F7FBDDFD4C5B98F6AA494D7B3DCE" />
-      <ComponentRef Id="comp_B4F1CC6AB75448E2A7F208E31A5CFF6E" />
-      <ComponentRef Id="comp_22291F27FA404CAD81F11A73214456FD" />
-      <ComponentRef Id="comp_F1870A881861436F818855CFEF7BBFC5" />
-      <ComponentRef Id="comp_2E77ADC7A20949B9B9E832EC1CBB648B" />
-      <ComponentRef Id="comp_37D66F83E21E4A449D06AE658A6DCC53" />
-      <ComponentRef Id="comp_4531980A5D374F548DF718922968324C" />
-      <ComponentRef Id="comp_372DACB18969478998F89BD135620BE3" />
-      <ComponentRef Id="comp_9EE768F9F8E347548B4A6383B2362791" />
-      <ComponentRef Id="comp_0B95C22B483E4B7AA3B740053A83B245" />
-      <ComponentRef Id="comp_054C412A20804D728774E4246492F25F" />
-      <ComponentRef Id="comp_C92A3CA4FC9E42FA8DF22E894B12BF7D" />
-      <ComponentRef Id="comp_983BB0B3FF214853AF82E969B5A0F727" />
-      <ComponentRef Id="comp_68C6FD61475846EBA79E32A383B89383" />
-      <ComponentRef Id="comp_2AE2B7AEF0A4490EB7FD60A7E987D674" />
-      <ComponentRef Id="comp_94C48E9AC4B848DC8B3E47AFCBC0EFB4" />
-      <ComponentRef Id="comp_BDE0BEE18D9B444D9FAFEF391F41738C" />
-      <ComponentRef Id="comp_EADB91F62B354160AEF99B5DB394C288" />
-      <ComponentRef Id="comp_A7A390719A2E4EA8874A97512826CD07" />
-      <ComponentRef Id="comp_9D6E9B8A30284CE69C9B950F552EB0C5" />
-      <ComponentRef Id="comp_A94421B3EC044DB9BF570B2563D72324" />
-      <ComponentRef Id="comp_14427D0E45D24235A16ACE5E116B94D3" />
-      <ComponentRef Id="comp_147530B74CD846ADA4CF1E3358037FB5" />
-      <ComponentRef Id="comp_E52D71531DA0404B9BC9ACA2544DBAF1" />
-      <ComponentRef Id="comp_5FF3EDCECA414EDF9CC7D436A756AEC5" />
-      <ComponentRef Id="comp_93F57713DE5C4CB19F8E6D0969285CE8" />
-      <ComponentRef Id="comp_C56AB2E43C8C485FA0D3F26479F33492" />
-      <ComponentRef Id="comp_57A1AD3235AE4FB0BF1302BE22D4D047" />
-      <ComponentRef Id="comp_826346D55D0149E4A1E6FDECF45B2534" />
-      <ComponentRef Id="comp_A2BEEC148DF641E398C29D5971D0882B" />
-      <ComponentRef Id="comp_72552A06ADD54C238E2C8FF243521C5C" />
-      <ComponentRef Id="comp_9D424748C5CB48D091842C8E63AFC65D" />
-      <ComponentRef Id="comp_595AEA337EA54FBEA85E913D9DEC5A8A" />
-      <ComponentRef Id="comp_230A9938E18248BB825F02CA6A9700A1" />
-      <ComponentRef Id="comp_4F677242A81A4A708184F683884E9F70" />
-      <ComponentRef Id="comp_9236F2D0CE3549019CA4BF583603B7C5" />
-      <ComponentRef Id="comp_07AB71A4D0404238BBCD13FDBB8D547D" />
-      <ComponentRef Id="comp_01116077149C495C9E35566FCD965128" />
-      <ComponentRef Id="comp_AB2E72769E1B4639B7F85707AE476482" />
-      <ComponentRef Id="comp_223F8E08E9604C6AB4373DDFDB21FDD2" />
-      <ComponentRef Id="comp_E0536248995649D197ACE6F03385C13D" />
-      <ComponentRef Id="comp_A2F7EAFA7357455199C728825BE0E67E" />
-      <ComponentRef Id="comp_03B37F7076FD461588DF2E51A7F31F43" />
-      <ComponentRef Id="comp_86FE88EE5F474FAEA968F270CC0C3E8D" />
+      <ComponentRef Id="comp_E22513FC996B493288F5A5BDD65C00D2" />
+      <ComponentRef Id="comp_373BC914AFB449C18BDFF229D094AB7A" />
+      <ComponentRef Id="comp_40F2B5550E144B28BA8307291AA678A5" />
+      <ComponentRef Id="comp_7AC27DD29CA24177A2EE3E50F167AAD5" />
+      <ComponentRef Id="comp_08AA75B60F9844C8BD874C91F7F9CDA3" />
+      <ComponentRef Id="comp_2E1896ABD6F5408E8C35E5BA8A1D8D21" />
+      <ComponentRef Id="comp_ACE2E6DB745543B691DB1DA88F9E515F" />
+      <ComponentRef Id="comp_E93AFBB98C634A5BB1A067C231B5C1BF" />
+      <ComponentRef Id="comp_098A276C822143A2BC187AEC0D9881E5" />
+      <ComponentRef Id="comp_7FE2533DF880489EAB471390C06C5645" />
+      <ComponentRef Id="comp_23272AC7F91340E6B0FDD8CAE94BA3F8" />
+      <ComponentRef Id="comp_24B18FC6352140E69B3C53800D329ECA" />
+      <ComponentRef Id="comp_DDC1509B8440417C8ADB7C656DF37C17" />
+      <ComponentRef Id="comp_BA4C12826673438BA4BEEAD4EF0FEDB9" />
+      <ComponentRef Id="comp_E7BE06E6BAAA4B83BA4399E3D4D70000" />
+      <ComponentRef Id="comp_B23A5F1B50A34FED83D4C2D272DD0B92" />
+      <ComponentRef Id="comp_659841449AF34EBC9448C60A796AF576" />
+      <ComponentRef Id="comp_68C1E9D84D594A4B90247AE68D7C13EA" />
+      <ComponentRef Id="comp_D728384445A14637A14C2E7CAAC37B40" />
+      <ComponentRef Id="comp_D28BBC8A1D9345519113961EAF7E8726" />
+      <ComponentRef Id="comp_A8ECBB5A48FD4F19BFDDD47D488F26D5" />
+      <ComponentRef Id="comp_3A8B5443920445E6AA42E5B15A285E31" />
+      <ComponentRef Id="comp_73D70C6392F34AEBAD1A4E0A67A1522A" />
+      <ComponentRef Id="comp_626FDA6F5F224B929B1D5AE2B8185CDA" />
+      <ComponentRef Id="comp_8E21901BB5BA4E748F89F24E1B747ECF" />
+      <ComponentRef Id="comp_608B475434A94EEA89DDE11BD4B7A18D" />
+      <ComponentRef Id="comp_084B847322374597A830C95826D97304" />
+      <ComponentRef Id="comp_1227D9A1542640ABAA2F8B5939EE2E73" />
+      <ComponentRef Id="comp_2C76F13C026A4A3BA5631C59FD563829" />
+      <ComponentRef Id="comp_7613815B3FF5421581C9AF44AD406F5E" />
+      <ComponentRef Id="comp_D392AC1FC56D4134BF813F6BC14096C1" />
+      <ComponentRef Id="comp_5352B4F53B7D4C38A4B8ACFB575BF480" />
+      <ComponentRef Id="comp_C72E11FE48414FABA6D25991D2009890" />
+      <ComponentRef Id="comp_31298472B201461D9C97CFE5BF6BF9AF" />
+      <ComponentRef Id="comp_4A836CE461EC48C69D56C6DC194F80F0" />
+      <ComponentRef Id="comp_AC3AC26B618C4B13B3A2BC5E8CFC072E" />
+      <ComponentRef Id="comp_49DC26D3027A4B4C8D99F3A74129EAFE" />
+      <ComponentRef Id="comp_52CD09493F514CC3B6D33FF61240F84D" />
+      <ComponentRef Id="comp_608CEC2539EF468C94998AFD0BD2C662" />
+      <ComponentRef Id="comp_6E7EDD362D6F41D4B2FB2E996F8F7B4A" />
+      <ComponentRef Id="comp_51C1AB0FEDE24B13A4CB4F184A458E74" />
+      <ComponentRef Id="comp_56A9E475DA5A4A5382DA41EC50C7659D" />
+      <ComponentRef Id="comp_CBF84588C04045E7B944E4E8373A6018" />
+      <ComponentRef Id="comp_829C5550C2974489A84379FCAAD503D8" />
+      <ComponentRef Id="comp_76D361877055455292CEF5656D7C841B" />
+      <ComponentRef Id="comp_CE954543BE134CAA844645F3356849EC" />
+      <ComponentRef Id="comp_13D015E75F8D4CF4A52110DB649BA35D" />
+      <ComponentRef Id="comp_EED476DAAF8F4FD7ACA9961686B8082D" />
+      <ComponentRef Id="comp_D337FDFE89674EA1811222079B95D374" />
+      <ComponentRef Id="comp_7BFC2E04AD864010ABA81EF14578AB2F" />
+      <ComponentRef Id="comp_48357A746FFF49449343AD49B968D6EC" />
+      <ComponentRef Id="comp_B6B8645ADAB84AB3A3EA0CF3026960FC" />
+      <ComponentRef Id="comp_8DCD3ED6941247AC800D8197A075C243" />
+      <ComponentRef Id="comp_2FBC7531354C4A18B54EBDED6762900D" />
+      <ComponentRef Id="comp_A94A1C0D92F34F8884E608204A0EFB97" />
+      <ComponentRef Id="comp_3D96AE85342645C1BD9D7D85A2CE4C82" />
+      <ComponentRef Id="comp_7E2B5434B58F4C3A8A223A97CD796AC4" />
+      <ComponentRef Id="comp_2A4F6FFEADD349C6836B3863125031FD" />
+      <ComponentRef Id="comp_C5252837FE424F45A9D2BCF6F6B2CCEE" />
+      <ComponentRef Id="comp_CB183A86108B4699B67DC2BF9B354AAC" />
+      <ComponentRef Id="comp_FAB16DC0C6B945FD84AB1FF78134510A" />
+      <ComponentRef Id="comp_D702DF924B224A548D32BD7C376C7A99" />
+      <ComponentRef Id="comp_645CD9AE544C4052BAFD4C5ACFA9ED9A" />
+      <ComponentRef Id="comp_3896083208B44518AF3DC62CAA7C119D" />
+      <ComponentRef Id="comp_251599126D5A4D7EBD40ADEA4468F6E2" />
+      <ComponentRef Id="comp_C1FA4525B30A4B29881C8604635ACA69" />
+      <ComponentRef Id="comp_D91FB80F189C48A49A2B33A9E616A073" />
+      <ComponentRef Id="comp_8FCEE5C3B89342968947FF722C24248F" />
+      <ComponentRef Id="comp_5CD8BA6CA94D4A52A0438E080B1986C6" />
+      <ComponentRef Id="comp_000923C439264C0C8ADA8E8BC278F10D" />
+      <ComponentRef Id="comp_F3184AE08710415E9C32519F46FF8CFE" />
+      <ComponentRef Id="comp_6C0D00B7B5F1415C9CD61B379192BECD" />
+      <ComponentRef Id="comp_137421B5FE8C47768AD4B17F136B1902" />
+      <ComponentRef Id="comp_46AE608C94C949949F176D28E32CC4B5" />
+      <ComponentRef Id="comp_AA2C9EB6F8DE4F6A95B17E9152D8AE93" />
+      <ComponentRef Id="comp_81F775B26BC846068528F073FD9B3EC3" />
+      <ComponentRef Id="comp_33105FD5DF8D4660A43943D60A975EE3" />
+      <ComponentRef Id="comp_CB00CC1AFC284FEFA0F6AED753DBD9C4" />
+      <ComponentRef Id="comp_6054FAF06434456DAA7E7C9260E683EB" />
+      <ComponentRef Id="comp_A93D5ECFFCBF45DA8861EB3AFD041A00" />
+      <ComponentRef Id="comp_F54BA8C6B2CB43DEB664A42B2C8C26B1" />
+      <ComponentRef Id="comp_38224E2220F8423D9173F4B253E7DD87" />
+      <ComponentRef Id="comp_53910B56D36E4A23A9FDD23D48DE47B6" />
+      <ComponentRef Id="comp_4707492FAF4040EABD5D4ED517E5C1ED" />
+      <ComponentRef Id="comp_A8598790154F440E8DC8F857F5055C4A" />
+      <ComponentRef Id="comp_3EC830F7ACF546DAB9D4C2A88F7B9F28" />
+      <ComponentRef Id="comp_19A562668F5344BF97659C8A82A6FEEE" />
+      <ComponentRef Id="comp_A6E69E3B79C14349BBD3333D9AD9BAB0" />
+      <ComponentRef Id="comp_A859B03B9A4C47BF8F9E592C4F130D95" />
+      <ComponentRef Id="comp_13A3E0545BF2430794AB3E654F7676C8" />
+      <ComponentRef Id="comp_2B3E77B52C03404CB1E3BD2AE1A27B26" />
+      <ComponentRef Id="comp_9F604CF9F54B44F99B1987323E4996BE" />
+      <ComponentRef Id="comp_B442027C42704204B6251392B30092B5" />
+      <ComponentRef Id="comp_EA7B94D566FE43198C13E3CB95A8B5B1" />
+      <ComponentRef Id="comp_C8C772F143D34E38AF0B8E29BEAB8AB3" />
+      <ComponentRef Id="comp_FB862260898C476292878928EE1397D4" />
+      <ComponentRef Id="comp_E59EE122610F426588BBE0B9975BF248" />
+      <ComponentRef Id="comp_349B8459693348239DE7C0C226AC5620" />
+      <ComponentRef Id="comp_520CF68B3B0A4424951351B3BDEE31DB" />
+      <ComponentRef Id="comp_C76BAE45335847DFA3B19E59142F07BD" />
+      <ComponentRef Id="comp_A10CC91A930A49C0AE27446B754564FC" />
+      <ComponentRef Id="comp_84D338599BE44B0DB142804507D3B195" />
+      <ComponentRef Id="comp_63654B924A804B73BDCD97EFD11A9ED6" />
+      <ComponentRef Id="comp_5BCFD635A8E2469C8203C13E1F9CD6B9" />
+      <ComponentRef Id="comp_277A35F6B6E54D61840ED2DEC5A93057" />
+      <ComponentRef Id="comp_4C4D4E7B52794246ABA861653F4B2DE8" />
+      <ComponentRef Id="comp_1C674C0522414DFCAF5F7563869DB485" />
+      <ComponentRef Id="comp_B7DE117263ED495D961146D1D952C9B3" />
+      <ComponentRef Id="comp_EB4B2A50251C45DDB5259037409DE2F7" />
+      <ComponentRef Id="comp_162036C940F3456080AB828A5E8F07E8" />
+      <ComponentRef Id="comp_287A7D9D87F84E87A8B4C037C3C41D62" />
     </ComponentGroup>
     <DirectoryRef Id="Silverlight">
-      <Component Id="comp_80BB490811FC42CE9315DD0B68D48C3F" Guid="ED4693E3-D9A6-4E39-ACEC-A3592D467C9C">
-        <File Id="file_1C85CEAF8A6F4C5CA1C1E85B8FDEB3F1" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.dll" />
+      <Component Id="comp_E22513FC996B493288F5A5BDD65C00D2" Guid="54412FDF-4400-4C9A-B0E6-974849136F7A">
+        <File Id="file_47AA2D86902A4942980C5BE77E22AEDE" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.dll" />
       </Component>
-      <Component Id="comp_C0162E9196CF402088D0969160A87FF4" Guid="B4C3D0D8-E5A2-4B1A-BA33-C0AA0A53C733">
-        <File Id="file_5B00058F46074F1A9C085C0FA0CD4C54" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.pdb" />
+      <Component Id="comp_373BC914AFB449C18BDFF229D094AB7A" Guid="19C9B265-B43E-4C7A-AAC0-E51FC726728D">
+        <File Id="file_4C5000125FD3482D81415DA322524431" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.pdb" />
       </Component>
-      <Component Id="comp_4B18A03C142D4B56A3CA94A50B0DBC7C" Guid="CD35621B-434C-4403-B18F-DF2A42856ED6">
-        <File Id="file_2091AA3A4C134BFEB88636F2A455F994" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.dll" />
+      <Component Id="comp_40F2B5550E144B28BA8307291AA678A5" Guid="F5A0D3A4-006E-4607-AFF1-2FF0FD90C72D">
+        <File Id="file_DEF8EC2A2B61429EA44D9B370890E77C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.dll" />
       </Component>
-      <Component Id="comp_6E3A76EE8A0B4797BD3136602925BD82" Guid="D0019222-C43D-4B45-AD6E-2114662DF646">
-        <File Id="file_E0613386441248C183BC99FA52A880B8" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.pdb" />
+      <Component Id="comp_7AC27DD29CA24177A2EE3E50F167AAD5" Guid="BA60EDB9-A6DF-41B2-B2C7-F40AC6AFBA4D">
+        <File Id="file_83BC641FA2774E5FB713DACAA2125984" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.pdb" />
       </Component>
-      <Component Id="comp_1153D997E5864228A14CB7DC9C68FB49" Guid="CEAD2E0B-D02F-4DE1-90C8-63243D4D0081">
-        <File Id="file_502988CB06584956ACBA1754DBAA4047" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.XML" />
+      <Component Id="comp_08AA75B60F9844C8BD874C91F7F9CDA3" Guid="1AEC0CFA-97B5-43C6-95D8-8037BB734FE8">
+        <File Id="file_88189CDCFA9B46ACBCA260F05CD1FCC7" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Validation.XML" />
       </Component>
-      <Component Id="comp_B570477FDD6C417DA025358A23A13DF3" Guid="ABADE2B4-39B9-4CFF-8F9B-D2D6CE35B40C">
-        <File Id="file_1153A80C490448139BA5099B8BEE454A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.dll" />
+      <Component Id="comp_2E1896ABD6F5408E8C35E5BA8A1D8D21" Guid="F51DC5DC-B46C-497C-BF12-F4E8722F1201">
+        <File Id="file_4A0EC50A7FE04E279FBC5D0BE16CB80C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.dll" />
       </Component>
-      <Component Id="comp_6C8F45FD69794B5FA2C00C1B7764FD76" Guid="0F6430D4-3963-4104-A6B0-D0A23EC2ED7E">
-        <File Id="file_AF726DA71A22442189C7C60DC47A5428" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.pdb" />
+      <Component Id="comp_ACE2E6DB745543B691DB1DA88F9E515F" Guid="8D66DDEB-97B6-4B41-B4E7-F44792D602D8">
+        <File Id="file_2B9CEDF9D621414D87CC6ECD65E5015C" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.pdb" />
       </Component>
-      <Component Id="comp_6332840F158E41DCA370DF8D8FBADAB9" Guid="7CE59383-9800-40BC-8315-6AE6EB62728C">
-        <File Id="file_3DC0E1D41AE1496DB0F1B26DBBA696DD" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.XML" />
+      <Component Id="comp_E93AFBB98C634A5BB1A067C231B5C1BF" Guid="7DEB90E7-8268-4982-AE4F-33BD7FB838D8">
+        <File Id="file_F197F2F5C1E649EFB658F93CB59BFFC6" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.Xaml.XML" />
       </Component>
-      <Component Id="comp_291C21A89D74451185B829F52D48C8DB" Guid="BD72B5F5-2A61-46BF-B98C-2FF0C7037204">
-        <File Id="file_4032F29723744FF189AC2A805FE94722" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.XML" />
+      <Component Id="comp_098A276C822143A2BC187AEC0D9881E5" Guid="4F3AAF1D-2787-4205-A702-5340F3DC8D55">
+        <File Id="file_108C826018A94DED890B8FE0916E527F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Csla.XML" />
       </Component>
-      <Component Id="comp_11D70303A85147DFBEC8212EFB07037E" Guid="2DB73502-85F8-437F-9E83-067556B7D891">
-        <File Id="file_90FF8196C7734FC6874F3AC527F6F393" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.dll" />
+      <Component Id="comp_7FE2533DF880489EAB471390C06C5645" Guid="BDA7C7A8-C308-4186-9304-BC327936FBB1">
+        <File Id="file_5BBDA20984B14E20871007635F21D65E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.dll" />
       </Component>
-      <Component Id="comp_2AF5CFCDDB574202AA6E12B010AB2E58" Guid="83CEA752-8F0A-4067-AF41-2387627E3030">
-        <File Id="file_26570C2998C14C79B752C20E978F1C61" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.dll" />
+      <Component Id="comp_23272AC7F91340E6B0FDD8CAE94BA3F8" Guid="77829ACD-E54C-4494-BC53-5376D8E90BBD">
+        <File Id="file_0937F5AA189D4D558B11039CBF8FD0F5" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.dll" />
       </Component>
-      <Component Id="comp_C0575233EBE1401BBF75A76A92B18DA2" Guid="58F26AAD-52FA-42E9-BA4C-A96806D7D66B">
-        <File Id="file_132FEB6A892342CDAB5F877409D8CB4C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.Silverlight.dll" />
+      <Component Id="comp_24B18FC6352140E69B3C53800D329ECA" Guid="2D1595A2-9D10-4AD2-BF71-3D402B20D7FD">
+        <File Id="file_A9797F18A3A64985A9CE303A789742E2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.Silverlight.dll" />
       </Component>
-      <Component Id="comp_6C964E12077B403295A82913221194BE" Guid="F35ABAE5-65B4-42E7-BCF5-9C4DE6E2F894">
-        <File Id="file_DEF45EE7618D4EDFB57732DB3514BB3C" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.Silverlight.xml" />
+      <Component Id="comp_DDC1509B8440417C8ADB7C656DF37C17" Guid="08812668-4106-42E8-9739-38839FD3327A">
+        <File Id="file_57F214E716DC47F9A39876EEBE87AB95" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.Silverlight.xml" />
       </Component>
-      <Component Id="comp_4A5B19A2EB764583A61EAE6EC8C98A95" Guid="573A7B2C-4F75-49CE-B645-7A7158694868">
-        <File Id="file_2634ECE9195F48E38C47E003CD70BC32" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.xml" />
+      <Component Id="comp_BA4C12826673438BA4BEEAD4EF0FEDB9" Guid="B90D827B-783E-453C-8F3A-E48A20DC1A65">
+        <File Id="file_5FEDAC18E76C42D185891D7F6BB11690" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.Extensions.xml" />
       </Component>
-      <Component Id="comp_932ACF5904194D6AAE89BB6B6B774675" Guid="58CDE563-B415-40B1-830F-0A557851D214">
-        <File Id="file_76CD10A9C10D410DA70BCFEBA7CC91F0" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.xml" />
+      <Component Id="comp_E7BE06E6BAAA4B83BA4399E3D4D70000" Guid="1DCAE0CA-3D00-4099-9EB9-1DA3ACB31ED9">
+        <File Id="file_00A0ABCCFE794DFA96B7A0AB196944F0" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\Microsoft.Threading.Tasks.xml" />
       </Component>
-      <Component Id="comp_F0888CFB71294DED8FB63C3C93B0C398" Guid="28801E32-37E0-49AA-AA0A-A2E0713D915C">
-        <File Id="file_13197ED182DD40E8AB9AB9A382452984" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.ComponentModel.DataAnnotations.dll" />
+      <Component Id="comp_B23A5F1B50A34FED83D4C2D272DD0B92" Guid="34BC3969-1517-418B-923E-A5DD32524E00">
+        <File Id="file_BC47E04463EB4F70B77083B14899B3CF" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.ComponentModel.DataAnnotations.dll" />
       </Component>
-      <Component Id="comp_28ECE48795574AABBC2EE93EB2C16F6B" Guid="893CA66E-CFF7-4E05-BFCA-DD52AD7037B1">
-        <File Id="file_51DA8D904C01475D8C154EC80AC4662D" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.ComponentModel.DataAnnotations.xml" />
+      <Component Id="comp_659841449AF34EBC9448C60A796AF576" Guid="440CFFDB-7D34-4E68-97B6-1B65CE4C1FE6">
+        <File Id="file_ADB8D0E9CB2842EAB6BA198C8E00D9DB" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.ComponentModel.DataAnnotations.xml" />
       </Component>
-      <Component Id="comp_5A7107300A654EA6A32DEAF3D0E80405" Guid="3DD95DA0-6764-4BED-B79E-ABA9D02DD42A">
-        <File Id="file_39E95479BA4E432AB4B980EBD5F4C8B3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Data.Services.Client.dll" />
+      <Component Id="comp_68C1E9D84D594A4B90247AE68D7C13EA" Guid="BE0A8A4C-4FBD-41FB-952A-6B104223A2DB">
+        <File Id="file_CAD239BD822A433A8D50084F0AD2F10D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Data.Services.Client.dll" />
       </Component>
-      <Component Id="comp_FD6CA2A0AD424F8E939706118ADC7328" Guid="842A6D12-5387-4229-8C4E-E931B7F1FDF9">
-        <File Id="file_EB0ED75083E041A1B9FD62AF260C1EB8" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Data.Services.Client.xml" />
+      <Component Id="comp_D728384445A14637A14C2E7CAAC37B40" Guid="597B9D03-DAA2-443B-BA83-42903805D4AE">
+        <File Id="file_AAC1D8F992064E3790DBBB1FFA989794" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Data.Services.Client.xml" />
       </Component>
-      <Component Id="comp_04BE573FD6C84CFEA2D35B5DF5C31DA3" Guid="27B768EC-FEBF-4522-A4B3-31357271A471">
-        <File Id="file_BEE487931E4B4D03A6EE9A15D7A4F3BB" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Runtime.dll" />
+      <Component Id="comp_D28BBC8A1D9345519113961EAF7E8726" Guid="D409A721-F59C-42D8-B648-56965FE70787">
+        <File Id="file_1CC47FCCD30D426BA708DE48245B0DA1" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.IO.dll" />
       </Component>
-      <Component Id="comp_435DA22F88664EBE931DE07DF3923AF8" Guid="E3AA3DD6-0DB8-423A-85DC-51839331F66F">
-        <File Id="file_F5E0710739D149A28C7E52BA095727BC" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Runtime.xml" />
+      <Component Id="comp_A8ECBB5A48FD4F19BFDDD47D488F26D5" Guid="29766798-68D6-468E-947D-90D0B74B3201">
+        <File Id="file_D28F77F99BED46CE97CFAB120E017B40" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.IO.xml" />
       </Component>
-      <Component Id="comp_8457A154400C410EADCA775744BEEA1A" Guid="46B1B2BB-91F5-4EFC-A3A8-15382D553668">
-        <File Id="file_D8CCB7BD77FB438D8A64855A6522F968" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Threading.Tasks.dll" />
+      <Component Id="comp_3A8B5443920445E6AA42E5B15A285E31" Guid="4D8234D0-6308-4B55-A48B-428F91481836">
+        <File Id="file_7976DE685B2E435E99CC8D23B7AEB400" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Runtime.dll" />
       </Component>
-      <Component Id="comp_BF54EF80408E48DE831CDEEF6D72D66F" Guid="6BCD186B-FC7B-4FB6-99FE-7723DBC2C2F1">
-        <File Id="file_C03449F1A12144E48B266CF1A4D4D245" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Threading.Tasks.xml" />
+      <Component Id="comp_73D70C6392F34AEBAD1A4E0A67A1522A" Guid="58EE2BBB-75A8-4EDD-ADC3-CD84CAF71059">
+        <File Id="file_BADB6D47B48048BCB4703417C586FDF5" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Runtime.xml" />
       </Component>
-      <Component Id="comp_5E6156BBF5F74694B1C1C32BE0682D04" Guid="770D9BA4-48FB-468D-BE88-B2528C2510C5">
-        <File Id="file_61C9B3076D254F3DBAD8E773D99D0B0C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Xml.Linq.dll" />
+      <Component Id="comp_626FDA6F5F224B929B1D5AE2B8185CDA" Guid="27A34592-ECB5-4544-9ED8-6D99C2C6481D">
+        <File Id="file_3F692EBD8ED84FA28598914B20D4DC25" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Threading.Tasks.dll" />
       </Component>
-      <Component Id="comp_347C9408BA64487D993E6FDF377E2A45" Guid="A8BAC624-038F-49A8-8EF6-B313EBB5ECC4">
-        <File Id="file_34A1A76A750D450B93E9F6F1B95F60E0" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Xml.Linq.xml" />
+      <Component Id="comp_8E21901BB5BA4E748F89F24E1B747ECF" Guid="35122A7F-D51A-4852-8844-22D9ACC28A38">
+        <File Id="file_DE7DA10B226E4EF6B073069AEAB11263" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Threading.Tasks.xml" />
       </Component>
-      <Directory Id="dir_E993A02FD5D24CD4B59D3D746EDC23E3" Name="ar">
-        <Component Id="comp_B254C4BFB25C40A7BC1B9191F8E606E4" Guid="347E75E9-4AAB-485A-9A38-4310C5510DD6">
-          <File Id="file_E3C5CEDB72E044948BD63EAFB9E2F211" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ar\Csla.resources.dll" />
+      <Component Id="comp_608B475434A94EEA89DDE11BD4B7A18D" Guid="7D62FA90-35B2-4335-81B9-9A515E960ADD">
+        <File Id="file_0191298780214CCC8AA946E25552EB41" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Xml.Linq.dll" />
+      </Component>
+      <Component Id="comp_084B847322374597A830C95826D97304" Guid="A1626FC5-B251-4A2C-BF5E-307FBCC8A207">
+        <File Id="file_80EC6A0772034C378CF006531D794152" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\System.Xml.Linq.xml" />
+      </Component>
+      <Directory Id="dir_075BD9F81803442781986C74E73DF5E8" Name="ar">
+        <Component Id="comp_1227D9A1542640ABAA2F8B5939EE2E73" Guid="79448E8B-4CCE-40E2-9053-C7853BA68152">
+          <File Id="file_F4628435DA1940B1B9ECB5DD3957C61D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ar\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_46EBB7A10C04401DB50F93D2024E32A3" Guid="9CACB713-ECB5-40FE-A959-B00FB42508D9">
-          <File Id="file_38B486C401F448C880EE57296D8F7189" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ar\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-      </Directory>
-      <Directory Id="dir_21EB3A0CE4B84A80816F7EC485CB22F0" Name="bg">
-        <Component Id="comp_5410AEFEE5E74B469BB0E3E075817359" Guid="3D2A6823-6C29-427C-829C-4528423C2BD3">
-          <File Id="file_6B1083AE94CA4836A80305937BD8B188" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\bg\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-      </Directory>
-      <Directory Id="dir_03500D9BD486484AA73B5E45F262671F" Name="bs">
-        <Component Id="comp_FE0975A1078F4A77B13348A8F318F72A" Guid="70C5A9D0-AED4-4CFD-823C-A51C4DF99E03">
-          <File Id="file_7DB82C4765A4403C915CA03D76956758" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\bs\Csla.resources.dll" />
+        <Component Id="comp_2C76F13C026A4A3BA5631C59FD563829" Guid="C03F296C-17EB-4B49-9FDB-E94CC0A011A5">
+          <File Id="file_0CED36F66AA14EC193D504DBDBE3C0C6" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ar\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_B16F60F8639D4F3EAEC32A308F218198" Name="ca">
-        <Component Id="comp_CA4E46E2F99246EBA5B31952F34D104C" Guid="EF1E0A52-E508-4C92-80A7-FDBD1DFC1EA7">
-          <File Id="file_7B59B12088624ED3A8BFDA7463F0E8BA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ca\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_372823B938914D2D98EF53D479D9EF64" Name="bg">
+        <Component Id="comp_7613815B3FF5421581C9AF44AD406F5E" Guid="6E33E5B3-20BE-4808-8E98-F91C46AA6826">
+          <File Id="file_9C1ACA58E6104F66ACA0F6B2538E7431" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\bg\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_86ECFE890B56474AAE75C76970B0D143" Name="ca-ES">
-        <Component Id="comp_531D29FC38074456BD4E4B9A9AD41385" Guid="6CF6D658-F225-4BFC-ACDE-F1C0C73653C9">
-          <File Id="file_42628AFFF05E41CDB27C812516C72C2D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ca-ES\Csla.resources.dll" />
+      <Directory Id="dir_37AE4138D66D4ADDACE1AAF6782D2B96" Name="bs">
+        <Component Id="comp_D392AC1FC56D4134BF813F6BC14096C1" Guid="9CA87D07-0D96-4487-833E-21003D9BF27D">
+          <File Id="file_0C1CCAAEB8334750A5E2C8DB61E411E9" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\bs\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_42C12F87F2464EB498FF0EB48D884BC8" Name="cs">
-        <Component Id="comp_9C35E3EEF80F47C3B17E023136CD8E03" Guid="84237B0D-97E8-4903-99F1-0840C06E9EFE">
-          <File Id="file_BD0E73A7BAE548FDB524624A3A0478A2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\cs\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_E19FD15716F74EBD94B9EF4E6D5A13F8" Name="ca">
+        <Component Id="comp_5352B4F53B7D4C38A4B8ACFB575BF480" Guid="C286F220-AAD9-462F-825D-867833744863">
+          <File Id="file_CB43C80AA2A74CC183B18D1664736AC9" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ca\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_EE0EC4DF8DCD4BFCA90D6D2BC37B3DC1" Name="da">
-        <Component Id="comp_D416A1EEE80746A4B1A37CC80DA70793" Guid="25F0CEEF-0796-4BF9-B5BE-9670DECDE41D">
-          <File Id="file_CCB2CBDCB3C34BCEB69C843F6C9CAB88" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\da\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_BAEC37D9EEEB4BCEA5390CEAFC677435" Guid="9EA5711C-BDBF-4E95-A848-8F9CB2918FB3">
-          <File Id="file_940FF448BA52408FABF4BA02291C0E05" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\da\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_0D0498DD79DA47BDAF58CB22C90B5C03" Name="ca-ES">
+        <Component Id="comp_C72E11FE48414FABA6D25991D2009890" Guid="8EEE0366-FD59-45ED-8C83-508382E74D4B">
+          <File Id="file_BFAB6A4DB2684BA09EA46E09B7C4B3A7" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ca-ES\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_A4E5E39D55D043F290099F74726F7DC9" Name="de">
-        <Component Id="comp_93A7C5228F1E42BB93D23F59AE9153DB" Guid="61B8ABF2-DCA0-432C-8D90-F82B185E9A52">
-          <File Id="file_09D1BA1148F24C2EA3C32F25EE2AFBC3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_17CC17EB8815499DBF5071EF25ABBF56" Guid="E1C6886D-6075-4888-A7B2-C108B0AC0EE4">
-          <File Id="file_E055B2D43B834E2EAAD518E77CB91BA3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_96B06528F84546B9B13DD104C5D12426" Guid="85DD22AE-5C21-4809-A719-5F3CB563C583">
-          <File Id="file_FB0EE12D64F84C0B891D73BD64D44CC7" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_A692020B7E7C419A90D984AF34FC0185" Guid="08D92B7A-7438-4949-BCB8-1EDA9700DBF0">
-          <File Id="file_C99A26759A9D40AEABCE0B9EF0CB2722" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_B3D2437695B448ACA09EB94BF9B238E0" Name="cs">
+        <Component Id="comp_31298472B201461D9C97CFE5BF6BF9AF" Guid="407DDD9E-D055-4D27-BFBF-D6B9B1456C97">
+          <File Id="file_C605647D02EE4701AD669D9E776B9141" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\cs\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_4D3B3F7D1F234B0F8BB194C09E10362F" Name="el">
-        <Component Id="comp_9BAA4D4AC49C4FC890DB7A78CABB4434" Guid="BCB5CFDD-D7AA-42C4-8B8C-62FDFCEEB789">
-          <File Id="file_D5D66796C2784DA48CF05FAB44C1E594" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\el\Csla.resources.dll" />
+      <Directory Id="dir_1C6FCEABA317440EBF75E336CF1C5E69" Name="da">
+        <Component Id="comp_4A836CE461EC48C69D56C6DC194F80F0" Guid="4B1564D6-FBE9-482E-940E-AC0DB70AE5F6">
+          <File Id="file_3359E7BA996E4293A719268740871818" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\da\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_E48B2BBE60D94610BFC6C631D9E71AFE" Guid="28355C4A-F9C5-46C3-9406-16F6F841A402">
-          <File Id="file_5F12F49CFCD04B6C8C32D98407716531" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\el\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-      </Directory>
-      <Directory Id="dir_3F9AD680F4544AEF97D5FA562AD5751B" Name="es">
-        <Component Id="comp_79C0F5B991F249ADBBA6FD1E204B949C" Guid="91FB31C9-96BE-49D5-A4F9-826EE7484529">
-          <File Id="file_9EA3FEC1F677466DBA075B47C5ABA013" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_EC7C1D357EA448EDBC85731DB17C38EB" Guid="8B377332-973C-49F3-BE0F-CA1D537DAA8A">
-          <File Id="file_BF8433B5FA264B7D804F819580D2C531" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_EFC20EBB82454A6CB951E17B4CA4EF68" Guid="C0A5CBE5-9CDF-4172-9293-7BB7B80FEF1B">
-          <File Id="file_1E215E4BEBCC4A76AE09E429976F504D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_97F0AEF73A48423BA3222F4CD734A9F0" Guid="C21D0F2E-E459-4A76-99AD-2C038F5F514C">
-          <File Id="file_CF47AD2D3DAA4B50A595D11897FC4B41" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.Xml.Linq.resources.dll" />
+        <Component Id="comp_AC3AC26B618C4B13B3A2BC5E8CFC072E" Guid="73CEB4B0-4B3A-42E6-B821-CAFB17946C6C">
+          <File Id="file_DC9DBF34EB0E443AAF4D1245CB187F8D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\da\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_5A77E47D4F2148A196B4705BDEA5EA79" Name="es-ES">
-        <Component Id="comp_9A3EA48233444B56833ECE4CF6995533" Guid="7AFC515D-DA7F-4944-A238-7FD53EF1E899">
-          <File Id="file_83BFFAACB1684A79890112ABB7904BB7" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es-ES\Csla.resources.dll" />
+      <Directory Id="dir_DB7FD981ABB44C5B978E15002335C5E9" Name="de">
+        <Component Id="comp_49DC26D3027A4B4C8D99F3A74129EAFE" Guid="452DCBA2-5285-4363-AAFA-B496F20A2A73">
+          <File Id="file_FF65D852524A4032A952FCB37FB8F72A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_52CD09493F514CC3B6D33FF61240F84D" Guid="6D5BB010-963A-47AA-8E3C-A02A54855338">
+          <File Id="file_7655E8969DED4B15B027E1049AD11491" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_608CEC2539EF468C94998AFD0BD2C662" Guid="A8364B51-E0E6-4E5C-978E-CC1FB5745549">
+          <File Id="file_B742F1194E2F4D269526D9805DD866B0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_6E7EDD362D6F41D4B2FB2E996F8F7B4A" Guid="BF5DA67C-EA13-4A2F-9830-A5CFC4176729">
+          <File Id="file_A0BFA94FE6C94BF8B49238287FCCFD48" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\de\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_36C78F6F82CC46DCB92B2654685DC6DE" Name="et">
-        <Component Id="comp_E60EBD4317DC4BDB8BCDC0C179B6300C" Guid="93E58A9C-70B2-441F-B8F9-557A9C576D17">
-          <File Id="file_61812AE3FDC645CDBCCED38FA9192D35" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\et\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_8B3922E589924109A02719D09C56F563" Name="el">
+        <Component Id="comp_51C1AB0FEDE24B13A4CB4F184A458E74" Guid="F7806ED7-46C9-4314-861E-886D6957B09F">
+          <File Id="file_82771B4505CC4D1BB7657BCCE4DD6323" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\el\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_56A9E475DA5A4A5382DA41EC50C7659D" Guid="76CE3C2C-CBD0-41FD-8EAA-4905C3DD78BE">
+          <File Id="file_2AF57B2DD99A46568BA88B11566FD04E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\el\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_5B147A6ED5304AE8B774FC4CE5CD16AC" Name="eu">
-        <Component Id="comp_09E79498D9ED4B3283FF8DE7AF4B2B65" Guid="AAD8C9A6-EFB2-45C7-96F2-ACAE089D9288">
-          <File Id="file_1A96BA5D0A514587ACAC4130764130ED" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\eu\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_8DC57F4D8AFA426FADF714F3C11971B5" Name="es">
+        <Component Id="comp_CBF84588C04045E7B944E4E8373A6018" Guid="166FA548-2651-4A36-9E2F-D147ED952964">
+          <File Id="file_6017F020F77643589E1A306A5AE75236" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_829C5550C2974489A84379FCAAD503D8" Guid="60CAE727-E862-4B87-8C2F-DC50164E44EB">
+          <File Id="file_54557E67C943476E8E408C90E9A2E887" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_76D361877055455292CEF5656D7C841B" Guid="56E19F7E-E57D-451F-A2D6-9473CC20A072">
+          <File Id="file_D79FCB6750D5400ABA1FF95187B0451C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_CE954543BE134CAA844645F3356849EC" Guid="CB17D4EA-A30F-4782-B225-80002D731850">
+          <File Id="file_AF3DB05BF58C416C9C1C163BBFCF3B16" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_8CC52AEBAD25462E9581FAF07F6EFFD5" Name="fi">
-        <Component Id="comp_8D90F023F419443A84B774381A435791" Guid="EA5C59E4-2318-48BD-BF3D-4ED7DC86B635">
-          <File Id="file_49DCF9568FB14BD190C2719FA9B5E19D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fi\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_5E8407DB3E9043828C25F5B8A8805A61" Name="es-ES">
+        <Component Id="comp_13D015E75F8D4CF4A52110DB649BA35D" Guid="FC9BA4B5-41FE-4C53-AFB3-7548C68B6704">
+          <File Id="file_79D9C8DE80934ABB90D2E3B264D11B0B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\es-ES\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_77B3BAF6C2AD47BF818242A02AAD795C" Name="fr">
-        <Component Id="comp_06381CA89E794857AC398750C78401F2" Guid="56D5210B-959F-44D6-A348-5AFF54D3504D">
-          <File Id="file_1DA1C3ECC7E043A6A6167F55FDF14E2E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_586CF4D0DFD3466DAE7ABD5CA89A990D" Guid="578A80BC-81C2-456B-A4D8-C2538E7F93A5">
-          <File Id="file_E8581C82546047A38C1C29D482506DAF" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_06A16754F2B044CF9A5BC5B71CABDC79" Guid="A1623A15-2836-46B8-94A5-E9D8C78DFCED">
-          <File Id="file_0AE37970E8F0458787C545E16770A319" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_5739F2D166A444F9ABCE4F51D8865B28" Guid="92890BE7-6B7B-4BB1-8F7C-B2BA5A15C01A">
-          <File Id="file_8D9CBD64432C4424BB292033FC6B3E70" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_4536EE62D3C24560B5E241C72A288849" Name="et">
+        <Component Id="comp_EED476DAAF8F4FD7ACA9961686B8082D" Guid="7B99D697-B4D3-49EB-998B-E4EC253785DB">
+          <File Id="file_01C82F0086BA4619A8376BB013228769" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\et\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_6978EDAE8D2049CEAD0E76B14E11B3F7" Name="he">
-        <Component Id="comp_B2DA1AA0241243669E4824D2C6BFC92C" Guid="F8B3BAD4-6162-4001-9C50-A2D605A819D8">
-          <File Id="file_89827F8694C64957B3863D614ADCCD74" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\he\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_03F7F7F9A90F413C9B0A783ACC3EA1A5" Name="eu">
+        <Component Id="comp_D337FDFE89674EA1811222079B95D374" Guid="AF3CFA05-7304-4632-A606-8CE065DF3AD4">
+          <File Id="file_78374E9EA8504D37BABF19BD78843F9A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\eu\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_E6D85C8C48A84774A9B1889A10A2671B" Name="he-IL">
-        <Component Id="comp_9298613602244FF1A49D2F1EF9ACEA38" Guid="A4F54995-58F6-4898-96A4-046DDA3715C8">
-          <File Id="file_8B01ECB3F32C4F45848FADE14BDC4D40" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\he-IL\Csla.resources.dll" />
+      <Directory Id="dir_37EC801C402E4FBFB30EA04DF7A151C8" Name="fi">
+        <Component Id="comp_7BFC2E04AD864010ABA81EF14578AB2F" Guid="C8037D7C-F68A-45A5-97C8-56BC80296332">
+          <File Id="file_CE3B4AE58B35492096E76FD8FCFC2934" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fi\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_AF3FA1B6D8074AF396492B1D821FE1E9" Name="hr">
-        <Component Id="comp_F6AD06F413A146EB8AC92CC08F7247FD" Guid="D135E516-7336-4316-A43E-4546B04A5D95">
-          <File Id="file_955EA2A8AB2A4EB185E745D6F3905007" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hr\Csla.resources.dll" />
+      <Directory Id="dir_38CFB0E01D614B7DAC81C3A6F3321A3E" Name="fr">
+        <Component Id="comp_48357A746FFF49449343AD49B968D6EC" Guid="5673FF92-E197-4A17-82F0-08ABA344D831">
+          <File Id="file_91715C9FC5D94C7AB796DBD07BDCF85F" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_1880FA048DD8478EBDD7C34FDAAE3C01" Guid="54669BD7-49C5-4DB1-90C3-3302BFD4EFC7">
-          <File Id="file_091CFD170FF748C2818BAB9F0422E919" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hr\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_B6B8645ADAB84AB3A3EA0CF3026960FC" Guid="9BE77919-3671-4506-B1A4-9F95C21B3F01">
+          <File Id="file_5B2FFA05A457468BACB7777CE3A9C8F5" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
-      </Directory>
-      <Directory Id="dir_B6AF9B73BF1B46BC91CA3A3BFBF54D8A" Name="hu">
-        <Component Id="comp_58BCB312840F42969C213549B45D4DDA" Guid="6AD215E3-FACE-404E-AB2D-D689675BEA43">
-          <File Id="file_A77238648C75413097FA6B576C15941F" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hu\Csla.resources.dll" />
+        <Component Id="comp_8DCD3ED6941247AC800D8197A075C243" Guid="AE682698-4AF6-4854-83F7-1F75DD68033C">
+          <File Id="file_3859BD17C31C40DE848C47FA6E775CF3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.Data.Services.Client.resources.dll" />
         </Component>
-        <Component Id="comp_376CBF717E9C4166952089C116604A54" Guid="8BEF6D2F-EC1C-4164-A5C8-11500A30FA68">
-          <File Id="file_37A02BD7F5684B53AE3020E05F179C9F" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hu\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_2FBC7531354C4A18B54EBDED6762900D" Guid="E3218D72-697B-4D59-922E-891F64AC4C68">
+          <File Id="file_8C1189CBD32E4C529374576D063E1D6D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\fr\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_DF036E9BD92B4088B2BC6CF029722DCE" Name="id">
-        <Component Id="comp_1A3AABCCE255468EBE18F6FF21626C98" Guid="92327597-999B-465F-8F2F-D27DECE47D8A">
-          <File Id="file_1F881DC0D20B47D8B1FC0FBB5E5CB274" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\id\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_0F5AD8CB75284D2088EF815879F3B9F6" Name="he">
+        <Component Id="comp_A94A1C0D92F34F8884E608204A0EFB97" Guid="DD9CCB97-B103-4741-A9F9-60DE922DF9AC">
+          <File Id="file_C6401284305447CBB8B856E49268BD59" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\he\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_5A759768354A4F299134006BD1EFC52A" Name="it">
-        <Component Id="comp_B84C5A984DD548598FA7DED128EC6E8A" Guid="E1AA5A46-1A7D-45D2-AECF-48D27C798B37">
-          <File Id="file_0C8F0FCC50DD489C8EF70690A108E4E2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_3FBA643A34054C90B024D4A2BC778D01" Guid="2FEFEC8D-A046-456C-A983-B2025975FE60">
-          <File Id="file_54FB1C0F3BFB41B9BC7B9ABB8D0C1888" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_D90B205028184431BD6ECC716FF420EA" Guid="27851414-6695-406C-90AE-EE9D75E054A8">
-          <File Id="file_45493AD550C74E5688801FD2A8574F4A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_B3736F123CF04F28B8A09DB6A741CBFE" Guid="FEE86C90-2484-4179-910D-9D3CDCDBA9A4">
-          <File Id="file_6E34681B8DBB44F0921D4FDA4BA25BA6" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_0FE4EEE1AF834C3194FB1572A17CCFBE" Name="he-IL">
+        <Component Id="comp_3D96AE85342645C1BD9D7D85A2CE4C82" Guid="0AAE60CF-AF9F-47D6-AD8C-7895D8725BCA">
+          <File Id="file_14111C64449041A0987C6AAE437D9C8E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\he-IL\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_7C03BAEDA3CF4749A4C0AC0E8BCE297A" Name="ja">
-        <Component Id="comp_3A94E35D086C45A985CE53D7E6B62CE1" Guid="514BA552-B794-4FB0-931C-7C846E767CF5">
-          <File Id="file_CD8AC0838AD34B05830ABF75FB337EA9" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_39A127F02B264BE6BC934B18DD83E06B" Name="hr">
+        <Component Id="comp_7E2B5434B58F4C3A8A223A97CD796AC4" Guid="92261F58-412C-41DE-A696-E4A6CAEF92ED">
+          <File Id="file_7EF3803D5CFB43DB8CA768FE11E2B62E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hr\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_E0AE1A113A914C6BA5AEB7B76F77FEB3" Guid="3D9921FC-FD28-4CE7-8EF4-721AF5D50DE2">
-          <File Id="file_7DAE6BA963554FE49606BD97A2DA0FEA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_D8C2F7FBDDFD4C5B98F6AA494D7B3DCE" Guid="EC00F3B6-A2FE-469A-AFD0-3B88DAD7F0AF">
-          <File Id="file_B5B8B25260634F0D9ACBBF83DEA42D6B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.Xml.Linq.resources.dll" />
+        <Component Id="comp_2A4F6FFEADD349C6836B3863125031FD" Guid="9FD05760-17F4-4BD1-BE36-803513B46CA6">
+          <File Id="file_8BB812F60FAC479CA9C7109D60FCA089" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hr\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_467B72BBD7594E55BEEDF53BFF616BED" Name="km-KH">
-        <Component Id="comp_B4F1CC6AB75448E2A7F208E31A5CFF6E" Guid="A76404CF-D620-4B5E-A273-76DD03206A95">
-          <File Id="file_68B09DCEC2284A089C2169614ACA8A2D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\km-KH\Csla.resources.dll" />
+      <Directory Id="dir_F3311049D3A4497395975280F60BDB52" Name="hu">
+        <Component Id="comp_C5252837FE424F45A9D2BCF6F6B2CCEE" Guid="4D366472-0BD1-480F-A182-FBD1ACB09D6E">
+          <File Id="file_3FD20C7C92F34106961461DF75267CF2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hu\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_CB183A86108B4699B67DC2BF9B354AAC" Guid="5EC0C875-F229-45BC-8381-F0EBB9828CA3">
+          <File Id="file_096323258C5446039BC17A37E6097E37" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\hu\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_975DCE4CABAD434DAD038B0199B94F35" Name="ko">
-        <Component Id="comp_22291F27FA404CAD81F11A73214456FD" Guid="532BC8EF-A0EA-4EA6-AE1C-4B15D904A74B">
-          <File Id="file_66C8F91A75A3457ABECBD2899B693C6C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_F1870A881861436F818855CFEF7BBFC5" Guid="5EAAF7D3-91AD-44A6-9C7A-778CD8444622">
-          <File Id="file_3CD3649276164D2C90DD279312ACA91C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_2E77ADC7A20949B9B9E832EC1CBB648B" Guid="EE8BBFC2-42E1-4E0C-9A40-91954ACE3A6C">
-          <File Id="file_93D8E216D5564D6E868D4C2FCD4BEE5A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_73245F403385441CB19AAD9A81EF9996" Name="id">
+        <Component Id="comp_FAB16DC0C6B945FD84AB1FF78134510A" Guid="60C733B1-C095-42A4-BE0D-DA904136B0A5">
+          <File Id="file_AFEAC22F9D6B4597BFA79896EDBB92E4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\id\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_F69822C144BB4944B7C608FFED683FE9" Name="lt">
-        <Component Id="comp_37D66F83E21E4A449D06AE658A6DCC53" Guid="E7025E98-41B6-4E5F-9FC8-E8EC2E3074F1">
-          <File Id="file_A986E6959FC14723B42E88DE31D9D8CA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\lt\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_723705810EB3452CBBD01750C4DA43AF" Name="it">
+        <Component Id="comp_D702DF924B224A548D32BD7C376C7A99" Guid="450A6455-F502-4452-90D2-F9BAB281C109">
+          <File Id="file_F6256A3FF28C4D618B0C0CCBC495BACA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_645CD9AE544C4052BAFD4C5ACFA9ED9A" Guid="FA9D75D8-7F79-4C62-8558-833FF7D1647C">
+          <File Id="file_8D84539A2D454E43A610A981EE89770C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_3896083208B44518AF3DC62CAA7C119D" Guid="ACADDFC9-F4DD-4726-BCDF-4814918EF394">
+          <File Id="file_ADF8DCD78E0B4B06A62735FF226019E2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_251599126D5A4D7EBD40ADEA4468F6E2" Guid="0F934C63-1DFD-4264-B060-88F84212C6E3">
+          <File Id="file_FB059816BB7E4C61BB22D77673F04023" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\it\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_89F4BEFEE76E4DEDB848AD6B3CE5D8D0" Name="lv">
-        <Component Id="comp_4531980A5D374F548DF718922968324C" Guid="0B9CD4A0-3664-48E2-8FD5-4344196A79A3">
-          <File Id="file_B6C620BD80D34FDDBFDDE8595A6F411E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\lv\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_4B9F8E977F7A4931924AC244041BCF1B" Name="ja">
+        <Component Id="comp_C1FA4525B30A4B29881C8604635ACA69" Guid="015269B7-4FCC-4D9B-BCB2-AC51EC84FE7F">
+          <File Id="file_F6AF5F412D5F4F2599C46B0B576735F4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_D91FB80F189C48A49A2B33A9E616A073" Guid="231AA667-5F55-4FCA-99AE-7F17E7181E29">
+          <File Id="file_6F2D57141E1947A8AD1CDB688D81601F" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_8FCEE5C3B89342968947FF722C24248F" Guid="170E6F4D-822D-4150-BAC1-398891265F4D">
+          <File Id="file_BCE0FF72A95E4C17814C3C00D70B166A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ja\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_31942DEB5E7D44EFB93668AFB95B98A4" Name="ms">
-        <Component Id="comp_372DACB18969478998F89BD135620BE3" Guid="B6B7925D-C7DB-468D-BF2D-C2A4D494CA41">
-          <File Id="file_6745C569326C4335AE58FDFC05126789" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ms\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_2AB6AFFB06EF42349B75AF4DBDBA5D4A" Name="km-KH">
+        <Component Id="comp_5CD8BA6CA94D4A52A0438E080B1986C6" Guid="0B711556-8C45-492F-BE91-29F66D11593E">
+          <File Id="file_2E3D83F077B3430DA04700FF314F0439" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\km-KH\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_B1E931CEA58F473CA05A63057AB5B82C" Name="nl">
-        <Component Id="comp_9EE768F9F8E347548B4A6383B2362791" Guid="CF8E68D3-6119-41C0-9956-4724709C97F6">
-          <File Id="file_79298C27FFDB43D4AA1C3671EDB01F4C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\nl\Csla.resources.dll" />
+      <Directory Id="dir_CB0DBBAF21D345D5B2EB21F3ECDD9230" Name="ko">
+        <Component Id="comp_000923C439264C0C8ADA8E8BC278F10D" Guid="7604E6F7-6DF3-4943-8DFE-4360FF07AAC3">
+          <File Id="file_35DEFC52F2684A278EF739C5FFF40426" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
-        <Component Id="comp_0B95C22B483E4B7AA3B740053A83B245" Guid="B61F9653-AC1D-472B-BA0B-8A9724793B0D">
-          <File Id="file_553CB8B525B84090A4868F366D2D977C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\nl\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_F3184AE08710415E9C32519F46FF8CFE" Guid="90A61C58-780E-4670-894A-51B66E2A5DB0">
+          <File Id="file_50AD95EE9F614CB4A2A4344C99AFD5A6" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.Data.Services.Client.resources.dll" />
         </Component>
-      </Directory>
-      <Directory Id="dir_7B545ACE278747E0A710EAAAA6C5320B" Name="no">
-        <Component Id="comp_054C412A20804D728774E4246492F25F" Guid="B80BE8EE-6FCC-498A-9160-06497D61D992">
-          <File Id="file_0099D46A5F1E4102A7F135B50E13A599" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\no\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_C92A3CA4FC9E42FA8DF22E894B12BF7D" Guid="E1B86C34-7BD9-4888-8FF2-897465CAD639">
-          <File Id="file_44CA2AFCE1284D9E9E71D63DFDB48555" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\no\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_6C0D00B7B5F1415C9CD61B379192BECD" Guid="A76E06C3-7D34-4366-B30A-7C2A2E02992C">
+          <File Id="file_EF4E963797AF48C68B9A8A02722E0530" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ko\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_D3020FC839554FC086C239968DF7C7E3" Name="pl">
-        <Component Id="comp_983BB0B3FF214853AF82E969B5A0F727" Guid="0197CECB-1E51-428B-B6A9-FB92347C7397">
-          <File Id="file_B7AFBF853C6346B3B485F082CB2E8FDA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pl\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_C5C389222AC64ABEB8796CD9C12037DD" Name="lt">
+        <Component Id="comp_137421B5FE8C47768AD4B17F136B1902" Guid="CF364070-A2D5-4C8F-8390-DC4A5839E6FA">
+          <File Id="file_34C05E3CD16B4BCE89123D23E4A9CA0E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\lt\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_482DA56C097C41AFA5F9AD6A21C27DD0" Name="pt">
-        <Component Id="comp_68C6FD61475846EBA79E32A383B89383" Guid="49C207CC-C4A0-4273-ADD4-4E4D761FE197">
-          <File Id="file_8F804991FEE547EAA5FFF3FC854EAEED" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_2AE2B7AEF0A4490EB7FD60A7E987D674" Guid="444F7D1A-8B25-4B9E-9A02-E58885EA701D">
-          <File Id="file_0122A01A310543B68A8F76EE53F4DF0D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_5ADA2AE86DBC4FC78B8941F6B65697EE" Name="lv">
+        <Component Id="comp_46AE608C94C949949F176D28E32CC4B5" Guid="073A6A44-7E92-4CD0-9254-D7892E10D18C">
+          <File Id="file_D6928C9E91CC48E4A4F02C8A1D1B6956" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\lv\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_C716A41F5BD44B219E724F5E65218767" Name="pt-br">
-        <Component Id="comp_94C48E9AC4B848DC8B3E47AFCBC0EFB4" Guid="32B47629-1A69-45E7-9C3F-9289F60F09E3">
-          <File Id="file_F69D235C985447DF981427DF35C1985D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt-br\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_BDE0BEE18D9B444D9FAFEF391F41738C" Guid="AD45C270-1FF8-49E8-9B49-D067709183EC">
-          <File Id="file_1F797D3395724CD990B66A126651F780" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt-br\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_574F11419CED42F4AB71F352340FEA77" Name="ms">
+        <Component Id="comp_AA2C9EB6F8DE4F6A95B17E9152D8AE93" Guid="62318C16-10C6-48EA-AA52-D20D10B8F84C">
+          <File Id="file_2E2C1466ACEE468BB00DED3FA770614D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ms\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_B03583960BAD4D0B9069E681BD761064" Name="ro">
-        <Component Id="comp_EADB91F62B354160AEF99B5DB394C288" Guid="8D210E18-D880-4F21-91F5-976B3298EC92">
-          <File Id="file_8BF9F9974CCC4782AFAFDEA0FD65FC5C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ro\Csla.resources.dll" />
+      <Directory Id="dir_87E2A757BCCA49C4A9FDEA1F9E030A1E" Name="nl">
+        <Component Id="comp_81F775B26BC846068528F073FD9B3EC3" Guid="FE5321AC-E440-4099-9CED-46C38E04E5AA">
+          <File Id="file_A76C77B3A2BA46D2930232239F4C626D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\nl\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_A7A390719A2E4EA8874A97512826CD07" Guid="F3563ED5-4842-47F6-A971-7F15F8AF04C6">
-          <File Id="file_ECE1429307504A8082987B15C8AD209A" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ro\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-      </Directory>
-      <Directory Id="dir_1166F14C016345669092D99942C6B7A5" Name="ru">
-        <Component Id="comp_9D6E9B8A30284CE69C9B950F552EB0C5" Guid="10B169CD-BFB6-4B42-836F-DFC348F5E518">
-          <File Id="file_D9495DF6028E41268C1C07BF4E0FD194" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_A94421B3EC044DB9BF570B2563D72324" Guid="1CBF2997-CA60-465D-BEE1-C38A0874670F">
-          <File Id="file_BED70CD2225142F1951FC7EC710A09A0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_14427D0E45D24235A16ACE5E116B94D3" Guid="5FE70329-5D33-4E87-9479-BA09C0D23D04">
-          <File Id="file_FFA7FE0269924EBA8974D0DD0FD259F6" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_147530B74CD846ADA4CF1E3358037FB5" Guid="D9B2B821-C5B3-46F0-8F56-3D9ED3AAEA7C">
-          <File Id="file_A5BA54067648409CA483525B1D6F2C10" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.Xml.Linq.resources.dll" />
+        <Component Id="comp_33105FD5DF8D4660A43943D60A975EE3" Guid="C238B24E-7270-44AE-9EEC-97F32C61A9B0">
+          <File Id="file_76BA3AD753D640A7BAEB3298C9710D8E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\nl\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_3F6A5A40173746EBA50D5323ACAC90A4" Name="sk">
-        <Component Id="comp_E52D71531DA0404B9BC9ACA2544DBAF1" Guid="18BD9C88-A382-4FC8-B14E-4227614ADA01">
-          <File Id="file_97188E9653BD4D2888C3BACEAD725F0B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sk\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_6842FD05EABE4A549AEEF0E216F66CFC" Name="no">
+        <Component Id="comp_CB00CC1AFC284FEFA0F6AED753DBD9C4" Guid="92A44E26-8C45-415F-8473-BA05DF4A36D6">
+          <File Id="file_58AA120CF93746A6AA57AD645EE4C498" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\no\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_6054FAF06434456DAA7E7C9260E683EB" Guid="9760238B-DBFE-4EF5-9D9C-66046AEBE2A0">
+          <File Id="file_5C72724753F3488988D01B381B0EF119" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\no\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_F0173CCFD9C44C3CBCC9FCAD7705F684" Name="sl">
-        <Component Id="comp_5FF3EDCECA414EDF9CC7D436A756AEC5" Guid="953AAA47-AD22-4BD8-914F-874F16AA275D">
-          <File Id="file_D5A15955F47C4632B92ED781FB40D8CD" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sl\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_DFD21D7A1264453D86BFEEB502DD4992" Name="pl">
+        <Component Id="comp_A93D5ECFFCBF45DA8861EB3AFD041A00" Guid="7772F445-B1E3-4036-80B9-178972AEB317">
+          <File Id="file_CD223E1B3CAB436785D09944464A521C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pl\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_EAA07931A175415AA7BD1A927CD552C8" Name="sr">
-        <Component Id="comp_93F57713DE5C4CB19F8E6D0969285CE8" Guid="8E8FCC2F-DC9B-4AF0-AB81-E829502E828D">
-          <File Id="file_7D5BB013D91349A78CF560545AD28AB5" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr\Csla.resources.dll" />
+      <Directory Id="dir_29533D9447664FFB92362DB2C6247261" Name="pt">
+        <Component Id="comp_F54BA8C6B2CB43DEB664A42B2C8C26B1" Guid="D8F85E17-BBE8-44C2-B953-89B20CB6EED1">
+          <File Id="file_DB149F51963841A6850385991D8F58D0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_38224E2220F8423D9173F4B253E7DD87" Guid="DCC1F078-B104-4B5D-8804-DA1BCB46AE07">
+          <File Id="file_E0C7AC79BB9343C8A499D5E7C7FD3F3E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_3FCA7F5C8C264036B450BFE459E39C35" Name="sr-Cyrl-CS">
-        <Component Id="comp_C56AB2E43C8C485FA0D3F26479F33492" Guid="34234838-492E-41F1-8DE4-FF7AD605C50A">
-          <File Id="file_DA4D5C6542834F37A07FB22238040EAC" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr-Cyrl-CS\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_B9B922EE8A3B415DA97BB6362E65307B" Name="pt-br">
+        <Component Id="comp_53910B56D36E4A23A9FDD23D48DE47B6" Guid="DBDCA118-FF99-4937-8962-9818EE6BC984">
+          <File Id="file_BCE76B25DA1F44D2BB97A59DF73EEFB1" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt-br\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_4707492FAF4040EABD5D4ED517E5C1ED" Guid="F477375A-5C19-479B-B3B6-D7BE173A3274">
+          <File Id="file_E92F8001F15445DF8923BBE545B2B7AD" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\pt-br\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_7DBA94EC05204AA3A2DCD9EF145E7BF0" Name="sr-Latn-CS">
-        <Component Id="comp_57A1AD3235AE4FB0BF1302BE22D4D047" Guid="22C838C1-3E11-4D1C-931C-ACC771A2A266">
-          <File Id="file_4F293E536CEF47A58451730341ED38C3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr-Latn-CS\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_8D388516181B4D1394E8A832E2FD7027" Name="ro">
+        <Component Id="comp_A8598790154F440E8DC8F857F5055C4A" Guid="BE9F4EC4-9410-4ACA-8DCB-9E073A828844">
+          <File Id="file_A94D678A9CC54275BEA6E27E2E4BC677" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ro\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_3EC830F7ACF546DAB9D4C2A88F7B9F28" Guid="53C8108D-6FD5-4E24-84FD-8719F3095AC7">
+          <File Id="file_AB3052DDB4444F3CA2857A6D08CF9659" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ro\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_1916AAA0305F4F41B8C04F8E7DE57AF0" Name="sv">
-        <Component Id="comp_826346D55D0149E4A1E6FDECF45B2534" Guid="D3A08148-5EDD-42F6-92BA-94DE316DF8BA">
-          <File Id="file_EE872E5F41ED4FF8ABEDFA293B173D49" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sv\Csla.resources.dll" />
+      <Directory Id="dir_19A8249AE19C4548B4768061288526D3" Name="ru">
+        <Component Id="comp_19A562668F5344BF97659C8A82A6FEEE" Guid="F845FE70-664E-48A9-8DB0-2B55A22D6024">
+          <File Id="file_DFFCEB043F684BDCB0E1ED010DF09716" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\Csla.resources.dll" />
         </Component>
-        <Component Id="comp_A2BEEC148DF641E398C29D5971D0882B" Guid="BBE306D9-F101-43FE-8F2B-B930A48F0B03">
-          <File Id="file_0FAE9C9B29D74FDA9BDB61C3388936B2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sv\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_A6E69E3B79C14349BBD3333D9AD9BAB0" Guid="3C045541-8F63-4895-8552-F84749BBC62A">
+          <File Id="file_6879B5569007435D830433922817BEB7" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
-      </Directory>
-      <Directory Id="dir_F7D9B469D15D478D813422B4FD30E40D" Name="th">
-        <Component Id="comp_72552A06ADD54C238E2C8FF243521C5C" Guid="5DB5C320-9F10-478B-9710-D89598E87DBE">
-          <File Id="file_8761D53F1EBB42609B848CFED133BE17" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\th\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_A859B03B9A4C47BF8F9E592C4F130D95" Guid="8C289C18-4874-47CF-9888-3B7E6BD5FDBF">
+          <File Id="file_C0705DEB45024E9D9E2B3F2F8C824473" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.Data.Services.Client.resources.dll" />
         </Component>
-      </Directory>
-      <Directory Id="dir_D6CCE42B8047438D9B3780B3C371C9B5" Name="tr">
-        <Component Id="comp_9D424748C5CB48D091842C8E63AFC65D" Guid="814F36A3-9B42-4A48-97F5-28E462A6E729">
-          <File Id="file_A8A391BC96B14E3B9007050FB1871FED" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\tr\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_595AEA337EA54FBEA85E913D9DEC5A8A" Guid="9E53A40F-B53D-434A-89E7-91BDA7067C33">
-          <File Id="file_E4EE4921D55D4F6099A3D4C6D82C1F7D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\tr\System.ComponentModel.DataAnnotations.resources.dll" />
+        <Component Id="comp_13A3E0545BF2430794AB3E654F7676C8" Guid="A61068CF-38EC-4E6B-9A38-9C5CAD53ED3B">
+          <File Id="file_01EBFBC687DA4DF9A77FCD5E3C2A0C5D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\ru\System.Xml.Linq.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_D0DD1310730F480F934DB46ECD39E178" Name="uk">
-        <Component Id="comp_230A9938E18248BB825F02CA6A9700A1" Guid="8C5A00C3-415F-44EB-8A55-D03689B25EE8">
-          <File Id="file_DF2C9F17FB984C93BF0ADF38CBCE8A7E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\uk\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_EB323E409D9A45D3909401762648FA51" Name="sk">
+        <Component Id="comp_2B3E77B52C03404CB1E3BD2AE1A27B26" Guid="2DE5811B-7A05-4426-8589-B908539A7A2D">
+          <File Id="file_E55D47978849459FA1710BDDBB18DC50" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sk\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_71C0C96322504BAB979253C99C310CDB" Name="vi">
-        <Component Id="comp_4F677242A81A4A708184F683884E9F70" Guid="5B28E676-5DE1-4A17-985A-3B11C7C46B66">
-          <File Id="file_92DAA87771E04E2487CF359F284567B1" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\vi\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_9236F2D0CE3549019CA4BF583603B7C5" Guid="B5766526-C1E6-4493-B709-382884956049">
-          <File Id="file_394CADE0EAF7454ABE68E5EC36FDA1AB" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\vi\System.ComponentModel.DataAnnotations.resources.dll" />
+      <Directory Id="dir_9EAF0CBCAEEF4F178DB431357F889EE3" Name="sl">
+        <Component Id="comp_9F604CF9F54B44F99B1987323E4996BE" Guid="B94EBAA1-E67E-4392-9DCB-8D584091CAF7">
+          <File Id="file_C5CEB0DF58E84A9C98C552224ED166C9" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sl\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_886CFCCF84F04E0A86794E514C39C747" Name="zh-Hans">
-        <Component Id="comp_07AB71A4D0404238BBCD13FDBB8D547D" Guid="C6562403-861E-46C7-91E7-4EE3B83072FB">
-          <File Id="file_D537D0C2DDEB40AD8B0959749F661194" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\Csla.resources.dll" />
-        </Component>
-        <Component Id="comp_01116077149C495C9E35566FCD965128" Guid="F4CAF20F-DF0C-4ABB-B09E-F8809100A76E">
-          <File Id="file_6E8932F178F9482182056CA840CBB1A3" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_AB2E72769E1B4639B7F85707AE476482" Guid="D19AC652-77A7-491C-9BB9-E2DF7A761451">
-          <File Id="file_BE469477992C4B789BD0FE27302D0423" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_223F8E08E9604C6AB4373DDFDB21FDD2" Guid="6B5F164E-9DB7-4FCD-A000-5F9F3523F301">
-          <File Id="file_FA2487167FE34D7E89F576A340119007" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_B02EA930A6F644808C6D81CA67BFE6E3" Name="sr">
+        <Component Id="comp_B442027C42704204B6251392B30092B5" Guid="1855F110-820D-48EA-8125-A1813EDED02E">
+          <File Id="file_E17EFCFC1BDB4744AD56CE3DEBE54C71" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr\Csla.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_636674BCF95A40999A4BD2A116AB9091" Name="zh-Hant">
-        <Component Id="comp_E0536248995649D197ACE6F03385C13D" Guid="285FBA0C-E102-4303-8716-061E82B359A0">
-          <File Id="file_5628BEA07724478C9DEF9E2F5949B79B" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.ComponentModel.DataAnnotations.resources.dll" />
-        </Component>
-        <Component Id="comp_A2F7EAFA7357455199C728825BE0E67E" Guid="0991C6F3-34DA-4449-9CB2-68257E0C44B3">
-          <File Id="file_6EE44879B2204779ACBF8B30D8AEA447" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.Data.Services.Client.resources.dll" />
-        </Component>
-        <Component Id="comp_03B37F7076FD461588DF2E51A7F31F43" Guid="1F6F694A-9574-46D7-B412-A3FE06939E47">
-          <File Id="file_A98A6EA838F04F6AACFB9A492C71658C" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.Xml.Linq.resources.dll" />
+      <Directory Id="dir_EABE928E21D04A3E8A5AB477D3D2FDC3" Name="sr-Cyrl-CS">
+        <Component Id="comp_EA7B94D566FE43198C13E3CB95A8B5B1" Guid="BE42F1A3-5126-438A-8D97-CE0A72C5F0AE">
+          <File Id="file_B58608762C8C49C78A7E85D7EA0846A5" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr-Cyrl-CS\System.ComponentModel.DataAnnotations.resources.dll" />
         </Component>
       </Directory>
-      <Directory Id="dir_B393239B87A84275B4BB031D9FC48C9A" Name="zh-TW">
-        <Component Id="comp_86FE88EE5F474FAEA968F270CC0C3E8D" Guid="582F2B31-111B-4F4F-93E8-8680F9FFC4C8">
-          <File Id="file_729716938EA046A28B4EC4D1D7DAC2D4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-TW\Csla.resources.dll" />
+      <Directory Id="dir_B400D863F70741C7B531D1882F89DE98" Name="sr-Latn-CS">
+        <Component Id="comp_C8C772F143D34E38AF0B8E29BEAB8AB3" Guid="1512FCF2-D89D-4D10-A09F-56A6CDEAF638">
+          <File Id="file_E24C058A62F74DB6B1B4181D2D2286FA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sr-Latn-CS\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_BD5AB590BD7D463AAF768A5DF8FC7A01" Name="sv">
+        <Component Id="comp_FB862260898C476292878928EE1397D4" Guid="61D8A9FF-B4DA-433C-B46C-F96C21C1D92D">
+          <File Id="file_FC8AD3B4AF78485AA236789828BB53BE" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sv\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_E59EE122610F426588BBE0B9975BF248" Guid="C644EC7D-D7DC-4D5B-BBFB-364A58096A27">
+          <File Id="file_BA05A8FB6CAB450C8FD6300502F3A552" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\sv\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_3FEC59CAB5674304A5EF45589A0B507C" Name="th">
+        <Component Id="comp_349B8459693348239DE7C0C226AC5620" Guid="2F113D48-31B9-4958-9FCD-13CFFE563C10">
+          <File Id="file_5E1A0ED487964A3E8A589453031B1139" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\th\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_2C71B63D757D47C1A3336B73E788FB0C" Name="tr">
+        <Component Id="comp_520CF68B3B0A4424951351B3BDEE31DB" Guid="6B19E0C5-4560-4397-9EA0-88FF65F1A595">
+          <File Id="file_69A2A91E726E4CA4AFB6777C129459C6" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\tr\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_C76BAE45335847DFA3B19E59142F07BD" Guid="8817F28E-E296-455A-B990-6F66F51F140D">
+          <File Id="file_3C729CABF4B74E0D9136C7B819153519" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\tr\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_D18A89069D524045BAF725B94ACA81F0" Name="uk">
+        <Component Id="comp_A10CC91A930A49C0AE27446B754564FC" Guid="6ABCA50A-BAA5-423F-ACAD-8D3C320485C4">
+          <File Id="file_94D7646EE4344C2290F75373BEB65ED4" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\uk\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_25306322447B4411BA6D55E1630A61BB" Name="vi">
+        <Component Id="comp_84D338599BE44B0DB142804507D3B195" Guid="D363D303-B140-4260-9F44-64DDF0584A52">
+          <File Id="file_9C3FF39A29774DE48BA1AA464FC2EEFB" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\vi\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_63654B924A804B73BDCD97EFD11A9ED6" Guid="43010665-5A66-4EA8-AC4F-A4344D944487">
+          <File Id="file_E87691E578D34663BD7C499B6A6A6FDA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\vi\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_31AB6D35057C42C49A46E29C6C00408C" Name="zh-Hans">
+        <Component Id="comp_5BCFD635A8E2469C8203C13E1F9CD6B9" Guid="98DF7480-0307-43FE-A2D1-84BE6820BE1C">
+          <File Id="file_CC3BB65B8B6740B291A89442ACEFBD40" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\Csla.resources.dll" />
+        </Component>
+        <Component Id="comp_277A35F6B6E54D61840ED2DEC5A93057" Guid="62B935F9-82D1-4720-947E-1F4EAEC84C1F">
+          <File Id="file_843452B48F844D4C889ECA68AE6BF4F8" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_4C4D4E7B52794246ABA861653F4B2DE8" Guid="E65988AE-7152-488C-B376-C574DE899D08">
+          <File Id="file_2C575C96263D4E02937C3AB70945CF36" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_1C674C0522414DFCAF5F7563869DB485" Guid="2735AF87-A827-4481-841C-940A56D3B2D9">
+          <File Id="file_F3B10C07409D467D8CE830634EF6EE59" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hans\System.Xml.Linq.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_9F5CC129EC784783B5E6825FAD5BD04C" Name="zh-Hant">
+        <Component Id="comp_B7DE117263ED495D961146D1D952C9B3" Guid="4453FF8D-4195-4C49-A7DA-703A35C884E3">
+          <File Id="file_6D0C34B467554897A573FF560365F8EA" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.ComponentModel.DataAnnotations.resources.dll" />
+        </Component>
+        <Component Id="comp_EB4B2A50251C45DDB5259037409DE2F7" Guid="763C012D-B42B-4464-B62E-3C014E6E42A8">
+          <File Id="file_84918148752E4A7CB2A29297D1FD42B2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.Data.Services.Client.resources.dll" />
+        </Component>
+        <Component Id="comp_162036C940F3456080AB828A5E8F07E8" Guid="9991C850-30C5-49AD-8098-7C678F917712">
+          <File Id="file_255588AC95FF4FECB6ED67CE70430633" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-Hant\System.Xml.Linq.resources.dll" />
+        </Component>
+      </Directory>
+      <Directory Id="dir_189C651452DC471EAD66D29DAFEC5A2C" Name="zh-TW">
+        <Component Id="comp_287A7D9D87F84E87A8B4C037C3C41D62" Guid="6132AECA-2D1B-4FD2-BF4D-93D480981008">
+          <File Id="file_84338F22CF8E41AE9B46874D582325D2" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\Silverlight\zh-TW\Csla.resources.dll" />
         </Component>
       </Directory>
     </DirectoryRef>

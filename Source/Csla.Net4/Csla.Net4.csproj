@@ -373,6 +373,9 @@
     <EmbeddedResource Include="..\Csla\Properties\Resources.zh-TW.resx">
       <Link>Properties\Resources.zh-TW.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla\Properties\Resources.uk-ua.resx">
+      <Link>Properties\Resources.uk-ua.resx</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\WcfPortal\" />

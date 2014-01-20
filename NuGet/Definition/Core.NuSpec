@@ -4,7 +4,7 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.5.491-Beta</version>
+    <version>4.5.500</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -22,10 +22,12 @@ Supports the creation of Class Library projects containing business domain class
     <dependencies>
       <group targetFramework="net45" />
       <group targetFramework="net40">
-        <dependency id="Microsoft.Bcl.Async" version="" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.165" />
+        <dependency id="Microsoft.Bcl" version="1.1.6" />
       </group>
       <group targetFramework="sl50">
-        <dependency id="Microsoft.Bcl.Async" version="" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.165" />
+        <dependency id="Microsoft.Bcl" version="1.1.6" />
       </group>
     </dependencies>
   </metadata>

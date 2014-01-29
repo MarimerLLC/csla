@@ -435,7 +435,7 @@ namespace Csla
 
     async Task<object> ISavable.SaveAsync(bool forceUpdate)
     {
-      return await SaveAsync();
+      return await SaveAsync(forceUpdate);
     }
 
     /// <summary>

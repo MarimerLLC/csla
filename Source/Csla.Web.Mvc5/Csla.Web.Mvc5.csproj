@@ -94,6 +94,7 @@
     <Compile Include="..\Csla.Web.Mvc4\ViewModelBase.cs">
       <Link>ViewModelBase.cs</Link>
     </Compile>
+    <Compile Include="AsyncController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,120 +1,179 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F35F6026-DA97-4993-B9BC-DE935FDCDA23}</ProjectGuid>
+    <ProjectGuid>{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>Csla</RootNamespace>
-    <ReleaseVersion>4.2.0.0</ReleaseVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>Csla</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\debug</OutputPath>
-    <DefineConstants>DEBUG, SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
+    <OutputPath>..\..\Bin\Debug\iOS\</OutputPath>
+    <DefineConstants>DEBUG;__IOS__;__MOBILE__;SILVERLIGHT;IOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchI18n />
-    <MtouchUseArmv7>false</MtouchUseArmv7>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <DocumentationFile>..\..\Bin\Debug\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <MtouchLink>None</MtouchLink>
-    <DefineConstants>SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
-    <MtouchUseArmv7>false</MtouchUseArmv7>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\ios\debug</OutputPath>
-    <DefineConstants>DEBUG, SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\iOS\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchDebug>true</MtouchDebug>
-    <MtouchUseArmv7>false</MtouchUseArmv7>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\ios\release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <DefineConstants>SILVERLIGHT, WINDOWS_PHONE, IOS</DefineConstants>
-    <MtouchUseArmv7>false</MtouchUseArmv7>
+    <DefineConstants>IOS;SILVERLIGHT;__IOS__;__MOBILE__;</DefineConstants>
+    <DocumentationFile>..\..\Bin\Release\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Csla.Wp\DataAnnotations\DisplayAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\DisplayAttribute.cs">
       <Link>DataAnnotations\DisplayAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RangeAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RangeAttribute.cs">
       <Link>DataAnnotations\RangeAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RegularExpressionAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RegularExpressionAttribute.cs">
       <Link>DataAnnotations\RegularExpressionAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\RequiredAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\RequiredAttribute.cs">
       <Link>DataAnnotations\RequiredAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\StringLengthAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\StringLengthAttribute.cs">
       <Link>DataAnnotations\StringLengthAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationAttribute.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationAttribute.cs">
       <Link>DataAnnotations\ValidationAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationContext.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationContext.cs">
       <Link>DataAnnotations\ValidationContext.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Wp\DataAnnotations\ValidationResult.cs">
+    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationResult.cs">
       <Link>DataAnnotations\ValidationResult.cs</Link>
     </Compile>
-    <Compile Include="DataPortalClient\WcfProxy.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web References\WcfPortal\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
+    <Compile Include="..\Csla.WinPRT\Service References\WcfPortal\Reference.cs">
+      <Link>Service References\WfcPortal\Reference.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ApplicationContext.cs">
+      <Link>ApplicationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\BusinessBase.cs">
+      <Link>BusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IContextManager.cs">
+      <Link>Core\IContextManager.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISavable.cs">
+      <Link>Core\ISavable.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISavableT.cs">
+      <Link>Core\ISavableT.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\AsyncLoadException.cs">
+      <Link>Core\LoadManager\AsyncLoadException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\IAsyncLoader.cs">
+      <Link>Core\LoadManager\IAsyncLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\LoadManager\TaskLoader.cs">
+      <Link>Core\LoadManager\TaskLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortal.cs">
+      <Link>DataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\DefaultPortalProxyFactory.cs">
+      <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\IDataPortalProxy.cs">
+      <Link>DataPortalClient\IDataPortalProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\IDataPortalProxyFactory.cs">
+      <Link>DataPortalClient\IDataPortalProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\LocalProxy.cs">
+      <Link>DataPortalClient\LocalProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\PrimitiveCriteria.cs">
+      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\WcfProxy.cs">
+      <Link>DataPortalClient\WcfProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalEventArgs.cs">
+      <Link>DataPortalEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalException.cs">
+      <Link>DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalT.cs">
+      <Link>DataPortalT.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IBusinessBase.cs">
+      <Link>IBusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IBusinessListBase.cs">
+      <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICommandBase.cs">
+      <Link>ICommandBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IDataPortal.cs">
+      <Link>IDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyBase.cs">
+      <Link>IReadOnlyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\IReadOnlyListBase.cs">
+      <Link>IReadOnlyListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\LazySingleton.cs">
+      <Link>LazySingleton.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\BusinessRulesExtensions.cs">
+      <Link>Rules\BusinessRulesExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\IBusinessRules.cs">
+      <Link>Rules\IBusinessRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Rules\ObjectRule.cs">
+      <Link>Rules\ObjectRule.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\PropertyRule.cs">
       <Link>Rules\PropertyRule.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Serialization\Mobile\ICslaReader.cs">
-      <Link>Serialization\Mobile\ICslaReader.cs</Link>
+    <Compile Include="..\Csla\RunLocalAttribute.cs">
+      <Link>RunLocalAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
-      <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    <Compile Include="..\Csla\Security\ICslaIdentity.cs">
+      <Link>Security\ICslaIdentity.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\ICslaPrincipal.cs">
+      <Link>Security\ICslaPrincipal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Security\SecurityException.cs">
+      <Link>Security\SecurityException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryReader.cs">
+      <Link>Serialization\Mobile\CslaBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaKnownTypes.cs">
+      <Link>Serialization\Mobile\CslaKnownTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaNonClosingBinaryWriter.cs">
+      <Link>Serialization\Mobile\CslaNonClosingBinaryWriter.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Serialization\Mobile\CslaReaderWriterFactory.cs">
       <Link>Serialization\Mobile\CslaReaderWriterFactory.cs</Link>
@@ -125,6 +184,91 @@
     <Compile Include="..\Csla\Serialization\Mobile\CslaXmlBinaryWriter.cs">
       <Link>Serialization\Mobile\CslaXmlBinaryWriter.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlReader.cs">
+      <Link>Serialization\Mobile\CslaXmlReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\CslaXmlWriter.cs">
+      <Link>Serialization\Mobile\CslaXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\DictionaryCheckResult.cs">
+      <Link>Serialization\Mobile\DictionaryCheckResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaReader.cs">
+      <Link>Serialization\Mobile\ICslaReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
+      <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\AuthorizeRequest.cs">
+      <Link>Server\AuthorizeRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ChildDataPortal.cs">
+      <Link>Server\ChildDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortal.cs">
+      <Link>Server\DataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalContext.cs">
+      <Link>Server\DataPortalContext.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalException.cs">
+      <Link>Server\DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalExceptionHandler.cs">
+      <Link>Server\DataPortalExceptionHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalMethodCache.cs">
+      <Link>Server\DataPortalMethodCache.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalMethodInfo.cs">
+      <Link>Server\DataPortalMethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalResult.cs">
+      <Link>Server\DataPortalResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DataPortalSelector.cs">
+      <Link>Server\DataPortalSelector.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\DefaultDataPortalActivator.cs">
+      <Link>Server\DefaultDataPortalActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
+      <Link>Server\FactoryDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
+      <Link>Server\IAuthorizeDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalActivator.cs">
+      <Link>Server\IDataPortalActivator.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalExceptionInspector.cs">
+      <Link>Server\IDataPortalExceptionInspector.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IDataPortalServer.cs">
+      <Link>Server\IDataPortalServer.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IInterceptDataPortal.cs">
+      <Link>Server\IInterceptDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\IObjectFactoryLoader.cs">
+      <Link>Server\IObjectFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\ObjectFactoryLoader.cs">
+      <Link>Server\ObjectFactoryLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\SimpleDataPortal.cs">
+      <Link>Server\SimpleDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
+      <Link>Threading\BackgroundWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\ContextParams.cs">
+      <Link>Threading\ContextParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\TransactionalTypes.cs">
+      <Link>TransactionalTypes.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
@@ -310,9 +454,6 @@
     <Compile Include="..\Csla\Server\EmptyCriteria.cs">
       <Link>Server\EmptyCriteria.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Silverlight\PrimitiveCriteria.cs">
-      <Link>DataPortalClient\PrimitiveCriteria.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\SingleCriteria.cs">
       <Link>SingleCriteria.cs</Link>
     </Compile>
@@ -457,12 +598,6 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\ApplicationContext.cs">
-      <Link>ApplicationContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
       <Link>BusinessBindingListBase.cs</Link>
     </Compile>
@@ -505,9 +640,6 @@
     <Compile Include="..\Csla.Silverlight\Core\IReadOnlyCollection.cs">
       <Link>Core\IReadOnlyCollection.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ISavable.cs">
-      <Link>Core\ISavable.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\Core\ISmartField.cs">
       <Link>Core\ISmartField.cs</Link>
     </Compile>
@@ -541,41 +673,11 @@
     <Compile Include="..\Csla.Silverlight\Core\UndoException.cs">
       <Link>Core\UndoException.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortal.cs">
-      <Link>DataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\ChildDataPortal.cs">
-      <Link>DataPortalClient\ChildDataPortal.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\FactoryProxy.cs">
-      <Link>DataPortalClient\FactoryProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\IDataPortalProxy.cs">
-      <Link>DataPortalClient\IDataPortalProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\LocalProxy.cs">
-      <Link>DataPortalClient\LocalProxy.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalClient\ProxyFactory.cs">
-      <Link>DataPortalClient\ProxyFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalEventArgs.cs">
-      <Link>DataPortalEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalException.cs">
-      <Link>DataPortalException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DataPortalT.cs">
-      <Link>DataPortalT.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.Silverlight\DynamicBindingListBase.cs">
       <Link>DynamicBindingListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\ICloneable.cs">
       <Link>ICloneable.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\LazySingleton.cs">
-      <Link>LazySingleton.cs</Link>
     </Compile>
     <Compile Include="..\Csla.Silverlight\NotUndoableAttribute.cs">
       <Link>NotUndoableAttribute.cs</Link>
@@ -624,33 +726,19 @@
       <Link>Properties\Resources.resx</Link>
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:21647/SlPortal.svc">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\WcfPortal\</RelPath>
-      <UpdateFromURL>http://localhost:21647/SlPortal.svc</UpdateFromURL>
-      <ServiceLocationURL />
-      <CachedDynamicPropName />
-      <CachedAppSettingsObjectName />
-      <CachedSettingsPropName />
-    </WebReferenceUrl>
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="monotouch" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties>
-        <Policies>
-          <TextStylePolicy FileWidth="120" TabWidth="2" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp" />
-          <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
-        </Policies>
-      </Properties>
-    </MonoDevelop>
-  </ProjectExtensions>
-  <ItemGroup>
-    <None Include="Info.plist" />
-  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
 </Project>

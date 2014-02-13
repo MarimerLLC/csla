@@ -1,24 +1,27 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios", "Csla.Ios\Csla.Ios.csproj", "{F35F6026-DA97-4993-B9BC-DE935FDCDA23}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios", "Csla.Ios\Csla.Ios.csproj", "{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|iPhoneSimulator = Debug|iPhoneSimulator
-		Release|iPhoneSimulator = Release|iPhoneSimulator
 		Debug|iPhone = Debug|iPhone
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
 		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhone.Build.0 = Debug|iPhone
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhone.ActiveCfg = Release|iPhone
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhone.Build.0 = Release|iPhone
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{F35F6026-DA97-4993-B9BC-DE935FDCDA23}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Release|iPhone.Build.0 = Release|Any CPU
+		{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Csla.Ios\Csla.Ios.csproj

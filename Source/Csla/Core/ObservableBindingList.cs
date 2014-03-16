@@ -53,7 +53,7 @@ namespace Csla.Core
     /// Gets or sets a value indicating whether data binding
     /// can automatically edit items in this collection.
     /// </summary>
-    public bool AllowEdit
+    protected bool AllowEdit
     {
       get { return _allowEdit; }
       set { _allowEdit = value; }
@@ -63,7 +63,7 @@ namespace Csla.Core
     /// Gets or sets a value indicating whether data binding
     /// can automatically add new items to this collection.
     /// </summary>
-    public bool AllowNew
+    protected bool AllowNew
     {
       get { return _allowNew; }
       set { _allowNew = value; }
@@ -73,7 +73,7 @@ namespace Csla.Core
     /// Gets or sets a value indicating whether data binding
     /// can automatically remove items from this collection.
     /// </summary>
-    public bool AllowRemove
+    protected bool AllowRemove
     {
       get { return _allowRemove; }
       set { _allowRemove = value; }

@@ -11,6 +11,8 @@
     <RootNamespace>Csla</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
     <AssemblyName>Csla</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <DefineConstants>IOS;SILVERLIGHT;__IOS__;__MOBILE__;</DefineConstants>
+    <DefineConstants>DEBUG;__IOS__;__MOBILE__;IOS;SILVERLIGHT;__IOS__;__MOBILE__;</DefineConstants>
     <DocumentationFile>..\..\Bin\Release\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>

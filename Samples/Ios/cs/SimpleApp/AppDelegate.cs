@@ -11,13 +11,16 @@ namespace SimpleApp
   public partial class AppDelegate : UIApplicationDelegate
   {
     UIWindow window;
-    MyViewController viewController;
+    MainViewController viewController;
 
     public override bool FinishedLaunching(UIApplication app, NSDictionary options)
     {
+      Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://testcslaportal.azurewebsites.net/wcfportal.svc";
+        
       window = new UIWindow(UIScreen.MainScreen.Bounds);
 
-      viewController = new MyViewController();
+      viewController = new MainViewController();
       window.RootViewController = viewController;
 
       window.MakeKeyAndVisible();

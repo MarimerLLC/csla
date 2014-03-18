@@ -61,6 +61,10 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.dll*" target="lib\MonoAndroid" />
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.pdb*" target="lib\MonoAndroid" />
     <file src="..\..\Bin\Release\Android\**\Csla.Validation.xml*" target="lib\MonoAndroid" />
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.dll*" target="lib\MonoTouch" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.pdb*" target="lib\MonoTouch" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Validation.xml*" target="lib\MonoTouch" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Validation\**\*.cs" target="src" />
   </files>

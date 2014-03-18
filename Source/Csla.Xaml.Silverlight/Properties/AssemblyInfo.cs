@@ -39,8 +39,8 @@ using System.Windows.Markup;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.5.501.0")]
-[assembly: AssemblyFileVersion("4.5.501.0")]
+[assembly: AssemblyVersion("4.5.580.0")]
+[assembly: AssemblyFileVersion("4.5.580.0")]
 
 [assembly: XmlnsDefinition("http://schemas.lhotka.net/4.2.0/xaml", "Csla.Xaml")]
 [assembly: XmlnsPrefix("http://schemas.lhotka.net/4.2.0/xaml", "csla")]

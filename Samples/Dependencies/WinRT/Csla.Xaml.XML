@@ -363,7 +363,7 @@
         <member name="P:Csla.Xaml.ViewModelBase`1.Error">
             <summary>
             Gets the Error object corresponding to the
-            last asyncronous operation.
+            last asynchronous operation.
             </summary>
         </member>
         <member name="E:Csla.Xaml.ViewModelBase`1.ErrorOccurred">

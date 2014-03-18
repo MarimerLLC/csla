@@ -288,5 +288,57 @@
             Gets or sets the Model object.
             </summary>
         </member>
+        <member name="T:Csla.Web.Mvc.AsyncController">
+            <summary>
+            Provides methods that respond to HTTP requests
+            in an ASP.NET MVC web site.
+            </summary>
+        </member>
+        <member name="M:Csla.Web.Mvc.AsyncController.SaveObjectAsync``1(``0,System.Boolean)">
+            <summary>
+            Performs a SaveAsync() operation on an
+            editable business object, with appropriate
+            validation and exception handling.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="item">The business object to insert.</param>
+            <param name="forceUpdate">true to force Save() to be an update.</param>
+            <returns>true the Save() succeeds, false if not.</returns>
+        </member>
+        <member name="M:Csla.Web.Mvc.AsyncController.SaveObjectAsync``1(``0,System.Action{``0},System.Boolean)">
+            <summary>
+            Performs a SaveAsync() operation on an
+            editable business object, with appropriate
+            validation and exception handling.
+            </summary>
+            <typeparam name="T">Type of business object.</typeparam>
+            <param name="item">The business object to insert.</param>
+            <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
+            <param name="forceUpdate">true to force SaveAsync() to be an update.</param>
+            <returns>true the SaveAsync() succeeds, false if not.</returns>
+        </member>
+        <member name="M:Csla.Web.Mvc.AsyncController.LoadProperty``1(System.Object,Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value calling PropertyHasChanged 
+            if the value does change.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="obj">
+            Object on which to call the method. 
+            </param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
     </members>
 </doc>

@@ -66,6 +66,10 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid" />
     <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid" />
     <file src="..\..\Bin\Release\Android\**\Csla.xml*" target="lib\MonoAndroid" />
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.dll*" target="lib\MonoTouch" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.pdb*" target="lib\MonoTouch" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.xml*" target="lib\MonoTouch" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\*.cs" target="src" />
   </files>

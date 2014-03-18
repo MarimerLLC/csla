@@ -26,6 +26,8 @@ using System.Linq.Expressions;
 
 #if __ANDROID__
 namespace Csla.Axml
+#elif __IOS__
+namespace Csla.Iosui
 #else
 namespace Csla.Xaml
 #endif
@@ -35,7 +37,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
     public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
@@ -101,7 +103,7 @@ namespace Csla.Xaml
       /// <summary>
       /// Gets or sets the Model object.
       /// </summary>
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
     public object ModelProperty;
 #else
     public static readonly DependencyProperty ModelProperty =
@@ -109,11 +111,11 @@ namespace Csla.Xaml
 #endif
 #if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
-#elif __ANDROID__
+#elif __ANDROID__ || __IOS__
 #else
         new PropertyMetadata((o, e) =>
 #endif
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
         {
           var viewmodel = (ViewModelBase<T>)o;
           if (viewmodel.ManageObjectLifetime)
@@ -127,7 +129,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           viewmodel.OnPropertyChanged("Model");
 #endif
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
   }));
 #endif
     /// <summary>
@@ -135,7 +137,7 @@ namespace Csla.Xaml
     /// </summary>
     public T Model
     {
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
       get { return (T)ModelProperty; }
       set
       {
@@ -160,7 +162,7 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
@@ -176,7 +178,7 @@ namespace Csla.Xaml
     [Display(AutoGenerateField = false)]
     public bool ManageObjectLifetime
     {
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else
@@ -189,7 +191,7 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Gets the Error object corresponding to the
-    /// last asyncronous operation.
+    /// last asynchronous operation.
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
@@ -221,7 +223,7 @@ namespace Csla.Xaml
     protected virtual void OnError(Exception error)
     {
       if (ErrorOccurred != null)
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
         ErrorOccurred(this, new ErrorEventArgs(this, error));
 #else
         ErrorOccurred(this, new ErrorEventArgs { Error = error });
@@ -986,7 +988,7 @@ namespace Csla.Xaml
     protected virtual void BeginAddNew()
     {
       // In SL (for Csla 4.0.x) it will always be an IBindingList 
-#if __ANDROID__
+#if __ANDROID__ || __IOS__
       var ibl = (Model as System.ComponentModel.IBindingList);
 #else
       var ibl = (Model as IBindingList);

@@ -14,6 +14,8 @@ using System.Windows;
 
 #if __ANDROID__
 namespace Csla.Axml
+#elif __IOS__
+namespace Csla.Iosui
 #else
 namespace Csla.Xaml
 #endif

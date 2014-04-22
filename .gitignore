@@ -115,4 +115,6 @@ Desktop.ini
 /Source/CslaDoc/csladoc.shfbproj_Rockford
 
 /Source/CslaDoc/Help
-/Source/.nuget/nuget.exe
+/Source/.nuget
+
+Thumbs.db

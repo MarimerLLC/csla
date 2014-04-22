@@ -41,3 +41,8 @@ copy ..\bin\release\Android\Csla.dll ..\Samples\Dependencies\Android
 copy ..\bin\release\Android\Csla.Axml.dll ..\Samples\Dependencies\Android
 copy ..\bin\release\Android\Csla.Validation.dll ..\Samples\Dependencies\Android
 copy ..\bin\release\Android\Csla*.xml ..\Samples\Dependencies\Android
+
+copy ..\bin\release\iOS\Csla.dll ..\Samples\Dependencies\iOS
+copy ..\bin\release\iOS\Csla.Iosui.dll ..\Samples\Dependencies\iOS
+copy ..\bin\release\iOS\Csla.Validation.dll ..\Samples\Dependencies\iOS
+copy ..\bin\release\iOS\Csla*.xml ..\Samples\Dependencies\iOS

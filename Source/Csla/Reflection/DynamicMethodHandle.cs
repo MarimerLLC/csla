@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !IOS
+//-----------------------------------------------------------------------
 // <copyright file="DynamicMethodHandle.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -65,3 +66,4 @@ namespace Csla.Reflection
     }
   }
 }
+#endif

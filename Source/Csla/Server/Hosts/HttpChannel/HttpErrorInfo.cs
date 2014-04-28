@@ -63,13 +63,25 @@ namespace Csla.Server.Hosts.HttpChannel
       private set { LoadProperty(SourceProperty, value); }
     }
     /// <summary>
-    /// WcfErrorInfo object containing information
+    /// TargetSiteName of the exception object.
+    /// </summary>
+    public static readonly PropertyInfo<string> TargetSiteNameProperty = RegisterProperty<string>(c => c.TargetSiteName);
+    /// <summary>
+    /// TargetSiteName of the exception object.
+    /// </summary>
+    public string TargetSiteName
+    {
+      get { return GetProperty(TargetSiteNameProperty); }
+      private set { LoadProperty(TargetSiteNameProperty, value); }
+    }
+    /// <summary>
+    /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
     public static readonly PropertyInfo<HttpErrorInfo> InnerErrorProperty = RegisterProperty<HttpErrorInfo>(c => c.InnerError);
     /// <summary>
-    /// WcfErrorInfo object containing information
+    /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
@@ -90,7 +102,9 @@ namespace Csla.Server.Hosts.HttpChannel
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
+#if !SILVERLIGHT
       this.Source = ex.Source;
+#endif
       if (ex.InnerException != null)
         this.InnerError = new HttpErrorInfo(ex.InnerException);
     }
@@ -100,5 +114,30 @@ namespace Csla.Server.Hosts.HttpChannel
     /// </summary>
     public HttpErrorInfo()
     { }
+
+    /// <summary>
+    /// Creates an instance of the type by copying
+    /// the WcfErrorInfo data.
+    /// </summary>
+    /// <param name="info">WcfErrorInfo object.</param>
+    public HttpErrorInfo(Csla.WcfPortal.WcfErrorInfo info)
+    {
+      var errorInfo = this;
+      var source = info;
+      while (source != null)
+      {
+        errorInfo.Message = source.Message;
+        errorInfo.ExceptionTypeName = source.ExceptionTypeName;
+        errorInfo.Source = source.Source;
+        errorInfo.StackTrace = source.StackTrace;
+        errorInfo.TargetSiteName = source.TargetSiteName;
+        source = info.InnerError;
+        if (source != null)
+        {
+          errorInfo.InnerError = new HttpErrorInfo();
+          errorInfo = errorInfo.InnerError;
+        }
+      }
+    }
   }
 }

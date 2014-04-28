@@ -190,6 +190,18 @@
     <Compile Include="..\Csla\Server\Hosts\*.cs">
       <Link>Server\Hosts\%(FileName)</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\CriteriaRequest.cs">
+      <Link>Server\Hosts\HttpChannel\CriteriaRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpErrorInfo.cs">
+      <Link>Server\Hosts\HttpChannel\HttpErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpResponse.cs">
+      <Link>Server\Hosts\HttpChannel\HttpResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\UpdateRequest.cs">
+      <Link>Server\Hosts\HttpChannel\UpdateRequest.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\Hosts\Mobile\*.cs">
       <Link>Server\Hosts\Mobile\%(FileName)</Link>
     </Compile>
@@ -204,6 +216,7 @@
     </Compile>
     <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
       <Link>Threading\BackgroundWorker</Link>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="..\Csla\Threading\BusyLock.cs">
       <Link>Threading\BusyLock</Link>
@@ -380,6 +393,7 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\WcfPortal\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" />

@@ -25,7 +25,7 @@ namespace Csla.Server.Hosts.HttpChannel
     public byte[] ObjectData
     {
       get { return GetProperty(ObjectDataProperty); }
-      private set { LoadProperty(ObjectDataProperty, value); }
+      set { LoadProperty(ObjectDataProperty, value); }
     }
 
     /// <summary>

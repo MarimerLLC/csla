@@ -573,6 +573,18 @@
     <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
       <Link>Server\FactoryDataPortal.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\CriteriaRequest.cs">
+      <Link>Server\Hosts\HttpClient\CriteriaRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpErrorInfo.cs">
+      <Link>Server\Hosts\HttpClient\HttpErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpResponse.cs">
+      <Link>Server\Hosts\HttpClient\HttpResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\UpdateRequest.cs">
+      <Link>Server\Hosts\HttpClient\UpdateRequest.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
       <Link>Server\IAuthorizeDataPortal.cs</Link>
     </Compile>

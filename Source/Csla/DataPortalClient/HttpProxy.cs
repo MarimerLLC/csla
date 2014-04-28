@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Csla.DataPortalClient
@@ -89,8 +90,14 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+#if NETFX_CORE || UNIVERSAL_PCL
+      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
+      request.ClientCulture = language;
+      request.ClientUICulture = language;
+#else
+      request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
+#endif
       return request;
     }
 
@@ -108,8 +115,14 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-      request.ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
-      request.ClientUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture.Name;
+#if NETFX_CORE || UNIVERSAL_PCL
+      var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
+      request.ClientCulture = language;
+      request.ClientUICulture = language;
+#else
+      request.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
+      request.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
+#endif
       return request;
     }
 

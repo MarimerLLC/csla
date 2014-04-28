@@ -17,6 +17,7 @@
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
     <TargetFrameworkVersion />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -305,6 +307,9 @@
     </Compile>
     <Compile Include="..\Csla\DataPortalClient\DefaultPortalProxyFactory.cs">
       <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalClient\HttpProxy.cs">
+      <Link>DataPortalClient\HttpProxy.cs</Link>
     </Compile>
     <Compile Include="..\Csla\DataPortalClient\IDataPortalProxy.cs">
       <Link>DataPortalClient\IDataPortalProxy.cs</Link>
@@ -896,6 +901,13 @@ copy "$(SolutionDir)Csla\Properties\resources.zh-TW.resx" "$(ProjectDir)resource
 mkdir "$(ProjectDir)resources\uk-ua"
 copy "$(SolutionDir)Csla\Properties\resources.uk-ua.resx" "$(ProjectDir)resources\uk-ua\Resources.resw"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

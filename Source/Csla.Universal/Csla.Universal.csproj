@@ -254,6 +254,9 @@
     <Compile Include="..\Csla\DataPortalClient\DefaultPortalProxyFactory.cs">
       <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalClient\HttpProxy.cs">
+      <Link>DataPortalClient\HttpProxy.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DataPortalClient\IDataPortalProxy.cs">
       <Link>DataPortalClient\IDataPortalProxy.cs</Link>
     </Compile>

@@ -17,53 +17,8 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-  public class HttpPortal : ApiController
+  public class HttpPortal
   {
-    /// <summary>
-    /// Entry point for all data portal operations.
-    /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <returns>Results from the server-side data portal.</returns>
-    public virtual async Task<HttpResponseMessage> Post(string operation)
-    {
-      var result = new HttpResponse();
-      HttpErrorInfo errorData = null;
-      try
-      {
-        var data = await Request.Content.ReadAsByteArrayAsync();
-        var buffer = new MemoryStream(data);
-        buffer.Position = 0;
-        var request = MobileFormatter.Deserialize(buffer.ToArray());
-        switch (operation)
-        {
-          case "create":
-            result = await Create((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          case "fetch":
-            result = await Fetch((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          case "update":
-            result = await Update((UpdateRequest)request).ConfigureAwait(false);
-            break;
-          case "delete":
-            result = await Delete((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          default:
-            throw new InvalidOperationException(operation);
-        }
-      }
-      catch (Exception ex)
-      {
-        errorData = new HttpErrorInfo(ex);
-      }
-      var restResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
-
-      var response = Request.CreateResponse();
-      var bytes = MobileFormatter.Serialize(restResult);
-      response.Content = new ByteArrayContent(bytes);
-      return response;
-    }
-
     /// <summary>
     /// Create and initialize an existing business object.
     /// </summary>

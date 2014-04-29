@@ -101,6 +101,7 @@
     <Compile Include="AsyncController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\Hosts\HttpPortal.cs" />
+    <Compile Include="Server\Hosts\HttpPortalController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

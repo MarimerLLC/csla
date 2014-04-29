@@ -43,8 +43,12 @@ namespace SimpleApp
     {
       //Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
       //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/MobilePortal.svc";
+
+      var x = new Csla.DataPortalClient.HttpProxy();
+
       Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/HttpPortal/Post";
+      //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:4497/api/DataPortal/PostAsync";
+      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/DataPortal/PostAsync";
 
       Frame rootFrame = Window.Current.Content as Frame;
 

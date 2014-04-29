@@ -10,13 +10,6 @@
             through HTTP request/response.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.HttpPortal.Post(System.String)">
-            <summary>
-            Entry point for all data portal operations.
-            </summary>
-            <param name="operation">Name of the data portal operation to perform.</param>
-            <returns>Results from the server-side data portal.</returns>
-        </member>
         <member name="M:Csla.Server.Hosts.HttpPortal.Create(Csla.Server.Hosts.HttpChannel.CriteriaRequest)">
             <summary>
             Create and initialize an existing business object.
@@ -61,6 +54,26 @@
             comes back from the network.
             </summary>
             <param name="response">Response object.</param>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpPortalController">
+            <summary>
+            Exposes server-side DataPortal functionality
+            through HTTP request/response.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpPortalController.PostAsync(System.String)">
+            <summary>
+            Entry point for all data portal operations.
+            </summary>
+            <param name="operation">Name of the data portal operation to perform.</param>
+            <returns>Results from the server-side data portal.</returns>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpPortalController.Portal">
+            <summary>
+            Gets or sets the HttpPortal implementation
+            used to coordinate the data portal
+            operations.
+            </summary>
         </member>
         <member name="T:Csla.Web.Mvc.Controller">
             <summary>

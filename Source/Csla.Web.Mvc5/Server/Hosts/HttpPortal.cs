@@ -1,4 +1,11 @@
-﻿using Csla.Serialization.Mobile;
+﻿//-----------------------------------------------------------------------
+// <copyright file="HttpPortal.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: http://www.lhotka.net/cslanet/
+// </copyright>
+// <summary>Exposes server-side DataPortal functionality</summary>
+//-----------------------------------------------------------------------
+using Csla.Serialization.Mobile;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,35 +46,26 @@ namespace Csla.Server.Hosts
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new Csla.Server.Hosts.Mobile.MobileRequestProcessor();
-        var createRequest = new Csla.Server.Hosts.Mobile.MobileCriteriaRequest(
-          request.TypeName,
-          criteria,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
+        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var context = new DataPortalContext(
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal), 
+          true, 
+          request.ClientCulture, 
+          request.ClientUICulture,
           (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          request.ClientCulture,
-          request.ClientUICulture);
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
 
-#if NET40
-        var createResponse = processor.Create(createRequest);
-#else
-        var createResponse = await processor.Create(createRequest).ConfigureAwait(false);
-#endif
-        if (createResponse.Error != null)
-        {
-          result.ErrorData = new HttpErrorInfo(createResponse.Error);
-        }
-        result.GlobalContext = MobileFormatter.Serialize(createResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(createResponse.Object);
+        var prtl = new Csla.Server.DataPortal();
+        var dpr = await prtl.Create(objectType, criteria, context, true);
+
+        if (dpr.Error != null)
+          result.ErrorData = new HttpErrorInfo(dpr.Error);
+        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
-      }
-      finally
-      {
-        Csla.Server.Hosts.Mobile.MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -84,41 +82,34 @@ namespace Csla.Server.Hosts
       try
       {
         request = ConvertRequest(request);
+
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
         {
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
-        var processor = new Csla.Server.Hosts.Mobile.MobileRequestProcessor();
-        var fetchRequest = new Csla.Server.Hosts.Mobile.MobileCriteriaRequest(
-          request.TypeName,
-          criteria,
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
-          request.ClientCulture,
-          request.ClientUICulture);
 
-#if NET40
-        var fetchResponse = processor.Fetch(fetchRequest);
-#else
-        var fetchResponse = await processor.Fetch(fetchRequest).ConfigureAwait(false);
-#endif
-        if (fetchResponse.Error != null)
-        {
-          result.ErrorData = new HttpErrorInfo(fetchResponse.Error);
-        }
-        result.GlobalContext = MobileFormatter.Serialize(fetchResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(fetchResponse.Object);
+        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var context = new DataPortalContext(
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          true,
+          request.ClientCulture,
+          request.ClientUICulture,
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
+
+        var prtl = new Csla.Server.DataPortal();
+        var dpr = await prtl.Fetch(objectType, criteria, context, true);
+
+        if (dpr.Error != null)
+          result.ErrorData = new HttpErrorInfo(dpr.Error);
+        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
-      }
-      finally
-      {
-        Csla.Server.Hosts.Mobile.MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -138,34 +129,26 @@ namespace Csla.Server.Hosts
         // unpack object
         object obj = GetCriteria(request.ObjectData);
 
-        var processor = new Csla.Server.Hosts.Mobile.MobileRequestProcessor();
-        var updateRequest = new Csla.Server.Hosts.Mobile.MobileUpdateRequest(
-          obj,
+        var context = new DataPortalContext(
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          true,
           request.ClientCulture,
-          request.ClientUICulture);
+          request.ClientUICulture,
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
 
-#if NET40
-        var updateResponse = processor.Update(updateRequest);
-#else
-        var updateResponse = await processor.Update(updateRequest).ConfigureAwait(false);
-#endif
-        if (updateResponse.Error != null)
-        {
-          result.ErrorData = new HttpErrorInfo(updateResponse.Error);
-        }
-        result.GlobalContext = MobileFormatter.Serialize(updateResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(updateResponse.Object);
+        var prtl = new Csla.Server.DataPortal();
+        var dpr = await prtl.Update(obj, context, true);
+
+        if (dpr.Error != null)
+          result.ErrorData = new HttpErrorInfo(dpr.Error);
+
+        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
-      }
-      finally
-      {
-        Csla.Server.Hosts.Mobile.MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }
@@ -182,6 +165,7 @@ namespace Csla.Server.Hosts
       try
       {
         request = ConvertRequest(request);
+
         // unpack criteria data into object
         object criteria = GetCriteria(request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
@@ -189,35 +173,26 @@ namespace Csla.Server.Hosts
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var processor = new Csla.Server.Hosts.Mobile.MobileRequestProcessor();
-        var deleteRequest = new Csla.Server.Hosts.Mobile.MobileCriteriaRequest(
-          request.TypeName,
-          criteria,
+        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var context = new DataPortalContext(
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
-          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext),
-          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          true,
           request.ClientCulture,
-          request.ClientUICulture);
+          request.ClientUICulture,
+          (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
+          (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
 
-#if NET40
-        var deleteResponse = processor.Delete(deleteRequest);
-#else
-        var deleteResponse = await processor.Delete(deleteRequest).ConfigureAwait(false);
-#endif
-        if (deleteResponse.Error != null)
-        {
-          result.ErrorData = new HttpErrorInfo(deleteResponse.Error);
-        }
-        result.GlobalContext = MobileFormatter.Serialize(deleteResponse.GlobalContext);
-        result.ObjectData = MobileFormatter.Serialize(deleteResponse.Object);
+        var prtl = new Csla.Server.DataPortal();
+        var dpr = await prtl.Delete(objectType, criteria, context, true);
+
+        if (dpr.Error != null)
+          result.ErrorData = new HttpErrorInfo(dpr.Error);
+        result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
+        result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
-      }
-      finally
-      {
-        Csla.Server.Hosts.Mobile.MobileRequestProcessor.ClearContext();
       }
       return ConvertResponse(result);
     }

@@ -294,13 +294,6 @@
             through HTTP request/response.
             </summary>
         </member>
-        <member name="M:Csla.Server.Hosts.HttpPortal.Post(System.String)">
-            <summary>
-            Entry point for all data portal operations.
-            </summary>
-            <param name="operation">Name of the data portal operation to perform.</param>
-            <returns>Results from the server-side data portal.</returns>
-        </member>
         <member name="M:Csla.Server.Hosts.HttpPortal.Create(Csla.Server.Hosts.HttpChannel.CriteriaRequest)">
             <summary>
             Create and initialize an existing business object.

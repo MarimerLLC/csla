@@ -24,7 +24,7 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
-    public async Task<HttpResponseMessage> Post(string operation)
+    public virtual async Task<HttpResponseMessage> Post(string operation)
     {
       var result = new HttpResponse();
       HttpErrorInfo errorData = null;
@@ -68,7 +68,9 @@ namespace Csla.Server.Hosts
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+#pragma warning disable 1998
     public async Task<HttpResponse> Create(CriteriaRequest request)
+#pragma warning restore 1998
     {
       var result = new HttpResponse();
       try
@@ -92,7 +94,11 @@ namespace Csla.Server.Hosts
           request.ClientCulture,
           request.ClientUICulture);
 
+#if NET40
+        var createResponse = processor.Create(createRequest);
+#else
         var createResponse = await processor.Create(createRequest).ConfigureAwait(false);
+#endif
         if (createResponse.Error != null)
         {
           result.ErrorData = new HttpErrorInfo(createResponse.Error);
@@ -115,7 +121,9 @@ namespace Csla.Server.Hosts
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+#pragma warning disable 1998
     public async Task<HttpResponse> Fetch(CriteriaRequest request)
+#pragma warning restore 1998
     {
       var result = new HttpResponse();
       try
@@ -164,7 +172,9 @@ namespace Csla.Server.Hosts
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+#pragma warning disable 1998
     public async Task<HttpResponse> Update(UpdateRequest request)
+#pragma warning restore 1998
     {
       var result = new HttpResponse();
       try
@@ -209,7 +219,9 @@ namespace Csla.Server.Hosts
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+#pragma warning disable 1998
     public async Task<HttpResponse> Delete(CriteriaRequest request)
+#pragma warning restore 1998
     {
       var result = new HttpResponse();
       try

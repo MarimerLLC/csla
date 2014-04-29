@@ -1,7 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30324.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleApp", "SimpleApp\SimpleApp.csproj", "{CAD3B5A9-ED6E-4E66-9309-16A5B6A9F0E2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{34B91672-EFE2-4A68-8510-3D9559C61C44} = {34B91672-EFE2-4A68-8510-3D9559C61C44}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.WinRT", "Library.WinRT\Library.WinRT.csproj", "{690EBC7D-7895-419E-AD9A-3EF3E80BB533}"
 EndProject

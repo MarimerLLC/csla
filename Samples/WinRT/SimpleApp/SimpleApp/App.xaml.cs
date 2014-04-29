@@ -41,8 +41,10 @@ namespace SimpleApp
     /// <param name="args">Details about the launch request and process.</param>
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/MobilePortal.svc";
+      //Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+      //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/MobilePortal.svc";
+      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
+      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:19454/HttpPortal/Post";
 
       Frame rootFrame = Window.Current.Content as Frame;
 

@@ -107,8 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.5.1.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Csla">
       <HintPath>..\..\..\Dependencies\WinRT\Csla.dll</HintPath>
     </Reference>
   </ItemGroup>

@@ -32,6 +32,10 @@ copy ..\bin\release\WinRT\Csla.Validation.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.xml ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.pri ..\Samples\Dependencies\WinRT
 
+copy ..\bin\release\Universal\Csla.dll ..\Samples\Dependencies\Universal
+copy ..\bin\release\Universal\Csla*.xml ..\Samples\Dependencies\Universal
+copy ..\bin\release\Universal\Csla*.pri ..\Samples\Dependencies\Universal
+
 copy ..\bin\release\WinPRT\Csla.dll ..\Samples\Dependencies\WinPRT
 copy ..\bin\release\WinPRT\Csla.Xaml.dll ..\Samples\Dependencies\WinPRT
 copy ..\bin\release\WinPRT\Csla.Validation.dll ..\Samples\Dependencies\WinPRT

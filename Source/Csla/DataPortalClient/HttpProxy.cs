@@ -15,7 +15,7 @@ namespace Csla.DataPortalClient
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server by using http.
   /// </summary>
-  public class HttpProxy
+  public class HttpProxy : IDataPortalProxy
   {
     private int _timeoutInMilliseconds = 0;
 

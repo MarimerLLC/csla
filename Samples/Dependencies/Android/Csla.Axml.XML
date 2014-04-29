@@ -205,7 +205,7 @@
         <member name="P:Csla.Axml.ViewModelBase`1.Error">
             <summary>
             Gets the Error object corresponding to the
-            last asynchronous operation.
+            last asyncronous operation.
             </summary>
         </member>
         <member name="E:Csla.Axml.ViewModelBase`1.ErrorOccurred">

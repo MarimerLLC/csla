@@ -10,6 +10,7 @@ using System.Web.Http;
 using Csla.Server.Hosts.HttpChannel;
 using Csla.Core;
 using System.Security.Principal;
+using System.Web.Mvc;
 
 namespace Csla.Server.Hosts
 {
@@ -17,18 +18,25 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NET40
+#if MVC4
   public class HttpPortalController : AsyncController
   {
+    /// <summary>
+    /// Entry point for all data portal operations.
+    /// </summary>
+    /// <param name="operation">Name of the data portal operation to perform.</param>
+    /// <returns>Results from the server-side data portal.</returns>
     [System.Web.Http.HttpPost]
     public async Task<ActionResult> Post(string operation)
     {
-      var requestData = await Request.Content.ReadAsByteArrayAsync();
+      var requestData = Request.BinaryRead(int.MaxValue);
       var responseData = await InvokePortal(operation, requestData);
-      Response.BinaryWrite(responseData)
+      Response.BinaryWrite(responseData);
       return View(new NullView());
     }
-  }
+
+    private class NullView : ViewPage
+    { }
 #else
   public class HttpPortalController : ApiController
   {
@@ -45,6 +53,7 @@ namespace Csla.Server.Hosts
       response.Content = new ByteArrayContent(responseData);
       return response;
     }
+#endif
 
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
@@ -83,5 +92,4 @@ namespace Csla.Server.Hosts
       return bytes;
     }
   }
-#endif
 }

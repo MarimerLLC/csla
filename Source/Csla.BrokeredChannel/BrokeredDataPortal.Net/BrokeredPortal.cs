@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Csla.Server;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
 
 namespace BrokeredDataPortal
 {
@@ -29,13 +30,16 @@ namespace BrokeredDataPortal
     /// <param name="contextData">
     /// Server.DataPortalContext object passed to the server.
     /// </param>
-    public byte[] Create(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
+    public IAsyncOperation<IList<byte>> Create(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
     {
-      var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
-      var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
-      var portal = new DataPortal();
-      var result = portal.Create(objectType, criteria, context, true).Result;
-      return Csla.Serialization.Mobile.MobileFormatter.Serialize(result);
+      return Task<IList<byte>>.Run(async () =>
+        {
+          var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
+          var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
+          var portal = new DataPortal();
+          var result = await portal.Create(objectType, criteria, context, false);
+          return (IList<byte>)Csla.Serialization.Mobile.MobileFormatter.Serialize(result).ToList();
+        }).AsAsyncOperation();
     }
 
     /// <summary>
@@ -46,13 +50,16 @@ namespace BrokeredDataPortal
     /// <param name="contextData">
     /// Server.DataPortalContext object passed to the server.
     /// </param>
-    public byte[] Fetch(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
+    public IAsyncOperation<IList<byte>> Fetch(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
     {
-      var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
-      var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
-      var portal = new DataPortal();
-      var result = portal.Fetch(objectType, criteria, context, true).Result;
-      return Csla.Serialization.Mobile.MobileFormatter.Serialize(result);
+      return Task<IList<byte>>.Run(async () =>
+        {
+          var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
+          var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
+          var portal = new DataPortal();
+          var result = await portal.Fetch(objectType, criteria, context, false);
+          return (IList<byte>)Csla.Serialization.Mobile.MobileFormatter.Serialize(result).ToList();
+        }).AsAsyncOperation();
     }
 
     /// <summary>
@@ -62,13 +69,16 @@ namespace BrokeredDataPortal
     /// <param name="contextData">
     /// Server.DataPortalContext object passed to the server.
     /// </param>
-    public byte[] Update([ReadOnlyArray] byte[] objectData, [ReadOnlyArray] byte[] contextData)
+    public IAsyncOperation<IList<byte>> Update([ReadOnlyArray] byte[] objectData, [ReadOnlyArray] byte[] contextData)
     {
-      var obj = Csla.Serialization.Mobile.MobileFormatter.Deserialize(objectData);
-      var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
-      var portal = new DataPortal();
-      var result = portal.Update(obj, context, true).Result;
-      return Csla.Serialization.Mobile.MobileFormatter.Serialize(result);
+      return Task<IList<byte>>.Run(async () =>
+        {
+          var obj = Csla.Serialization.Mobile.MobileFormatter.Deserialize(objectData);
+          var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
+          var portal = new DataPortal();
+          var result = await portal.Update(obj, context, false);
+          return (IList<byte>)Csla.Serialization.Mobile.MobileFormatter.Serialize(result).ToList();
+        }).AsAsyncOperation();
     }
 
     /// <summary>
@@ -79,13 +89,16 @@ namespace BrokeredDataPortal
     /// <param name="contextData">
     /// Server.DataPortalContext object passed to the server.
     /// </param>
-    public byte[] Delete(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
+    public IAsyncOperation<IList<byte>> Delete(Type objectType, [ReadOnlyArray] byte[] criteriaData, [ReadOnlyArray] byte[] contextData)
     {
-      var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
-      var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
-      var portal = new DataPortal();
-      var result = portal.Delete(objectType, criteria, context, true).Result;
-      return Csla.Serialization.Mobile.MobileFormatter.Serialize(result);
+      return Task<IList<byte>>.Run(async () =>
+        {
+          var criteria = Csla.Serialization.Mobile.MobileFormatter.Deserialize(criteriaData);
+          var context = (DataPortalContext)Csla.Serialization.Mobile.MobileFormatter.Deserialize(contextData);
+          var portal = new DataPortal();
+          var result = await portal.Delete(objectType, criteria, context, false);
+          return (IList<byte>)Csla.Serialization.Mobile.MobileFormatter.Serialize(result).ToList();
+        }).AsAsyncOperation();
     }
   }
 }

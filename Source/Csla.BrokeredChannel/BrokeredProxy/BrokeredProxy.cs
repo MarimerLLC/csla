@@ -41,19 +41,12 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var task = Task.Run<DataPortalResult>(() =>
-        {
-          var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
-          var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
-          var portal = new BrokeredDataPortal.BrokeredPortal();
-          var resultData = portal.Create(objectType, criteriaData, contextData);
-          var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData);
-          return result;
-        });
-      if (isSync)
-        return task.Result;
-      else
-        return await task;
+      var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
+      var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
+      var portal = new BrokeredDataPortal.BrokeredPortal();
+      var resultData = await portal.Create(objectType, criteriaData, contextData);
+      var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData.ToArray());
+      return result;
     }
 
     /// <summary>
@@ -66,19 +59,12 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var task = Task.Run<DataPortalResult>(() =>
-      {
-        var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
-        var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
-        var portal = new BrokeredDataPortal.BrokeredPortal();
-        var resultData = portal.Fetch(objectType, criteriaData, contextData);
-        var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData);
-        return result;
-      });
-      if (isSync)
-        return task.Result;
-      else
-        return await task;
+      var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
+      var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
+      var portal = new BrokeredDataPortal.BrokeredPortal();
+      var resultData = await portal.Fetch(objectType, criteriaData, contextData);
+      var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData.ToArray());
+      return result;
     }
 
     /// <summary>
@@ -90,19 +76,12 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      var task = Task.Run<DataPortalResult>(() =>
-      {
-        var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
-        var objectData = Csla.Serialization.Mobile.MobileFormatter.Serialize(obj);
-        var portal = new BrokeredDataPortal.BrokeredPortal();
-        var resultData = portal.Update(objectData, contextData);
-        var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData);
-        return result;
-      });
-      if (isSync)
-        return task.Result;
-      else
-        return await task;
+      var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
+      var objectData = Csla.Serialization.Mobile.MobileFormatter.Serialize(obj);
+      var portal = new BrokeredDataPortal.BrokeredPortal();
+      var resultData = await portal.Update(objectData, contextData);
+      var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData.ToArray());
+      return result;
     }
 
     /// <summary>
@@ -115,19 +94,12 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      var task = Task.Run<DataPortalResult>(() =>
-      {
-        var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
-        var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
-        var portal = new BrokeredDataPortal.BrokeredPortal();
-        var resultData = portal.Delete(objectType, criteriaData, contextData);
-        var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData);
-        return result;
-      });
-      if (isSync)
-        return task.Result;
-      else
-        return await task;
+      var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
+      var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
+      var portal = new BrokeredDataPortal.BrokeredPortal();
+      var resultData = await portal.Delete(objectType, criteriaData, contextData);
+      var result = (DataPortalResult)Csla.Serialization.Mobile.MobileFormatter.Deserialize(resultData.ToArray());
+      return result;
     }
   }
 }

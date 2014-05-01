@@ -41,6 +41,8 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
       var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
       var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
       var portal = new BrokeredDataPortal.BrokeredPortal();
@@ -59,6 +61,8 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
       var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
       var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
       var portal = new BrokeredDataPortal.BrokeredPortal();
@@ -76,6 +80,8 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
       var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
       var objectData = Csla.Serialization.Mobile.MobileFormatter.Serialize(obj);
       var portal = new BrokeredDataPortal.BrokeredPortal();
@@ -94,6 +100,8 @@ namespace BrokeredProxy
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (isSync)
+        throw new NotSupportedException("isSync == true");
       var contextData = Csla.Serialization.Mobile.MobileFormatter.Serialize(context);
       var criteriaData = Csla.Serialization.Mobile.MobileFormatter.Serialize(criteria);
       var portal = new BrokeredDataPortal.BrokeredPortal();

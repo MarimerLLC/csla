@@ -18003,6 +18003,11 @@
             <param name="clientUICulture">Client UI culture.</param>
             <param name="globalContext">Global context.</param>
         </member>
+        <member name="M:Csla.Server.DataPortalContext.#ctor">
+            <summary>
+            Default constructor for use by MobileFormatter.
+            </summary>
+        </member>
         <member name="P:Csla.Server.DataPortalContext.Principal">
             <summary>
             The current principal object

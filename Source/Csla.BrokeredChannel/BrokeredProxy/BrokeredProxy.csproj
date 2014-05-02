@@ -9,8 +9,8 @@
     <ProjectGuid>{2D360A64-16AE-4249-98D4-C16AC87730AB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrokeredProxy</RootNamespace>
-    <AssemblyName>BrokeredProxy</AssemblyName>
+    <RootNamespace>Csla.DataPortalClient</RootNamespace>
+    <AssemblyName>Csla.BrokeredProxy</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
@@ -88,7 +88,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>..\..\..\Bin\Debug\WinRT\BrokeredProxy.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Bin\Debug\WinRT\Csla.BrokeredProxy.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\..\Bin\Release\WinRT\</OutputPath>
@@ -100,7 +100,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
-    <DocumentationFile>..\..\..\Bin\Release\WinRT\BrokeredProxy.XML</DocumentationFile>
+    <DocumentationFile>..\..\..\Bin\Release\WinRT\Csla.BrokeredProxy.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->

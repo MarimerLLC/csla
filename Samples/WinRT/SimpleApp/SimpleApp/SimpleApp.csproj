@@ -18,7 +18,7 @@
     <PackageCertificateThumbprint>3E13E2135C1E7A64147E3897E86CA544AD5119F2</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -148,6 +148,14 @@
   <ItemGroup>
     <Reference Include="Csla">
       <HintPath>..\..\..\Dependencies\WinRT\Csla.dll</HintPath>
+    </Reference>
+    <Reference Include="Csla.BrokeredDataPortal, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\WinRT\Csla.BrokeredDataPortal.winmd</HintPath>
+    </Reference>
+    <Reference Include="Csla.BrokeredProxy, Version=4.5.580.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\WinRT\Csla.BrokeredProxy.dll</HintPath>
     </Reference>
     <Reference Include="Csla.Xaml">
       <HintPath>..\..\..\Dependencies\WinRT\Csla.Xaml.dll</HintPath>

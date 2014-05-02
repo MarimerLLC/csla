@@ -55,12 +55,14 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <EmbedManifest>true</EmbedManifest>
+    <OutDir>$(SolutionDir)..\bin\$(Configuration)\NET\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <EmbedManifest>true</EmbedManifest>
+    <OutDir>$(SolutionDir)..\bin\$(Configuration)\NET\$(MSBuildProjectName)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -107,7 +109,7 @@
     <None Include="ProxyStub.def" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BrokeredDataPortal.Net\BrokeredDataPortal.Net.csproj">
+    <ProjectReference Include="..\BrokeredDataPortal.Net\BrokeredDataPortalHost.csproj">
       <Project>{23cb18ca-b7f6-4480-b72c-8a4ea4a3538d}</Project>
     </ProjectReference>
   </ItemGroup>

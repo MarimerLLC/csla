@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokeredDataPortal.Net", "Csla.BrokeredChannel\BrokeredDataPortal.Net\BrokeredDataPortal.Net.csproj", "{23CB18CA-B7F6-4480-B72C-8A4EA4A3538D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrokeredDataPortalHost", "Csla.BrokeredChannel\BrokeredDataPortal.Net\BrokeredDataPortalHost.csproj", "{23CB18CA-B7F6-4480-B72C-8A4EA4A3538D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{782DFF
 		Csla.BrokeredChannel\.nuget\NuGet.exe = Csla.BrokeredChannel\.nuget\NuGet.exe
 		Csla.BrokeredChannel\.nuget\NuGet.targets = Csla.BrokeredChannel\.nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.BrokeredDataPortal", "Csla.BrokeredChannel\Csla.BrokeredDataPortal\Csla.BrokeredDataPortal.csproj", "{2993586A-A314-40F1-8DC6-01BE6BE7E07A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -304,6 +306,46 @@ Global
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Testing|x64.Build.0 = Release|x64
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Testing|x86.ActiveCfg = Release|x86
 		{24C13E06-70A8-46C2-8351-987AF0780F78}.Testing|x86.Build.0 = Release|x86
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|ARM.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|Win32.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|x64.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Debug|x86.ActiveCfg = Debug|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|ARM.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|Win32.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|x64.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Mono Release|x86.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|ARM.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|Win32.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|x64.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Release|x86.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|ARM.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|Mixed Platforms.Build.0 = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|Win32.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|x64.ActiveCfg = Release|Any CPU
+		{2993586A-A314-40F1-8DC6-01BE6BE7E07A}.Testing|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

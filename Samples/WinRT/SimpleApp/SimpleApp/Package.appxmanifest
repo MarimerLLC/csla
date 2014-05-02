@@ -28,4 +28,18 @@
   <Capabilities>
     <Capability Name="internetClient" />
   </Capabilities>
+  <Extensions>
+    <Extension Category="windows.activatableClass.inProcessServer">
+      <InProcessServer>
+        <Path>clrhost.dll</Path>
+        <ActivatableClass ActivatableClassId="Csla.BrokeredDataPortal.BrokeredPortal"
+                          ThreadingModel="both">
+          <ActivatableClassAttribute
+               Name="DesktopApplicationPath"
+               Type="string"
+               Value="D:\Users\Rockford\Documents\GitHub\csla\Samples\WinRT\SimpleApp\BrokeredServer"/>
+        </ActivatableClass>
+      </InProcessServer>
+    </Extension>
+  </Extensions>
 </Package>

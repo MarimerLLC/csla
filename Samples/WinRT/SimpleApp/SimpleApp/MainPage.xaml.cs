@@ -34,10 +34,20 @@ namespace SimpleApp
     protected async override void OnNavigatedTo(NavigationEventArgs e)
     {
       ProgressDisplay.IsActive = true;
-      var obj = await Library.CustomerEdit.GetCustomerEditAsync(441);
-      obj.BeginEdit();
-      this.DataContext = obj;
-      ProgressDisplay.IsActive = false;
+      try
+      {
+        var obj = await Library.CustomerEdit.GetCustomerEditAsync(441);
+        obj.BeginEdit();
+        this.DataContext = obj;
+      }
+      catch (Exception ex)
+      {
+        this.DataContext = null;
+      }
+      finally
+      {
+        ProgressDisplay.IsActive = false;
+      }
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)

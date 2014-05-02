@@ -7416,6 +7416,12 @@
             type based on current configuration values.
             </summary>
         </member>
+        <member name="T:Csla.DataPortalClient.HttpProxy">
+            <summary>
+            Implements a data portal proxy to relay data portal
+            calls to a remote application server by using http.
+            </summary>
+        </member>
         <member name="T:Csla.DataPortalClient.IDataPortalProxy">
             <summary>
             Interface implemented by client-side 
@@ -7476,6 +7482,114 @@
             Get a value indicating whether this proxy will invoke
             a remote data portal server, or run the "server-side"
             data portal in the caller's process and AppDomain.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.#ctor">
+            <summary>
+            Creates an instance of the object, initializing
+            it to use the DefaultUrl 
+            values.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.GetClient">
+            <summary>
+            Gets an HttpClient object for use in
+            communication with the server.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to create a
+            new business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to load an
+            existing business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to update a
+            business object.
+            </summary>
+            <param name="obj">The business object to update.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to delete a
+            business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertRequest(Csla.Server.Hosts.HttpChannel.UpdateRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Update request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertRequest(Csla.Server.Hosts.HttpChannel.CriteriaRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Criteria request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertResponse(Csla.Server.Hosts.HttpChannel.HttpResponse)">
+            <summary>
+            Override this method to manipulate the message
+            request data returned from the server.
+            </summary>
+            <param name="response">Response data.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.Timeout">
+            <summary>
+            Gets or sets the HttpClient timeout
+            in milliseconds (0 uses default HttpClient timeout).
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.DefaultUrl">
+            <summary>
+            Gets or sets the default URL address
+            for the data portal server.
+            </summary>
+            <remarks>
+            Deprecated: use ApplicationContext.DataPortalUrlString
+            </remarks>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.IsServerRemote">
+            <summary>
+            Gets a value indicating whether the data portal
+            is hosted on a remote server.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.DataPortalUrl">
+            <summary>
+            Gets the URL address for the data portal server
+            used by this proxy instance.
             </summary>
         </member>
         <member name="T:Csla.DataPortalClient.LocalProxy">
@@ -7856,6 +7970,12 @@
             </param>
         </member>
         <member name="M:Csla.DataPortalException.#ctor(Csla.WcfPortal.WcfErrorInfo)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="info">Info about the exception.</param>
+        </member>
+        <member name="M:Csla.DataPortalException.#ctor(Csla.Server.Hosts.HttpChannel.HttpErrorInfo)">
             <summary>
             Creates an instance of the object.
             </summary>
@@ -11488,6 +11608,989 @@
             a CSLA .NET business object.
             </summary>
         </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.CriteriaRequest">
+            <summary>
+            Message sent to the Silverlight
+            WCF data portal.
+            </summary>
+        </member>
+        <member name="T:Csla.ReadOnlyBase`1">
+            <summary>
+            This is a base class from which readonly business classes
+            can be derived.
+            </summary>
+            <remarks>
+            This base class only supports data retrieve, not updating or
+            deleting. Any business classes derived from this base class
+            should only implement readonly properties.
+            </remarks>
+            <typeparam name="T">Type of the business object.</typeparam>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetIdValue">
+            <summary>
+            Override this method to return a unique identifying
+            value for this object.
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.ToString">
+            <summary>
+            Returns a text representation of this object by
+            returning the <see cref="M:Csla.ReadOnlyBase`1.GetIdValue"/> value
+            in text form.
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.#ctor">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.Initialize">
+            <summary>
+            Override this method to set up event handlers so user
+            code in a partial class can respond to events raised by
+            generated code.
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.AddBusinessRules">
+            <summary>
+            Override this method to add per-type
+            authorization rules for your type's properties.
+            </summary>
+            <remarks>
+            AddSharedAuthorizationRules is automatically called by CSLA .NET
+            when your object should associate per-type authorization roles
+            with its properties.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            calling property.
+            </summary>
+            <param name="property">Property to check.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(Csla.Core.IPropertyInfo,System.Boolean)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            calling property.
+            </summary>
+            <returns><see langword="true" /> if read is allowed.</returns>
+            <param name="property">Property to read.</param>
+            <param name="throwOnFalse">Indicates whether a negative
+            result should cause an exception.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <param name="propertyName">Name of the property to read.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(System.String,System.Boolean)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to read the
+            specified property.
+            </summary>
+            <param name="propertyName">Name of the property to read.</param>
+            <param name="throwOnFalse">Indicates whether a negative
+            result should cause an exception.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(Csla.Core.IMemberInfo)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute
+            the specified method.
+            </summary>
+            <param name="method">Method to execute.</param>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(Csla.Core.IMemberInfo,System.Boolean)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute
+            the specified method.
+            </summary>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+            <param name="method">Method to execute.</param>
+            <param name="throwOnFalse">Indicates whether a negative
+            result should cause an exception.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(System.String)">
+            <summary>
+            Returns <see langword="true" /> if the user is allowed to execute
+            the specified method.
+            </summary>
+            <param name="methodName">Name of the method to execute.</param>
+            <returns><see langword="true" /> if execute is allowed.</returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetClone">
+            <summary>
+            Creates a clone of the object.
+            </summary>
+            <returns>A new object containing the exact data of the original object.</returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.Clone">
+            <summary>
+            Creates a clone of the object.
+            </summary>
+            <returns>
+            A new object containing the exact data of the original object.
+            </returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalInvoke(Csla.DataPortalEventArgs)">
+            <summary>
+            Called by the server-side DataPortal prior to calling the 
+            requested DataPortal_xyz method.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalInvokeComplete(Csla.DataPortalEventArgs)">
+            <summary>
+            Called by the server-side DataPortal after calling the 
+            requested DataPortal_xyz method.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalException(Csla.DataPortalEventArgs,System.Exception)">
+            <summary>
+            Called by the server-side DataPortal if an exception
+            occurs during data access.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+            <param name="ex">The Exception thrown during data access.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalInvoke(Csla.DataPortalEventArgs)">
+            <summary>
+            Called by the server-side DataPortal prior to calling the 
+            requested DataPortal_XYZ method.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalInvokeComplete(Csla.DataPortalEventArgs)">
+            <summary>
+            Called by the server-side DataPortal after calling the 
+            requested DataPortal_XYZ method.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalException(Csla.DataPortalEventArgs,System.Exception)">
+            <summary>
+            Called by the server-side DataPortal if an exception
+            occurs during data access.
+            </summary>
+            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
+            <param name="ex">The Exception thrown during data access.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnDeserialized(System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            This method is called on a newly deserialized object
+            after deserialization is complete.
+            </summary>
+            <param name="context">Serialization context object.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Type,Csla.PropertyInfo{``0})">
+            <summary>
+            Indicates that the specified property belongs
+            to the type.
+            </summary>
+            <typeparam name="P">
+            Type of property.
+            </typeparam>
+            <param name="objectType">
+            Type of object to which the property belongs.
+            </param>
+            <param name="info">
+            PropertyInfo object for the property.
+            </param>
+            <returns>
+            The provided IPropertyInfo object.
+            </returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(Csla.PropertyInfo{``0})">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">
+            Type of property.
+            </typeparam>
+            <param name="info">
+            PropertyInfo object for the property.
+            </param>
+            <returns>
+            The provided IPropertyInfo object.
+            </returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">Type of property</typeparam>
+            <param name="propertyLambdaExpression">Property Expression</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">Type of property</typeparam>
+            <param name="propertyLambdaExpression">Property Expression</param>
+            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,``0)">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">Type of property</typeparam>
+            <param name="propertyLambdaExpression">Property Expression</param>
+            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+            <param name="defaultValue">Default Value for the property</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},Csla.RelationshipTypes)">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">Type of property</typeparam>
+            <param name="propertyLambdaExpression">Property Expression</param>
+            <param name="relationship">Relationship with
+            referenced object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,Csla.RelationshipTypes)">
+            <summary>
+            Indicates that the specified property belongs
+            to the business object type.
+            </summary>
+            <typeparam name="P">Type of property</typeparam>
+            <param name="propertyLambdaExpression">Property Expression</param>
+            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+            <param name="relationship">Relationship with
+            referenced object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Type,Csla.Core.IMemberInfo)">
+            <summary>
+            Indicates that the specified method belongs
+            to the type.
+            </summary>
+            <param name="objectType">
+            Type of object to which the method belongs.
+            </param>
+            <param name="info">
+            IMemberInfo object for the property.
+            </param>
+            <returns>
+            The provided IMemberInfo object.
+            </returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Type,System.String)">
+            <summary>
+            Indicates that the specified method belongs
+            to the type.
+            </summary>
+            <param name="objectType">
+            Type of object to which the method belongs.
+            </param>
+            <param name="methodName">
+            Name of the method.
+            </param>
+            <returns>
+            The provided IMemberInfo object.
+            </returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Linq.Expressions.Expression{System.Action{`0}})">
+            <summary>
+            Registers the method.
+            </summary>
+            <param name="methodLambdaExpression">The method lambda expression.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(System.String,``0,``0)">
+            <summary>
+            Gets a property's value, first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyName">
+            The name of the property.</param>
+            <param name="defaultValue">
+            Value to be returned if the user is not
+            authorized to read the property.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(System.String,``0,``0,Csla.Security.NoAccessBehavior)">
+            <summary>
+            Gets a property's value, first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyName">
+            The name of the property.</param>
+            <param name="defaultValue">
+            Value to be returned if the user is not
+            authorized to read the property.</param>
+            <param name="noAccess">
+            True if an exception should be thrown when the
+            user is not authorized to read this property.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Gets a property's value, first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},``0,``0,Csla.Security.NoAccessBehavior)">
+            <summary>
+            Gets a property's value, first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="defaultValue">
+            Value to be returned if the user is not
+            authorized to read the property.</param>
+            <param name="noAccess">
+            True if an exception should be thrown when the
+            user is not authorized to read this property.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Gets a property's value as 
+            a specified type, first checking authorization.
+            </summary>
+            <typeparam name="F">
+            Type of the field.
+            </typeparam>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},``0,Csla.Security.NoAccessBehavior)">
+            <summary>
+            Gets a property's value as a specified type, 
+            first checking authorization.
+            </summary>
+            <typeparam name="F">
+            Type of the field.
+            </typeparam>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="field">
+            The backing field for the property.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="noAccess">
+            True if an exception should be thrown when the
+            user is not authorized to read this property.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0})">
+            <summary>
+            Gets a property's managed field value, 
+            first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0})">
+            <summary>
+            Gets a property's value from the list of 
+            managed field values, first checking authorization,
+            and converting the value to an appropriate type.
+            </summary>
+            <typeparam name="F">
+            Type of the field.
+            </typeparam>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},Csla.Security.NoAccessBehavior)">
+            <summary>
+            Gets a property's value from the list of 
+            managed field values, first checking authorization,
+            and converting the value to an appropriate type.
+            </summary>
+            <typeparam name="F">
+            Type of the field.
+            </typeparam>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="noAccess">
+            True if an exception should be thrown when the
+            user is not authorized to read this property.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},Csla.Security.NoAccessBehavior)">
+            <summary>
+            Gets a property's value as a specified type, 
+            first checking authorization.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="noAccess">
+            True if an exception should be thrown when the
+            user is not authorized to read this property.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.GetProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Gets a property's value as a specified type.
+            </summary>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <remarks>
+            If the user is not authorized to read the property
+            value, the defaultValue value is returned as a
+            result.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.ReadPropertyConvert``2(Csla.PropertyInfo{``0})">
+            <summary>
+            Gets a property's value from the list of 
+            managed field values, converting the 
+            value to an appropriate type.
+            </summary>
+            <typeparam name="F">
+            Type of the field.
+            </typeparam>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.ReadProperty``1(Csla.PropertyInfo{``0})">
+            <summary>
+            Gets a property's value as a specified type.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.ReadProperty(Csla.Core.IPropertyInfo)">
+            <summary>
+            Gets a property's value as a specified type.
+            </summary>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyConvert``2(Csla.PropertyInfo{``0},``1)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value calling PropertyHasChanged 
+            if the value does change.
+            </summary>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.LoadProperty``1(Csla.PropertyInfo{``0},``0)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value calling PropertyHasChanged 
+            if the value does change.
+            </summary>
+            <typeparam name="P">
+            Type of the property.
+            </typeparam>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.LoadProperty(Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Loads a property's managed field with the 
+            supplied value calling PropertyHasChanged 
+            if the value does change.
+            </summary>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <remarks>
+            No authorization checks occur when this method is called,
+            and no PropertyChanging or PropertyChanged events are raised.
+            Loading values does not cause validation rules to be
+            invoked.
+            </remarks>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``1(Csla.PropertyInfo{``0},System.Threading.Tasks.Task{``0})">
+            <summary>
+            Load a property from an async method. 
+            </summary>
+            <typeparam name="R"></typeparam>
+            <param name="property"></param>
+            <param name="factory"></param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.MarkBusy">
+            <summary>
+            Marks the object as being busy (it is
+            running an async operation).
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.MarkIdle">
+            <summary>
+            Marks the object as being not busy
+            (it is not running an async operation).
+            </summary>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnBusyChanged(System.String,System.Boolean)">
+            <summary>
+            Raises the BusyChanged event.
+            </summary>
+            <param name="propertyName">Name of the property
+            that has changed.</param>
+            <param name="busy">New busy value.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnBusyChanged(Csla.Core.BusyChangedEventArgs)">
+            <summary>
+            Raises the BusyChanged event.
+            </summary>
+            <param name="args">Event arguments.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnGetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
+            <summary>
+            Override this method to insert your child object
+            references into the MobileFormatter serialzation stream.
+            </summary>
+            <param name="info">
+            Object containing the data to serialize.
+            </param>
+            <param name="formatter">
+            Reference to MobileFormatter instance. Use this to
+            convert child references to/from reference id values.
+            </param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnSetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
+            <summary>
+            Override this method to retrieve your child object
+            references from the MobileFormatter serialzation stream.
+            </summary>
+            <param name="info">
+            Object containing the data to serialize.
+            </param>
+            <param name="formatter">
+            Reference to MobileFormatter instance. Use this to
+            convert child references to/from reference id values.
+            </param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnUnhandledAsyncException(Csla.Core.ErrorEventArgs)">
+            <summary>
+            Raises the UnhandledAsyncException event.
+            </summary>
+            <param name="error">Error arguments.</param>
+        </member>
+        <member name="M:Csla.ReadOnlyBase`1.OnUnhandledAsyncException(System.Object,System.Exception)">
+            <summary>
+            Raises the UnhandledAsyncException event.
+            </summary>
+            <param name="originalSender">Original sender of the
+            event.</param>
+            <param name="error">Execption that occurred.</param>
+        </member>
+        <member name="P:Csla.ReadOnlyBase`1.BusinessRules">
+            <summary>
+            Provides access to the broken rules functionality.
+            </summary>
+            <remarks>
+            This property is used within your business logic so you can
+            easily call the AddRule() method to associate business
+            rules with your object's properties.
+            </remarks>
+        </member>
+        <member name="P:Csla.ReadOnlyBase`1.FieldManager">
+            <summary>
+            Gets the PropertyManager object for this
+            business object.
+            </summary>
+        </member>
+        <member name="P:Csla.ReadOnlyBase`1.IsBusy">
+            <summary>
+            Gets a value indicating whether this
+            object or any of its child objects are
+            running an async operation.
+            </summary>
+        </member>
+        <member name="P:Csla.ReadOnlyBase`1.IsSelfBusy">
+            <summary>
+            Gets a value indicating whether this
+            object is
+            running an async operation.
+            </summary>
+        </member>
+        <member name="E:Csla.ReadOnlyBase`1.BusyChanged">
+            <summary>
+            Event raised when the IsBusy property value
+            has changed.
+            </summary>
+        </member>
+        <member name="E:Csla.ReadOnlyBase`1.UnhandledAsyncException">
+            <summary>
+            Event raised when an exception occurs on a background
+            thread during an asynchronous operation.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.TypeNameProperty">
+            <summary>
+            Assembly qualified name of the 
+            business object type to create.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.CriteriaDataProperty">
+            <summary>
+            Serialized data for the criteria object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.PrincipalProperty">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.GlobalContextProperty">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientContextProperty">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientCultureProperty">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientUICultureProperty">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.TypeName">
+            <summary>
+            Assembly qualified name of the 
+            business object type to create.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.CriteriaData">
+            <summary>
+            Serialized data for the criteria object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.Principal">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.GlobalContext">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientContext">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientCulture">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientUICulture">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.HttpErrorInfo">
+            <summary>
+            Message containing details about any
+            server-side exception.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.ExceptionTypeNameProperty">
+            <summary>
+            Type name of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.MessageProperty">
+            <summary>
+            Message from the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.StackTraceProperty">
+            <summary>
+            Stack trace from the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.SourceProperty">
+            <summary>
+            Source of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.TargetSiteNameProperty">
+            <summary>
+            TargetSiteName of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.InnerErrorProperty">
+            <summary>
+            HttpErrorInfo object containing information
+            about any inner exception of the original
+            exception.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor(System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="ex">
+            The Exception to encapusulate.
+            </param>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor">
+            <summary>
+            Creates an empty instance of the type.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor(Csla.WcfPortal.WcfErrorInfo)">
+            <summary>
+            Creates an instance of the type by copying
+            the WcfErrorInfo data.
+            </summary>
+            <param name="info">WcfErrorInfo object.</param>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.ExceptionTypeName">
+            <summary>
+            Type name of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.Message">
+            <summary>
+            Message from the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.StackTrace">
+            <summary>
+            Stack trace from the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.Source">
+            <summary>
+            Source of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.TargetSiteName">
+            <summary>
+            TargetSiteName of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.InnerError">
+            <summary>
+            HttpErrorInfo object containing information
+            about any inner exception of the original
+            exception.
+            </summary>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.HttpResponse">
+            <summary>
+            Response message for returning
+            the results of a data portal call.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.ErrorDataProperty">
+            <summary>
+            Server-side exception data if an exception occurred on the server.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.GlobalContextProperty">
+            <summary>
+            Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.ObjectDataProperty">
+            <summary>
+            Serialized business object data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.ErrorData">
+            <summary>
+            Server-side exception data if an exception occurred on the server.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.GlobalContext">
+            <summary>
+            Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.ObjectData">
+            <summary>
+            Serialized business object data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.UpdateRequest">
+            <summary>
+            Request message for updating
+            a business object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ObjectDataProperty">
+            <summary>
+            Serialized object data.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.PrincipalProperty">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.GlobalContextProperty">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientContextProperty">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientCultureProperty">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientUICultureProperty">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ObjectData">
+            <summary>
+            Serialized object data.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.Principal">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.GlobalContext">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientContext">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientCulture">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientUICulture">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
         <member name="T:Csla.Server.IDataPortalExceptionInspector">
             <summary>
             Implement this interface to check a DataPortalException before returning Exception to the client. 
@@ -13477,711 +14580,6 @@
             <summary>
             Provides a base class to simplify creation of
             a .NET identity object for use with CslaPrincipal.
-            </summary>
-        </member>
-        <member name="T:Csla.ReadOnlyBase`1">
-            <summary>
-            This is a base class from which readonly business classes
-            can be derived.
-            </summary>
-            <remarks>
-            This base class only supports data retrieve, not updating or
-            deleting. Any business classes derived from this base class
-            should only implement readonly properties.
-            </remarks>
-            <typeparam name="T">Type of the business object.</typeparam>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetIdValue">
-            <summary>
-            Override this method to return a unique identifying
-            value for this object.
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.ToString">
-            <summary>
-            Returns a text representation of this object by
-            returning the <see cref="M:Csla.ReadOnlyBase`1.GetIdValue"/> value
-            in text form.
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.#ctor">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.Initialize">
-            <summary>
-            Override this method to set up event handlers so user
-            code in a partial class can respond to events raised by
-            generated code.
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.AddBusinessRules">
-            <summary>
-            Override this method to add per-type
-            authorization rules for your type's properties.
-            </summary>
-            <remarks>
-            AddSharedAuthorizationRules is automatically called by CSLA .NET
-            when your object should associate per-type authorization roles
-            with its properties.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(Csla.Core.IPropertyInfo)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            calling property.
-            </summary>
-            <param name="property">Property to check.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(Csla.Core.IPropertyInfo,System.Boolean)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            calling property.
-            </summary>
-            <returns><see langword="true" /> if read is allowed.</returns>
-            <param name="property">Property to read.</param>
-            <param name="throwOnFalse">Indicates whether a negative
-            result should cause an exception.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            specified property.
-            </summary>
-            <param name="propertyName">Name of the property to read.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanReadProperty(System.String,System.Boolean)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to read the
-            specified property.
-            </summary>
-            <param name="propertyName">Name of the property to read.</param>
-            <param name="throwOnFalse">Indicates whether a negative
-            result should cause an exception.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(Csla.Core.IMemberInfo)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to execute
-            the specified method.
-            </summary>
-            <param name="method">Method to execute.</param>
-            <returns><see langword="true" /> if execute is allowed.</returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(Csla.Core.IMemberInfo,System.Boolean)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to execute
-            the specified method.
-            </summary>
-            <returns><see langword="true" /> if execute is allowed.</returns>
-            <param name="method">Method to execute.</param>
-            <param name="throwOnFalse">Indicates whether a negative
-            result should cause an exception.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.CanExecuteMethod(System.String)">
-            <summary>
-            Returns <see langword="true" /> if the user is allowed to execute
-            the specified method.
-            </summary>
-            <param name="methodName">Name of the method to execute.</param>
-            <returns><see langword="true" /> if execute is allowed.</returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetClone">
-            <summary>
-            Creates a clone of the object.
-            </summary>
-            <returns>A new object containing the exact data of the original object.</returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.Clone">
-            <summary>
-            Creates a clone of the object.
-            </summary>
-            <returns>
-            A new object containing the exact data of the original object.
-            </returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalInvoke(Csla.DataPortalEventArgs)">
-            <summary>
-            Called by the server-side DataPortal prior to calling the 
-            requested DataPortal_xyz method.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalInvokeComplete(Csla.DataPortalEventArgs)">
-            <summary>
-            Called by the server-side DataPortal after calling the 
-            requested DataPortal_xyz method.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.DataPortal_OnDataPortalException(Csla.DataPortalEventArgs,System.Exception)">
-            <summary>
-            Called by the server-side DataPortal if an exception
-            occurs during data access.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-            <param name="ex">The Exception thrown during data access.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalInvoke(Csla.DataPortalEventArgs)">
-            <summary>
-            Called by the server-side DataPortal prior to calling the 
-            requested DataPortal_XYZ method.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalInvokeComplete(Csla.DataPortalEventArgs)">
-            <summary>
-            Called by the server-side DataPortal after calling the 
-            requested DataPortal_XYZ method.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.Child_OnDataPortalException(Csla.DataPortalEventArgs,System.Exception)">
-            <summary>
-            Called by the server-side DataPortal if an exception
-            occurs during data access.
-            </summary>
-            <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-            <param name="ex">The Exception thrown during data access.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnDeserialized(System.Runtime.Serialization.StreamingContext)">
-            <summary>
-            This method is called on a newly deserialized object
-            after deserialization is complete.
-            </summary>
-            <param name="context">Serialization context object.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Type,Csla.PropertyInfo{``0})">
-            <summary>
-            Indicates that the specified property belongs
-            to the type.
-            </summary>
-            <typeparam name="P">
-            Type of property.
-            </typeparam>
-            <param name="objectType">
-            Type of object to which the property belongs.
-            </param>
-            <param name="info">
-            PropertyInfo object for the property.
-            </param>
-            <returns>
-            The provided IPropertyInfo object.
-            </returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(Csla.PropertyInfo{``0})">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">
-            Type of property.
-            </typeparam>
-            <param name="info">
-            PropertyInfo object for the property.
-            </param>
-            <returns>
-            The provided IPropertyInfo object.
-            </returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">Type of property</typeparam>
-            <param name="propertyLambdaExpression">Property Expression</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String)">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">Type of property</typeparam>
-            <param name="propertyLambdaExpression">Property Expression</param>
-            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,``0)">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">Type of property</typeparam>
-            <param name="propertyLambdaExpression">Property Expression</param>
-            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-            <param name="defaultValue">Default Value for the property</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},Csla.RelationshipTypes)">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">Type of property</typeparam>
-            <param name="propertyLambdaExpression">Property Expression</param>
-            <param name="relationship">Relationship with
-            referenced object.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterProperty``1(System.Linq.Expressions.Expression{System.Func{`0,System.Object}},System.String,Csla.RelationshipTypes)">
-            <summary>
-            Indicates that the specified property belongs
-            to the business object type.
-            </summary>
-            <typeparam name="P">Type of property</typeparam>
-            <param name="propertyLambdaExpression">Property Expression</param>
-            <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-            <param name="relationship">Relationship with
-            referenced object.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Type,Csla.Core.IMemberInfo)">
-            <summary>
-            Indicates that the specified method belongs
-            to the type.
-            </summary>
-            <param name="objectType">
-            Type of object to which the method belongs.
-            </param>
-            <param name="info">
-            IMemberInfo object for the property.
-            </param>
-            <returns>
-            The provided IMemberInfo object.
-            </returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Type,System.String)">
-            <summary>
-            Indicates that the specified method belongs
-            to the type.
-            </summary>
-            <param name="objectType">
-            Type of object to which the method belongs.
-            </param>
-            <param name="methodName">
-            Name of the method.
-            </param>
-            <returns>
-            The provided IMemberInfo object.
-            </returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.RegisterMethod(System.Linq.Expressions.Expression{System.Action{`0}})">
-            <summary>
-            Registers the method.
-            </summary>
-            <param name="methodLambdaExpression">The method lambda expression.</param>
-            <returns></returns>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(System.String,``0,``0)">
-            <summary>
-            Gets a property's value, first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyName">
-            The name of the property.</param>
-            <param name="defaultValue">
-            Value to be returned if the user is not
-            authorized to read the property.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(System.String,``0,``0,Csla.Security.NoAccessBehavior)">
-            <summary>
-            Gets a property's value, first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyName">
-            The name of the property.</param>
-            <param name="defaultValue">
-            Value to be returned if the user is not
-            authorized to read the property.</param>
-            <param name="noAccess">
-            True if an exception should be thrown when the
-            user is not authorized to read this property.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},``0)">
-            <summary>
-            Gets a property's value, first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},``0,``0,Csla.Security.NoAccessBehavior)">
-            <summary>
-            Gets a property's value, first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="defaultValue">
-            Value to be returned if the user is not
-            authorized to read the property.</param>
-            <param name="noAccess">
-            True if an exception should be thrown when the
-            user is not authorized to read this property.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},``0)">
-            <summary>
-            Gets a property's value as 
-            a specified type, first checking authorization.
-            </summary>
-            <typeparam name="F">
-            Type of the field.
-            </typeparam>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},``0,Csla.Security.NoAccessBehavior)">
-            <summary>
-            Gets a property's value as a specified type, 
-            first checking authorization.
-            </summary>
-            <typeparam name="F">
-            Type of the field.
-            </typeparam>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="field">
-            The backing field for the property.</param>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="noAccess">
-            True if an exception should be thrown when the
-            user is not authorized to read this property.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0})">
-            <summary>
-            Gets a property's managed field value, 
-            first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0})">
-            <summary>
-            Gets a property's value from the list of 
-            managed field values, first checking authorization,
-            and converting the value to an appropriate type.
-            </summary>
-            <typeparam name="F">
-            Type of the field.
-            </typeparam>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetPropertyConvert``2(Csla.PropertyInfo{``0},Csla.Security.NoAccessBehavior)">
-            <summary>
-            Gets a property's value from the list of 
-            managed field values, first checking authorization,
-            and converting the value to an appropriate type.
-            </summary>
-            <typeparam name="F">
-            Type of the field.
-            </typeparam>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="noAccess">
-            True if an exception should be thrown when the
-            user is not authorized to read this property.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty``1(Csla.PropertyInfo{``0},Csla.Security.NoAccessBehavior)">
-            <summary>
-            Gets a property's value as a specified type, 
-            first checking authorization.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="noAccess">
-            True if an exception should be thrown when the
-            user is not authorized to read this property.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.GetProperty(Csla.Core.IPropertyInfo)">
-            <summary>
-            Gets a property's value as a specified type.
-            </summary>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <remarks>
-            If the user is not authorized to read the property
-            value, the defaultValue value is returned as a
-            result.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.ReadPropertyConvert``2(Csla.PropertyInfo{``0})">
-            <summary>
-            Gets a property's value from the list of 
-            managed field values, converting the 
-            value to an appropriate type.
-            </summary>
-            <typeparam name="F">
-            Type of the field.
-            </typeparam>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.ReadProperty``1(Csla.PropertyInfo{``0})">
-            <summary>
-            Gets a property's value as a specified type.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.ReadProperty(Csla.Core.IPropertyInfo)">
-            <summary>
-            Gets a property's value as a specified type.
-            </summary>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyConvert``2(Csla.PropertyInfo{``0},``1)">
-            <summary>
-            Loads a property's managed field with the 
-            supplied value calling PropertyHasChanged 
-            if the value does change.
-            </summary>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="newValue">
-            The new value for the property.</param>
-            <remarks>
-            No authorization checks occur when this method is called,
-            and no PropertyChanging or PropertyChanged events are raised.
-            Loading values does not cause validation rules to be
-            invoked.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadProperty``1(Csla.PropertyInfo{``0},``0)">
-            <summary>
-            Loads a property's managed field with the 
-            supplied value calling PropertyHasChanged 
-            if the value does change.
-            </summary>
-            <typeparam name="P">
-            Type of the property.
-            </typeparam>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="newValue">
-            The new value for the property.</param>
-            <remarks>
-            No authorization checks occur when this method is called,
-            and no PropertyChanging or PropertyChanged events are raised.
-            Loading values does not cause validation rules to be
-            invoked.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadProperty(Csla.Core.IPropertyInfo,System.Object)">
-            <summary>
-            Loads a property's managed field with the 
-            supplied value calling PropertyHasChanged 
-            if the value does change.
-            </summary>
-            <param name="propertyInfo">
-            PropertyInfo object containing property metadata.</param>
-            <param name="newValue">
-            The new value for the property.</param>
-            <remarks>
-            No authorization checks occur when this method is called,
-            and no PropertyChanging or PropertyChanged events are raised.
-            Loading values does not cause validation rules to be
-            invoked.
-            </remarks>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.LoadPropertyAsync``1(Csla.PropertyInfo{``0},System.Threading.Tasks.Task{``0})">
-            <summary>
-            Load a property from an async method. 
-            </summary>
-            <typeparam name="R"></typeparam>
-            <param name="property"></param>
-            <param name="factory"></param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.MarkBusy">
-            <summary>
-            Marks the object as being busy (it is
-            running an async operation).
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.MarkIdle">
-            <summary>
-            Marks the object as being not busy
-            (it is not running an async operation).
-            </summary>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnBusyChanged(System.String,System.Boolean)">
-            <summary>
-            Raises the BusyChanged event.
-            </summary>
-            <param name="propertyName">Name of the property
-            that has changed.</param>
-            <param name="busy">New busy value.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnBusyChanged(Csla.Core.BusyChangedEventArgs)">
-            <summary>
-            Raises the BusyChanged event.
-            </summary>
-            <param name="args">Event arguments.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnGetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
-            <summary>
-            Override this method to insert your child object
-            references into the MobileFormatter serialzation stream.
-            </summary>
-            <param name="info">
-            Object containing the data to serialize.
-            </param>
-            <param name="formatter">
-            Reference to MobileFormatter instance. Use this to
-            convert child references to/from reference id values.
-            </param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnSetChildren(Csla.Serialization.Mobile.SerializationInfo,Csla.Serialization.Mobile.MobileFormatter)">
-            <summary>
-            Override this method to retrieve your child object
-            references from the MobileFormatter serialzation stream.
-            </summary>
-            <param name="info">
-            Object containing the data to serialize.
-            </param>
-            <param name="formatter">
-            Reference to MobileFormatter instance. Use this to
-            convert child references to/from reference id values.
-            </param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnUnhandledAsyncException(Csla.Core.ErrorEventArgs)">
-            <summary>
-            Raises the UnhandledAsyncException event.
-            </summary>
-            <param name="error">Error arguments.</param>
-        </member>
-        <member name="M:Csla.ReadOnlyBase`1.OnUnhandledAsyncException(System.Object,System.Exception)">
-            <summary>
-            Raises the UnhandledAsyncException event.
-            </summary>
-            <param name="originalSender">Original sender of the
-            event.</param>
-            <param name="error">Execption that occurred.</param>
-        </member>
-        <member name="P:Csla.ReadOnlyBase`1.BusinessRules">
-            <summary>
-            Provides access to the broken rules functionality.
-            </summary>
-            <remarks>
-            This property is used within your business logic so you can
-            easily call the AddRule() method to associate business
-            rules with your object's properties.
-            </remarks>
-        </member>
-        <member name="P:Csla.ReadOnlyBase`1.FieldManager">
-            <summary>
-            Gets the PropertyManager object for this
-            business object.
-            </summary>
-        </member>
-        <member name="P:Csla.ReadOnlyBase`1.IsBusy">
-            <summary>
-            Gets a value indicating whether this
-            object or any of its child objects are
-            running an async operation.
-            </summary>
-        </member>
-        <member name="P:Csla.ReadOnlyBase`1.IsSelfBusy">
-            <summary>
-            Gets a value indicating whether this
-            object is
-            running an async operation.
-            </summary>
-        </member>
-        <member name="E:Csla.ReadOnlyBase`1.BusyChanged">
-            <summary>
-            Event raised when the IsBusy property value
-            has changed.
-            </summary>
-        </member>
-        <member name="E:Csla.ReadOnlyBase`1.UnhandledAsyncException">
-            <summary>
-            Event raised when an exception occurs on a background
-            thread during an asynchronous operation.
             </summary>
         </member>
         <member name="M:Csla.Security.CslaIdentityBase`1.UnauthenticatedIdentity">

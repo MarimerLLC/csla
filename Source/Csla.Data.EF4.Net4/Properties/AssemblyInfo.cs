@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marrimer LLC")]
 [assembly: AssemblyProduct("Csla.Data.EF4.Net4")]
-[assembly: AssemblyCopyright("Copyright © 2010-13 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-14 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

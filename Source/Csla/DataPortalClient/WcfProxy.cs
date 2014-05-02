@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
+#if !UNIVERSAL_PCL
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -901,3 +902,4 @@ namespace Csla.DataPortalClient
 #endif
   }
 }
+#endif

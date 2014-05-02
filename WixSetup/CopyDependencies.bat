@@ -11,6 +11,7 @@ copy ..\bin\release\net\Csla.Validation.dll ..\Samples\Dependencies\Net
 copy ..\bin\release\net\Csla*.xml ..\Samples\Dependencies\Net
 mkdir ..\Samples\Dependencies\Net\BrokeredDataPortal\
 copy ..\bin\release\net\BrokeredDataPortal ..\Samples\Dependencies\Net\BrokeredDataPortal
+copy ..\bin\release\net\Csla.BrokeredDataPortal.* ..\Samples\Dependencies\Net
 
 copy ..\bin\release\net4\Csla.dll ..\Samples\Dependencies\Net4
 copy ..\bin\release\net4\Csla.Web.dll ..\Samples\Dependencies\Net4
@@ -33,8 +34,7 @@ copy ..\bin\release\WinRT\Csla.Xaml.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla.Validation.dll ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.xml ..\Samples\Dependencies\WinRT
 copy ..\bin\release\WinRT\Csla*.pri ..\Samples\Dependencies\WinRT
-copy ..\bin\release\WinRT\Csla.BrokeredDataPortal.* ..\Samples\Dependencies\WinRT
-copy ..\bin\release\WinRT\Csla.BrokeredProxy.* ..\Samples\Dependencies\WinRT
+copy ..\bin\release\WinRT\Csla.Brokered*.* ..\Samples\Dependencies\WinRT
 
 copy ..\bin\release\Universal\Csla.dll ..\Samples\Dependencies\Universal
 copy ..\bin\release\Universal\Csla*.xml ..\Samples\Dependencies\Universal

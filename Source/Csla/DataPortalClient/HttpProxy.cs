@@ -97,7 +97,7 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-#if NETFX_CORE || UNIVERSAL_PCL
+#if NETFX_CORE || NETFX_PHONE
       var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;
@@ -122,7 +122,7 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-#if NETFX_CORE || UNIVERSAL_PCL
+#if NETFX_CORE || NETFX_PHONE
       var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
       request.ClientCulture = language;
       request.ClientUICulture = language;

@@ -10,7 +10,7 @@ namespace System.ComponentModel.DataAnnotations
   /// </summary>
   public class ValidationContext
   {
-#if UNIVERSAL_PCL
+#if NETFX_PHONE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

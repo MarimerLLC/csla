@@ -1,12 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Validation for WinRT")]
-[assembly: AssemblyDescription("CSLA .NET Validation from 3.5.x and newer")]
+[assembly: AssemblyTitle("CSLA .NET for WinRT Phone (Xaml)")]
+[assembly: AssemblyDescription("CSLA .NET Xaml")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
@@ -26,4 +27,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("4.5.581.0")]
 [assembly: AssemblyFileVersion("4.5.581.0")]
-[assembly: ComVisible(false)]

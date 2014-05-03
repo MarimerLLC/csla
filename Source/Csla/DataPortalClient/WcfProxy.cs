@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-#if !UNIVERSAL_PCL
+#if !NETFX_PHONE
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;

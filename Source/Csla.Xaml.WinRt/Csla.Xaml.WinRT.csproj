@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\WinRT\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\WinRT\Csla.Xaml.XML</DocumentationFile>
@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\WinRT\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\WinRT\Csla.Xaml.XML</DocumentationFile>

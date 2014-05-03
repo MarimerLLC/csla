@@ -10,42 +10,37 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla</RootNamespace>
     <AssemblyName>Csla</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile32</TargetFrameworkProfile>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{76F1466A-8B6D-4E39-A767-685A06062A39};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetPlatformIdentifier>WindowsPhoneApp</TargetPlatformIdentifier>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\Universal\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE;UNIVERSAL_PCL</DefineConstants>
+    <OutputPath>..\..\Bin\Debug\WinRT.Phone\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE;NETFX_PHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\Universal\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\WinRT.Phone\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\Universal\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;UNIVERSAL_PCL</DefineConstants>
+    <OutputPath>..\..\Bin\Release\WinRT.Phone\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;NETFX_PHONE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\Universal\Csla.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\WinRT.Phone\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <ItemGroup>
-    <TargetPlatform Include="WindowsPhoneApp, Version=8.1" />
-    <TargetPlatform Include="Windows, Version=8.1" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
       <Link>BusinessBindingListBase.cs</Link>
@@ -761,7 +756,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>mkdir "$(ProjectDir)resources\en"
 copy "$(SolutionDir)Csla\Properties\resources.resx" "$(ProjectDir)resources\en\Resources.resw"

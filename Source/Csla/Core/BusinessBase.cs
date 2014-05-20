@@ -1938,7 +1938,7 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
     {
-      SetProperty<P>(propertyInfo.Name, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      SetProperty<P>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -1958,7 +1958,8 @@ namespace Csla.Core
     /// </remarks>
     protected void SetProperty<P>(string propertyName, ref P field, P newValue)
     {
-      SetProperty<P>(propertyName, ref field, newValue, Security.NoAccessBehavior.ThrowException);
+      var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
+      SetProperty<P>(propertyInfo, ref field, newValue, Security.NoAccessBehavior.ThrowException);
     }
 
     /// <summary>
@@ -2002,8 +2003,8 @@ namespace Csla.Core
     /// A reference to the backing field for the property.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="propertyInfo">
-    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="propertyName">
+    /// The name of the property.</param>
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
@@ -2011,9 +2012,10 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
-      SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
+       var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
+       SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, noAccess);
     }
 
     /// <summary>
@@ -2025,18 +2027,16 @@ namespace Csla.Core
     /// A reference to the backing field for the property.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="propertyName">
-    /// The name of the property.</param>
+    /// <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P>(string propertyName, ref P field, P newValue, Security.NoAccessBehavior noAccess)
+    protected void SetProperty<P>(IPropertyInfo propertyInfo, ref P field, P newValue, Security.NoAccessBehavior noAccess)
     {
       try
       {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
-
-        var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
         if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
           throw new InvalidOperationException(Resources.PrivateFieldException);
@@ -2060,9 +2060,9 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
             field = newValue;
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
           }
         }
       }
@@ -2073,7 +2073,7 @@ namespace Csla.Core
       catch (Exception ex)
       {
         throw new PropertyLoadException(
-          string.Format(Resources.PropertyLoadException, propertyName, ex.Message, ex.Message), ex);
+          string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message, ex.Message), ex);
       }
     }
 
@@ -2092,8 +2092,8 @@ namespace Csla.Core
     /// A reference to the backing field for the property.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <param name="propertyName">
-    /// The name of the property.</param>
+    ///  <param name="propertyInfo">
+    /// PropertyInfo object containing property metadata.</param>
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
@@ -2101,13 +2101,11 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, Security.NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<P, V>(IPropertyInfo propertyInfo, ref P field, V newValue, Security.NoAccessBehavior noAccess)
     {
       try
       {
         #region Check to see if the property is marked with RelationshipTypes.PrivateField
-
-        var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
         if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
           throw new InvalidOperationException(Resources.PrivateFieldException);
@@ -2131,9 +2129,9 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
           }
         }
       }
@@ -2144,7 +2142,7 @@ namespace Csla.Core
       catch (Exception ex)
       {
         throw new PropertyLoadException(
-          string.Format(Properties.Resources.PropertyLoadException, propertyName, ex.Message), ex);
+          string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
       }
     }
 
@@ -3495,6 +3493,20 @@ namespace Csla.Core
     {
       return BrokenRulesCollection;
     }
+    #endregion
+
+    #region Expose when an object is bypassing property checks
+
+    /// <summary>
+    /// Gets a value indicating whether this instance is bypassing property checks.
+    /// </summary>
+    /// <value>true if this instance is bypassing property checks, false if not.</value>
+    /// <remarks>Used to permit subclasses to detect if the class is currently bypassing property checks.</remarks>
+    protected bool IsBypassingPropertyChecks
+    {
+      get { return _bypassPropertyChecks; }
+    }
+
     #endregion
   }
 }

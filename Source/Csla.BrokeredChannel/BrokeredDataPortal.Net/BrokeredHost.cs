@@ -22,27 +22,6 @@ namespace Csla.BrokeredDataPortalHost
   public sealed class BrokeredHost
   {
     /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    public IAsyncOperation<IList<byte>> foo(string objectTypeName, [ReadOnlyArray] byte[] criteriaData)
-    {
-      return Task<IList<byte>>.Run(async () =>
-      {
-        //var typeName = "Csla.Server.Hosts.BrokeredPortal, Csla.BrokeredDataPortal";
-        //var type = Type.GetType(typeName);
-        var portal = GetPortal();
-        var method = portal.GetType().GetMethod("Create");
-        var result = await (Task<byte[]>)method.Invoke(portal, new object[] { objectTypeName, criteriaData, criteriaData });
-        //if (method != null)
-        //  return (IList<byte>)new byte[] { 1 };
-        //else
-        //  return (IList<byte>)new byte[] { 2 };
-        return (IList<byte>)result;
-      }).AsAsyncOperation();
-    }
-
-    /// <summary>
     /// Create and initialize a business object.
     /// </summary>
     /// <param name="objectTypeName">Type of business object to create.</param>
@@ -120,9 +99,17 @@ namespace Csla.BrokeredDataPortalHost
     private object GetPortal()
     {
       var typeName = "Csla.Server.Hosts.BrokeredPortal, Csla.BrokeredDataPortal";
-      var type = Type.GetType(typeName);
-      if (type == null)
-        throw new TypeLoadException(typeName);
+      Type type = null;
+      try
+      {
+        type = Type.GetType(typeName);
+        if (type == null)
+          throw new TypeLoadException("BrokeredHost: " + typeName);
+      }
+      catch (Exception ex)
+      {
+        throw new TypeLoadException("BrokeredHost: " + typeName, ex);
+      }
       return Activator.CreateInstance(type);
     }
   }

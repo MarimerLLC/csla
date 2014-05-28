@@ -32,6 +32,7 @@
     <Compile Include="VBSnippetsFragment.wxs" />
     <Compile Include="WinPRTFragment.wxs" />
     <Compile Include="WinRTFragment.wxs" />
+    <Compile Include="WinRTPhoneFragment.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUIExtension">

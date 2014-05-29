@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET</id>
     <title>CSLA .NET - ASP.NET</title>
     <tags>CSLA ASP.NET</tags>
-    <version>4.5.582-Beta</version>
+    <version>4.5.583-Beta</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of ASP.NET Web Forms applications, and is required for any
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.582-Beta]" />
+      <dependency id="CSLA-Core" version="[4.5.583-Beta]" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Web" targetFramework="net40-full" />

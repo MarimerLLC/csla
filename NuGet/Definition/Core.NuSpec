@@ -51,7 +51,7 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\sl50" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.pdb*" target="lib\sl50" />
     <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\sl50" />
-    <!-- Windows Phone 8 Client -->
+    <!-- Windows Phone 8 Silverlight Client -->
     <file src="..\..\Bin\Release\WinPRT\**\Csla.dll*" target="lib\wp8" />
     <file src="..\..\Bin\Release\WinPRT\**\Csla.pdb*" target="lib\wp8" />
     <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.dll*" target="lib\wp8" />
@@ -62,6 +62,11 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.pri*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
+    <!-- Windows Runtime Phone Client -->
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pri*" target="lib\wpa" />
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.xml*" target="lib\wpa" />
     <!-- Xamarin Android Client -->
     <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid" />
     <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid" />

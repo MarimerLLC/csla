@@ -4,7 +4,7 @@
     <id>CSLA-WindowsPhoneWinRT</id>
     <title>CSLA .NET - Windows Phone WinRT</title>
     <tags>CSLA WP8 WinRT Windows Phone</tags>
-    <version>4.5.583-Beta</version>
+    <version>4.5.600</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Windows Phone 8.1 (WinRT) applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.583-Beta]" />
+      <dependency id="CSLA-Core" version="[4.5.600]" />
     </dependencies>
     <!--
     <frameworkAssemblies>

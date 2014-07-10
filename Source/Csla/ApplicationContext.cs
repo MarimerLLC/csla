@@ -685,7 +685,7 @@ namespace Csla
         string tmp = ConfigurationManager.AppSettings["CslaDefaultTransactionIsolationLevel"];
         if (string.IsNullOrEmpty(tmp))
         {
-          return TransactionIsolationLevel.Serializable;
+          return TransactionIsolationLevel.Unspecified;
         }
         return (TransactionIsolationLevel)Enum.Parse(typeof(TransactionIsolationLevel), tmp);
       }

@@ -80,6 +80,8 @@ namespace Csla.Server
     {
       switch (transactionIsolationLevel)
       {
+        case TransactionIsolationLevel.Unspecified:
+          return IsolationLevel.Unspecified;
         case TransactionIsolationLevel.Serializable:
           return IsolationLevel.Serializable;
         case TransactionIsolationLevel.RepeatableRead:
@@ -89,7 +91,7 @@ namespace Csla.Server
         case TransactionIsolationLevel.ReadUncommitted:
           return IsolationLevel.ReadUncommitted;
         default:
-          return IsolationLevel.Serializable;
+          return IsolationLevel.Unspecified;
       }
     }
 

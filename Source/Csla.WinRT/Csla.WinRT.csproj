@@ -17,6 +17,7 @@
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
     <TargetFrameworkVersion />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\WinRT\Csla.xml</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -306,6 +308,9 @@
     <Compile Include="..\Csla\DataPortalClient\DefaultPortalProxyFactory.cs">
       <Link>DataPortalClient\DefaultPortalProxyFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalClient\HttpProxy.cs">
+      <Link>DataPortalClient\HttpProxy.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DataPortalClient\IDataPortalProxy.cs">
       <Link>DataPortalClient\IDataPortalProxy.cs</Link>
     </Compile>
@@ -572,6 +577,18 @@
     </Compile>
     <Compile Include="..\Csla\Server\FactoryDataPortal.cs">
       <Link>Server\FactoryDataPortal.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\CriteriaRequest.cs">
+      <Link>Server\Hosts\HttpClient\CriteriaRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpErrorInfo.cs">
+      <Link>Server\Hosts\HttpClient\HttpErrorInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpResponse.cs">
+      <Link>Server\Hosts\HttpClient\HttpResponse.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Server\Hosts\HttpChannel\UpdateRequest.cs">
+      <Link>Server\Hosts\HttpClient\UpdateRequest.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\IAuthorizeDataPortal.cs">
       <Link>Server\IAuthorizeDataPortal.cs</Link>
@@ -884,6 +901,13 @@ copy "$(SolutionDir)Csla\Properties\resources.zh-TW.resx" "$(ProjectDir)resource
 mkdir "$(ProjectDir)resources\uk-ua"
 copy "$(SolutionDir)Csla\Properties\resources.uk-ua.resx" "$(ProjectDir)resources\uk-ua\Resources.resw"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

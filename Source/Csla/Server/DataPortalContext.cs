@@ -18,7 +18,7 @@ namespace Csla.Server
   /// and server DataPortal objects. 
   /// </summary>
   [Serializable]
-  public class DataPortalContext
+  public class DataPortalContext : Csla.Serialization.Mobile.IMobileObject
   {
     private IPrincipal _principal;
     private bool _remotePortal;
@@ -143,6 +143,40 @@ namespace Csla.Server
       _clientUICulture = clientUICulture;
       _globalContext = globalContext;
       _remotePortal = isRemotePortal;
+    }
+
+    /// <summary>
+    /// Default constructor for use by MobileFormatter.
+    /// </summary>
+    public DataPortalContext()
+    { }
+
+    void Serialization.Mobile.IMobileObject.GetState(Serialization.Mobile.SerializationInfo info)
+    {
+      info.AddValue("principal", Csla.Serialization.Mobile.MobileFormatter.Serialize(_principal));
+      info.AddValue("clientContext", Csla.Serialization.Mobile.MobileFormatter.Serialize(_clientContext));
+      info.AddValue("clientCulture", _clientCulture);
+      info.AddValue("clientUICulture", _clientUICulture);
+      info.AddValue("globalContext", Csla.Serialization.Mobile.MobileFormatter.Serialize(_globalContext));
+      info.AddValue("isRemotePortal", _remotePortal);
+    }
+
+    void Serialization.Mobile.IMobileObject.GetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
+    {
+    }
+
+    void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
+    {
+      _principal = (IPrincipal)Csla.Serialization.Mobile.MobileFormatter.Deserialize(info.GetValue<byte[]>("principal"));
+      _clientContext = (ContextDictionary)Csla.Serialization.Mobile.MobileFormatter.Deserialize(info.GetValue<byte[]>("clientContext"));
+      _clientCulture = info.GetValue<string>("clientCulture");
+      _clientUICulture = info.GetValue<string>("clientUICulture");
+      _globalContext = (ContextDictionary)Csla.Serialization.Mobile.MobileFormatter.Deserialize(info.GetValue<byte[]>("globalContext")); ;
+      _remotePortal = info.GetValue<bool>("isRemotePortal");
+    }
+
+    void Serialization.Mobile.IMobileObject.SetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
+    {
     }
   }
 }

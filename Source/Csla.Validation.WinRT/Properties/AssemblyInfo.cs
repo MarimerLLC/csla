@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Validation for Windows Phone")]
+[assembly: AssemblyTitle("CSLA .NET Validation for WinRT")]
 [assembly: AssemblyDescription("CSLA .NET Validation from 3.5.x and newer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-13 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-14 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -24,6 +24,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.5.492.0")]
-[assembly: AssemblyFileVersion("4.5.492.0")]
+[assembly: AssemblyVersion("4.5.600.0")]
+[assembly: AssemblyFileVersion("4.5.600.0")]
 [assembly: ComVisible(false)]

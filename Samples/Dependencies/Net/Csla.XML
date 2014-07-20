@@ -5962,10 +5962,10 @@
             Wraps async loading by Task&gt;T&lt; from DataPortal.XYZAsync methods
             </summary>
         </member>
-        <member name="T:Csla.DataPortalClient.MobileProxy">
+        <member name="T:Csla.DataPortalClient.HttpProxy">
             <summary>
             Implements a data portal proxy to relay data portal
-            calls to a remote application server by using WCF.
+            calls to a remote application server by using http.
             </summary>
         </member>
         <member name="T:Csla.DataPortalClient.IDataPortalProxy">
@@ -6028,6 +6028,120 @@
             Get a value indicating whether this proxy will invoke
             a remote data portal server, or run the "server-side"
             data portal in the caller's process and AppDomain.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.#ctor">
+            <summary>
+            Creates an instance of the object, initializing
+            it to use the DefaultUrl 
+            values.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.GetClient">
+            <summary>
+            Gets an HttpClient object for use in
+            communication with the server.
+            </summary>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Create(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to create a
+            new business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Fetch(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to load an
+            existing business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Update(System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to update a
+            business object.
+            </summary>
+            <param name="obj">The business object to update.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.Delete(System.Type,System.Object,Csla.Server.DataPortalContext,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Csla.DataPortal"/> to delete a
+            business object.
+            </summary>
+            <param name="objectType">Type of business object to create.</param>
+            <param name="criteria">Criteria object describing business object.</param>
+            <param name="context">
+            <see cref="T:Csla.Server.DataPortalContext"/> object passed to the server.
+            </param>
+            <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertRequest(Csla.Server.Hosts.HttpChannel.UpdateRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Update request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertRequest(Csla.Server.Hosts.HttpChannel.CriteriaRequest)">
+            <summary>
+            Override this method to manipulate the message
+            request data sent to the server.
+            </summary>
+            <param name="request">Criteria request data.</param>
+        </member>
+        <member name="M:Csla.DataPortalClient.HttpProxy.ConvertResponse(Csla.Server.Hosts.HttpChannel.HttpResponse)">
+            <summary>
+            Override this method to manipulate the message
+            request data returned from the server.
+            </summary>
+            <param name="response">Response data.</param>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.Timeout">
+            <summary>
+            Gets or sets the HttpClient timeout
+            in milliseconds (0 uses default HttpClient timeout).
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.DefaultUrl">
+            <summary>
+            Gets or sets the default URL address
+            for the data portal server.
+            </summary>
+            <remarks>
+            Deprecated: use ApplicationContext.DataPortalUrlString
+            </remarks>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.IsServerRemote">
+            <summary>
+            Gets a value indicating whether the data portal
+            is hosted on a remote server.
+            </summary>
+        </member>
+        <member name="P:Csla.DataPortalClient.HttpProxy.DataPortalUrl">
+            <summary>
+            Gets the URL address for the data portal server
+            used by this proxy instance.
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalClient.MobileProxy">
+            <summary>
+            Implements a data portal proxy to relay data portal
+            calls to a remote application server by using WCF.
             </summary>
         </member>
         <member name="M:Csla.DataPortalClient.MobileProxy.#ctor">
@@ -12009,6 +12123,291 @@
             </summary>
             <param name="obj">Reference to the business object.</param>
         </member>
+        <member name="M:Csla.Server.IDataPortalActivator.FinalizeInstance(System.Object)">
+            <summary>
+            Finalizes an existing business object instance. Called
+            after a data portal operation is complete.
+            </summary>
+            <param name="obj">Reference to the business object.</param>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.CriteriaRequest">
+            <summary>
+            Message sent to the Silverlight
+            WCF data portal.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.TypeNameProperty">
+            <summary>
+            Assembly qualified name of the 
+            business object type to create.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.CriteriaDataProperty">
+            <summary>
+            Serialized data for the criteria object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.PrincipalProperty">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.GlobalContextProperty">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientContextProperty">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientCultureProperty">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientUICultureProperty">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.TypeName">
+            <summary>
+            Assembly qualified name of the 
+            business object type to create.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.CriteriaData">
+            <summary>
+            Serialized data for the criteria object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.Principal">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.GlobalContext">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientContext">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientCulture">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.CriteriaRequest.ClientUICulture">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.HttpErrorInfo">
+            <summary>
+            Message containing details about any
+            server-side exception.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.ExceptionTypeNameProperty">
+            <summary>
+            Type name of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.MessageProperty">
+            <summary>
+            Message from the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.StackTraceProperty">
+            <summary>
+            Stack trace from the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.SourceProperty">
+            <summary>
+            Source of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.TargetSiteNameProperty">
+            <summary>
+            TargetSiteName of the exception object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.InnerErrorProperty">
+            <summary>
+            HttpErrorInfo object containing information
+            about any inner exception of the original
+            exception.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor(System.Exception)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="ex">
+            The Exception to encapusulate.
+            </param>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor">
+            <summary>
+            Creates an empty instance of the type.
+            </summary>
+        </member>
+        <member name="M:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.#ctor(Csla.WcfPortal.WcfErrorInfo)">
+            <summary>
+            Creates an instance of the type by copying
+            the WcfErrorInfo data.
+            </summary>
+            <param name="info">WcfErrorInfo object.</param>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.ExceptionTypeName">
+            <summary>
+            Type name of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.Message">
+            <summary>
+            Message from the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.StackTrace">
+            <summary>
+            Stack trace from the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.Source">
+            <summary>
+            Source of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.TargetSiteName">
+            <summary>
+            TargetSiteName of the exception object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpErrorInfo.InnerError">
+            <summary>
+            HttpErrorInfo object containing information
+            about any inner exception of the original
+            exception.
+            </summary>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.HttpResponse">
+            <summary>
+            Response message for returning
+            the results of a data portal call.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.ErrorDataProperty">
+            <summary>
+            Server-side exception data if an exception occurred on the server.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.GlobalContextProperty">
+            <summary>
+            Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.HttpResponse.ObjectDataProperty">
+            <summary>
+            Serialized business object data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.ErrorData">
+            <summary>
+            Server-side exception data if an exception occurred on the server.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.GlobalContext">
+            <summary>
+            Serialized GlobalContext data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.HttpResponse.ObjectData">
+            <summary>
+            Serialized business object data returned from the server (deserialize with MobileFormatter).
+            </summary>
+        </member>
+        <member name="T:Csla.Server.Hosts.HttpChannel.UpdateRequest">
+            <summary>
+            Request message for updating
+            a business object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ObjectDataProperty">
+            <summary>
+            Serialized object data.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.PrincipalProperty">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.GlobalContextProperty">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientContextProperty">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientCultureProperty">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="F:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientUICultureProperty">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ObjectData">
+            <summary>
+            Serialized object data.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.Principal">
+            <summary>
+            Serialized data for the principal object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.GlobalContext">
+            <summary>
+            Serialized data for the global context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientContext">
+            <summary>
+            Serialized data for the client context object.
+            </summary>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientCulture">
+            <summary>
+            Serialized client culture.
+            </summary>
+            <value>The client culture.</value>
+        </member>
+        <member name="P:Csla.Server.Hosts.HttpChannel.UpdateRequest.ClientUICulture">
+            <summary>
+            Serialized client UI culture.
+            </summary>
+            <value>The client UI culture.</value>
+        </member>
         <member name="T:Csla.Server.ServicedDataPortalReadUncommitted">
             <summary>
             Implements the server-side Serviced 
@@ -15615,6 +16014,12 @@
             </summary>
             <param name="info">Info about the exception.</param>
         </member>
+        <member name="M:Csla.DataPortalException.#ctor(Csla.Server.Hosts.HttpChannel.HttpErrorInfo)">
+            <summary>
+            Creates an instance of the object.
+            </summary>
+            <param name="info">Info about the exception.</param>
+        </member>
         <member name="M:Csla.DataPortalException.ToString">
             <summary>
             Gets a string representation
@@ -16098,6 +16503,11 @@
             <param name="clientCulture">Client culture.</param>
             <param name="clientUICulture">Client UI culture.</param>
             <param name="globalContext">Global context.</param>
+        </member>
+        <member name="M:Csla.Server.DataPortalContext.#ctor">
+            <summary>
+            Default constructor for use by MobileFormatter.
+            </summary>
         </member>
         <member name="P:Csla.Server.DataPortalContext.Principal">
             <summary>

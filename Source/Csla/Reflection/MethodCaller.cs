@@ -54,6 +54,8 @@ namespace Csla.Reflection
       BindingFlags.Instance |
       BindingFlags.FlattenHierarchy;
 
+#if !IOS
+
     #region Dynamic Method Cache
 
     private static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
@@ -155,6 +157,8 @@ namespace Csla.Reflection
 
     #endregion
 
+#endif
+
     #region GetType
 
     /// <summary>
@@ -221,10 +225,14 @@ namespace Csla.Reflection
     /// <param name="objectType">Type of object to create.</param>
     public static object CreateInstance(Type objectType)
     {
+#if IOS
+      return Activator.CreateInstance(objectType);
+#else
       var ctor = GetCachedConstructor(objectType);
       if (ctor == null)
         throw new NotImplementedException(objectType.Name + " " + Resources.DefaultConstructor + Resources.MethodNotImplemented);
       return ctor.Invoke();
+#endif
     }
 
     /// <summary>
@@ -245,6 +253,8 @@ namespace Csla.Reflection
 
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+#if !IOS
 
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
 
@@ -292,6 +302,8 @@ namespace Csla.Reflection
       return mh;
     }
 
+#endif
+
     /// <summary>
     /// Invokes a property getter using dynamic
     /// method invocation.
@@ -301,6 +313,10 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
+#if IOS
+      var propertyInfo = obj.GetType().GetProperty(property);
+      return propertyInfo.GetValue(obj);
+#else
       if (obj == null)
         throw new ArgumentNullException("obj");
       if (string.IsNullOrEmpty(property))
@@ -317,6 +333,7 @@ namespace Csla.Reflection
       }
 
       return mh.DynamicMemberGet(obj);
+#endif
     }
 
     /// <summary>
@@ -333,6 +350,10 @@ namespace Csla.Reflection
       if (string.IsNullOrEmpty(property))
         throw new ArgumentException("Argument is null or empty.", "property");
 
+#if IOS
+      var propertyInfo = obj.GetType().GetProperty(property);
+      propertyInfo.SetValue(obj, value);
+#else
       var mh = GetCachedProperty(obj.GetType(), property);
       if (mh.DynamicMemberSet == null)
       {
@@ -344,6 +365,7 @@ namespace Csla.Reflection
       }
 
       mh.DynamicMemberSet(obj, value);
+#endif
     }
 
 
@@ -384,12 +406,21 @@ namespace Csla.Reflection
 
     private static object CallMethodIfImplemented(object obj, string method, bool hasParameters, params object[] parameters)
     {
+#if IOS
+      var found = (FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters)) != null);
+      if (found)
+        return CallMethod(obj, method, parameters);
+      else
+        return null;
+#else
       var mh = GetCachedMethod(obj, method, parameters);
       if (mh == null || mh.DynamicMethod == null)
         return null;
       return CallMethod(obj, mh, hasParameters, parameters);
+#endif
     }
 
+#if !IOS
     /// <summary>
     /// Detects if a method matching the name and parameters is implemented on the provided object.
     /// </summary>
@@ -402,6 +433,7 @@ namespace Csla.Reflection
       var mh = GetCachedMethod(obj, method, parameters);
       return mh != null && mh.DynamicMethod != null;
     }
+#endif
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method,
@@ -440,10 +472,17 @@ namespace Csla.Reflection
 
     private static object CallMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
+#if IOS
+      var methodInfo = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
+      if (methodInfo == null)
+        throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+      return methodInfo.Invoke(obj, parameters);
+#else
       var mh = GetCachedMethod(obj, method, hasParameters, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, hasParameters, parameters);
+#endif
     }
 
     /// <summary>
@@ -467,11 +506,17 @@ namespace Csla.Reflection
 
     private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object[] parameters)
     {
+#if IOS
+      return info.Invoke(obj, parameters);
+#else
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)
         throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
       return CallMethod(obj, mh, hasParameters, parameters);
+#endif
     }
+
+#if !IOS
 
     private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
     {
@@ -529,6 +574,8 @@ namespace Csla.Reflection
       }
       return result;
     }
+
+#endif
 
     private static object[] GetExtrasArray(int count, Type arrayType)
     {
@@ -947,6 +994,26 @@ namespace Csla.Reflection
     {
       try
       {
+#if IOS
+        var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
+        if (info  == null)
+          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
+        var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
+        if (isAsyncTask)
+        {
+          await (System.Threading.Tasks.Task)CallMethod(obj, method, hasParameters, parameters);
+          return null;
+        }
+        else if (isAsyncTaskObject)
+        {
+          return await (System.Threading.Tasks.Task<object>)CallMethod(obj, method, hasParameters, parameters);
+        }
+        else
+        {
+          return CallMethod(obj, method, hasParameters, parameters);
+        }
+#else
         var mh = GetCachedMethod(obj, method, hasParameters, parameters);
         if (mh == null || mh.DynamicMethod == null)
           throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
@@ -963,6 +1030,7 @@ namespace Csla.Reflection
         {
           return CallMethod(obj, mh, hasParameters, parameters);
         }
+#endif
       }
       catch (InvalidCastException ex)
       {

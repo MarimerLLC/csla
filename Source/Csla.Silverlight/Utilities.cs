@@ -278,7 +278,7 @@ namespace Csla
       {
         info = new WcfErrorInfo
         {
-		  ExceptionTypeName = ex.GetType().FullName,
+      ExceptionTypeName = ex.GetType().FullName,
           Message = ex.Message,
           StackTrace = ex.StackTrace,
           InnerError = ex.InnerException.ToErrorInfo()

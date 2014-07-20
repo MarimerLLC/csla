@@ -6,9 +6,11 @@
 ##  •	Contents:
 ##      o	Csla.dll (.NET 4 and .NET 4.5)
 ##      o	Csla.dll (Silverlight 5)
-##      o	Csla.dll (WinPRT - Windows Phone 8)
+##      o	Csla.dll (WinPRT - Windows Phone 8 Silverlight)
+##      o	Csla.dll (WinRT - Windows Phone 8.1)
 ##      o	Csla.dll (WinRT - Windows RT)
 ##      o	Csla.dll (MonoAndroid - Xamarin Android)
+##      o	Csla.dll (MonoIos - Xamarin iOS)
 ##  •	Dependencies
 ##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
 ##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
@@ -50,6 +52,12 @@
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
+##  “CSLA .NET - Windows Phone WinRT” NuGet
+##  •	Contents:
+##      o	Csla.Xaml.dll (WinRT)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##  
 ##  “CSLA .NET - Windows Runtime” NuGet
 ##  •	Contents:
 ##      o	Csla.Xaml.dll (WinRt)
@@ -65,6 +73,12 @@
 ##  “CSLA .NET - MonoAndroid” NuGet
 ##  •	Contents:
 ##      o	Csla.Axml.dll (MonoAndroid)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##
+##  “CSLA .NET - MonoTouch” NuGet
+##  •	Contents:
+##      o	Csla.Iosui.dll (Mono iOS UI)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##
@@ -105,9 +119,11 @@
 ##  •	Contents:
 ##      o	Csla.Validation.dll (.NET 4 and .NET 4.5)
 ##      o	Csla.Validation.dll (Silverlight 5)
-##      o	Csla.Validation.dll (WinPRT - Windows Phone 8)
+##      o	Csla.Validation.dll (WinPRT - Windows Phone 8 Silverlight)
+##      o	Csla.Validation.dll (WinRT - Windows Phone 8.1)
 ##      o	Csla.Validation.dll (WinRT - Windows RT)
 ##      o	Csla.Validation.dll (MonoAndroid - Xamarin Android)
+##      o	Csla.Validation.dll (MonoTouch - Xamarin iOS)
 ##  •	Dependencies
 ##      o	Dependencies for .NET4 and SL5 on Async Targetting packages
 ##      o Dependencies on EntityFramework v4/v5 for CSLA .NET - Data EFx" packages
@@ -152,7 +168,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "MonoAndroid", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation")  
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "Windows Phone WinRT", "WPF", "Windows Runtime", "MonoAndroid", "MonoTouch", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

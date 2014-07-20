@@ -93,6 +93,10 @@ namespace Csla.Server
               new DataPortalExceptionHandler().InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
               outval);
       }
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+      }
     }
 
     /// <summary>
@@ -169,6 +173,10 @@ namespace Csla.Server
               "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
               outval);
+      }
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
       }
     }
 
@@ -283,6 +291,10 @@ namespace Csla.Server
               new DataPortalExceptionHandler().InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
               obj);
       }
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
+      }
     }
 
     /// <summary>
@@ -344,6 +356,10 @@ namespace Csla.Server
               "DataPortal.Delete " + Resources.FailedOnServer,
               new DataPortalExceptionHandler().InspectException(objectType, obj, null, "DataPortal.Delete", ex),
               null);
+      }
+      finally
+      {
+        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
       }
     }
   }

@@ -71,6 +71,16 @@ namespace Csla
     public DataPortalException(WcfPortal.WcfErrorInfo info)
       : base(info.Message)
     {
+      this.ErrorInfo = new Csla.Server.Hosts.HttpChannel.HttpErrorInfo(info);
+    }
+
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="info">Info about the exception.</param>
+    public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
+      : base(info.Message)
+    {
       this.ErrorInfo = info;
     }
 
@@ -105,7 +115,7 @@ namespace Csla
     /// but this property returns information
     /// about the exception.
     /// </summary>
-    public WcfPortal.WcfErrorInfo ErrorInfo { get; private set; }
+    public Csla.Server.Hosts.HttpChannel.HttpErrorInfo ErrorInfo { get; private set; }
 
     private object _businessObject;
     private string _innerStackTrace;

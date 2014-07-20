@@ -138,7 +138,7 @@ namespace Csla.Server.Hosts.HttpChannel
         errorInfo.Source = source.Source;
         errorInfo.StackTrace = source.StackTrace;
         errorInfo.TargetSiteName = source.TargetSiteName;
-        source = info.InnerError;
+        source = source.InnerError;
         if (source != null)
         {
           errorInfo.InnerError = new HttpErrorInfo();

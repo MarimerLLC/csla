@@ -13,6 +13,12 @@ namespace Csla
   public enum TransactionIsolationLevel
   {
     /// <summary>
+    /// Shows that different isolation level than the one specified is being used, but 
+    /// the level cannot be determined. An exception is thrown if this value is set.
+    /// Default.
+    /// </summary>
+    Unspecified,
+    /// <summary>
     /// Prevents updating or inserting until the transaction is complete.
     /// </summary>
     Serializable,

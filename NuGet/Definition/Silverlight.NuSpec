@@ -4,7 +4,7 @@
     <id>CSLA-Silverlight</id>
     <title>CSLA .NET - Silverlight</title>
     <tags>CSLA Silverlight</tags>
-    <version>4.5.600</version>
+    <version>4.5.601</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Silverlight applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.600]" />
+      <dependency id="CSLA-Core" version="[4.5.601]" />
     </dependencies>
   </metadata>
   <files>

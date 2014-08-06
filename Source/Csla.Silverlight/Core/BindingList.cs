@@ -25,6 +25,7 @@ namespace Csla.Core
   /// a .NET BindingList.
   /// </summary>
   /// <typeparam name="T"></typeparam>
+  [Serializable]
   public class BindingList<T> : ObservableCollection<T>, IBindingList
   {
     private bool _supportsChangeNotificationCore = true;

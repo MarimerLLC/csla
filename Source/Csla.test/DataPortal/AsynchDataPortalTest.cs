@@ -165,7 +165,7 @@ namespace Csla.Test.DataPortal
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async void CreateAsync_NoCriteria()
+    public async Task CreateAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single>();
       Assert.IsNotNull(result);
@@ -173,7 +173,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async void CreateAsync_WithCriteria()
+    public async Task CreateAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>(123);
       Assert.IsNotNull(result);
@@ -295,7 +295,7 @@ namespace Csla.Test.DataPortal
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async void FetchAsync_NoCriteria()
+    public async Task FetchAsync_NoCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>();
       Assert.IsNotNull(result);
@@ -303,7 +303,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async void FetchAsync_WithCriteria()
+    public async Task FetchAsync_WithCriteria()
     {
       var result = await Csla.DataPortal.FetchAsync<Single2>(123);
       Assert.IsNotNull(result);
@@ -703,7 +703,7 @@ namespace Csla.Test.DataPortal
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async void SaveAsync()
+    public async Task SaveAsync()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>();
       Assert.IsNotNull(result);
@@ -716,7 +716,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async void SaveAsyncWithException()
+    public async Task SaveAsyncWithException()
     {
       var result = await Csla.DataPortal.CreateAsync<Single2>(555);
       Assert.IsNotNull(result);
@@ -777,7 +777,7 @@ namespace Csla.Test.DataPortal
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async void DeleteAsync()
+    public async Task DeleteAsync()
     {
       await Csla.DataPortal.DeleteAsync<Single2>(123);
       Assert.Inconclusive("how to test when method is void?");
@@ -847,7 +847,7 @@ namespace Csla.Test.DataPortal
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async void ExecuteAsync()
+    public async Task ExecuteAsync()
     {
       var result = await Csla.DataPortal.ExecuteAsync<SingleCommand>(
         new SingleCommand { Value = 123 });

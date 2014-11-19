@@ -48,7 +48,8 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
+    <Reference Include="Csla, Version=4.5.601.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\CSLA-Core.4.5.601\lib\MonoAndroid\Csla.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
@@ -86,7 +87,12 @@
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <Import Project="..\..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems" Label="Shared" Condition="Exists('..\..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems')" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\BusinessLibrary.Android\BusinessLibrary.Android.csproj">
+      <Project>{a7cb6b99-0b4b-4609-9667-08bc2763f1e4}</Project>
+      <Name>BusinessLibrary.Android</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\..\MobileUI.Shared\MobileUI.Shared.projitems" Label="Shared" Condition="Exists('..\..\MobileUI.Shared\MobileUI.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.1.0.6186\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.1.0.6186\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" />

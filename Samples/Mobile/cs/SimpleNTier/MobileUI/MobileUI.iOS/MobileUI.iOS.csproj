@@ -82,6 +82,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BusinessLibrary.iOS\BusinessLibrary.iOS.csproj">
+      <Project>{1600bf3f-2209-411c-9c79-6af4d8479282}</Project>
+      <Name>BusinessLibrary.iOS</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Csla">
@@ -101,7 +105,6 @@
       <HintPath>..\..\packages\Xamarin.Forms.1.0.6186\lib\MonoTouch10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Import Project="..\..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems" Label="Shared" Condition="Exists('..\..\BusinessLibrary.Shared\BusinessLibrary.Shared.projitems')" />
   <Import Project="..\..\MobileUI.Shared\MobileUI.Shared.projitems" Label="Shared" Condition="Exists('..\..\MobileUI.Shared\MobileUI.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.1.0.6186\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.1.0.6186\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" />

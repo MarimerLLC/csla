@@ -31,5 +31,10 @@ namespace MobileUI
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    internal async Task SaveData()
+    {
+      await Model.SaveAsync();
+    }
   }
 }

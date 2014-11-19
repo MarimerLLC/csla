@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("BusinessLibrary.Android.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("BusinessLibrary.Resource", IsApplication=false)]
 
-namespace BusinessLibrary.Android
+namespace BusinessLibrary
 {
 	
 	

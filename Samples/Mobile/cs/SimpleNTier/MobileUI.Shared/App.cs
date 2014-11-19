@@ -19,7 +19,7 @@ namespace MobileUI
       var page = new MainPage();
 
       MainViewModel = new OrderVm();
-      page.BindingContext = MainViewModel;
+      page.ViewModel = MainViewModel;
       return new NavigationPage(page);
     }
 

@@ -2,5 +2,14 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
 					   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					   x:Class="MobileUI.MainPage">
-	<Label Text="My main page here!" VerticalOptions="Center" HorizontalOptions="Center" />
+  <Page.ToolbarItems>
+    <ToolbarItem Name="Save" x:Name="SaveItem"/>
+  </Page.ToolbarItems>
+  <StackLayout Orientation="Vertical">
+    <Label Text="CUSTOMERS" Font="24"/>
+    <Label Text="Id" Font="Large"/>
+    <Editor x:Name="idtext" Text="{Binding Id}" VerticalOptions="FillAndExpand"/>
+    <Label Text="Name" Font="Large"/>
+    <Editor x:Name="nametext" Text="{Binding CustomerName}" VerticalOptions="FillAndExpand"/>
+  </StackLayout>
 </ContentPage>

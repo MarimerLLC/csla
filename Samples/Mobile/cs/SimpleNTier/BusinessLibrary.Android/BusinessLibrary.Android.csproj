@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3FF326C8-CA3F-450E-88A5-AC23CBB3A0AD}</ProjectGuid>
+    <ProjectGuid>{A7CB6B99-0B4B-4609-9667-08BC2763F1E4}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BusinessLibrary.Android</RootNamespace>
-    <AssemblyName>BusinessLibrary.Android</AssemblyName>
+    <RootNamespace>BusinessLibrary</RootNamespace>
+    <AssemblyName>BusinessLibrary</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>

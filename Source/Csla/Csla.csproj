@@ -378,6 +378,7 @@
     <Compile Include="Threading\BusyLock.cs" />
     <Compile Include="Threading\ContextParams.cs" />
     <Compile Include="Threading\CslaTaskScheduler.cs" />
+    <Compile Include="Threading\TasksExtensions.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />
     <Compile Include="Data\DataMap.cs" />

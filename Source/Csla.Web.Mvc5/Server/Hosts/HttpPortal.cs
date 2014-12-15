@@ -48,9 +48,9 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal), 
-          true, 
-          request.ClientCulture, 
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          true,
+          request.ClientCulture,
           request.ClientUICulture,
           (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
@@ -63,15 +63,14 @@ namespace Csla.Server.Hosts
         result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
         result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
-      // RoyOg - 12/9/2014 The error caught here needs to be re-thrown, otherwise the error never makes it back to the client.
       catch (Exception ex)
       {
-          result.ErrorData = new HttpErrorInfo(ex);
-          throw;
+        result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
       finally
       {
-          result = ConvertResponse(result);
+        result = ConvertResponse(result);
       }
       return result;
     }
@@ -113,15 +112,14 @@ namespace Csla.Server.Hosts
         result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
         result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
-      // RoyOg - 12/9/2014 The error caught here needs to be re-thrown, otherwise the error never makes it back to the client.
       catch (Exception ex)
       {
-          result.ErrorData = new HttpErrorInfo(ex);
-          throw;
+        result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
       finally
       {
-          result = ConvertResponse(result);
+        result = ConvertResponse(result);
       }
       return result;
     }
@@ -158,15 +156,14 @@ namespace Csla.Server.Hosts
         result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
         result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
-      // RoyOg - 12/9/2014 The error caught here needs to be re-thrown, otherwise the error never makes it back to the client.
       catch (Exception ex)
       {
-          result.ErrorData = new HttpErrorInfo(ex);
-          throw;
+        result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
       finally
       {
-          result = ConvertResponse(result);
+        result = ConvertResponse(result);
       }
       return result;
     }
@@ -208,15 +205,14 @@ namespace Csla.Server.Hosts
         result.GlobalContext = MobileFormatter.Serialize(dpr.GlobalContext);
         result.ObjectData = MobileFormatter.Serialize(dpr.ReturnObject);
       }
-      // RoyOg - 12/9/2014 The error caught here needs to be re-thrown, otherwise the error never makes it back to the client.
       catch (Exception ex)
       {
-          result.ErrorData = new HttpErrorInfo(ex);
-          throw;
+        result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
       finally
       {
-          result = ConvertResponse(result);
+        result = ConvertResponse(result);
       }
       return result;
     }

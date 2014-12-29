@@ -4,7 +4,7 @@
     <id>CSLA-UpdateValidation</id>
     <title>CSLA .NET - Legacy Validation</title>
     <tags>CSLA Validation</tags>
-    <version>4.5.501</version>
+    <version>4.5.601</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.501]" />
+      <dependency id="CSLA-Core" version="[4.5.601]" />
     </dependencies>
   </metadata>
   <files>
@@ -46,12 +46,16 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.xml*" target="lib\sl50" />
     <!-- Windows Phone 7 Client -->
     <!-- > None -->
-    <!-- Windows Phone 8 Client -->
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.dll*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.pdb*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.dll*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.pdb*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.xml*" target="lib\wp8" />
+    <!-- Windows Phone 8 Silverlight Client -->
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.dll*" target="lib\wp" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.pdb*" target="lib\wp" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.dll*" target="lib\wp" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.pdb*" target="lib\wp" />
+    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.xml*" target="lib\wp" />
+    <!-- Windows Phone 8 WinRT Client -->
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.dll*" target="lib\wpa" />
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.pdb*" target="lib\wpa" />
+    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.xml*" target="lib\wpa" />
     <!-- Windows Runtime Client -->
     <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.dll*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.Validation.pdb*" target="lib\NetCore45" />

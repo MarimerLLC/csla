@@ -238,6 +238,31 @@
             Sets the properties at object level.
             </summary>
         </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.DoRefresh(System.Func{`0})">
+            <summary>
+            Creates or retrieves a new instance of the 
+            Model by invoking a static factory method.
+            </summary>
+            <param name="factoryMethod">Static factory method function.</param>
+            <example>DoRefresh(BusinessList.GetList)</example>
+            <example>DoRefresh(() => BusinessList.GetList())</example>
+            <example>DoRefresh(() => BusinessList.GetList(id))</example>
+        </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.DoRefresh(System.String,System.Object[])">
+            <summary>
+            Creates or retrieves a new instance of the 
+            Model by invoking a static factory method.
+            </summary>
+            <param name="factoryMethod">Name of the static factory method.</param>
+            <param name="factoryParameters">Factory method parameters.</param>
+        </member>
+        <member name="M:Csla.Xaml.ViewModelBase`1.DoRefresh(System.String)">
+            <summary>
+            Creates or retrieves a new instance of the 
+            Model by invoking a static factory method.
+            </summary>
+            <param name="factoryMethod">Name of the static factory method.</param>
+        </member>
         <member name="M:Csla.Xaml.ViewModelBase`1.BeginRefresh(System.Action{System.EventHandler{Csla.DataPortalResult{`0}}})">
             <summary>
             Creates or retrieves a new instance of the 
@@ -363,7 +388,7 @@
         <member name="P:Csla.Xaml.ViewModelBase`1.Error">
             <summary>
             Gets the Error object corresponding to the
-            last asyncronous operation.
+            last asynchronous operation.
             </summary>
         </member>
         <member name="E:Csla.Xaml.ViewModelBase`1.ErrorOccurred">

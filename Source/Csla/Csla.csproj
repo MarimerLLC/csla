@@ -122,6 +122,7 @@
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -176,8 +177,10 @@
     <Compile Include="Core\LoadManager\IAsyncLoader.cs" />
     <Compile Include="Core\LoadManager\TaskLoader.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
+    <Compile Include="DataPortalClient\HttpProxy.cs" />
     <Compile Include="DataPortalClient\IWcfPortal.cs" />
     <Compile Include="DataPortalClient\MobileProxy.cs" />
+    <Compile Include="DataPortalOperationExtensions.cs" />
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
     <Compile Include="IBusinessBase.cs" />
@@ -271,6 +274,10 @@
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\DefaultDataPortalActivator.cs" />
+    <Compile Include="Server\Hosts\HttpChannel\CriteriaRequest.cs" />
+    <Compile Include="Server\Hosts\HttpChannel\HttpErrorInfo.cs" />
+    <Compile Include="Server\Hosts\HttpChannel\HttpResponse.cs" />
+    <Compile Include="Server\Hosts\HttpChannel\UpdateRequest.cs" />
     <Compile Include="Server\IDataPortalActivator.cs" />
     <Compile Include="Server\ServicedDataPortalReadUncommitted.cs" />
     <Compile Include="Server\ServicedDataPortalReadCommitted.cs" />
@@ -372,6 +379,7 @@
     <Compile Include="Threading\BusyLock.cs" />
     <Compile Include="Threading\ContextParams.cs" />
     <Compile Include="Threading\CslaTaskScheduler.cs" />
+    <Compile Include="Threading\TasksExtensions.cs" />
     <Compile Include="TransactionalAttribute.cs" />
     <Compile Include="TransactionalTypes.cs" />
     <Compile Include="Data\DataMap.cs" />

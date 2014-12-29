@@ -811,7 +811,7 @@ namespace Csla.Xaml
     protected virtual void OnRefreshed()
     { }
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
@@ -980,7 +980,7 @@ namespace Csla.Xaml
       }
     }
 
-#if SILVERLIGHT
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).

@@ -43,6 +43,8 @@ or
 ## Submitting Changes
 
 * Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/master/Support/Contributions/CSLA%20Contributor%20Agreement.pdf?raw=true) document to Marimer LLC (rocky at lhotka dot net)
+ * We will not accept large changes without a signed contributor agreement, but we may accept small edits to the existing codebase
+ * By submitting a change, large or small, you grant ownership of the code and related IP to Marimer LLC, and you certify that you have the right to transfer such ownership
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the Marimer LLC organization.
 * Update your GitHub issue to mark that you have submitted code and are ready for it to be reviewed.

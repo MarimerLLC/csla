@@ -56,7 +56,7 @@ namespace Csla.Core
     public bool AllowEdit
     {
       get { return _allowEdit; }
-      set { _allowEdit = value; }
+      protected set { _allowEdit = value; }
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace Csla.Core
     public bool AllowNew
     {
       get { return _allowNew; }
-      set { _allowNew = value; }
+      protected set { _allowNew = value; }
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ namespace Csla.Core
     public bool AllowRemove
     {
       get { return _allowRemove; }
-      set { _allowRemove = value; }
+      protected set { _allowRemove = value; }
     }
 
     /// <summary>

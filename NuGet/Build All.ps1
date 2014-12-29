@@ -6,7 +6,8 @@
 ##  •	Contents:
 ##      o	Csla.dll (.NET 4 and .NET 4.5)
 ##      o	Csla.dll (Silverlight 5)
-##      o	Csla.dll (WinPRT - Windows Phone 8)
+##      o	Csla.dll (WinPRT - Windows Phone 8 Silverlight)
+##      o	Csla.dll (WinRT - Windows Phone 8.1)
 ##      o	Csla.dll (WinRT - Windows RT)
 ##      o	Csla.dll (MonoAndroid - Xamarin Android)
 ##      o	Csla.dll (MonoIos - Xamarin iOS)
@@ -48,6 +49,12 @@
 ##  “CSLA .NET - Windows Phone” NuGet
 ##  •	Contents:
 ##      o	Csla.Xaml.dll (WinPrt)
+##  •	Dependencies
+##      o	“CSLA .NET - Core” NuGet
+##  
+##  “CSLA .NET - Windows Phone WinRT” NuGet
+##  •	Contents:
+##      o	Csla.Xaml.dll (WinRT)
 ##  •	Dependencies
 ##      o	“CSLA .NET - Core” NuGet
 ##  
@@ -112,7 +119,8 @@
 ##  •	Contents:
 ##      o	Csla.Validation.dll (.NET 4 and .NET 4.5)
 ##      o	Csla.Validation.dll (Silverlight 5)
-##      o	Csla.Validation.dll (WinPRT - Windows Phone 8)
+##      o	Csla.Validation.dll (WinPRT - Windows Phone 8 Silverlight)
+##      o	Csla.Validation.dll (WinRT - Windows Phone 8.1)
 ##      o	Csla.Validation.dll (WinRT - Windows RT)
 ##      o	Csla.Validation.dll (MonoAndroid - Xamarin Android)
 ##      o	Csla.Validation.dll (MonoTouch - Xamarin iOS)
@@ -160,7 +168,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "WPF", "Windows Runtime", "MonoAndroid", "MonoTouch", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation")  
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "Silverlight", "Windows Forms", "Windows Phone", "Windows Phone WinRT", "WPF", "Windows Runtime", "MonoAndroid", "MonoTouch", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation")  
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

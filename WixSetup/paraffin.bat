@@ -6,4 +6,5 @@ Support\Paraffin.exe xSilverlightFragment.wxs -dir ..\Bin\Release\Silverlight -g
 Support\Paraffin.exe xVBSnippetsFragment.wxs -dir ..\Support\Snippets\vb -groupname VBSnippetsComp -alias "$(var.SolutionDir)..\Support\Snippets\vb" -dirref VBSnippets -norootdirectory
 Support\Paraffin.exe xWinPRTFragment.wxs -dir ..\Bin\Release\WinPRT -groupname WinPRTComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\WinPRT" -ext config -dirref WinPRT -norootdirectory
 Support\Paraffin.exe xWinRTFragment.wxs -dir ..\Bin\Release\WinRT -groupname WinRTComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT" -ext config -dirref WinRT -norootdirectory
+Support\Paraffin.exe xWinRTPhoneFragment.wxs -dir ..\Bin\Release\WinRT.Phone -groupname WinRTPhoneComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone" -ext config -dirref WinRT.Phone -norootdirectory
 Support\Paraffin.exe xAndroidFragment.wxs -dir ..\Bin\Release\Android -groupname AndroidComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\Android" -ext config -dirref Android -norootdirectory

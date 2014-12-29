@@ -10,6 +10,16 @@ namespace System.ComponentModel.DataAnnotations
   /// </summary>
   public class ValidationContext
   {
+#if NETFX_PHONE
+    /// <summary>
+    /// Creates an instance of the object.
+    /// </summary>
+    /// <param name="instance">Object to validate.</param>
+    public ValidationContext(object instance)
+    {
+      ObjectInstance = instance;
+    }
+#endif
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

@@ -48,9 +48,9 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal), 
-          true, 
-          request.ClientCulture, 
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          true,
+          request.ClientCulture,
           request.ClientUICulture,
           (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
@@ -66,8 +66,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -110,8 +115,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -149,8 +159,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -193,8 +208,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     #region Criteria

@@ -70,13 +70,16 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pri*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.xml*" target="lib\wpa" />
     <!-- Xamarin Android Client -->
-    <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid" />
-    <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid" />
-    <file src="..\..\Bin\Release\Android\**\Csla.xml*" target="lib\MonoAndroid" />
+    <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.xml*" target="lib\MonoAndroid10" />
     <!-- Xamarin iOS Client -->
-    <file src="..\..\Bin\Release\iOS\**\Csla.dll*" target="lib\MonoTouch" />
-    <file src="..\..\Bin\Release\iOS\**\Csla.pdb*" target="lib\MonoTouch" />
-    <file src="..\..\Bin\Release\iOS\**\Csla.xml*" target="lib\MonoTouch" />
+    <file src="..\..\Bin\Release\iOSClassic\**\Csla.dll*" target="lib\MonoTouch10" />
+    <file src="..\..\Bin\Release\iOSClassic\**\Csla.pdb*" target="lib\MonoTouch10" />
+    <file src="..\..\Bin\Release\iOSClassic\**\Csla.xml*" target="lib\MonoTouch10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.dll*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.pdb*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.xml*" target="lib\Xamarin.iOS10" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\*.cs" target="src" />
   </files>

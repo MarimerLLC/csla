@@ -14,6 +14,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -132,6 +133,9 @@
     </Compile>
     <Compile Include="..\Csla\DataPortalException.cs">
       <Link>DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalOperationExtensions.cs">
+      <Link>DataPortalOperationExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\DataPortalT.cs">
       <Link>DataPortalT.cs</Link>
@@ -294,6 +298,12 @@
     </Compile>
     <Compile Include="..\Csla\Threading\ContextParams.cs">
       <Link>Threading\ContextParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
+      <Link>Threading\CslaTaskScheduler.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\TasksExtensions.cs">
+      <Link>Threading\TasksExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
@@ -766,6 +776,13 @@
     <None Include="CslaKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

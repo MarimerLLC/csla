@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Validation for iOS Unified API")]
-[assembly: AssemblyDescription("CSLA .NET Validation from 3.5.x and newer")]
+[assembly: AssemblyTitle("CSLA .NET for iOS UI Classic API")]
+[assembly: AssemblyDescription("CSLA .NET helpers for iOS UI")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
-[assembly: AssemblyProduct("Csla .NET")]
+[assembly: AssemblyProduct("CSLA .NET")]
 [assembly: AssemblyCopyright("Copyright © 2010-14 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

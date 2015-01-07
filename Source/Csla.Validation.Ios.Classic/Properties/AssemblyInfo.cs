@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET Validation for iOS Unified API")]
+[assembly: AssemblyTitle("CSLA .NET Validation for iOS Classic API")]
 [assembly: AssemblyDescription("CSLA .NET Validation from 3.5.x and newer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]

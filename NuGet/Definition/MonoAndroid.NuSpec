@@ -30,10 +30,10 @@ Supports the creation of Xamarin Android applications.
     <!-- Silverlight 5.0 Client -->
     <!-- Windows Phone 7 Client -->
     <!-- Xamarin Android Client -->
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll*" target="lib\MonoAndroid" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll.mdb*" target="lib\MonoAndroid" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.pdb*" target="lib\MonoAndroid" />
-    <file src="..\..\Bin\Release\Android\**\Csla.Axml.xml*" target="lib\MonoAndroid" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml.dll.mdb*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml.pdb*" target="lib\MonoAndroid10" />
+    <file src="..\..\Bin\Release\Android\**\Csla.Axml.xml*" target="lib\MonoAndroid10" />
     <!-- > None -->
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Axml.Android\**\*.cs" target="src" />

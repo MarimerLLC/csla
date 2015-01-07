@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8C50E0D2-92E6-4C74-B317-AA56F3988160}</ProjectGuid>
-    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{597F6F1B-C461-452D-9650-53B2C6F9C5C9}</ProjectGuid>
+    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <RootNamespace>Csla.Validation</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
@@ -18,25 +18,25 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Debug\ios\</OutputPath>
-    <DefineConstants>DEBUG;__UNIFIED__;__MOBILE__;__IOS__;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <OutputPath>..\..\bin\Debug\iosClassic\</OutputPath>
+    <DefineConstants>DEBUG;__IOS__;__MOBILE__;SILVERLIGHT;WINDOWS_PHONE;__IOS__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <DocumentationFile>..\..\bin\Debug\ios\Csla.Validation.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\iosClassic\Csla.Validation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\iOS\</OutputPath>
+    <OutputPath>..\..\Bin\Release\iOSClassic\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__;SILVERLIGHT;WINDOWS_PHONE;__IOS__</DefineConstants>
-    <DocumentationFile>..\..\Bin\Release\iOS\Csla.Validation.XML</DocumentationFile>
+    <DefineConstants>DEBUG;__MOBILE__;__IOS__;__IOS__;__MOBILE__;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <DocumentationFile>..\..\Bin\Release\iOSClassic\Csla.Validation.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
@@ -72,14 +72,14 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="Xamarin.iOS" />
+    <Reference Include="monotouch" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Ios\Csla.Ios.csproj">
-      <Project>{0735c0c7-0571-407f-9f62-fd59a0a15dfc}</Project>
-      <Name>Csla.Ios</Name>
+    <ProjectReference Include="..\Csla.Ios.Classic\Csla.Ios.Classic.csproj">
+      <Project>{6b9f2a26-9f72-4056-97e9-49bacbbb52f6}</Project>
+      <Name>Csla.Ios.Classic</Name>
       <IsAppExtension>false</IsAppExtension>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
 </Project>

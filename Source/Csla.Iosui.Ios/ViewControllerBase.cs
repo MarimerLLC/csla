@@ -8,7 +8,11 @@
 
 using Csla.Iosui.Binding;
 using Csla.Serialization.Mobile;
+#if __UNIFIED__
+using  UIKit;
+#else
 using MonoTouch.UIKit;
+#endif
 
 namespace Csla.Iosui
 {

@@ -4,7 +4,7 @@
     <id>CSLA-EF6</id>
     <title>CSLA .NET - ADO.NET EF 6</title>
     <tags>CSLA Windows ADO.NET EF</tags>
-    <version>4.5.601</version>
+    <version>4.5.680-Beta</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the use of ADO.NET Entity Framework 6.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.601]" />
+      <dependency id="CSLA-Core" version="[4.5.680-Beta]" />
       <dependency id="EntityFramework" version="6.0" />
     </dependencies>
   </metadata>

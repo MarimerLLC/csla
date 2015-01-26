@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-iOS</id>
+    <title>CSLA .NET - iOS Unified</title>
+    <tags>CSLA iOS Unified</tags>
+    <version>4.5.680-Beta</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of Xamarin iOS applications using the unified API.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of Xamarin iOS applications using the unified API.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="CSLA-Core" version="[4.5.680-Beta]" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- .NET 4.0 Client -->
+    <!-- > None -->
+    <!-- Silverlight 4.0 Client -->
+    <!-- Silverlight 5.0 Client -->
+    <!-- Windows Phone 7 Client -->
+    <!-- Xamarin iOS Client -->
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll.mdb*" target="lib\Xamarin.iOS" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.pdb*" target="lib\Xamarin.iOS" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.xml*" target="lib\Xamarin.iOS" />
+    <!-- > None -->
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
+  </files>
+</package>

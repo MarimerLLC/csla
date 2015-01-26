@@ -95,7 +95,10 @@ namespace Csla.Server
       }
       finally
       {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -176,7 +179,10 @@ namespace Csla.Server
       }
       finally
       {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -293,7 +299,10 @@ namespace Csla.Server
       }
       finally
       {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
+        object reference = null;
+        if (lb != null)
+          reference = lb.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
 
@@ -359,7 +368,10 @@ namespace Csla.Server
       }
       finally
       {
-        ApplicationContext.DataPortalActivator.FinalizeInstance(obj.Instance);
+        object reference = null;
+        if (obj != null)
+          reference = obj.Instance;
+        ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
       }
     }
   }

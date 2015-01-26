@@ -6,9 +6,9 @@
 // <summary>Object containing information about the</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Csla.Properties;
+using Csla.Rules;
+using Csla.Security;
 
 namespace Csla.Server
 {
@@ -40,6 +40,24 @@ namespace Csla.Server
       this.ObjectType = objectType;
       this.RequestObject = requestObject;
       this.Operation = operation;
+    }
+
+    /// <summary>
+    /// Checks that the current identity has permission to carry out this operation,
+    /// and if not throws a <c>SecurityException</c>.
+    /// </summary>
+    /// <exception cref="SecurityException">Thrown if the current principal does 
+    /// not have permission to carry out this operation.</exception>
+    public void CheckPermissions()
+    {
+      if (!BusinessRules.HasPermission(Operation.ToAuthAction(), ObjectType))
+      {
+        throw new SecurityException(
+            string.Format(Resources.UserNotAuthorizedException,
+                Operation.ToSecurityActionDescription(),
+                ObjectType.Name)
+            );
+      }
     }
   }
 }

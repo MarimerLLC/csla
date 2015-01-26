@@ -201,6 +201,9 @@
     <Compile Include="..\Csla\DataPortalClient\HttpProxy.cs">
       <Link>DataPortalClient\HttpProxy.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalOperationExtensions.cs">
+      <Link>DataPortalOperationExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Properties\Resources.Designer.cs">
       <Link>Properties\Resources.Designer.cs</Link>
       <AutoGen>True</AutoGen>

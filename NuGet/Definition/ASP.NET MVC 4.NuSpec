@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC4</id>
     <title>CSLA .NET - ASP.NET MVC 4</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>4.5.600</version>
+    <version>4.5.680-Beta</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,8 +20,8 @@ Supports the creation of ASP.NET MVC 4 applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.600]" />
-      <dependency id="CSLA-ASP.NET" version="[4.5.600]" />
+      <dependency id="CSLA-Core" version="[4.5.680-Beta]" />
+      <dependency id="CSLA-ASP.NET" version="[4.5.680-Beta]" />
     </dependencies>
   </metadata>
   <files>

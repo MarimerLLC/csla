@@ -149,3 +149,4 @@ Thumbs.db
 /Source/Csla.WinRT.Phone/Resources/zh-TW/*.resw
 /Source/Csla.BrokeredChannel/BrokeredDataPortal
 /Source/packages
+/XamarinPackage/*.xam

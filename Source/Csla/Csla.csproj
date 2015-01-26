@@ -180,6 +180,7 @@
     <Compile Include="DataPortalClient\HttpProxy.cs" />
     <Compile Include="DataPortalClient\IWcfPortal.cs" />
     <Compile Include="DataPortalClient\MobileProxy.cs" />
+    <Compile Include="DataPortalOperationExtensions.cs" />
     <Compile Include="DynamicBindingListBase.cs" />
     <Compile Include="DynamicListBase.cs" />
     <Compile Include="IBusinessBase.cs" />

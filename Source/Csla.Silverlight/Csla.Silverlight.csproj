@@ -244,6 +244,9 @@
     <Compile Include="..\Csla\DataPortalException.cs">
       <Link>DataPortalException.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DataPortalOperationExtensions.cs">
+      <Link>DataPortalOperationExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DataPortalResult.cs">
       <Link>DataPortalResult.cs</Link>
     </Compile>

@@ -11,7 +11,7 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif
+#endif 
 
 namespace Csla.Test.DataPortal
 {
@@ -238,11 +238,6 @@ namespace Csla.Test.DataPortal
     public void InitializeInstance(object obj)
     {
       Csla.ApplicationContext.GlobalContext["Activate2+" + obj.GetType().Name] = "InitializeInstance";
-    }
-
-    public void FinalizeInstance(object obj)
-    {
-      Csla.ApplicationContext.GlobalContext["Activate3+" + obj.GetType().Name] = "FinalizeInstance";
     }
   }
 }

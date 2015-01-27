@@ -12,12 +12,10 @@ using Csla.Serialization;
 #else
 
 #endif
-using System.Threading.Tasks;
 
 using Csla;
 using System;
 using Csla.Core;
-using Csla.Server;
 
 namespace Csla.Test.DataPortalTest
 {
@@ -224,24 +222,5 @@ namespace Csla.Test.DataPortalTest
       Value += 1;
     }
 #endif
-  }
-
-  [Serializable]
-  [ObjectFactory(typeof(SingleWithFactoryFactory))]
-  public class SingleWithFactory : BusinessBase<SingleWithFactory>
-  {
-  }
-
-  public class SingleWithFactoryFactory : ObjectFactory
-  {
-    public async Task<object> Fetch()
-    {
-      return await Task.Run(() => new SingleWithFactory());
-    }
-
-    public async Task<object> Create()
-    {
-      return await Task.Run(() => new SingleWithFactory());
-    }
   }
 }

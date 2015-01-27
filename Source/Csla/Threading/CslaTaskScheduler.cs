@@ -49,7 +49,7 @@ namespace Csla.Threading
 #if NETFX_CORE
     private void NotifyThreadPoolOfPendingWork()
     {
-      var asyncAction = ThreadPool.RunAsync(_ =>
+      ThreadPool.RunAsync(_ =>
       {
         // Note that the current thread is now processing work items.
         // This is necessary to enable inlining of tasks into this thread.

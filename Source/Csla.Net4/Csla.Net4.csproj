@@ -253,9 +253,6 @@
     <Compile Include="..\Csla\Properties\Settings.Designer.cs">
       <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
-    <Compile Include="..\Csla\Threading\TasksExtensions.cs">
-      <Link>Threading\TasksExtensions.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
       <AutoGen>True</AutoGen>

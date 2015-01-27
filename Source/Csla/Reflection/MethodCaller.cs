@@ -473,10 +473,11 @@ namespace Csla.Reflection
     private static object CallMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
 #if IOS
-      var methodInfo = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
-      if (methodInfo == null)
+      System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, hasParameters, parameters);
+      if (info == null)
         throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-      return methodInfo.Invoke(obj, parameters);
+
+      return CallMethod(obj, info, hasParameters, parameters);
 #else
       var mh = GetCachedMethod(obj, method, hasParameters, parameters);
       if (mh == null || mh.DynamicMethod == null)
@@ -507,7 +508,46 @@ namespace Csla.Reflection
     private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object[] parameters)
     {
 #if IOS
-      return info.Invoke(obj, parameters);
+      var infoParams = info.GetParameters();
+      var infoParamsCount = infoParams.Length;
+      bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
+      bool specialParamArray = false;
+      if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(string[])))
+        specialParamArray = true;
+      if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
+        specialParamArray = true;
+      object[] par = null;
+      if (infoParamsCount == 1 && specialParamArray)
+      {
+        par = new object[] { parameters };
+      }
+      else if (infoParamsCount > 1 && hasParamArray && specialParamArray)
+      {
+        par = new object[infoParamsCount];
+        for (int i = 0; i < infoParamsCount - 1; i++)
+          par[i] = parameters[i];
+        par[infoParamsCount - 1] = parameters[infoParamsCount - 1];
+      }
+      else
+      {
+        par = parameters;
+      }
+
+      object result = null;
+      try
+      {
+        result = info.Invoke(obj, par);
+      }
+      catch (Exception e)
+      {
+        Exception inner = null;
+        if (e.InnerException == null)
+          inner = e;
+        else
+          inner = e.InnerException;
+        throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
+      }
+      return result;
 #else
       var mh = GetCachedMethod(obj, info, parameters);
       if (mh == null || mh.DynamicMethod == null)

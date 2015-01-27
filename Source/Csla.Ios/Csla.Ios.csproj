@@ -39,30 +39,6 @@
     <DocumentationFile>..\..\Bin\Release\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\DisplayAttribute.cs">
-      <Link>DataAnnotations\DisplayAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RangeAttribute.cs">
-      <Link>DataAnnotations\RangeAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RegularExpressionAttribute.cs">
-      <Link>DataAnnotations\RegularExpressionAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RequiredAttribute.cs">
-      <Link>DataAnnotations\RequiredAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\StringLengthAttribute.cs">
-      <Link>DataAnnotations\StringLengthAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationAttribute.cs">
-      <Link>DataAnnotations\ValidationAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationContext.cs">
-      <Link>DataAnnotations\ValidationContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationResult.cs">
-      <Link>DataAnnotations\ValidationResult.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.WinPRT\Service References\WcfPortal\Reference.cs">
       <Link>Service References\WfcPortal\Reference.cs</Link>
     </Compile>
@@ -284,9 +260,6 @@
     </Compile>
     <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
       <Link>Threading\CslaTaskScheduler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Threading\TasksExtensions.cs">
-      <Link>Threading\TasksExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
@@ -756,6 +729,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />

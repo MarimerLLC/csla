@@ -15,7 +15,10 @@ using Csla.Serialization;
 
 using Csla;
 using System;
+using System.Threading.Tasks;
+
 using Csla.Core;
+using Csla.Server;
 
 namespace Csla.Test.DataPortalTest
 {
@@ -143,6 +146,25 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = "Deleted";
     }
 #endif
+  }
+
+  [Serializable]
+  [ObjectFactory(typeof(SingleWithFactoryFactory))]
+  public class SingleWithFactory : BusinessBase<SingleWithFactory>
+  {
+  }
+
+  public class SingleWithFactoryFactory : ObjectFactory
+  {
+    public async Task<object> Fetch()
+    {
+      return await Task.Run(() => new SingleWithFactory());
+    }
+
+    public async Task<object> Create()
+    {
+      return await Task.Run(() => new SingleWithFactory());
+    }
   }
 
   [Serializable]

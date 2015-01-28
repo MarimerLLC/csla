@@ -150,3 +150,5 @@ Thumbs.db
 /Source/Csla.BrokeredChannel/BrokeredDataPortal
 /Source/packages
 /XamarinPackage/*.xam
+
+*.userprefs

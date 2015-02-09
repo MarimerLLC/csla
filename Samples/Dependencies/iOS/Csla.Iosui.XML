@@ -336,49 +336,12 @@
             editable root object).
             </summary>
         </member>
-        <member name="T:Csla.Iosui.ViewControllerBase`2">
-            <summary>
-            CSLA helper to be used in place of the normal Xamarin Android activity that contains a reference to a CSLA ViewModel and a BindingManager.
-            </summary>
-            <typeparam name="T">A type that inherits from the ViewModel.</typeparam>
-            <typeparam name="Z">The type that is defined as used by T.</typeparam>
-        </member>
-        <member name="F:Csla.Iosui.ViewControllerBase`2.viewModel">
-            <summary>
-            A reference to the view model.
-            </summary>
-        </member>
-        <member name="F:Csla.Iosui.ViewControllerBase`2.Bindings">
-            <summary>
-            The BindingManager for this Activity.
-            </summary>
-        </member>
-        <member name="M:Csla.Iosui.ViewControllerBase`2.SerilizeModelForParameter">
-            <summary>
-            Serializes the ViewModel's model property using the MobileFormatter.  Used to serialize and transfer models between activities.
-            </summary>
-            <returns>An array of bytes that contains the serialized model.</returns>
-        </member>
-        <member name="M:Csla.Iosui.ViewControllerBase`2.SerilizeModelForParameter(System.Object)">
-            <summary>
-            Serialized the provided model using the MobileFormatter.  Used to serialize and transfer models between activities.
-            </summary>
-            <param name="model">A reference to the model to serialize.</param>
-            <returns>An array of bytes that contains the serialized model.</returns>
-        </member>
-        <member name="M:Csla.Iosui.ViewControllerBase`2.DeserializeFromParameter(System.Byte[])">
-            <summary>
-            Takes a byte array and uses the MobileFormatter to reconstitute it into a model reference.
-            </summary>
-            <param name="parameter">An array of bytes to deserialized.</param>
-            <returns>A reference to the deserialized object.  An exception will be thrown if the supplied byte array is not valid for deserializaiton.</returns>
-        </member>
         <member name="T:Csla.Iosui.Binding.Binding">
             <summary>
             Contains an individual binding to tie a property on an Axml view to the property on a supplied object.
             </summary>
         </member>
-        <member name="M:Csla.Iosui.Binding.Binding.#ctor(MonoTouch.UIKit.UIView,System.String,System.Object,System.String,System.ComponentModel.BindingDirection)">
+        <member name="M:Csla.Iosui.Binding.Binding.#ctor(UIKit.UIView,System.String,System.Object,System.String,System.ComponentModel.BindingDirection)">
             <summary>
             Creates a new instance of the Binding class.
             </summary>
@@ -388,7 +351,7 @@
             <param name="sourceProperty">The name of the property on the object that will be bound to the target property.</param>
             <param name="bindingDirection">Indicates if the binding is one way or two way.</param>
         </member>
-        <member name="M:Csla.Iosui.Binding.Binding.#ctor(MonoTouch.UIKit.UIView,System.String,System.Object,System.String,System.Func{System.Object,System.Object},System.ComponentModel.BindingDirection)">
+        <member name="M:Csla.Iosui.Binding.Binding.#ctor(UIKit.UIView,System.String,System.Object,System.String,System.Func{System.Object,System.Object},System.ComponentModel.BindingDirection)">
             <summary>
             Creates a new instance of the Binding class.
             </summary>
@@ -399,7 +362,7 @@
             <param name="convert">A reference to a function to do a custom conversion from the source property to the target property.</param>
             <param name="bindingDirection">Indicates if the binding is one way or two way.</param>
         </member>
-        <member name="M:Csla.Iosui.Binding.Binding.#ctor(MonoTouch.UIKit.UIView,System.String,System.Object,System.String,System.Func{System.Object,System.Object},System.Func{System.Object,System.Object},System.ComponentModel.BindingDirection)">
+        <member name="M:Csla.Iosui.Binding.Binding.#ctor(UIKit.UIView,System.String,System.Object,System.String,System.Func{System.Object,System.Object},System.Func{System.Object,System.Object},System.ComponentModel.BindingDirection)">
             <summary>
             Creates a new instance of the Binding class.
             </summary>
@@ -485,13 +448,13 @@
             The UIView that is being used by the bindings.
             </summary>
         </member>
-        <member name="M:Csla.Iosui.Binding.BindingManager.#ctor(MonoTouch.UIKit.UIView)">
+        <member name="M:Csla.Iosui.Binding.BindingManager.#ctor(UIKit.UIView)">
             <summary>
             Creates a new instance of the binding manager.
             </summary>
             <param name="view">The Android activity that is using the view with the controls to bind to.</param>
         </member>
-        <member name="M:Csla.Iosui.Binding.BindingManager.Add(MonoTouch.UIKit.UIView,System.String,System.Object,System.String,System.ComponentModel.BindingDirection)">
+        <member name="M:Csla.Iosui.Binding.BindingManager.Add(UIKit.UIView,System.String,System.Object,System.String,System.ComponentModel.BindingDirection)">
             <summary>
             Adds a new binding to be managed.
             </summary>
@@ -507,7 +470,7 @@
             </summary>
             <param name="binding">The new binding to add.</param>
         </member>
-        <member name="M:Csla.Iosui.Binding.BindingManager.Remove(MonoTouch.UIKit.UIView,System.String,System.Object,System.String)">
+        <member name="M:Csla.Iosui.Binding.BindingManager.Remove(UIKit.UIView,System.String,System.Object,System.String)">
             <summary>
             Removes the binding matching the supplied parameters from the binding manager.  If no bindings matched the method does nothing.
             </summary>
@@ -527,14 +490,14 @@
             Removes all bindings from the binding manager.
             </summary>
         </member>
-        <member name="M:Csla.Iosui.Binding.BindingManager.GetBindingsForView(MonoTouch.UIKit.UIView)">
+        <member name="M:Csla.Iosui.Binding.BindingManager.GetBindingsForView(UIKit.UIView)">
             <summary>
             Returns all bindings for the supplied view.
             </summary>
             <param name="view">A reference to the view to return bindings for.</param>
             <returns>A enumerable containing the bindings for the supplied view.</returns>
         </member>
-        <member name="M:Csla.Iosui.Binding.BindingManager.UpdateSourceForView(MonoTouch.UIKit.UIView)">
+        <member name="M:Csla.Iosui.Binding.BindingManager.UpdateSourceForView(UIKit.UIView)">
             <summary>
             Updates bindings with the current values in the supplied control.
             </summary>
@@ -549,6 +512,43 @@
             <summary>
             A list of bindings that have been added to the manager.
             </summary>
+        </member>
+        <member name="T:Csla.Iosui.ViewControllerBase`2">
+            <summary>
+            CSLA helper to be used in place of the normal Xamarin Android activity that contains a reference to a CSLA ViewModel and a BindingManager.
+            </summary>
+            <typeparam name="T">A type that inherits from the ViewModel.</typeparam>
+            <typeparam name="Z">The type that is defined as used by T.</typeparam>
+        </member>
+        <member name="F:Csla.Iosui.ViewControllerBase`2.viewModel">
+            <summary>
+            A reference to the view model.
+            </summary>
+        </member>
+        <member name="F:Csla.Iosui.ViewControllerBase`2.Bindings">
+            <summary>
+            The BindingManager for this Activity.
+            </summary>
+        </member>
+        <member name="M:Csla.Iosui.ViewControllerBase`2.SerilizeModelForParameter">
+            <summary>
+            Serializes the ViewModel's model property using the MobileFormatter.  Used to serialize and transfer models between activities.
+            </summary>
+            <returns>An array of bytes that contains the serialized model.</returns>
+        </member>
+        <member name="M:Csla.Iosui.ViewControllerBase`2.SerilizeModelForParameter(System.Object)">
+            <summary>
+            Serialized the provided model using the MobileFormatter.  Used to serialize and transfer models between activities.
+            </summary>
+            <param name="model">A reference to the model to serialize.</param>
+            <returns>An array of bytes that contains the serialized model.</returns>
+        </member>
+        <member name="M:Csla.Iosui.ViewControllerBase`2.DeserializeFromParameter(System.Byte[])">
+            <summary>
+            Takes a byte array and uses the MobileFormatter to reconstitute it into a model reference.
+            </summary>
+            <param name="parameter">An array of bytes to deserialized.</param>
+            <returns>A reference to the deserialized object.  An exception will be thrown if the supplied byte array is not valid for deserializaiton.</returns>
         </member>
     </members>
 </doc>

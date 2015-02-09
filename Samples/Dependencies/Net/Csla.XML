@@ -2372,6 +2372,18 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Core.BusinessBase.LoadPropertyByReflection(System.String,Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Calls the generic LoadProperty method via reflection.
+            </summary>
+            <param name="loadPropertyMethodName">
+            The LoadProperty method name to call via reflection.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Core.BusinessBase.ResetChildEditLevel(System.Object)">
             <summary>
             Makes sure that a child object is set up properly
@@ -6274,6 +6286,11 @@
             <summary>
             Gets the WCF endpoint name for the data portal
             server used by this proxy instance.
+            </summary>
+        </member>
+        <member name="T:Csla.DataPortalOperationExtensions">
+            <summary>
+            Extension methods for mapping <c>DataPortalOperations</c> to other system values.
             </summary>
         </member>
         <member name="T:Csla.DynamicBindingListBase`1">
@@ -12084,6 +12101,14 @@
             Object containing information about the
             client request to the data portal.
             </summary>
+        </member>
+        <member name="M:Csla.Server.AuthorizeRequest.CheckPermissions">
+            <summary>
+            Checks that the current identity has permission to carry out this operation,
+            and if not throws a <c>SecurityException</c>.
+            </summary>
+            <exception cref="T:Csla.Security.SecurityException">Thrown if the current principal does 
+            not have permission to carry out this operation.</exception>
         </member>
         <member name="P:Csla.Server.AuthorizeRequest.ObjectType">
             <summary>

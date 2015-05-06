@@ -43,9 +43,7 @@ namespace Csla.Core
     {
       add
       {
-        if (value.Method.IsPublic && 
-           (value.Method.DeclaringType.IsSerializable || 
-            value.Method.IsStatic))
+        if (ShouldHandlerSerialize(value))
           _serializableChangedHandlers = (PropertyChangedEventHandler)
             System.Delegate.Combine(_serializableChangedHandlers, value);
         else
@@ -54,15 +52,26 @@ namespace Csla.Core
       }
       remove
       {
-        if (value.Method.IsPublic && 
-           (value.Method.DeclaringType.IsSerializable || 
-            value.Method.IsStatic))
+          if (ShouldHandlerSerialize(value))
           _serializableChangedHandlers = (PropertyChangedEventHandler)
             System.Delegate.Remove(_serializableChangedHandlers, value);
         else
           _nonSerializableChangedHandlers = (PropertyChangedEventHandler)
             System.Delegate.Remove(_nonSerializableChangedHandlers, value);
       }
+    }
+
+    /// <summary>
+    /// Override this method to change the default logic for determining 
+    /// if the event handler should be serialized
+    /// </summary>
+    /// <param name="value">the event handler to review</param>
+    /// <returns></returns>
+    protected virtual bool ShouldHandlerSerialize(PropertyChangedEventHandler value)
+    {
+      return value.Method.IsPublic &&
+             value.Method.DeclaringType != null &&
+             (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
     }
 
     /// <summary>
@@ -116,6 +125,19 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Override this method to change the default logic for determining 
+    /// if the event handler should be serialized
+    /// </summary>
+    /// <param name="value">the event handler to review</param>
+    /// <returns></returns>
+    protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
+    {
+        return value.Method.IsPublic &&
+               value.Method.DeclaringType != null &&
+               (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
+    }
+
+    /// <summary>
     /// Call this method to raise the PropertyChanged event
     /// for a specific property.
     /// </summary>
@@ -148,9 +170,7 @@ namespace Csla.Core
     {
       add
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
+          if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
             System.Delegate.Combine(_serializableChangingHandlers, value);
         else
@@ -159,9 +179,7 @@ namespace Csla.Core
       }
       remove
       {
-        if (value.Method.IsPublic &&
-           (value.Method.DeclaringType.IsSerializable ||
-            value.Method.IsStatic))
+          if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
             System.Delegate.Remove(_serializableChangingHandlers, value);
         else

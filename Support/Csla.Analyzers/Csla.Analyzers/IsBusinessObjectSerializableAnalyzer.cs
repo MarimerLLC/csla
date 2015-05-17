@@ -38,7 +38,7 @@ namespace Csla.Analyzers
          if (classSymbol.IsStereotype() && !classSymbol.IsSerializable())
 			{
 				context.ReportDiagnostic(Diagnostic.Create(IsBusinessObjectSerializableAnalyzer.makeSerializableRule,
-					classNode.GetLocation()));
+					classNode.Identifier.GetLocation()));
 				return;
 			}
 		}

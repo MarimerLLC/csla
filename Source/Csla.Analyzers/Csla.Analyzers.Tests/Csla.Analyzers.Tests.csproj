@@ -105,7 +105,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsNotSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -121,6 +131,7 @@
     <Compile Include="Targets\ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="TestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

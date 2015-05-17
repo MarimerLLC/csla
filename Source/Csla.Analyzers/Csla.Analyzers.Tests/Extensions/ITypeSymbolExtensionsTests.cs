@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
@@ -70,7 +71,7 @@ namespace Csla.Analyzers.Tests.Extensions
 			var tree = CSharpSyntaxTree.ParseText(code);
 
 			var compilation = CSharpCompilation.Create(
-				this.GetType().Assembly.GetName().Name,
+				Guid.NewGuid().ToString("N"),
 				syntaxTrees: new[] { tree },
 				references: new[]
 				{

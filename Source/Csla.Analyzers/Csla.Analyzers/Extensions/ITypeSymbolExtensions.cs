@@ -27,14 +27,13 @@ namespace Csla.Analyzers.Extensions
 
 		internal static bool IsStereotype(this ITypeSymbol @this)
 		{
-			// Is the type assignable from IBusinessObject or EditableRootListBase<>? 
 			if(@this == null)
 			{
 				return false;
 			}
 			else
 			{
-				if ((@this.Name == "EditableRootListBase" || @this.Name == "IBusinessObject") &&
+				if (@this.Name == "IBusinessObject" &&
 					@this.ContainingAssembly.Name == "Csla")
 				{
 					return true;

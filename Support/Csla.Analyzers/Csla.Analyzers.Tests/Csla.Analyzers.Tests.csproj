@@ -137,7 +137,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Csla\Csla.csproj">
+    <ProjectReference Include="..\..\..\Source\Csla\Csla.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
       <Name>Csla</Name>
     </ProjectReference>

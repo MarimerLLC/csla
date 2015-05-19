@@ -140,12 +140,15 @@
     <Compile Include="CommandBase.cs" />
     <Compile Include="Core\AddedNewEventArgs.cs" />
     <Compile Include="Core\AsyncFactoryDelegates.cs" />
+    <Compile Include="Core\BindingList.cs" />
     <Compile Include="Core\BusyChangedEventArgs.cs" />
     <Compile Include="Core\ErrorEventArgs.cs" />
     <Compile Include="Core\FieldManager\DefaultPropertyInfoFactory.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoFactory.cs" />
+    <Compile Include="Core\IBindingList.cs" />
     <Compile Include="Core\IContextManager.cs" />
     <Compile Include="Core\IMemberInfo.cs" />
+    <Compile Include="Core\INotifyPropertyChanging.cs" />
     <Compile Include="Core\IObservableBindingList.cs" />
     <Compile Include="Core\IPropertyInfoFactory.cs" />
     <Compile Include="Core\FieldManager\PropertyInfoList.cs" />
@@ -177,6 +180,8 @@
     <Compile Include="Core\LoadManager\IAsyncLoader.cs" />
     <Compile Include="Core\LoadManager\TaskLoader.cs" />
     <Compile Include="Core\ManagedObjectBase.cs" />
+    <Compile Include="Core\PropertyChangingEventArgs.cs" />
+    <Compile Include="Core\PropertyChangingEventHandler.cs" />
     <Compile Include="DataPortalClient\HttpProxy.cs" />
     <Compile Include="DataPortalClient\IWcfPortal.cs" />
     <Compile Include="DataPortalClient\MobileProxy.cs" />
@@ -185,6 +190,7 @@
     <Compile Include="DynamicListBase.cs" />
     <Compile Include="IBusinessBase.cs" />
     <Compile Include="IBusinessListBase.cs" />
+    <Compile Include="ICloneable.cs" />
     <Compile Include="ICommandBase.cs" />
     <Compile Include="IDataPortal.cs" />
     <Compile Include="IReadOnlyBase.cs" />
@@ -272,6 +278,9 @@
     <Compile Include="Serialization\Mobile\ICslaWriter.cs" />
     <Compile Include="Serialization\Mobile\NullPlaceholder.cs" />
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
+    <Compile Include="Serialization\NonSerializedAttribute.cs" />
+    <Compile Include="Serialization\SerializationAttribute.cs" />
+    <Compile Include="Serialization\TypeExtensions.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\DefaultDataPortalActivator.cs" />
     <Compile Include="Server\Hosts\HttpChannel\CriteriaRequest.cs" />
@@ -584,6 +593,11 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Error.png" />
+    <Content Include="Resources\Information.png" />
+    <Content Include="Resources\Warning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

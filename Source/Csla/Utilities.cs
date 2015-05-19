@@ -6,13 +6,13 @@
 // <summary>Contains utility methods used by the</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
 using System.Reflection;
-using System.Xml;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
 using Csla.Reflection;
+using System.ComponentModel;
+#if NETFX_CORE
+using System.Text.RegularExpressions;
+using Csla.WcfPortal;
+#endif
 
 namespace Csla
 {
@@ -79,7 +79,11 @@ namespace Csla
     public static Type GetPropertyType(Type propertyType)
     {
       Type type = propertyType;
+#if NETFX_CORE
+      if (type.IsGenericType() &&
+#else
       if (type.IsGenericType &&
+#endif
         (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
         return Nullable.GetUnderlyingType(type);
       return type;
@@ -97,9 +101,14 @@ namespace Csla
         result = listType.GetElementType();
       else
       {
+#if NETFX_CORE
+        DefaultMemberAttribute indexer =
+          (DefaultMemberAttribute)listType.GetCustomAttribute(typeof(DefaultMemberAttribute));
+#else
         DefaultMemberAttribute indexer =
           (DefaultMemberAttribute)Attribute.GetCustomAttribute(
           listType, typeof(DefaultMemberAttribute));
+#endif
         if (indexer != null)
           foreach (PropertyInfo prop in listType.GetProperties(
             BindingFlags.Public |
@@ -156,7 +165,11 @@ namespace Csla
       }
       else
       {
+#if NETFX_CORE
+        if (desiredType.IsGenericType())
+#else
         if (desiredType.IsGenericType)
+#endif
         {
           if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
@@ -167,7 +180,12 @@ namespace Csla
         desiredType = Utilities.GetPropertyType(desiredType);
       }
 
-      if (desiredType.IsEnum && (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
+#if NETFX_CORE
+      if (desiredType.IsEnum() &&
+#else
+      if (desiredType.IsEnum && 
+#endif
+        (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
         return System.Enum.Parse(desiredType, value.ToString());
 
       if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)
@@ -182,8 +200,13 @@ namespace Csla
         return tmp;
       }
 
+#if NETFX_CORE
+      if ((desiredType.IsPrimitive() || desiredType.Equals(typeof(decimal))) &&
+          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#else
       if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
           valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+#endif
         value = 0;
 
       try
@@ -197,10 +220,12 @@ namespace Csla
       }
       catch
       {
+#if !NETFX_CORE
         TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
           return cnv.ConvertFrom(value);
         else
+#endif
           throw;
       }
     }
@@ -244,6 +269,93 @@ namespace Csla
     }
 
     #endregion
+
+#if NETFX_CORE
+    #region Error Handling
+
+    /// <summary>
+    /// Converts an Exception into a
+    /// WcfErrorInfo object.
+    /// </summary>
+    /// <param name="ex">Exception object</param>
+    public static WcfErrorInfo ToErrorInfo(this Exception ex)
+    {
+      WcfErrorInfo info = null;
+      if (ex != null)
+      {
+        info = new WcfErrorInfo
+        {
+          ExceptionTypeName = ex.GetType().FullName,
+          Message = ex.Message,
+          StackTrace = ex.StackTrace,
+          InnerError = ex.InnerException.ToErrorInfo()
+        };
+      }
+
+      return info;
+    }
+
+    #endregion
+
+    #region Uri
+    //  RFC 2396                   URI Generic Syntax                August 1998
+
+    // Characters in the "reserved" set are not reserved in all contexts.
+    // The set of characters actually reserved within any given URI
+    // component is defined by that component. In general, a character is
+    // reserved if the semantics of the URI changes if the character is
+    // replaced with its escaped US-ASCII encoding.
+
+    //  2.3. Unreserved Characters
+
+    // Data characters that are allowed in a URI but do not have a reserved
+    // purpose are called unreserved.  These include upper and lower case
+    // letters, decimal digits, and a limited set of punctuation marks and
+    // symbols.
+
+    //   unreserved  = alphanum | mark
+
+    //   mark        = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
+
+    // Unreserved characters can be escaped without changing the semantics
+    // of the URI, but this should not be done unless the URI is being used
+    // in a context that does not allow the unescaped character to appear.
+    private static Regex Unreserved = new Regex(@"[0-9A-Za-z-_.!~*'()]");
+
+    /// <summary>
+    /// Escpaes a string according to RFC 2396. This is meant as a replacement for the missing Uri.EscapeDataString
+    /// method in silverlight.
+    /// </summary>
+    /// <param name="data">The string to escape.</param>
+    /// <returns>An escaped version of data.</returns>
+    /// <remarks>
+    /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
+    /// to ensure platform compatibility:
+    /// 
+    /// #if SILVERLIGHT
+    /// using Uri = Csla.Utilities;
+    /// #endif
+    /// </remarks>
+    public static string EscapeDataString(string data)
+    {
+      StringBuilder sb = new StringBuilder();
+      foreach (char c in data)
+      {
+        if (Unreserved.IsMatch(c.ToString()))
+        {
+          sb.Append(c);
+        }
+        else
+        {
+          sb.Append("%");
+          sb.Append(string.Format("{0:x2}", (int)c).ToUpper());
+        }
+      }
+      return sb.ToString();
+    }
+
+    #endregion
+#endif
   }
 
   /// <summary>

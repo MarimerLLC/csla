@@ -5,6 +5,44 @@
 // </copyright>
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
+#if NETFX_CORE
+using System;
+using Csla;
+using Csla.Serialization;
+
+namespace Csla
+{
+  /// <summary>
+  /// This is the base class from which collections
+  /// of editable root business objects should be
+  /// derived.
+  /// </summary>
+  /// <typeparam name="T">
+  /// Type of editable root object to contain within
+  /// the collection.
+  /// </typeparam>
+  /// <remarks>
+  /// <para>
+  /// Your subclass should implement a factory method
+  /// and should override or overload
+  /// DataPortal_Fetch() to implement data retrieval.
+  /// </para><para>
+  /// Saving (inserts or updates) of items in the collection
+  /// should be handled through the SaveItem() method on
+  /// the collection. 
+  /// </para><para>
+  /// Removing an item from the collection
+  /// through Remove() or RemoveAt() causes immediate deletion
+  /// of the object, by calling the object's Delete() and
+  /// Save() methods.
+  /// </para>
+  /// </remarks>
+  [Serializable]
+  public class DynamicBindingListBase<T> : DynamicListBase<T>
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, Csla.Serialization.Mobile.IMobileObject
+  { }
+}
+#else
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -53,7 +91,7 @@ namespace Csla
       AllowNew = true;
     }
 
-    #region Initialize
+#region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -63,9 +101,9 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-    #endregion
+#endregion
 
-    #region  SaveItem Methods
+#region  SaveItem Methods
 
     private bool _activelySaving;
 
@@ -154,9 +192,9 @@ namespace Csla
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region Saved Event
+#region Saved Event
     [NonSerialized]
     [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
@@ -214,9 +252,9 @@ namespace Csla
         _serializableSavedHandlers.Invoke(this, args);
     }
 
-    #endregion
+#endregion
 
-    #region  Insert, Remove, Clear
+#region  Insert, Remove, Clear
 
     /// <summary>
     /// Adds a new item to the list.
@@ -281,9 +319,9 @@ namespace Csla
       base.SetItem(index, item);
     }
 
-    #endregion
+#endregion
 
-    #region  IParent Members
+#region  IParent Members
 
     void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
     {
@@ -302,9 +340,9 @@ namespace Csla
       get { return null; }
     }
 
-    #endregion
+#endregion
 
-    #region  Cascade Child events
+#region  Cascade Child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
@@ -369,9 +407,9 @@ namespace Csla
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region  Serialization Notification
+#region  Serialization Notification
 
     /// <summary>
     /// This method is called on a newly deserialized object
@@ -390,9 +428,9 @@ namespace Csla
       base.OnDeserialized();
     }
 
-    #endregion
+#endregion
 
-    #region  Data Access
+#region  Data Access
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     private void DataPortal_Create(object criteria)
@@ -456,9 +494,9 @@ namespace Csla
 
     }
 
-    #endregion
+#endregion
 
-    #region ToArray
+#region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -471,9 +509,9 @@ namespace Csla
       return result.ToArray();
     }
 
-    #endregion
+#endregion
 
-    #region IDataPortalTarget Members
+#region IDataPortalTarget Members
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
@@ -511,9 +549,9 @@ namespace Csla
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
-    #endregion
+#endregion
 
-    #region IsBusy
+#region IsBusy
 
     /// <summary>
     /// Gets a value indicating whether this object
@@ -534,6 +572,7 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

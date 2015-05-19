@@ -8,6 +8,7 @@
 using System;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
+using Csla.Serialization;
 
 namespace Csla
 {
@@ -21,9 +22,15 @@ namespace Csla
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
+#if !NETFX_CORE
   [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
+#endif
   public struct SmartDate : Csla.Core.ISmartField,
-    IComparable, IConvertible, IFormattable, Csla.Serialization.Mobile.IMobileObject
+#if !NETFX_CORE
+    IConvertible, 
+    IComparable,
+#endif
+    IFormattable, IMobileObject
   {
     private DateTime _date;
     private bool _initialized;
@@ -31,10 +38,13 @@ namespace Csla
     private string _format;
     private static string _defaultFormat;
 
-    [NonSerialized, NotUndoable]
+#if !NETFX_CORE
+    [NonSerialized]
+#endif
+    [NotUndoable]
     private static Func<string, DateTime?> _customParser;
     
-    #region EmptyValue enum
+#region EmptyValue enum
 
     /// <summary>
     /// Indicates the empty value of a
@@ -54,9 +64,9 @@ namespace Csla
       MaxDate
     }
 
-    #endregion
+#endregion
 
-    #region Constructors
+#region Constructors
 
     static SmartDate()
     {
@@ -327,9 +337,9 @@ namespace Csla
         this.Date = DateTime.MaxValue;
     }
 
-    #endregion
+#endregion
 
-    #region Text Support
+#region Text Support
 
     /// <summary>
     /// Sets the global default format string used by all new
@@ -394,9 +404,9 @@ namespace Csla
       set { this.Date = StringToDate(value, _emptyValue); }
     }
 
-    #endregion
+#endregion
 
-    #region Date Support
+#region Date Support
 
     /// <summary>
     /// Gets or sets the date value.
@@ -438,9 +448,9 @@ namespace Csla
         return new DateTime?(this.Date);
     }
 
-    #endregion
+#endregion
 
-    #region System.Object overrides
+#region System.Object overrides
 
     /// <summary>
     /// Returns a text representation of the date value.
@@ -495,9 +505,9 @@ namespace Csla
       return this.Date.GetHashCode();
     }
 
-    #endregion
+#endregion
 
-    #region DBValue
+#region DBValue
 
     /// <summary>
     /// Gets a database-friendly version of the date value.
@@ -527,9 +537,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Empty Dates
+#region Empty Dates
 
     /// <summary>
     /// Gets a value indicating whether this object contains an empty date.
@@ -559,9 +569,9 @@ namespace Csla
       get { return (_emptyValue == EmptyValue.MinDate); }
     }
 
-    #endregion
+#endregion
 
-    #region Conversion Functions
+#region Conversion Functions
 
     /// <summary>
     /// Gets or sets the custom parser.
@@ -816,9 +826,9 @@ namespace Csla
       return string.Format("{0:" + formatString + "}", value);
     }
 
-    #endregion
+#endregion
 
-    #region Manipulation Functions
+#region Manipulation Functions
 
     /// <summary>
     /// Compares one SmartDate to another.
@@ -948,9 +958,9 @@ namespace Csla
         return this.Date.Subtract(value);
     }
 
-    #endregion
+#endregion
 
-    #region Operators
+#region Operators
 
     /// <summary>
     /// Equality operator
@@ -1257,7 +1267,8 @@ namespace Csla
 
     #endregion
 
-    #region  IConvertible
+#if !NETFX_CORE
+#region  IConvertible
 
     System.TypeCode IConvertible.GetTypeCode()
     {
@@ -1349,18 +1360,20 @@ namespace Csla
       return ((IConvertible)_date).ToUInt64(provider);
     }
 
-    #endregion
+#endregion
 
-    #region IFormattable Members
+#endif
+
+#region IFormattable Members
 
     string IFormattable.ToString(string format, IFormatProvider formatProvider)
     {
       return this.ToString(format);
     }
 
-    #endregion
+#endregion
 
-    #region IMobileObject Members
+#region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)
     {
@@ -1390,6 +1403,6 @@ namespace Csla
       //
     }
 
-    #endregion
+#endregion
   }
 }

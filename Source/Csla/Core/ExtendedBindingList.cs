@@ -8,7 +8,11 @@
 using System;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
-using System.Runtime.Serialization;
+#if NETFX_CORE
+using Csla.Serialization;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+#endif
 
 namespace Csla.Core
 {
@@ -25,8 +29,27 @@ namespace Csla.Core
     INotifyChildChanged,
     ISerializationNotification
   {
-    #region RemovingItem event
 
+#if NETFX_CORE
+    /// <summary>
+    /// Implements a serialization-safe RemovingItem event.
+    /// </summary>
+    public event EventHandler<RemovingItemEventArgs> RemovingItem;
+
+    /// <summary>
+    /// Raise the RemovingItem event.
+    /// </summary>
+    /// <param name="removedItem">
+    /// A reference to the item that 
+    /// is being removed.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected void OnRemovingItem(T removedItem)
+    {
+      if (RemovingItem != null)
+        RemovingItem(this, new RemovingItemEventArgs(removedItem));
+    }
+#else
     [NonSerialized()]
     private EventHandler<RemovingItemEventArgs> _nonSerializableHandlers;
     private EventHandler<RemovingItemEventArgs> _serializableHandlers;
@@ -77,10 +100,7 @@ namespace Csla.Core
         _serializableHandlers.Invoke(this,
           new RemovingItemEventArgs(removedItem));
     }
-
-    #endregion
-
-    #region RemoveItem
+#endif
 
     /// <summary>
     /// Remove the item at the
@@ -97,10 +117,6 @@ namespace Csla.Core
       base.RemoveItem(index);
     }
 
-    #endregion
-
-    #region AddRange
-
     /// <summary>
     /// Add a range of items to the list.
     /// </summary>
@@ -110,10 +126,6 @@ namespace Csla.Core
       foreach (var element in range)
         this.Add(element);
     }
-
-    #endregion
-
-    #region INotifyPropertyBusy Members
 
     [NotUndoable]
     [NonSerialized]
@@ -175,10 +187,6 @@ namespace Csla.Core
       OnBusyChanged(e);
     }
 
-    #endregion
-
-    #region INotifyUnhandledAsyncException Members
-
     [NotUndoable]
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
@@ -219,10 +227,6 @@ namespace Csla.Core
       OnUnhandledAsyncException(e);
     }
 
-    #endregion
-
-    #region AddChildHooks
-
     /// <summary>
     /// Invoked when an item is inserted into the list.
     /// </summary>
@@ -254,10 +258,6 @@ namespace Csla.Core
       if (c != null)
         c.PropertyChanged += Child_PropertyChanged;
 
-      //IBindingList list = item as IBindingList;
-      //if (list != null)
-      //  list.ListChanged += new ListChangedEventHandler(Child_ListChanged);
-
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged += Child_Changed;
@@ -283,18 +283,10 @@ namespace Csla.Core
       if (c != null)
         c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
 
-      //IBindingList list = item as IBindingList;
-      //if(list!=null)
-      //  list.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
-
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
         child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
     }
-
-    #endregion
-
-    #region ISerializationNotification Members
 
     /// <summary>
     /// This method is called on a newly deserialized object
@@ -307,15 +299,6 @@ namespace Csla.Core
       // could override if needed
     }
 
-    [OnDeserialized]
-    private void OnDeserializedHandler(StreamingContext context)
-    {
-      foreach (T item in this)
-        OnAddEventHooks(item);
-
-      OnDeserialized();
-    }
-
     void ISerializationNotification.Deserialized()
     {
       // don't rehook events here, because the MobileFormatter has
@@ -324,9 +307,16 @@ namespace Csla.Core
       OnDeserialized();
     }
 
-    #endregion
+#if !NETFX_CORE
+    [System.Runtime.Serialization.OnDeserialized]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
+    {
+      foreach (T item in this)
+        OnAddEventHooks(item);
 
-    #region Child Change Notification
+      OnDeserialized();
+    }
+#endif
 
     [NonSerialized]
     [NotUndoable]
@@ -396,10 +386,6 @@ namespace Csla.Core
       RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
     }
 
-    #endregion
-
-    #region SuppressListChanged
-
     /// <summary>
     /// Use this object to suppress ListChangedEvents for an entire code block.
     /// May be nested in multiple levels for the same object.
@@ -431,7 +417,5 @@ namespace Csla.Core
         _businessObject.RaiseListChangedEvents = _initialRaiseListChangedEvents;
       }
     }
-
-    #endregion
   }
 }

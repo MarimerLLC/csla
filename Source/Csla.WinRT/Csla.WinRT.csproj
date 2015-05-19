@@ -125,113 +125,29 @@
     <None Include="Service References\WcfPortal\MobilePortal.disco" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Silverlight\BusinessBindingListBase.cs">
-      <Link>BusinessBindingListBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\AddedNewEventArgs.cs">
-      <Link>Core\AddedNewEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\BindableBase.cs">
-      <Link>Core\BindableBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\BindingList.cs">
-      <Link>Core\BindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ContextDictionary.cs">
-      <Link>Core\ContextDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ExtendedBindingList.cs">
-      <Link>Core\ExtendedBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IBindingList.cs">
-      <Link>Core\IBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IBusinessObject.cs">
-      <Link>Core\IBusinessObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ICommandObject.cs">
-      <Link>Core\ICommandObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IEditableBusinessObject.cs">
-      <Link>Core\IEditableBusinessObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IExtendedBindingList.cs">
-      <Link>Core\IExtendedBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\INotifyPropertyChanging.cs">
-      <Link>Core\INotifyPropertyChanging.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IParent.cs">
-      <Link>Core\IParent.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IReadOnlyCollection.cs">
-      <Link>Core\IReadOnlyCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ISmartField.cs">
-      <Link>Core\ISmartField.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ISupportUndo.cs">
-      <Link>Core\ISupportUndo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\IUndoableObject.cs">
-      <Link>Core\IUndoableObject.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ObjectCloner.cs">
-      <Link>Core\ObjectCloner.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\PropertyChangingEventArgs.cs">
-      <Link>Core\PropertyChangingEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\PropertyChangingEventHandler.cs">
-      <Link>Core\PropertyChangingEventHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\ReadOnlyBindingList.cs">
-      <Link>Core\ReadOnlyBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\RemovingItemEventArgs.cs">
-      <Link>Core\RemovingItemEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\SavedEventArgs.cs">
-      <Link>Core\SavedEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\UndoableBase.cs">
-      <Link>Core\UndoableBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Core\UndoException.cs">
-      <Link>Core\UndoException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\DynamicBindingListBase.cs">
-      <Link>DynamicBindingListBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\ICloneable.cs">
-      <Link>ICloneable.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\NotUndoableAttribute.cs">
-      <Link>NotUndoableAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\PropertyLoaderException.cs">
-      <Link>PropertyLoaderException.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\ReadOnlyBindingListBase.cs">
-      <Link>ReadOnlyBindingListBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Serialization\NonSerializedAttribute.cs">
-      <Link>Serialization\NonSerializedAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Serialization\SerializationAttribute.cs">
-      <Link>Serialization\SerializationAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\SmartDate.cs">
-      <Link>SmartDate.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Silverlight\Utilities.cs">
-      <Link>Utilities.cs</Link>
-    </Compile>
     <Compile Include="..\Csla\ApplicationContext.cs">
       <Link>ApplicationContext.cs</Link>
     </Compile>
     <Compile Include="..\Csla\BusinessBase.cs">
       <Link>BusinessBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\BusinessBindingListBase.cs">
+      <Link>BusinessBindingListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\AddedNewEventArgs.cs">
+      <Link>Core\AddedNewEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\BindableBase.cs">
+      <Link>Core\BindableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\BindingList.cs">
+      <Link>Core\BindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ContextDictionary.cs">
+      <Link>Core\ContextDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ExtendedBindingList.cs">
+      <Link>Core\ExtendedBindingList.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\FieldManager\FieldData.cs">
       <Link>Core\FieldManager\FieldData.cs</Link>
@@ -260,20 +176,44 @@
     <Compile Include="..\Csla\Core\FieldManager\DefaultPropertyInfoFactory.cs">
       <Link>Core\FieldManager\DefaultPropertyInfoFactory.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\IBindingList.cs">
+      <Link>Core\IBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IBusinessObject.cs">
+      <Link>Core\IBusinessObject.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\ICheckRules.cs">
       <Link>Core\ICheckRules.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ICommandObject.cs">
+      <Link>Core\ICommandObject.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\IContextManager.cs">
       <Link>Core\IContextManager.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\IEditableBusinessObject.cs">
+      <Link>Core\IEditableBusinessObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IExtendedBindingList.cs">
+      <Link>Core\IExtendedBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\IMemberInfo.cs">
       <Link>Core\IMemberInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\INotifyPropertyChanging.cs">
+      <Link>Core\INotifyPropertyChanging.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\IObservableBindingList.cs">
       <Link>Core\IObservableBindingList.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\IParent.cs">
+      <Link>Core\IParent.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\IPropertyInfoFactory.cs">
       <Link>Core\IPropertyInfoFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IReadOnlyCollection.cs">
+      <Link>Core\IReadOnlyCollection.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\IReadOnlyObject.cs">
       <Link>Core\IReadOnlyObject.cs</Link>
@@ -283,6 +223,15 @@
     </Compile>
     <Compile Include="..\Csla\Core\ISavableT.cs">
       <Link>Core\ISavableT.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISmartField.cs">
+      <Link>Core\ISmartField.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ISupportUndo.cs">
+      <Link>Core\ISupportUndo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\IUndoableObject.cs">
+      <Link>Core\IUndoableObject.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Core\LoadManager\AsyncLoadException.cs">
       <Link>Core\LoadManager\AsyncLoadException.cs</Link>
@@ -296,11 +245,35 @@
     <Compile Include="..\Csla\Core\MobileObservableCollection.cs">
       <Link>Core\MobileObservableCollection.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\ObjectCloner.cs">
+      <Link>Core\ObjectCloner.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\ObservableBindingList.cs">
       <Link>Core\ObservableBindingList.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Core\PropertyChangingEventArgs.cs">
+      <Link>Core\PropertyChangingEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\PropertyChangingEventHandler.cs">
+      <Link>Core\PropertyChangingEventHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\ReadOnlyBindingList.cs">
+      <Link>Core\ReadOnlyBindingList.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Core\ReadOnlyObservableBindingList.cs">
       <Link>Core\ReadOnlyObservableBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\RemovingItemEventArgs.cs">
+      <Link>Core\RemovingItemEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\SavedEventArgs.cs">
+      <Link>Core\SavedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\UndoableBase.cs">
+      <Link>Core\UndoableBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Core\UndoException.cs">
+      <Link>Core\UndoException.cs</Link>
     </Compile>
     <Compile Include="..\Csla\DataPortal.cs">
       <Link>DataPortal.cs</Link>
@@ -410,6 +383,9 @@
     <Compile Include="..\Csla\CriteriaBase.cs">
       <Link>CriteriaBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\DynamicBindingListBase.cs">
+      <Link>DynamicBindingListBase.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\DynamicListBase.cs">
       <Link>DynamicListBase.cs</Link>
     </Compile>
@@ -418,6 +394,9 @@
     </Compile>
     <Compile Include="..\Csla\IBusinessListBase.cs">
       <Link>IBusinessListBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ICloneable.cs">
+      <Link>ICloneable.cs</Link>
     </Compile>
     <Compile Include="..\Csla\ICommandBase.cs">
       <Link>ICommandBase.cs</Link>
@@ -436,6 +415,15 @@
     </Compile>
     <Compile Include="..\Csla\MethodInfo.cs">
       <Link>MethodInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\NotUndoableAttribute.cs">
+      <Link>NotUndoableAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\PropertyLoadException.cs">
+      <Link>PropertyLoadException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\ReadOnlyBindingListBase.cs">
+      <Link>ReadOnlyBindingListBase.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
@@ -541,6 +529,15 @@
     </Compile>
     <Compile Include="..\Csla\Serialization\Mobile\ICslaWriter.cs">
       <Link>Serialization\Mobile\ICslaWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\NonSerializedAttribute.cs">
+      <Link>Serialization\NonSerializedAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\SerializationAttribute.cs">
+      <Link>Serialization\SerializationAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Serialization\TypeExtensions.cs">
+      <Link>Serialization\TypeExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\AuthorizeRequest.cs">
       <Link>Server\AuthorizeRequest.cs</Link>
@@ -740,6 +737,9 @@
     <Compile Include="..\Csla\Silverlight\Security\WindowsIdentity.cs">
       <Link>Silverlight\Security\WindowsIdentity.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\SmartDate.cs">
+      <Link>SmartDate.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
       <Link>Threading\BackgroundWorker.cs</Link>
     </Compile>
@@ -769,6 +769,9 @@
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Utilities.cs">
+      <Link>Utilities.cs</Link>
     </Compile>
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -844,6 +847,17 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Csla\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Content>
+    <Content Include="..\Csla\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Content>
+    <Content Include="..\Csla\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Content>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

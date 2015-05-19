@@ -5,13 +5,34 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
+#if NETFX_CORE
+using System;
+using Csla.Serialization;
+
+namespace Csla
+{
+  /// <summary>
+  /// This is the base class from which most business collections
+  /// or lists will be derived.
+  /// </summary>
+  /// <typeparam name="T">Type of the business object being defined.</typeparam>
+  /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
+#if TESTING
+  [System.Diagnostics.DebuggerStepThrough]
+#endif
+  [Serializable]
+  public abstract class BusinessBindingListBase<T, C> : BusinessListBase<T, C>
+    where T : BusinessBindingListBase<T, C>
+    where C : Csla.Core.IEditableBusinessObject
+  {
+
+  }
+}
+#else
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Csla.Properties;
-using System.Linq;
-using System.Linq.Expressions;
 using Csla.Core;
 using System.Threading.Tasks;
 
@@ -34,7 +55,7 @@ namespace Csla
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
-    #region Constructors
+#region Constructors
 
     /// <summary>
     /// Creates an instance of the object.
@@ -45,9 +66,9 @@ namespace Csla
       this.AllowNew = true;
     }
 
-    #endregion
+#endregion
 
-    #region Initialize
+#region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -57,9 +78,9 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-    #endregion
+#endregion
 
-    #region IsDirty, IsValid, IsSavable
+#region IsDirty, IsValid, IsSavable
 
         /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
@@ -142,9 +163,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Begin/Cancel/ApplyEdit
+#region Begin/Cancel/ApplyEdit
 
     /// <summary>
     /// Starts a nested edit on the object.
@@ -238,9 +259,9 @@ namespace Csla
       // when a child has its edits applied
     }
 
-    #endregion
+#endregion
 
-    #region N-level undo
+#region N-level undo
 
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
@@ -371,9 +392,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Delete and Undelete child
+#region Delete and Undelete child
 
     private MobileList<C> _deletedList;
 
@@ -429,9 +450,9 @@ namespace Csla
       return DeletedList.Contains(item);
     }
 
-    #endregion
+#endregion
 
-    #region Insert, Remove, Clear
+#region Insert, Remove, Clear
 
 #if SILVERLIGHT
     /// <summary>
@@ -583,9 +604,9 @@ namespace Csla
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
     }
 
-    #endregion
+#endregion
 
-    #region Cascade child events
+#region Cascade child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
@@ -630,9 +651,9 @@ namespace Csla
       return result;
     }
 
-    #endregion
+#endregion
 
-    #region Edit level tracking
+#region Edit level tracking
 
     // keep track of how many edit levels we have
     private int _editLevel;
@@ -654,9 +675,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region IsChild
+#region IsChild
 
     [NotUndoable()]
     private bool _isChild = false;
@@ -694,9 +715,9 @@ namespace Csla
       _isChild = true;
     }
 
-    #endregion
+#endregion
 
-    #region ICloneable
+#region ICloneable
 
     object ICloneable.Clone()
     {
@@ -722,9 +743,9 @@ namespace Csla
       return (T)GetClone();
     }
 
-    #endregion
+#endregion
 
-    #region Serialization Notification
+#region Serialization Notification
 
     [NonSerialized]
     [NotUndoable]
@@ -749,9 +770,9 @@ namespace Csla
         child.SetParent(this);
     }
 
-    #endregion
+#endregion
 
-    #region  Child Data Access
+#region  Child Data Access
 
     /// <summary>
     /// Initializes a new instance of the object
@@ -790,9 +811,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Data Access
+#region Data Access
 
     /// <summary>
     /// Saves the object to the database.
@@ -1051,9 +1072,9 @@ namespace Csla
     {
     }
 
-    #endregion
+#endregion
 
-    #region ISavable Members
+#region ISavable Members
 
     object Csla.Core.ISavable.Save()
     {
@@ -1150,9 +1171,9 @@ namespace Csla
         _serializableSavedHandlers.Invoke(this, args);
     }
 
-    #endregion
+#endregion
 
-    #region  Parent/Child link
+#region  Parent/Child link
 
     [NotUndoable(), NonSerialized()]
     private Core.IParent _parent;
@@ -1197,9 +1218,9 @@ namespace Csla
       this.SetParent(parent);
     }
 
-    #endregion
+#endregion
 
-    #region ToArray
+#region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -1211,9 +1232,9 @@ namespace Csla
         result.Add(item);
       return result.ToArray();
     }
-    #endregion
+#endregion
 
-    #region  ITrackStatus
+#region  ITrackStatus
 
     bool Core.ITrackStatus.IsNew
     {
@@ -1256,9 +1277,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region IDataPortalTarget Members
+#region IDataPortalTarget Members
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
@@ -1304,9 +1325,9 @@ namespace Csla
       this.Child_OnDataPortalException(e, ex);
     }
 
-    #endregion
+#endregion
 
-    #region Mobile object overrides
+#region Mobile object overrides
 
     /// <summary>
     /// Override this method to retrieve your field values
@@ -1380,6 +1401,7 @@ namespace Csla
       base.OnSetChildren(info, formatter);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

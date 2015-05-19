@@ -4,7 +4,7 @@
     <id>CSLA-WinRT</id>
     <title>CSLA .NET - Windows Runtime</title>
     <tags>CSLA WP7 WinRT</tags>
-    <version>4.5.680-Beta</version>
+    <version>4.5.700</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Windows Runtime (WinRT) applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.680-Beta]" />
+      <dependency id="CSLA-Core" version="[4.5.700]" />
     </dependencies>
     <!--
     <frameworkAssemblies>

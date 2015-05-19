@@ -756,7 +756,7 @@ namespace Csla
 
     #region Default context manager
 
-#if SILVERLIGHT || NETFX_CORE
+#if (SILVERLIGHT || NETFX_CORE) && !(ANDROID || IOS)
     private class ApplicationContextManager : IContextManager
     {
       private static ContextDictionary _localContext;

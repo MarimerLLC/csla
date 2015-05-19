@@ -8,6 +8,7 @@
 using System;
 using System.Threading.Tasks;
 using Csla.Server;
+using Csla.Threading;
 
 namespace Csla.DataPortalClient
 {
@@ -18,8 +19,8 @@ namespace Csla.DataPortalClient
   /// </summary>
   public class LocalProxy : DataPortalClient.IDataPortalProxy
   {
-    private Server.IDataPortalServer _portal =
-      new Server.DataPortal();
+    private Server.IDataPortalServer _portal = new Server.DataPortal();
+    private readonly TaskFactory _taskFactory = new TaskFactory(new CslaTaskScheduler());
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -40,21 +41,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        var tcs = new TaskCompletionSource<DataPortalResult>();
-        var bw = new Csla.Threading.BackgroundWorker();
-        bw.DoWork += (s, o) =>
-        {
-          o.Result = _portal.Create(objectType, criteria, context, isSync).Result;
-        };
-        bw.RunWorkerCompleted += (s, o) =>
-        {
-          if (o.Error == null)
-            tcs.TrySetResult((DataPortalResult)o.Result);
-          else
-            tcs.TrySetException(o.Error);
-        };
-        bw.RunWorkerAsync();
-        return await tcs.Task;
+        return await await _taskFactory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync));
       }
     }
 
@@ -76,21 +63,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        var tcs = new TaskCompletionSource<DataPortalResult>();
-        var bw = new Csla.Threading.BackgroundWorker();
-        bw.DoWork += (s, o) =>
-        {
-          o.Result = _portal.Fetch(objectType, criteria, context, isSync).Result;
-        };
-        bw.RunWorkerCompleted += (s, o) =>
-        {
-          if (o.Error == null)
-            tcs.TrySetResult((DataPortalResult)o.Result);
-          else
-            tcs.TrySetException(o.Error);
-        };
-        bw.RunWorkerAsync();
-        return await tcs.Task;
+        return await await _taskFactory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync));
       }
     }
 
@@ -111,21 +84,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        var tcs = new TaskCompletionSource<DataPortalResult>();
-        var bw = new Csla.Threading.BackgroundWorker();
-        bw.DoWork += (s, o) =>
-        {
-          o.Result = _portal.Update(obj, context, isSync).Result;
-        };
-        bw.RunWorkerCompleted += (s, o) =>
-        {
-          if (o.Error == null)
-            tcs.TrySetResult((DataPortalResult)o.Result);
-          else
-            tcs.TrySetException(o.Error);
-        };
-        bw.RunWorkerAsync();
-        return await tcs.Task;
+        return await await _taskFactory.StartNew(() => this._portal.Update(obj, context, isSync));
       }
     }
 
@@ -147,21 +106,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-        var tcs = new TaskCompletionSource<DataPortalResult>();
-        var bw = new Csla.Threading.BackgroundWorker();
-        bw.DoWork += (s, o) =>
-        {
-          o.Result = _portal.Delete(objectType, criteria, context, isSync).Result;
-        };
-        bw.RunWorkerCompleted += (s, o) =>
-        {
-          if (o.Error == null)
-            tcs.TrySetResult((DataPortalResult)o.Result);
-          else
-            tcs.TrySetException(o.Error);
-        };
-        bw.RunWorkerAsync();
-        return await tcs.Task;
+        return await await _taskFactory.StartNew(() => _portal.Delete(objectType, criteria, context, isSync));
       }
     }
 

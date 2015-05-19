@@ -40,7 +40,7 @@ namespace Csla.Analyzers.Tests
 		public async Task AnalyzeWhenClassIsNotStereotype()
 		{
 			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
-				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsNotStereotype))}.cs", 
+				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs", 
 				0);
 		}
 
@@ -48,7 +48,7 @@ namespace Csla.Analyzers.Tests
 		public async Task AnalyzeWhenClassIsStereotypeAndIsSerializable()
 		{
 			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
-				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsSerializable))}.cs",
+				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsSerializable))}.cs",
 				0);
 		}
 
@@ -56,7 +56,7 @@ namespace Csla.Analyzers.Tests
 		public async Task AnalyzeWhenClassIsStereotypeAndIsNotSerializable()
 		{
 			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
-				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsNotSerializable))}.cs",
+				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsNotSerializable))}.cs",
 				1);
 		}
 	}

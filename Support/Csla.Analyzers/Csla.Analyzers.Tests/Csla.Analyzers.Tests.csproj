@@ -106,9 +106,20 @@
   <ItemGroup>
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
+    <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IMethodSymbolExtensionsTests.IsDataPortalOperation.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

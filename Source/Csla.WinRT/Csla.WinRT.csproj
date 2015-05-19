@@ -764,6 +764,9 @@
     <Compile Include="..\Csla\Threading\ContextParams.cs">
       <Link>Threading\ContextParams.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
+      <Link>Threading\CslaTaskScheduler.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
     </Compile>

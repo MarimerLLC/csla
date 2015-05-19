@@ -1,1 +1,1 @@
-﻿public class IsNotSerializable { }
+﻿public class IsSerializableWhenSymbolIsNotSerializable { }

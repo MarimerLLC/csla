@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CodeActions;
 
 namespace Csla.Analyzers
 {
@@ -43,10 +45,15 @@ namespace Csla.Analyzers
 				return;
 			}
 
-			//context.RegisterCodeFix(
-			//	CodeAction.Create(
-			//		IsBusinessObjectSerializableMakeSerializableCodeFixConstants.Description,
-			//		_ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
+			var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName("Serializable"));
+			var attributeList = SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList<AttributeSyntax>().Add(attribute));
+			var newClassNode = classNode.AddAttributeLists(attributeList);
+			var newRoot = root.ReplaceNode(classNode, newClassNode);
+			
+			context.RegisterCodeFix(
+				CodeAction.Create(
+					IsBusinessObjectSerializableMakeSerializableCodeFixConstants.Description,
+					_ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
 		}
 	}
 }

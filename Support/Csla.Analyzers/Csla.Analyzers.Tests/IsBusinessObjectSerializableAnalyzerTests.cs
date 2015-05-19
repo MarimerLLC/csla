@@ -31,7 +31,8 @@ namespace Csla.Analyzers.Tests
 		private static async Task RunAnalysis(string path, int expectedDiagnosticCount)
 		{
 			var code = File.ReadAllText(path);
-			var diagnostics = await TestHelpers.GetDiagnosticsAsync(code);
+			var diagnostics = await TestHelpers.GetDiagnosticsAsync(
+				code, new IsBusinessObjectSerializableAnalyzer());
 			Assert.AreEqual(expectedDiagnosticCount, diagnostics.Count, nameof(diagnostics.Count));
 		}
 

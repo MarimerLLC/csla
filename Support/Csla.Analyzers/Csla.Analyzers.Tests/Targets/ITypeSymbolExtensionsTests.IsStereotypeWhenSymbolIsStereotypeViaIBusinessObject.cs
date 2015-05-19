@@ -1,4 +1,4 @@
 ﻿using Csla.Core;
 
-public class BOClass
+public class IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject
 	: IBusinessObject { }

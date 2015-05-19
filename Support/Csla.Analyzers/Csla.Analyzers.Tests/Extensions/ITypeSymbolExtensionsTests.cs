@@ -1,7 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
@@ -24,7 +23,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		{
 			Assert.IsFalse((await this.GetTypeSymbol(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable))}.cs",
-				new TextSpan(0, 34))).IsSerializable());
+				nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable))).IsSerializable());
 		}
 
 		[TestMethod]
@@ -32,7 +31,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		{
 			Assert.IsTrue((await this.GetTypeSymbol(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))}.cs",
-				new TextSpan(17, 47))).IsSerializable());
+				nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))).IsSerializable());
 		}
 
 		[TestMethod]
@@ -46,7 +45,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		{
 			Assert.IsFalse((await this.GetTypeSymbol(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype))}.cs",
-				new TextSpan(0, 23))).IsStereotype());
+				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype))).IsStereotype());
 		}
 
 		[TestMethod]
@@ -54,7 +53,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		{
 			Assert.IsTrue((await this.GetTypeSymbol(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))}.cs",
-				new TextSpan(20, 44))).IsStereotype());
+				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))).IsStereotype());
 		}
 
 		[TestMethod]
@@ -62,10 +61,10 @@ namespace Csla.Analyzers.Tests.Extensions
 		{
 			Assert.IsTrue((await this.GetTypeSymbol(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))}.cs",
-				new TextSpan(15, 50))).IsStereotype());
+				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))).IsStereotype());
 		}
 
-		private async Task<ITypeSymbol> GetTypeSymbol(string file, TextSpan span)
+		private async Task<ITypeSymbol> GetTypeSymbol(string file, string name)
 		{
 			var code = File.ReadAllText(file);
 			var tree = CSharpSyntaxTree.ParseText(code);
@@ -81,7 +80,32 @@ namespace Csla.Analyzers.Tests.Extensions
 
 			var model = compilation.GetSemanticModel(tree);
 			var root = await tree.GetRootAsync().ConfigureAwait(false);
-			return model.GetDeclaredSymbol(root.FindNode(span) as ClassDeclarationSyntax);
+			return model.GetDeclaredSymbol(ITypeSymbolExtensionsTests.FindClassDeclaration(root, name));
+		}
+
+		private static ClassDeclarationSyntax FindClassDeclaration(SyntaxNode node, string name)
+		{
+			if (node.Kind() == SyntaxKind.ClassDeclaration)
+			{
+				var classNode = node as ClassDeclarationSyntax;
+
+				if (classNode.Identifier.ValueText == name)
+				{
+					return classNode;
+				}
+			}
+
+			foreach (var childNode in node.ChildNodes())
+			{
+				var childClassNode = ITypeSymbolExtensionsTests.FindClassDeclaration(childNode, name);
+
+				if (childClassNode != null)
+				{
+					return childClassNode;
+				}
+			}
+
+			return null;
 		}
 	}
 }

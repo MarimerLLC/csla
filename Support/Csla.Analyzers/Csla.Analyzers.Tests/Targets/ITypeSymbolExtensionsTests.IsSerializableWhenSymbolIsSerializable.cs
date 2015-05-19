@@ -1,4 +1,4 @@
 ﻿using System;
 
 [Serializable]
-public class IsSerializable { }
+public class IsSerializableWhenSymbolIsSerializable { }

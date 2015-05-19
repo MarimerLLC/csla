@@ -11,12 +11,12 @@ namespace Csla.Analyzers.Tests
 {
 	internal static class TestHelpers
 	{
-		internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code)
+		internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)
 		{
 			var document = TestHelpers.Create(code);
 			var root = await document.GetSyntaxRootAsync();
 			var compilation = (await document.Project.GetCompilationAsync())
-				.WithAnalyzers(ImmutableArray.Create(new IsBusinessObjectSerializableAnalyzer() as DiagnosticAnalyzer));
+				.WithAnalyzers(ImmutableArray.Create(analyzer));
 			return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
 		}
 

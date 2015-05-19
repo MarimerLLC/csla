@@ -104,9 +104,29 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\IMethodSymbolExtensionsTests.IsDataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsNotSerializable.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

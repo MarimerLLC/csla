@@ -1,4 +1,4 @@
 ﻿using Csla;
 
-public class BBClass
-	: BusinessBase<BBClass> { }
+public class IsStereotypeWhenSymbolIsStereotypeViaBusinessBase
+	: BusinessBase<IsStereotypeWhenSymbolIsStereotypeViaBusinessBase> { }

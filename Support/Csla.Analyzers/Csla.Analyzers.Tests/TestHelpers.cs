@@ -14,7 +14,8 @@ namespace Csla.Analyzers.Tests
 {
 	internal static class TestHelpers
 	{
-		internal static async Task VerifyActionAsync(List<CodeAction> actions, string title, Document document, SyntaxTree tree, string expectedNewText)
+		internal static async Task VerifyActionAsync(List<CodeAction> actions, string title, Document document, 
+			SyntaxTree tree, string expectedNewText)
 		{
 			var action = actions.Where(_ => _.Title == title).First();
 

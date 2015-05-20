@@ -46,7 +46,7 @@ namespace Csla.Analyzers
 				return;
 			}
 
-			if(root.HasUsing("System"))
+			if(root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
 			{
 				IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFixWhenSystemUsingExists(
 					context, root, diagnostic, classNode);
@@ -71,7 +71,7 @@ namespace Csla.Analyzers
 			Diagnostic diagnostic, ClassDeclarationSyntax classNode)
 		{
 			var newRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-				root, classNode, "Serializable");
+				root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
 
 			context.RegisterCodeFix(
 				CodeAction.Create(
@@ -83,7 +83,7 @@ namespace Csla.Analyzers
 			Diagnostic diagnostic, ClassDeclarationSyntax classNode)
 		{
 			var qualifiedRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-				root, classNode, "System.Serializable");
+				root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableFullName);
 
 			context.RegisterCodeFix(
 				CodeAction.Create(
@@ -91,10 +91,11 @@ namespace Csla.Analyzers
 					_ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(qualifiedRoot))), diagnostic);
 
 			var unqualifiedRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-				root, classNode, "Serializable");
+				root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
 
 			unqualifiedRoot = (unqualifiedRoot as CompilationUnitSyntax).AddUsings(
-				SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System")));
+				SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
+					IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
 
 			context.RegisterCodeFix(
 				CodeAction.Create(

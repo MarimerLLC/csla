@@ -5,26 +5,26 @@ using System.Linq;
 
 namespace Csla.Analyzers.Extensions
 {
-	internal static class SyntaxNodeExtensions
-	{
-		internal static bool HasUsing(this SyntaxNode @this, string qualifiedName)
-		{
-			if(@this == null)
-			{
-				return false;
-			}
+  internal static class SyntaxNodeExtensions
+  {
+    internal static bool HasUsing(this SyntaxNode @this, string qualifiedName)
+    {
+      if (@this == null)
+      {
+        return false;
+      }
 
-			if (@this.Kind() == SyntaxKind.UsingDirective)
-			{
-				var usingNode = @this as UsingDirectiveSyntax;
+      if (@this.Kind() == SyntaxKind.UsingDirective)
+      {
+        var usingNode = @this as UsingDirectiveSyntax;
 
-				if (usingNode.Name.ToFullString() == qualifiedName)
-				{
-					return true;
-				}
-			}
+        if (usingNode.Name.ToFullString() == qualifiedName)
+        {
+          return true;
+        }
+      }
 
-			return @this.ChildNodes().Where(_ => _.HasUsing(qualifiedName)).Any();
-		}
-	}
+      return @this.ChildNodes().Where(_ => _.HasUsing(qualifiedName)).Any();
+    }
+  }
 }

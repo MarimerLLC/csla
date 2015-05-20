@@ -10,71 +10,71 @@ using Microsoft.CodeAnalysis.CodeActions;
 
 namespace Csla.Analyzers
 {
-	[ExportCodeFixProvider(IsOperationMethodPublicAnalyzerConstants.DiagnosticId, LanguageNames.CSharp)]
-	[Shared]
-	public sealed class IsOperationMethodPublicMakeNonPublicCodeFix
-		: CodeFixProvider
-	{
-		public override ImmutableArray<string> FixableDiagnosticIds
-		{
-			get
-			{
-				return ImmutableArray.Create(IsOperationMethodPublicAnalyzerConstants.DiagnosticId);
-			}
-		}
+  [ExportCodeFixProvider(IsOperationMethodPublicAnalyzerConstants.DiagnosticId, LanguageNames.CSharp)]
+  [Shared]
+  public sealed class IsOperationMethodPublicMakeNonPublicCodeFix
+    : CodeFixProvider
+  {
+    public override ImmutableArray<string> FixableDiagnosticIds
+    {
+      get
+      {
+        return ImmutableArray.Create(IsOperationMethodPublicAnalyzerConstants.DiagnosticId);
+      }
+    }
 
-		public sealed override FixAllProvider GetFixAllProvider()
-		{
-			return WellKnownFixAllProviders.BatchFixer;
-		}
+    public sealed override FixAllProvider GetFixAllProvider()
+    {
+      return WellKnownFixAllProviders.BatchFixer;
+    }
 
-		public override async Task RegisterCodeFixesAsync(CodeFixContext context)
-		{
-			var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+      var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-			if (context.CancellationToken.IsCancellationRequested)
-			{
-				return;
-			}
+      if (context.CancellationToken.IsCancellationRequested)
+      {
+        return;
+      }
 
-			var diagnostic = context.Diagnostics.First();
-			var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
+      var diagnostic = context.Diagnostics.First();
+      var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
 
-			if (context.CancellationToken.IsCancellationRequested)
-			{
-				return;
-			}
+      if (context.CancellationToken.IsCancellationRequested)
+      {
+        return;
+      }
 
-			IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
-				context, root, methodNode, SyntaxKind.PrivateKeyword,
-				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, diagnostic);
-			IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
-				context, root, methodNode, SyntaxKind.InternalKeyword,
-				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, diagnostic);
+      IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+        context, root, methodNode, SyntaxKind.PrivateKeyword,
+        IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, diagnostic);
+      IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+        context, root, methodNode, SyntaxKind.InternalKeyword,
+        IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, diagnostic);
 
-			var isSealed = bool.Parse(diagnostic.Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]);
+      var isSealed = bool.Parse(diagnostic.Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]);
 
-			if(!isSealed)
-			{
-				IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
-					context, root, methodNode, SyntaxKind.ProtectedKeyword,
-					IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, diagnostic);
-			}
-		}
+      if (!isSealed)
+      {
+        IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
+          context, root, methodNode, SyntaxKind.ProtectedKeyword,
+          IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, diagnostic);
+      }
+    }
 
-		private static void RegisterNewCodeFix(CodeFixContext context, SyntaxNode root, MethodDeclarationSyntax methodNode,
-			SyntaxKind visibility, string description, Diagnostic diagnostic)
-		{
-         var publicModifier = methodNode.Modifiers.Where(_ => _.Kind() == SyntaxKind.PublicKeyword).First();
-			var visibilityNode = SyntaxFactory.Token(publicModifier.LeadingTrivia, visibility,
-				publicModifier.TrailingTrivia);
-			var modifiers = methodNode.Modifiers.Replace(publicModifier, visibilityNode);
-			var newwMethodNode = methodNode.WithModifiers(modifiers);
-			var newRoot = root.ReplaceNode(methodNode, newwMethodNode);
+    private static void RegisterNewCodeFix(CodeFixContext context, SyntaxNode root, MethodDeclarationSyntax methodNode,
+      SyntaxKind visibility, string description, Diagnostic diagnostic)
+    {
+      var publicModifier = methodNode.Modifiers.Where(_ => _.Kind() == SyntaxKind.PublicKeyword).First();
+      var visibilityNode = SyntaxFactory.Token(publicModifier.LeadingTrivia, visibility,
+        publicModifier.TrailingTrivia);
+      var modifiers = methodNode.Modifiers.Replace(publicModifier, visibilityNode);
+      var newwMethodNode = methodNode.WithModifiers(modifiers);
+      var newRoot = root.ReplaceNode(methodNode, newwMethodNode);
 
-			context.RegisterCodeFix(
-				CodeAction.Create(description,
-					_ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
-		}
-	}
+      context.RegisterCodeFix(
+        CodeAction.Create(description,
+          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
+    }
+  }
 }

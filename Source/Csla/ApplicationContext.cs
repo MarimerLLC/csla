@@ -652,16 +652,7 @@ namespace Csla
     {
       get
       {
-        string ruleSet = null;
-
-#if !SILVERLIGHT && !NETFX_CORE
-        if (ClientContext.Contains("__ruleSet"))
-          ruleSet = (string)ClientContext["__ruleSet"];
-#else
-        object value;
-        if (ClientContext.TryGetValue("__ruleSet", out value))
-          ruleSet = value as string;
-#endif
+        var ruleSet = (string)ClientContext.GetValueOrNull("__ruleSet");
         return string.IsNullOrEmpty(ruleSet) ? ApplicationContext.DefaultRuleSet : ruleSet;
       }
       set
@@ -737,8 +728,9 @@ namespace Csla
     {
       get
       {
-        if (LocalContext.Contains("__logicalExecutionLocation"))
-          return (LogicalExecutionLocations)LocalContext["__logicalExecutionLocation"];
+        object location = LocalContext.GetValueOrNull("__logicalExecutionLocation");
+        if (location != null)
+          return (LogicalExecutionLocations)location;
         else
           return LogicalExecutionLocations.Client;
       }

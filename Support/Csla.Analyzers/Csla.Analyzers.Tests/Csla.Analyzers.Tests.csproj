@@ -105,19 +105,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
+    <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
     <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\SyntaxNodeExtensionsTests.HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests.HasUsingWhenNodeHasUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenUsingSystemExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsSealed.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsNotSealed.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixes.cs">
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenUsingSystemDoesNotExist.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\IMethodSymbolExtensionsTests.IsDataPortalOperation.cs">

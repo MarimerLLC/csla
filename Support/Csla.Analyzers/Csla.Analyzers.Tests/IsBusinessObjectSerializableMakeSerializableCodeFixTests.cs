@@ -30,10 +30,10 @@ namespace FixingIsOneWay.Tests
 		}
 
 		[TestMethod]
-		public async Task VerifyGetFixes()
+		public async Task VerifyGetFixesWhenUsingSystemDoesNotExist()
 		{
 			var code = File.ReadAllText(
-				$@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}.{(nameof(this.VerifyGetFixes))}.cs");
+				$@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}.{(nameof(this.VerifyGetFixesWhenUsingSystemDoesNotExist))}.cs");
 			var document = TestHelpers.Create(code);
 			var tree = await document.GetSyntaxTreeAsync();
 			var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
@@ -48,19 +48,40 @@ namespace FixingIsOneWay.Tests
 				codeActionRegistration, new CancellationToken(false));
 			await fix.RegisterCodeFixesAsync(codeFixContext);
 
-			Assert.AreEqual(1, actions.Count);
-			var action = actions[0];
+			Assert.AreEqual(2, actions.Count, nameof(actions.Count));
 
-			var operation = (await action.GetOperationsAsync(
-				new CancellationToken(false))).ToArray()[0] as ApplyChangesOperation;
-			var newDoc = operation.ChangedSolution.GetDocument(document.Id);
-			var newTree = await newDoc.GetSyntaxTreeAsync();
-			var changes = newTree.GetChanges(tree);
+			await TestHelpers.VerifyActionAsync(actions,
+				IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSystemSerializableDescription, document,
+				tree, $"{Environment.NewLine}[System.Serializable]");
+			await TestHelpers.VerifyActionAsync(actions,
+				IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
+				tree, $"using System;{Environment.NewLine}{Environment.NewLine}[Serializable]");
+		}
 
-			Assert.AreEqual(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.Description, action.Title,
-				nameof(action.Title));
-			Assert.AreEqual(1, changes.Count, nameof(changes.Count));
-			Assert.AreEqual($"{Environment.NewLine}[Serializable]", changes[0].NewText, nameof(TextChange.NewText));
+		[TestMethod]
+		public async Task VerifyGetFixesWhenUsingSystemExists()
+		{
+			var code = File.ReadAllText(
+				$@"Targets\{nameof(IsBusinessObjectSerializableMakeSerializableCodeFixTests)}.{(nameof(this.VerifyGetFixesWhenUsingSystemExists))}.cs");
+			var document = TestHelpers.Create(code);
+			var tree = await document.GetSyntaxTreeAsync();
+			var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
+			var sourceSpan = diagnostics[0].Location.SourceSpan;
+
+			var actions = new List<CodeAction>();
+			var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+				(a, _) => { actions.Add(a); });
+
+			var fix = new IsBusinessObjectSerializableMakeSerializableCodeFix();
+			var codeFixContext = new CodeFixContext(document, diagnostics[0],
+				codeActionRegistration, new CancellationToken(false));
+			await fix.RegisterCodeFixesAsync(codeFixContext);
+
+			Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+
+			await TestHelpers.VerifyActionAsync(actions,
+				IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription, document,
+				tree, $"{Environment.NewLine}[Serializable]");
 		}
 	}
 }

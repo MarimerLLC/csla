@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Extensions\SyntaxNodeExtensions.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensions.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensions.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFix.cs" />

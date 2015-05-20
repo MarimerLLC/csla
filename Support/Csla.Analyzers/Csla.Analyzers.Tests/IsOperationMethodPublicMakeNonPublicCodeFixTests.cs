@@ -3,7 +3,6 @@ using Csla.Analyzers.Tests;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -49,13 +48,13 @@ namespace FixingIsOneWay.Tests
 			await fix.RegisterCodeFixesAsync(codeFixContext);
 
 			Assert.AreEqual(3, actions.Count);
-			await IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyAction(actions,
+			await TestHelpers.VerifyActionAsync(actions,
 				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
 				tree, "rivate");
-			await IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyAction(actions,
+			await TestHelpers.VerifyActionAsync(actions,
 				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, document,
 				tree, "rotected");
-			await IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyAction(actions,
+			await TestHelpers.VerifyActionAsync(actions,
 				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
 				tree, "internal");
 		}
@@ -80,26 +79,12 @@ namespace FixingIsOneWay.Tests
 			await fix.RegisterCodeFixesAsync(codeFixContext);
 
 			Assert.AreEqual(2, actions.Count);
-			await IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyAction(actions,
+			await TestHelpers.VerifyActionAsync(actions,
 				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
 				tree, "rivate");
-			await IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyAction(actions,
+			await TestHelpers.VerifyActionAsync(actions,
 				IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
 				tree, "internal");
-		}
-
-		private static async Task VerifyAction(List<CodeAction> actions, string title, Document document, SyntaxTree tree, string expectedNewText)
-		{
-			var action = actions.Where(_ => _.Title == title).First();
-
-			var operation = (await action.GetOperationsAsync(
-				new CancellationToken(false))).ToArray()[0] as ApplyChangesOperation;
-			var newDoc = operation.ChangedSolution.GetDocument(document.Id);
-			var newTree = await newDoc.GetSyntaxTreeAsync();
-			var changes = newTree.GetChanges(tree);
-
-			Assert.AreEqual(1, changes.Count, nameof(changes.Count));
-			Assert.AreEqual(expectedNewText, changes[0].NewText, nameof(TextChange.NewText));
 		}
 	}
 }

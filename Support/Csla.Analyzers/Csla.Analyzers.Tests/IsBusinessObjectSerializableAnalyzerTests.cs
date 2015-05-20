@@ -28,7 +28,7 @@ namespace Csla.Analyzers.Tests
 				nameof(DiagnosticDescriptor.DefaultSeverity));
 		}
 
-		private static async Task RunAnalysis(string path, int expectedDiagnosticCount)
+		private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount)
 		{
 			var code = File.ReadAllText(path);
 			var diagnostics = await TestHelpers.GetDiagnosticsAsync(
@@ -39,7 +39,7 @@ namespace Csla.Analyzers.Tests
 		[TestMethod]
 		public async Task AnalyzeWhenClassIsNotStereotype()
 		{
-			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
+			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
 				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs", 
 				0);
 		}
@@ -47,7 +47,7 @@ namespace Csla.Analyzers.Tests
 		[TestMethod]
 		public async Task AnalyzeWhenClassIsStereotypeAndIsSerializable()
 		{
-			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
+			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
 				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsSerializable))}.cs",
 				0);
 		}
@@ -55,7 +55,7 @@ namespace Csla.Analyzers.Tests
 		[TestMethod]
 		public async Task AnalyzeWhenClassIsStereotypeAndIsNotSerializable()
 		{
-			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysis(
+			await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
 				$@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsNotSerializable))}.cs",
 				1);
 		}

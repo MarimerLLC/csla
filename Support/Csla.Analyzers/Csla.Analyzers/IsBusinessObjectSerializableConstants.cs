@@ -11,6 +11,8 @@
 
 	public static class IsBusinessObjectSerializableMakeSerializableCodeFixConstants
 	{
-		public const string Description = "Make CSLA business object serializable.";
+		public const string AddSerializableDescription = "Add [Serializable]";
+		public const string AddSystemSerializableDescription = "Add [System.Serializable]";
+		public const string AddSerializableAndUsingDescription = "Add [Serializable] and using statement";
 	}
 }

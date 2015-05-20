@@ -44,12 +44,10 @@ namespace Csla.Analyzers
 				var properties = new Dictionary<string, string>()
 				{
 					[IsOperationMethodPublicAnalyzerConstants.IsSealed] = classSymbol.IsSealed.ToString()
-				};
+				}.ToImmutableDictionary();
 
             context.ReportDiagnostic(Diagnostic.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule,
-					methodNode.Identifier.GetLocation(), 
-					properties.ToImmutableDictionary()));
-				return;
+					methodNode.Identifier.GetLocation(), properties));
 			}
 		}
 	}

@@ -21,7 +21,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsSerializableWhenSymbolIsNotSerializable()
 		{
-			Assert.IsFalse((await this.GetTypeSymbol(
+			Assert.IsFalse((await this.GetTypeSymbolAsync(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsSerializableWhenSymbolIsNotSerializable))}.cs",
 				nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable))).IsSerializable());
 		}
@@ -29,7 +29,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsSerializableWhenSymbolIsSerializable()
 		{
-			Assert.IsTrue((await this.GetTypeSymbol(
+			Assert.IsTrue((await this.GetTypeSymbolAsync(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsSerializableWhenSymbolIsSerializable))}.cs",
 				nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))).IsSerializable());
 		}
@@ -43,7 +43,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsStereotypeWhenSymbolIsNotAStereotype()
 		{
-			Assert.IsFalse((await this.GetTypeSymbol(
+			Assert.IsFalse((await this.GetTypeSymbolAsync(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsNotAStereotype))}.cs",
 				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype))).IsStereotype());
 		}
@@ -51,7 +51,7 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject()
 		{
-			Assert.IsTrue((await this.GetTypeSymbol(
+			Assert.IsTrue((await this.GetTypeSymbolAsync(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))}.cs",
 				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))).IsStereotype());
 		}
@@ -59,12 +59,12 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsStereotypeWhenSymbolIsStereotypeViaBusinessBase()
 		{
-			Assert.IsTrue((await this.GetTypeSymbol(
+			Assert.IsTrue((await this.GetTypeSymbolAsync(
 				$@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))}.cs",
 				nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))).IsStereotype());
 		}
 
-		private async Task<ITypeSymbol> GetTypeSymbol(string file, string name)
+		private async Task<ITypeSymbol> GetTypeSymbolAsync(string file, string name)
 		{
 			var code = File.ReadAllText(file);
 			var tree = CSharpSyntaxTree.ParseText(code);

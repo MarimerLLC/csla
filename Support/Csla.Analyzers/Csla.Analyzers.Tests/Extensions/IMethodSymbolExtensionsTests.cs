@@ -12,12 +12,12 @@ namespace Csla.Analyzers.Tests.Extensions
 	[TestClass]
 	public sealed class IMethodSymbolExtensionsTests
 	{
-		private string path;
+		private string _path;
 
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			this.path = $@"Targets\{nameof(IMethodSymbolExtensionsTests)}.IsDataPortalOperation.cs";
+			this._path = $@"Targets\{nameof(IMethodSymbolExtensionsTests)}.IsDataPortalOperation.cs";
       }
 
 		[TestMethod]
@@ -29,95 +29,95 @@ namespace Csla.Analyzers.Tests.Extensions
 		[TestMethod]
 		public async Task IsDataPortalOperationForMethodThatIsNotADataPortalOperation()
 		{
-			Assert.IsFalse((await this.GetMethodSymbol(
-				this.path, "AMethod")).IsDataPortalOperation());
+			Assert.IsFalse((await this.GetMethodSymbolAsync(
+				this._path, "AMethod")).IsDataPortalOperation());
       }
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalCreate()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Create")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Create")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalFetch()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Fetch")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Fetch")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalInsert()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Insert")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Insert")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalUpdate()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Update")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Update")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalDelete()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Delete")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Delete")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalDeleteSelf()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_DeleteSelf")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_DeleteSelf")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForDataPortalExecute()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "DataPortal_Execute")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "DataPortal_Execute")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForChildCreate()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "Child_Create")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "Child_Create")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForChildFetch()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "Child_Fetch")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "Child_Fetch")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForChildInsert()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "Child_Insert")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "Child_Insert")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForChildUpdate()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "Child_Update")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "Child_Update")).IsDataPortalOperation());
 		}
 
 		[TestMethod]
 		public async Task IsDataPortalOperationForChildDeleteSelf()
 		{
-			Assert.IsTrue((await this.GetMethodSymbol(
-				this.path, "Child_DeleteSelf")).IsDataPortalOperation());
+			Assert.IsTrue((await this.GetMethodSymbolAsync(
+				this._path, "Child_DeleteSelf")).IsDataPortalOperation());
 		}
 
-		private async Task<IMethodSymbol> GetMethodSymbol(string file, string name)
+		private async Task<IMethodSymbol> GetMethodSymbolAsync(string file, string name)
 		{
 			var code = File.ReadAllText(file);
 			var tree = CSharpSyntaxTree.ParseText(code);

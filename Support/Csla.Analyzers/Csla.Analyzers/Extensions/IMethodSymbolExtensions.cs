@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using System.Linq;
 
 namespace Csla.Analyzers.Extensions
 {

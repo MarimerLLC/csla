@@ -26,16 +26,18 @@ namespace Csla.Core
   public class ContextDictionary : HybridDictionary, IMobileObject
 #endif
   {
-#if NETFX_CORE
     internal object GetValueOrNull(string key)
     {
+#if NETFX_CORE
       object value;
       if (this.TryGetValue(key, out value))
         return value;
-      else
-        return null;
-    }
+#else
+      if (this.Contains(key))
+        return this[key];
 #endif
+      return null;
+    }
 
     #region IMobileObject Members
 

@@ -280,7 +280,7 @@
     <Compile Include="Serialization\Mobile\ReferenceComparer.cs" />
     <Compile Include="Serialization\NonSerializedAttribute.cs" />
     <Compile Include="Serialization\SerializationAttribute.cs" />
-    <Compile Include="Serialization\TypeExtensions.cs" />
+    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Server\AuthorizeRequest.cs" />
     <Compile Include="Server\DefaultDataPortalActivator.cs" />
     <Compile Include="Server\Hosts\HttpChannel\CriteriaRequest.cs" />

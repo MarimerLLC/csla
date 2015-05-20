@@ -44,6 +44,18 @@ namespace Csla.Core
     {
       OnPropertyChanged(propertyInfo.Name);
     }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">The name of the property that has changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
 #else
     [NonSerialized()]
     private PropertyChangedEventHandler _nonSerializableChangedHandlers;

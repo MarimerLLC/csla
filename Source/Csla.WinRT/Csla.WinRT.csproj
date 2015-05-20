@@ -425,6 +425,9 @@
     <Compile Include="..\Csla\ReadOnlyBindingListBase.cs">
       <Link>ReadOnlyBindingListBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Reflection\TypeExtensions.cs">
+      <Link>Reflection\TypeExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
     </Compile>
@@ -535,9 +538,6 @@
     </Compile>
     <Compile Include="..\Csla\Serialization\SerializationAttribute.cs">
       <Link>Serialization\SerializationAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Serialization\TypeExtensions.cs">
-      <Link>Serialization\TypeExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Server\AuthorizeRequest.cs">
       <Link>Server\AuthorizeRequest.cs</Link>
@@ -775,7 +775,6 @@
     </Compile>
     <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Resources.Designer.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
       <AutoGen>True</AutoGen>

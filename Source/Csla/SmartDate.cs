@@ -28,9 +28,8 @@ namespace Csla
   public struct SmartDate : Csla.Core.ISmartField,
 #if !NETFX_CORE
     IConvertible, 
-    IComparable,
 #endif
-    IFormattable, IMobileObject
+    IComparable, IFormattable, IMobileObject
   {
     private DateTime _date;
     private bool _initialized;
@@ -509,6 +508,7 @@ namespace Csla
 
 #region DBValue
 
+#if !NETFX_CORE
     /// <summary>
     /// Gets a database-friendly version of the date value.
     /// </summary>
@@ -536,6 +536,7 @@ namespace Csla
           return this.Date;
       }
     }
+#endif
 
 #endregion
 
@@ -1265,7 +1266,7 @@ namespace Csla
       return obj1.CompareTo(obj2) <= 0;
     }
 
-    #endregion
+#endregion
 
 #if !NETFX_CORE
 #region  IConvertible

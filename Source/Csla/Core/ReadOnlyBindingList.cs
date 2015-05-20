@@ -97,6 +97,15 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
+#if NETFX_CORE
+    protected override void AddNewCore()
+    {
+      if (!IsReadOnly)
+        base.AddNewCore();
+      else
+        throw new NotSupportedException(Resources.InsertInvalidException);
+    }
+#else
     protected override object AddNewCore()
     {
       if (!IsReadOnly)
@@ -104,6 +113,7 @@ namespace Csla.Core
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }
+#endif
 
     /// <summary>
     /// Prevents insertion of items into the collection.

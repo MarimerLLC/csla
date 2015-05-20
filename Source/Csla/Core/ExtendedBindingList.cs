@@ -353,6 +353,38 @@ namespace Csla.Core
         _childChangedHandlers.Invoke(this, e);
     }
 
+#if NETFX_CORE
+    /// <summary>
+    /// Creates a ChildChangedEventArgs and raises the event.
+    /// </summary>
+    private void RaiseChildChanged(
+      object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    {
+      ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
+      OnChildChanged(args);
+    }
+
+    /// <summary>
+    /// Handles any PropertyChanged event from 
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      RaiseChildChanged(sender, e, null);
+    }
+
+    /// <summary>
+    /// Handles any ChildChanged event from
+    /// a child object and echoes it up as
+    /// a ChildChanged event.
+    /// </summary>
+    private void Child_Changed(object sender, ChildChangedEventArgs e)
+    {
+      RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.CollectionChangedArgs);
+    }
+#else
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
@@ -385,6 +417,7 @@ namespace Csla.Core
     {
       RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
     }
+#endif
 
     /// <summary>
     /// Use this object to suppress ListChangedEvents for an entire code block.

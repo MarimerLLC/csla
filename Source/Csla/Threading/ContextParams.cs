@@ -53,10 +53,11 @@ namespace Csla.Threading
       Csla.ApplicationContext.User = User;
       Csla.ApplicationContext.SetContext(ClientContext, GlobalContext);
 #if NETFX_CORE
+      var resourceContext = ResourceContext.GetForCurrentView();
       var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { UICulture });
-      ResourceManager.Current.DefaultContext.Languages = list;
+      resourceContext.Languages = list;
       list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { Culture });
-      ResourceManager.Current.DefaultContext.Languages = list;
+      resourceContext.Languages = list;
 #else
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;

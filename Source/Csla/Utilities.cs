@@ -9,6 +9,7 @@ using System;
 using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
+using System.Text;
 #if NETFX_CORE
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;

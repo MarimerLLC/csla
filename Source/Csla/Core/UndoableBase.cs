@@ -6,7 +6,7 @@
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
 #if NETFX_CORE
-  using System;
+using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.ComponentModel;

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿#if NETFX_CORE || WINDOWS_PHONE
+using System.Runtime.CompilerServices;
 
 
 namespace Csla.Properties
@@ -1231,3 +1232,4 @@ namespace Csla.Properties
     }
   }
 }
+#endif

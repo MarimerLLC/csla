@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-#if !MONO
+#if !MONO && !NETFX_PHONE
 using System.EnterpriseServices;
 
 // EnterpriseServices settings

@@ -216,6 +216,7 @@
     </Compile>
     <Compile Include="Data\ServiceClientManager.cs" />
     <Compile Include="Data\TransactionManager.cs" />
+    <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\CslaPrivate.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -227,6 +228,7 @@
     <Compile Include="Reflection\DynamicMemberHandle.cs" />
     <Compile Include="RelationshipTypes.cs" />
     <Compile Include="Reflection\Reflect.cs" />
+    <Compile Include="Resources.Designer.cs" />
     <Compile Include="Rules\AuthorizationActions.cs" />
     <Compile Include="Rules\AuthorizationContext.cs" />
     <Compile Include="Rules\AuthorizationRule.cs" />

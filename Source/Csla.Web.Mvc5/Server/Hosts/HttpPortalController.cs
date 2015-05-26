@@ -7,17 +7,14 @@
 //-----------------------------------------------------------------------
 using Csla.Serialization.Mobile;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Csla.Server.Hosts.HttpChannel;
-using Csla.Core;
-using System.Security.Principal;
+#if MVC4
 using System.Web.Mvc;
+#endif
+using System.Net.Http;
+using System.Web.Http;
 
 namespace Csla.Server.Hosts
 {
@@ -33,7 +30,7 @@ namespace Csla.Server.Hosts
     /// </summary>
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
-    [System.Web.Http.HttpPost]
+    [HttpPost]
     public virtual async Task<ActionResult> PostAsync(string operation)
     {
       var requestData = Request.BinaryRead(Request.TotalBytes);

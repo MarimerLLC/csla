@@ -419,6 +419,9 @@
     <Compile Include="..\Csla\NotUndoableAttribute.cs">
       <Link>NotUndoableAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\PortedAttributes.cs">
+      <Link>PortedAttributes.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\PropertyLoadException.cs">
       <Link>PropertyLoadException.cs</Link>
     </Compile>
@@ -427,6 +430,9 @@
     </Compile>
     <Compile Include="..\Csla\Reflection\TypeExtensions.cs">
       <Link>Reflection\TypeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Resources.Designer.cs">
+      <Link>Resources.Designer.cs</Link>
     </Compile>
     <Compile Include="..\Csla\Rules\AuthorizationActions.cs">
       <Link>Rules\AuthorizationActions.cs</Link>
@@ -776,9 +782,7 @@
     <Compile Include="..\Csla\Utilities.cs">
       <Link>Utilities.cs</Link>
     </Compile>
-    <Compile Include="PortedAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.Designer.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

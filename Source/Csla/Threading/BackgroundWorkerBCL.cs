@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if NETFX_CORE
+//-----------------------------------------------------------------------
 // <copyright file="BackgroundWorkerBCL.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -247,3 +248,4 @@ namespace System.ComponentModel
     public bool Cancelled { get; set; }
   }
 }
+#endif

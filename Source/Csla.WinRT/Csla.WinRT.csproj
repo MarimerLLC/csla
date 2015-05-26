@@ -761,6 +761,9 @@
     <Compile Include="..\Csla\ReadOnlyBase.cs">
       <Link>ReadOnlyBase.cs</Link>
     </Compile>
+    <Compile Include="..\Csla\Threading\BackgroundWorkerBCL.cs">
+      <Link>Threading\BackgroundWorkerBCL.cs</Link>
+    </Compile>
     <Compile Include="..\Csla\Threading\ContextParams.cs">
       <Link>Threading\ContextParams.cs</Link>
     </Compile>
@@ -781,7 +784,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Threading\BackgroundWorkerBCL.cs" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Resources\ar\Resources.resw">

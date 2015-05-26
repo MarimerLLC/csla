@@ -385,6 +385,7 @@
     <Compile Include="Threading\BackgroundWorker.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Threading\BackgroundWorkerBCL.cs" />
     <Compile Include="Threading\BusyLock.cs" />
     <Compile Include="Threading\ContextParams.cs" />
     <Compile Include="Threading\CslaTaskScheduler.cs" />

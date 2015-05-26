@@ -82,15 +82,15 @@
     <None Include="CslaKey.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\Csla.Silverlight\Resources\Error.png">
+    <Content Include="..\Csla\Resources\Error.png">
       <Link>Resources\Error.png</Link>
-    </Resource>
-    <Resource Include="..\Csla.Silverlight\Resources\Information.png">
+    </Content>
+    <Content Include="..\Csla\Resources\Information.png">
       <Link>Resources\Information.png</Link>
-    </Resource>
-    <Resource Include="..\Csla.Silverlight\Resources\Warning.png">
+    </Content>
+    <Content Include="..\Csla\Resources\Warning.png">
       <Link>Resources\Warning.png</Link>
-    </Resource>
+    </Content>
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>

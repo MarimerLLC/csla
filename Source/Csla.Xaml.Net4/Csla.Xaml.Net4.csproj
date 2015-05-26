@@ -98,17 +98,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\Csla.Silverlight\Resources\Error.png">
-      <Link>Resources\Error.png</Link>
-    </Resource>
-    <Resource Include="..\Csla.Silverlight\Resources\Information.png">
-      <Link>Resources\Information.png</Link>
-    </Resource>
-    <Resource Include="..\Csla.Silverlight\Resources\Warning.png">
-      <Link>Resources\Warning.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="..\Csla.Xaml\Themes\Generic.xaml">
       <Link>Themes\Generic.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +119,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Csla\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Content>
+    <Content Include="..\Csla\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Content>
+    <Content Include="..\Csla\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Content>
     <Content Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

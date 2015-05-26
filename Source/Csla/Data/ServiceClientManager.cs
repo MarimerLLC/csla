@@ -39,12 +39,8 @@ namespace Csla.Data
 
       lock (_lock)
       {
-        ServiceClientManager<C, T> mgr = null;
-        if (ApplicationContext.LocalContext.Contains(name))
-        {
-          mgr = (ServiceClientManager<C, T>)(ApplicationContext.LocalContext[name]);
-        }
-        else
+        ServiceClientManager<C, T> mgr = (ServiceClientManager<C, T>)ApplicationContext.LocalContext.GetValueOrNull(name);
+        if (mgr == null)
         {
           mgr = new ServiceClientManager<C, T>(name);
           ApplicationContext.LocalContext[name] = mgr;

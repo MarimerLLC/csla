@@ -3625,7 +3625,7 @@ namespace Csla.Core
 
     #endregion
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     #region UndoableBase overrides
 
     /// <summary>

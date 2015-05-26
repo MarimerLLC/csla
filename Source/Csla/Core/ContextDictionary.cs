@@ -8,6 +8,10 @@
 using System;
 using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
+#if NETFX_CORE
+using System.Collections.Generic;
+using Csla.Serialization;
+#endif
 
 namespace Csla.Core
 {
@@ -16,8 +20,25 @@ namespace Csla.Core
   /// with the MobileFormatter.
   /// </summary>
   [Serializable()]
+#if NETFX_CORE
+  public class ContextDictionary : Dictionary<string, object>, IMobileObject
+#else
   public class ContextDictionary : HybridDictionary, IMobileObject
+#endif
   {
+    internal object GetValueOrNull(string key)
+    {
+#if NETFX_CORE
+      object value;
+      if (this.TryGetValue(key, out value))
+        return value;
+#else
+      if (this.Contains(key))
+        return this[key];
+#endif
+      return null;
+    }
+
     #region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)
@@ -61,6 +82,6 @@ namespace Csla.Core
       }
     }
 
-    #endregion
+#endregion
   }
 }

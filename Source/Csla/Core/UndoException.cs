@@ -6,6 +6,7 @@
 // <summary>Exception indicating a problem with the</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -40,6 +41,7 @@ namespace Csla.Core
 
     }
 
+#if !NETFX_CORE && !IOS && !ANDROID
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
@@ -62,6 +64,6 @@ namespace Csla.Core
       base.GetObjectData(info, context);
 
     }
-
+#endif
   }
 }

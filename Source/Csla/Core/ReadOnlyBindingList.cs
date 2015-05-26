@@ -6,11 +6,11 @@
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Csla.Properties;
+#if NETFX_CORE || IOS || ANDROID
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+#endif
 
 namespace Csla.Core
 {
@@ -42,8 +42,22 @@ namespace Csla.Core
     /// <value>True indicates that the list is readonly.</value>
     public bool IsReadOnly
     {
+      get { return IsReadOnlyCore; }
+#if !IOS
+      protected set { IsReadOnlyCore = value; }
+#else
+      set { IsReadOnlyCore = value; }
+#endif
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether
+    /// the list is readonly.
+    /// </summary>
+    protected virtual bool IsReadOnlyCore
+    {
       get { return _isReadOnly; }
-      protected set { _isReadOnly = value; }
+      set { _isReadOnly = value; }
     }
 
     bool Core.IReadOnlyBindingList.IsReadOnly
@@ -83,6 +97,15 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
+#if NETFX_CORE
+    protected override void AddNewCore()
+    {
+      if (!IsReadOnly)
+        base.AddNewCore();
+      else
+        throw new NotSupportedException(Resources.InsertInvalidException);
+    }
+#else
     protected override object AddNewCore()
     {
       if (!IsReadOnly)
@@ -90,6 +113,7 @@ namespace Csla.Core
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }
+#endif
 
     /// <summary>
     /// Prevents insertion of items into the collection.
@@ -141,7 +165,7 @@ namespace Csla.Core
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
-    #region ITrackStatus
+#region ITrackStatus
 
     /// <summary>
     /// Gets a value indicating whether this object or its
@@ -165,9 +189,9 @@ namespace Csla.Core
       }
     }
 
-    #endregion
+#endregion
 
-    #region MobileFormatter
+#region MobileFormatter
 
     /// <summary>
     /// Override this method to insert your field values
@@ -214,6 +238,6 @@ namespace Csla.Core
       IsReadOnly = old;
     }
 
-    #endregion
+#endregion
   }
 }

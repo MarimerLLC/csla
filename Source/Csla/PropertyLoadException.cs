@@ -6,6 +6,9 @@
 // <summary>Exception indicating a failure to</summary>
 //-----------------------------------------------------------------------
 using System;
+#if NETFX_CORE
+using Csla.Serialization;
+#endif
 
 namespace Csla
 {
@@ -34,6 +37,7 @@ namespace Csla
       : base(message, ex)
     { }
 
+#if !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>
@@ -52,5 +56,6 @@ namespace Csla
     {
       base.GetObjectData(info, context);
     }
+#endif
   }
 }

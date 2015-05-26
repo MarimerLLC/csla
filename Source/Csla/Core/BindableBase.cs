@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+using Csla.Serialization;
 
 namespace Csla.Core
 {
@@ -16,20 +17,46 @@ namespace Csla.Core
   /// serialization-safe manner.
   /// </summary>
   [Serializable()]
-  public abstract class BindableBase : MobileObject, 
-    System.ComponentModel.INotifyPropertyChanged, 
-    System.ComponentModel.INotifyPropertyChanging
+  public abstract class BindableBase : 
+    MobileObject, 
+    INotifyPropertyChanged, 
+    INotifyPropertyChanging
   {
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     protected BindableBase()
-    {
+    { }
 
+#if NETFX_CORE
+    /// <summary>
+    /// Event raised when a property is changed.
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">The property info for the property that has changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
     }
 
-    #region INotifyPropertyChanged
-
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">The name of the property that has changed.</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    }
+#else
     [NonSerialized()]
     private PropertyChangedEventHandler _nonSerializableChangedHandlers;
     private PropertyChangedEventHandler _serializableChangedHandlers;
@@ -76,6 +103,44 @@ namespace Csla.Core
 
     /// <summary>
     /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (_nonSerializableChangedHandlers != null)
+        _nonSerializableChangedHandlers.Invoke(this,
+          new PropertyChangedEventArgs(propertyName));
+      if (_serializableChangedHandlers != null)
+        _serializableChangedHandlers.Invoke(this,
+          new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
+    }
+#endif
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
     /// for all object properties.
     /// </summary>
     /// <remarks>
@@ -103,60 +168,44 @@ namespace Csla.Core
       OnPropertyChanged(string.Empty);
     }
 
+#if NETFX_CORE
     /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
+    /// Event raised when a property is changing.
+    /// </summary>
+    public event PropertyChangingEventHandler PropertyChanging;
+
+    /// <summary>
+    /// Raises the PropertyChanging event.
     /// </summary>
     /// <param name="propertyName">Name of the property that
-    /// has changed.</param>
+    /// is being changed.</param>
     /// <remarks>
     /// This method may be called by properties in the business
-  /// class to indicate the change in a specific property.
+    /// class to indicate the change that is about to occur 
+    /// in a specific property.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanged(string propertyName)
+    protected virtual void OnPropertyChanging(string propertyName)
     {
-      if (_nonSerializableChangedHandlers != null)
-        _nonSerializableChangedHandlers.Invoke(this,
-          new PropertyChangedEventArgs(propertyName));
-      if (_serializableChangedHandlers != null)
-        _serializableChangedHandlers.Invoke(this,
-          new PropertyChangedEventArgs(propertyName));
+      if (PropertyChanging != null)
+        PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
     }
 
     /// <summary>
-    /// Override this method to change the default logic for determining 
-    /// if the event handler should be serialized
+    /// Raises the PropertyChanging event.
     /// </summary>
-    /// <param name="value">the event handler to review</param>
-    /// <returns></returns>
-    protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
-    {
-        return value.Method.IsPublic &&
-               value.Method.DeclaringType != null &&
-               (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
-    }
-
-    /// <summary>
-    /// Call this method to raise the PropertyChanged event
-    /// for a specific property.
-    /// </summary>
-    /// <param name="propertyInfo">PropertyInfo of the property that
-    /// has changed.</param>
+    /// <param name="propertyInfo">The property info for the property that has changed.</param>
     /// <remarks>
     /// This method may be called by properties in the business
-    /// class to indicate the change in a specific property.
+    /// class to indicate the change that is about to occur 
+    /// in a specific property.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
     {
-      OnPropertyChanged(propertyInfo.Name);
+      OnPropertyChanging(propertyInfo.Name);
     }
-
-    #endregion
-
-    #region INotifyPropertyChanging
-
+#else
     [NonSerialized()]
     private PropertyChangingEventHandler _nonSerializableChangingHandlers;
     private PropertyChangingEventHandler _serializableChangingHandlers;
@@ -254,6 +303,19 @@ namespace Csla.Core
       OnPropertyChanging(propertyInfo.Name);
     }
 
-    #endregion
+    /// <summary>
+    /// Override this method to change the default logic for determining 
+    /// if the event handler should be serialized
+    /// </summary>
+    /// <param name="value">the event handler to review</param>
+    /// <returns></returns>
+    protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
+    {
+      return value.Method.IsPublic &&
+             value.Method.DeclaringType != null &&
+             (value.Method.DeclaringType.IsSerializable || value.Method.IsStatic);
+    }
+
+#endif
   }
 }

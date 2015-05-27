@@ -22,7 +22,7 @@ namespace Csla.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Csla.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Csla.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to close?.
         /// </summary>
-        internal static string ActionExtenderCloseConfirmation {
+        public static string ActionExtenderCloseConfirmation {
             get {
                 return ResourceManager.GetString("ActionExtenderCloseConfirmation", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object is currently in a dirty changed..
         /// </summary>
-        internal static string ActionExtenderDirtyWarningMessagePropertyDefault {
+        public static string ActionExtenderDirtyWarningMessagePropertyDefault {
             get {
                 return ResourceManager.GetString("ActionExtenderDirtyWarningMessagePropertyDefault", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
-        internal static string ActionExtenderErrorCaption {
+        public static string ActionExtenderErrorCaption {
             get {
                 return ResourceManager.GetString("ActionExtenderErrorCaption", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Information.
         /// </summary>
-        internal static string ActionExtenderInformationCaption {
+        public static string ActionExtenderInformationCaption {
             get {
                 return ResourceManager.GetString("ActionExtenderInformationCaption", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to DataSource does not cast to a BindingSource.
         /// </summary>
-        internal static string ActionExtenderInvalidBindingSourceCast {
+        public static string ActionExtenderInvalidBindingSourceCast {
             get {
                 return ResourceManager.GetString("ActionExtenderInvalidBindingSourceCast", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The underlying data source does not cast to a CSLA BusinessBase object.
         /// </summary>
-        internal static string ActionExtenderInvalidBusinessObjectBaseCast {
+        public static string ActionExtenderInvalidBusinessObjectBaseCast {
             get {
                 return ResourceManager.GetString("ActionExtenderInvalidBusinessObjectBaseCast", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object is valid.
         /// </summary>
-        internal static string ActionExtenderObjectIsValidMessagePropertyDefault {
+        public static string ActionExtenderObjectIsValidMessagePropertyDefault {
             get {
                 return ResourceManager.GetString("ActionExtenderObjectIsValidMessagePropertyDefault", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to DataSource must be a BindingSource control instance.
         /// </summary>
-        internal static string ActionExtenderSourceMustBeBindingSource {
+        public static string ActionExtenderSourceMustBeBindingSource {
             get {
                 return ResourceManager.GetString("ActionExtenderSourceMustBeBindingSource", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to revert to the previous values?.
         /// </summary>
-        internal static string ActionExtenderWarnOnCancelMessagePropertyDefault {
+        public static string ActionExtenderWarnOnCancelMessagePropertyDefault {
             get {
                 return ResourceManager.GetString("ActionExtenderWarnOnCancelMessagePropertyDefault", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to AddNewCore must be overridden.
         /// </summary>
-        internal static string AddNewCoreMustBeOverriden {
+        public static string AddNewCoreMustBeOverriden {
             get {
                 return ResourceManager.GetString("AddNewCoreMustBeOverriden", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Failed on async load of property {0}.
         /// </summary>
-        internal static string AsyncLoadException {
+        public static string AsyncLoadException {
             get {
                 return ResourceManager.GetString("AsyncLoadException", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
         /// </summary>
-        internal static string AuthenticationProviderDoesNotImplementIAuthorizeDataPortal {
+        public static string AuthenticationProviderDoesNotImplementIAuthorizeDataPortal {
             get {
                 return ResourceManager.GetString("AuthenticationProviderDoesNotImplementIAuthorizeDataPortal", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Csla Authorization Provider App Setting name not specified.
         /// </summary>
-        internal static string AuthorizationProviderNameNotSpecified {
+        public static string AuthorizationProviderNameNotSpecified {
             get {
                 return ResourceManager.GetString("AuthorizationProviderNameNotSpecified", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Serialization of type object is not supported..
         /// </summary>
-        internal static string BinaryWriterObjectSerializationException {
+        public static string BinaryWriterObjectSerializationException {
             get {
                 return ResourceManager.GetString("BinaryWriterObjectSerializationException", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to A root binding source has not been provided..
         /// </summary>
-        internal static string BindingSourceNotProvided {
+        public static string BindingSourceNotProvided {
             get {
                 return ResourceManager.GetString("BindingSourceNotProvided", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Principal must be of type BusinessPrincipal, not.
         /// </summary>
-        internal static string BusinessPrincipalException {
+        public static string BusinessPrincipalException {
             get {
                 return ResourceManager.GetString("BusinessPrincipalException", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Objects that are marked busy may not be marked busy again.
         /// </summary>
-        internal static string BusyObjectsMayNotBeMarkedBusy {
+        public static string BusyObjectsMayNotBeMarkedBusy {
             get {
                 return ResourceManager.GetString("BusyObjectsMayNotBeMarkedBusy", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Objects that are marked busy may not be saved.
         /// </summary>
-        internal static string BusyObjectsMayNotBeSaved {
+        public static string BusyObjectsMayNotBeSaved {
             get {
                 return ResourceManager.GetString("BusyObjectsMayNotBeSaved", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot serialize collections not of type IMobileObject.
         /// </summary>
-        internal static string CannotSerializeCollectionsNotOfIMobileObject {
+        public static string CannotSerializeCollectionsNotOfIMobileObject {
             get {
                 return ResourceManager.GetString("CannotSerializeCollectionsNotOfIMobileObject", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Changing an element is an invalid operation.
         /// </summary>
-        internal static string ChangeInvalidException {
+        public static string ChangeInvalidException {
             get {
                 return ResourceManager.GetString("ChangeInvalidException", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can not change a read-only list or collection.
         /// </summary>
-        internal static string ChangeReadOnlyListInvalid {
+        public static string ChangeReadOnlyListInvalid {
             get {
                 return ResourceManager.GetString("ChangeReadOnlyListInvalid", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can not directly mark a child object for deletion - use its parent collection.
         /// </summary>
-        internal static string ChildDeleteException {
+        public static string ChildDeleteException {
             get {
                 return ResourceManager.GetString("ChildDeleteException", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Clear is an invalid operation.
         /// </summary>
-        internal static string ClearInvalidException {
+        public static string ClearInvalidException {
             get {
                 return ResourceManager.GetString("ClearInvalidException", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The client query is invalid:.
         /// </summary>
-        internal static string ClientQueryIsInvalid {
+        public static string ClientQueryIsInvalid {
             get {
                 return ResourceManager.GetString("ClientQueryIsInvalid", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Constructor with parameters are not supported.
         /// </summary>
-        internal static string ConstructorsWithParametersNotSupported {
+        public static string ConstructorsWithParametersNotSupported {
             get {
                 return ResourceManager.GetString("ConstructorsWithParametersNotSupported", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create method name not specified in MobileFactory attribute.
         /// </summary>
-        internal static string CreateMethodNameNotSpecified {
+        public static string CreateMethodNameNotSpecified {
             get {
                 return ResourceManager.GetString("CreateMethodNameNotSpecified", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - create not allowed.
         /// </summary>
-        internal static string CreateNotSupportedException {
+        public static string CreateNotSupportedException {
             get {
                 return ResourceManager.GetString("CreateNotSupportedException", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Csla Authentication Provider not set!.
         /// </summary>
-        internal static string CslaAuthenticationProviderNotSet {
+        public static string CslaAuthenticationProviderNotSet {
             get {
                 return ResourceManager.GetString("CslaAuthenticationProviderNotSet", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Database name not found in config file ({0}).
         /// </summary>
-        internal static string DatabaseNameNotFound {
+        public static string DatabaseNameNotFound {
             get {
                 return ResourceManager.GetString("DatabaseNameNotFound", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Default Constructor.
         /// </summary>
-        internal static string DefaultConstructor {
+        public static string DefaultConstructor {
             get {
                 return ResourceManager.GetString("DefaultConstructor", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete method name not specified in MobileFactory attribute.
         /// </summary>
-        internal static string DeleteMethodNameNotSpecified {
+        public static string DeleteMethodNameNotSpecified {
             get {
                 return ResourceManager.GetString("DeleteMethodNameNotSpecified", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - delete not allowed.
         /// </summary>
-        internal static string DeleteNotSupportedException {
+        public static string DeleteNotSupportedException {
             get {
                 return ResourceManager.GetString("DeleteNotSupportedException", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Edit level mismatch in {0}.
         /// </summary>
-        internal static string EditLevelMismatchException {
+        public static string EditLevelMismatchException {
             get {
                 return ResourceManager.GetString("EditLevelMismatchException", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error reading value:.
         /// </summary>
-        internal static string ErrorReadingValueException {
+        public static string ErrorReadingValueException {
             get {
                 return ResourceManager.GetString("ErrorReadingValueException", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to An exception ocurred during the save operation.
         /// </summary>
-        internal static string ExceptionOccurredDuringSaveOperation {
+        public static string ExceptionOccurredDuringSaveOperation {
             get {
                 return ResourceManager.GetString("ExceptionOccurredDuringSaveOperation", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Method to be executed must have 0 or 2 parameters.
         /// </summary>
-        internal static string ExecuteBadParams {
+        public static string ExecuteBadParams {
             get {
                 return ResourceManager.GetString("ExecuteBadParams", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Trigger event has an unsupported signature.
         /// </summary>
-        internal static string ExecuteBadTriggerEvent {
+        public static string ExecuteBadTriggerEvent {
             get {
                 return ResourceManager.GetString("ExecuteBadTriggerEvent", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - execute not allowed.
         /// </summary>
-        internal static string ExecuteNotSupportedException {
+        public static string ExecuteNotSupportedException {
             get {
                 return ResourceManager.GetString("ExecuteNotSupportedException", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Factory type or assembly could not be loaded ({0}).
         /// </summary>
-        internal static string FactoryTypeNotFoundException {
+        public static string FactoryTypeNotFoundException {
             get {
                 return ResourceManager.GetString("FactoryTypeNotFoundException", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to failed.
         /// </summary>
-        internal static string Failed {
+        public static string Failed {
             get {
                 return ResourceManager.GetString("Failed", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to failed on the server.
         /// </summary>
-        internal static string FailedOnServer {
+        public static string FailedOnServer {
             get {
                 return ResourceManager.GetString("FailedOnServer", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Fetch method name not specified in MobileFactory attribute.
         /// </summary>
-        internal static string FetchMethodNameNotSpecified {
+        public static string FetchMethodNameNotSpecified {
             get {
                 return ResourceManager.GetString("FetchMethodNameNotSpecified", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - fetch not allowed.
         /// </summary>
-        internal static string FetchNotSupportedException {
+        public static string FetchNotSupportedException {
             get {
                 return ResourceManager.GetString("FetchNotSupportedException", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Filter parameter and filter provider are required.
         /// </summary>
-        internal static string FilterRequiredException {
+        public static string FilterRequiredException {
             get {
                 return ResourceManager.GetString("FilterRequiredException", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Target object must implement IEditableCollection.
         /// </summary>
-        internal static string IEditableCollectionRequiredException {
+        public static string IEditableCollectionRequiredException {
             get {
                 return ResourceManager.GetString("IEditableCollectionRequiredException", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Target object must implement IManageProperties.
         /// </summary>
-        internal static string IManagePropertiesRequiredException {
+        public static string IManagePropertiesRequiredException {
             get {
                 return ResourceManager.GetString("IManagePropertiesRequiredException", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Indexed expressions must be closed.
         /// </summary>
-        internal static string IndexedExpressionsMustBeClosed {
+        public static string IndexedExpressionsMustBeClosed {
             get {
                 return ResourceManager.GetString("IndexedExpressionsMustBeClosed", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Insert is an invalid operation.
         /// </summary>
-        internal static string InsertInvalidException {
+        public static string InsertInvalidException {
             get {
                 return ResourceManager.GetString("InsertInvalidException", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - insert not allowed.
         /// </summary>
-        internal static string InsertNotSupportedException {
+        public static string InsertNotSupportedException {
             get {
                 return ResourceManager.GetString("InsertNotSupportedException", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to List item must be marked as a child object.
         /// </summary>
-        internal static string ListItemNotAChildException {
+        public static string ListItemNotAChildException {
             get {
                 return ResourceManager.GetString("ListItemNotAChildException", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} can not exceed {1}.
         /// </summary>
-        internal static string MaxValueRule {
+        public static string MaxValueRule {
             get {
                 return ResourceManager.GetString("MaxValueRule", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Member not found on object ({0}).
         /// </summary>
-        internal static string MemberNotFoundException {
+        public static string MemberNotFoundException {
             get {
                 return ResourceManager.GetString("MemberNotFoundException", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to method call failed.
         /// </summary>
-        internal static string MethodCallFailed {
+        public static string MethodCallFailed {
             get {
                 return ResourceManager.GetString("MethodCallFailed", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Method execution not allowed.
         /// </summary>
-        internal static string MethodExecuteNotAllowed {
+        public static string MethodExecuteNotAllowed {
             get {
                 return ResourceManager.GetString("MethodExecuteNotAllowed", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to not implemented.
         /// </summary>
-        internal static string MethodNotImplemented {
+        public static string MethodNotImplemented {
             get {
                 return ResourceManager.GetString("MethodNotImplemented", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} can not be less than {1}.
         /// </summary>
-        internal static string MinValueRule {
+        public static string MinValueRule {
             get {
                 return ResourceManager.GetString("MinValueRule", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The Type &apos;{0}&apos; was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application.
         /// </summary>
-        internal static string MobileFormatterUnableToDeserialize {
+        public static string MobileFormatterUnableToDeserialize {
             get {
                 return ResourceManager.GetString("MobileFormatterUnableToDeserialize", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Type {0} must implement IMobileObject.
         /// </summary>
-        internal static string MustImplementIMobileObject {
+        public static string MustImplementIMobileObject {
             get {
                 return ResourceManager.GetString("MustImplementIMobileObject", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Please set NavigatorProvider prior to TriggerEvent property..
         /// </summary>
-        internal static string NavigatorProviderSetPriorToTriggerEvent {
+        public static string NavigatorProviderSetPriorToTriggerEvent {
             get {
                 return ResourceManager.GetString("NavigatorProviderSetPriorToTriggerEvent", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to ApplyEdit is not valid on a child object.
         /// </summary>
-        internal static string NoApplyEditChildException {
+        public static string NoApplyEditChildException {
             get {
                 return ResourceManager.GetString("NoApplyEditChildException", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to BeginEdit is not valid on a child object.
         /// </summary>
-        internal static string NoBeginEditChildException {
+        public static string NoBeginEditChildException {
             get {
                 return ResourceManager.GetString("NoBeginEditChildException", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CancelEdit is not valid on a child object.
         /// </summary>
-        internal static string NoCancelEditChildException {
+        public static string NoCancelEditChildException {
             get {
                 return ResourceManager.GetString("NoCancelEditChildException", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid for root objects - use Delete instead.
         /// </summary>
-        internal static string NoDeleteRootException {
+        public static string NoDeleteRootException {
             get {
                 return ResourceManager.GetString("NoDeleteRootException", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No principal object should be passed to DataPortal when using Windows integrated security.
         /// </summary>
-        internal static string NoPrincipalAllowedException {
+        public static string NoPrincipalAllowedException {
             get {
                 return ResourceManager.GetString("NoPrincipalAllowedException", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can not directly save a child object.
         /// </summary>
-        internal static string NoSaveChildException {
+        public static string NoSaveChildException {
             get {
                 return ResourceManager.GetString("NoSaveChildException", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object is still being edited and can not be saved.
         /// </summary>
-        internal static string NoSaveEditingException {
+        public static string NoSaveEditingException {
             get {
                 return ResourceManager.GetString("NoSaveEditingException", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object is not valid and can not be saved.
         /// </summary>
-        internal static string NoSaveInvalidException {
+        public static string NoSaveInvalidException {
             get {
                 return ResourceManager.GetString("NoSaveInvalidException", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No such factory method:{0}.
         /// </summary>
-        internal static string NoSuchFactoryMethod {
+        public static string NoSuchFactoryMethod {
             get {
                 return ResourceManager.GetString("NoSuchFactoryMethod", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No such method {0}.
         /// </summary>
-        internal static string NoSuchMethod {
+        public static string NoSuchMethod {
             get {
                 return ResourceManager.GetString("NoSuchMethod", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No such value exists:.
         /// </summary>
-        internal static string NoSuchValueExistsException {
+        public static string NoSuchValueExistsException {
             get {
                 return ResourceManager.GetString("NoSuchValueExistsException", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Argument must not be Nothing.
         /// </summary>
-        internal static string NothingNotValid {
+        public static string NothingNotValid {
             get {
                 return ResourceManager.GetString("NothingNotValid", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Can not set property if data object is not null.
         /// </summary>
-        internal static string ObjectNotNull {
+        public static string ObjectNotNull {
             get {
                 return ResourceManager.GetString("ObjectNotNull", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object not serializable ({0}).
         /// </summary>
-        internal static string ObjectNotSerializableFormatted {
+        public static string ObjectNotSerializableFormatted {
             get {
                 return ResourceManager.GetString("ObjectNotSerializableFormatted", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object rule can not have PrimaryPropery..
         /// </summary>
-        internal static string ObjectRulesCannotSetPrimaryProperty {
+        public static string ObjectRulesCannotSetPrimaryProperty {
             get {
                 return ResourceManager.GetString("ObjectRulesCannotSetPrimaryProperty", resourceCulture);
             }
@@ -729,7 +729,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Object type or assembly could not be loaded ({0}).
         /// </summary>
-        internal static string ObjectTypeCouldNotBeLoaded {
+        public static string ObjectTypeCouldNotBeLoaded {
             get {
                 return ResourceManager.GetString("ObjectTypeCouldNotBeLoaded", resourceCulture);
             }
@@ -738,7 +738,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Properties with private backing fields must be marked as RelationshipTypes.PrivateField.
         /// </summary>
-        internal static string PrivateFieldException {
+        public static string PrivateFieldException {
             get {
                 return ResourceManager.GetString("PrivateFieldException", resourceCulture);
             }
@@ -747,7 +747,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property copy failed.
         /// </summary>
-        internal static string PropertyCopyFailed {
+        public static string PropertyCopyFailed {
             get {
                 return ResourceManager.GetString("PropertyCopyFailed", resourceCulture);
             }
@@ -756,7 +756,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property get not allowed.
         /// </summary>
-        internal static string PropertyGetNotAllowed {
+        public static string PropertyGetNotAllowed {
             get {
                 return ResourceManager.GetString("PropertyGetNotAllowed", resourceCulture);
             }
@@ -765,7 +765,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Attempt to read/load private field property in managed properties..
         /// </summary>
-        internal static string PropertyIsPrivateField {
+        public static string PropertyIsPrivateField {
             get {
                 return ResourceManager.GetString("PropertyIsPrivateField", resourceCulture);
             }
@@ -774,7 +774,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property load or set failed for property {0} ({1}).
         /// </summary>
-        internal static string PropertyLoadException {
+        public static string PropertyLoadException {
             get {
                 return ResourceManager.GetString("PropertyLoadException", resourceCulture);
             }
@@ -783,7 +783,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The specified property name &apos;{0}&apos; does not exist.
         /// </summary>
-        internal static string PropertyNameDoesNotExist {
+        public static string PropertyNameDoesNotExist {
             get {
                 return ResourceManager.GetString("PropertyNameDoesNotExist", resourceCulture);
             }
@@ -792,7 +792,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property &apos;{0}&apos; not registered..
         /// </summary>
-        internal static string PropertyNameNotRegisteredException {
+        public static string PropertyNameNotRegisteredException {
             get {
                 return ResourceManager.GetString("PropertyNameNotRegisteredException", resourceCulture);
             }
@@ -801,7 +801,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property {0} must be added to AffectedProperties. .
         /// </summary>
-        internal static string PropertyNotInAffectedPropertiesException {
+        public static string PropertyNotInAffectedPropertiesException {
             get {
                 return ResourceManager.GetString("PropertyNotInAffectedPropertiesException", resourceCulture);
             }
@@ -810,7 +810,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to One or more properties are not registered for this type.
         /// </summary>
-        internal static string PropertyNotRegistered {
+        public static string PropertyNotRegistered {
             get {
                 return ResourceManager.GetString("PropertyNotRegistered", resourceCulture);
             }
@@ -819,7 +819,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot register property {0}, a PropertyInfo with the same name already exists..
         /// </summary>
-        internal static string PropertyRegisterDuplicateNotAllowed {
+        public static string PropertyRegisterDuplicateNotAllowed {
             get {
                 return ResourceManager.GetString("PropertyRegisterDuplicateNotAllowed", resourceCulture);
             }
@@ -828,7 +828,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot register property {0} after containing type ({1}) has been instantiated.
         /// </summary>
-        internal static string PropertyRegisterNotAllowed {
+        public static string PropertyRegisterNotAllowed {
             get {
                 return ResourceManager.GetString("PropertyRegisterNotAllowed", resourceCulture);
             }
@@ -837,7 +837,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to This property requires {0} index arguments, {1} were provided.
         /// </summary>
-        internal static string PropertyRequiresIndexArguments {
+        public static string PropertyRequiresIndexArguments {
             get {
                 return ResourceManager.GetString("PropertyRequiresIndexArguments", resourceCulture);
             }
@@ -846,7 +846,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property set not allowed.
         /// </summary>
-        internal static string PropertySetNotAllowed {
+        public static string PropertySetNotAllowed {
             get {
                 return ResourceManager.GetString("PropertySetNotAllowed", resourceCulture);
             }
@@ -855,7 +855,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} does not match regular expression.
         /// </summary>
-        internal static string RegExMatchRule {
+        public static string RegExMatchRule {
             get {
                 return ResourceManager.GetString("RegExMatchRule", resourceCulture);
             }
@@ -864,7 +864,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Remove is an invalid operation.
         /// </summary>
-        internal static string RemoveInvalidException {
+        public static string RemoveInvalidException {
             get {
                 return ResourceManager.GetString("RemoveInvalidException", resourceCulture);
             }
@@ -873,7 +873,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Message for broken rule is required. Rule:{0}.
         /// </summary>
-        internal static string RuleMessageRequired {
+        public static string RuleMessageRequired {
             get {
                 return ResourceManager.GetString("RuleMessageRequired", resourceCulture);
             }
@@ -882,7 +882,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
-        internal static string SmartDateT {
+        public static string SmartDateT {
             get {
                 return ResourceManager.GetString("SmartDateT", resourceCulture);
             }
@@ -891,7 +891,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to today.
         /// </summary>
-        internal static string SmartDateToday {
+        public static string SmartDateToday {
             get {
                 return ResourceManager.GetString("SmartDateToday", resourceCulture);
             }
@@ -900,7 +900,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to tom.
         /// </summary>
-        internal static string SmartDateTom {
+        public static string SmartDateTom {
             get {
                 return ResourceManager.GetString("SmartDateTom", resourceCulture);
             }
@@ -909,7 +909,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to tomorrow.
         /// </summary>
-        internal static string SmartDateTomorrow {
+        public static string SmartDateTomorrow {
             get {
                 return ResourceManager.GetString("SmartDateTomorrow", resourceCulture);
             }
@@ -918,7 +918,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to y.
         /// </summary>
-        internal static string SmartDateY {
+        public static string SmartDateY {
             get {
                 return ResourceManager.GetString("SmartDateY", resourceCulture);
             }
@@ -927,7 +927,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to yesterday.
         /// </summary>
-        internal static string SmartDateYesterday {
+        public static string SmartDateYesterday {
             get {
                 return ResourceManager.GetString("SmartDateYesterday", resourceCulture);
             }
@@ -936,7 +936,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to PropertyName &apos;{0}&apos; not found in list.
         /// </summary>
-        internal static string SortedBindingListPropertyNameNotFound {
+        public static string SortedBindingListPropertyNameNotFound {
             get {
                 return ResourceManager.GetString("SortedBindingListPropertyNameNotFound", resourceCulture);
             }
@@ -945,7 +945,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Sorting not supported.
         /// </summary>
-        internal static string SortingNotSupported {
+        public static string SortingNotSupported {
             get {
                 return ResourceManager.GetString("SortingNotSupported", resourceCulture);
             }
@@ -954,7 +954,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} can not exceed {1} characters.
         /// </summary>
-        internal static string StringMaxLengthRule {
+        public static string StringMaxLengthRule {
             get {
                 return ResourceManager.GetString("StringMaxLengthRule", resourceCulture);
             }
@@ -963,7 +963,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} must be at least {1} characters.
         /// </summary>
-        internal static string StringMinLengthRule {
+        public static string StringMinLengthRule {
             get {
                 return ResourceManager.GetString("StringMinLengthRule", resourceCulture);
             }
@@ -972,7 +972,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} required.
         /// </summary>
-        internal static string StringRequiredRule {
+        public static string StringRequiredRule {
             get {
                 return ResourceManager.GetString("StringRequiredRule", resourceCulture);
             }
@@ -981,7 +981,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to String value can not be converted to a date.
         /// </summary>
-        internal static string StringToDateException {
+        public static string StringToDateException {
             get {
                 return ResourceManager.GetString("StringToDateException", resourceCulture);
             }
@@ -990,7 +990,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Method {0} must return Task&lt;object&gt;.
         /// </summary>
-        internal static string TaskOfObjectException {
+        public static string TaskOfObjectException {
             get {
                 return ResourceManager.GetString("TaskOfObjectException", resourceCulture);
             }
@@ -999,7 +999,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
         /// </summary>
-        internal static string TypeLoadException {
+        public static string TypeLoadException {
             get {
                 return ResourceManager.GetString("TypeLoadException", resourceCulture);
             }
@@ -1008,7 +1008,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Unhandled CSLA Known type was found.
         /// </summary>
-        internal static string UnandledKNownTypeException {
+        public static string UnandledKNownTypeException {
             get {
                 return ResourceManager.GetString("UnandledKNownTypeException", resourceCulture);
             }
@@ -1017,7 +1017,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
         /// </summary>
-        internal static string UpdateMethodNameNotSpecified {
+        public static string UpdateMethodNameNotSpecified {
             get {
                 return ResourceManager.GetString("UpdateMethodNameNotSpecified", resourceCulture);
             }
@@ -1026,7 +1026,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Invalid operation - update not allowed.
         /// </summary>
-        internal static string UpdateNotSupportedException {
+        public static string UpdateNotSupportedException {
             get {
                 return ResourceManager.GetString("UpdateNotSupportedException", resourceCulture);
             }
@@ -1035,7 +1035,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to User not authorized to {0} object type {1}.
         /// </summary>
-        internal static string UserNotAuthorizedException {
+        public static string UserNotAuthorizedException {
             get {
                 return ResourceManager.GetString("UserNotAuthorizedException", resourceCulture);
             }
@@ -1044,7 +1044,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Value is not a SmartDate.
         /// </summary>
-        internal static string ValueNotSmartDateException {
+        public static string ValueNotSmartDateException {
             get {
                 return ResourceManager.GetString("ValueNotSmartDateException", resourceCulture);
             }
@@ -1053,7 +1053,7 @@ namespace Csla.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Warning.
         /// </summary>
-        internal static string Warning {
+        public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }

@@ -1337,7 +1337,7 @@ namespace Csla.Validation
       if (!isAuthorized)
       {
         e.Severity = RuleSeverity.Information;
-        e.Description = string.Format("You are not authorized to read this field", RuleArgs.GetPropertyName(e));
+        e.Description = string.Format("You are not authorized to read this field {0}", RuleArgs.GetPropertyName(e));
       }
 
       return isAuthorized;
@@ -1369,7 +1369,7 @@ namespace Csla.Validation
       if (!isAuthorized)
       {
         e.Severity = RuleSeverity.Information;
-        e.Description = string.Format("You are not authorized to write to this field", RuleArgs.GetPropertyName(e));
+        e.Description = string.Format("You are not authorized to write to this field {0}", RuleArgs.GetPropertyName(e));
       }
 
       return isAuthorized;

@@ -94,7 +94,9 @@ Global
 		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ebd18729-9887-4ce5-a8b7-760baf75b027}*SharedItemsImports = 13
 		Csla.Shared\Csla.Shared.projitems*{bf7b6927-41c1-40c7-8a7c-e0977455dad4}*SharedItemsImports = 4
+		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{efd22f68-1a49-4e97-b8a5-d424d32f61d4}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{1fce45ff-c391-4ed1-a9c4-f71caf8773e6}*SharedItemsImports = 4
+		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{71fe587c-daa4-411f-8c1b-e716cb90fd16}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{46f5e424-7524-4bc4-a6e1-620505a6c5d6}*SharedItemsImports = 4
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ea416867-349f-43f7-ae5a-85286643ff10}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4

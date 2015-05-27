@@ -152,3 +152,4 @@ Thumbs.db
 /XamarinPackage/*.xam
 
 *.userprefs
+/Source/Csla.WinRT/resources

@@ -38,7 +38,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\Csla.Shared\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -55,22 +55,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbContextManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Csla\CslaKey.snk">
+    <None Include="..\Csla.Shared\CslaKey.snk">
       <Link>CslaKey.snk</Link>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla\Csla.csproj">
-      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla</Name>
+    <ProjectReference Include="..\Csla.Net4.5\Csla.Net4.5.csproj">
+      <Project>{bf7b6927-41c1-40c7-8a7c-e0977455dad4}</Project>
+      <Name>Csla.Net4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

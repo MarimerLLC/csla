@@ -121,10 +121,6 @@
       <Project>{492b788e-888e-4041-b356-f5947b50d360}</Project>
       <Name>Csla.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Csla\Csla.csproj">
-      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -98,33 +98,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
-      <Link>AuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\CommonRules.cs">
-      <Link>CommonRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
-      <Link>DecoratedRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
-      <Link>ObjectAccessor.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
-      <Link>PropertyHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
-      <Link>ReadOnlyBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleArgs.cs">
-      <Link>RuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
-      <Link>RuleExtensions.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +111,7 @@
     <None Include="CslaKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

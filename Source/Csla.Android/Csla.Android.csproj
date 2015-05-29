@@ -14,6 +14,9 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <AndroidUseLatestPlatformSdk />
+    <TargetFrameworkVersion>v2.3</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +49,7 @@
   <ItemGroup>
     <Reference Include="Mono.Android" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization" />
@@ -55,30 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\DisplayAttribute.cs">
-      <Link>DataAnnotations\DisplayAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RangeAttribute.cs">
-      <Link>DataAnnotations\RangeAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RegularExpressionAttribute.cs">
-      <Link>DataAnnotations\RegularExpressionAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\RequiredAttribute.cs">
-      <Link>DataAnnotations\RequiredAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\StringLengthAttribute.cs">
-      <Link>DataAnnotations\StringLengthAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationAttribute.cs">
-      <Link>DataAnnotations\ValidationAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationContext.cs">
-      <Link>DataAnnotations\ValidationContext.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.WinPRT\DataAnnotations\ValidationResult.cs">
-      <Link>DataAnnotations\ValidationResult.cs</Link>
-    </Compile>
     <Compile Include="..\Csla.WinPRT\Service References\WcfPortal\Reference.cs">
       <Link>Service References\WfcPortal\Reference.cs</Link>
     </Compile>
@@ -132,6 +112,9 @@
     </Compile>
     <Compile Include="..\Csla\DataPortalException.cs">
       <Link>DataPortalException.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\DataPortalOperationExtensions.cs">
+      <Link>DataPortalOperationExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Csla\DataPortalT.cs">
       <Link>DataPortalT.cs</Link>
@@ -294,6 +277,9 @@
     </Compile>
     <Compile Include="..\Csla\Threading\ContextParams.cs">
       <Link>Threading\ContextParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
+      <Link>Threading\CslaTaskScheduler.cs</Link>
     </Compile>
     <Compile Include="..\Csla\TransactionalTypes.cs">
       <Link>TransactionalTypes.cs</Link>
@@ -766,6 +752,13 @@
     <None Include="CslaKey.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

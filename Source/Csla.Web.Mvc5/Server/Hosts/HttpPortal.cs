@@ -13,7 +13,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Csla.Server.Hosts.HttpChannel;
 using Csla.Core;
 using System.Security.Principal;
@@ -48,9 +47,9 @@ namespace Csla.Server.Hosts
 
         var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
         var context = new DataPortalContext(
-          (IPrincipal)MobileFormatter.Deserialize(request.Principal), 
-          true, 
-          request.ClientCulture, 
+          (IPrincipal)MobileFormatter.Deserialize(request.Principal),
+          true,
+          request.ClientCulture,
           request.ClientUICulture,
           (ContextDictionary)MobileFormatter.Deserialize(request.ClientContext),
           (ContextDictionary)MobileFormatter.Deserialize(request.GlobalContext));
@@ -66,8 +65,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -110,8 +114,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -149,8 +158,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     /// <summary>
@@ -193,8 +207,13 @@ namespace Csla.Server.Hosts
       catch (Exception ex)
       {
         result.ErrorData = new HttpErrorInfo(ex);
+        throw;
       }
-      return ConvertResponse(result);
+      finally
+      {
+        result = ConvertResponse(result);
+      }
+      return result;
     }
 
     #region Criteria

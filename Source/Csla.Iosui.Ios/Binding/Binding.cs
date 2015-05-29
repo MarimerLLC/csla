@@ -10,7 +10,11 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+#if __UNIFIED__
+using UIKit;
+#else
 using MonoTouch.UIKit;
+#endif
 
 namespace Csla.Iosui.Binding
 {

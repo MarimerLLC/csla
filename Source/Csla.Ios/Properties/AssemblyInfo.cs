@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for iOS")]
+[assembly: AssemblyTitle("CSLA .NET for iOS Unified API")]
 [assembly: AssemblyDescription("CSLA .NET Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.5.601.0")]
-[assembly: AssemblyFileVersion("4.5.601.0")]
+[assembly: AssemblyVersion("4.5.700.0")]
+[assembly: AssemblyFileVersion("4.5.700.0")]

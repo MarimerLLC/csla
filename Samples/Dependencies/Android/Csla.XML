@@ -4,245 +4,6 @@
         <name>Csla</name>
     </assembly>
     <members>
-        <member name="T:System.ComponentModel.DataAnnotations.DisplayAttribute">
-            <summary>
-            Defines a user-friendly display name for the property.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.GetName">
-            <summary>
-            Gets the Name property value.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.DisplayAttribute.#ctor(System.Boolean,System.String)">
-            <summary>
-            Creates an instance of the type.
-            </summary>
-            <param name="AutoGenerateField">AutoGenerateField value.</param>
-            <param name="Name">Friendly name.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Name">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.Description">
-            <summary>
-            User-friendly property name.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.DisplayAttribute.AutoGenerateField">
-            <summary>
-            Gets or sets a value indicating whether to
-            autogenerate the field.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RangeAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationAttribute">
-            <summary>
-            Base class used to create validation attributes.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationAttribute.GetValidationResult(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Checks whether the specified value is valid with respect to the current
-            validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessage">
-            <summary>
-            Gets or sets an error message to associated with a validation control if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceName">
-            <summary>
-            Gets or sets the error resource name in order to look up the error message
-            text from a resource if validation fails.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationAttribute.ErrorMessageResourceType">
-            <summary>
-            Gets or sets the resource type to use for message look-up if validation fails.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Int32,System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Double,System.Double)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.#ctor(System.Type,System.String,System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="type">Type of object to test.</param>
-            <param name="minimum">Minimum value allowed.</param>
-            <param name="maximum">Maximum value allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RangeAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RegularExpressionAttribute">
-            <summary>
-            Specifies that a data field value must
-            match the specified regular expression.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.#ctor(System.String)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RegularExpressionAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.RequiredAttribute">
-            <summary>
-            Specifies that a data field value is required.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.#ctor">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.RequiredAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.StringLengthAttribute">
-            <summary>
-            Specifies that a data field value must
-            fall within the specified range.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.#ctor(System.Int32)">
-            <summary>
-            Creates an instance of the attribute.
-            </summary>
-            <param name="stringMaxLength">Maximum string length allowed.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.StringLengthAttribute.IsValid(System.Object,System.ComponentModel.DataAnnotations.ValidationContext)">
-            <summary>
-            Validates the specified value with respect to
-            the current validation attribute.
-            </summary>
-            <param name="value">Value of the object to validate.</param>
-            <param name="validationContext">The context information about the validation operation.</param>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationContext">
-            <summary>
-            Validation context information.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationContext.#ctor(System.Object,System.Object,System.Collections.Generic.IDictionary{System.Object,System.Object})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="instance">Object to validate.</param>
-            <param name="serviceProvider">Ignored.</param>
-            <param name="items">Collection of name/value pairs.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.DisplayName">
-            <summary>
-            Gets or sets the display name of the member
-            to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.MemberName">
-            <summary>
-            Gets or sets the name of the member to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectInstance">
-            <summary>
-            Gets the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.ObjectType">
-            <summary>
-            Gets the type of the object to validate.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationContext.Items">
-            <summary>
-            Gets the dictionary of items that is associated with this context.
-            </summary>
-        </member>
-        <member name="T:System.ComponentModel.DataAnnotations.ValidationResult">
-            <summary>
-            Results of a validation operation.
-            </summary>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String)">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-        </member>
-        <member name="M:System.ComponentModel.DataAnnotations.ValidationResult.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String})">
-            <summary>
-            Creates an instance of the object.
-            </summary>
-            <param name="errorMessage">The error message for the validation.</param>
-            <param name="memberNames">The collection of member names that indicate
-            which fields have validation errors.</param>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.ErrorMessage">
-            <summary>
-            Gets the error message for the validation.
-            </summary>
-        </member>
-        <member name="P:System.ComponentModel.DataAnnotations.ValidationResult.MemberNames">
-            <summary>
-            Gets the collection of member names that indicate which
-            fields have validation errors.
-            </summary>
-        </member>
         <member name="T:Csla.ApplicationContext">
             <summary>
             Provides consistent context information between the client
@@ -2559,6 +2320,18 @@
             invoked.
             </remarks>
         </member>
+        <member name="M:Csla.Core.BusinessBase.LoadPropertyByReflection(System.String,Csla.Core.IPropertyInfo,System.Object)">
+            <summary>
+            Calls the generic LoadProperty method via reflection.
+            </summary>
+            <param name="loadPropertyMethodName">
+            The LoadProperty method name to call via reflection.</param>
+            <param name="propertyInfo">
+            PropertyInfo object containing property metadata.</param>
+            <param name="newValue">
+            The new value for the property.</param>
+            <returns></returns>
+        </member>
         <member name="M:Csla.Core.BusinessBase.ResetChildEditLevel(System.Object)">
             <summary>
             Makes sure that a child object is set up properly
@@ -4521,6 +4294,11 @@
             and client.
             </summary>
         </member>
+        <member name="T:Csla.DataPortalOperationExtensions">
+            <summary>
+            Extension methods for mapping <c>DataPortalOperations</c> to other system values.
+            </summary>
+        </member>
         <member name="T:Csla.DataPortal`1">
             <summary>
             Client side data portal used for making asynchronous
@@ -6045,6 +5823,14 @@
             Object containing information about the
             client request to the data portal.
             </summary>
+        </member>
+        <member name="M:Csla.Server.AuthorizeRequest.CheckPermissions">
+            <summary>
+            Checks that the current identity has permission to carry out this operation,
+            and if not throws a <c>SecurityException</c>.
+            </summary>
+            <exception cref="T:Csla.Security.SecurityException">Thrown if the current principal does 
+            not have permission to carry out this operation.</exception>
         </member>
         <member name="P:Csla.Server.AuthorizeRequest.ObjectType">
             <summary>
@@ -7911,6 +7697,41 @@
             <summary>
             Holds the CSLA Context values
             </summary>
+        </member>
+        <member name="T:Csla.Threading.CslaTaskScheduler">
+            <summary>
+            A TaskScheduler that sets CSLA context before task is executed.
+            </summary>
+        </member>
+        <member name="F:Csla.Threading.CslaTaskScheduler._currentThreadIsProcessingItems">
+            <summary>Whether the current thread is processing work items.</summary>
+        </member>
+        <member name="F:Csla.Threading.CslaTaskScheduler._tasks">
+            <summary>The list of tasks to be executed.</summary>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <summary>Queues a task to the scheduler.</summary>
+            <param name="task">The task to be queued.</param>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.NotifyThreadPoolOfPendingWork">
+            <summary>
+            Informs the ThreadPool that there's work to be executed for this scheduler.
+            </summary>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>Attempts to execute the specified task on the current thread.</summary>
+            <param name="task">The task to be executed.</param>
+            <param name="taskWasPreviouslyQueued"></param>
+            <returns>Whether the task could be executed on the current thread.</returns>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
+            <summary>Attempts to remove a previously scheduled task from the scheduler.</summary>
+            <param name="task">The task to be removed.</param>
+            <returns>Whether the task could be found and removed.</returns>
+        </member>
+        <member name="M:Csla.Threading.CslaTaskScheduler.GetScheduledTasks">
+            <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary>
+            <returns>An enumerable of the tasks currently scheduled.</returns>
         </member>
         <member name="T:Csla.TransactionalTypes">
             <summary>

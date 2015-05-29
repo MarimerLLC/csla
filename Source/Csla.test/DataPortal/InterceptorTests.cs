@@ -239,5 +239,10 @@ namespace Csla.Test.DataPortal
     {
       Csla.ApplicationContext.GlobalContext["Activate2+" + obj.GetType().Name] = "InitializeInstance";
     }
+
+    public void FinalizeInstance(object obj)
+    {
+      Csla.ApplicationContext.GlobalContext["Activate3+" + obj.GetType().Name] = "FinalizeInstance";
+    }
   }
 }

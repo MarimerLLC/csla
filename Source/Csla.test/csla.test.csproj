@@ -258,6 +258,8 @@
     <Compile Include="Serialization\BinaryReaderWriterTestClass.cs" />
     <Compile Include="Serialization\DCRoot.cs" />
     <Compile Include="Serialization\nonSerializableEventHandler.cs" />
+    <Compile Include="Serialization\NonSerializedClass.cs" />
+    <Compile Include="Serialization\OverrideSerializationRoot.cs" />
     <Compile Include="Serialization\SerializationRoot.cs" />
     <Compile Include="Serialization\SerializationTests.cs" />
     <Compile Include="Serialization\TestEventSink.cs" />

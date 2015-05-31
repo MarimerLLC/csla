@@ -46,41 +46,10 @@
     <None Include="..\Csla.Validation\CslaKey.snk">
       <Link>CslaKey.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
-      <Link>AuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\CommonRules.cs">
-      <Link>CommonRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
-      <Link>DecoratedRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
-      <Link>ObjectAccessor.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
-      <Link>PropertyHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
-      <Link>ReadOnlyBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleArgs.cs">
-      <Link>RuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
-      <Link>RuleExtensions.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\Csla.Validation\Upgrade.txt">
-      <Link>Upgrade.txt</Link>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla.WinRT.Phone\Csla.WinRT.Phone.csproj">
@@ -88,6 +57,13 @@
       <Name>Csla.WinRT.Phone</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

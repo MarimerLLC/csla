@@ -13,7 +13,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Csla.Server.Hosts.HttpChannel;
 using Csla.Core;
 using System.Security.Principal;

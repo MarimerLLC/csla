@@ -531,10 +531,15 @@ namespace Csla
       {
 #if !SILVERLIGHT && !NETFX_CORE
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+
         if (string.IsNullOrEmpty(tmp))
           tmp = "BinaryFormatter";
-        return (SerializationFormatters)
-          Enum.Parse(typeof(SerializationFormatters), tmp);
+
+        SerializationFormatters serializationFormatter;
+        if (Enum.TryParse(tmp, true, out serializationFormatter))
+            return serializationFormatter;
+
+        return SerializationFormatters.CustomFormatter;
 #else
         return SerializationFormatters.MobileFormatter;
 #endif
@@ -559,6 +564,11 @@ namespace Csla
       /// NetDataContractSerializer</see> provided as part of WCF.
       /// </summary>
       NetDataContractSerializer,
+      /// <summary>
+      /// Use a custom formatter provided by type found
+      /// at <appSetting key="CslaSerializationFormatterType"></appSetting>
+      /// </summary>
+      CustomFormatter,
 #endif
       /// <summary>
       /// Use the CSLA .NET MobileFormatter

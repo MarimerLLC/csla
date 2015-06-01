@@ -9,12 +9,6 @@
     <Import_RootNamespace>Csla.Xaml.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BrokenRulesSeverityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.cs" />

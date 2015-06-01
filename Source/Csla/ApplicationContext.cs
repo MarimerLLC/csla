@@ -566,7 +566,7 @@ namespace Csla
       NetDataContractSerializer,
       /// <summary>
       /// Use a custom formatter provided by type found
-      /// at <appSetting key="CslaSerializationFormatterType"></appSetting>
+      /// at <appSetting key="CslaSerializationFormatter"></appSetting>
       /// </summary>
       CustomFormatter,
 #endif

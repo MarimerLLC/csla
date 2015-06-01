@@ -117,6 +117,7 @@
       <Name>Csla.Net4</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

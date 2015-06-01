@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>3698d49c-25b5-4f46-bde2-14008231e68d</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.Xaml.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BrokenRulesSeverityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CancellableViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaDataProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaDataProviderCommandManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataDecoratorBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExecuteEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IdentityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IErrorDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InvokeMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IsNotConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TriggerAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Resources\Error.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Resources\Information.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Resources\Warning.png" />
+  </ItemGroup>
+</Project>

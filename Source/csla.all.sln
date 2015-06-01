@@ -93,6 +93,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Shared", "Csla.Web
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Windows.Shared", "Csla.Windows.Shared\Csla.Windows.Shared.shproj", "{79283F86-5F62-4A53-ADC2-8058A17D4B13}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Xaml.Shared", "Csla.Xaml.Shared\Csla.Xaml.Shared.shproj", "{3698D49C-25B5-4F46-BDE2-14008231E68D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{514afda4-a92f-464b-a9ed-73796448ef25}*SharedItemsImports = 13
@@ -103,11 +105,16 @@ Global
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{fd0f1958-7391-4141-a710-4b5fbb16c407}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{24c13e06-70a8-46c2-8351-987af0780f78}*SharedItemsImports = 4
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{68a43187-0ee5-4b4c-a053-abf5123b5aad}*SharedItemsImports = 4
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{9072d136-8ffb-43f3-b166-ca9dc791fa1d}*SharedItemsImports = 4
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{563efdfa-eb47-4039-955b-654582ea5362}*SharedItemsImports = 4
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{c333cfed-d5a6-47a2-96a6-f13ee2b71ecf}*SharedItemsImports = 4
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{8ac01fee-c998-4048-b109-a98d070a167d}*SharedItemsImports = 4
 		Csla.Web.Shared\Csla.Web.Shared.projitems*{64816801-0d82-4883-aee5-82037d3ebadb}*SharedItemsImports = 13
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{eb6d61ca-a7e4-4031-b3ad-bec689490ddb}*SharedItemsImports = 4
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{edcee91e-c70d-4480-8af7-d7fde06a5c21}*SharedItemsImports = 13
 		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ebd18729-9887-4ce5-a8b7-760baf75b027}*SharedItemsImports = 13
+		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{3698d49c-25b5-4f46-bde2-14008231e68d}*SharedItemsImports = 13
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{2d4eb600-d8cb-4bc3-8fb9-e91df30cd693}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{bf7b6927-41c1-40c7-8a7c-e0977455dad4}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{0b368484-950e-4ebe-9edc-bff0c46dbddb}*SharedItemsImports = 4
@@ -2509,5 +2516,6 @@ Global
 		{BB7A0DB4-F7F4-4632-B6AE-1EDCDD758F16} = {3C1B872F-4DDC-4758-82CE-A052E5909204}
 		{64816801-0D82-4883-AEE5-82037D3EBADB} = {A26EBA9F-1777-46F2-994A-4C4D3055873D}
 		{79283F86-5F62-4A53-ADC2-8058A17D4B13} = {A26EBA9F-1777-46F2-994A-4C4D3055873D}
+		{3698D49C-25B5-4F46-BDE2-14008231E68D} = {A26EBA9F-1777-46F2-994A-4C4D3055873D}
 	EndGlobalSection
 EndGlobal

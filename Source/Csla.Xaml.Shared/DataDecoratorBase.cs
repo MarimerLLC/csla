@@ -1,3 +1,4 @@
+#if !NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="DataDecoratorBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -334,3 +335,4 @@ namespace Csla.Xaml
     #endregion
   }
 }
+#endif

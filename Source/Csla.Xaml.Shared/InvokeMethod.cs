@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NETFX_CORE
+//-----------------------------------------------------------------------
 // <copyright file="InvokeMethod.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -263,3 +264,4 @@ namespace Csla.Xaml
     }
   }
 }
+#endif

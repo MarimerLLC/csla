@@ -1,3 +1,4 @@
+#if !NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="IdentityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -50,3 +51,4 @@ namespace Csla.Xaml
     #endregion
   }
 }
+#endif

@@ -23,22 +23,22 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Bin\Debug\NET\</OutputPath>
+    <OutputPath>..\..\Bin\Debug\NET45\</OutputPath>
     <DefineConstants>TRACE;DEBUG;MVC4</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\NET\Csla.Web.Mvc4.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET45\Csla.Web.Mvc4.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\Release\NET\</OutputPath>
+    <OutputPath>..\..\Bin\Release\NET45\</OutputPath>
     <DefineConstants>TRACE;MVC4</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>..\..\Bin\Release\NET\Csla.Web.Mvc4.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET45\Csla.Web.Mvc4.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Mono Debug|AnyCPU'">
@@ -79,10 +79,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

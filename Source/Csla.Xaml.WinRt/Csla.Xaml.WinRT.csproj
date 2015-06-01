@@ -118,18 +118,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
-      <Link>ErrorEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\IViewModel.cs">
-      <Link>IViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
-      <Link>PropertyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
-      <Link>ViewModelBase.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +130,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

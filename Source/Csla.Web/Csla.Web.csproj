@@ -93,31 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationContextManager.cs" />
-    <Compile Include="CslaDataSource.cs" />
-    <Compile Include="CslaDataSourceView.cs" />
-    <Compile Include="DeleteObjectArgs.cs" />
-    <Compile Include="Design\CslaDataSourceConfiguration.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Design\CslaDataSourceConfiguration.designer.cs">
-      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Design\CslaDataSourceDesigner.cs" />
-    <Compile Include="Design\CslaDesignerDataSourceView.cs" />
-    <Compile Include="Design\ObjectFieldInfo.cs" />
-    <Compile Include="Design\ObjectSchema.cs" />
-    <Compile Include="Design\ObjectViewSchema.cs" />
-    <Compile Include="InsertObjectArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\IdentityFactory.cs" />
-    <Compile Include="SelectObjectArgs.cs" />
-    <Compile Include="UpdateObjectArgs.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Design\CslaDataSourceConfiguration.resx">
-      <DependentUpon>CslaDataSourceConfiguration.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
@@ -132,6 +108,7 @@
       <Name>Csla.Net4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Web.Shared\Csla.Web.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

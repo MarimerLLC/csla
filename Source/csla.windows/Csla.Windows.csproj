@@ -92,36 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BindingSourceHelper.cs" />
-    <Compile Include="BindingSourceNode.cs" />
-    <Compile Include="BindingSourceRefresh.cs" />
-    <Compile Include="BusyAnimation.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BusyAnimation.designer.cs">
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CslaActionCancelEventArgs.cs" />
-    <Compile Include="CslaActionEventArgs.cs" />
-    <Compile Include="CslaActionExtender.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CslaActionExtenderProperties.cs" />
-    <Compile Include="CslaActionExtenderToolStrip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Enums.cs" />
-    <Compile Include="ErrorEncounteredEventArgs.cs" />
-    <Compile Include="HasBrokenRulesEventArgs.cs" />
-    <Compile Include="HostPropertyAttribute.cs" />
-    <Compile Include="ObjectSaveException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadWriteAuthorization.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="BusyAnimation.resx">
-      <DependentUpon>BusyAnimation.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="CslaKey.snk" />
@@ -136,6 +107,7 @@
       <Name>Csla.Net4.5</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Windows.Shared\Csla.Windows.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

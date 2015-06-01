@@ -138,32 +138,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Web\*.cs" />
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceConfiguration.cs">
-      <Link>Design\CslaDataSourceConfiguration</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceConfiguration.designer.cs">
-      <Link>Design\CslaDataSourceConfiguration.designer</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDataSourceDesigner.cs">
-      <Link>Design\CslaDataSourceDesigner</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\CslaDesignerDataSourceView.cs">
-      <Link>Design\CslaDesignerDataSourceView</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectFieldInfo.cs">
-      <Link>Design\ObjectFieldInfo</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectSchema.cs">
-      <Link>Design\ObjectSchema</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Design\ObjectViewSchema.cs">
-      <Link>Design\ObjectViewSchema</Link>
-    </Compile>
-    <Compile Include="..\Csla.Web\Security\*.cs">
-      <Link>Security\%(FileName)</Link>
-    </Compile>
+    <Compile Include="..\Csla.Web\ApplicationContextManager.cs" />
+    <Compile Include="..\Csla.Web\CslaDataSource.cs" />
+    <Compile Include="..\Csla.Web\CslaDataSourceView.cs" />
+    <Compile Include="..\Csla.Web\DeleteObjectArgs.cs" />
+    <Compile Include="..\Csla.Web\InsertObjectArgs.cs" />
+    <Compile Include="..\Csla.Web\SelectObjectArgs.cs" />
+    <Compile Include="..\Csla.Web\UpdateObjectArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,11 +155,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Csla.Web\Design\CslaDataSourceConfiguration.resx">
-      <Link>Design\CslaDataSourceConfiguration.resx</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="CslaKey.snk" />
     <None Include="packages.config" />
@@ -186,6 +162,7 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
+  <Import Project="..\Csla.Web.Shared\Csla.Web.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

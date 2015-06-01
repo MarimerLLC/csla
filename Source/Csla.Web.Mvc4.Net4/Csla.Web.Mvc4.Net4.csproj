@@ -36,7 +36,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\NET4\</OutputPath>
-    <DefineConstants>TRACE;NET40</DefineConstants>
+    <DefineConstants>TRACE;NET40;MVC4</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -164,10 +164,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Web.Mvc4\*.cs" />
-    <Compile Include="..\Csla.Web.Mvc5\Server\Hosts\HttpPortal.cs">
-      <Link>Server\Hosts\HttpPortal.cs</Link>
-    </Compile>
+    <Compile Include="..\Csla.Web.Mvc4\Controller.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\CslaModelBinder.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\HasPermissionAttribute.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\HtmlExtensions.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\IModelCreator.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\IViewModel.cs" />
+    <Compile Include="..\Csla.Web.Mvc4\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +188,7 @@
     <None Include="CslaKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

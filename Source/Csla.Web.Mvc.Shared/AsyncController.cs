@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if MVC5
+//-----------------------------------------------------------------------
 // <copyright file="Controller.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -103,3 +104,4 @@ namespace Csla.Web.Mvc
         }
     }
 }
+#endif

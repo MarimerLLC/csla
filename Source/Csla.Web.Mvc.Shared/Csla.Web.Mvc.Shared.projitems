@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>bb7a0db4-f7f4-4632-b6ae-1edcdd758f16</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.Web.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AsyncController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaModelBinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HasPermissionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HtmlExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IModelCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\Hosts\HttpPortalController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
+  </ItemGroup>
+</Project>

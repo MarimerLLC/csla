@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NET40
+//-----------------------------------------------------------------------
 // <copyright file="HttpPortalController.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -111,3 +112,4 @@ namespace Csla.Server.Hosts
     }
   }
 }
+#endif

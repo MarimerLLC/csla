@@ -26,7 +26,7 @@ namespace Csla
         case DataPortalOperations.Update:
           return AuthorizationActions.EditObject;
         case DataPortalOperations.Delete:
-          return AuthorizationActions.CreateObject;
+          return AuthorizationActions.DeleteObject;
         case DataPortalOperations.Execute:
           // CSLA handles Execute/CommandObject as Update operations 
           // - this is the permission that the client DataPortal checks.

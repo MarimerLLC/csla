@@ -550,7 +550,43 @@ namespace Csla.Test.Serialization
       }
     }
 #endif
+
+#if !SILVERLIGHT && !NETFX_CORE
+    [TestMethod]
+    public void UseCustomSerializationFormatter()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.CustomFormatter);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
+
+    [TestMethod]
+    public void UseNetDataContractSerializer()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "NetDataContractSerializer";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.NetDataContractSerializer);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
   }
+#endif
 
   [Serializable]
   public class TestCommand : CommandBase<TestCommand>

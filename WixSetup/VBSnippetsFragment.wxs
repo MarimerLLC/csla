@@ -18,91 +18,91 @@
 </CommandLineOptions>-->
   <Fragment>
     <ComponentGroup Id="VBSnippetsComp">
-      <ComponentRef Id="comp_5A1E4F93DFD24134970781479C0979FC" />
-      <ComponentRef Id="comp_203B12AB6C484D4D9B6594CC201C4B4B" />
-      <ComponentRef Id="comp_AA16141D933F4DFABEF235012A41E454" />
-      <ComponentRef Id="comp_1956CB98A5C74D93941DD4C8412C0693" />
-      <ComponentRef Id="comp_D3F70C0FCAAC4BCB94EB97550EFAFAFC" />
-      <ComponentRef Id="comp_FEBB1E245076454E9D9E62BE1BD5E282" />
-      <ComponentRef Id="comp_2768E768B61B45E2AE0261A1503F33B6" />
-      <ComponentRef Id="comp_3F5F555C870446D1A7E5BB95F8FD7A75" />
-      <ComponentRef Id="comp_D00D5420DBD24AFDB4B9532B250CBCCE" />
-      <ComponentRef Id="comp_F5718760D4BD4FAEB251C2784BCFEAC5" />
-      <ComponentRef Id="comp_3703D5F45C854571BD81A62CA277522B" />
-      <ComponentRef Id="comp_2DD62C903E5448DDB4469099C7BE8E9E" />
-      <ComponentRef Id="comp_FA02D25CCE5A42C996BD5BABAA4AC799" />
-      <ComponentRef Id="comp_0A2801587F5C4031BA7A2AC35FC64919" />
-      <ComponentRef Id="comp_D2CB2756E8E6443CB8E6DBCA5C0692FC" />
-      <ComponentRef Id="comp_BB2520908D5C40C898A408B924102561" />
-      <ComponentRef Id="comp_1C08BF19E5E9475FA68763E98BD30F3E" />
-      <ComponentRef Id="comp_F3327FB0AC464988A3729760637D2231" />
-      <ComponentRef Id="comp_2EB089E7AF244D3893CADB271B5FD39C" />
-      <ComponentRef Id="comp_E9EBF774DBFC4ADBA83E08C862BC4E3F" />
-      <ComponentRef Id="comp_0BE739D268AE4627BEE3883841A4B17D" />
+      <ComponentRef Id="comp_9989FCEFA81041D999299941AD2D137F" />
+      <ComponentRef Id="comp_6938E8A101514FB6900093A856197B1F" />
+      <ComponentRef Id="comp_9538F2D236F04A1199FC8A7E7CCDB428" />
+      <ComponentRef Id="comp_E86A5566FE364F1DA883D6D292E59245" />
+      <ComponentRef Id="comp_CA9033282E894872B38E9CE6E26A74FB" />
+      <ComponentRef Id="comp_56B738E9CFE5444EB26058A24C44E114" />
+      <ComponentRef Id="comp_3987A62EB9CB40B18767D122CFBF2724" />
+      <ComponentRef Id="comp_8A15E316D7A045FF86697D603FCE33B2" />
+      <ComponentRef Id="comp_F4B34E57ABF949C3B468AA14436D4E45" />
+      <ComponentRef Id="comp_17AE8877464D408E8B1070BA908978E0" />
+      <ComponentRef Id="comp_6446A954ED744005864E2EFFDCC4DA23" />
+      <ComponentRef Id="comp_052F1FE0D999473BB87234BD6F302712" />
+      <ComponentRef Id="comp_DBA9B26FA34641C0BA1BFACF30F0A2B6" />
+      <ComponentRef Id="comp_1DF801727D5644068BB20FA484C6C966" />
+      <ComponentRef Id="comp_CE5F91A5F5714B7C9AEE606FB526AE61" />
+      <ComponentRef Id="comp_354913AAF8DB4AAA9E5FD50D11BA184B" />
+      <ComponentRef Id="comp_0F354941CF9B417789E6012A90AD88FC" />
+      <ComponentRef Id="comp_1120B727F7B74BDA969C91BAFAC56DD4" />
+      <ComponentRef Id="comp_571A1A8D5D714F2C991C0B5E13D31E72" />
+      <ComponentRef Id="comp_0915D6D115054A12807283B3212D0438" />
+      <ComponentRef Id="comp_B53A5613BC83411FA5E90E022F51FFA8" />
     </ComponentGroup>
     <DirectoryRef Id="VBSnippets">
-      <Component Id="comp_5A1E4F93DFD24134970781479C0979FC" Guid="84AACC31-ABC0-4A6F-977F-4D8D541EDE66">
-        <File Id="file_DF6164FCBB0742CCA13F5D79721ABFC2" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddACriteriaClass.snippet" />
+      <Component Id="comp_9989FCEFA81041D999299941AD2D137F" Guid="9C7BA7E1-FD21-4D0E-9F26-F6CEDEAD5848">
+        <File Id="file_2119934B41B94043927F38CE78459E8E" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddACriteriaClass.snippet" />
       </Component>
-      <Component Id="comp_203B12AB6C484D4D9B6594CC201C4B4B" Guid="2F85146F-41CD-4716-B045-D223D477508D">
-        <File Id="file_2650F2B9E3CD45F594CC99FCBE8EB724" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddBusinessRegions.snippet" />
+      <Component Id="comp_6938E8A101514FB6900093A856197B1F" Guid="7046BCE9-FC4F-4F86-9EDB-10B789219BF8">
+        <File Id="file_327FD4040B3C420FB577597FB925797D" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddBusinessRegions.snippet" />
       </Component>
-      <Component Id="comp_AA16141D933F4DFABEF235012A41E454" Guid="EE08D676-865E-47ED-B44B-B2EAF7C1B5DF">
-        <File Id="file_297DC64BFE264CECAE9E4E011CD11E60" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddDataAccessRegion.snippet" />
+      <Component Id="comp_9538F2D236F04A1199FC8A7E7CCDB428" Guid="3D1C7DA1-A2C8-4746-B54A-A9D6BCC9BE6C">
+        <File Id="file_72C1B14E6819400B9BAE58E929F0A503" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddDataAccessRegion.snippet" />
       </Component>
-      <Component Id="comp_1956CB98A5C74D93941DD4C8412C0693" Guid="64C6531E-637D-4779-B896-69F82DABAFE3">
-        <File Id="file_75F0775C8CD44015B212AE8BCAAE9803" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddFactoryMethods.snippet" />
+      <Component Id="comp_E86A5566FE364F1DA883D6D292E59245" Guid="38D95039-3B23-4312-B3F1-C3DBEC4F8657">
+        <File Id="file_D64AF0BF6BD24792B3B55F550326CE3D" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\AddFactoryMethods.snippet" />
       </Component>
-      <Component Id="comp_D3F70C0FCAAC4BCB94EB97550EFAFAFC" Guid="5429EFAE-1471-4793-B627-F4562A6359F2">
-        <File Id="file_35C25DB41001468B83167501EDB1E59F" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaAuthorizationRule.snippet" />
+      <Component Id="comp_CA9033282E894872B38E9CE6E26A74FB" Guid="81B2C951-6D1B-4712-AF6B-4E10EF5E14F9">
+        <File Id="file_12545705E87242FE80CFD76F1880C52C" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaAuthorizationRule.snippet" />
       </Component>
-      <Component Id="comp_FEBB1E245076454E9D9E62BE1BD5E282" Guid="9DF1D184-42A0-4FE2-AED1-9B1C013A1102">
-        <File Id="file_8D03D81E6DDE4BEFB3767BBB9E94ADAD" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaBusinessRule.snippet" />
+      <Component Id="comp_56B738E9CFE5444EB26058A24C44E114" Guid="456D1912-70B1-442F-AE8F-9F2E16313661">
+        <File Id="file_10D826C9B3384F98827F6773F93B510A" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaBusinessRule.snippet" />
       </Component>
-      <Component Id="comp_2768E768B61B45E2AE0261A1503F33B6" Guid="8A981AB0-9ADE-4129-BCC6-2C83A46A43F6">
-        <File Id="file_7CA25BEEA82D410CB16FFF351326AB47" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildProperty.snippet" />
+      <Component Id="comp_3987A62EB9CB40B18767D122CFBF2724" Guid="735AE691-466E-4354-AB62-92F58830F898">
+        <File Id="file_08103E3AE5024D5DB36C91134A209054" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildProperty.snippet" />
       </Component>
-      <Component Id="comp_3F5F555C870446D1A7E5BB95F8FD7A75" Guid="6135C9C0-B5FA-47F3-BB76-A52D0234AB79">
-        <File Id="file_BB2F2C22FAE14CD5A1A0F3E600EC5E94" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildPropertyWithAsyncLazyLoad.snippet" />
+      <Component Id="comp_8A15E316D7A045FF86697D603FCE33B2" Guid="0CAC69B6-2652-44A8-8CDC-3D4B7B121176">
+        <File Id="file_48DE32BF650446F583B92A81CDACD480" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildPropertyWithAsyncLazyLoad.snippet" />
       </Component>
-      <Component Id="comp_D00D5420DBD24AFDB4B9532B250CBCCE" Guid="101EF31A-EBEC-44CA-A833-190DE3989153">
-        <File Id="file_AA5A18B592EF4DD3B9FDDF510E6F06E6" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildPropertyWithSyncLazyLoad.snippet" />
+      <Component Id="comp_F4B34E57ABF949C3B468AA14436D4E45" Guid="090BDE6F-A0DB-4C09-9DEE-4C32A324F6DB">
+        <File Id="file_616C7B857C054B4CAFADA0D60B367C8B" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaChildPropertyWithSyncLazyLoad.snippet" />
       </Component>
-      <Component Id="comp_F5718760D4BD4FAEB251C2784BCFEAC5" Guid="6197D91E-45D5-4404-9D6A-EFDD0DEB7190">
-        <File Id="file_20B630820FA748AB95828B114E42533B" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaIntergraphReference.snippet" />
+      <Component Id="comp_17AE8877464D408E8B1070BA908978E0" Guid="B8A43496-BEBB-4BA8-928E-D83E27ABCE4D">
+        <File Id="file_EA8FD12EB89C436A9E781E45B9A62140" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaIntergraphReference.snippet" />
       </Component>
-      <Component Id="comp_3703D5F45C854571BD81A62CA277522B" Guid="E8313AC0-A24F-4B54-A0DC-EA31C38DC07C">
-        <File Id="file_431136FC565D412D8CD2987EC4BD2097" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaMethod.snippet" />
+      <Component Id="comp_6446A954ED744005864E2EFFDCC4DA23" Guid="C0C8B7E8-A239-46E1-BE35-CC36CDC961D8">
+        <File Id="file_370F727EB03B4A75863448BD46C6DD4F" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaMethod.snippet" />
       </Component>
-      <Component Id="comp_2DD62C903E5448DDB4469099C7BE8E9E" Guid="BC96AEC6-4E7E-4C5B-9836-F7CE99424098">
-        <File Id="file_6A5087BE3D704E57AEB05569BA563D2A" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaProperty.snippet" />
+      <Component Id="comp_052F1FE0D999473BB87234BD6F302712" Guid="4F58DFCE-F668-4E7E-BAE6-D5A92CE335AC">
+        <File Id="file_F092589A54F4476D84ED81687228AA1E" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaProperty.snippet" />
       </Component>
-      <Component Id="comp_FA02D25CCE5A42C996BD5BABAA4AC799" Guid="324638AC-A95B-479E-9F9D-2C5581D01B18">
-        <File Id="file_2C526B663CC54929BC6B3981978E6385" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithConversion.snippet" />
+      <Component Id="comp_DBA9B26FA34641C0BA1BFACF30F0A2B6" Guid="0AEA5FBF-E7B1-460D-8156-7494941490C4">
+        <File Id="file_92F3FD3112D14C4C86E7247F5822B645" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithConversion.snippet" />
       </Component>
-      <Component Id="comp_0A2801587F5C4031BA7A2AC35FC64919" Guid="B6A2A78C-E4DE-43F0-BA9C-F09D65F1335B">
-        <File Id="file_62C4416D33594C55AB87AF3F285DDC7A" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet" />
+      <Component Id="comp_1DF801727D5644068BB20FA484C6C966" Guid="9CF46CA4-634C-4A93-9641-1FFEB0F20B78">
+        <File Id="file_14EF1BC7D2BC44B6B15430E73F836AD5" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithNoAuthorizationOrDirty.snippet" />
       </Component>
-      <Component Id="comp_D2CB2756E8E6443CB8E6DBCA5C0692FC" Guid="BFC6A795-5233-4F62-82AC-20CD75A480E6">
-        <File Id="file_8AC10088464C4EB3A1BBA477A4C8D861" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithPrivateBackingField.snippet" />
+      <Component Id="comp_CE5F91A5F5714B7C9AEE606FB526AE61" Guid="FAAA17D5-917C-4434-AF11-A6C67848D914">
+        <File Id="file_43D6E9FC7EE84A9EA7E7995BA8E93C35" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaPropertyWithPrivateBackingField.snippet" />
       </Component>
-      <Component Id="comp_BB2520908D5C40C898A408B924102561" Guid="0A454AE4-F9EE-4BA0-A414-40F4B264C6F4">
-        <File Id="file_BE528A8D8297438EBDAAE286DFE99245" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyProperty.snippet" />
+      <Component Id="comp_354913AAF8DB4AAA9E5FD50D11BA184B" Guid="BEA6E1AD-5766-409D-8226-DB5478D50987">
+        <File Id="file_FB0E1200239E425C85914C978608ED34" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyProperty.snippet" />
       </Component>
-      <Component Id="comp_1C08BF19E5E9475FA68763E98BD30F3E" Guid="C53AB6C6-4931-49DF-8305-6AF0222EDEA9">
-        <File Id="file_6DAF31CC93C143F4AB5E6AD0D011E3FD" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithConversion.snippet" />
+      <Component Id="comp_0F354941CF9B417789E6012A90AD88FC" Guid="7084072C-CCAF-45B7-B6EC-4B5D0C640D12">
+        <File Id="file_56A330D57E6748649EEB875EA43224B1" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithConversion.snippet" />
       </Component>
-      <Component Id="comp_F3327FB0AC464988A3729760637D2231" Guid="1ED7CECD-BBE8-469F-A137-0CE188356365">
-        <File Id="file_606EF48F59084837A47FB01ABC6001B7" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithNoAuthorization.snippet" />
+      <Component Id="comp_1120B727F7B74BDA969C91BAFAC56DD4" Guid="3C53F267-9108-4011-824F-EE48C29BADEB">
+        <File Id="file_3215DBB966D445AA9F93C2B3C89C5168" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithNoAuthorization.snippet" />
       </Component>
-      <Component Id="comp_2EB089E7AF244D3893CADB271B5FD39C" Guid="9BFA663A-C528-4F24-9BAF-0CF2245A15F6">
-        <File Id="file_66213ED014584C598098D8E606FAC580" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet" />
+      <Component Id="comp_571A1A8D5D714F2C991C0B5E13D31E72" Guid="F16DD537-48A7-4DCA-A3C4-C70A8BD0DC5D">
+        <File Id="file_04615FE6C6BE411F899D5FA4C37A9A29" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaReadonlyPropertyWithPrivateBackingField.snippet" />
       </Component>
-      <Component Id="comp_E9EBF774DBFC4ADBA83E08C862BC4E3F" Guid="0D2D8AD8-6F0B-4AD0-A65C-C86E7DC0BFEA">
-        <File Id="file_9C00CA511A7C48E6A3397478E78AC6AB" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaSmartDateProperty.snippet" />
+      <Component Id="comp_0915D6D115054A12807283B3212D0438" Guid="BCC40502-E384-4EE7-841F-2E4B05609A94">
+        <File Id="file_4F079A711A2D4C6D94A4ED12E969D676" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaSmartDateProperty.snippet" />
       </Component>
-      <Component Id="comp_0BE739D268AE4627BEE3883841A4B17D" Guid="AF4F6E97-C6A4-4495-80A1-23AD3DAFA0E3">
-        <File Id="file_ADD3C2450B034BEE80F3B94A99F004B1" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaUsingReference.snippet" />
+      <Component Id="comp_B53A5613BC83411FA5E90E022F51FFA8" Guid="D6B5EF86-54C8-455D-B34D-708DDA472881">
+        <File Id="file_50A4289E8C3E47B093A2CEF59849AA3E" KeyPath="yes" Source="$(var.SolutionDir)..\Support\Snippets\vb\DefineACslaUsingReference.snippet" />
       </Component>
     </DirectoryRef>
   </Fragment>

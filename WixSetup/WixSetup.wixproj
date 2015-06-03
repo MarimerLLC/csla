@@ -25,12 +25,11 @@
     <Compile Include="CSSnippetsFragment.wxs" />
     <Compile Include="iOSFragment.wxs" />
     <Compile Include="LogosFragment.wxs" />
+    <Compile Include="Net45Fragment.wxs" />
+    <Compile Include="Net46Fragment.wxs" />
     <Compile Include="Net4Fragment.wxs" />
-    <Compile Include="NetFragment.wxs" />
     <Compile Include="Product.wxs" />
-    <Compile Include="SilverlightFragment.wxs" />
     <Compile Include="VBSnippetsFragment.wxs" />
-    <Compile Include="WinPRTFragment.wxs" />
     <Compile Include="WinRTFragment.wxs" />
     <Compile Include="WinRTPhoneFragment.wxs" />
   </ItemGroup>

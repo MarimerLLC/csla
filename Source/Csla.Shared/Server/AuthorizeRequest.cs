@@ -50,9 +50,24 @@ namespace Csla.Server
     /// not have permission to carry out this operation.</exception>
     public void CheckPermissions()
     {
+      if (Operation == DataPortalOperations.Update || 
+          Operation == DataPortalOperations.Execute)
+      { 
+         // Per-Instance checks
+         if (!BusinessRules.HasPermission(Operation.ToAuthAction(), RequestObject))
+         {
+            throw new SecurityException(
+               string.Format(Resources.UserNotAuthorizedException,
+                   Operation.ToSecurityActionDescription(),
+                   ObjectType.Name)
+               );
+         }
+      }
+
+      // Per-Type checks
       if (!BusinessRules.HasPermission(Operation.ToAuthAction(), ObjectType))
       {
-        throw new SecurityException(
+         throw new SecurityException(
             string.Format(Resources.UserNotAuthorizedException,
                 Operation.ToSecurityActionDescription(),
                 ObjectType.Name)

@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC5</id>
     <title>CSLA .NET - ASP.NET MVC 5</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>4.5.700</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,24 +20,24 @@ Supports the creation of ASP.NET MVC 5 applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
-      <dependency id="CSLA-ASP.NET" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
+      <dependency id="CSLA-ASP.NET" version="[4.6.1]" />
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.0 Server -->
-    <!-- > None -->
     <!-- .NET 4.5 Server -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.Mvc5.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.Mvc5.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.Mvc5.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.Mvc5.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc5.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Server -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc5.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Web.Mvc5\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Web.Mvc5.Net4\**\*.cs" target="src" />
   </files>
 </package>

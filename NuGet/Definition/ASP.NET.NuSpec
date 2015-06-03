@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET</id>
     <title>CSLA .NET - ASP.NET</title>
     <tags>CSLA ASP.NET</tags>
-    <version>4.5.700</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of ASP.NET Web Forms applications, and is required for any
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Web" targetFramework="net40-full" />
@@ -35,17 +35,18 @@ Supports the creation of ASP.NET Web Forms applications, and is required for any
     <file src="..\..\Bin\Release\NET4\**\Csla.Web.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Web.xml*" target="lib\net40" />
     <!-- .NET 4.5 Server -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Web.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- > None -->
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Web.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Server -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Web\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Web.Net4\**\*.cs" target="src" />
   </files>
 </package>

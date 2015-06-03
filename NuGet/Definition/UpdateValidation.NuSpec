@@ -4,7 +4,7 @@
     <id>CSLA-UpdateValidation</id>
     <title>CSLA .NET - Legacy Validation</title>
     <tags>CSLA Validation</tags>
-    <version>4.5.700</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
     </dependencies>
   </metadata>
   <files>
@@ -31,27 +31,17 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\NET4\**\Csla.Validation.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Validation.xml*" target="lib\net40" />
     <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Validation.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- > None -->
-    <!-- Silverlight 5.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.resources.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.Validation.xml*" target="lib\sl50" />
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
-    <!-- Windows Phone 8 Silverlight Client -->
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.dll*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.pdb*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.dll*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.resources.pdb*" target="lib\wp" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.Validation.xml*" target="lib\wp" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Validation.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Validation.xml*" target="lib\net46" />
     <!-- Windows Phone 8 WinRT Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Validation.pdb*" target="lib\wpa" />

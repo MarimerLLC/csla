@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?define VERSION="4.5.601"?>
-  <Product Id="*" Name="CSLA .NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="BD160E92-1B34-4F49-A9E2-B91644A8C99D">
+  <?define VERSION="4.6.001"?>
+  <Product Id="*" Name="CSLA .NET" Language="1033" Version="$(var.VERSION).0" Manufacturer="Marimer LLC" UpgradeCode="BD160E92-1B34-4F49-A9E2-B91644A8C99E">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property Id="ARPPRODUCTICON" Value="favicon.ico" />
     <Feature Id="ProductFeature" Title="WixSetup" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
-      <ComponentGroupRef Id="NetComponents"/>
+      <ComponentGroupRef Id="Net46Components"/>
+      <ComponentGroupRef Id="Net45Components"/>
       <ComponentGroupRef Id="Net4Components"/>
-      <ComponentGroupRef Id="SilverlightComponents"/>
       <ComponentGroupRef Id="WinRTComponents"/>
       <ComponentGroupRef Id="WinRTPhoneComponents"/>
-      <ComponentGroupRef Id="WinPRTComponents"/>
       <ComponentGroupRef Id="AndroidComponents"/>
       <ComponentGroupRef Id="iOSComponents"/>
       <ComponentGroupRef Id="LogosComponents"/>
@@ -28,12 +27,11 @@
           <Directory Id="CSLAFolder" Name="CSLA .NET">
              <Directory Id="INSTALLDIR" Name="$(var.VERSION)">
               <Directory Id="Bin" Name="Bin">
-                <Directory Id="Net" Name="NET" />
+                <Directory Id="Net46" Name="NET46" />
+                <Directory Id="Net45" Name="NET45" />
                 <Directory Id="Net4" Name="NET4" />
-                <Directory Id="Silverlight" Name="Silverlight" />
                 <Directory Id="WinRT" Name="WinRT" />
                 <Directory Id="WinRT.Phone" Name="WinRT.Phone" />
-                <Directory Id="WinPRT" Name="WinPRT" />
                 <Directory Id="Android" Name="Android" />
                 <Directory Id="iOS" Name="iOS" />
               </Directory>

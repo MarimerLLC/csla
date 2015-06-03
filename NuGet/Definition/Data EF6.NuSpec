@@ -4,7 +4,7 @@
     <id>CSLA-EF6</id>
     <title>CSLA .NET - ADO.NET EF 6</title>
     <tags>CSLA Windows ADO.NET EF</tags>
-    <version>4.5.700</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the use of ADO.NET Entity Framework 6.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
       <dependency id="EntityFramework" version="6.0" />
     </dependencies>
   </metadata>
@@ -32,17 +32,18 @@ Supports the use of ADO.NET Entity Framework 6.
     <file src="..\..\Bin\Release\NET4\**\Csla.Data.EF6.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Data.EF6.xml*" target="lib\net40" />
     <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Data.EF6.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Data.EF6.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Data.EF6.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Data.EF6.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Data.EF6.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- > None -->
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
+    <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Data.EF6.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF6.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Data.EF6\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Data.EF6.Net4\**\*.cs" target="src" />
   </files>
 </package>

@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC4</id>
     <title>CSLA .NET - ASP.NET MVC 4</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>..-Alpha</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,8 +20,8 @@ Supports the creation of ASP.NET MVC 4 applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[..-Alpha]" />
-      <dependency id="CSLA-ASP.NET" version="[..-Alpha]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
+      <dependency id="CSLA-ASP.NET" version="[4.6.1]" />
     </dependencies>
   </metadata>
   <files>
@@ -37,12 +37,12 @@ Supports the creation of ASP.NET MVC 4 applications.
     <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc4.resources.dll*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc4.resources.pdb*" target="lib\net45" />
     <file src="..\..\Bin\Release\NET45\**\Csla.Web.Mvc4.xml*" target="lib\net45" />
-    <!-- .NET 4.\NET45\6 Server -->
-    <file src="..\..\Bin\Release\NET4\NET45\6\**\Csla.Web.Mvc4.dll*" target="lib\net4\NET45\6" />
-    <file src="..\..\Bin\Release\NET4\NET45\6\**\Csla.Web.Mvc4.pdb*" target="lib\net4\NET45\6" />
-    <file src="..\..\Bin\Release\NET4\NET45\6\**\Csla.Web.Mvc4.resources.dll*" target="lib\net4\NET45\6" />
-    <file src="..\..\Bin\Release\NET4\NET45\6\**\Csla.Web.Mvc4.resources.pdb*" target="lib\net4\NET45\6" />
-    <file src="..\..\Bin\Release\NET4\NET45\6\**\Csla.Web.Mvc4.xml*" target="lib\net4\NET45\6" />
+    <!-- .NET 4.\NET46 Server -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.dll*" target="lib\NET46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.pdb*" target="lib\NET46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.resources.dll*" target="lib\NET46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.resources.pdb*" target="lib\NET46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.xml*" target="lib\NET46" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Web.Mvc4\**\*.cs" target="src" />
   </files>

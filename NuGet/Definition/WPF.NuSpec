@@ -4,7 +4,7 @@
     <id>CSLA-WPF</id>
     <title>CSLA .NET - WPF</title>
     <tags>CSLA WPF UI</tags>
-    <version>..-Alpha</version>
+    <version>4.6.1</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of WPF applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[..-Alpha]" />
+      <dependency id="CSLA-Core" version="[4.6.1]" />
     </dependencies>
   </metadata>
   <files>

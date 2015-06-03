@@ -6,6 +6,8 @@
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Configuration;
+using Csla.Reflection;
 
 namespace Csla.Serialization
 {
@@ -28,6 +30,11 @@ namespace Csla.Serialization
         return new BinaryFormatterWrapper();
       else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.NetDataContractSerializer)
         return new NetDataContractSerializerWrapper();
+      else if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.CustomFormatter)
+      {
+        string customFormatterTypeName = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+        return (ISerializationFormatter)MethodCaller.CreateInstance(Type.GetType(customFormatterTypeName, true, true));
+      }
       else
         return new Csla.Serialization.Mobile.MobileFormatter();
 #endif

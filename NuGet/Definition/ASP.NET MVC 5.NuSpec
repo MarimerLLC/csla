@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC5</id>
     <title>CSLA .NET - ASP.NET MVC 5</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>4.6.1</version>
+    <version>4.6.1-Alpha</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,8 +20,8 @@ Supports the creation of ASP.NET MVC 5 applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.1]" />
-      <dependency id="CSLA-ASP.NET" version="[4.6.1]" />
+      <dependency id="CSLA-Core" version="[4.6.1-Alpha]" />
+      <dependency id="CSLA-ASP.NET" version="[4.6.1-Alpha]" />
     </dependencies>
   </metadata>
   <files>

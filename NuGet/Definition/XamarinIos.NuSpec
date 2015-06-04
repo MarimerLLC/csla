@@ -25,7 +25,7 @@ Supports the creation of Xamarin iOS applications using the unified API.
   </metadata>
   <files>
     <!-- Xamarin iOS Client -->
-    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll*" target="lib\Xamarin.iOS10" />
+    <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll*" target="lib\Xamarin.iOS" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.dll.mdb*" target="lib\Xamarin.iOS" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.pdb*" target="lib\Xamarin.iOS" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.xml*" target="lib\Xamarin.iOS" />

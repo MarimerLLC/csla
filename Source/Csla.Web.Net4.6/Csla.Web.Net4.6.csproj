@@ -7,8 +7,8 @@
     <ProjectGuid>{963430C1-39F4-4BB8-961D-185C5E813DAB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Csla.Web.Net4._6</RootNamespace>
-    <AssemblyName>Csla.Web.Net4.6</AssemblyName>
+    <RootNamespace>Csla.Web</RootNamespace>
+    <AssemblyName>Csla.Web</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Debug\NET46\Csla.Web.Net4.6.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Debug\NET46\Csla.Web.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\Bin\Release\NET46\Csla.Web.Net4.6.XML</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\NET46\Csla.Web.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

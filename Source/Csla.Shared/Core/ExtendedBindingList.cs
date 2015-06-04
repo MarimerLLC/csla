@@ -8,7 +8,7 @@
 using System;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
 using Csla.Serialization;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -30,7 +30,7 @@ namespace Csla.Core
     ISerializationNotification
   {
 
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     /// <summary>
     /// Implements a serialization-safe RemovingItem event.
     /// </summary>
@@ -307,7 +307,7 @@ namespace Csla.Core
       OnDeserialized();
     }
 
-#if !NETFX_CORE
+#if !NETFX_CORE && !(ANDROID || IOS)
     [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
@@ -353,7 +353,8 @@ namespace Csla.Core
         _childChangedHandlers.Invoke(this, e);
     }
 
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
+
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>

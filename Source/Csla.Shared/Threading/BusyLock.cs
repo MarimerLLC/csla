@@ -85,7 +85,11 @@ namespace Csla.Threading
         // otherwise wait for the event to be signaled.
         if (_target.IsBusy)
         {
+#if (ANDROID || IOS)
+          _event.WaitOne(_timeout);
+#else
           _event.WaitOne(_timeout, false);
+#endif
         }
       }
       finally

@@ -54,3 +54,8 @@ copy ..\bin\release\iOS\Csla.dll ..\Samples\Dependencies\iOS
 copy ..\bin\release\iOS\Csla.Iosui.dll ..\Samples\Dependencies\iOS
 copy ..\bin\release\iOS\Csla.Validation.dll ..\Samples\Dependencies\iOS
 copy ..\bin\release\iOS\Csla*.xml ..\Samples\Dependencies\iOS
+
+copy ..\bin\release\iOSClassic\Csla.dll ..\Samples\Dependencies\iOSClassic
+copy ..\bin\release\iOSClassic\Csla.Iosui.dll ..\Samples\Dependencies\iOSClassic
+copy ..\bin\release\iOSClassic\Csla.Validation.dll ..\Samples\Dependencies\iOSClassic
+copy ..\bin\release\iOSClassic\Csla*.xml ..\Samples\Dependencies\iOSClassic

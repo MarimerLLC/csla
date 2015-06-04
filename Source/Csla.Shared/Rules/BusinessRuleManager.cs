@@ -17,7 +17,7 @@ namespace Csla.Rules
   /// </summary>
   public class BusinessRuleManager
   {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
 
@@ -71,7 +71,7 @@ namespace Csla.Rules
       {
 
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
         var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
         foreach (var key in typeRules)
         {

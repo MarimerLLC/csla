@@ -34,7 +34,7 @@ namespace Csla.Server
     {
       get
       {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
         if (_datePortalInspecorName == null)
         {
           string setting = ConfigurationManager.AppSettings["CslaDataPortalExceptionInspector"];

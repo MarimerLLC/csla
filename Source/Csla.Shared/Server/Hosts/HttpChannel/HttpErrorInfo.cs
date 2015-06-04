@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="HttpErrorInfo.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -110,7 +110,9 @@ namespace Csla.Server.Hosts.HttpChannel
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
+#if !(ANDROID || IOS)
       this.Source = ex.Source;
+#endif
       if (ex.InnerException != null)
         this.InnerError = new HttpErrorInfo(ex.InnerException);
     }

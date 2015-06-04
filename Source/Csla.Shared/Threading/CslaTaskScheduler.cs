@@ -86,6 +86,46 @@ namespace Csla.Threading
         }
       }, WorkItemPriority.Normal, WorkItemOptions.None);
     }
+#elif (ANDROID || IOS) 
+    private void NotifyThreadPoolOfPendingWork()
+    {
+      ThreadPool.QueueUserWorkItem(_ =>
+      {
+        // Note that the current thread is now processing work items.
+        // This is necessary to enable inlining of tasks into this thread.
+        _currentThreadIsProcessingItems = true;
+        _context.SetThreadContext();
+        try
+        {
+          // Process all available items in the queue.
+          while (true)
+          {
+            Task item;
+            lock (_tasks)
+            {
+              // When there are no more items to be processed,
+              // note that we're done processing, and get out.
+              if (_tasks.Count == 0)
+              {
+                break;
+              }
+
+              // Get the next item from the queue
+              item = _tasks.First.Value;
+              _tasks.RemoveFirst();
+            }
+
+            // Execute the task we pulled out of the queue
+            base.TryExecuteTask(item);
+          }
+        }
+        // We're done processing items on the current thread
+        finally
+        {
+          _currentThreadIsProcessingItems = false;
+        }
+      }, null);
+    }
 #else
     private void NotifyThreadPoolOfPendingWork()
     {

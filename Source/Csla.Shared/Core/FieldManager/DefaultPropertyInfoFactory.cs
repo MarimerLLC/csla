@@ -144,7 +144,7 @@ namespace Csla.Core.FieldManager
         if (display != null)
           name = display.GetName();
 
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
         else
         {
           // ComponentModel attribute.

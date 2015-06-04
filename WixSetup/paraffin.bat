@@ -7,3 +7,5 @@ Support\Paraffin.exe xVBSnippetsFragment.wxs -dir ..\Support\Snippets\vb -groupn
 Support\Paraffin.exe xWinRTFragment.wxs -dir ..\Bin\Release\WinRT -groupname WinRTComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT" -ext config -dirref WinRT -norootdirectory
 Support\Paraffin.exe xWinRTPhoneFragment.wxs -dir ..\Bin\Release\WinRT.Phone -groupname WinRTPhoneComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone" -ext config -dirref WinRT.Phone -norootdirectory
 Support\Paraffin.exe xAndroidFragment.wxs -dir ..\Bin\Release\Android -groupname AndroidComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\Android" -ext config -dirref Android -norootdirectory
+Support\Paraffin.exe xiOSFragment.wxs -dir ..\Bin\Release\iOS -groupname iOSComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\iOS" -ext config -dirref iOS -norootdirectory
+Support\Paraffin.exe xiOSClassicFragment.wxs -dir ..\Bin\Release\iOSClassic -groupname iOSClassicComponents -alias "$(var.SolutionDir)..\Bin\$(var.Configuration)\iOSClassic" -ext config -dirref iOSClassic -norootdirectory

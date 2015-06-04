@@ -153,3 +153,4 @@ Thumbs.db
 
 *.userprefs
 /Source/Csla.WinRT/resources
+/Source/Csla.Uwp/resources

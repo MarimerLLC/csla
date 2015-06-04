@@ -13,9 +13,9 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-#if __ANDROID__
+#if ANDROID
 namespace Csla.Axml
-#elif __IOS__
+#elif IOS
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml
@@ -55,7 +55,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
-#if SILVERLIGHT
+#if ANDROID || IOS
       BeginAddNew();
 #else
       DoAddNew();

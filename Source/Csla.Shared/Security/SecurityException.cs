@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
 using System.Security.Permissions;
 #endif
 using System.Text;
@@ -39,7 +39,7 @@ namespace Csla.Security
       : base(message, innerException)
     { }
 
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

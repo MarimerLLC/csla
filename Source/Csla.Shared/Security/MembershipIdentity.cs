@@ -20,7 +20,7 @@ namespace Csla.Security
   /// Implements a .NET identity object that automatically
   /// authenticates against the ASP.NET membership provider.
   /// </summary>
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
 	[Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
   [Csla.Server.ObjectFactory("Csla.Web.Security.IdentityAppFactory,Csla.Web")]
 #endif
@@ -34,7 +34,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     public MembershipIdentity()
 #else
     protected MembershipIdentity()
@@ -47,7 +47,7 @@ namespace Csla.Security
 
     #region OnDeserialized
 
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Method invoked when the object is deserialized.
     /// </summary>
@@ -72,7 +72,7 @@ namespace Csla.Security
 
     #region Factory Methods
 
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Gets a MembershipIdentity object by loading the
     /// object with membership data from the server.

@@ -375,7 +375,7 @@ namespace Csla
       OnSaved(newObject, null, null);
     }
 
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
 
     object Csla.Core.ISavable.Save()
     {
@@ -452,7 +452,7 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       if (_nonSerializableSavedHandlers != null)
         _nonSerializableSavedHandlers.Invoke(this, args);
       if (_serializableSavedHandlers != null)

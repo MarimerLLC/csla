@@ -30,7 +30,7 @@ namespace Csla.Core.FieldManager
       {
         if (_factory == null)
         {
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
           _factory = new DefaultPropertyInfoFactory();
 #else
           var typeName = System.Configuration.ConfigurationManager.AppSettings["CslaPropertyInfoFactory"];

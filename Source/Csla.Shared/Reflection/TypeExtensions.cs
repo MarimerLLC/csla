@@ -1,4 +1,4 @@
-﻿#if (!__ANDROID__ && !IOS)
+﻿#if (!ANDROID && !IOS)
 //-----------------------------------------------------------------------
 // <copyright file="TypeExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines the method signature for the</summary>
 //-----------------------------------------------------------------------
-#if __ANDROID__ || IOS || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
 using System;
 
 namespace Csla.Core

@@ -55,7 +55,7 @@ namespace Csla.Server
       _result = result;
     }
 
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

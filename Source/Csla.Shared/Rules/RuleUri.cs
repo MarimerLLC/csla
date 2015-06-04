@@ -243,7 +243,7 @@ namespace Csla.Rules
     /// </returns>
     public static string[] Parts(this System.Uri uri)
     {
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       var path = uri.LocalPath.Split('/');
       string[] result = new string[path.Length - 1];
       for (int i = 0; i < path.Length - 1; i++)

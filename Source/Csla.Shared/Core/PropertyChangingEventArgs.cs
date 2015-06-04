@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Arguments object containing information about</summary>
 //-----------------------------------------------------------------------
-#if __ANDROID__ || IOS || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
 using System;
 
 namespace Csla.Core

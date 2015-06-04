@@ -9,9 +9,9 @@
 using System;
 using System.Windows;
 
-#if __ANDROID__
+#if ANDROID
 namespace Csla.Axml
-#elif __IOS__
+#elif IOS
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml
@@ -23,7 +23,7 @@ namespace Csla.Xaml
   /// </summary>
   public class ExecuteEventArgs : EventArgs
   {
-#if !__ANDROID__ && !__IOS__
+#if !ANDROID && !IOS
     /// <summary>
     /// The control that raised the event that
     /// triggered invocation of this method.

@@ -6,7 +6,7 @@
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------
 using System;
-#if !NETFX_CORE
+#if !((ANDROID || IOS) || NETFX_CORE)
 using System.Configuration;
 #endif
 using Csla.Reflection;
@@ -25,7 +25,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
       return new Csla.Serialization.Mobile.MobileFormatter();
 #else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)

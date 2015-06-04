@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -28,7 +28,7 @@ namespace Csla.Server.Hosts.Mobile
   public class WcfPortal : IWcfPortal
   {
 
-    #region IWcfPortal Members
+#region IWcfPortal Members
 
     /// <summary>
     /// Create a new business object.
@@ -246,9 +246,9 @@ namespace Csla.Server.Hosts.Mobile
       return ConvertResponse(result);
     }
 
-    #endregion
+#endregion
 
-    #region Criteria
+#region Criteria
 
     private static object GetCriteria(byte[] criteriaData)
     {
@@ -258,9 +258,9 @@ namespace Csla.Server.Hosts.Mobile
       return criteria;
     }
 
-    #endregion
+#endregion
 
-    #region Extention Method for Requests
+#region Extention Method for Requests
 
     /// <summary>
     /// Override to convert the request data before it
@@ -292,7 +292,7 @@ namespace Csla.Server.Hosts.Mobile
       return response;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

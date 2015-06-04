@@ -1,3 +1,4 @@
+#if !NETFX_PHONE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -5,7 +6,6 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-#if !NETFX_PHONE
 using System;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -113,7 +113,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     public string EndPoint { get; protected set; }
 
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Returns an instance of the channel factory
     /// used by GetProxy() to create the WCF proxy
@@ -188,8 +188,8 @@ namespace Csla.DataPortalClient
     }
 #endif
 
-#if NETFX_CORE
-    #region Criteria
+#if (ANDROID || IOS) || NETFX_CORE
+#region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -241,7 +241,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 #endif
 
     /// <summary>
@@ -256,7 +256,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -413,7 +413,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -473,7 +473,7 @@ namespace Csla.DataPortalClient
         throw (Exception)result;
       return (DataPortalResult)result;
 #endif
-#else // WinRT 
+#else // WinRT and Silverlight
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
       if (!(criteria is IMobileObject))
@@ -487,7 +487,7 @@ namespace Csla.DataPortalClient
       var proxy = GetProxy();
       DataPortalResult result = null;
 
-#if !NETFX_CORE 
+#if !NETFX_CORE // Silverlight
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.FetchCompleted += (s, e) => 
         {
@@ -572,11 +572,11 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
-      #if NET40
+#if NET40
       try
       {
         var request = new UpdateRequest(obj, context);
@@ -724,7 +724,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -865,8 +865,8 @@ namespace Csla.DataPortalClient
 #endif
     }
 
-#if NETFX_CORE
-    #region Extension Method for Requests
+#if (ANDROID || IOS) || NETFX_CORE
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -898,7 +898,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
 #endif
   }
 }

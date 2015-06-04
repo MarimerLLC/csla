@@ -332,6 +332,10 @@ namespace Csla
     /// <remarks>
     /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
     /// to ensure platform compatibility:
+    /// 
+    /// #if (ANDROID || IOS)
+    /// using Uri = Csla.Utilities;
+    /// #endif
     /// </remarks>
     public static string EscapeDataString(string data)
     {

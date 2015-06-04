@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
 using System;
 using Csla.Serialization;
 
@@ -1063,6 +1063,7 @@ namespace Csla
 
 #region ISavable Members
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1072,6 +1073,7 @@ namespace Csla
     {
       return Save();
     }
+#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -1088,10 +1090,12 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
+#endif
 
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {

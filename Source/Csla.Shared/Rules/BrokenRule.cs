@@ -18,7 +18,7 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Creates an instance of this object.
     /// </summary>

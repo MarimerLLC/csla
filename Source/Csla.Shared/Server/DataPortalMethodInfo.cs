@@ -14,7 +14,7 @@ namespace Csla.Server
   internal class DataPortalMethodInfo
   {
     public bool RunLocal { get; private set; }
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     public TransactionalAttribute TransactionalAttribute { get; private set; }
 #else
     public TransactionalTypes TransactionalType { get; private set; }
@@ -22,7 +22,7 @@ namespace Csla.Server
 
     public DataPortalMethodInfo()
     {
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
       TransactionalAttribute = new TransactionalAttribute(TransactionalTypes.Manual);
 #else
       TransactionalType = TransactionalTypes.Manual;
@@ -36,7 +36,7 @@ namespace Csla.Server
       if (info != null)
       {
         RunLocal = IsRunLocal(info);
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
         TransactionalAttribute = GetTransactionalAttribute(info);
 #else
         TransactionalType = TransactionalTypes.Manual;
@@ -53,7 +53,7 @@ namespace Csla.Server
 #endif
     }
 
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     private static bool IsTransactionalMethod(System.Reflection.MethodInfo method)
     {
       return Attribute.IsDefined(method, typeof(TransactionalAttribute));

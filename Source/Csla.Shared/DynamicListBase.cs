@@ -44,7 +44,7 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public abstract class DynamicListBase<T> :
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     ExtendedBindingList<T>,
 #else
     ObservableBindingList<T>,
@@ -258,7 +258,7 @@ namespace Csla
 
     #region  Insert, Remove, Clear
 
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     /// <summary>
     /// Adds a new item to the list.
     /// Uses ProcyModes.LocalOnly as default. 

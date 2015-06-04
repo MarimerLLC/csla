@@ -56,7 +56,7 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     Task DeleteAsync(object criteria);
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default

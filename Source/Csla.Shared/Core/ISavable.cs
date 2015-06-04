@@ -16,7 +16,7 @@ namespace Csla.Core
   /// </summary>
   public interface ISavable
   {
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>

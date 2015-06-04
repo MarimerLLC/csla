@@ -53,7 +53,7 @@ namespace Csla
     /// you must provide a criteria value
     /// parameter.
     /// </summary>
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     public SingleCriteria()
     { }
 #else
@@ -143,7 +143,7 @@ namespace Csla
     /// you must provide a criteria value
     /// parameter.
     /// </summary>
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     public SingleCriteria()
     { }
 #else

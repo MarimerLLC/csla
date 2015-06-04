@@ -52,7 +52,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.MobileList.AllowNew", AllowNew);
       info.AddValue("Csla.Core.MobileList.AllowRemove", AllowRemove);
       info.AddValue("Csla.Core.MobileList.RaiseListChangedEvents", RaiseListChangedEvents);
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
       info.AddValue("Csla.Core.MobileList._supportsChangeNotificationCore", SupportsChangeNotificationCore);
 #endif
     }

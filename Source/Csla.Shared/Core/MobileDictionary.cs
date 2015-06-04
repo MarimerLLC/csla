@@ -72,7 +72,7 @@ namespace Csla.Core
       DetermineTypes();
     }
 
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

@@ -15,7 +15,7 @@ namespace Csla
   /// </summary>
   public enum TransactionalTypes
   {
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Causes the server-side DataPortal to
     /// use Enterprise Services (COM+) transactions.

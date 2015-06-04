@@ -23,7 +23,7 @@ namespace Csla
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class ReadOnlyListBase<T, C> :
-#if NETFX_CORE
+#if SILVERLIGHT || NETFX_CORE
     Core.ReadOnlyBindingList<C>,
 #else
     Core.ReadOnlyObservableBindingList<C>, 

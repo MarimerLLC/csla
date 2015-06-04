@@ -36,7 +36,7 @@ namespace Csla.Core
     /// </summary>
     public NotifyCollectionChangedEventArgs CollectionChangedArgs { get; private set; }
 
-#if !NETFX_CORE
+#if !SILVERLIGHT && !NETFX_CORE
     /// <summary>
     /// Gets the ListChangedEventArgs object from the
     /// child's ListChanged event, if the child is a

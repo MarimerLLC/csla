@@ -117,7 +117,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Validation.Uwp", "Csla
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Csla.Shared\Csla.Shared.projitems*{a2a7bce0-7ecb-4353-8f2b-5857dbbab4de}*SharedItemsImports = 4
 		Csla.Data.EF6.Shared\Csla.Data.EF6.Shared.projitems*{514afda4-a92f-464b-a9ed-73796448ef25}*SharedItemsImports = 13
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{f2ff4b77-a3c4-4810-a944-cd8230599b59}*SharedItemsImports = 13
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{46b51c1e-51a4-4bf5-aca5-b13098712950}*SharedItemsImports = 4

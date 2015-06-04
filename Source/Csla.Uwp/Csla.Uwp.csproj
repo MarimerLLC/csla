@@ -118,6 +118,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -132,6 +137,36 @@
   <ItemGroup>
     <None Include="CslaKey.snk" />
     <None Include="packages.config" />
+    <None Include="Properties\ServiceReferences.Designer.ClientConfig" />
+    <None Include="Service References\WcfPortal\App1.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal.wsdl" />
+    <None Include="Service References\WcfPortal\SlPortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+    <None Include="Service References\WcfPortal\SlPortal.disco" />
   </ItemGroup>
   <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

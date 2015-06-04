@@ -23,7 +23,7 @@ namespace Csla.Silverlight.Security
       System.Security.Principal.IIdentity, Csla.Security.ICheckRoles
   {
     #region Constructor, Helper Setter
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Creates an instance of the class.
     /// </summary>
@@ -60,7 +60,7 @@ namespace Csla.Silverlight.Security
 
     #region Identity and roles population
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Retrieves identity and role information from the currently
     /// logged in Windows user.

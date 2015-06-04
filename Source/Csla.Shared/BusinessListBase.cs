@@ -32,7 +32,7 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       ExtendedBindingList<C>,
 #else
       ObservableBindingList<C>,
@@ -252,7 +252,7 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -889,7 +889,7 @@ namespace Csla
 
     #region Data Access
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -1114,7 +1114,7 @@ namespace Csla
 
     #region ISavable Members
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1146,7 +1146,7 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();

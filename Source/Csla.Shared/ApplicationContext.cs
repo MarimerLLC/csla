@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using System.Security.Principal;
 using System.Collections.Specialized;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
 using System.Configuration;
 using System.Web;
 #endif
@@ -26,7 +26,7 @@ namespace Csla
     #region Context Manager
 
     private static IContextManager _contextManager;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     private static IContextManager _webContextManager;
     private static Type _webManagerType;
     private static Type _xamlManagerType;
@@ -34,7 +34,7 @@ namespace Csla
 
     static ApplicationContext()
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
       _xamlManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
 
@@ -47,7 +47,7 @@ namespace Csla
         _contextManager = new ApplicationContextManager();
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Gets or sets the web context manager.
     /// Will use default WebContextManager. 
@@ -78,7 +78,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         if (WebContextManager != null && WebContextManager.IsValid)
             return WebContextManager;
 #endif
@@ -242,7 +242,7 @@ namespace Csla
       {
         if (_dataPortalActivator == null)
         {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
           lock (_dataPortalActivatorSync)
           {
             if (_dataPortalActivator == null)
@@ -282,7 +282,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         if (_dataPortalUrl == null)
         {
           _dataPortalUrl = ConfigurationManager.AppSettings["CslaDataPortalUrl"];
@@ -338,7 +338,7 @@ namespace Csla
       {
         if (string.IsNullOrEmpty(_dataPortalProxyFactory))
         {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
           _dataPortalProxyFactory = ConfigurationManager.AppSettings["CslaDataPortalProxyFactory"];
 #endif
           if (string.IsNullOrEmpty(_dataPortalProxyFactory))
@@ -372,7 +372,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         if (_authenticationType == null)
           _authenticationType = ConfigurationManager.AppSettings["CslaAuthentication"];
 #endif
@@ -409,7 +409,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         if (string.IsNullOrEmpty(_dataPortalProxy))
           _dataPortalProxy = ConfigurationManager.AppSettings["CslaDataPortalProxy"];
 #endif
@@ -442,7 +442,7 @@ namespace Csla
       get
       {
         string result = null;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         result = ConfigurationManager.AppSettings["CslaIsInRoleProvider"];
 #endif
         if (string.IsNullOrEmpty(result))
@@ -461,7 +461,7 @@ namespace Csla
       get
       {
         bool result = true;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         string setting = ConfigurationManager.AppSettings["CslaAutoCloneOnUpdate"];
         if (!string.IsNullOrEmpty(setting))
           result = bool.Parse(setting);
@@ -485,7 +485,7 @@ namespace Csla
       {
         if (!_dataPortalReturnObjectOnExceptionSet)
         {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
           string setting = ConfigurationManager.AppSettings["CslaDataPortalReturnObjectOnException"];
           if (!string.IsNullOrEmpty(setting))
             DataPortalReturnObjectOnException = bool.Parse(setting);
@@ -515,7 +515,7 @@ namespace Csla
       /// </summary>
       Server,
       /// <summary>
-      /// The code is executing on the Silverlight client.
+      /// The code is executing on the mobile client.
       /// </summary>
       MobileClient
     }
@@ -529,7 +529,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         string tmp = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
 
         if (string.IsNullOrEmpty(tmp))
@@ -552,7 +552,7 @@ namespace Csla
     /// </summary>
     public enum SerializationFormatters
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       /// <summary>
       /// Use the standard Microsoft .NET
       /// <see cref="BinaryFormatter"/>.
@@ -577,7 +577,7 @@ namespace Csla
     }
 
     private static PropertyChangedModes _propertyChangedMode = PropertyChangedModes.Xaml;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     private static bool _propertyChangedModeSet;
 #endif
     /// <summary>
@@ -588,7 +588,7 @@ namespace Csla
     {
       get
       {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         if (!_propertyChangedModeSet)
         {
           string tmp = ConfigurationManager.AppSettings["CslaPropertyChangedMode"];
@@ -604,7 +604,7 @@ namespace Csla
       set
       {
         _propertyChangedMode = value;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         _propertyChangedModeSet = true;
 #endif
       }
@@ -629,7 +629,7 @@ namespace Csla
     }
 
     private static ExecutionLocations _executionLocation =
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       ExecutionLocations.MobileClient;
 #else
       ExecutionLocations.Client;
@@ -671,7 +671,7 @@ namespace Csla
       }
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
 
     /// <summary>
     /// Gets the default transaction isolation level.
@@ -758,7 +758,7 @@ namespace Csla
 
     #region Default context manager
 
-#if (SILVERLIGHT || NETFX_CORE) && !(ANDROID || IOS)
+#if NETFX_CORE && !(ANDROID || IOS)
     private class ApplicationContextManager : IContextManager
     {
       private static ContextDictionary _localContext;

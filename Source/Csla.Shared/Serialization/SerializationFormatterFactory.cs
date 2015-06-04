@@ -6,7 +6,9 @@
 // <summary>Factory used to create the appropriate</summary>
 //-----------------------------------------------------------------------
 using System;
+#if !NETFX_CORE
 using System.Configuration;
+#endif
 using Csla.Reflection;
 
 namespace Csla.Serialization
@@ -23,7 +25,7 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter()
     {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       return new Csla.Serialization.Mobile.MobileFormatter();
 #else
       if (ApplicationContext.SerializationFormatter == ApplicationContext.SerializationFormatters.BinaryFormatter)

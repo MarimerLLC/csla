@@ -55,7 +55,7 @@ namespace Csla.Server
       _result = result;
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

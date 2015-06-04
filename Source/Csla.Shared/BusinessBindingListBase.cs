@@ -454,18 +454,6 @@ namespace Csla
 
 #region Insert, Remove, Clear
 
-#if SILVERLIGHT
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override void  AddNewCore()
-    {
-      var item = DataPortal.CreateChild<C>();
-      Add(item);
-      OnAddedNew(item);
-    }
-#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -476,7 +464,6 @@ namespace Csla
       Add(item);
       return item;
     }
-#endif
 
     /// <summary>
     /// This method is called by a child object when it

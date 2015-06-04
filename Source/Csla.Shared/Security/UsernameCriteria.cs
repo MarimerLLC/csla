@@ -63,7 +63,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     public UsernameCriteria()
     { }
 #else

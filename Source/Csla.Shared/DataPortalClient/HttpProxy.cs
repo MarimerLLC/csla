@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="HttpProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -82,7 +82,7 @@ namespace Csla.DataPortalClient
       return new HttpClient();
     }
 
-    #region Criteria
+#region Criteria
 
     private Csla.Server.Hosts.HttpChannel.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -134,7 +134,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -395,7 +395,7 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    #region Extension Method for Requests
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -427,7 +427,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

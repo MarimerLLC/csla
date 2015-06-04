@@ -64,7 +64,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE
+#if !NETFX_PHONE && !(ANDROID || IOS)
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -170,7 +170,7 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

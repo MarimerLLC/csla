@@ -86,7 +86,7 @@ namespace Csla.Threading
         }
       }, WorkItemPriority.Normal, WorkItemOptions.None);
     }
-#elif SILVERLIGHT 
+#elif (ANDROID || IOS) 
     private void NotifyThreadPoolOfPendingWork()
     {
       ThreadPool.QueueUserWorkItem(_ =>

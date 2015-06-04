@@ -333,7 +333,7 @@ namespace Csla
     /// For linked files calling Uri.EscapeDataString you can use the following C# code snippet 
     /// to ensure platform compatibility:
     /// 
-    /// #if SILVERLIGHT
+    /// #if (ANDROID || IOS)
     /// using Uri = Csla.Utilities;
     /// #endif
     /// </remarks>

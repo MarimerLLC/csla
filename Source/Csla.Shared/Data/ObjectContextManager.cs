@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !MONO
+﻿#if !NETFX_CORE && !MONO && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="ObjectContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

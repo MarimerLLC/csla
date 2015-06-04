@@ -24,9 +24,9 @@ using Windows.UI.Xaml;
 using System.Linq.Expressions;
 #endif
 
-#if __ANDROID__
+#if ANDROID
 namespace Csla.Axml
-#elif __IOS__
+#elif IOS
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml
@@ -37,7 +37,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
     public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
@@ -103,7 +103,7 @@ namespace Csla.Xaml
       /// <summary>
       /// Gets or sets the Model object.
       /// </summary>
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
     public object ModelProperty;
 #else
     public static readonly DependencyProperty ModelProperty =
@@ -111,11 +111,11 @@ namespace Csla.Xaml
 #endif
 #if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
-#elif __ANDROID__ || __IOS__
+#elif ANDROID || IOS
 #else
         new PropertyMetadata((o, e) =>
 #endif
-#if !__ANDROID__ && !__IOS__
+#if !ANDROID && !IOS
         {
           var viewmodel = (ViewModelBase<T>)o;
           if (viewmodel.ManageObjectLifetime)
@@ -129,7 +129,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           viewmodel.OnPropertyChanged("Model");
 #endif
-#if !__ANDROID__ && !__IOS__
+#if !ANDROID && !IOS
   }));
 #endif
     /// <summary>
@@ -137,7 +137,7 @@ namespace Csla.Xaml
     /// </summary>
     public T Model
     {
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
       get { return (T)ModelProperty; }
       set
       {
@@ -162,7 +162,7 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
@@ -178,7 +178,7 @@ namespace Csla.Xaml
     [Display(AutoGenerateField = false)]
     public bool ManageObjectLifetime
     {
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else
@@ -223,7 +223,7 @@ namespace Csla.Xaml
     protected virtual void OnError(Exception error)
     {
       if (ErrorOccurred != null)
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
         ErrorOccurred(this, new ErrorEventArgs(this, error));
 #else
         ErrorOccurred(this, new ErrorEventArgs { Error = error });

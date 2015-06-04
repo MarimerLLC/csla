@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------
 
 
-#if __ANDROID__
+#if ANDROID
 namespace Csla.Axml
-#elif __IOS__
+#elif IOS
 namespace Csla.Iosui
 #else
 namespace Csla.Xaml

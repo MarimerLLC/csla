@@ -37,18 +37,10 @@
     <DocumentationFile>..\..\Bin\Release\iOS\Csla.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.WinPRT\Service References\WcfPortal\Reference.cs">
+    <Compile Include="..\Csla.WinRT\Service References\WcfPortal\Reference.cs">
       <Link>Service References\WfcPortal\Reference.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Csla\Properties\Resources.Designer.cs">
-      <Link>Properties\Resources.Designer.cs</Link>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="..\Csla.Silverlight\Resources\Error.png">
@@ -62,14 +54,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.resx">
+    <BundleResource Include="..\Csla.Shared.Resources\Resources.resx">
       <Link>Properties\Resources.resx</Link>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

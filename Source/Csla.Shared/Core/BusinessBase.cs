@@ -51,7 +51,7 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if ((ANDROID || IOS) || NETFX_CORE) && !__ANDROID__ && !IOS
+#if ((ANDROID || IOS) || NETFX_CORE) && !ANDROID && !IOS
 , INotifyDataErrorInfo
 #else
 , IDataErrorInfo
@@ -1326,7 +1326,7 @@ namespace Csla.Core
 
     #endregion
 
-#if (!(ANDROID || IOS) && !NETFX_CORE) || __ANDROID__ || IOS
+#if (!(ANDROID || IOS) && !NETFX_CORE) || ANDROID || IOS
     #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -3670,7 +3670,7 @@ namespace Csla.Core
 
     #endregion
 
-#if !__ANDROID__ && !IOS
+#if !ANDROID && !IOS
     #region INotifyDataErrorInfo
 
     /// <summary>

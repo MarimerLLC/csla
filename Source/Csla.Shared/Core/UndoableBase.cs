@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if NETFX_CORE || IOS || ANDROID
 using System;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
 using System.IO;
-#if !__ANDROID__ && !IOS
+#if !ANDROID && !IOS
 using System.Runtime.Serialization;
 #endif
 

@@ -387,7 +387,7 @@ namespace Csla.Core
       // could override if needed
     }
 
-#if !__ANDROID__ && !IOS
+#if !ANDROID && !IOS
     [System.Runtime.Serialization.OnDeserialized]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)

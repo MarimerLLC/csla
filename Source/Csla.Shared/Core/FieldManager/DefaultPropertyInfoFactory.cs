@@ -144,7 +144,7 @@ namespace Csla.Core.FieldManager
         if (display != null)
           name = display.GetName();
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         else
         {
           // ComponentModel attribute.

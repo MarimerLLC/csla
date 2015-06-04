@@ -24,7 +24,7 @@ using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
 using Csla.Serialization;
 #endif
 
@@ -254,8 +254,7 @@ namespace Csla
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || SILVERLIGHT
-#else
+#if !NETFX_CORE
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
 #endif
         return true;

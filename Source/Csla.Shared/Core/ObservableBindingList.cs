@@ -89,7 +89,7 @@ namespace Csla.Core
       set { _raiseListChangedEvents = value; }
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
@@ -522,7 +522,7 @@ namespace Csla.Core
       }
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 

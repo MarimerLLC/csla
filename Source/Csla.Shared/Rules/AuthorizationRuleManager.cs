@@ -20,7 +20,7 @@ namespace Csla.Rules
   /// </summary>
   public class AuthorizationRuleManager
   {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
 
@@ -107,7 +107,7 @@ namespace Csla.Rules
       lock (_perTypeRules)
       {
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         return _perTypeRules.Value.Count(value => value.Key.Type == type) > 1;
 #else
 
@@ -123,7 +123,7 @@ namespace Csla.Rules
       {
 
         // the first RuleSet is already added to list when this check is executed so so if count > 1 then we have already initialized type rules.
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         var typeRules = _perTypeRules.Value.Where(value => value.Key.Type == type);
         foreach (var key in typeRules)
         {

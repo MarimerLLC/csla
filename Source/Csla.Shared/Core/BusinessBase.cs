@@ -51,7 +51,7 @@ namespace Csla.Core
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
-#if (SILVERLIGHT || NETFX_CORE) && !__ANDROID__ && !IOS
+#if NETFX_CORE && !__ANDROID__ && !IOS
 , INotifyDataErrorInfo
 #else
 , IDataErrorInfo
@@ -523,8 +523,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || SILVERLIGHT
-#else
+#if !NETFX_CORE
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
 #endif
         return true;
@@ -600,8 +599,7 @@ namespace Csla.Core
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || SILVERLIGHT
-#else
+#if !NETFX_CORE 
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
 #endif        
         return true;
@@ -1010,7 +1008,7 @@ namespace Csla.Core
 
     #region BusinessRules, IsValid
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Event raised when validation is complete.
     /// </summary>
@@ -1326,7 +1324,7 @@ namespace Csla.Core
 
     #endregion
 
-#if (!SILVERLIGHT && !NETFX_CORE) || __ANDROID__ || IOS
+#if !NETFX_CORE || __ANDROID__ || IOS
     #region IDataErrorInfo
 
     string IDataErrorInfo.Error
@@ -1423,7 +1421,7 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged += Child_PropertyChanged;
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged += Child_ListChanged;
@@ -1467,7 +1465,7 @@ namespace Csla.Core
       if (pc != null)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       IBindingList bl = child as IBindingList;
       if (bl != null)
         bl.ListChanged -= Child_ListChanged;
@@ -3151,7 +3149,7 @@ namespace Csla.Core
       OnChildChanged(args);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
@@ -3183,7 +3181,7 @@ namespace Csla.Core
       RaiseChildChanged(sender, e);
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Handles any ListChanged event from 
     /// a child list and echoes it up as

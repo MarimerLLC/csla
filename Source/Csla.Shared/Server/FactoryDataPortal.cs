@@ -37,7 +37,7 @@ namespace Csla.Server
       {
         if (_factoryLoader == null)
         {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
           string setting = ConfigurationManager.AppSettings["CslaObjectFactoryLoader"];
           if (!string.IsNullOrEmpty(setting))
             _factoryLoader =

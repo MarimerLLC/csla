@@ -170,7 +170,7 @@ namespace Csla
       get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for serialization.
     /// </summary>

@@ -110,9 +110,7 @@ namespace Csla.Server.Hosts.HttpChannel
       this.ExceptionTypeName = ex.GetType().FullName;
       this.Message = ex.Message;
       this.StackTrace = ex.StackTrace;
-#if !SILVERLIGHT
       this.Source = ex.Source;
-#endif
       if (ex.InnerException != null)
         this.InnerError = new HttpErrorInfo(ex.InnerException);
     }

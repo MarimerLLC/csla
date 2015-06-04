@@ -26,7 +26,7 @@ namespace Csla.Core.FieldManager
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
   public class FieldDataManager : MobileObject, IUndoableObject
 #else
   public class FieldDataManager : IUndoableObject, IMobileObject
@@ -39,7 +39,7 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -454,7 +454,7 @@ namespace Csla.Core.FieldManager
 
     #region  IUndoableObject
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     private Stack<SerializationInfo> _stateStack = new Stack<SerializationInfo>();
 #else
     private Stack<byte[]> _stateStack = new Stack<byte[]>();
@@ -473,7 +473,7 @@ namespace Csla.Core.FieldManager
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
 
@@ -535,7 +535,7 @@ namespace Csla.Core.FieldManager
         if (this.EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
 
@@ -652,7 +652,7 @@ namespace Csla.Core.FieldManager
 
     #endregion
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     #region IMobileObject Members
 
     /// <summary>
@@ -947,7 +947,7 @@ namespace Csla.Core.FieldManager
     /// <param name="type">Type of object to initialize.</param>
     public static void ForceStaticFieldInit(Type type)
     {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       var attr =
         BindingFlags.Static |
         BindingFlags.Public |

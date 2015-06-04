@@ -170,7 +170,7 @@ namespace Csla.Reflection
     public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
       string fullTypeName;
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
       if (typeName.Contains("Version="))
         fullTypeName = typeName;
       else
@@ -918,7 +918,7 @@ namespace Csla.Reflection
       return result.ToArray();
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Gets a property type descriptor by name.
     /// </summary>

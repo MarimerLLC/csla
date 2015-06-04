@@ -344,7 +344,7 @@ namespace Csla.Core
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();
-#if NET40 || SILVERLIGHT
+#if NET40
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
       var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
 #else

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
 #endif
@@ -113,7 +113,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     public string EndPoint { get; protected set; }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Returns an instance of the channel factory
     /// used by GetProxy() to create the WCF proxy
@@ -188,7 +188,7 @@ namespace Csla.DataPortalClient
     }
 #endif
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     #region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
@@ -256,7 +256,7 @@ namespace Csla.DataPortalClient
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -413,7 +413,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -473,7 +473,7 @@ namespace Csla.DataPortalClient
         throw (Exception)result;
       return (DataPortalResult)result;
 #endif
-#else // WinRT and Silverlight
+#else // WinRT 
       var request = GetBaseCriteriaRequest();
       request.TypeName = objectType.AssemblyQualifiedName;
       if (!(criteria is IMobileObject))
@@ -487,7 +487,7 @@ namespace Csla.DataPortalClient
       var proxy = GetProxy();
       DataPortalResult result = null;
 
-#if !NETFX_CORE // Silverlight
+#if !NETFX_CORE 
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.FetchCompleted += (s, e) => 
         {
@@ -572,7 +572,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -724,7 +724,7 @@ namespace Csla.DataPortalClient
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
 #pragma warning restore 1998
     {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
       ChannelFactory<IWcfPortal> cf = GetChannelFactory();
       var proxy = GetProxy(cf);
       WcfResponse response = null;
@@ -865,7 +865,7 @@ namespace Csla.DataPortalClient
 #endif
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     #region Extension Method for Requests
 
     /// <summary>

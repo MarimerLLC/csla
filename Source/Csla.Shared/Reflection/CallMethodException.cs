@@ -9,7 +9,7 @@ using System;
 #if !NETFX_CORE
 using System.Security.Permissions;
 #endif
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
 using Csla.Serialization;
 #endif
 
@@ -56,7 +56,7 @@ namespace Csla.Reflection
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
     /// <summary>
     /// Creates an instance of the object for deserialization.
     /// </summary>
@@ -75,7 +75,7 @@ namespace Csla.Reflection
     /// <param name="info">Serialization info.</param>
     /// <param name="context">Serialization context.</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-#if !SILVERLIGHT && !NETFX_CORE && !__ANDROID__
+#if !NETFX_CORE && !__ANDROID__
     [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
     [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 #endif

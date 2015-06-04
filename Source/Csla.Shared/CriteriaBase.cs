@@ -24,7 +24,7 @@ namespace Csla
   public abstract class CriteriaBase<T> : ManagedObjectBase
     where T : CriteriaBase<T>
   {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
     private static bool _forceInit = false;
 
     /// <summary>

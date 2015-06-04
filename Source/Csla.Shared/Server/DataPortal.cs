@@ -88,7 +88,7 @@ namespace Csla.Server
 
       if (null == _authorizer)//not yet instantiated
       {
-#if SILVERLIGHT || NETFX_CORE
+#if NETFX_CORE
         string authProvider = string.Empty;
 #else
         var authProvider = ConfigurationManager.AppSettings[cslaAuthorizationProviderAppSettingName];
@@ -107,7 +107,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !SILVERLIGHT && !NETFX_CORE && !MONO
+#if !NETFX_CORE && !MONO
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -150,7 +150,7 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetCreateMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
@@ -242,7 +242,7 @@ namespace Csla.Server
         DataPortalMethodInfo method = DataPortalMethodCache.GetFetchMethod(objectType, criteria);
 
         IDataPortalServer portal;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
@@ -373,13 +373,13 @@ namespace Csla.Server
             methodName = "DataPortal_Update";
           method = DataPortalMethodCache.GetMethodInfo(obj.GetType(), methodName);
         }
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
 #else
         context.TransactionalType = method.TransactionalType;
 #endif
         IDataPortalServer portal;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
@@ -478,7 +478,7 @@ namespace Csla.Server
         }
 
         IDataPortalServer portal;
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         switch (method.TransactionalAttribute.TransactionType)
         {
 #if !MONO
@@ -559,7 +559,7 @@ namespace Csla.Server
       {
         if (!_InterceptorTypeSet)
         {
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
           var typeName = ConfigurationManager.AppSettings["CslaDataPortalInterceptor"];
           if (!string.IsNullOrWhiteSpace(typeName))
             InterceptorType = Type.GetType(typeName);
@@ -633,7 +633,7 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
-#if !SILVERLIGHT && !NETFX_CORE
+#if !NETFX_CORE
         // Set .NET to use integrated security
         AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
 #endif

@@ -633,7 +633,7 @@ namespace Csla.Xaml
 
     #region Verbs
 
-#if !SILVERLIGHT
+#if !(ANDROID || IOS)
     /// <summary>
     /// Creates or retrieves a new instance of the 
     /// Model by invoking a static factory method.
@@ -811,7 +811,7 @@ namespace Csla.Xaml
     protected virtual void OnRefreshed()
     { }
 
-#if !SILVERLIGHT && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
@@ -980,7 +980,7 @@ namespace Csla.Xaml
       }
     }
 
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).
@@ -988,7 +988,7 @@ namespace Csla.Xaml
     protected virtual void BeginAddNew()
     {
       // In SL (for Csla 4.0.x) it will always be an IBindingList 
-#if __ANDROID__ || __IOS__
+#if ANDROID || IOS
       var ibl = (Model as System.ComponentModel.IBindingList);
 #else
       var ibl = (Model as IBindingList);

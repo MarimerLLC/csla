@@ -55,7 +55,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
-#if SILVERLIGHT
+#if ANDROID || IOS
       BeginAddNew();
 #else
       DoAddNew();

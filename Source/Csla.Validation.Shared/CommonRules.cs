@@ -1432,7 +1432,7 @@ namespace Csla.Validation
       var args = (DataAnnotationRuleArgs)e;
       object pValue = Utilities.CallByName(
         target, e.PropertyName, CallType.Get);
-#if SILVERLIGHT || NETFX_PHONE
+#if (ANDROID || IOS) || NETFX_PHONE
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(target, null, null);
       var result = args.Attribute.GetValidationResult(pValue, ctx);
       if (result != null)

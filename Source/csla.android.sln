@@ -5,7 +5,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}"
 	ProjectSection(SolutionItems) = preProject
 		..\license.txt = ..\license.txt
-		..\readme.txt = ..\readme.txt
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Android", "Csla.Android\Csla.Android.csproj", "{F38F7293-0B67-4F49-992B-B1A3036B7DD0}"
@@ -22,8 +22,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Validation.Android", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Validation.Shared", "Csla.Validation.Shared\Csla.Validation.Shared.shproj", "{F2FF4B77-A3C4-4810-A944-CD8230599B59}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{f2ff4b77-a3c4-4810-a944-cd8230599b59}*SharedItemsImports = 13
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{282a2fc6-46ff-4831-a735-9445c5625bdf}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
 		Csla.Shared\Csla.Shared.projitems*{f38f7293-0b67-4f49-992b-b1a3036b7dd0}*SharedItemsImports = 4
 	EndGlobalSection
@@ -311,5 +315,6 @@ Global
 		{CD6CAB84-80A9-48B3-A600-B62A728A3909} = {ED4FAF6A-F3B3-4564-A408-FF194E54B20F}
 		{282A2FC6-46FF-4831-A735-9445C5625BDF} = {B37DA990-C8D6-4B77-B173-EDFB14A24EA8}
 		{EDACD58E-B295-4F3E-A263-5BD89FA51270} = {A59E4B72-229C-4D5E-84FC-611518360C20}
+		{F2FF4B77-A3C4-4810-A944-CD8230599B59} = {B37DA990-C8D6-4B77-B173-EDFB14A24EA8}
 	EndGlobalSection
 EndGlobal

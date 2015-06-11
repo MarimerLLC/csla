@@ -15,7 +15,7 @@ namespace Csla
   /// </summary>
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
   public interface IBusinessListBase<C>
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if !NETFX_CORE && !(ANDROID || IOS)
  : IEditableCollection, IBusinessObject, ISupportUndo, ITrackStatus, IUndoableObject,
     ICloneable, ISavable, IParent, INotifyBusy, INotifyUnhandledAsyncException,
     IObservableBindingList, INotifyChildChanged, ISerializationNotification, IMobileObject,

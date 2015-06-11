@@ -20,55 +20,63 @@
 </CommandLineOptions>-->
   <Fragment>
     <ComponentGroup Id="WinRTPhoneComponents">
-      <ComponentRef Id="comp_FA56F74435474B9EB4AD4F1D453E6440" />
-      <ComponentRef Id="comp_F2A8136B70B640D8AEE0BE1655800191" />
-      <ComponentRef Id="comp_3D9CE1E8007647C5B17E505D7A718D91" />
-      <ComponentRef Id="comp_41BB370594F348B699C7221044F00B69" />
-      <ComponentRef Id="comp_E05882E02F904F8BAB567E7C67450C1D" />
-      <ComponentRef Id="comp_734175640BAD446883589E4A15093A77" />
-      <ComponentRef Id="comp_05BC78C540FE4D3787D73F2E2F234F27" />
-      <ComponentRef Id="comp_0AAF6178F65B46C386D64A9BAD258327" />
-      <ComponentRef Id="comp_5376566F97B84400B3342670F900084A" />
-      <ComponentRef Id="comp_C2FC87FB024C415E814267AE53989247" />
-      <ComponentRef Id="comp_9C6001B995D6494EB5CDF5302810ECA4" />
-      <ComponentRef Id="comp_075F4CA58BFD47AC80548A594A6DA447" />
+      <ComponentRef Id="comp_E3111C57DE004BA98DD141396D266C33" />
+      <ComponentRef Id="comp_F9507826F9294052BF6D094DD6B6332B" />
+      <ComponentRef Id="comp_2ADDB5ABAEE246EB94302DCECE9C67E1" />
+      <ComponentRef Id="comp_972E0367E4154E7C9AF4683043E925C0" />
+      <ComponentRef Id="comp_1E18980A07D74BF0A92B09D0186D4535" />
+      <ComponentRef Id="comp_A6CBAEC03CEB47B382BD5301B1C3F477" />
+      <ComponentRef Id="comp_04D78B5133DA45C193726ACDFC0FF39C" />
+      <ComponentRef Id="comp_8CA1F4A9790E4ED2A8C2390315F33586" />
+      <ComponentRef Id="comp_32B7401AAC6F456D94061A263925E88B" />
+      <ComponentRef Id="comp_BEFB210CB10A482A83CA02B27AEF7561" />
+      <ComponentRef Id="comp_ADC8896A1C96431090E22C6B85310D22" />
+      <ComponentRef Id="comp_7C9DE15F2E6746D0AF7A7934149F2B33" />
+      <ComponentRef Id="comp_342FD5F7C5004289B061A442C509537D" />
+      <ComponentRef Id="comp_74D550F130E64A91B1CC3D9955937530" />
     </ComponentGroup>
     <DirectoryRef Id="WinRT.Phone">
-      <Component Id="comp_FA56F74435474B9EB4AD4F1D453E6440" Guid="E443CA2A-EED3-4FF9-8863-18DDF82961E5">
-        <File Id="file_856332EB3D324A24884A0EE0D7122F73" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.dll" />
+      <Component Id="comp_E3111C57DE004BA98DD141396D266C33" Guid="47627DEB-84E6-4C71-B918-FE191749AE39">
+        <File Id="file_E6834A9454D4428AAA0C6C4436F7CFB8" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.dll" />
       </Component>
-      <Component Id="comp_F2A8136B70B640D8AEE0BE1655800191" Guid="2E1CE094-4F6E-4B9E-AC14-184F615FF567">
-        <File Id="file_5D94E57059A94E44AD572547730B6743" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.pdb" />
+      <Component Id="comp_F9507826F9294052BF6D094DD6B6332B" Guid="D9F0253C-FF33-4AE7-B55C-751C3E77F390">
+        <File Id="file_1DFFDC9FDE3541A39D12094518B9063F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.pdb" />
       </Component>
-      <Component Id="comp_3D9CE1E8007647C5B17E505D7A718D91" Guid="E0B99111-0B6F-4885-89E0-C2FEB2016EDC">
-        <File Id="file_C332633A4C8C43DD8C67DA866E441F43" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.pri" />
+      <Component Id="comp_2ADDB5ABAEE246EB94302DCECE9C67E1" Guid="ACC1A3EE-9459-4DC0-A4CE-EA3F6F01C071">
+        <File Id="file_E7F21B83D7F345D49E7398FDB07B4215" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.pri" />
       </Component>
-      <Component Id="comp_41BB370594F348B699C7221044F00B69" Guid="F5E1E317-3F47-4C82-A240-1B0CAC062FDE">
-        <File Id="file_A19D0001D1864B3BB40784526A03A51D" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.dll" />
+      <Component Id="comp_972E0367E4154E7C9AF4683043E925C0" Guid="38F528A4-DCBB-47D0-B942-290C24174E14">
+        <File Id="file_DBF08359AE5346A99A1E5C885DB77E3E" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.dll" />
       </Component>
-      <Component Id="comp_E05882E02F904F8BAB567E7C67450C1D" Guid="E1BE1D8D-74E8-4737-B166-A90FB97420E8">
-        <File Id="file_9C628130291C41BDB7D014343CDA0701" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.pdb" />
+      <Component Id="comp_1E18980A07D74BF0A92B09D0186D4535" Guid="8AA67DB9-B752-4832-BA25-B6788719692D">
+        <File Id="file_A1910CD1F8994FA7B551D8852E127BDA" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.pdb" />
       </Component>
-      <Component Id="comp_734175640BAD446883589E4A15093A77" Guid="278E3D3D-1DA0-4980-8D64-BAD11EAC2621">
-        <File Id="file_7C7FF426AFF74B888FA035D15D6421CD" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.pri" />
+      <Component Id="comp_A6CBAEC03CEB47B382BD5301B1C3F477" Guid="4B924307-F6DE-4FB2-9EFE-88BB4007CE9A">
+        <File Id="file_23D5A394D684415287BD70A7EAB7F4F3" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.pri" />
       </Component>
-      <Component Id="comp_05BC78C540FE4D3787D73F2E2F234F27" Guid="220B04F0-A74C-4680-9EB6-7DFA3595CE12">
-        <File Id="file_54BC45796E8D416790C6F5041D1593AF" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.XML" />
+      <Component Id="comp_04D78B5133DA45C193726ACDFC0FF39C" Guid="6109C11A-27F2-4125-875C-E2B44C3B679A">
+        <File Id="file_629B9E9C4525418ABCBA8FABD6DAE7D5" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Validation.XML" />
       </Component>
-      <Component Id="comp_0AAF6178F65B46C386D64A9BAD258327" Guid="ADD8DC26-E170-415D-A412-04AB610EA222">
-        <File Id="file_C82FE13E00FE43E094B93589D2FCF1F0" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.dll" />
+      <Component Id="comp_8CA1F4A9790E4ED2A8C2390315F33586" Guid="D3C20656-4C41-4A1F-89ED-78DB92ACC073">
+        <File Id="file_CAC2F8007A9646C8BA5509632C75C739" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.dll" />
       </Component>
-      <Component Id="comp_5376566F97B84400B3342670F900084A" Guid="8CE3D3A5-9506-4948-9C15-B21422F562FC">
-        <File Id="file_D0058809123643AC83003F23218B972F" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.pdb" />
+      <Component Id="comp_32B7401AAC6F456D94061A263925E88B" Guid="BDCB3A4E-8342-45A5-A538-1244708A06AC">
+        <File Id="file_B67BF8E780CF467791F129A686A33A87" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.pdb" />
       </Component>
-      <Component Id="comp_C2FC87FB024C415E814267AE53989247" Guid="0BB26574-E24D-4B49-9F04-EA3EE0ACBA89">
-        <File Id="file_3664FF7EA1F74FB0AB90496CB23170CC" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.pri" />
+      <Component Id="comp_BEFB210CB10A482A83CA02B27AEF7561" Guid="0AEA8506-F9B9-4D07-8EDE-24FFECD38E23">
+        <File Id="file_7D3671EB92DF48058621732C1ED1CE47" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.pri" />
       </Component>
-      <Component Id="comp_9C6001B995D6494EB5CDF5302810ECA4" Guid="023AE855-A78B-4783-964E-CE6879A189FB">
-        <File Id="file_6202C4DA5A984C8EB9B5A9D27A73477E" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.XML" />
+      <Component Id="comp_ADC8896A1C96431090E22C6B85310D22" Guid="E95EEE36-A081-4E00-8A99-FD9869D16074">
+        <File Id="file_E68611C9A0B347A9BAD095B3548E246B" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.Xaml.XML" />
       </Component>
-      <Component Id="comp_075F4CA58BFD47AC80548A594A6DA447" Guid="9E499380-0060-427E-820D-0F988D3B2BDC">
-        <File Id="file_975566F8077B4AE8B3A39ECA883B41D5" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.XML" />
+      <Component Id="comp_7C9DE15F2E6746D0AF7A7934149F2B33" Guid="B2474912-28AC-4982-A8E0-91BDB7C49261">
+        <File Id="file_E3ABD5BB8BC14DA5A15BF612B2BC3CAE" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Csla.XML" />
+      </Component>
+      <Component Id="comp_342FD5F7C5004289B061A442C509537D" Guid="EFB74747-D667-4843-8E20-3FB3632473B1">
+        <File Id="file_079B7CFF0600449B8775AA6ED4E09945" Checksum="yes" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="comp_74D550F130E64A91B1CC3D9955937530" Guid="E9208E9B-00C5-4E4D-95E3-22D22E9B1158">
+        <File Id="file_FFEE98FA9F134DE18ED92D2DDDE246CC" KeyPath="yes" Source="$(var.SolutionDir)..\Bin\$(var.Configuration)\WinRT.Phone\Newtonsoft.Json.xml" />
       </Component>
     </DirectoryRef>
   </Fragment>

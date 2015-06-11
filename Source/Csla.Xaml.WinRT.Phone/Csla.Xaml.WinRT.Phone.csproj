@@ -49,18 +49,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Xaml\ErrorEventArgs.cs">
-      <Link>ErrorEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\IViewModel.cs">
-      <Link>IViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\PropertyInfo.cs">
-      <Link>PropertyInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
-      <Link>ViewModelBase.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +61,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

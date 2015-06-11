@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="TransactionIsolationLevel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

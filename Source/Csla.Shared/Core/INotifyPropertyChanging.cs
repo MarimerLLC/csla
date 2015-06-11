@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines an object that raises the PropertyChanging</summary>
 //-----------------------------------------------------------------------
-#if WINDOWS_PHONE || __ANDROID__ || IOS || NETFX_CORE
+#if (ANDROID || IOS) || ANDROID || IOS || NETFX_CORE
 using System;
 
 namespace Csla.Core

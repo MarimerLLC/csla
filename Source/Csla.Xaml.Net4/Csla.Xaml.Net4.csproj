@@ -103,15 +103,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Xaml\*.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="..\Csla.Xaml\Themes\Generic.xaml">
-      <Link>Themes\Generic.xaml</Link>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla.Net4\Csla.Net4.csproj">
@@ -126,17 +118,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Csla\Resources\Error.png">
-      <Link>Resources\Error.png</Link>
-    </Content>
-    <Content Include="..\Csla\Resources\Information.png">
-      <Link>Resources\Information.png</Link>
-    </Content>
-    <Content Include="..\Csla\Resources\Warning.png">
-      <Link>Resources\Warning.png</Link>
-    </Content>
     <Content Include="favicon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

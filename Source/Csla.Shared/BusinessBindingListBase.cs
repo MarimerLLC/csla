@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
 using System;
 using Csla.Serialization;
 
@@ -454,18 +454,6 @@ namespace Csla
 
 #region Insert, Remove, Clear
 
-#if SILVERLIGHT
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override void  AddNewCore()
-    {
-      var item = DataPortal.CreateChild<C>();
-      Add(item);
-      OnAddedNew(item);
-    }
-#else
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -476,7 +464,6 @@ namespace Csla
       Add(item);
       return item;
     }
-#endif
 
     /// <summary>
     /// This method is called by a child object when it
@@ -1076,6 +1063,7 @@ namespace Csla
 
 #region ISavable Members
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     object Csla.Core.ISavable.Save()
     {
       return Save();
@@ -1085,6 +1073,7 @@ namespace Csla
     {
       return Save();
     }
+#endif
 
     async Task<object> ISavable.SaveAsync()
     {
@@ -1101,10 +1090,12 @@ namespace Csla
       OnSaved((T)newObject, null, null);
     }
 
+#if !(ANDROID || IOS) && !NETFX_CORE
     T Csla.Core.ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
+#endif
 
     async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
     {

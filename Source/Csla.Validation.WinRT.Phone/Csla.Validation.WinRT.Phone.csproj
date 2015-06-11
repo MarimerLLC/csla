@@ -39,13 +39,11 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Csla.Validation\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <None Include="..\Csla.Validation\CslaKey.snk">
-      <Link>CslaKey.snk</Link>
-    </None>
+    <None Include="CslaKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

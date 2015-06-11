@@ -1,4 +1,4 @@
-﻿#if (!__ANDROID__ && !IOS) && NETFX_CORE
+﻿#if (!ANDROID && !IOS) && NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

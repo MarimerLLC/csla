@@ -22,7 +22,7 @@ namespace Csla.Threading
   /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, GlobalContext, CurrentCulture 
   /// and CurrentUICulture to the background thread.
   /// </summary>
-#if SILVERLIGHT || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE
   public class BackgroundWorker : System.Object
 #else
   public class BackgroundWorker : System.ComponentModel.Component

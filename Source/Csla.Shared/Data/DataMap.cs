@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !IOS
+//-----------------------------------------------------------------------
 // <copyright file="DataMap.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -144,3 +145,4 @@ namespace Csla.Data
     }
   }
 }
+#endif

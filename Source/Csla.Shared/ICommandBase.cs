@@ -14,7 +14,7 @@ namespace Csla
   /// objects will be derived.
   /// </summary>
   public interface ICommandBase
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if !NETFX_CORE && !(ANDROID || IOS)
  : ICommandObject, IBusinessObject, IMobileObject, ICloneable,
     INotifyPropertyChanged
 #else

@@ -4,7 +4,7 @@
     <id>CSLA-iOS-Classic</id>
     <title>CSLA .NET - iOS Classic</title>
     <tags>CSLA iOS Classic</tags>
-    <version>4.5.700</version>
+    <version>4.6.1-Alpha</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,21 +20,15 @@ Supports the creation of Xamarin iOS applications using the classic API.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.1-Alpha]" />
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.0 Client -->
-    <!-- > None -->
-    <!-- Silverlight 4.0 Client -->
-    <!-- Silverlight 5.0 Client -->
-    <!-- Windows Phone 7 Client -->
     <!-- Xamarin iOS Client -->
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.dll*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.dll.mdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.pdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.xml*" target="lib\MonoTouch10" />
-    <!-- > None -->
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Iosui.Ios.Classic\**\*.cs" target="src" />
   </files>

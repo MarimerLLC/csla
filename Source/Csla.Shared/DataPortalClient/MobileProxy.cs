@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="MobileProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -138,7 +138,7 @@ namespace Csla.DataPortalClient
       }
     }
 
-    #region Criteria
+#region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -178,7 +178,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -469,7 +469,7 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    #region Extension Method for Requests
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -501,7 +501,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

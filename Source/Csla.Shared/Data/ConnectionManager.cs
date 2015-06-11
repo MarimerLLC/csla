@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+#if !NETFX_CORE && !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="ConnectionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -163,7 +163,7 @@ namespace Csla.Data
       }
     }
 
-    #region  Reference counting
+#region  Reference counting
 
     private int _refCount;
 
@@ -196,9 +196,9 @@ namespace Csla.Data
 
     }
 
-    #endregion
+#endregion
 
-    #region  IDisposable
+#region  IDisposable
 
     /// <summary>
     /// Dispose object, dereferencing or
@@ -210,7 +210,7 @@ namespace Csla.Data
       DeRef();
     }
 
-    #endregion
+#endregion
 
   }
 }

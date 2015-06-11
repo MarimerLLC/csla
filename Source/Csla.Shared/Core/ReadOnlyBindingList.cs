@@ -97,7 +97,7 @@ namespace Csla.Core
     /// <summary>
     /// Prevents insertion of items into the collection.
     /// </summary>
-#if NETFX_CORE
+#if NETFX_CORE || (ANDROID || IOS)
     protected override void AddNewCore()
     {
       if (!IsReadOnly)

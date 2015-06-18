@@ -64,7 +64,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE && !(ANDROID || IOS)
+#if !NETFX_PHONE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

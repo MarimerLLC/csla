@@ -1,4 +1,4 @@
-#if !NETFX_PHONE && !(ANDROID || IOS)
+#if !NETFX_PHONE
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.WcfChannel;
 #endif
@@ -176,7 +176,7 @@ namespace Csla.DataPortalClient
       }
       else
       {
-#if NETFX_CORE
+#if NETFX_CORE || IOS || ANDROID
         return new WcfPortal.WcfPortalClient();
 #else
         if (string.IsNullOrEmpty(EndPoint))
@@ -328,7 +328,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.CreateCompleted += (s, e) => 
         {
@@ -487,7 +487,7 @@ namespace Csla.DataPortalClient
       var proxy = GetProxy();
       DataPortalResult result = null;
 
-#if !NETFX_CORE // Silverlight
+#if !NETFX_CORE  && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.FetchCompleted += (s, e) => 
         {
@@ -639,7 +639,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.UpdateCompleted += (s, e) => 
         {
@@ -796,7 +796,7 @@ namespace Csla.DataPortalClient
 
       var proxy = GetProxy();
       DataPortalResult result = null;
-#if !NETFX_CORE
+#if !NETFX_CORE && !(IOS || ANDROID)
       var tcs = new TaskCompletionSource<DataPortalResult>();
       proxy.DeleteCompleted += (s, e) => 
         {
@@ -865,7 +865,7 @@ namespace Csla.DataPortalClient
 #endif
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS || NETFX_CORE
 #region Extension Method for Requests
 
     /// <summary>

@@ -1,5 +1,4 @@
-﻿#if !NETFX_PHONE && !(ANDROID || IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="HttpErrorInfo.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -123,6 +122,7 @@ namespace Csla.Server.Hosts.HttpChannel
     public HttpErrorInfo()
     { }
 
+#if !NETFX_PHONE
     /// <summary>
     /// Creates an instance of the type by copying
     /// the WcfErrorInfo data.
@@ -147,6 +147,6 @@ namespace Csla.Server.Hosts.HttpChannel
         }
       }
     }
+#endif
   }
 }
-#endif

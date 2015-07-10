@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers", "Csla.Analyzers\Csla.Analyzers.csproj", "{90324805-D023-4A43-8491-AF4EE7B5DFBD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers", "Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj", "{90324805-D023-4A43-8491-AF4EE7B5DFBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Tests", "Csla.Analyzers.Tests\Csla.Analyzers.Tests.csproj", "{244F4A0B-E113-404E-8045-52A5E3392785}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Tests", "Csla.Analyzers\Csla.Analyzers.Tests\Csla.Analyzers.Tests.csproj", "{244F4A0B-E113-404E-8045-52A5E3392785}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Vsix", "Csla.Analyzers.Vsix\Csla.Analyzers.Vsix.csproj", "{C219B2FA-93A5-4329-9B5C-6A22769A278F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Vsix", "Csla.Analyzers\Csla.Analyzers.Vsix\Csla.Analyzers.Vsix.csproj", "{C219B2FA-93A5-4329-9B5C-6A22769A278F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Net4.6", "..\Csla.Net4.6\Csla.Net4.6.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Net4.6", "Csla.Net4.6\Csla.Net4.6.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

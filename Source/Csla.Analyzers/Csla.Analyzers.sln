@@ -9,9 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Tests", "Csl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Analyzers.Vsix", "Csla.Analyzers.Vsix\Csla.Analyzers.Vsix.csproj", "{C219B2FA-93A5-4329-9B5C-6A22769A278F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla", "..\..\Source\Csla\Csla.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Net4.6", "..\Csla.Net4.6\Csla.Net4.6.csproj", "{9DA591ED-C570-47AC-8E5D-35B039E07973}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Mono Debug|Any CPU = Mono Debug|Any CPU

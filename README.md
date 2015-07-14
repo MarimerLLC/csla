@@ -9,7 +9,7 @@ More information about CSLA .NET is available from the following sources:
 * [CSLA .NET home page](http://www.cslanet.com)
 * [Getting started with CSLA .NET](https://github.com/MarimerLLC/csla/wiki/Getting-started)
 * [CSLA .NET Frequently Asked Questions](http://www.lhotka.net/cslanet/faq/)
-* [CSLA .NET forums](https://github.com/marimerllc/cslaforum/issues?q=is%3Aissue+sort%3Aupdated-desc)
+* [CSLA .NET forums](https://github.com/marimerllc/cslaforum)
 * [CSLA .NET training videos and ebooks](https://github.com/MarimerLLC/csla/wiki/Books-and-videos)
 
 License

@@ -18,7 +18,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-14 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -39,8 +39,8 @@ using System.Windows.Markup;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.5.700.0")]
-[assembly: AssemblyFileVersion("4.5.700.0")]
+[assembly: AssemblyVersion("4.5.701.0")]
+[assembly: AssemblyFileVersion("4.5.701.0")]
 
 [assembly: XmlnsDefinition("http://schemas.lhotka.net/4.2.0/xaml", "Csla.Xaml")]
 [assembly: XmlnsPrefix("http://schemas.lhotka.net/4.2.0/xaml", "csla")]

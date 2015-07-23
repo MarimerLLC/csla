@@ -4,7 +4,7 @@
     <id>CSLA-WindowsPhoneWinRT</id>
     <title>CSLA .NET - Windows Phone WinRT</title>
     <tags>CSLA WP8 WinRT Windows Phone</tags>
-    <version>4.6.2-Beta6</version>
+    <version>4.6.2-Beta7</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Windows Phone 8.1 (WinRT) applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.2-Beta6]" />
+      <dependency id="CSLA-Core" version="[4.6.2-Beta7]" />
     </dependencies>
   </metadata>
   <files>
@@ -29,6 +29,6 @@ Supports the creation of Windows Phone 8.1 (WinRT) applications.
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Xaml.pdb*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.Xaml.xml*" target="lib\wpa" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Xaml\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml*\**\*.cs" target="src" />
   </files>
 </package>

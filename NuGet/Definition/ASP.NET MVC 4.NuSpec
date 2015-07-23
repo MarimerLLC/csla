@@ -4,7 +4,7 @@
     <id>CSLA-ASP.NET-MVC4</id>
     <title>CSLA .NET - ASP.NET MVC 4</title>
     <tags>CSLA ASP.NET MVC</tags>
-    <version>4.6.2-Beta6</version>
+    <version>4.6.2-Beta7</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,8 +20,8 @@ Supports the creation of ASP.NET MVC 4 applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.2-Beta6]" />
-      <dependency id="CSLA-ASP.NET" version="[4.6.2-Beta6]" />
+      <dependency id="CSLA-Core" version="[4.6.2-Beta7]" />
+      <dependency id="CSLA-ASP.NET" version="[4.6.2-Beta7]" />
     </dependencies>
   </metadata>
   <files>
@@ -44,6 +44,6 @@ Supports the creation of ASP.NET MVC 4 applications.
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.resources.pdb*" target="lib\NET46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Web.Mvc4.xml*" target="lib\NET46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Web.Mvc4\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Web.Mvc4*\**\*.cs" target="src" />
   </files>
 </package>

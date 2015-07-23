@@ -31,5 +31,6 @@ Supports the creation of Xamarin Android applications.
     <file src="..\..\Bin\Release\Android\**\Csla.Axml.xml*" target="lib\MonoAndroid10" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Axml.Android\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" />
   </files>
 </package>

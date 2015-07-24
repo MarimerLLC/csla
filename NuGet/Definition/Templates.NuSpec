@@ -20,8 +20,7 @@ Code snippets and templates that supports the creation of CSLA business objects.
     </summary>
     <language>en-US</language>
   </metadata>
-  <files>
-    <file src="content\*" target="content" />
+  <files>   
     <!-- Snippets for Tools folder -->
     <file src="tools\install.ps1" target="tools" />
     <file src="tools\uninstall.ps1" target="tools" />

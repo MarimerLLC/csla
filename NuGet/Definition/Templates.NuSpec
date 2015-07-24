@@ -4,7 +4,7 @@
     <id>CSLA-Templates</id>
     <title>CSLA .NET - Templates</title>
     <tags>CSLA Business Object Snippet Templates</tags>
-    <version>4.6.2-Beta6</version>
+    <version>..</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,9 +20,9 @@ Code snippets and templates that supports the creation of CSLA business objects.
     </summary>
     <language>en-US</language>
   </metadata>
-  <files>   
+  <files>
     <!-- Snippets for Tools folder -->
-    <file src="tools\install.ps1" target="tools" />
+    <file src="tools\init.ps1" target="tools" />
     <file src="tools\uninstall.ps1" target="tools" />
     <file src="..\..\Support\Snippets\cs\*.snippet" target="tools\Snippets\cs" />
     <file src="..\..\Support\Snippets\vb\*.snippet" target="tools\Snippets\vb" />

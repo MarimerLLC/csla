@@ -14,6 +14,7 @@ using System.Reflection;
 namespace Csla.Reflection
 {
 #if NETFX_CORE
+#if !WINDOWS_UWP
   /// <summary>
   /// Binding flags.
   /// </summary>
@@ -45,6 +46,7 @@ namespace Csla.Reflection
     /// </summary>
     DeclaredOnly = 32
   }
+#endif
 
   /// <summary>
   /// Extension and helper methods to help mitigate the
@@ -121,6 +123,7 @@ namespace Csla.Reflection
       return result;
     }
 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a method.
     /// </summary>
@@ -154,7 +157,9 @@ namespace Csla.Reflection
       }
       return result;
     }
+#endif
 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a field.
     /// </summary>
@@ -180,6 +185,7 @@ namespace Csla.Reflection
       else
         return t.GetTypeInfo().DeclaredFields.ToArray();
     }
+#endif
 
     /// <summary>
     /// Gets the containing assembly.
@@ -230,6 +236,7 @@ namespace Csla.Reflection
       return (result != null && result.Count() > 0);
     }
 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a value indicating whether the type
     /// is assignable to the target type.
@@ -267,6 +274,7 @@ namespace Csla.Reflection
       var ti = t.GetTypeInfo();
       return ti.DeclaredProperties.Where(r => r.Name == propertyName).FirstOrDefault();
     }
+#endif
 
     /// <summary>
     /// Gets declared properties.
@@ -279,6 +287,7 @@ namespace Csla.Reflection
       return ti.DeclaredProperties.ToArray();
     }
 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets declared properties.
     /// </summary>
@@ -319,6 +328,7 @@ namespace Csla.Reflection
       }
       return methods.ToArray();
     }
+#endif
 
     /// <summary>
     /// Gets the base type.
@@ -440,6 +450,7 @@ namespace Csla.Reflection
     }
   }
 
+#if !WINDOWS_UWP
   /// <summary>
   /// Type codes
   /// </summary>
@@ -518,11 +529,12 @@ namespace Csla.Reflection
     /// </summary>
     String
   }
+#endif
 #else
-  /// <summary>
-  /// Contains extension methods for Type.
-  /// </summary>
-  public static class TypeExtensions
+    /// <summary>
+    /// Contains extension methods for Type.
+    /// </summary>
+    public static class TypeExtensions
   {
     /// <summary>
     /// Gets a value indicating whether this

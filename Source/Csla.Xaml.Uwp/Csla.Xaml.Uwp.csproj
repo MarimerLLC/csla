@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{93F6A357-27FC-4A0A-B182-6399D427D017}</ProjectGuid>
+    <ProjectGuid>{72BA2362-641B-4AA7-9B30-8FB09AE490BE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Xaml</RootNamespace>

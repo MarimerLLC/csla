@@ -4,7 +4,7 @@
     <id>CSLA-WindowsForms</id>
     <title>CSLA .NET - Windows Forms</title>
     <tags>CSLA Windows WinForms Forms</tags>
-    <version>4.6.2-Beta6</version>
+    <version>4.6.3-Beta</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Windows Forms applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.2-Beta6]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta]" />
     </dependencies>
   </metadata>
   <files>
@@ -43,6 +43,6 @@ Supports the creation of Windows Forms applications.
     <file src="..\..\Bin\Release\NET46\**\Csla.Windows.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Windows.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Windows\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Windows*\**\*.cs" target="src" />
   </files>
 </package>

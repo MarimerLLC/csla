@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2A7BCE0-7ECB-4353-8F2B-5857DBBAB4DE}</ProjectGuid>
+    <ProjectGuid>{1F7F65F7-7EE5-4255-9A75-4CED8FCA1D77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
     <RootNamespace>Csla</RootNamespace>
     <AssemblyName>Csla</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.10069.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10069.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -23,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\UWP\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\UWP\Csla.XML</DocumentationFile>
@@ -33,7 +34,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\UWP\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\UWP\Csla.XML</DocumentationFile>
@@ -42,7 +43,7 @@
     <PlatformTarget>ARM</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>ARM</PlatformTarget>
@@ -53,7 +54,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
     <OutputPath>bin\ARM\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -66,7 +67,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -77,7 +78,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -89,19 +90,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <OutputPath>..\..\Bin\Debug\UWP\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <NoWarn>;2008</NoWarn>
     <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>..\..\Bin\Debug\UWP\Csla.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
-    <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UAP</DefineConstants>
+    <OutputPath>..\..\Bin\Release\UWP\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
     <NoWarn>;2008</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -109,6 +111,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>..\..\Bin\Release\UWP\Csla.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -117,27 +120,44 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="CslaKey.snk" />
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Numerics.Vectors, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.0.0\lib\win8\System.Numerics.Vectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Numerics.Vectors.WindowsRuntime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.0.0\lib\win8\System.Numerics.Vectors.WindowsRuntime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CslaKey.snk" />
-    <None Include="packages.config" />
-    <None Include="Properties\ServiceReferences.Designer.ClientConfig" />
+    <PRIResource Include="Resources\ar\Resources.resw" />
+    <PRIResource Include="Resources\bs\Resources.resw" />
+    <PRIResource Include="Resources\ca-ES\Resources.resw" />
+    <PRIResource Include="Resources\da\Resources.resw" />
+    <PRIResource Include="Resources\de\Resources.resw" />
+    <PRIResource Include="Resources\el\Resources.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\es\Resources.resw" />
+    <PRIResource Include="Resources\es-ES\Resources.resw" />
+    <PRIResource Include="Resources\hr\Resources.resw" />
+    <PRIResource Include="Resources\hu\Resources.resw" />
+    <PRIResource Include="Resources\it\Resources.resw" />
+    <PRIResource Include="Resources\km-KH\Resources.resw" />
+    <PRIResource Include="Resources\nl\Resources.resw" />
+    <PRIResource Include="Resources\no\Resources.resw" />
+    <PRIResource Include="Resources\pt\Resources.resw" />
+    <PRIResource Include="Resources\pt-BR\Resources.resw" />
+    <PRIResource Include="Resources\ro\Resources.resw" />
+    <PRIResource Include="Resources\ru\Resources.resw" />
+    <PRIResource Include="Resources\sr\Resources.resw" />
+    <PRIResource Include="Resources\sv\Resources.resw" />
+    <PRIResource Include="Resources\tr\Resources.resw" />
+    <PRIResource Include="Resources\uk-ua\Resources.resw" />
+    <PRIResource Include="Resources\vi\Resources.resw" />
+    <PRIResource Include="Resources\zh-Hans\Resources.resw" />
+    <PRIResource Include="Resources\zh-TW\Resources.resw" />
     <None Include="Service References\WcfPortal\App1.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -152,6 +172,8 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <Content Include="Properties\Csla.Uwp.rd.xml" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -174,7 +196,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>mkdir "$(ProjectDir)resources\en"
+    <PreBuildEvent>mkdir "$(ProjectDir)Resources\en"
 copy "$(SolutionDir)Csla.Shared.Resources\resources.resx" "$(ProjectDir)resources\en\Resources.resw"
 mkdir "$(ProjectDir)resources\en-US"
 copy "$(SolutionDir)Csla.Shared.Resources\resources.resx" "$(ProjectDir)resources\en-US\Resources.resw"

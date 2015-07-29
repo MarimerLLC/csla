@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE && !WINDOWS_UWP
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorker.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

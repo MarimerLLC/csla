@@ -4,7 +4,7 @@
     <id>CSLA-iOS</id>
     <title>CSLA .NET - iOS Unified</title>
     <tags>CSLA iOS Unified</tags>
-    <version>4.6.2-Beta6</version>
+    <version>4.6.3-Beta</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the creation of Xamarin iOS applications using the unified API.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.2-Beta6]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta]" />
     </dependencies>
   </metadata>
   <files>
@@ -31,5 +31,6 @@ Supports the creation of Xamarin iOS applications using the unified API.
     <file src="..\..\Bin\Release\iOS\**\Csla.Iosui.xml*" target="lib\Xamarin.iOS" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" />
   </files>
 </package>

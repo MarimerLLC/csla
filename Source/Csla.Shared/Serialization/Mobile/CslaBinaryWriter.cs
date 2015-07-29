@@ -144,7 +144,7 @@ namespace Csla.Serialization.Mobile
 #if NETFX_CORE
         var typeCode = TypeExtensions.GetTypeCode(target.GetType());
 #else
-				var typeCode = Type.GetTypeCode(target.GetType());
+        var typeCode = Type.GetTypeCode(target.GetType());
 #endif
 				switch (typeCode)
 				{

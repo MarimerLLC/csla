@@ -10,6 +10,7 @@ using System.Linq;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System;
+using System.Reflection;
 using Csla.Reflection;
 
 namespace Csla.Core

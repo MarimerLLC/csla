@@ -13,6 +13,9 @@ TestResults
 *.user
 *.sln.docstates
 
+# Generated NuGet files
+project.lock.json
+
 # Build results
 [Dd]ebug/
 [Rr]elease/

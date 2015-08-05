@@ -12,8 +12,6 @@ TestResults
 *.suo
 *.user
 *.sln.docstates
-
-# Generated NuGet files
 project.lock.json
 
 # Build results
@@ -157,3 +155,5 @@ Thumbs.db
 *.userprefs
 /Source/Csla.WinRT/resources
 /Source/Csla.Uwp/resources
+/Source/Csla.Xaml.Uwp/project.lock.json
+/Source/Csla.Validation.Uwp/project.lock.json

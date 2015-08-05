@@ -4,7 +4,7 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.6.3-Beta</version>
+    <version>4.6.3-Beta7</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -54,7 +54,7 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NET46\**\Csla.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.xml*" target="lib\net46" />
     <!-- CSLA Analyzers -->
-    <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.dll*" target="tools\analyzers\c#" />
+    <file src="..\..\Bin\Release\Analyzers\**\*.dll" target="analyzers\dotnet\cs" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*;**\System.Composition.*" />
     <file src="..\..\Bin\Release\Analyzers\tools\*.ps1" target="tools\" />
     <!-- Windows Runtime Client -->
     <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />

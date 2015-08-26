@@ -15,6 +15,7 @@ TestResults
 
 # Generated NuGet files
 project.lock.json
+.vs
 
 # Build results
 [Dd]ebug/
@@ -157,3 +158,4 @@ Thumbs.db
 *.userprefs
 /Source/Csla.WinRT/resources
 /Source/Csla.Uwp/resources
+/Samples/ProjectTracker/.vs

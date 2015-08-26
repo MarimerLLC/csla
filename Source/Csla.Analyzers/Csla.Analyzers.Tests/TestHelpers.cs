@@ -47,11 +47,11 @@ namespace Csla.Analyzers.Tests
          .CurrentSolution
          .AddProject(projectId, projectName, projectName, LanguageNames.CSharp)
          .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromAssembly(typeof(object).Assembly))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromAssembly(typeof(Enumerable).Assembly))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromAssembly(typeof(CSharpCompilation).Assembly))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromAssembly(typeof(Compilation).Assembly))
-         .AddMetadataReference(projectId, MetadataReference.CreateFromAssembly(typeof(BusinessBase<>).Assembly));
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(CSharpCompilation).Assembly.Location))
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Compilation).Assembly.Location))
+         .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location));
 
       var documentId = DocumentId.CreateNewId(projectId);
       solution = solution.AddDocument(documentId, "Test.cs", SourceText.From(code));

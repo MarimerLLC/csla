@@ -57,11 +57,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\..\Bin\Release\NET46\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.3.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.6.3-Beta3\lib\net46\Csla.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Windows">
-      <HintPath>..\..\..\Bin\Release\NET46\Csla.Windows.dll</HintPath>
+    <Reference Include="Csla.Windows, Version=4.6.3.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-WindowsForms.4.6.3-Beta3\lib\net46\Csla.Windows.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -139,6 +141,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\ProjectTracker.Library.ProjectList.datasource" />
     <None Include="Properties\DataSources\ProjectTracker.Library.ResourceList.datasource" />
     <None Include="Properties\DataSources\ProjectTracker.Library.RoleList.datasource" />
@@ -203,6 +206,9 @@
       <Project>{677efbd4-1565-4d5d-a022-c2a85078db64}</Project>
       <Name>ProjectTracker.Dal</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\CSLA-Core.4.6.3-Beta3\tools\analyzers\C#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

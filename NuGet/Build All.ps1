@@ -169,17 +169,27 @@ try
     Write-Host "==================================" -ForegroundColor White
 
     Write-Host "Creating Packages folder" -ForegroundColor Yellow
-    mkdir Packages
+    mkdir Packages -ErrorAction Ignore
 
     ## NB - Cleanup destination package folder
     ## ---------------------------------------
     Write-Host "Clean destination folders..." -ForegroundColor Yellow
     Remove-Item ".\Packages\*.nupkg" -Recurse -Force -ErrorAction SilentlyContinue
     
+    ## RDL - Copy definition files to temp folder
+    ## ------------------------------------------
+    Write-Host "Copy NuSpec files to working directory..." -ForegroundColor Yellow
+    mkdir deftmp  -ErrorAction Ignore
+    Remove-Item ".\deftmp\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Copy $originalLocation\Definition\* $originalLocation\deftmp
+    
     ## Spawn off individual build processes...
     ## ---------------------------------------
-    Set-Location "$originalLocation\Definition" ## Adjust current working directory since scripts are using relative paths
+    Set-Location "$originalLocation\deftmp" ## Adjust current working directory since scripts are using relative paths
     $packages | ForEach { & ".\Build.ps1" $_ $commandLineOptions }
+
+    Set-Location "$originalLocation" 
+    Remove-Item "deftmp" -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host "Build All - Done." -ForegroundColor Green
 }
 catch 

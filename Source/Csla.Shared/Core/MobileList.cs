@@ -13,6 +13,7 @@ using Csla.Serialization.Mobile;
 using Csla.Serialization;
 using serialization = System.Runtime.Serialization;
 using System.IO;
+using System.Reflection;
 using Csla.Reflection;
 
 namespace Csla.Core

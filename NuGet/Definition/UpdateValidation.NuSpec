@@ -4,7 +4,7 @@
     <id>CSLA-UpdateValidation</id>
     <title>CSLA .NET - Legacy Validation</title>
     <tags>CSLA Validation</tags>
-    <version>4.6.1-Alpha</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.1-Alpha]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
@@ -63,6 +63,6 @@ Supports legacy CSLA .NET 3.8 style validation and business rules in newer versi
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.pdb*" target="lib\Xamarin.iOS10" />
     <file src="..\..\Bin\Release\iOS\**\Csla.Validation.xml*" target="lib\Xamarin.iOS10" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Validation\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Validation*\**\*.cs" target="src" />
   </files>
 </package>

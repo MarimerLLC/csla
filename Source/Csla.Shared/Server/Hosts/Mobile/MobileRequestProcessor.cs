@@ -402,6 +402,9 @@ namespace Csla.Server.Hosts.Mobile
     #region Context and Criteria
     private void SetContext(IMobileRequest request)
     {
+      ApplicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
+      ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+
       ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       if (ApplicationContext.AuthenticationType != "Windows")
         ApplicationContext.User = request.Principal;

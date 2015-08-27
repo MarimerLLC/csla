@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
 using Csla.Serialization;
+using System.Reflection;
 using Csla.Reflection;
 
 namespace Csla.Core

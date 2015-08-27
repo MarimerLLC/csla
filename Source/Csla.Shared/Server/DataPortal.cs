@@ -10,6 +10,7 @@ using System;
 using System.Configuration;
 #endif
 #if NETFX_CORE
+using System.Reflection;
 using Csla.Reflection;
 #endif
 using System.Security.Principal;

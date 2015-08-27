@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>a9f7658d-40fb-419c-939a-dea56c499889</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ProjectTracker.Library</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectCloser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectExistsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectGetter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectResourceEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectResourceEditCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectResources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectResourceUpdater.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceAssignmentEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceAssignmentEditCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceAssignments.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceEdit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceExistsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceGetter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RoleList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\PTIdentity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Security\PTPrincipal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ValidRole.cs" />
+  </ItemGroup>
+</Project>

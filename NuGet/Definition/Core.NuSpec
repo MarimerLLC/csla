@@ -4,7 +4,11 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.6.1-Alpha</version>
+<<<<<<< HEAD
+    <version>4.6.3-Beta10</version>
+=======
+    <version>4.6.3-Beta7</version>
+>>>>>>> 3f5c722c2c895f49e7aa398048bcf0bbb8b31b69
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -53,6 +57,13 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NET46\**\Csla.resources.dll*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.xml*" target="lib\net46" />
+    <!-- CSLA Analyzers -->
+<<<<<<< HEAD
+    <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.dll*" target="analyzers\c#" />
+=======
+    <file src="..\..\Bin\Release\Analyzers\**\*.dll" target="analyzers\dotnet\cs" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*;**\System.Composition.*" />
+>>>>>>> 3f5c722c2c895f49e7aa398048bcf0bbb8b31b69
+    <file src="..\..\Bin\Release\Analyzers\tools\*.ps1" target="tools\" />
     <!-- Windows Runtime Client -->
     <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />

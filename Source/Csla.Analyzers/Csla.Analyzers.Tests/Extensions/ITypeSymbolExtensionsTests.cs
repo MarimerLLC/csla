@@ -74,8 +74,8 @@ namespace Csla.Analyzers.Tests.Extensions
         syntaxTrees: new[] { tree },
         references: new[]
         {
-          MetadataReference.CreateFromAssembly(typeof(object).Assembly),
-          MetadataReference.CreateFromAssembly(typeof(BusinessBase<>).Assembly)
+          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
+          MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location)
         });
 
       var model = compilation.GetSemanticModel(tree);

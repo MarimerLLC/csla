@@ -4,7 +4,7 @@
     <id>CSLA-EF4</id>
     <title>CSLA .NET - ADO.NET EF 4</title>
     <tags>CSLA Windows ADO.NET EF</tags>
-    <version>4.6.1-Alpha</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
     <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
     <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
@@ -20,7 +20,7 @@ Supports the use of ADO.NET Entity Framework 4.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.6.1-Alpha]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
       <dependency id="EntityFramework" version="[4.3.1]" />
     </dependencies>
   </metadata>
@@ -44,6 +44,6 @@ Supports the use of ADO.NET Entity Framework 4.
     <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF4.resources.pdb*" target="lib\net46" />
     <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF4.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Data.EF4\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Data.EF4*\**\*.cs" target="src" />
   </files>
 </package>

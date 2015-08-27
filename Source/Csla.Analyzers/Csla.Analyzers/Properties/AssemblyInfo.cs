@@ -1,9 +1,15 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Csla.Analyzers")]
-[assembly: AssemblyProduct("Csla.Analyzers")]
-[assembly: AssemblyCopyright("Copyright © 2015")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyTitle("CSLA .NET Analyzers")]
+[assembly: AssemblyDescription("CSLA .NET Framework analyzers")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("Marimer LLC")]
+[assembly: AssemblyProduct("CSLA .NET")]
+[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("Csla.Analyzers.Tests")]
+
+[assembly: AssemblyVersion("4.6.003.0")]
+[assembly: AssemblyFileVersion("4.6.003.0")]

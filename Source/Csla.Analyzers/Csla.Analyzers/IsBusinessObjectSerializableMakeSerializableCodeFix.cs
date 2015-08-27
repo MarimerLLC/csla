@@ -46,16 +46,8 @@ namespace Csla.Analyzers
         return;
       }
 
-      if (root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
-      {
-        IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFixWhenSystemUsingExists(
-          context, root, diagnostic, classNode);
-      }
-      else
-      {
-        IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFixWhenSystemUsingDoesNotExist(
-          context, root, diagnostic, classNode);
-      }
+      IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFix(
+        context, root, diagnostic, classNode);
     }
 
     private static SyntaxNode AddAttribute(SyntaxNode root, ClassDeclarationSyntax classNode,
@@ -67,40 +59,30 @@ namespace Csla.Analyzers
       return root.ReplaceNode(classNode, newClassNode);
     }
 
-    private static void AddCodeFixWhenSystemUsingExists(CodeFixContext context, SyntaxNode root,
+    private static void AddCodeFix(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode)
     {
       var newRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
         root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
 
-      context.RegisterCodeFix(
-        CodeAction.Create(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableDescription,
-          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
-    }
+      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
+      {
+        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
+            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
+      }
 
-    private static void AddCodeFixWhenSystemUsingDoesNotExist(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, ClassDeclarationSyntax classNode)
-    {
-      var qualifiedRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-        root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableFullName);
-
-      context.RegisterCodeFix(
-        CodeAction.Create(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSystemSerializableDescription,
-          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(qualifiedRoot))), diagnostic);
-
-      var unqualifiedRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-        root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
-
-      unqualifiedRoot = (unqualifiedRoot as CompilationUnitSyntax).AddUsings(
-        SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
+      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace))
+      {
+        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
+            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace)));
+      }
 
       context.RegisterCodeFix(
         CodeAction.Create(
           IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,
-          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(unqualifiedRoot))), diagnostic);
+          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
     }
   }
 }

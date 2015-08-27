@@ -1,5 +1,0 @@
-﻿using Csla;
-
-public class IsBusinessObjectSerializableMakeSerializableCodeFixTests_VerifyGetFixesWhenUsingSystemDoesNotExist
-	: BusinessBase<IsBusinessObjectSerializableMakeSerializableCodeFixTests_VerifyGetFixesWhenUsingSystemDoesNotExist>
-{ }

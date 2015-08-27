@@ -109,7 +109,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\v4.6\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)\packages\NuGet.CommandLine.2.8.2\tools\NuGet.exe" pack Csla.Analyzers.nuspec -NoPackageAnalysis -OutputDirectory .</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)\packages\NuGet.CommandLine.2.8.6\tools\NuGet.exe" pack Csla.Analyzers.nuspec -NoPackageAnalysis -OutputDirectory .</PostBuildEvent>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

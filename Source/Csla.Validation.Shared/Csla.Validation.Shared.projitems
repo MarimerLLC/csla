@@ -9,7 +9,7 @@
     <Import_RootNamespace>Csla.Validation.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Upgrade.txt" />
+    <None Include="$(MSBuildThisFileDirectory)Upgrade.txt" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AuthorizationRules.cs" />

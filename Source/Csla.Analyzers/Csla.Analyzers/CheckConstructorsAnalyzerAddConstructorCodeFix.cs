@@ -7,20 +7,19 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
-using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
 {
-  [ExportCodeFixProvider(IsBusinessObjectSerializableConstants.DiagnosticId, LanguageNames.CSharp)]
+  [ExportCodeFixProvider(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, LanguageNames.CSharp)]
   [Shared]
-  public sealed class IsBusinessObjectSerializableMakeSerializableCodeFix
+  public sealed class CheckConstructorsAnalyzerAddConstructorCodeFix
     : CodeFixProvider
   {
     public override ImmutableArray<string> FixableDiagnosticIds
     {
       get
       {
-        return ImmutableArray.Create(IsBusinessObjectSerializableConstants.DiagnosticId);
+        return ImmutableArray.Create(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId);
       }
     }
 
@@ -46,7 +45,7 @@ namespace Csla.Analyzers
         return;
       }
 
-      IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFix(
+      CheckConstructorsAnalyzerAddConstructorCodeFix.AddCodeFix(
         context, root, diagnostic, classNode);
     }
 
@@ -62,28 +61,38 @@ namespace Csla.Analyzers
     private static void AddCodeFix(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode)
     {
-      var newRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
-        root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
-      
-      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
-      {
-        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
-          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
-            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
-      }
-
-      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace))
-      {
-        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
-          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
-            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace)));
-      }
+      // Generated from http://roslynquoter.azurewebsites.net/
+      var constructor = SyntaxFactory.ConstructorDeclaration(classNode.Identifier)
+        .WithModifiers(
+          SyntaxFactory.TokenList(
+            SyntaxFactory.Token(SyntaxKind.PublicKeyword)))
+        .WithParameterList(SyntaxFactory.ParameterList()
+          .WithOpenParenToken(
+            SyntaxFactory.Token(SyntaxKind.OpenParenToken))
+          .WithCloseParenToken(
+            SyntaxFactory.Token(
+              SyntaxFactory.TriviaList(),
+              SyntaxKind.CloseParenToken,
+              SyntaxFactory.TriviaList(SyntaxFactory.Space))))
+        .WithBody(SyntaxFactory.Block()
+          .WithOpenBraceToken(
+            SyntaxFactory.Token(
+              SyntaxFactory.TriviaList(),
+              SyntaxKind.OpenBraceToken,
+              SyntaxFactory.TriviaList(SyntaxFactory.Space)))
+          .WithCloseBraceToken(
+            SyntaxFactory.Token(
+              SyntaxFactory.TriviaList(),
+              SyntaxKind.CloseBraceToken,
+              SyntaxFactory.TriviaList(SyntaxFactory.LineFeed))));
+      var newClassNode = classNode.AddMembers(constructor);
+      var newRoot = root.ReplaceNode(classNode, newClassNode);
 
       context.RegisterCodeFix(
         CodeAction.Create(
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,
+          CheckConstructorsAnalyzerAddConstructorCodeFixConstants.AddConstructorDescription,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription), diagnostic);
+          CheckConstructorsAnalyzerAddConstructorCodeFixConstants.AddConstructorDescription), diagnostic);
     }
   }
 }

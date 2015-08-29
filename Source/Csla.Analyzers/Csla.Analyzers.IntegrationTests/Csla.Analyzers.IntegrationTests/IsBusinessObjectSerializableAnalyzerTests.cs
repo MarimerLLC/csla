@@ -2,13 +2,15 @@
 using System;
 
 public class ClassIsStereotypeAndIsNotSerializable
-  : BusinessBase<ClassIsStereotypeAndIsNotSerializable> { }
+  : BusinessBase<ClassIsStereotypeAndIsNotSerializable>
+{ }
 
 public class ClassIsNotStereotype { }
 
 [Serializable]
 public class ClassIsStereotypeAndIsSerializable
-  : BusinessBase<ClassIsStereotypeAndIsSerializable> { }
+  : BusinessBase<ClassIsStereotypeAndIsSerializable>
+{ }
 
 [Serializable]
 public class Foo : BusinessBase<Foo>

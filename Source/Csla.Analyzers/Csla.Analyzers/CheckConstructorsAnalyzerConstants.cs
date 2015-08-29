@@ -17,4 +17,9 @@
     public const string IdentifierText = "ConstructorHasParameters";
     public const string Message = "CSLA business objects should not have constructors with parameters.";
   }
+
+  public static class CheckConstructorsAnalyzerAddConstructorCodeFixConstants
+  {
+    public const string AddConstructorDescription = "Add public constructor with no arguments";
+  }
 }

@@ -9,3 +9,9 @@ public class ClassIsNotStereotype { }
 [Serializable]
 public class ClassIsStereotypeAndIsSerializable
   : BusinessBase<ClassIsStereotypeAndIsSerializable> { }
+
+[Serializable]
+public class Foo : BusinessBase<Foo>
+{
+  public Foo(int x) { }
+}

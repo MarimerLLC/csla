@@ -32,7 +32,7 @@ namespace FixingIsOneWay.Tests
     public async Task VerifyGetFixesWhenClassIsNotSealed()
     {
       var code = File.ReadAllText(
-        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}.{(nameof(this.VerifyGetFixesWhenClassIsNotSealed))}.cs");
+        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsNotSealed))}.cs");
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());
@@ -63,7 +63,7 @@ namespace FixingIsOneWay.Tests
     public async Task VerifyGetFixesWhenClassIsSealed()
     {
       var code = File.ReadAllText(
-        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}.{(nameof(this.VerifyGetFixesWhenClassIsSealed))}.cs");
+        $@"Targets\{nameof(IsOperationMethodPublicMakeNonPublicCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenClassIsSealed))}.cs");
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());

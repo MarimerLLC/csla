@@ -1,0 +1,74 @@
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
+
+namespace Csla.Analyzers
+{
+  [DiagnosticAnalyzer(LanguageNames.CSharp)]
+  public sealed class CheckConstructorsAnalyzer
+    : DiagnosticAnalyzer
+  {
+    private static DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = new DiagnosticDescriptor(
+      PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, PublicNoArgumentConstructorIsMissingConstants.Title,
+      PublicNoArgumentConstructorIsMissingConstants.Message, PublicNoArgumentConstructorIsMissingConstants.Category,
+      DiagnosticSeverity.Error, true);
+    private static DiagnosticDescriptor constructorHasParametersRule = new DiagnosticDescriptor(
+      ConstructorHasParametersConstants.DiagnosticId, ConstructorHasParametersConstants.Title,
+      ConstructorHasParametersConstants.Message, ConstructorHasParametersConstants.Category,
+      DiagnosticSeverity.Warning, true);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+    {
+      get
+      {
+        return ImmutableArray.Create(
+          CheckConstructorsAnalyzer.publicNoArgumentConstructorIsMissingRule,
+          CheckConstructorsAnalyzer.constructorHasParametersRule);
+      }
+    }
+
+    public override void Initialize(AnalysisContext context)
+    {
+      context.RegisterSyntaxNodeAction<SyntaxKind>(
+        CheckConstructorsAnalyzer.AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+    }
+
+    private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
+    {
+      var hasPublicNoArgumentConstructor = false;
+      var classNode = (ClassDeclarationSyntax)context.Node;
+      var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
+
+      if(classSymbol.IsStereotype() && !(classSymbol?.IsAbstract).Value)
+      {
+        foreach (var constructor in classSymbol?.Constructors)
+        {
+          if (constructor.DeclaredAccessibility == Accessibility.Public &&
+            constructor.Parameters.Length == 0)
+          {
+            hasPublicNoArgumentConstructor = true;
+          }
+          else if (constructor.Parameters.Length > 0)
+          {
+            foreach (var location in constructor.Locations)
+            {
+              context.ReportDiagnostic(Diagnostic.Create(
+                CheckConstructorsAnalyzer.constructorHasParametersRule,
+                location));
+            }
+          }
+        }
+
+        if (!hasPublicNoArgumentConstructor)
+        {
+          context.ReportDiagnostic(Diagnostic.Create(
+            CheckConstructorsAnalyzer.publicNoArgumentConstructorIsMissingRule,
+            classNode.Identifier.GetLocation()));
+        }
+      }
+    }
+  }
+}

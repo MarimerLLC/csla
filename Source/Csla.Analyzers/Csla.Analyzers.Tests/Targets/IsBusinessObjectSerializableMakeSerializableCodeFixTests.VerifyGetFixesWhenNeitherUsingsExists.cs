@@ -1,7 +1,0 @@
-﻿using Csla;
-
-public class IsBusinessObjectSerializableMakeSerializableCodeFixTests_VerifyGetFixesWhenNeitherUsingsExists
-	: BusinessBase<IsBusinessObjectSerializableMakeSerializableCodeFixTests_VerifyGetFixesWhenNeitherUsingsExists>
-{
-	public void DataPortal_Fetch() { }
-}

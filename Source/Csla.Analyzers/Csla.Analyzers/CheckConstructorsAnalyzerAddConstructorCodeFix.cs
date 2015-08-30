@@ -84,7 +84,7 @@ namespace Csla.Analyzers
             SyntaxFactory.Token(
               SyntaxFactory.TriviaList(),
               SyntaxKind.CloseBraceToken,
-              SyntaxFactory.TriviaList(SyntaxFactory.LineFeed))));
+              SyntaxFactory.TriviaList(SyntaxFactory.CarriageReturn, SyntaxFactory.LineFeed))));
       var newClassNode = classNode.AddMembers(constructor);
       var newRoot = root.ReplaceNode(classNode, newClassNode);
 

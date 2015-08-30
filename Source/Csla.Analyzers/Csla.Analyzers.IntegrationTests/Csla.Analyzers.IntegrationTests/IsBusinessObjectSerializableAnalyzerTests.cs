@@ -15,5 +15,5 @@ public class ClassIsStereotypeAndIsSerializable
 [Serializable]
 public class Foo : BusinessBase<Foo>
 {
-  public Foo(int x) { }
+  private Foo(int x) { }
 }

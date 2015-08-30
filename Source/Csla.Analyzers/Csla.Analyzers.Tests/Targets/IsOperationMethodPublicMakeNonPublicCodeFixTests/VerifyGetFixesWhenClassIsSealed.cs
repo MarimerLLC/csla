@@ -1,9 +1,12 @@
 ﻿using Csla;
 using System;
 
-[Serializable]
-public sealed class VerifyGetFixesWhenClassIsSealed
-	: BusinessBase<VerifyGetFixesWhenClassIsSealed>
+namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicMakeNonPublicCodeFixTests
 {
-	public void DataPortal_Fetch() { }
+  [Serializable]
+  public sealed class VerifyGetFixesWhenClassIsSealed
+    : BusinessBase<VerifyGetFixesWhenClassIsSealed>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

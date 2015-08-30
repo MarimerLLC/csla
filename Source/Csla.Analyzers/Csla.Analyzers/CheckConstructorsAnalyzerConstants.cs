@@ -15,7 +15,7 @@
     public const string DiagnosticId = "CSLA0004";
     public const string Title = "Find CSLA Business Objects That Have Constructors With Parameters";
     public const string IdentifierText = "ConstructorHasParameters";
-    public const string Message = "CSLA business objects should not have constructors with parameters.";
+    public const string Message = "CSLA business objects should not have public constructors with parameters.";
   }
 
   public static class CheckConstructorsAnalyzerAddConstructorCodeFixConstants

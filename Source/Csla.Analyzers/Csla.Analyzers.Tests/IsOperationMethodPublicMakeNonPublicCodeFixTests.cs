@@ -50,13 +50,13 @@ namespace FixingIsOneWay.Tests
       Assert.AreEqual(3, actions.Count);
       await TestHelpers.VerifyActionAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
-        tree, "rivate");
+        tree, new[] { "rivate" });
       await TestHelpers.VerifyActionAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.ProtectedDescription, document,
-        tree, "rotected");
+        tree, new[] { "rotected" });
       await TestHelpers.VerifyActionAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
-        tree, "internal");
+        tree, new[] { "internal" });
     }
 
     [TestMethod]
@@ -81,10 +81,10 @@ namespace FixingIsOneWay.Tests
       Assert.AreEqual(2, actions.Count);
       await TestHelpers.VerifyActionAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.PrivateDescription, document,
-        tree, "rivate");
+        tree, new[] { "rivate" });
       await TestHelpers.VerifyActionAsync(actions,
         IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants.InternalDescription, document,
-        tree, "internal");
+        tree, new[] { "internal" });
     }
   }
 }

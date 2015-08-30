@@ -46,18 +46,20 @@ namespace Csla.Analyzers
       {
         foreach (var constructor in classSymbol?.Constructors)
         {
-          if (constructor.DeclaredAccessibility == Accessibility.Public &&
-            constructor.Parameters.Length == 0)
+          if (constructor.DeclaredAccessibility == Accessibility.Public)
           {
-            hasPublicNoArgumentConstructor = true;
-          }
-          else if (constructor.Parameters.Length > 0)
-          {
-            foreach (var location in constructor.Locations)
+            if (constructor.Parameters.Length == 0)
             {
-              context.ReportDiagnostic(Diagnostic.Create(
-                CheckConstructorsAnalyzer.constructorHasParametersRule,
-                location));
+              hasPublicNoArgumentConstructor = true;
+            }
+            else
+            {
+              foreach (var location in constructor.Locations)
+              {
+                context.ReportDiagnostic(Diagnostic.Create(
+                  CheckConstructorsAnalyzer.constructorHasParametersRule,
+                  location));
+              }
             }
           }
         }

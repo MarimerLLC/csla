@@ -1,8 +1,11 @@
 ﻿using Csla;
 using System;
 
-public class VerifyGetFixesWhenOnlyUsingSystemExists
-	: BusinessBase<VerifyGetFixesWhenOnlyUsingSystemExists>
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
 {
-	public void DataPortal_Fetch() { }
+  public class VerifyGetFixesWhenOnlyUsingSystemExists
+    : BusinessBase<VerifyGetFixesWhenOnlyUsingSystemExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

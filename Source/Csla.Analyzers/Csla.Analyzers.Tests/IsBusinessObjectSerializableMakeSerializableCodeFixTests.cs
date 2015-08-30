@@ -51,7 +51,7 @@ namespace FixingIsOneWay.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, $"using Csla.Serialization;{Environment.NewLine}{Environment.NewLine}[Serializable]");
+        tree, new[] { $"using Csla.Serialization;{Environment.NewLine}", $"  [Serializable]{Environment.NewLine}    " });
     }
 
     [TestMethod]
@@ -77,7 +77,7 @@ namespace FixingIsOneWay.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, $"using System;{Environment.NewLine}{Environment.NewLine}[Serializable]");
+        tree, new[] { $"using System;{Environment.NewLine}", $"  [Serializable]{Environment.NewLine}    " });
     }
 
     [TestMethod]
@@ -103,7 +103,7 @@ namespace FixingIsOneWay.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, $"{Environment.NewLine}[Serializable]");
+        tree, new[] { $"  [Serializable]{Environment.NewLine}    " });
     }
 
     [TestMethod]
@@ -129,7 +129,7 @@ namespace FixingIsOneWay.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription, document,
-        tree, $"using System;{Environment.NewLine}using Csla.Serialization;{Environment.NewLine}{Environment.NewLine}[Serializable]");
+        tree, new[] { $"using System;{Environment.NewLine}using Csla.Serialization;{Environment.NewLine}", $"  [Serializable]{Environment.NewLine}    " });
     }
   }
 }

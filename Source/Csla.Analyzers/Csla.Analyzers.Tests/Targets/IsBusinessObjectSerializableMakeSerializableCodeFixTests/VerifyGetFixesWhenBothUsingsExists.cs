@@ -2,8 +2,11 @@
 using Csla.Serialization;
 using System;
 
-public class VerifyGetFixesWhenBothUsingsExists
-	: BusinessBase<VerifyGetFixesWhenBothUsingsExists>
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
 {
-	public void DataPortal_Fetch() { }
+  public class VerifyGetFixesWhenBothUsingsExists
+    : BusinessBase<VerifyGetFixesWhenBothUsingsExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

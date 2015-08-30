@@ -1,4 +1,8 @@
 ﻿using Csla;
 
-public class ClassIsStereotypeAndIsNotSerializable
-	: BusinessBase<ClassIsStereotypeAndIsSerializable>{ }
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableAnalyzerTests
+{
+  public class ClassIsStereotypeAndIsNotSerializable
+    : BusinessBase<ClassIsStereotypeAndIsSerializable>
+  { }
+}

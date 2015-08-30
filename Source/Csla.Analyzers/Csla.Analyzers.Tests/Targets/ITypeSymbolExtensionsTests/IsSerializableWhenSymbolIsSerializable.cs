@@ -1,4 +1,7 @@
 ﻿using System;
 
-[Serializable]
-public class IsSerializableWhenSymbolIsSerializable { }
+namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
+{
+  [Serializable]
+  public class IsSerializableWhenSymbolIsSerializable { }
+}

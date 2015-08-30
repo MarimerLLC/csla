@@ -1,8 +1,11 @@
 ﻿using Csla;
 using Csla.Serialization;
 
-public class VerifyGetFixesWhenOnlyUsingCslaSerializationExists
-	: BusinessBase<VerifyGetFixesWhenOnlyUsingCslaSerializationExists>
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
 {
-	public void DataPortal_Fetch() { }
+  public class VerifyGetFixesWhenOnlyUsingCslaSerializationExists
+    : BusinessBase<VerifyGetFixesWhenOnlyUsingCslaSerializationExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

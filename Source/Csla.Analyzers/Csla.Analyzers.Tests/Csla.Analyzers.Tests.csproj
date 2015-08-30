@@ -97,11 +97,30 @@
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
     <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerTests.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
     <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructor.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateNoArgumentConstructor.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenNeitherUsingsExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

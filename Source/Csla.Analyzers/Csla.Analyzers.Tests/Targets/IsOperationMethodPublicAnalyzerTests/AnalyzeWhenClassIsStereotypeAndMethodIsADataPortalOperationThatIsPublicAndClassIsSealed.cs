@@ -1,9 +1,12 @@
 ﻿using Csla;
 using System;
 
-[Serializable]
-public sealed class AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed
-	: BusinessBase<AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed>
+namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicAnalyzerTests
 {
-	public void DataPortal_Fetch() { }
+  [Serializable]
+  public sealed class AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed
+    : BusinessBase<AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

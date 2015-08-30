@@ -1,3 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class HasUsingWhenNodeHasUsingStatememt { }
+namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class HasUsingWhenNodeHasUsingStatememt { }
+}

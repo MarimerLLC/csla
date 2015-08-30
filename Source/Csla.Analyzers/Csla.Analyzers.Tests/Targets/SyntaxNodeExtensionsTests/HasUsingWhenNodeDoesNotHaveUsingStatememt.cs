@@ -1,1 +1,4 @@
-﻿public class HasUsingWhenNodeDoesNotHaveUsingStatememt { }
+﻿namespace Csla.Analyzers.Tests.Targets.SyntaxNodeExtensionsTests
+{
+  public class HasUsingWhenNodeDoesNotHaveUsingStatememt { }
+}

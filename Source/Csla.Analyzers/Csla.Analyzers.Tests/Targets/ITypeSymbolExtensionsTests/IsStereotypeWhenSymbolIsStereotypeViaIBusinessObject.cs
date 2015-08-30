@@ -1,4 +1,7 @@
 ﻿using Csla.Core;
 
-public class IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject
-	: IBusinessObject { }
+namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
+{
+  public class IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject
+    : IBusinessObject { }
+}

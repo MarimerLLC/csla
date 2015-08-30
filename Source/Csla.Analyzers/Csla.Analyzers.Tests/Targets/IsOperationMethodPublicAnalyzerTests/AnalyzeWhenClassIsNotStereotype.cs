@@ -1,4 +1,7 @@
-﻿public class AnalyzeWhenClassIsNotStereotype
+﻿namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicAnalyzerTests
 {
-	public void DataPortal_Fetch() { }
+  public class AnalyzeWhenClassIsNotStereotype
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

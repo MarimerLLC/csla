@@ -15,7 +15,7 @@ namespace Csla.Analyzers.Tests
   internal static class TestHelpers
   {
     internal static async Task VerifyActionAsync(List<CodeAction> actions, string title, Document document,
-      SyntaxTree tree, string expectedNewText)
+      SyntaxTree tree, string[] expectedNewTexts)
     {
       var action = actions.Where(_ => _.Title == title).First();
 
@@ -25,8 +25,12 @@ namespace Csla.Analyzers.Tests
       var newTree = await newDoc.GetSyntaxTreeAsync();
       var changes = newTree.GetChanges(tree);
 
-      Assert.AreEqual(1, changes.Count, nameof(changes.Count));
-      Assert.AreEqual(expectedNewText, changes[0].NewText, nameof(TextChange.NewText));
+      Assert.AreEqual(expectedNewTexts.Length, changes.Count, nameof(changes.Count));
+
+      foreach(var expectedNewText in expectedNewTexts)
+      {
+        Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), expectedNewText);
+      }
     }
 
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)

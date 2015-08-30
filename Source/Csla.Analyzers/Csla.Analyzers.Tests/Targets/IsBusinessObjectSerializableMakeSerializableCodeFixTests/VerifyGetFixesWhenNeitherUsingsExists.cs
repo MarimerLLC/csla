@@ -1,7 +1,10 @@
 ﻿using Csla;
 
-public class VerifyGetFixesWhenNeitherUsingsExists
-	: BusinessBase<VerifyGetFixesWhenNeitherUsingsExists>
+namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
 {
-	public void DataPortal_Fetch() { }
+  public class VerifyGetFixesWhenNeitherUsingsExists
+    : BusinessBase<VerifyGetFixesWhenNeitherUsingsExists>
+  {
+    public void DataPortal_Fetch() { }
+  }
 }

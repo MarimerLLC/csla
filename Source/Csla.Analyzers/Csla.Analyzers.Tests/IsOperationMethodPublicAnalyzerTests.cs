@@ -32,10 +32,10 @@ namespace Csla.Analyzers.Tests
 
     private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount)
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(path, expectedDiagnosticCount, null);
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(path, expectedDiagnosticCount, null);
     }
 
-    private static async Task RunAnalysis(string path, int expectedDiagnosticCount,
+    private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount,
       Action<List<Diagnostic>> diagnosticInspector)
     {
       var code = File.ReadAllText(path);
@@ -72,7 +72,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed()
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
         1, diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
@@ -80,7 +80,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed()
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
         1, diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }

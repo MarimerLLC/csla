@@ -13,7 +13,7 @@ namespace Csla.Analyzers
 {
   [ExportCodeFixProvider(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, LanguageNames.CSharp)]
   [Shared]
-  public sealed class CheckConstructorsAnalyzerAddConstructorCodeFix
+  public sealed class CheckConstructorsAnalyzerPublicConstructorCodeFix
     : CodeFixProvider
   {
     public override ImmutableArray<string> FixableDiagnosticIds
@@ -46,20 +46,21 @@ namespace Csla.Analyzers
         return;
       }
 
-      CheckConstructorsAnalyzerAddConstructorCodeFix.AddCodeFix(
-        context, root, diagnostic, classNode);
+      var hasNonPublicNoArgumentConstructor = bool.Parse(diagnostic.Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]);
+
+      if(hasNonPublicNoArgumentConstructor)
+      {
+        CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithUpdatingNonPublicConstructor(
+          context, root, diagnostic, classNode);
+      }
+      else
+      {
+        CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithNewPublicConstructor(
+          context, root, diagnostic, classNode);
+      }
     }
 
-    private static SyntaxNode AddAttribute(SyntaxNode root, ClassDeclarationSyntax classNode,
-      string name)
-    {
-      var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName(name));
-      var attributeList = SyntaxFactory.AttributeList(SyntaxFactory.SeparatedList<AttributeSyntax>().Add(attribute));
-      var newClassNode = classNode.AddAttributeLists(attributeList);
-      return root.ReplaceNode(classNode, newClassNode);
-    }
-
-    private static void AddCodeFix(CodeFixContext context, SyntaxNode root,
+    private static void AddCodeFixWithNewPublicConstructor(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode)
     {
       // Generated from http://roslynquoter.azurewebsites.net/
@@ -85,9 +86,29 @@ namespace Csla.Analyzers
 
       context.RegisterCodeFix(
         CodeAction.Create(
-          CheckConstructorsAnalyzerAddConstructorCodeFixConstants.AddConstructorDescription,
+          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          CheckConstructorsAnalyzerAddConstructorCodeFixConstants.AddConstructorDescription), diagnostic);
+          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription), diagnostic);
+    }
+
+    private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,
+      Diagnostic diagnostic, ClassDeclarationSyntax classNode)
+    {
+      var publicModifier = SyntaxFactory.Token(SyntaxKind.PublicKeyword);
+      var constructor = classNode.DescendantNodesAndSelf()
+        .Where(_ => _.IsKind(SyntaxKind.ConstructorDeclaration))
+        .Cast<ConstructorDeclarationSyntax>()
+        .Single(c => c.ParameterList.Parameters.Count == 0 &&
+          !c.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
+
+      var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
+      var newRoot = root.ReplaceNode(constructor, newConstructor);
+
+      context.RegisterCodeFix(
+        CodeAction.Create(
+          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription,
+          _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
+          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription), diagnostic);
     }
   }
 }

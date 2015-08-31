@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
@@ -39,6 +40,7 @@ namespace Csla.Analyzers
     private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
     {
       var hasPublicNoArgumentConstructor = false;
+      var hasNonPublicNoArgumentConstructor = false;
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
@@ -62,13 +64,22 @@ namespace Csla.Analyzers
               }
             }
           }
+          else if(constructor.Parameters.Length == 0)
+          {
+            hasNonPublicNoArgumentConstructor = true;
+          }
         }
 
         if (!hasPublicNoArgumentConstructor)
         {
+          var properties = new Dictionary<string, string>()
+          {
+            [PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor] = hasNonPublicNoArgumentConstructor.ToString()
+          }.ToImmutableDictionary();
+
           context.ReportDiagnostic(Diagnostic.Create(
             CheckConstructorsAnalyzer.publicNoArgumentConstructorIsMissingRule,
-            classNode.Identifier.GetLocation()));
+            classNode.Identifier.GetLocation(), properties));
         }
       }
     }

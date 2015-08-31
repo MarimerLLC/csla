@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,6 +41,12 @@ namespace Csla.Analyzers.Tests
 
     private static async Task RunAnalysisAsync(string path, string[] diagnosticIds)
     {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(path, diagnosticIds, null);
+    }
+
+    private static async Task RunAnalysisAsync(string path, string[] diagnosticIds,
+      Action<List<Diagnostic>> diagnosticInspector)
+    {
       var code = File.ReadAllText(path);
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(
         code, new CheckConstructorsAnalyzer());
@@ -48,6 +56,8 @@ namespace Csla.Analyzers.Tests
       {
         Assert.IsTrue(diagnostics.Any(_ => _.Id == diagnosticId), diagnosticId);
       }
+
+      diagnosticInspector?.Invoke(diagnostics);
     }
 
     [TestMethod]
@@ -71,7 +81,8 @@ namespace Csla.Analyzers.Tests
     {
       await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPrivateNoArgumentConstructor))}.cs",
-        new[] { PublicNoArgumentConstructorIsMissingConstants.DiagnosticId });
+        new[] { PublicNoArgumentConstructorIsMissingConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
     [TestMethod]
@@ -79,7 +90,8 @@ namespace Csla.Analyzers.Tests
     {
       await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPrivateConstructorWithArguments))}.cs",
-        new[] { PublicNoArgumentConstructorIsMissingConstants.DiagnosticId });
+        new[] { PublicNoArgumentConstructorIsMissingConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
     [TestMethod]
@@ -87,7 +99,8 @@ namespace Csla.Analyzers.Tests
     {
       await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments))}.cs",
-        new[] { ConstructorHasParametersConstants.DiagnosticId });
+        new[] { ConstructorHasParametersConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
     [TestMethod]
@@ -95,7 +108,8 @@ namespace Csla.Analyzers.Tests
     {
       await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments))}.cs",
-        new[] { ConstructorHasParametersConstants.DiagnosticId, PublicNoArgumentConstructorIsMissingConstants.DiagnosticId });
+        new[] { ConstructorHasParametersConstants.DiagnosticId, PublicNoArgumentConstructorIsMissingConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
   }
 }

@@ -98,13 +98,16 @@
     <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
     <Compile Include="CheckConstructorsAnalyzerTests.cs" />
-    <Compile Include="CheckConstructorsAnalyzerAddConstructorCodeFixTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
     <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Targets\CheckConstructorsAnalyzerAddConstructorCodeFixTests\VerifyGetFixes.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">

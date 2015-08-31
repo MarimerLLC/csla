@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------
 using System;
 
-namespace Csla.Serialization
+namespace System
 {
   /// <summary>
   /// Indicates that an object may be

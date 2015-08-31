@@ -64,7 +64,7 @@ namespace Csla.Analyzers
     {
       var newRoot = IsBusinessObjectSerializableMakeSerializableCodeFix.AddAttribute(
         root, classNode, IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SerializableName);
-
+      
       if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace))
       {
         newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
@@ -82,7 +82,8 @@ namespace Csla.Analyzers
       context.RegisterCodeFix(
         CodeAction.Create(
           IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,
-          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
+          _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
+          IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription), diagnostic);
     }
   }
 }

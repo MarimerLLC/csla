@@ -32,10 +32,10 @@ namespace Csla.Analyzers.Tests
 
     private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount)
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(path, expectedDiagnosticCount, null);
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(path, expectedDiagnosticCount, null);
     }
 
-    private static async Task RunAnalysis(string path, int expectedDiagnosticCount,
+    private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount,
       Action<List<Diagnostic>> diagnosticInspector)
     {
       var code = File.ReadAllText(path);
@@ -49,7 +49,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
         0);
     }
 
@@ -57,7 +57,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation()
     {
       await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation))}.cs",
         0);
     }
 
@@ -65,23 +65,23 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic()
     {
       await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic))}.cs",
         0);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed()
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
         1, diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed()
     {
-      await IsOperationMethodPublicAnalyzerTests.RunAnalysis(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}.{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
+      await IsOperationMethodPublicAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
         1, diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
   }

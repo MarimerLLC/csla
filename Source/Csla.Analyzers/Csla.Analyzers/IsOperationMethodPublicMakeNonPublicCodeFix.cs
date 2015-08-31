@@ -74,7 +74,7 @@ namespace Csla.Analyzers
 
       context.RegisterCodeFix(
         CodeAction.Create(description,
-          _ => Task.FromResult<Document>(context.Document.WithSyntaxRoot(newRoot))), diagnostic);
+          _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)), description), diagnostic);
     }
   }
 }

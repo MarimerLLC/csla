@@ -232,7 +232,7 @@ namespace Csla.Reflection
     public static bool IsSerializable(this Type t)
     {
       var tinfo = t.GetTypeInfo();
-      var result = tinfo.GetCustomAttributes(typeof(Csla.Serialization.SerializableAttribute), false);
+      var result = tinfo.GetCustomAttributes(typeof(SerializableAttribute), false);
       return (result != null && result.Count() > 0);
     }
 

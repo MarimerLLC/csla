@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.Formatting;
 
 namespace Csla.Analyzers
 {
@@ -71,20 +72,14 @@ namespace Csla.Analyzers
             SyntaxFactory.Token(SyntaxKind.OpenParenToken))
           .WithCloseParenToken(
             SyntaxFactory.Token(
-              SyntaxFactory.TriviaList(),
-              SyntaxKind.CloseParenToken,
-              SyntaxFactory.TriviaList(SyntaxFactory.Space))))
+              SyntaxKind.CloseParenToken)))
         .WithBody(SyntaxFactory.Block()
           .WithOpenBraceToken(
             SyntaxFactory.Token(
-              SyntaxFactory.TriviaList(),
-              SyntaxKind.OpenBraceToken,
-              SyntaxFactory.TriviaList(SyntaxFactory.Space)))
+              SyntaxKind.OpenBraceToken))
           .WithCloseBraceToken(
             SyntaxFactory.Token(
-              SyntaxFactory.TriviaList(),
-              SyntaxKind.CloseBraceToken,
-              SyntaxFactory.TriviaList(SyntaxFactory.CarriageReturn, SyntaxFactory.LineFeed))));
+              SyntaxKind.CloseBraceToken))).NormalizeWhitespace().WithAdditionalAnnotations(Formatter.Annotation);
       var newClassNode = classNode.AddMembers(constructor);
       var newRoot = root.ReplaceNode(classNode, newClassNode);
 

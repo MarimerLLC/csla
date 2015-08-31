@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -29,7 +30,8 @@ namespace Csla.Analyzers.Tests
 
       foreach(var expectedNewText in expectedNewTexts)
       {
-        Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), expectedNewText);
+        Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), 
+          string.Join($"{Environment.NewLine}{Environment.NewLine}", changes.Select(_ => $"Change text: {_.NewText}")));
       }
     }
 

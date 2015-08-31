@@ -13,7 +13,8 @@ public class ClassIsStereotypeAndIsSerializable
 { }
 
 [Serializable]
-public class Foo : BusinessBase<Foo>
+public class Foo 
+  : BusinessBase<Foo>
 {
   private Foo(int x) { }
 }

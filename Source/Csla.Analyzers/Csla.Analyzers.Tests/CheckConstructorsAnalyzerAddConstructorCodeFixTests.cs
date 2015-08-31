@@ -51,7 +51,7 @@ namespace FixingIsOneWay.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         CheckConstructorsAnalyzerAddConstructorCodeFixConstants.AddConstructorDescription, document,
-        tree, new[] { $@"{Environment.NewLine}        public VerifyGetFixes() {{ }}{Environment.NewLine}" });
+        tree, new[] { $@"      public VerifyGetFixes(){Environment.NewLine}        {{{Environment.NewLine}        }}{Environment.NewLine}    " });
     }
   }
 }

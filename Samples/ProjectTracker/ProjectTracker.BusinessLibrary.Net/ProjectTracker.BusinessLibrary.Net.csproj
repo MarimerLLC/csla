@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bxf, Version=1.2.0.0, Culture=neutral, PublicKeyToken=494e794d3bed2ce4, processorArchitecture=MSIL">
+      <HintPath>..\packages\BXF.1.2.0.0\lib\net46\Bxf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Csla, Version=4.6.100.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <HintPath>..\packages\CSLA-Core.4.6.100\lib\net46\Csla.dll</HintPath>
       <Private>True</Private>

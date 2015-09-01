@@ -72,13 +72,6 @@ namespace Csla.Analyzers
             IsBusinessObjectSerializableMakeSerializableCodeFixConstants.SystemNamespace)));
       }
 
-      if (!root.HasUsing(IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace))
-      {
-        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
-          SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
-            IsBusinessObjectSerializableMakeSerializableCodeFixConstants.CslaSerializationNamespace)));
-      }
-
       context.RegisterCodeFix(
         CodeAction.Create(
           IsBusinessObjectSerializableMakeSerializableCodeFixConstants.AddSerializableAndUsingDescription,

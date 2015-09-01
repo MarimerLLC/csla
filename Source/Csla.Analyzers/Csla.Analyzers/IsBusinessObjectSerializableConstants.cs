@@ -12,7 +12,6 @@
   public static class IsBusinessObjectSerializableMakeSerializableCodeFixConstants
   {
     public const string AddSerializableAndUsingDescription = "Add [Serializable] and using statement(s)";
-    public const string CslaSerializationNamespace = "Csla.Serialization";
     public const string SerializableName = "Serializable";
     public const string SystemNamespace = "System";
   }

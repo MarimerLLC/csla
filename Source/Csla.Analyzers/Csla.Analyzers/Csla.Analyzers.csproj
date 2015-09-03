@@ -34,6 +34,10 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFix.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFix.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerConstants.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzer.cs" />
     <Compile Include="CheckConstructorsAnalyzer.cs" />
     <Compile Include="Extensions\SyntaxNodeExtensions.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensions.cs" />

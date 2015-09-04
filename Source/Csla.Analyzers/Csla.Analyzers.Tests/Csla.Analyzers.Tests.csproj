@@ -99,6 +99,7 @@
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
     <Compile Include="CheckConstructorsAnalyzerTests.cs" />
     <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerTests.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
     <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
@@ -126,6 +127,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemDoesNotExists.cs">

@@ -39,11 +39,17 @@ namespace Csla.Analyzers
 
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
+
       var awaitExpressionNode = invocationNode.Parent as AwaitExpressionSyntax;
-      var leadingTrivia = awaitExpressionNode.AwaitKeyword.HasLeadingTrivia ?
-        awaitExpressionNode.AwaitKeyword.LeadingTrivia : new SyntaxTriviaList();
+      var awaitKeyword = awaitExpressionNode.AwaitKeyword;
+      var leadingTrivia = awaitKeyword.HasLeadingTrivia ?
+        awaitKeyword.LeadingTrivia : new SyntaxTriviaList();
+
+      var newAwaitExpressionNode = awaitExpressionNode.WithAwaitKeyword(
+        awaitKeyword.WithLeadingTrivia(new SyntaxTriviaList()));
       var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
         .Expression as IdentifierNameSyntax).Identifier;
+      var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());
 
       if (context.CancellationToken.IsCancellationRequested)
       {
@@ -51,7 +57,7 @@ namespace Csla.Analyzers
       }
 
       var simpleAssignmentExpressionNode = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-        SyntaxFactory.IdentifierName(invocationIdentifier), awaitExpressionNode)
+        SyntaxFactory.IdentifierName(newInvocationIdentifier), newAwaitExpressionNode)
         .WithLeadingTrivia(leadingTrivia);
 
       var newRoot = root.ReplaceNode(awaitExpressionNode, simpleAssignmentExpressionNode);

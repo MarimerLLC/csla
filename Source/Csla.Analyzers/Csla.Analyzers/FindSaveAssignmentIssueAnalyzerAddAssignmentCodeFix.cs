@@ -39,10 +39,14 @@ namespace Csla.Analyzers
 
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
+
       var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
         .Expression as IdentifierNameSyntax).Identifier;
       var leadingTrivia = invocationIdentifier.HasLeadingTrivia ? 
         invocationIdentifier.LeadingTrivia : new SyntaxTriviaList();
+
+      var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());
+      var newInvocationNode = invocationNode.ReplaceToken(invocationIdentifier, newInvocationIdentifier);
 
       if (context.CancellationToken.IsCancellationRequested)
       {
@@ -50,7 +54,7 @@ namespace Csla.Analyzers
       }
 
       var simpleAssignmentExpressionNode = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-        SyntaxFactory.IdentifierName(invocationIdentifier), invocationNode)
+        SyntaxFactory.IdentifierName(newInvocationIdentifier), newInvocationNode)
         .WithLeadingTrivia(leadingTrivia);
 
       var newRoot = root.ReplaceNode(invocationNode, simpleAssignmentExpressionNode);

@@ -44,6 +44,7 @@
     <Compile Include="Extensions\ITypeSymbolExtensions.cs" />
     <Compile Include="CheckConstructorsAnalyzerConstants.cs" />
     <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFix.cs" />
+    <Compile Include="ContainsInvocationExpressionWalker.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFix.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerConstants.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzer.cs" />

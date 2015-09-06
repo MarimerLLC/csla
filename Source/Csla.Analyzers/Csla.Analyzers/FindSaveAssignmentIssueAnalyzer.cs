@@ -52,26 +52,24 @@ namespace Csla.Analyzers
 
         if (invocationSymbol?.Name == "Save")
         {
-          var expressionStatementParent = invocationNode.Parent;
-
-          if (!expressionStatementParent?.DescendantTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false)
-          {
-            context.ReportDiagnostic(Diagnostic.Create(
-              FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule,
-              invocationNode.GetLocation()));
-          }
+          FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode, 
+            invocationNode.Parent, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
         }
         else if (invocationSymbol?.Name == "SaveAsync")
         {
-          var expressionStatementParent = invocationNode.Parent?.Parent;
-
-          if (!expressionStatementParent?.DescendantTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false)
-          {
-            context.ReportDiagnostic(Diagnostic.Create(
-              FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule,
-              invocationNode.GetLocation()));
-          }
+          FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
+            invocationNode.Parent?.Parent, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
         }
+      }
+    }
+
+    private static void CheckForCondition(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationNode, 
+      SyntaxNode expressionStatementParent, DiagnosticDescriptor descriptor)
+    {
+      if ((!expressionStatementParent?.DescendantNodesAndTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false) &&
+        !(invocationNode.DescendantNodes()?.Any(_ => new ContainsInvocationExpressionWalker(_).HasIssue) ?? false))
+      {
+        context.ReportDiagnostic(Diagnostic.Create(descriptor, invocationNode.GetLocation()));
       }
     }
   }

@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 using serialization = System.Runtime.Serialization;
 using System.IO;
 using System.Reflection;

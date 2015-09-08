@@ -6,7 +6,6 @@
 // <summary>Exception class indicating that there was a validation</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 
 namespace Csla.Rules
 {

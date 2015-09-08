@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using System.Reflection;
-using Csla.Serialization;
 
 namespace Csla
 {

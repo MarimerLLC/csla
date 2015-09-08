@@ -6,7 +6,6 @@ using System.Security.Permissions;
 #endif
 using System.Text;
 using System.Threading.Tasks;
-using Csla.Serialization;
 
 namespace Csla.Security
 {

@@ -9,13 +9,12 @@ using System;
 #if !NETFX_CORE
 using System.Security.Permissions;
 #endif
-using Csla.Serialization;
 
 namespace Csla
 {
 
   /// <summary>
-  /// This exception is returned for any errors occuring
+  /// This exception is returned for any errors occurring
   /// during the server-side DataPortal invocation.
   /// </summary>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]

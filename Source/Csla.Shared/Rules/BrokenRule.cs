@@ -6,7 +6,6 @@
 // <summary>Stores details about a specific broken business rule.</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 

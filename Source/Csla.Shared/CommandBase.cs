@@ -12,7 +12,6 @@ using Csla.Server;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 using Csla.DataPortalClient;
 using System.Linq.Expressions;
 using Csla.Reflection;

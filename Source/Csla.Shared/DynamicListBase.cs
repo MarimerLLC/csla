@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla

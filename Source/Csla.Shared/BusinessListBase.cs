@@ -8,7 +8,6 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Csla.Serialization;
 using Csla.Core;
 using Csla.Properties;
 using System.Collections.Generic;

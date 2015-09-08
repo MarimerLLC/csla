@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla;
-using Csla.Serialization;
 
 namespace Csla.Security
 {

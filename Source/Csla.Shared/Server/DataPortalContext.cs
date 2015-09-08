@@ -9,7 +9,6 @@ using System;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using Csla.Core;
-using Csla.Serialization;
 
 namespace Csla.Server
 {

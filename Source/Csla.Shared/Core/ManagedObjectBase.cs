@@ -16,7 +16,6 @@ using Csla.Core.LoadManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 
 namespace Csla.Core
 {

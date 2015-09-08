@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #if NETFX_CORE || (ANDROID || IOS)
 using System;
-using Csla.Serialization;
 
 namespace Csla
 {

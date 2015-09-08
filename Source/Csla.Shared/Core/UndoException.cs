@@ -6,7 +6,6 @@
 // <summary>Exception indicating a problem with the</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 
 namespace Csla.Core
 {

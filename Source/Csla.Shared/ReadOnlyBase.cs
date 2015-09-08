@@ -24,9 +24,6 @@ using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-#if (ANDROID || IOS) || NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla
 {

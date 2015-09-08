@@ -127,12 +127,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ProjectTracker.BusinessLibrary.Uwp\ProjectTracker.BusinessLibrary.Uwp.csproj">
-      <Project>{4027c5ac-6b25-433a-af78-334fdffeab0d}</Project>
-      <Name>ProjectTracker.BusinessLibrary.Uwp</Name>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

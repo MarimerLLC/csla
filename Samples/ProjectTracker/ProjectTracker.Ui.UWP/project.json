@@ -1,6 +1,5 @@
 ﻿{
   "dependencies": {
-    "CSLA-WinRT": "4.6.100",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
   },
   "frameworks": {

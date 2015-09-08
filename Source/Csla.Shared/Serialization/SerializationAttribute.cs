@@ -1,4 +1,4 @@
-﻿#if (!ANDROID && !IOS) && NETFX_CORE
+﻿#if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="SerializationAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

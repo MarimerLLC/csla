@@ -2,8 +2,8 @@
 
 namespace Csla.Analyzers.Tests.Targets.IsBusinessObjectSerializableMakeSerializableCodeFixTests
 {
-  public class VerifyGetFixesWhenNeitherUsingsExists
-    : BusinessBase<VerifyGetFixesWhenNeitherUsingsExists>
+  public class VerifyGetFixesWhenUsingSystemDoesNotExists
+    : BusinessBase<VerifyGetFixesWhenUsingSystemDoesNotExists>
   {
     public void DataPortal_Fetch() { }
   }

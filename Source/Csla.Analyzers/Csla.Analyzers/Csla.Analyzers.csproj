@@ -34,12 +34,17 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFix.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFix.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerConstants.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzer.cs" />
     <Compile Include="CheckConstructorsAnalyzer.cs" />
     <Compile Include="Extensions\SyntaxNodeExtensions.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensions.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensions.cs" />
     <Compile Include="CheckConstructorsAnalyzerConstants.cs" />
     <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFix.cs" />
+    <Compile Include="ContainsInvocationExpressionWalker.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFix.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerConstants.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzer.cs" />

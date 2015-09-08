@@ -13,6 +13,28 @@ namespace Csla.Analyzers.Tests.Extensions
   public sealed class ITypeSymbolExtensionsTests
   {
     [TestMethod]
+    public void IsBusinessBaseWhenSymbolIsNull()
+    {
+      Assert.IsFalse((null as ITypeSymbol).IsBusinessBase());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessBaseWhenSymbolIsNotABusinessBase()
+    {
+      Assert.IsFalse((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsBusinessBaseWhenSymbolIsNotABusinessBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsBusinessBaseWhenSymbolIsNotABusinessBase))).IsBusinessBase());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessBaseWhenSymbolIsABusinessBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsBusinessBaseWhenSymbolIsABusinessBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsBusinessBaseWhenSymbolIsABusinessBase))).IsBusinessBase());
+    }
+
+    [TestMethod]
     public void IsSerializableWhenSymbolIsNull()
     {
       Assert.IsFalse((null as ITypeSymbol).IsSerializable());

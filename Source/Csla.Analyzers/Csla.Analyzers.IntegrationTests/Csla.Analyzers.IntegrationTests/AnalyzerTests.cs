@@ -79,6 +79,18 @@ public class UserCaller
     // This should have an error because it doesn't set the return value
     this.DoThis(() => { x.Save(); });
 
+    this.ReturnThis(() => x.Save());
+
+    this.ReturnThis(() => { return x.Save(); });
+
+    this.ReturnThis(() => 
+    {
+      var q = DataPortal.Fetch<User>();
+      // This should have an error because it doesn't set the return value
+      q.Save();
+      return null;
+    });
+
     DataPortal.Fetch<User>().Save();
   }
 
@@ -97,5 +109,10 @@ public class UserCaller
   private void DoThis(Action a)
   {
     a();
+  }
+
+  private User ReturnThis(Func<User> a)
+  {
+    return a();
   }
 }

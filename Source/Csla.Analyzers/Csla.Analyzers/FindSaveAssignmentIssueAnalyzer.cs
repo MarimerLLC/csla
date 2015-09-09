@@ -67,10 +67,32 @@ namespace Csla.Analyzers
       SyntaxNode expressionStatementParent, DiagnosticDescriptor descriptor)
     {
       if ((!expressionStatementParent?.DescendantNodesAndTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false) &&
-        !(invocationNode.DescendantNodes()?.Any(_ => new ContainsInvocationExpressionWalker(_).HasIssue) ?? false))
+        !(invocationNode.DescendantNodes()?.Any(_ => new ContainsInvocationExpressionWalker(_).HasIssue) ?? false) &&
+        !FindSaveAssignmentIssueAnalyzer.IsReturnValue(invocationNode))
       {
         context.ReportDiagnostic(Diagnostic.Create(descriptor, invocationNode.GetLocation()));
       }
+    }
+
+    private static bool IsReturnValue(InvocationExpressionSyntax invocationNode)
+    {
+      var parentNode = invocationNode?.Parent;
+      var foundReturn = false;
+
+      while(parentNode != null && !(parentNode is BlockSyntax))
+      {
+        foundReturn = parentNode is ReturnStatementSyntax ||
+          parentNode is ParenthesizedLambdaExpressionSyntax;
+
+        if(foundReturn)
+        {
+          break;
+        }
+
+        parentNode = parentNode.Parent;
+      }
+
+      return foundReturn;
     }
   }
 }

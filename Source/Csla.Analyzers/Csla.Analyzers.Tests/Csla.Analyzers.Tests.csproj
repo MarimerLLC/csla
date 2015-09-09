@@ -94,6 +94,8 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
     <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
@@ -127,6 +129,30 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests\VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">

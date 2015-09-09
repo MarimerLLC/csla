@@ -107,5 +107,53 @@ namespace Csla.Analyzers.Tests
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned))}.cs",
         new[] { FindSaveAsyncAssignmentIssueAnalyzerConstants.DiagnosticId });
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
+        new string[0]);
+    }
   }
 }

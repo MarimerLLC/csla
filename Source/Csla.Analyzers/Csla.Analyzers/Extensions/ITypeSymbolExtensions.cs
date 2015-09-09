@@ -5,45 +5,24 @@ namespace Csla.Analyzers.Extensions
 {
   internal static class ITypeSymbolExtensions
   {
+    internal static bool IsBusinessBase(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == "BusinessBase" && @this.ContainingAssembly.Name == "Csla") ||
+          @this.BaseType.IsBusinessBase());
+    }
+
     internal static bool IsSerializable(this ITypeSymbol @this)
     {
-      if (@this == null)
-      {
-        return false;
-      }
-
-      foreach (var attributeData in @this.GetAttributes())
-      {
-        var attributeClass = attributeData.AttributeClass;
-
-        if (attributeClass.Name == "SerializableAttribute")
-        {
-          return true;
-        }
-      }
-
-      return false;
+      return @this != null && 
+        @this.GetAttributes().Any(_ => _.AttributeClass.Name == "SerializableAttribute");
     }
 
     internal static bool IsStereotype(this ITypeSymbol @this)
     {
-      if (@this == null)
-      {
-        return false;
-      }
-      else
-      {
-        if (@this.Name == "IBusinessObject" &&
-          @this.ContainingAssembly.Name == "Csla")
-        {
-          return true;
-        }
-        else
-        {
-          return @this.BaseType.IsStereotype() ||
-            @this.Interfaces.Where(_ => _.IsStereotype()).Any();
-        }
-      }
+      return @this != null &&
+        ((@this.Name == "IBusinessObject" && @this.ContainingAssembly.Name == "Csla") ||
+          (@this.BaseType.IsStereotype() || @this.Interfaces.Any(_ => _.IsStereotype())));
     }
   }
 }

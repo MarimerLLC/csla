@@ -13,6 +13,28 @@ namespace Csla.Analyzers.Tests.Extensions
   public sealed class ITypeSymbolExtensionsTests
   {
     [TestMethod]
+    public void IsBusinessBaseWhenSymbolIsNull()
+    {
+      Assert.IsFalse((null as ITypeSymbol).IsBusinessBase());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessBaseWhenSymbolIsNotABusinessBase()
+    {
+      Assert.IsFalse((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsBusinessBaseWhenSymbolIsNotABusinessBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsBusinessBaseWhenSymbolIsNotABusinessBase))).IsBusinessBase());
+    }
+
+    [TestMethod]
+    public async Task IsBusinessBaseWhenSymbolIsABusinessBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsBusinessBaseWhenSymbolIsABusinessBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsBusinessBaseWhenSymbolIsABusinessBase))).IsBusinessBase());
+    }
+
+    [TestMethod]
     public void IsSerializableWhenSymbolIsNull()
     {
       Assert.IsFalse((null as ITypeSymbol).IsSerializable());
@@ -22,7 +44,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsSerializableWhenSymbolIsNotSerializable()
     {
       Assert.IsFalse((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsSerializableWhenSymbolIsNotSerializable))}.cs",
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsNotSerializable))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable))).IsSerializable());
     }
 
@@ -30,7 +52,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsSerializableWhenSymbolIsSerializable()
     {
       Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsSerializableWhenSymbolIsSerializable))}.cs",
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsSerializable))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))).IsSerializable());
     }
 
@@ -44,7 +66,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsStereotypeWhenSymbolIsNotAStereotype()
     {
       Assert.IsFalse((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsNotAStereotype))}.cs",
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsNotAStereotype))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype))).IsStereotype());
     }
 
@@ -52,7 +74,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject()
     {
       Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))}.cs",
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject))).IsStereotype());
     }
 
@@ -60,7 +82,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsStereotypeWhenSymbolIsStereotypeViaBusinessBase()
     {
       Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}.{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))}.cs",
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))).IsStereotype());
     }
 

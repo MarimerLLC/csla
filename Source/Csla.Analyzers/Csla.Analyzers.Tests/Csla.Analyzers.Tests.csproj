@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -92,78 +94,149 @@
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
     <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
     <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerTests.cs" />
     <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
     <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenNeitherUsingsExists.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenOnlyUsingCslaSerializationExists.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenBothUsingsExists.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests.VerifyGetFixesWhenOnlyUsingSystemExists.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\SyntaxNodeExtensionsTests.HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateConstructorWithArguments.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\SyntaxNodeExtensionsTests.HasUsingWhenNodeHasUsingStatememt.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructor.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsSealed.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateNoArgumentConstructor.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests.VerifyGetFixesWhenClassIsNotSealed.cs">
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IMethodSymbolExtensionsTests.IsDataPortalOperation.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests.AnalyzeWhenClassIsNotStereotype.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsNotSerializable.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsStereotypeAndIsSerializable.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests.AnalyzeWhenClassIsNotStereotype.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsNotSerializable.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsNotAStereotype.cs">
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemDoesNotExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeHasUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests\VerifyGetFixesWhenClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests\VerifyGetFixesWhenClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IMethodSymbolExtensionsTests\IsDataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsStereotypeAndIsNotSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsStereotypeAndIsSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsNotSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsNotAStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="TestHelpers.cs" />
@@ -189,6 +262,7 @@
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

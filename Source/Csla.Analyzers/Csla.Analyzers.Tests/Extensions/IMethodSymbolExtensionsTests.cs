@@ -17,7 +17,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestInitialize]
     public void TestInitialize()
     {
-      this._path = $@"Targets\{nameof(IMethodSymbolExtensionsTests)}.IsDataPortalOperation.cs";
+      this._path = $@"Targets\{nameof(IMethodSymbolExtensionsTests)}\IsDataPortalOperation.cs";
     }
 
     [TestMethod]

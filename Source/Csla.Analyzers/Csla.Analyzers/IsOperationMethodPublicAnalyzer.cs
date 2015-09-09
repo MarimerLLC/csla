@@ -47,7 +47,7 @@ namespace Csla.Analyzers
         }.ToImmutableDictionary();
 
         context.ReportDiagnostic(Diagnostic.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule,
-      methodNode.Identifier.GetLocation(), properties));
+          methodNode.Identifier.GetLocation(), properties));
       }
     }
   }

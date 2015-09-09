@@ -20,7 +20,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task HasUsingWhenNodeHasUsingStatememt()
     {
       Assert.IsTrue((await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}.{(nameof(this.HasUsingWhenNodeHasUsingStatememt))}.cs"))
+        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.HasUsingWhenNodeHasUsingStatememt))}.cs"))
           .HasUsing("System.Collections.Generic"));
     }
 
@@ -28,7 +28,7 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task HasUsingWhenNodeDoesNotHaveUsingStatememt()
     {
       Assert.IsFalse((await this.GetRootAsync(
-        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}.{(nameof(this.HasUsingWhenNodeDoesNotHaveUsingStatememt))}.cs"))
+        $@"Targets\{nameof(SyntaxNodeExtensionsTests)}\{(nameof(this.HasUsingWhenNodeDoesNotHaveUsingStatememt))}.cs"))
           .HasUsing("System.Collections.Generic"));
     }
 

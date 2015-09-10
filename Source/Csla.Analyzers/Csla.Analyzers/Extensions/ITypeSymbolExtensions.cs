@@ -12,6 +12,15 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsBusinessBase());
     }
 
+    internal static bool IsEditableStereotype(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        (((@this.Name == "BusinessBase" || @this.Name == "BusinessListBase" || 
+          @this.Name == "DynamicListBase" || @this.Name == "BusinessBindingListBase") && 
+          @this.ContainingAssembly.Name == "Csla") ||
+          @this.BaseType.IsEditableStereotype());
+    }
+
     internal static bool IsSerializable(this ITypeSymbol @this)
     {
       return @this != null && 
@@ -21,7 +30,8 @@ namespace Csla.Analyzers.Extensions
     internal static bool IsStereotype(this ITypeSymbol @this)
     {
       return @this != null &&
-        ((@this.Name == "IBusinessObject" && @this.ContainingAssembly.Name == "Csla") ||
+        (((@this.Name == "IBusinessObject" || @this.Name == "DynamicListBase") && 
+          @this.ContainingAssembly.Name == "Csla") ||
           (@this.BaseType.IsStereotype() || @this.Interfaces.Any(_ => _.IsStereotype())));
     }
   }

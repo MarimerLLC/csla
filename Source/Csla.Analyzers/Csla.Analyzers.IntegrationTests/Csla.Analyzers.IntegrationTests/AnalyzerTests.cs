@@ -2,6 +2,13 @@
 using System;
 using System.Threading.Tasks;
 
+[Serializable]
+public class MyCommandBase
+  : CommandBase<MyCommandBase>
+{
+  public MyCommandBase(int id) { }
+}
+
 // This should have an error because it's not serializable
 public class ClassIsStereotypeAndIsNotSerializable
   : BusinessBase<ClassIsStereotypeAndIsNotSerializable>
@@ -39,7 +46,7 @@ public class UserCaller
     await x.SaveAsync();
 
     await this.SaveAsync();
-    
+
     // This should have an error because it doesn't set the return value
     await x.SaveAsync(true);
 
@@ -83,7 +90,7 @@ public class UserCaller
 
     this.ReturnThis(() => { return x.Save(); });
 
-    this.ReturnThis(() => 
+    this.ReturnThis(() =>
     {
       var q = DataPortal.Fetch<User>();
       // This should have an error because it doesn't set the return value

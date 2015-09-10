@@ -44,29 +44,32 @@ namespace Csla.Analyzers
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
-      if(classSymbol.IsStereotype() && !(classSymbol?.IsAbstract).Value)
+      if (classSymbol.IsStereotype() && !(classSymbol?.IsAbstract).Value)
       {
         foreach (var constructor in classSymbol?.Constructors)
         {
-          if (constructor.DeclaredAccessibility == Accessibility.Public)
+          if (!constructor.IsStatic)
           {
-            if (constructor.Parameters.Length == 0)
+            if (constructor.DeclaredAccessibility == Accessibility.Public)
             {
-              hasPublicNoArgumentConstructor = true;
-            }
-            else
-            {
-              foreach (var location in constructor.Locations)
+              if (constructor.Parameters.Length == 0)
               {
-                context.ReportDiagnostic(Diagnostic.Create(
-                  CheckConstructorsAnalyzer.constructorHasParametersRule,
-                  location));
+                hasPublicNoArgumentConstructor = true;
+              }
+              else if(classSymbol.IsEditableStereotype())
+              {
+                foreach (var location in constructor.Locations)
+                {
+                  context.ReportDiagnostic(Diagnostic.Create(
+                    CheckConstructorsAnalyzer.constructorHasParametersRule,
+                    location));
+                }
               }
             }
-          }
-          else if(constructor.Parameters.Length == 0)
-          {
-            hasNonPublicNoArgumentConstructor = true;
+            else if (constructor.Parameters.Length == 0)
+            {
+              hasNonPublicNoArgumentConstructor = true;
+            }
           }
         }
 

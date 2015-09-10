@@ -113,7 +113,22 @@
     <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsBusinessBindingListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsCommandBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsDynamicListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsBusinessListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasStaticConstructor.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
@@ -179,10 +194,28 @@
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsACommandBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessBindingListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsADynamicListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">

@@ -111,5 +111,49 @@ namespace Csla.Analyzers.Tests
         new[] { ConstructorHasParametersConstants.DiagnosticId, PublicNoArgumentConstructorIsMissingConstants.DiagnosticId },
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsStereotypeAndHasStaticConstructor()
+    {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasStaticConstructor))}.cs",
+        new[] { PublicNoArgumentConstructorIsMissingConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsBusinessListBaseAndHasPublicConstructorWithArguments()
+    {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsBusinessListBaseAndHasPublicConstructorWithArguments))}.cs",
+        new[] { ConstructorHasParametersConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsDynamicListBaseAndHasPublicConstructorWithArguments()
+    {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsDynamicListBaseAndHasPublicConstructorWithArguments))}.cs",
+        new[] { ConstructorHasParametersConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsBusinessBindingListBaseAndHasPublicConstructorWithArguments()
+    {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsBusinessBindingListBaseAndHasPublicConstructorWithArguments))}.cs",
+        new[] { ConstructorHasParametersConstants.DiagnosticId },
+        diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsCommandBaseAndHasPublicConstructorWithArguments()
+    {
+      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsCommandBaseAndHasPublicConstructorWithArguments))}.cs",
+        new string[0]);
+    }
   }
 }

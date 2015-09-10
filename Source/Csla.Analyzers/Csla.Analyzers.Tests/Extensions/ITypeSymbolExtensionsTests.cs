@@ -35,6 +35,46 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
+    public async Task IsEditableStereotypeWhenSymbolIsABusinessBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsEditableStereotypeWhenSymbolIsABusinessBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsABusinessBase))).IsEditableStereotype());
+    }
+
+    [TestMethod]
+    public async Task IsEditableStereotypeWhenSymbolIsABusinessListBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsEditableStereotypeWhenSymbolIsABusinessListBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsABusinessListBase))).IsEditableStereotype());
+    }
+
+    [TestMethod]
+    public async Task IsEditableStereotypeWhenSymbolIsADynamicListBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsEditableStereotypeWhenSymbolIsADynamicListBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsADynamicListBase))).IsEditableStereotype());
+    }
+
+    [TestMethod]
+    public async Task IsEditableStereotypeWhenSymbolIsABusinessBindingListBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsEditableStereotypeWhenSymbolIsABusinessBindingListBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsABusinessBindingListBase))).IsEditableStereotype());
+    }
+
+    [TestMethod]
+    public async Task IsEditableStereotypeWhenSymbolIsACommandBase()
+    {
+      Assert.IsFalse((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsEditableStereotypeWhenSymbolIsACommandBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsEditableStereotypeWhenSymbolIsACommandBase))).IsEditableStereotype());
+    }
+
+    [TestMethod]
     public void IsSerializableWhenSymbolIsNull()
     {
       Assert.IsFalse((null as ITypeSymbol).IsSerializable());
@@ -84,6 +124,14 @@ namespace Csla.Analyzers.Tests.Extensions
       Assert.IsTrue((await this.GetTypeSymbolAsync(
         $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaBusinessBase))).IsStereotype());
+    }
+
+    [TestMethod]
+    public async Task IsStereotypeWhenSymbolIsDynamicListBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsDynamicListBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsDynamicListBase))).IsStereotype());
     }
 
     private async Task<ITypeSymbol> GetTypeSymbolAsync(string file, string name)

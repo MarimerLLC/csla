@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
-using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -30,10 +26,22 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
 
-#if !NETFX_CORE
     protected override void DataPortal_Execute()
     {
     }
-#endif
+  }
+
+  [Serializable]
+  public class Data
+    : BusinessBase<Data>
+  {
+    public static readonly PropertyInfo<string> MyTextProperty = 
+      RegisterProperty<string>(c => c.MyText);
+
+    public string MyText
+    {
+      get { return this.GetProperty(Data.MyTextProperty); }
+      set { this.SetProperty(Data.MyTextProperty, value); }
+    }
   }
 }

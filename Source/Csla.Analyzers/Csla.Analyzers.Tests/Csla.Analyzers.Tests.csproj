@@ -186,6 +186,24 @@
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

@@ -150,6 +150,12 @@
     <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasInvocation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasNoInvocations.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

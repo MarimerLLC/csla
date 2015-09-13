@@ -246,6 +246,30 @@
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyMarkDirty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemDoesNotExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

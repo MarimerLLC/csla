@@ -29,6 +29,7 @@ Supports the creation of Windows Runtime (WinRT) applications.
     <file src="..\..\Bin\Release\WinRT\**\Csla.Xaml.pdb*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.Xaml.pri*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.Xaml.xml*" target="lib\NetCore45" />
+    <file src="..\..\Source\Csla.Xaml.Shared\Resources\**\*.png" target="lib\NetCore45\Csla.Xaml\Resources" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Xaml*\**\*.cs" target="src" />
   </files>

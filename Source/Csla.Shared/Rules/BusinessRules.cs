@@ -11,7 +11,6 @@ using System.ComponentModel;
 using System.Linq;
 using Csla.Core.FieldManager;
 using Csla.Reflection;
-using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;

@@ -6,7 +6,6 @@
 // <summary>Base class to simplify the retrieval of Windows identity</summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 using System.Collections.Generic;
 using Csla.Core;
 

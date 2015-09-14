@@ -6,9 +6,6 @@
 // <summary>Exception indicating a failure to</summary>
 //-----------------------------------------------------------------------
 using System;
-#if NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla
 {

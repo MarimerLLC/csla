@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE && !(ANDROID || IOS)
+﻿#if !NETFX_PHONE
 //-----------------------------------------------------------------------
 // <copyright file="HttpProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

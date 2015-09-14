@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System.Collections.Generic;
 using System.Linq;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System;
 using System.Reflection;

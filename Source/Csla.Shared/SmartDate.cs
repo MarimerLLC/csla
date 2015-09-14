@@ -8,7 +8,6 @@
 using System;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 
 namespace Csla
 {

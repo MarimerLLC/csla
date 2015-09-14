@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #if !MONO
 using System;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 

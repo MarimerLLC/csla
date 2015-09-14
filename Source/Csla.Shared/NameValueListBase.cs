@@ -10,7 +10,6 @@ using System.ComponentModel;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
-using Csla.Serialization;
 
 namespace Csla
 {

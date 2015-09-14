@@ -20,7 +20,6 @@ using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
 using System.Security;

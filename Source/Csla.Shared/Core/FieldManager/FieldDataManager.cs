@@ -9,11 +9,11 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using Csla.Serialization;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 using Csla.Reflection;
 using System.Reflection;
+using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
 {

@@ -6,7 +6,6 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 using System;
-using Csla.Serialization;
 
 namespace Csla.Server
 {

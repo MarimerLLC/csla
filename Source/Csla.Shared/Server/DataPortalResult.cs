@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Specialized;
 using Csla.Core;
-using Csla.Serialization;
 
 namespace Csla.Server
 {

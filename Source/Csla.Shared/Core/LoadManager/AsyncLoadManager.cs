@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Csla.Properties;
-using Csla.Serialization;
 
 namespace Csla.Core.LoadManager
 {

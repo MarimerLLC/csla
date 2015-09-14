@@ -11,7 +11,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using Csla.Properties;
-using Csla.Serialization;
 
 namespace Csla.Core
 {

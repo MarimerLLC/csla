@@ -1,4 +1,4 @@
-﻿#if (!ANDROID && !IOS) && NETFX_CORE
+﻿#if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------
 using System;
 
-namespace Csla.Serialization
+namespace System
 {
   /// <summary>
   /// Indicates that a field should not be

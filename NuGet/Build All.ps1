@@ -181,7 +181,7 @@ try
     Write-Host "Copy NuSpec files to working directory..." -ForegroundColor Yellow
     mkdir deftmp  -ErrorAction Ignore
     Remove-Item ".\deftmp\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Copy $originalLocation\Definition\* $originalLocation\deftmp
+    Copy -Recurse $originalLocation\Definition\* $originalLocation\deftmp
     
     ## Spawn off individual build processes...
     ## ---------------------------------------

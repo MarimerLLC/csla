@@ -232,8 +232,7 @@ namespace Csla.Reflection
     public static bool IsSerializable(this Type t)
     {
       var tinfo = t.GetTypeInfo();
-      var result = tinfo.GetCustomAttributes(typeof(SerializableAttribute), false);
-      return (result != null && result.Count() > 0);
+      return tinfo.IsSerializable;
     }
 
 #if !WINDOWS_UWP

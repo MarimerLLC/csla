@@ -46,6 +46,33 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="Resources\ar\Resources.resw" />
+    <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\it\Resources.resw" />
+    <PRIResource Include="Resources\km-KH\Resources.resw" />
+    <PRIResource Include="Resources\nl\Resources.resw" />
+    <PRIResource Include="Resources\no\Resources.resw" />
+    <PRIResource Include="Resources\tr\Resources.resw" />
+    <PRIResource Include="Resources\hu\Resources.resw" />
+    <PRIResource Include="Resources\hr\Resources.resw" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
+    <PRIResource Include="Resources\es-ES\Resources.resw" />
+    <PRIResource Include="Resources\es\Resources.resw" />
+    <PRIResource Include="Resources\el\Resources.resw" />
+    <PRIResource Include="Resources\de\Resources.resw" />
+    <PRIResource Include="Resources\da\Resources.resw" />
+    <PRIResource Include="Resources\ca-ES\Resources.resw" />
+    <PRIResource Include="Resources\bs\Resources.resw" />
+    <PRIResource Include="Resources\pt-BR\Resources.resw" />
+    <PRIResource Include="Resources\pt\Resources.resw" />
+    <PRIResource Include="Resources\ro\Resources.resw" />
+    <PRIResource Include="Resources\ru\Resources.resw" />
+    <PRIResource Include="Resources\sr\Resources.resw" />
+    <PRIResource Include="Resources\sv\Resources.resw" />
+    <PRIResource Include="Resources\vi\Resources.resw" />
+    <PRIResource Include="Resources\zh-Hans\Resources.resw" />
+    <PRIResource Include="Resources\zh-TW\Resources.resw" />
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,32 @@
 ﻿<Page
-    x:Class="ProjectTracker.Ui.UWP.MainPage"
+    x:Class="UwpUI.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ProjectTracker.Ui.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:this="using:UwpUI.Xaml"
+    xmlns:this="using:UwpUI.Xaml" Loaded="Page_Loaded"
     mc:Ignorable="d">
 
-  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        DataContext="{Binding}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="40*"/>
+      <ColumnDefinition Width="60*"/>
+    </Grid.ColumnDefinitions>
+    <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="5"
+               Style="{StaticResource TitleTextBlockStyle}">Project Tracker Dashboard</TextBlock>
+    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5">Projects</TextBlock>
+    <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Path=Model.ProjectCount}"/>
+    <TextBlock Grid.Row="2" Grid.Column="0" Margin="5">Open projects</TextBlock>
+    <TextBlock Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Path=Model.OpenProjectCount}"/>
+    <TextBlock Grid.Row="3" Grid.Column="0" Margin="5">Resources</TextBlock>
+    <TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Path=Model.ResourceCount}"/>
   </Grid>
 </Page>

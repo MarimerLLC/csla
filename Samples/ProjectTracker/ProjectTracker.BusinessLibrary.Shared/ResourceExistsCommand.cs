@@ -10,6 +10,10 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceExistsCommand : CommandBase<ResourceExistsCommand>
   {
+    public ResourceExistsCommand()
+    { }
+
+#pragma warning disable CSLA0004
     public ResourceExistsCommand(int id)
     {
       ResourceId = id;

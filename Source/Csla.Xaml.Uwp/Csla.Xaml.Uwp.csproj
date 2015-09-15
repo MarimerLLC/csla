@@ -37,6 +37,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\UWP\Csla.Xaml.XML</DocumentationFile>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -114,12 +115,13 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="Csla.Xaml.NuSpec" />
     <None Include="CslaKey.snk" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Properties\Csla.Xaml.Uwp.rd.xml" />
+    <None Include="Properties\Csla.Xaml.Uwp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla.Uwp\Csla.Uwp.csproj">

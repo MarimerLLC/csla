@@ -38,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\UWP\Csla.XML</DocumentationFile>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -172,7 +173,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
-    <Content Include="Properties\Csla.Uwp.rd.xml" />
+    <EmbeddedResource Include="Properties\Csla.Uwp.rd.xml" />
     <PRIResource Include="Resources\fr\Resources.resw" />
   </ItemGroup>
   <ItemGroup>

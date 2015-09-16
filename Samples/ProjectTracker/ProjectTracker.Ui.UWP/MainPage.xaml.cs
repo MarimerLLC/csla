@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,15 +30,24 @@ namespace UwpUI
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
+      ErrorText.Text += Csla.ApplicationContext.User.Identity.ToString();
+      ErrorText.Text += Environment.NewLine;
       try
       {
-        this.DataContext = await new ViewModel.DashboardViewModel().InitAsync();
+        var obj = new ProjectTracker.Library.Dashboard();
+        var obj2 = Csla.Core.ObjectCloner.Clone(obj);
+
+        //this.DataContext = await new ViewModel.DashboardViewModel().InitAsync();
+        //this.DataContext = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
+
+        ErrorText.Text += "Success";
+        ErrorText.Text += Environment.NewLine;
       }
       catch (Exception ex)
       {
-        var x = ex;
+        //await new MessageDialog(ex.ToString(), "Data error").ShowAsync();
+        ErrorText.Text += ex.ToString();
       }
-      //this.DataContext = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
     }
   }
 }

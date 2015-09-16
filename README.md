@@ -1,5 +1,7 @@
 CSLA .NET
 ====
+
+[![Join the chat at https://gitter.im/MarimerLLC/csla](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/csla?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 ![](https://raw.github.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_mid.png)
 
 CSLA .NET is a software development framework that helps you build a reusable, maintainable object-oriented business layer for your app. This framework reduces the cost of building and maintaining applications. 

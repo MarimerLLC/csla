@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,16 +16,38 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace ProjectTracker.Ui.UWP
+namespace UwpUI
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
+  /// <summary>
+  /// An empty page that can be used on its own or navigated to within a Frame.
+  /// </summary>
+  public sealed partial class MainPage : Page
+  {
+    public MainPage()
     {
-        public MainPage()
-        {
-            this.InitializeComponent();
-        }
+      this.InitializeComponent();
     }
+
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    {
+      ErrorText.Text += Csla.ApplicationContext.User.Identity.ToString();
+      ErrorText.Text += Environment.NewLine;
+      try
+      {
+        var obj = new ProjectTracker.Library.Dashboard();
+        var obj2 = Csla.Core.ObjectCloner.Clone(obj);
+
+        //this.DataContext = await new ViewModel.DashboardViewModel().InitAsync();
+        //this.DataContext = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
+
+        ErrorText.Text += "Success";
+        ErrorText.Text += Environment.NewLine;
+      }
+      catch (Exception ex)
+      {
+        //await new MessageDialog(ex.ToString(), "Data error").ShowAsync();
+        ErrorText.Text += ex.ToString();
+      }
+    }
+  }
 }

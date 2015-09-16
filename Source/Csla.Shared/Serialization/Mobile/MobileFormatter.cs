@@ -167,12 +167,10 @@ namespace Csla.Serialization.Mobile
 #if (ANDROID || IOS)
       var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
       return (result != null && result.Length > 0);
-#else 
-#if ((ANDROID || IOS) || NETFX_CORE)
+#elif NETFX_CORE
       return objectType.IsSerializable();
 #else
       return objectType.IsSerializable;
-#endif
 #endif
     }
 

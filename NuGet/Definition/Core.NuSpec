@@ -27,10 +27,19 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="Microsoft.Bcl" version="1.1.6" />
         <dependency id="Microsoft.Net.Http" version="2.2.28" />
       </group>
-      <group targetFramework="sl50">
-        <dependency id="Microsoft.Bcl.Async" version="1.0.165" />
-        <dependency id="Microsoft.Bcl" version="1.1.6" />
-        <dependency id="Microsoft.Net.Http" version="2.2.28" />
+      <group targetFramework="uap10.0">
+        <dependency id="System.Collections" version="4.0.10" />
+        <dependency id="System.ComponentModel.Annotations" version="4.0.10" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.10" />
+        <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Linq.Expressions" version="4.0.10" />
+        <dependency id="System.ObjectModel" version="4.0.10" />
+        <dependency id="System.Reflection" version="4.0.10" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.0.0" />
+        <dependency id="System.Runtime" version="4.0.20" />
+        <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.0.0" />
+        <dependency id="System.Threading" version="4.0.10" />
+        <dependency id="System.Threading.Tasks" version="4.0.10" />
       </group>
     </dependencies>
   </metadata>
@@ -61,6 +70,12 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.pri*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
+    <!--<file src="..\..\Bin\Release\UWP\Csla\**" target="lib\uap10.0\Csla" />-->
     <!-- Windows Runtime Phone Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />

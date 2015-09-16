@@ -118,7 +118,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="CslaKey.snk" />
-    <None Include="packages.config" />
     <None Include="Service References\WcfPortal\MobilePortal.disco" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +129,33 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <PRIResource Include="Resources\ar\Resources.resw" />
+    <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\it\Resources.resw" />
+    <PRIResource Include="Resources\km-KH\Resources.resw" />
+    <PRIResource Include="Resources\nl\Resources.resw" />
+    <PRIResource Include="Resources\no\Resources.resw" />
+    <PRIResource Include="Resources\tr\Resources.resw" />
+    <PRIResource Include="Resources\hu\Resources.resw" />
+    <PRIResource Include="Resources\hr\Resources.resw" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
+    <PRIResource Include="Resources\es-ES\Resources.resw" />
+    <PRIResource Include="Resources\es\Resources.resw" />
+    <PRIResource Include="Resources\el\Resources.resw" />
+    <PRIResource Include="Resources\de\Resources.resw" />
+    <PRIResource Include="Resources\da\Resources.resw" />
+    <PRIResource Include="Resources\ca-ES\Resources.resw" />
+    <PRIResource Include="Resources\bs\Resources.resw" />
+    <PRIResource Include="Resources\pt-BR\Resources.resw" />
+    <PRIResource Include="Resources\pt\Resources.resw" />
+    <PRIResource Include="Resources\ro\Resources.resw" />
+    <PRIResource Include="Resources\ru\Resources.resw" />
+    <PRIResource Include="Resources\sr\Resources.resw" />
+    <PRIResource Include="Resources\sv\Resources.resw" />
+    <PRIResource Include="Resources\vi\Resources.resw" />
+    <PRIResource Include="Resources\zh-Hans\Resources.resw" />
+    <PRIResource Include="Resources\zh-TW\Resources.resw" />
     <None Include="Properties\ServiceReferences.Designer.ClientConfig" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -159,12 +185,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\netcore45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
@@ -229,13 +249,6 @@ copy "$(SolutionDir)Csla.Shared.Resources\resources.zh-TW.resx" "$(ProjectDir)re
 mkdir "$(ProjectDir)resources\uk-ua"
 copy "$(SolutionDir)Csla.Shared.Resources\resources.uk-ua.resx" "$(ProjectDir)resources\uk-ua\Resources.resw"</PreBuildEvent>
   </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

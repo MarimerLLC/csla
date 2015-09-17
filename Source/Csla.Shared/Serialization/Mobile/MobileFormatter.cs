@@ -164,19 +164,12 @@ namespace Csla.Serialization.Mobile
 
     private static bool IsSerializable(Type objectType)
     {
-#if (ANDROID || IOS)
-      var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
-      return (result != null && result.Length > 0);
-#elif NETFX_CORE
       return objectType.IsSerializable();
-#else
-      return objectType.IsSerializable;
-#endif
     }
 
-    #endregion
+#endregion
 
-    #region Deserialize
+#region Deserialize
 
     private Dictionary<int, IMobileObject> _deserializationReferences =
       new Dictionary<int, IMobileObject>();
@@ -308,9 +301,9 @@ namespace Csla.Serialization.Mobile
       return _deserializationReferences[referenceId];
     }
 
-    #endregion
+#endregion
 
-    #region Static Helpers
+#region Static Helpers
 
     /// <summary>
     /// Serializes the object into a byte array.
@@ -399,7 +392,7 @@ namespace Csla.Serialization.Mobile
       var formatter = new MobileFormatter();
       return formatter.DeserializeAsDTO(data);
     }
-    #endregion
+#endregion
 
   }
 }

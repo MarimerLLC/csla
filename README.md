@@ -4,6 +4,8 @@ CSLA .NET
 
 CSLA .NET is a software development framework that helps you build a reusable, maintainable object-oriented business layer for your app. This framework reduces the cost of building and maintaining applications. 
 
+[![Build status](https://ci.appveyor.com/api/projects/status/jl2k3pjvtqca4lei/branch/master?svg=true)](https://ci.appveyor.com/project/rockfordlhotka/csla/branch/master)
+
 More information about CSLA .NET is available from the following sources:
 
 * [CSLA .NET home page](http://www.cslanet.com)

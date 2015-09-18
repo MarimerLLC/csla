@@ -111,7 +111,6 @@ namespace Csla.Serialization.Mobile
       }
     }
 
-
     /// <summary>
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
@@ -127,7 +126,7 @@ namespace Csla.Serialization.Mobile
         info = new SerializationInfo(_serializationReferences.Count + 1);
         _serializationReferences.Add(nullPlaceholder, info);
 
-        info.TypeName = typeof(NullPlaceholder).AssemblyQualifiedName;
+        info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(typeof(NullPlaceholder));
       }
       else
       {
@@ -150,7 +149,7 @@ namespace Csla.Serialization.Mobile
           info = new SerializationInfo(_serializationReferences.Count + 1);
           _serializationReferences.Add(mobile, info);
 
-          info.TypeName = thisType.AssemblyQualifiedName;
+          info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
 
           mobile.GetChildren(info, this);
           mobile.GetState(info);
@@ -225,14 +224,13 @@ namespace Csla.Serialization.Mobile
       _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
       {
-        //Type type = Csla.Reflection.MethodCaller.GetType(info.TypeName);
-        Type type = GetTypeFromCache(info.TypeName);
+        var typeName = AssemblyNameTranslator.GetAssemblyQualifiedName(info.TypeName);
+        Type type = GetTypeFromCache(typeName);
 
         if (type == null)
         {
           throw new SerializationException(string.Format(
-            Resources.MobileFormatterUnableToDeserialize,
-            info.TypeName));
+            Resources.MobileFormatterUnableToDeserialize, typeName));
         }
         else if (type == typeof(NullPlaceholder))
         {

@@ -6,7 +6,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -15,16 +14,16 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace UwpUI
+namespace UwpUI.Views
 {
   /// <summary>
   /// An empty page that can be used on its own or navigated to within a Frame.
   /// </summary>
-  public sealed partial class MainPage : Page
+  public sealed partial class ProjectList : Page
   {
-    public MainPage()
+    public ProjectList()
     {
       this.InitializeComponent();
     }
@@ -38,26 +37,8 @@ namespace UwpUI
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
-      var vm = await new ViewModels.DashboardViewModel().InitAsync();
-      this.DataContext = vm;
-    }
-
-    private void ShowProjectList(object sender, RoutedEventArgs e)
-    {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.ProjectList));
-    }
-
-    private void ShowResourceList(object sender, RoutedEventArgs e)
-    {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.ResourceList));
-    }
-
-    private void ViewRoles(object sender, RoutedEventArgs e)
-    {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.RoleList));
+      var vm = await new ViewModels.ProjectList().InitAsync();
+      DataContext = vm;
     }
   }
 }

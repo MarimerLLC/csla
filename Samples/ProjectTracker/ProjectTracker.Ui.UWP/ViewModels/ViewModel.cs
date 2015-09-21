@@ -2,7 +2,7 @@
 using Csla.Xaml;
 using Windows.UI.Popups;
 
-namespace UwpUI.ViewModel
+namespace UwpUI.ViewModels
 {
   public abstract class ViewModel<T> : ViewModelBase<T>
   {

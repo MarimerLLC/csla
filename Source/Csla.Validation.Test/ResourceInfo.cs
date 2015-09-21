@@ -36,5 +36,8 @@ namespace ProjectTracker.Library
       Csla.Security.AuthorizationRules.AllowCreate(typeof(ResourceInfo), "ProjectManager");
       Csla.Security.AuthorizationRules.AllowGet(typeof(ResourceInfo), "Administrator");
     }
+    public ResourceInfo()
+    {
+    }
   }
 }

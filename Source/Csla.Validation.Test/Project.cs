@@ -140,7 +140,7 @@ namespace Csla.Validation.Test
       DataPortal.Delete<Project>(new SingleCriteria<Project, Guid>(id));
     }
 
-    private Project()
+    public Project()
     {
       /* require use of factory methods */
     }

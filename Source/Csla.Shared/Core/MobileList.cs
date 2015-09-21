@@ -85,10 +85,11 @@ namespace Csla.Core
       }
       else
       {
+        var source = this.ToList<T>();
         using (MemoryStream stream = new MemoryStream())
         {
-          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(GetType());
-          serializer.WriteObject(stream, this);
+          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(source.GetType());
+          serializer.WriteObject(stream, source);
           stream.Flush();
           info.AddValue("$list", stream.ToArray());
         }
@@ -135,10 +136,11 @@ namespace Csla.Core
         else
         {
           byte[] buffer = (byte[])info.Values["$list"].Value;
+          List<T> list = null;
           using (MemoryStream stream = new MemoryStream(buffer))
           {
-            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(GetType());
-            MobileList<T> list = (MobileList<T>)dcs.ReadObject(stream);
+            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(list.GetType());
+            list = (List<T>)dcs.ReadObject(stream);
             AddRange(list);
           }
         }

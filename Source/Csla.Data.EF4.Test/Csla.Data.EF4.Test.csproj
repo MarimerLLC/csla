@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Data.EF4.Test</RootNamespace>
     <AssemblyName>Csla.Data.EF4.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -18,6 +18,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -77,9 +78,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Data.EF4\Csla.Data.EF4.csproj">
-      <Project>{68A43187-0EE5-4B4C-A053-ABF5123B5AAD}</Project>
-      <Name>Csla.Data.EF4</Name>
+    <ProjectReference Include="..\Csla.Data.EF4.Net4.6\Csla.Data.EF4.Net4.6.csproj">
+      <Project>{ee1b7d74-2bc6-4bb0-b1f0-3491d354cb7e}</Project>
+      <Name>Csla.Data.EF4.Net4.6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
+      <Name>Csla.Net4.6</Name>
     </ProjectReference>
     <ProjectReference Include="..\Csla.test\csla.test.csproj">
       <Project>{d464bfbe-c26a-46e9-bc72-3978bcad02d7}</Project>

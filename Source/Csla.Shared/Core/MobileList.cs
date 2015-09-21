@@ -88,7 +88,7 @@ namespace Csla.Core
         var source = this.ToList<T>();
         using (MemoryStream stream = new MemoryStream())
         {
-          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(source.GetType());
+          serialization.DataContractSerializer serializer = new serialization.DataContractSerializer(typeof(List<T>));
           serializer.WriteObject(stream, source);
           stream.Flush();
           info.AddValue("$list", stream.ToArray());
@@ -139,7 +139,7 @@ namespace Csla.Core
           List<T> list = null;
           using (MemoryStream stream = new MemoryStream(buffer))
           {
-            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(list.GetType());
+            serialization.DataContractSerializer dcs = new serialization.DataContractSerializer(typeof(List<T>));
             list = (List<T>)dcs.ReadObject(stream);
             AddRange(list);
           }

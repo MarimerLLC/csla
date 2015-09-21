@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Test</RootNamespace>
     <AssemblyName>Csla.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -182,7 +182,6 @@
     <Compile Include="DataPortal\TransactionalRoot.cs" />
     <Compile Include="DataPortalTestDatabaseDataSet.cs">
       <DependentUpon>DataPortalTestDatabaseDataSet.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="DataPortalTestDatabaseDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -446,28 +445,23 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\csla\csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla</Name>
+    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
+      <Name>Csla.Net4.6</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Csla.Web\Csla.Web.csproj">
-      <Project>{492B788E-888E-4041-B356-F5947B50D360}</Project>
-      <Name>Csla.Web</Name>
+    <ProjectReference Include="..\Csla.Windows.Net4.6\Csla.Windows.Net4.6.csproj">
+      <Project>{e6982b4d-d9be-4f70-ae2f-bb84763d317d}</Project>
+      <Name>Csla.Windows.Net4.6</Name>
     </ProjectReference>
-    <ProjectReference Include="..\csla.windows\Csla.Windows.csproj">
-      <Project>{C333CFED-D5A6-47A2-96A6-F13EE2B71ECF}</Project>
-      <Name>Csla.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\csla.xaml\Csla.Xaml.csproj">
-      <Project>{563EFDFA-EB47-4039-955B-654582EA5362}</Project>
-      <Name>Csla.Xaml</Name>
+    <ProjectReference Include="..\Csla.Xaml.Net4.6\Csla.Xaml.Net4.6.csproj">
+      <Project>{86d57709-004d-4195-a671-edc37eb57ed6}</Project>
+      <Name>Csla.Xaml.Net4.6</Name>
     </ProjectReference>
     <ProjectReference Include="Silverlight\Server\csla.silverlight.server.test.csproj">
       <Project>{3374389D-59D8-44B1-B6D0-015819DB482C}</Project>
       <Name>csla.silverlight.server.test</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

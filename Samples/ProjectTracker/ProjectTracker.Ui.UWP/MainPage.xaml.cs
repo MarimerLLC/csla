@@ -32,22 +32,38 @@ namespace UwpUI
     {
       ErrorText.Text += Csla.ApplicationContext.User.Identity.ToString();
       ErrorText.Text += Environment.NewLine;
+      ErrorText.Text += Environment.NewLine;
       try
       {
-        var obj = new ProjectTracker.Library.Dashboard();
-        var obj2 = Csla.Core.ObjectCloner.Clone(obj);
+        //var obj = new ProjectTracker.Library.Dashboard();
+        //var obj2 = Csla.Core.ObjectCloner.Clone(obj);
 
-        //this.DataContext = await new ViewModel.DashboardViewModel().InitAsync();
         //this.DataContext = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
 
-        ErrorText.Text += "Success";
-        ErrorText.Text += Environment.NewLine;
+        var vm = await new ViewModel.DashboardViewModel().InitAsync();
+        this.DataContext = vm;
+
+        if (vm.Error == null)
+        {
+          ErrorText.Text += "Success";
+          ErrorText.Text += Environment.NewLine;
+        }
+        else
+        {
+          ShowError(vm.Error);
+        }
       }
       catch (Exception ex)
       {
-        //await new MessageDialog(ex.ToString(), "Data error").ShowAsync();
-        ErrorText.Text += ex.ToString();
+        ShowError(ex);
       }
+    }
+
+    private void ShowError(Exception ex)
+    {
+      //await new MessageDialog(ex.ToString(), "Data error").ShowAsync();
+      ErrorText.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
+      ErrorText.Text += ex.ToString();
     }
   }
 }

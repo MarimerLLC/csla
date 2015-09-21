@@ -157,7 +157,7 @@ namespace Csla.DataPortalClient
         if (this.Timeout > 0)
           client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -165,7 +165,7 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=create", DataPortalUrl));
         httpRequest.Content = new ByteArrayContent(serialized);
@@ -174,7 +174,7 @@ namespace Csla.DataPortalClient
         httpResponse.EnsureSuccessStatusCode();
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -224,7 +224,7 @@ namespace Csla.DataPortalClient
         if (this.Timeout > 0)
           client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -232,7 +232,7 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=fetch", DataPortalUrl));
         httpRequest.Content = new ByteArrayContent(serialized);
@@ -241,7 +241,7 @@ namespace Csla.DataPortalClient
         httpResponse.EnsureSuccessStatusCode();
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -293,7 +293,7 @@ namespace Csla.DataPortalClient
         request.ObjectData = MobileFormatter.Serialize(obj);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=update", DataPortalUrl));
         httpRequest.Content = new ByteArrayContent(serialized);
@@ -302,7 +302,7 @@ namespace Csla.DataPortalClient
         httpResponse.EnsureSuccessStatusCode();
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)
@@ -352,7 +352,7 @@ namespace Csla.DataPortalClient
         if (this.Timeout > 0)
           client.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         var request = GetBaseCriteriaRequest();
-        request.TypeName = objectType.AssemblyQualifiedName;
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
         if (!(criteria is IMobileObject))
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -360,7 +360,7 @@ namespace Csla.DataPortalClient
         request.CriteriaData = MobileFormatter.Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = Csla.Serialization.Mobile.MobileFormatter.Serialize(request);
+        var serialized = MobileFormatter.Serialize(request);
 
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, string.Format("{0}?operation=delete", DataPortalUrl));
         httpRequest.Content = new ByteArrayContent(serialized);
@@ -369,7 +369,7 @@ namespace Csla.DataPortalClient
         httpResponse.EnsureSuccessStatusCode();
         serialized = await httpResponse.Content.ReadAsByteArrayAsync();
 
-        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)Csla.Serialization.Mobile.MobileFormatter.Deserialize(serialized);
+        var response = (Csla.Server.Hosts.HttpChannel.HttpResponse)MobileFormatter.Deserialize(serialized);
         response = ConvertResponse(response);
         var globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);
         if (response != null && response.ErrorData == null)

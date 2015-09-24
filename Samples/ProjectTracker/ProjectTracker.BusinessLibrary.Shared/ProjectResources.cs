@@ -8,14 +8,14 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
-#if !NETFX_CORE
+#if FULL_DOTNET
     public ProjectResourceEdit Assign(int resourceId)
     {
       var resource = ProjectResourceEditCreator.GetProjectResourceEditCreator(resourceId).Result;
       this.Add(resource);
       return resource;
     }
-#elif __ANDROID__
+#elif ANDROID
       public async System.Threading.Tasks.Task<ProjectResourceEdit> AssignAsync(int resourceId)
       {
           var resource = (await ProjectResourceEditCreator.GetProjectResourceEditCreatorAsync(resourceId)).Result;
@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
       return item > 0;
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void Child_Fetch(int projectId)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

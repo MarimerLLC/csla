@@ -140,7 +140,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if FULL_DOTNET
 
     public static ResourceEdit NewResourceEdit()
     {
@@ -172,7 +172,7 @@ namespace ProjectTracker.Library
       base.DataPortal_Create();
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void DataPortal_Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

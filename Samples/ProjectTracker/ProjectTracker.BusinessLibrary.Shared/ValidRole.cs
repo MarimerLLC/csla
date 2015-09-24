@@ -15,28 +15,17 @@ namespace ProjectTracker.Library
     public ValidRole(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-#if NETFX_CORE
-        IsAsync = true;
-#endif
+      IsAsync = true;
       InputProperties = new System.Collections.Generic.List<Csla.Core.IPropertyInfo> { primaryProperty };
     }
 
-#if __ANDROID__
     protected override async void Execute(RuleContext context)
-#else
-    protected override void Execute(RuleContext context)
-#endif
     {
         int role = (int)context.InputPropertyValues[PrimaryProperty];
-#if __ANDROID__
-        var roles = await RoleList.GetListAsync();
-        if (!(await RoleList.GetListAsync()).ContainsKey(role))
+        var roles = await RoleList.CacheListAsync();
+        if (!roles.ContainsKey(role))
             context.AddErrorResult("Role must be in RoleList");
         context.Complete();
-#else
-      if (!RoleList.GetList().ContainsKey(role))
-        context.AddErrorResult("Role must be in RoleList");
-#endif
     }
   }
 }

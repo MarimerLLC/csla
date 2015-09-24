@@ -34,7 +34,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ProjectResourceEditCreator>(
         new ProjectResourceCriteria { ProjectId = projectId, ResourceId = resourceId }, callback);
     }
-#if __ANDROID__
+#if ANDROID
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>
@@ -44,7 +44,7 @@ namespace ProjectTracker.Library
     }
 #endif
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     /// <summary>
     /// Creates a new ProjectResourceEdit object.
     /// </summary>

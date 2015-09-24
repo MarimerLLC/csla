@@ -35,7 +35,7 @@ namespace ProjectTracker.Library
       return Name;
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void Child_Fetch(ProjectTracker.Dal.ResourceDto item)
     {
       Id = item.Id;

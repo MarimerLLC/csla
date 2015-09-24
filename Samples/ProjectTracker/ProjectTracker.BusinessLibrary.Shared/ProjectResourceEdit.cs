@@ -111,7 +111,7 @@ namespace ProjectTracker.Library
     }
 
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void Child_Create(int resourceId)
     {
       using (BypassPropertyChecks)

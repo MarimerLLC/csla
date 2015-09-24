@@ -29,7 +29,7 @@ namespace ProjectTracker.Library.Security
       }
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static bool Login(string username, string password)
     {
       var identity = PTIdentity.GetPTIdentity(username, password);

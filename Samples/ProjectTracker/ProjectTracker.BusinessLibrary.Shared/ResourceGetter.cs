@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
       });
     }
 
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if FULL_DOTNET
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)

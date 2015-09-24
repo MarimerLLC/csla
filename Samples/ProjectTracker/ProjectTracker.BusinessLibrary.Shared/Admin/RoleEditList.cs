@@ -75,7 +75,7 @@ namespace ProjectTracker.Library
         RoleList.InvalidateCache();
       }
 
-#if NETFX_CORE
+#if !FULL_DOTNET
       protected override void AddNewCore()
       {
         var item = RoleEdit.NewRoleEdit();

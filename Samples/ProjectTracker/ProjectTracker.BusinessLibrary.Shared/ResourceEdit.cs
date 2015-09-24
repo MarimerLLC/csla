@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceEdit : BusinessBase<ResourceEdit>
+  public class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
@@ -61,12 +61,7 @@ namespace ProjectTracker.Library
       RegisterProperty<ResourceAssignments>(c => c.Assignments);
     public ResourceAssignments Assignments
     {
-      get
-      {
-        if (!(FieldManager.FieldExists(AssignmentsProperty)))
-          LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
-        return GetProperty(AssignmentsProperty);
-      }
+      get { return LazyGetProperty(AssignmentsProperty, DataPortal.Create<ResourceAssignments>); }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
 

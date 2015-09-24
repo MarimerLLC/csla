@@ -7,6 +7,7 @@
              xmlns:my="clr-namespace:WpfUI.Xaml">
   <Application.Resources>
     <bxfc:VisibilityConverter x:Key="VisibilityConverter" />
-    <!--<my:NullVisibilityConverter x:Key="NullVisibilityConverterI" Invert="True" />-->
+    <my:NullVisibilityConverter x:Key="NullVisibilityConverter" Invert="False" />
+    <my:NullVisibilityConverter x:Key="NullVisibilityConverterI" Invert="True" />
   </Application.Resources>
 </Application>

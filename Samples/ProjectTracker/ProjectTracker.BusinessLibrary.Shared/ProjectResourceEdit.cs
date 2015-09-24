@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using Csla.Serialization;
 using System.ComponentModel;
+using Csla.Rules;
 
 namespace ProjectTracker.Library
 {
@@ -66,11 +67,7 @@ namespace ProjectTracker.Library
     public int Role
     {
       get { return GetProperty(RoleProperty); }
-      set 
-      { 
-        SetProperty(RoleProperty, value);
-        OnPropertyChanged("RoleName");
-      }
+      set { SetProperty(RoleProperty, value); }
     }
 
     [Display(Name = "Role")]
@@ -95,11 +92,24 @@ namespace ProjectTracker.Library
       base.AddBusinessRules();
 
       BusinessRules.AddRule(new ValidRole(RoleProperty));
-
+      BusinessRules.AddRule(new NotifyRoleNameChanged(RoleProperty));
       BusinessRules.AddRule(
         new Csla.Rules.CommonRules.IsInRole(
           Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
+
+    private class NotifyRoleNameChanged : BusinessRule
+    {
+      public NotifyRoleNameChanged(Csla.Core.IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      { }
+
+      protected override void Execute(RuleContext context)
+      {
+        ((ProjectResourceEdit)context.Target).OnPropertyChanged("RoleName");
+      }
+    }
+
 
 #if !NETFX_CORE
     private void Child_Create(int resourceId)

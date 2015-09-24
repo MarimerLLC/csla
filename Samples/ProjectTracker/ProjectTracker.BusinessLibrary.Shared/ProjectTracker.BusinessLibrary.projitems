@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEdit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admin\RoleEditManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CslaBaseTypes\BusinessBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectCloser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectEdit.cs" />

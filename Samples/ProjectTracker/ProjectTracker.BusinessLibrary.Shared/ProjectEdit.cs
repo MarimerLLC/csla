@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ProjectEdit : BusinessBase<ProjectEdit>
+  public class ProjectEdit : CslaBaseTypes.BusinessBase<ProjectEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
@@ -67,12 +67,7 @@ namespace ProjectTracker.Library
       RegisterProperty<ProjectResources>(p => p.Resources);
     public ProjectResources Resources
     {
-      get
-      {
-        if (!(FieldManager.FieldExists(ResourcesProperty)))
-          LoadProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>());
-        return GetProperty(ResourcesProperty);
-      }
+      get { return LazyGetProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>); }
       private set { LoadProperty(ResourcesProperty, value); }
     }
 

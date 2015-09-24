@@ -32,7 +32,7 @@ namespace ProjectTracker.Library
       get { return CachedList != null; }
     }
 
-    public static RoleList GetList()
+    public static RoleList GetCachedList()
     {
       if (IsCached)
         return CachedList;
@@ -42,7 +42,7 @@ namespace ProjectTracker.Library
 
     public static int DefaultRole()
     {
-      var list = GetList();
+      var list = GetCachedList();
       if (list.Count > 0)
         return list.Items[0].Key;
       else

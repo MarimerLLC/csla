@@ -56,7 +56,7 @@ namespace ProjectTracker.Library
       else
         Project = ProjectEdit.GetProject(criteria.ProjectId);
       if (criteria.GetRoles)
-        RoleList = RoleList.GetList();
+        RoleList = RoleList.GetCachedList();
     }
 #endif
 

@@ -42,7 +42,7 @@ namespace WpfUI.ViewModels
 
     public ProjectTracker.Library.RoleList RoleList
     {
-      get { return ProjectTracker.Library.RoleList.GetList(); }
+      get { return ProjectTracker.Library.RoleList.GetCachedList(); }
     }
 
     private ProjectTracker.Library.ProjectInfo _selectedProject;

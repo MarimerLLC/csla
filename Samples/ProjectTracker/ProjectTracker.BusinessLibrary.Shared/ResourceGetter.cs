@@ -57,7 +57,7 @@ namespace ProjectTracker.Library
       else
         Resource = ResourceEdit.GetResourceEdit(criteria.ResourceId);
       if (criteria.GetRoles)
-        RoleList = RoleList.GetList();
+        RoleList = RoleList.GetCachedList();
     }
 #endif
 

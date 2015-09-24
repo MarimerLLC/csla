@@ -56,8 +56,8 @@ namespace ProjectTracker.Library
       get
       {
         var result = "none";
-        if (RoleList.GetList().ContainsKey(Role))
-          result = RoleList.GetList().GetItemByKey(Role).Value;
+        if (RoleList.GetCachedList().ContainsKey(Role))
+          result = RoleList.GetCachedList().GetItemByKey(Role).Value;
         return result;
       }
     }

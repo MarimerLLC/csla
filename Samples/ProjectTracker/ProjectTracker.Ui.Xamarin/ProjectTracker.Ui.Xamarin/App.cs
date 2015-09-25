@@ -39,6 +39,11 @@ namespace ProjectTracker.Ui.Xamarin
       try
       {
         var obj = await Csla.DataPortal.FetchAsync<Library.Dashboard>();
+        ((StackLayout)((ContentPage)MainPage).Content).Children.Add(new Label
+        {
+          XAlign = TextAlignment.Center,
+          Text = string.Format("{0} {1} {2}", obj.ProjectCount, obj.OpenProjectCount, obj.ResourceCount)
+        });
       }
       catch (Exception ex)
       {

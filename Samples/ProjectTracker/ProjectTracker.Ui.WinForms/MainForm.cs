@@ -26,7 +26,7 @@ namespace PTWin
       get { return _main; }
     }
 
-    private void MainForm_Load(object sender, EventArgs e)
+    private async void MainForm_Load(object sender, EventArgs e)
     {
       if (Csla.ApplicationContext.AuthenticationType == "Windows")
       {
@@ -39,7 +39,10 @@ namespace PTWin
         DoLogin();
       }
       if (DocumentCount == 0)
-        this.DocumentsToolStripDropDownButton.Enabled = false;
+        DocumentsToolStripDropDownButton.Enabled = false;
+
+      // initialize cache of role list
+      await RoleList.CacheListAsync();
     }
 
     #region Projects

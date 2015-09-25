@@ -36,7 +36,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginExecute<ProjectCloser>(cmd, callback);
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static ProjectCloser CloseProject(int id)
     {
       ProjectCloser cmd = new ProjectCloser { ProjectId = id };

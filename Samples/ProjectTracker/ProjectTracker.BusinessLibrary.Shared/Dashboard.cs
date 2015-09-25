@@ -43,7 +43,7 @@ namespace ProjectTracker.Library
       return await DataPortal.FetchAsync<Dashboard>();
     }
 #endif
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static Dashboard GetDashboard()
     {
       return DataPortal.Fetch<Dashboard>();

@@ -49,7 +49,7 @@ namespace PTWin
     private void ProjectEdit_Load(object sender, EventArgs e)
     {
       // set up binding
-      this.roleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetList();
+      this.roleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetCachedList();
 
       BindUI();
 

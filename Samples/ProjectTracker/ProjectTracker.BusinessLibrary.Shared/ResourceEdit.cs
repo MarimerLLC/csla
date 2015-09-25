@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ProjectTracker.Library
 {
   [Serializable()]
-  public class ResourceEdit : BusinessBase<ResourceEdit>
+  public class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
   {
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
@@ -61,12 +61,7 @@ namespace ProjectTracker.Library
       RegisterProperty<ResourceAssignments>(c => c.Assignments);
     public ResourceAssignments Assignments
     {
-      get
-      {
-        if (!(FieldManager.FieldExists(AssignmentsProperty)))
-          LoadProperty(AssignmentsProperty, DataPortal.CreateChild<ResourceAssignments>());
-        return GetProperty(AssignmentsProperty);
-      }
+      get { return LazyGetProperty(AssignmentsProperty, DataPortal.Create<ResourceAssignments>); }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
 
@@ -145,7 +140,7 @@ namespace ProjectTracker.Library
       DataPortal.BeginFetch<ResourceEdit>(id, callback);
     }
 
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if FULL_DOTNET
 
     public static ResourceEdit NewResourceEdit()
     {
@@ -177,7 +172,7 @@ namespace ProjectTracker.Library
       base.DataPortal_Create();
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void DataPortal_Fetch(int id)
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

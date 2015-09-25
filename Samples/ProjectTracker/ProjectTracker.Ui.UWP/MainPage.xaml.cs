@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -28,42 +29,35 @@ namespace UwpUI
       this.InitializeComponent();
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    public Xaml.NavigationHelper NavigationHelper { get; private set; }
+    protected override void OnNavigatedTo(NavigationEventArgs e)
     {
-      ErrorText.Text += Csla.ApplicationContext.User.Identity.ToString();
-      ErrorText.Text += Environment.NewLine;
-      ErrorText.Text += Environment.NewLine;
-      try
-      {
-        //var obj = new ProjectTracker.Library.Dashboard();
-        //var obj2 = Csla.Core.ObjectCloner.Clone(obj);
-
-        //this.DataContext = await ProjectTracker.Library.Dashboard.GetDashboardAsync();
-
-        var vm = await new ViewModel.DashboardViewModel().InitAsync();
-        this.DataContext = vm;
-
-        if (vm.Error == null)
-        {
-          ErrorText.Text += "Success";
-          ErrorText.Text += Environment.NewLine;
-        }
-        else
-        {
-          ShowError(vm.Error);
-        }
-      }
-      catch (Exception ex)
-      {
-        ShowError(ex);
-      }
+      NavigationHelper = new Xaml.NavigationHelper().OnNavigatedTo(this, e);
+      base.OnNavigatedTo(e);
     }
 
-    private void ShowError(Exception ex)
+    private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
-      //await new MessageDialog(ex.ToString(), "Data error").ShowAsync();
-      ErrorText.Foreground = new SolidColorBrush(Windows.UI.Colors.Red);
-      ErrorText.Text += ex.ToString();
+      var vm = await new ViewModels.DashboardViewModel().InitAsync();
+      this.DataContext = vm;
+    }
+
+    private void ShowProjectList(object sender, RoutedEventArgs e)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      rootFrame.Navigate(typeof(Views.ProjectList));
+    }
+
+    private void ShowResourceList(object sender, RoutedEventArgs e)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      rootFrame.Navigate(typeof(Views.ResourceList));
+    }
+
+    private void ViewRoles(object sender, RoutedEventArgs e)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      rootFrame.Navigate(typeof(Views.RoleList));
     }
   }
 }

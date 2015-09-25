@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />

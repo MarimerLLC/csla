@@ -9,10 +9,12 @@ namespace ProjectTracker.Ui.Xamarin
 {
   public class App : Application
   {
+    private Dashboard startPage = new Dashboard();
+
     public App ()
     {
       // The root page of your application
-      MainPage = new Dashboard();
+      MainPage = new NavigationPage(startPage);
     }
 
     protected async override void OnStart()
@@ -26,7 +28,7 @@ namespace ProjectTracker.Ui.Xamarin
 
       await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
-      await ((Dashboard)MainPage).LoadData();
+      await startPage.LoadData();
     }
 
     protected override void OnSleep ()

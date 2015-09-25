@@ -9,14 +9,12 @@ namespace ProjectTracker.Ui.Xamarin
     StackLayout stackLayout = null;
     public Dashboard()
     {
-      var mainGrid = new Grid();
-      mainGrid.RowDefinitions.Add(new RowDefinition { Height = 20 });
-      mainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+      Title = "Dashboard";
 
       stackLayout = new StackLayout
       {
         VerticalOptions = LayoutOptions.Center,
-        Spacing = 2,
+        Spacing = 5,
         Children = {
             new Label {
               XAlign = TextAlignment.Center,
@@ -25,8 +23,7 @@ namespace ProjectTracker.Ui.Xamarin
           }
       };
 
-      mainGrid.Children.Add(stackLayout, 0, 1);
-      Content = mainGrid;
+      Content = stackLayout;
     }
 
     public async Task LoadData()
@@ -48,21 +45,27 @@ namespace ProjectTracker.Ui.Xamarin
 
       stackLayout.Children.Clear();
       stackLayout.VerticalOptions = LayoutOptions.Start;
-      stackLayout.Children.Add(new Label
+      CreateRow("Projects", dashboard.ProjectCount, typeof(ProjectList));
+      CreateRow("Open projects", dashboard.OpenProjectCount, typeof(ProjectList));
+      CreateRow("Resources", dashboard.ResourceCount, typeof(ResourceList));
+    }
+
+    private void CreateRow(string label, int count, Type targetPage)
+    {
+      var child = new StackLayout { Orientation = StackOrientation.Horizontal, Spacing = 5 };
+      var button = new Button
+      {
+        Text = "View"
+      };
+      button.Clicked += async (a, b) => await Navigation.PushAsync(
+        (Page)Activator.CreateInstance(targetPage));
+      child.Children.Add(button);
+      child.Children.Add(new Label
       {
         XAlign = TextAlignment.Start,
-        Text = string.Format("Projects {0}", dashboard.ProjectCount)
+        Text = string.Format("{0} {1}", label, count)
       });
-      stackLayout.Children.Add(new Label
-      {
-        XAlign = TextAlignment.Start,
-        Text = string.Format("Open projects {0}", dashboard.OpenProjectCount)
-      });
-      stackLayout.Children.Add(new Label
-      {
-        XAlign = TextAlignment.Start,
-        Text = string.Format("Resources {0}", dashboard.ResourceCount)
-      });
+      stackLayout.Children.Add(child);
     }
   }
 }

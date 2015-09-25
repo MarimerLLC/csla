@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("ProjectTracker.Library.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("ProjectTracker.Ui.Xamarin.Droid.Resource", IsApplication=true)]
 
-namespace ProjectTracker.Library
+namespace ProjectTracker.Ui.Xamarin.Droid
 {
 	
 	
@@ -22,6 +22,13 @@ namespace ProjectTracker.Library
 		static Resource()
 		{
 			global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+		}
+		
+		public static void UpdateIdValues()
+		{
+			global::Csla.Axml.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
+			global::ProjectTracker.Library.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
+			global::ProjectTracker.Library.Resource.String.Hello = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.Hello;
 		}
 		
 		public partial class Attribute
@@ -37,14 +44,30 @@ namespace ProjectTracker.Library
 			}
 		}
 		
+		public partial class Drawable
+		{
+			
+			// aapt resource value: 0x7f020000
+			public const int icon = 2130837504;
+			
+			static Drawable()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Drawable()
+			{
+			}
+		}
+		
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f020001
-			public static int ApplicationName = 2130837505;
+			// aapt resource value: 0x7f030001
+			public const int ApplicationName = 2130903041;
 			
-			// aapt resource value: 0x7f020000
-			public static int Hello = 2130837504;
+			// aapt resource value: 0x7f030000
+			public const int Hello = 2130903040;
 			
 			static String()
 			{

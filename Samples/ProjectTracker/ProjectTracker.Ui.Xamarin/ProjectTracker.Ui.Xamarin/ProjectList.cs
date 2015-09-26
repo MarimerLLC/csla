@@ -1,5 +1,4 @@
-﻿using Csla;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace ProjectTracker.Ui.Xamarin
 {

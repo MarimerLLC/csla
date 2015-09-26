@@ -64,14 +64,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Threading.Tasks" />
-    <Reference Include="System.Linq.Expressions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Runtime" />
-    <Reference Include="System.Globalization" />
-    <Reference Include="System.ObjectModel" />
-    <Reference Include="System.Net.Primitives" />
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Linq.Expressions" />
     <Reference Include="Xamarin.Android.Support.v4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Android.Support.v4.21.0.3.0\lib\MonoAndroid10\Xamarin.Android.Support.v4.dll</HintPath>
       <Private>True</Private>
@@ -106,13 +103,13 @@
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.173-Beta1\analyzers\c#\Csla.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary.Android\ProjectTracker.BusinessLibrary.Android.csproj">
       <Project>{8d47ddc8-9941-4285-bf8c-42709778df44}</Project>
       <Name>ProjectTracker.BusinessLibrary.Android</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.173-Beta1\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems" Label="Shared" Condition="Exists('..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

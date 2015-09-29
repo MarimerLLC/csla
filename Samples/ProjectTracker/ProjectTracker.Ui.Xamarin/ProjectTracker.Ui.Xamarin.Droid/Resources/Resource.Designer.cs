@@ -29,6 +29,8 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 			global::Csla.Axml.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
 			global::ProjectTracker.Library.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
 			global::ProjectTracker.Library.Resource.String.Hello = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.Hello;
+			global::Xamarin.Forms.Platform.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
+			global::Xamarin.Forms.Platform.Resource.String.Hello = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.Hello;
 		}
 		
 		public partial class Attribute

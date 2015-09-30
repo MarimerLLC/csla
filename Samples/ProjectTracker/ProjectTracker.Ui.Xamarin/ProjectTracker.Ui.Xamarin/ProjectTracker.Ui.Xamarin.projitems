@@ -3,15 +3,15 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>20ee2f15-856b-453d-a6f7-61a44a7c4c21</SharedGUID>
+    <SharedGUID>46b8e5d7-f387-4b4f-b7df-0de4f4833f16</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>ProjectTracker.Ui.Xamarin</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProjectList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResourceList.cs" />
   </ItemGroup>
 </Project>

@@ -8,7 +8,6 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Csla.Serialization;
 
 namespace Csla.Core.FieldManager
 {

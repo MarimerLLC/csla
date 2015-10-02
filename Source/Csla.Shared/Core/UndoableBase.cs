@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #if NETFX_CORE || IOS || ANDROID
 using System;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -338,11 +337,11 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
-using Csla.Serialization;
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
+using Csla.Serialization;
 
 namespace Csla.Core
 {

@@ -26,8 +26,6 @@
 -->
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
   <Library Name="Csla.Uwp">
-
-  	<!-- add directives for your library here -->
-
+    <Assembly Name="Csla" Activate="Required All" Browse="Required All" Serialize="Required All" Dynamic="Required All" />
   </Library>
 </Directives>

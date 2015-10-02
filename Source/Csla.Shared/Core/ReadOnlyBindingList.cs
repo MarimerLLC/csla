@@ -7,10 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using Csla.Properties;
-#if NETFX_CORE || IOS || ANDROID
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
-#endif
 
 namespace Csla.Core
 {

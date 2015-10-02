@@ -53,16 +53,6 @@
     <Compile Include="ModelBinderTest\SingleRoot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Csla.Web.Mvc3\Csla.Web.Mvc3.csproj">
-      <Project>{e9198340-cc6f-4d4f-8a0e-bafa9a29c8f9}</Project>
-      <Name>Csla.Web.Mvc3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Csla\Csla.csproj">
-      <Project>{9DA591ED-C570-47AC-8E5D-35B039E07973}</Project>
-      <Name>Csla</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

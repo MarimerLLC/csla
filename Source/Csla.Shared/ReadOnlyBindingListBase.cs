@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #if NETFX_CORE
 using System;
-using Csla.Serialization;
 
 namespace Csla
 {

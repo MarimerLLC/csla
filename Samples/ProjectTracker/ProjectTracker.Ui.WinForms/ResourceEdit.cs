@@ -31,7 +31,7 @@ namespace PTWin
       this.CurrentPrincipalChanged += new EventHandler(ResourceEdit_CurrentPrincipalChanged);
       _resource.PropertyChanged += new PropertyChangedEventHandler(mResource_PropertyChanged);
 
-      this.RoleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetList();
+      this.RoleListBindingSource.DataSource = ProjectTracker.Library.RoleList.GetCachedList();
 
       BindUI();
 

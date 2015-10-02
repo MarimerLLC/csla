@@ -44,7 +44,7 @@ namespace ProjectTracker.Library
       return await Csla.DataPortal.FetchAsync<ProjectTracker.Library.ProjectList>();
     }
 #endif
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static ProjectList GetProjectList()
     {
       return DataPortal.Fetch<ProjectList>();

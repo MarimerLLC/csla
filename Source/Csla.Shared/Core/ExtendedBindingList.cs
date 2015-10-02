@@ -9,7 +9,6 @@ using System;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 #if NETFX_CORE || (ANDROID || IOS)
-using Csla.Serialization;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 #endif

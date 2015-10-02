@@ -24,12 +24,16 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ProjectExistsProperty, value); }
     }
 
+    public ProjectExistsCommand()
+    { }
+
+#pragma warning disable CSLA0004
     public ProjectExistsCommand(int id)
     {
       ProjectId = id;
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

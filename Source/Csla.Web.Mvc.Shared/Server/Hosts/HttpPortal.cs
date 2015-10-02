@@ -45,7 +45,7 @@ namespace Csla.Server.Hosts
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           true,
@@ -94,7 +94,7 @@ namespace Csla.Server.Hosts
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           true,
@@ -187,7 +187,7 @@ namespace Csla.Server.Hosts
           criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(request.TypeName, true);
+        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           (IPrincipal)MobileFormatter.Deserialize(request.Principal),
           true,

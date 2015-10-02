@@ -13,9 +13,6 @@ using Csla.Properties;
 using Csla.Core;
 using Csla.Reflection;
 using System.Threading.Tasks;
-#if NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla
 {

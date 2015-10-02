@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
       });
     }
 
-#if !NETFX_CORE && !WINDOWS_PHONE
+#if FULL_DOTNET
     private void DataPortal_Fetch(Criteria criteria)
     {
       if (criteria.ResourceId == -1)
@@ -57,7 +57,7 @@ namespace ProjectTracker.Library
       else
         Resource = ResourceEdit.GetResourceEdit(criteria.ResourceId);
       if (criteria.GetRoles)
-        RoleList = RoleList.GetList();
+        RoleList = RoleList.GetCachedList();
     }
 #endif
 

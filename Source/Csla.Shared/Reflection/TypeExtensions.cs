@@ -1,5 +1,4 @@
-﻿#if (!ANDROID && !IOS)
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="TypeExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -13,6 +12,7 @@ using System.Reflection;
 
 namespace Csla.Reflection
 {
+#if (!ANDROID && !IOS)
 #if NETFX_CORE
 #if !WINDOWS_UWP
   /// <summary>
@@ -231,9 +231,14 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static bool IsSerializable(this Type t)
     {
+#if WINDOWS_UWP
+      var tinfo = t.GetTypeInfo();
+      return tinfo.IsSerializable;
+#elif NETFX_CORE
       var tinfo = t.GetTypeInfo();
       var result = tinfo.GetCustomAttributes(typeof(SerializableAttribute), false);
       return (result != null && result.Count() > 0);
+#endif
     }
 
 #if !WINDOWS_UWP
@@ -531,23 +536,41 @@ namespace Csla.Reflection
   }
 #endif
 #else
-    /// <summary>
-    /// Contains extension methods for Type.
-    /// </summary>
-    public static class TypeExtensions
+  /// <summary>
+  /// Contains extension methods for Type.
+  /// </summary>
+  public static class TypeExtensions
   {
     /// <summary>
     /// Gets a value indicating whether this
     /// type is marked as Serializable.
     /// </summary>
-    /// <param name="type">Type to check.</param>
+    /// <param name="objectType">Type to check.</param>
     /// <returns>True if the type is Serializable.</returns>
-    public static bool IsSerializable(this Type type)
+    public static bool IsSerializable(this Type objectType)
     {
-      var result = type.GetCustomAttributes(typeof(SerializableAttribute), false);
+      var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
+      return (result != null && result.Length > 0);
+    }
+  }
+#endif
+#else
+  /// <summary>
+  /// Contains extension methods for Type.
+  /// </summary>
+  public static class TypeExtensions
+  {
+    /// <summary>
+    /// Gets a value indicating whether this
+    /// type is marked as Serializable.
+    /// </summary>
+    /// <param name="objectType">Type to check.</param>
+    /// <returns>True if the type is Serializable.</returns>
+    public static bool IsSerializable(this Type objectType)
+    {
+      var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
       return (result != null && result.Length > 0);
     }
   }
 #endif
 }
-#endif

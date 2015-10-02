@@ -24,7 +24,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ProjectResourceProperty, value); }
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static ProjectResourceEdit Update(int projectId, ProjectResourceEdit projectResource)
     {
       var cmd = new ProjectResourceUpdater { ProjectId = projectId, ProjectResource = projectResource };

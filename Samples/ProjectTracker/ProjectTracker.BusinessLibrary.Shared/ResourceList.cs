@@ -44,7 +44,7 @@ namespace ProjectTracker.Library
       return await DataPortal.FetchAsync<ResourceList>();
     }
 #endif
-#if !NETFX_CORE
+#if FULL_DOTNET
     public static ResourceList GetResourceList()
     {
       return DataPortal.Fetch<ResourceList>();

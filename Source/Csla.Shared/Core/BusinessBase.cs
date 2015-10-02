@@ -20,7 +20,6 @@ using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
 using System.Security;
@@ -1883,6 +1882,61 @@ namespace Csla.Core
       return (P)GetProperty(propertyInfo);
     }
 
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P LazyGetProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return GetProperty<P>(property);
+    }
+
+    private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// Note that the first value returned is almost certainly
+    /// the defaultValue because the value is initialized asynchronously.
+    /// The real value is provided later along with a PropertyChanged
+    /// event to indicate the value has changed.
+    /// </para><para>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </para>
+    /// </remarks>
+    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return GetProperty<P>(property);
+    }
+
     #endregion
 
     #region  Read Properties
@@ -2902,33 +2956,6 @@ namespace Csla.Core
     {
       OnBusyChanged(e);
     }
-
-    /*
-    /// <summary>
-    /// Loads a property value asynchronously.
-    /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    //protected void LoadPropertyAsync<R>(PropertyInfo<R> property, AsyncFactoryDelegate<R> factory)
-    //{
-    //  LoadManager.BeginLoad(new AsyncLoader<R>(property, factory));
-    //}
-
-    /// <summary>
-    /// Loads a property value asynchronously.
-    /// </summary>
-    /// <typeparam name="R">Type of the property</typeparam>
-    /// <typeparam name="P">Type of the parameter.</typeparam>
-    /// <param name="property">Property to load.</param>
-    /// <param name="factory">AsyncFactory delegate.</param>
-    /// <param name="parameter">Parameter value.</param>
-    //protected void LoadPropertyAsync<R, P>(PropertyInfo<R> property, AsyncFactoryDelegate<P, R> factory, P parameter)
-    //{
-    //  LoadManager.BeginLoad(new AsyncLoader<R>(property, factory, parameter));
-    //}
-    */
 
     /// <summary>
     /// Load a property from an async method. 

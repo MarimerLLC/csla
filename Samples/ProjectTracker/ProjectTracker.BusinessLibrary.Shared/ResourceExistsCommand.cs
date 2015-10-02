@@ -10,6 +10,10 @@ namespace ProjectTracker.Library
   [Serializable()]
   public class ResourceExistsCommand : CommandBase<ResourceExistsCommand>
   {
+    public ResourceExistsCommand()
+    { }
+
+#pragma warning disable CSLA0004
     public ResourceExistsCommand(int id)
     {
       ResourceId = id;
@@ -29,7 +33,7 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ResourceExistsProperty, value); }
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     protected override void DataPortal_Execute()
     {
       using (var ctx = ProjectTracker.Dal.DalFactory.GetManager())

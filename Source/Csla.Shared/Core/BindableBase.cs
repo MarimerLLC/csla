@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using Csla.Serialization;
 
 namespace Csla.Core
 {

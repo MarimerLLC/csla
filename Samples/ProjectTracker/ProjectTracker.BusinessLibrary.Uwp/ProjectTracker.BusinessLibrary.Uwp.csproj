@@ -7,8 +7,8 @@
     <ProjectGuid>{4027C5AC-6B25-433A-AF78-334FDFFEAB0D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProjectTracker.BusinessLibrary.Uwp</RootNamespace>
-    <AssemblyName>ProjectTracker.BusinessLibrary.Uwp</AssemblyName>
+    <RootNamespace>ProjectTracker.Library</RootNamespace>
+    <AssemblyName>ProjectTracker.BusinessLibrary</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>

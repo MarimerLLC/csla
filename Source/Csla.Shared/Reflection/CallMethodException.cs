@@ -9,9 +9,6 @@ using System;
 #if !NETFX_CORE
 using System.Security.Permissions;
 #endif
-#if (ANDROID || IOS) || NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla.Reflection
 {

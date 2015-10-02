@@ -8,7 +8,6 @@
 #if NETFX_CORE || (ANDROID || IOS)
 using System;
 using Csla;
-using Csla.Serialization;
 
 namespace Csla
 {
@@ -80,7 +79,7 @@ namespace Csla
     Core.ExtendedBindingList<T>,
     Core.IParent,
     Server.IDataPortalTarget
-    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IBusinessObject
   {
     /// <summary>
     /// Creates an instance of the object.

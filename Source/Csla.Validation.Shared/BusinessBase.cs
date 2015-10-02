@@ -11,9 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Rules;
-#if (ANDROID || IOS) || NETFX_CORE
-using Csla.Serialization;
-#endif
 
 namespace Csla.Validation
 {

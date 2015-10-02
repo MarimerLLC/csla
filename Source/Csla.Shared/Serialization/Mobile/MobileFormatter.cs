@@ -111,7 +111,6 @@ namespace Csla.Serialization.Mobile
       }
     }
 
-
     /// <summary>
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
@@ -127,7 +126,7 @@ namespace Csla.Serialization.Mobile
         info = new SerializationInfo(_serializationReferences.Count + 1);
         _serializationReferences.Add(nullPlaceholder, info);
 
-        info.TypeName = typeof(NullPlaceholder).AssemblyQualifiedName;
+        info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(typeof(NullPlaceholder));
       }
       else
       {
@@ -150,7 +149,7 @@ namespace Csla.Serialization.Mobile
           info = new SerializationInfo(_serializationReferences.Count + 1);
           _serializationReferences.Add(mobile, info);
 
-          info.TypeName = thisType.AssemblyQualifiedName;
+          info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(thisType);
 
           mobile.GetChildren(info, this);
           mobile.GetState(info);
@@ -164,21 +163,12 @@ namespace Csla.Serialization.Mobile
 
     private static bool IsSerializable(Type objectType)
     {
-#if (ANDROID || IOS)
-      var result = objectType.GetCustomAttributes(typeof(SerializableAttribute), false);
-      return (result != null && result.Length > 0);
-#else 
-#if ((ANDROID || IOS) || NETFX_CORE)
       return objectType.IsSerializable();
-#else
-      return objectType.IsSerializable;
-#endif
-#endif
     }
 
-    #endregion
+#endregion
 
-    #region Deserialize
+#region Deserialize
 
     private Dictionary<int, IMobileObject> _deserializationReferences =
       new Dictionary<int, IMobileObject>();
@@ -234,14 +224,13 @@ namespace Csla.Serialization.Mobile
       _deserializationReferences = new Dictionary<int, IMobileObject>();
       foreach (SerializationInfo info in deserialized)
       {
-        //Type type = Csla.Reflection.MethodCaller.GetType(info.TypeName);
-        Type type = GetTypeFromCache(info.TypeName);
+        var typeName = AssemblyNameTranslator.GetAssemblyQualifiedName(info.TypeName);
+        Type type = GetTypeFromCache(typeName);
 
         if (type == null)
         {
           throw new SerializationException(string.Format(
-            Resources.MobileFormatterUnableToDeserialize,
-            info.TypeName));
+            Resources.MobileFormatterUnableToDeserialize, typeName));
         }
         else if (type == typeof(NullPlaceholder))
         {
@@ -310,9 +299,9 @@ namespace Csla.Serialization.Mobile
       return _deserializationReferences[referenceId];
     }
 
-    #endregion
+#endregion
 
-    #region Static Helpers
+#region Static Helpers
 
     /// <summary>
     /// Serializes the object into a byte array.
@@ -401,7 +390,7 @@ namespace Csla.Serialization.Mobile
       var formatter = new MobileFormatter();
       return formatter.DeserializeAsDTO(data);
     }
-    #endregion
+#endregion
 
   }
 }

@@ -10,7 +10,6 @@ using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
 #if NETFX_CORE
 using System.Collections.Generic;
-using Csla.Serialization;
 #endif
 
 namespace Csla.Core

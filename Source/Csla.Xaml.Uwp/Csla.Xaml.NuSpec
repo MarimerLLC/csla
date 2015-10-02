@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-UWP</id>
+    <title>CSLA .NET - UWP</title>
+    <tags>CSLA UWP UI Windows10 UAP</tags>
+    <version>..</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
+    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
+    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of UWP applications.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of UWP applications.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="uap10.0">
+        <dependency id="System.Collections" version="4.0.10" />
+        <dependency id="System.ComponentModel.Annotations" version="4.0.10" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.10" />
+        <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Linq.Expressions" version="4.0.10" />
+        <dependency id="System.ObjectModel" version="4.0.10" />
+        <dependency id="System.Reflection" version="4.0.10" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.0.0" />
+        <dependency id="System.Runtime" version="4.0.20" />
+        <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.0.0" />
+        <dependency id="System.Threading" version="4.0.10" />
+        <dependency id="System.Threading.Tasks" version="4.0.10" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.Xaml.xml*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\Csla.Xaml\**" target="lib\uap10.0\Csla.Xaml" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Xaml*\**\*.cs" target="src" />
+  </files>
+</package>

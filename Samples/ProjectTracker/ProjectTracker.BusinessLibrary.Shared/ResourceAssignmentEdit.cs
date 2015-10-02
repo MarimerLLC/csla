@@ -56,8 +56,8 @@ namespace ProjectTracker.Library
       get
       {
         var result = "none";
-        if (RoleList.GetList().ContainsKey(Role))
-          result = RoleList.GetList().GetItemByKey(Role).Value;
+        if (RoleList.GetCachedList().ContainsKey(Role))
+          result = RoleList.GetCachedList().GetItemByKey(Role).Value;
         return result;
       }
     }
@@ -76,7 +76,7 @@ namespace ProjectTracker.Library
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, "ProjectManager"));
     }
 
-#if !NETFX_CORE
+#if FULL_DOTNET
     private void Child_Create(int projectId)
     {
       using (BypassPropertyChecks)

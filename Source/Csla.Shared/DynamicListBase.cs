@@ -12,7 +12,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla
@@ -50,7 +49,7 @@ namespace Csla
     ObservableBindingList<T>,
 #endif
     Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
-    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject
+    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
     /// Creates an instance of the object.

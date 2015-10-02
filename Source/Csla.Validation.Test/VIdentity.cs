@@ -8,8 +8,11 @@ using Csla.Security;
 
 namespace Csla.Validation.Test
 {
+  [Serializable]
   public class VIdentity : CslaIdentity
   {
+    public VIdentity() { }
+
     public VIdentity(params string[] roles)
     {
       Name = "Test";

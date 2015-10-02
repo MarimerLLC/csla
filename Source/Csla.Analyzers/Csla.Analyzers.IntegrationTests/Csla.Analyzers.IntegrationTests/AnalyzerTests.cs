@@ -28,6 +28,26 @@ public class User
   : BusinessBase<User>
 {
   private User(int x) { }
+
+  public void SaveItself()
+  {
+    Save();
+  }
+
+  public User SaveItselfAndReturn()
+  {
+    return Save();
+  }
+
+  public async Task SaveItselfAsync()
+  {
+    await SaveAsync();
+  }
+
+  public async Task<User> SaveItselfAndReturnAsync()
+  {
+    return await SaveAsync();
+  }
 }
 
 public class UserCaller

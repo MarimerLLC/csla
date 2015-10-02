@@ -227,6 +227,21 @@
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

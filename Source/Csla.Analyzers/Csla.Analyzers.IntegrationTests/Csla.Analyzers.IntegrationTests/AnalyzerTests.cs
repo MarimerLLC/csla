@@ -7,6 +7,10 @@ public class MyCommandBase
   : CommandBase<MyCommandBase>
 {
   public MyCommandBase(int id) { }
+
+  public MyCommandBase()
+  {
+  }
 }
 
 // This should have an error because it's not serializable

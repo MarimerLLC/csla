@@ -102,6 +102,17 @@ namespace Csla.Analyzers
           !c.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
 
       var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
+      
+      if(constructor.HasLeadingTrivia)
+      {
+        newConstructor = newConstructor.WithLeadingTrivia(constructor.GetLeadingTrivia());
+      }
+
+      if (constructor.HasTrailingTrivia)
+      {
+        newConstructor = newConstructor.WithTrailingTrivia(constructor.GetTrailingTrivia());
+      }
+
       var newRoot = root.ReplaceNode(constructor, newConstructor);
 
       context.RegisterCodeFix(

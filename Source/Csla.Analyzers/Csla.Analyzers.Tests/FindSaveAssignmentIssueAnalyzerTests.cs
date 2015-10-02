@@ -155,5 +155,13 @@ namespace Csla.Analyzers.Tests
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
         new string[0]);
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself))}.cs",
+        new string[0]);
+    }
   }
 }

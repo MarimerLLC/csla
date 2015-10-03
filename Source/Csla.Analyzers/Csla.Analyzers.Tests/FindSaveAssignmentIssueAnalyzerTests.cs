@@ -155,5 +155,53 @@ namespace Csla.Analyzers.Tests
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
         new string[0]);
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase()
+    {
+      await FindSaveAssignmentIssueAnalyzerTests.RunAnalysisAsync(
+        $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase))}.cs",
+        new string[0]);
+    }
   }
 }

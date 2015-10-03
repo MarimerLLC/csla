@@ -66,7 +66,10 @@ namespace Csla.Analyzers
     private static void CheckForCondition(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationNode, 
       SyntaxNode expressionStatementParent, DiagnosticDescriptor descriptor)
     {
-      if ((!expressionStatementParent?.DescendantNodesAndTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false) &&
+      // Make sure the invocation's containing type is not the same as the class that contains it
+      if ((invocationNode.DescendantNodesAndTokens().Any(_ => _.IsKind(SyntaxKind.DotToken)) &&
+        !invocationNode.DescendantNodesAndTokens().Any(_ => _.IsKind(SyntaxKind.ThisExpression) || _.IsKind(SyntaxKind.BaseExpression))) &&
+        (!expressionStatementParent?.DescendantNodesAndTokens()?.Any(_ => _.IsKind(SyntaxKind.EqualsToken)) ?? false) &&
         !(invocationNode.DescendantNodes()?.Any(_ => new ContainsInvocationExpressionWalker(_).HasIssue) ?? false) &&
         !FindSaveAssignmentIssueAnalyzer.IsReturnValue(invocationNode))
       {

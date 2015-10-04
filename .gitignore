@@ -12,6 +12,8 @@ TestResults
 *.suo
 *.user
 *.sln.docstates
+project.lock.json
+.vs
 
 # Build results
 [Dd]ebug/
@@ -152,3 +154,21 @@ Thumbs.db
 /XamarinPackage/*.xam
 
 *.userprefs
+/Source/Csla.WinRT/resources
+/Source/Csla.Uwp/resources
+<<<<<<< HEAD
+/Samples/ProjectTracker/.vs
+/Source/Csla.Xaml.Uwp/project.lock.json
+/Source/Csla.Validation.Uwp/project.lock.json
+/Source/Csla.Uwp/project.lock.json
+/Source/Csla.Uwp/project.lock.json
+/Source/Csla.Validation.Uwp/project.lock.json
+/Source/Csla.Xaml.Uwp/project.lock.json
+=======
+/Source/Csla.Xaml.Uwp/project.lock.json
+/Source/Csla.Validation.Uwp/project.lock.json
+>>>>>>> 3f5c722c2c895f49e7aa398048bcf0bbb8b31b69
+/Source/Csla.Uwp/project.lock.json
+/Source/Csla.Xaml.Uwp/project.lock.json
+/Source/Csla.Validation.Uwp/project.lock.json
+/Source/.vs

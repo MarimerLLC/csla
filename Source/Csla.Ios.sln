@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6A003B73-2BA8-423B-BAA4-C695D12CD9B7}"
 EndProject
@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB3A38D9-BB4A-4558-A909-3F466FE3406F}"
 	ProjectSection(SolutionItems) = preProject
 		..\license.txt = ..\license.txt
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios.Classic", "Csla.Ios.Classic\Csla.Ios.Classic.csproj", "{6B9F2A26-9F72-4056-97E9-49BACBBB52F6}"
@@ -26,7 +27,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Iosui.Ios", "Csla.Iosu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Validation.Ios", "Csla.Validation.Ios\Csla.Validation.Ios.csproj", "{8C50E0D2-92E6-4C74-B317-AA56F3988160}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Validation.Shared", "Csla.Validation.Shared\Csla.Validation.Shared.shproj", "{F2FF4B77-A3C4-4810-A944-CD8230599B59}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{f2ff4b77-a3c4-4810-a944-cd8230599b59}*SharedItemsImports = 13
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{8c50e0d2-92e6-4c74-b317-aa56f3988160}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{6b9f2a26-9f72-4056-97e9-49bacbbb52f6}*SharedItemsImports = 4
+		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{597f6f1b-c461-452d-9650-53b2c6f9c5c9}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{0735c0c7-0571-407f-9f62-fd59a0a15dfc}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
 		Ad-Hoc|iPhone = Ad-Hoc|iPhone
@@ -213,6 +226,8 @@ Global
 		{0735C0C7-0571-407F-9F62-FD59A0A15DFC} = {6A003B73-2BA8-423B-BAA4-C695D12CD9B7}
 		{B827A2B3-1A7D-4AB4-8325-A5442F317CE8} = {E6ACF38E-0D21-440D-A838-EC9B5F2718DA}
 		{8C50E0D2-92E6-4C74-B317-AA56F3988160} = {8650F630-E995-460C-B28F-A42E8E40D5AA}
+		{EDACD58E-B295-4F3E-A263-5BD89FA51270} = {6A003B73-2BA8-423B-BAA4-C695D12CD9B7}
+		{F2FF4B77-A3C4-4810-A944-CD8230599B59} = {8650F630-E995-460C-B28F-A42E8E40D5AA}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Csla.Ios\Csla.Ios.csproj

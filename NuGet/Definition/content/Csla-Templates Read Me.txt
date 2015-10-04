@@ -1,2 +1,0 @@
-The snippets and templates have been installed into the current users' Visual Studio environment and will be available for all projects. 
-This means that this NuGet CSLA-Template package does not need to be installed for every project that uses CSLA.

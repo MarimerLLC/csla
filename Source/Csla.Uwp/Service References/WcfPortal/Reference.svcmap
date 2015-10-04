@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ad2c0f6a-9880-41c8-9e89-36a744ce4454" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.ObjectModel.ObservableCollection`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>false</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:13046/SlPortal.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SlPortal.disco" MetadataType="Disco" ID="a1c3e585-81e2-43bd-8e36-0219cb6838fd" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?disco" />
+    <MetadataFile FileName="WcfPortal.wsdl" MetadataType="Wsdl" ID="5e380fa5-9834-4e78-8870-d33122064f12" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?wsdl" />
+    <MetadataFile FileName="SlPortal.xsd" MetadataType="Schema" ID="8f1a9b98-83ef-4713-919f-7cd4575af58a" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?xsd=xsd0" />
+    <MetadataFile FileName="SlPortal1.xsd" MetadataType="Schema" ID="1ff2f21a-ac6f-4945-9508-305395bec389" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?xsd=xsd2" />
+    <MetadataFile FileName="SlPortal2.xsd" MetadataType="Schema" ID="0c475618-32a8-4d11-91d3-e9ca9e69d41e" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?xsd=xsd1" />
+    <MetadataFile FileName="SlPortal.wsdl" MetadataType="Wsdl" ID="acc19dcf-108e-429d-93b7-854ce48d5ff0" SourceId="1" SourceUrl="http://localhost:13046/SlPortal.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

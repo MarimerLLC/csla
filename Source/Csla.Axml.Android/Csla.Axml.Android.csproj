@@ -18,15 +18,15 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
-    <AndroidUseLatestPlatformSdk />
-    <TargetFrameworkVersion>v2.3</TargetFrameworkVersion>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\Debug\Android\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;WINDOWS_PHONE;__ANDROID__</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Debug\Android\Csla.Axml.XML</DocumentationFile>
@@ -35,7 +35,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\Release\Android\</OutputPath>
-    <DefineConstants>TRACE;__ANDROID__,SILVERLIGHT,WINDOWS_PHONE</DefineConstants>
+    <DefineConstants>TRACE;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Release\Android\Csla.Axml.XML</DocumentationFile>
@@ -50,16 +50,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Xaml\ExecuteEventArgs.cs">
+    <Compile Include="..\Csla.Xaml.Shared\ExecuteEventArgs.cs">
       <Link>ExecuteEventArgs.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Xaml\IViewModel.cs">
+    <Compile Include="..\Csla.Xaml.Shared\IViewModel.cs">
       <Link>IViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModel.cs">
+    <Compile Include="..\Csla.Xaml.Shared\ViewModel.cs">
       <Link>ViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\Csla.Xaml\ViewModelBase.cs">
+    <Compile Include="..\Csla.Xaml.Shared\ViewModelBase.cs">
       <Link>ViewModelBase.cs</Link>
     </Compile>
     <Compile Include="ActivityBase.cs" />

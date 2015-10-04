@@ -39,33 +39,6 @@
     <DocumentationFile>..\..\Bin\Release\iOSClassic\Csla.Validation.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
-      <Link>AuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\CommonRules.cs">
-      <Link>CommonRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
-      <Link>DecoratedRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
-      <Link>ObjectAccessor.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
-      <Link>PropertyHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
-      <Link>ReadOnlyBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleArgs.cs">
-      <Link>RuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
-      <Link>RuleExtensions.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -82,5 +55,6 @@
       <IsAppExtension>false</IsAppExtension>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
 </Project>

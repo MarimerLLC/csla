@@ -31,9 +31,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Resources\Error.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Resources\Information.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Resources\Warning.png" />
-  </ItemGroup>
 </Project>

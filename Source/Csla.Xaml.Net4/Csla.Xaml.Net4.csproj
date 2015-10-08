@@ -118,10 +118,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Themes\Generic.xaml">
+    <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
+      <Link>Themes\Generic.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

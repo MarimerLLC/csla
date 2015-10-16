@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE || (ANDROID || IOS)
+﻿#if NETFX_CORE || ANDROID
 using System.Runtime.CompilerServices;
 
 
@@ -28,7 +28,7 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
-#if (ANDROID || IOS)
+#if ANDROID
       global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
       var value = temp.GetString("ms-resource:///Csla/Resources/" + resourceName);
       if (string.IsNullOrWhiteSpace(value))

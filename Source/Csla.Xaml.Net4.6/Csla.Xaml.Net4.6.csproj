@@ -64,6 +64,24 @@
       <Name>Csla.Net4.6</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
+      <Link>Themes\Generic.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Error.png">
+      <Link>Resources\Error.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Information.png">
+      <Link>Resources\Information.png</Link>
+    </Resource>
+    <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
+      <Link>Resources\Warning.png</Link>
+    </Resource>
+  </ItemGroup>
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

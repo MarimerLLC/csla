@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios", "Csla.Ios\Csla.Ios.csproj", "{0735C0C7-0571-407F-9F62-FD59A0A15DFC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Ios.Test", "Csla.Ios.Test\Csla.Ios.Test.csproj", "{F3938ADB-D9D7-429B-A591-D60E878192B7}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Csla.Shared\Csla.Shared.projitems*{0735c0c7-0571-407f-9f62-fd59a0a15dfc}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
 		Ad-Hoc|iPhone = Ad-Hoc|iPhone

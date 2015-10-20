@@ -7,6 +7,10 @@ public class MyCommandBase
   : CommandBase<MyCommandBase>
 {
   public MyCommandBase(int id) { }
+
+  public MyCommandBase()
+  {
+  }
 }
 
 // This should have an error because it's not serializable
@@ -28,6 +32,26 @@ public class User
   : BusinessBase<User>
 {
   private User(int x) { }
+
+  public void SaveItself()
+  {
+    Save();
+  }
+
+  public User SaveItselfAndReturn()
+  {
+    return Save();
+  }
+
+  public async Task SaveItselfAsync()
+  {
+    await SaveAsync();
+  }
+
+  public async Task<User> SaveItselfAndReturnAsync()
+  {
+    return await SaveAsync();
+  }
 }
 
 public class UserCaller

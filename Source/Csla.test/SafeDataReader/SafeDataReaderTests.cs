@@ -26,6 +26,8 @@ using TestMethod = NUnit.Framework.TestAttribute;
 using System.Configuration;
 #endif
 
+#if DEBUG
+
 namespace Csla.Test.SafeDataReader
 {
     [TestClass()]
@@ -100,69 +102,69 @@ namespace Csla.Test.SafeDataReader
             }
         }
 
-        //[TestMethod()]
-        //public void InsertBinaryObject()
-        //{
-        //    Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
-        //    root.FirstName = "Bill";
-        //    root.LastName = "Johnson";
-        //    root = root.Save();
+    //[TestMethod()]
+    //public void InsertBinaryObject()
+    //{
+    //    Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot();
+    //    root.FirstName = "Bill";
+    //    root.LastName = "Johnson";
+    //    root = root.Save();
 
-        //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-        //    SqlCommand cm = cn.CreateCommand();
-        //    cm.CommandText = "UPDATE MultiDataTypes SET BINARYFIELD=@obj WHERE CHARFIELD='z'";
-        //    cm.Parameters.Add("@obj", SqlDbType.Binary);
+    //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+    //    SqlCommand cm = cn.CreateCommand();
+    //    cm.CommandText = "UPDATE MultiDataTypes SET BINARYFIELD=@obj WHERE CHARFIELD='z'";
+    //    cm.Parameters.Add("@obj", SqlDbType.Binary);
 
-        //    //create an object that will be serialized for the binaryfield
-        //    System.IO.MemoryStream buffer = new System.IO.MemoryStream();
+    //    //create an object that will be serialized for the binaryfield
+    //    System.IO.MemoryStream buffer = new System.IO.MemoryStream();
 
-        //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = 
-        //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+    //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = 
+    //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 
-        //    formatter.Serialize(buffer, root);
-        //    buffer.Position = 0;
+    //    formatter.Serialize(buffer, root);
+    //    buffer.Position = 0;
 
-        //    cm.Parameters["@obj"].Value = buffer.ToArray(); //serialized object
+    //    cm.Parameters["@obj"].Value = buffer.ToArray(); //serialized object
 
-        //    cn.Open();
-        //    cm.ExecuteNonQuery();
-        //    cn.Close();
-        //}
+    //    cn.Open();
+    //    cm.ExecuteNonQuery();
+    //    cn.Close();
+    //}
 
-        //[TestMethod()]
-        //public void RetrieveBinaryObjectFromDB()
-        //{
-        //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-        //    SqlCommand cm = cn.CreateCommand();
-        //    cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
-            
-        //    byte[] byteArray = new Byte[7000];
-        //    long longValue;
+    //[TestMethod()]
+    //public void RetrieveBinaryObjectFromDB()
+    //{
+    //    SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+    //    SqlCommand cm = cn.CreateCommand();
+    //    cm.CommandText = "SELECT BINARYFIELD FROM MultiDataTypes WHERE CHARFIELD='z'";
 
-        //    cn.Open();
-        //    using (cm)
-        //    {
-        //        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-        //        {
-        //            dr.Read();
-        //            longValue = dr.GetBytes("BINARYFIELD", 0, byteArray, 0, 7000);
-        //            dr.Close();
-        //        }
-        //    }
-        //    cn.Close();
+    //    byte[] byteArray = new Byte[7000];
+    //    long longValue;
 
-        //    System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
-        //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter =
-        //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+    //    cn.Open();
+    //    using (cm)
+    //    {
+    //        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+    //        {
+    //            dr.Read();
+    //            longValue = dr.GetBytes("BINARYFIELD", 0, byteArray, 0, 7000);
+    //            dr.Close();
+    //        }
+    //    }
+    //    cn.Close();
 
-        //    object obj = formatter.Deserialize(stream);
-        //    Csla.Test.DataPortal.TransactionalRoot root = (Csla.Test.DataPortal.TransactionalRoot)(obj);
+    //    System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
+    //    System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter =
+    //        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 
-        //    Assert.AreEqual("Bill", root.FirstName);
-        //    Assert.AreEqual("Johnson", root.LastName);
-        //}
+    //    object obj = formatter.Deserialize(stream);
+    //    Csla.Test.DataPortal.TransactionalRoot root = (Csla.Test.DataPortal.TransactionalRoot)(obj);
 
-        [TestMethod()]
+    //    Assert.AreEqual("Bill", root.FirstName);
+    //    Assert.AreEqual("Johnson", root.LastName);
+    //}
+
+    [TestMethod()]
         public void GetSchemaTable()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -224,7 +226,7 @@ namespace Csla.Test.SafeDataReader
             cn.Close();
         }
 
-        [TestMethod()]
+    [TestMethod()]
         public void GetDataTypes()
         {
             SqlConnection cn = new SqlConnection(CONNECTION_STRING);
@@ -324,3 +326,4 @@ namespace Csla.Test.SafeDataReader
         }
     }
 }
+#endif

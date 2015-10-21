@@ -201,7 +201,7 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-
+#if DEBUG
     [TestMethod]
     [Ignore]
     public void UpdateEnerpriseServicesTransactionCustomTransactionLevel()
@@ -239,7 +239,7 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsNew, "Should not be new");
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
-
+#endif
 
     [TestMethod]
     public void Delete()

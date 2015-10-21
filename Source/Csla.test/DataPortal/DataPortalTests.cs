@@ -128,6 +128,7 @@ namespace Csla.Test.DataPortal
             ClearDataBase();
         }
 
+#if DEBUG
         [TestMethod()]
         public void TestTransactionScopeUpdate()
         {
@@ -202,6 +203,7 @@ namespace Csla.Test.DataPortal
 
             ClearDataBase();
         }
+#endif
 
         [TestMethod()]
         public void StronglyTypedDataPortalMethods()

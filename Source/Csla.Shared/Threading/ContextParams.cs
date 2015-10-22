@@ -53,11 +53,8 @@ namespace Csla.Threading
       Csla.ApplicationContext.User = User;
       Csla.ApplicationContext.SetContext(ClientContext, GlobalContext);
 #if NETFX_CORE
-      var resourceContext = ResourceContext.GetForCurrentView();
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { UICulture });
-      resourceContext.Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { Culture });
-      resourceContext.Languages = list;
+      // do nothing because we can't set the context on a non-UI thread
+      // in WinRT or UWP
 #else
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;

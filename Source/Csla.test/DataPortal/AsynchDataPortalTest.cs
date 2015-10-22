@@ -702,6 +702,7 @@ namespace Csla.Test.DataPortal
     }
 
 #if !SILVERLIGHT
+#if DEBUG
     [TestMethod]
     public async Task SaveAsync()
     {
@@ -714,6 +715,7 @@ namespace Csla.Test.DataPortal
       Assert.IsFalse(result.IsNew);
       Assert.IsFalse(result.IsDirty);
     }
+#endif
 
     [TestMethod]
     public async Task SaveAsyncWithException()

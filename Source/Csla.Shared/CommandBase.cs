@@ -16,6 +16,7 @@ using Csla.DataPortalClient;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -400,6 +401,26 @@ namespace Csla
     bool IManageProperties.FieldExists(Core.IPropertyInfo property)
     {
       return FieldManager.FieldExists(property);
+    }
+
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      throw new NotImplementedException();
+    }
+
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      throw new NotImplementedException();
+    }
+
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      throw new NotImplementedException();
+    }
+
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      throw new NotImplementedException();
     }
 
     #endregion

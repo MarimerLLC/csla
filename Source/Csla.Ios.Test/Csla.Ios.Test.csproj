@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
+    <Compile Include="ResourceStrings\ResourceStringTests.cs" />
     <Compile Include="UnitTestAppDelegate.cs" />
     <Compile Include="Nullable\NullableTests.cs" />
     <Compile Include="Nullable\NullableEntity.cs" />

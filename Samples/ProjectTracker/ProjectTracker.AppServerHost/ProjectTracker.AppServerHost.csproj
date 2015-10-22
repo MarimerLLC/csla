@@ -41,16 +41,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.6.173-Beta1\lib\net46\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.6.175-Beta\lib\net46\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Web, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET.4.6.173-Beta1\lib\net46\Csla.Web.dll</HintPath>
+    <Reference Include="Csla.Web, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-ASP.NET.4.6.175-Beta\lib\net46\Csla.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Web.Mvc5, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.6.173-Beta1\lib\net46\Csla.Web.Mvc5.dll</HintPath>
+    <Reference Include="Csla.Web.Mvc5, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-ASP.NET-MVC5.4.6.175-Beta\lib\net46\Csla.Web.Mvc5.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -253,7 +253,7 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.6.173-Beta1\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.6.175-Beta\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

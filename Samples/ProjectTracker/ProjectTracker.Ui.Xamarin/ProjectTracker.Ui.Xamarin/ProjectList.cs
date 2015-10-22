@@ -11,21 +11,28 @@ namespace ProjectTracker.Ui.Xamarin
       Content = new StackLayout();
     }
 
+    private bool _loaded = false;
+
     protected async override void OnAppearing()
     {
-      var projects = await Library.ProjectList.GetProjectListAsync();
-      var list = new ListView();
-      list.ItemTemplate = new DataTemplate(() =>
+      if (!_loaded)
       {
-        var cell = new TextCell();
-        cell.SetBinding<Library.ProjectInfo>(TextCell.TextProperty, m => m.Name);
-        return cell;
-      });
-      list.ItemsSource = projects;
+        _loaded = true;
+        var projects = await Library.ProjectList.GetProjectListAsync();
+        var list = new ListView();
+        list.ItemTemplate = new DataTemplate(() =>
+        {
+          var cell = new TextCell();
+          cell.SetBinding<Library.ProjectInfo>(TextCell.TextProperty, m => m.Name);
+          return cell;
+        });
+        list.ItemsSource = projects;
+        list.ItemTapped +=
+          async (a, b) => await Navigation.PushAsync(new ProjectEdit(((ListView)a).SelectedItem));
 
-      var stack = (StackLayout)Content;
-      stack.Children.Add(list);
-
+        var stack = (StackLayout)Content;
+        stack.Children.Add(list);
+      }
       base.OnAppearing();
     }
   }

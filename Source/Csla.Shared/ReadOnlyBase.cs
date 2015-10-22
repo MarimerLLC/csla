@@ -793,6 +793,61 @@ namespace Csla
     }
 
     /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </remarks>
+    protected P LazyGetProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return GetProperty<P>(property);
+    }
+
+    private List<Csla.Core.IPropertyInfo> _lazyLoadingProperties = new List<Csla.Core.IPropertyInfo>();
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <para>
+    /// Note that the first value returned is almost certainly
+    /// the defaultValue because the value is initialized asynchronously.
+    /// The real value is provided later along with a PropertyChanged
+    /// event to indicate the value has changed.
+    /// </para><para>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </para>
+    /// </remarks>
+    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return GetProperty<P>(property);
+    }
+
+    /// <summary>
     /// Gets a property's value as 
     /// a specified type, first checking authorization.
     /// </summary>
@@ -1037,6 +1092,54 @@ namespace Csla
         FieldManager.LoadFieldData(propertyInfo, result);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    protected P LazyReadProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return ReadProperty<P>(property);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    protected P LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return ReadProperty<P>(property);
+    }
+
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyReadProperty(propertyInfo, valueGenerator);
+    }
+
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyReadPropertyAsync(propertyInfo, factory);
     }
 
     #endregion
@@ -1423,6 +1526,16 @@ namespace Csla
     object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
     {
       return GetProperty(propertyInfo);
+    }
+
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyGetProperty(propertyInfo, valueGenerator);
+    }
+
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyGetPropertyAsync(propertyInfo, factory);
     }
 
     object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)

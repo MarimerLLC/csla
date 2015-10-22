@@ -1937,6 +1937,16 @@ namespace Csla.Core
       return GetProperty<P>(property);
     }
 
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyGetProperty(propertyInfo, valueGenerator);
+    }
+
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyGetPropertyAsync(propertyInfo, factory);
+    }
+
     #endregion
 
     #region  Read Properties
@@ -2021,6 +2031,54 @@ namespace Csla.Core
       }
 
       return result;
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="valueGenerator">Method returning the new value.</param>
+    protected P LazyReadProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    {
+      if (!(FieldManager.FieldExists(property)))
+      {
+        var result = valueGenerator();
+        LoadProperty(property, result);
+      }
+      return ReadProperty<P>(property);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">Async method returning the new value.</param>
+    protected P LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (!(FieldManager.FieldExists(property)) && !_lazyLoadingProperties.Contains(property))
+      {
+        _lazyLoadingProperties.Add(property);
+        LoadPropertyAsync(property, factory);
+      }
+      return ReadProperty<P>(property);
+    }
+
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    {
+      return LazyReadProperty(propertyInfo, valueGenerator);
+    }
+
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    {
+      return LazyReadPropertyAsync(propertyInfo, factory);
     }
 
     #endregion

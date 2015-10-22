@@ -60,6 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Csla.Shared.Resources\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="..\Csla.WinRT\Service References\WcfPortal\Reference.cs">
       <Link>Service References\WcfPortal\Reference.cs</Link>
     </Compile>
@@ -74,6 +80,8 @@
   <ItemGroup>
     <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.resx">
       <Link>Properties\Resources.resx</Link>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

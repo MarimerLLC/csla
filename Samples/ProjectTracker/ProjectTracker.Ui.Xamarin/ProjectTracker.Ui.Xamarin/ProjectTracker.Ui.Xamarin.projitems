@@ -11,18 +11,8 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Page1.xaml.cs">
-      <DependentUpon>Page1.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ProjectEdit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResourceList.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Page1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

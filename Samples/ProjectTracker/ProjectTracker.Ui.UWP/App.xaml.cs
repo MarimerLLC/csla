@@ -48,11 +48,11 @@ namespace UwpUI
       }
 #endif
 
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://localhost:11170/api/DataPortal/PostAsync"; // MVC 5 and Web API
+      //Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
+      //Csla.ApplicationContext.DataPortalUrlString = "http://localhost:11170/api/DataPortal/PostAsync"; // MVC 5 and Web API
 
-      //Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
-      //Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:11170/WcfMobilePortal.svc";
+      Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+      Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:11170/WcfMobilePortal.svc";
 
       await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 

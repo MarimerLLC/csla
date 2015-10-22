@@ -200,6 +200,18 @@
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadPropertyConvert.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

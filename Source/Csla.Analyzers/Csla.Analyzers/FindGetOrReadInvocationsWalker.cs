@@ -21,7 +21,11 @@ namespace Csla.Analyzers
         (invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.GetProperty ||
         invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.GetPropertyConvert ||
         invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.ReadProperty ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.ReadPropertyConvert))
+        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.ReadPropertyConvert ||
+        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetProperty ||
+        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetPropertyAsync ||
+        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadProperty ||
+        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadPropertyAsync))
       {
         this.Invocation = node;
       }

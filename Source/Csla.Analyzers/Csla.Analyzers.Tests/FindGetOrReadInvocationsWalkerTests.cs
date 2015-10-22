@@ -64,5 +64,37 @@ namespace Csla.Analyzers.Tests
         $@"Targets\{nameof(FindGetOrReadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadPropertyConvert))}.cs");
       Assert.IsNotNull(walker.Invocation);
     }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetProperty()
+    {
+      var walker = await FindGetOrReadInvocationsWalkerTests.GetWalker(
+        $@"Targets\{nameof(FindGetOrReadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetProperty))}.cs");
+      Assert.IsNotNull(walker.Invocation);
+    }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsync()
+    {
+      var walker = await FindGetOrReadInvocationsWalkerTests.GetWalker(
+        $@"Targets\{nameof(FindGetOrReadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsync))}.cs");
+      Assert.IsNotNull(walker.Invocation);
+    }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadProperty()
+    {
+      var walker = await FindGetOrReadInvocationsWalkerTests.GetWalker(
+        $@"Targets\{nameof(FindGetOrReadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadProperty))}.cs");
+      Assert.IsNotNull(walker.Invocation);
+    }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsync()
+    {
+      var walker = await FindGetOrReadInvocationsWalkerTests.GetWalker(
+        $@"Targets\{nameof(FindGetOrReadInvocationsWalkerTests)}\{(nameof(this.WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsync))}.cs");
+      Assert.IsNotNull(walker.Invocation);
+    }
   }
 }

@@ -8,6 +8,10 @@
       public const string GetPropertyConvert = "GetPropertyConvert";
       public const string ReadProperty = "ReadProperty";
       public const string ReadPropertyConvert = "ReadPropertyConvert";
+      public const string LazyGetProperty = "LazyGetProperty";
+      public const string LazyGetPropertyAsync = "LazyGetPropertyAsync";
+      public const string LazyReadProperty = "LazyReadProperty";
+      public const string LazyReadPropertyAsync = "LazyReadPropertyAsync";
       public const string LoadProperty = "LoadProperty";
       public const string LoadPropertyAsync = "LoadPropertyAsync";
       public const string LoadPropertyConvert = "LoadPropertyConvert";

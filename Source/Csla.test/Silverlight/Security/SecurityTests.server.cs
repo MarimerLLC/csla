@@ -76,7 +76,7 @@ namespace Csla.Test.Silverlight.Security
     }
 
     #region Login Using Membership Principal
-#if !CLIENTONLY
+#if !CLIENTONLY && SILVERLIGHT
     [TestMethod]
     public void SetMembershipPrincipalWebServer()
     {

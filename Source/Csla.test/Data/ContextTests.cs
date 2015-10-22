@@ -65,6 +65,7 @@ namespace Csla.Test.Data
 
 #endif
 
+#if DEBUG
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
     public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_SqlConnection()
@@ -74,7 +75,9 @@ namespace Csla.Test.Data
       {
       }
     }
-#if !CLIENTONLY
+#endif
+
+#if !CLIENTONLY && DEBUG
 
     [TestMethod]
     [ExpectedException(typeof(SqlException))]
@@ -107,6 +110,7 @@ namespace Csla.Test.Data
 
     #region Data
 
+#if DEBUG
     [TestMethod]
     public void ExecuteReader_on_Table2_returns_reader_with_3_fields()
     {
@@ -121,7 +125,10 @@ namespace Csla.Test.Data
         }
       }
     }
+#endif
+
 #if !CLIENTONLY
+#if DEBUG
     [TestMethod]
     public void Table1_retreived_through_LingToSqlDataContext_has_records()
     {
@@ -145,13 +152,13 @@ namespace Csla.Test.Data
         Assert.IsTrue(query.ToList().Count > 0, "Data in table is missing");
       }
     }
-
-
+#endif
 #endif
     #endregion
 
     #region Transaction Manager
 
+#if DEBUG
     [TestMethod]
     public void Using_TransactionManager_Insert_of_2records_rolls_back_if_second_record_fails_insert()
     {
@@ -194,6 +201,7 @@ namespace Csla.Test.Data
       list = TransactionContextUserList.GetList();
       Assert.AreEqual(counter, list.Count, "Data should not have been saved.");
     }
+
 
     [TestMethod]
     public void Using_TransactionManager_Insert_2records_increases_count_by2_then_removing_them_decreases_count_by2()
@@ -254,8 +262,9 @@ namespace Csla.Test.Data
         Assert.IsNotNull(manager.Transaction, "Transaction should not be null.");
       }
     }
+#endif
 
-    #endregion
+#endregion
 
   }
 }

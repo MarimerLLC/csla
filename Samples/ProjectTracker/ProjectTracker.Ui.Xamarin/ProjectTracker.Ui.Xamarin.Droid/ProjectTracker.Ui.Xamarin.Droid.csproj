@@ -22,7 +22,7 @@
     <MandroidI18n />
     <JavaMaximumHeapSize />
     <JavaOptions />
-    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -48,12 +48,12 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Core.4.6.173-Beta1\lib\MonoAndroid10\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CSLA-Core.4.6.175-Beta\lib\MonoAndroid10\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Axml, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Android.4.6.173-Beta1\lib\MonoAndroid10\Csla.Axml.dll</HintPath>
+    <Reference Include="Csla.Axml, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CSLA-Android.4.6.175-Beta\lib\MonoAndroid10\Csla.Axml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FormsViewGroup, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -107,13 +107,13 @@
     <Content Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.173-Beta1\analyzers\c#\Csla.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary.Android\ProjectTracker.BusinessLibrary.Android.csproj">
       <Project>{8d47ddc8-9941-4285-bf8c-42709778df44}</Project>
       <Name>ProjectTracker.BusinessLibrary.Android</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.175-Beta\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems" Label="Shared" Condition="Exists('..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

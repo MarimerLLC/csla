@@ -116,12 +116,12 @@
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Core.4.6.173-Beta1\lib\Xamarin.iOS10\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CSLA-Core.4.6.175-Beta\lib\Xamarin.iOS10\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Iosui, Version=4.6.173.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-iOS.4.6.173-Beta1\lib\Xamarin.iOS\Csla.Iosui.dll</HintPath>
+    <Reference Include="Csla.Iosui, Version=4.6.175.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CSLA-iOS.4.6.175-Beta\lib\Xamarin.iOS\Csla.Iosui.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -146,15 +146,15 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.173-Beta1\analyzers\c#\Csla.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary.iOS\ProjectTracker.BusinessLibrary.iOS.csproj">
       <Project>{1196dd84-077b-42eb-bc3b-94e6c1e1c9f9}</Project>
       <Name>ProjectTracker.BusinessLibrary.iOS</Name>
       <IsAppExtension>false</IsAppExtension>
       <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.175-Beta\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems" Label="Shared" Condition="Exists('..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

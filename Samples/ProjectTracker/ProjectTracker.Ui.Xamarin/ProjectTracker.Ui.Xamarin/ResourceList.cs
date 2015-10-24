@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace ProjectTracker.Ui.Xamarin
 {
@@ -7,25 +8,29 @@ namespace ProjectTracker.Ui.Xamarin
     public ResourceList()
     {
       Title = "Resource List";
-
-      Content = new StackLayout();
     }
+
+    private bool _loaded = false;
 
     protected async override void OnAppearing()
     {
-      var resources = await Library.ResourceList.GetResourceListAsync();
-      var list = new ListView();
-      list.ItemTemplate = new DataTemplate(() =>
+      if (!_loaded)
       {
-        var cell = new TextCell();
-        cell.SetBinding<Library.ResourceInfo>(TextCell.TextProperty, m => m.Name);
-        return cell;
-      });
-      list.ItemsSource = resources;
+        _loaded = true;
+        var resources = await Library.ResourceList.GetResourceListAsync();
+        var list = new ListView();
+        list.ItemTemplate = new DataTemplate(() =>
+        {
+          var cell = new TextCell();
+          cell.SetBinding<Library.ResourceInfo>(TextCell.TextProperty, m => m.Name);
+          return cell;
+        });
+        list.ItemsSource = resources;
 
-      var stack = (StackLayout)Content;
-      stack.Children.Add(list);
-
+        var stack = new StackLayout();
+        stack.Children.Add(list);
+        Content = stack;
+      }
       base.OnAppearing();
     }
   }

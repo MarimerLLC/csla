@@ -113,6 +113,9 @@
     <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
     <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndClassHasNestedClasses.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

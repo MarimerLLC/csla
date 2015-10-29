@@ -132,5 +132,33 @@ namespace FixingIsOneWay.Tests
         CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
         tree, new[] { @"    public" });
     }
+
+    [TestMethod]
+    public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndClassHasNestedClasses()
+    {
+      var code = File.ReadAllText(
+        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndClassHasNestedClasses))}.cs");
+      var document = TestHelpers.Create(code);
+      var tree = await document.GetSyntaxTreeAsync();
+      var diagnostic = (await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer()))
+        .Single(_ => _.Location.SourceSpan.End == 191 &&
+          _.Location.SourceSpan.Start == 114);
+      var sourceSpan = diagnostic.Location.SourceSpan;
+
+      var actions = new List<CodeAction>();
+      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+        (a, _) => { actions.Add(a); });
+
+      var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
+      var codeFixContext = new CodeFixContext(document, diagnostic,
+        codeActionRegistration, new CancellationToken(false));
+      await fix.RegisterCodeFixesAsync(codeFixContext);
+
+      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+
+      await TestHelpers.VerifyActionAsync(actions,
+        CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
+        tree, new[] { @"    public" });
+    }
   }
 }

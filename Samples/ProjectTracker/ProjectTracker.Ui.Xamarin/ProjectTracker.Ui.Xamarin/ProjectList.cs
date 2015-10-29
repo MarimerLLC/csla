@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace ProjectTracker.Ui.Xamarin
 {
@@ -8,7 +9,10 @@ namespace ProjectTracker.Ui.Xamarin
     {
       Title = "Project List";
 
-      Content = new StackLayout();
+      var tbi = new ToolbarItem();
+      tbi.Text = "Add";
+      tbi.Clicked += Add_Clicked;
+      ToolbarItems.Add(tbi);
     }
 
     private bool _loaded = false;
@@ -27,13 +31,32 @@ namespace ProjectTracker.Ui.Xamarin
           return cell;
         });
         list.ItemsSource = projects;
-        list.ItemTapped +=
-          async (a, b) => await Navigation.PushAsync(new ProjectEdit(((ListView)a).SelectedItem));
+        list.ItemTapped += async (a, b) => 
+        {
+          var info = (Library.ProjectInfo)((ListView)a).SelectedItem;
+          var project = await Library.ProjectEdit.GetProjectAsync(info.Id);
+          await Navigation.PushAsync(new ProjectEdit(project));
+        };
 
-        var stack = (StackLayout)Content;
+        var stack = new StackLayout();
         stack.Children.Add(list);
+        Content = stack;
       }
       base.OnAppearing();
+    }
+
+    private async void Add_Clicked(object sender, System.EventArgs e)
+    {
+      try
+      {
+        var project = await Library.ProjectEdit.NewProjectAsync();
+        var page = new ProjectEdit(project);
+        await Navigation.PushAsync(page);
+      }
+      catch (Exception ex)
+      {
+        var obj = ex;
+      }
     }
   }
 }

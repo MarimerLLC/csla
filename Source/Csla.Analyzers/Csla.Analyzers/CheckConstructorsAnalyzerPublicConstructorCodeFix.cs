@@ -46,12 +46,17 @@ namespace Csla.Analyzers
         return;
       }
 
-      var hasNonPublicNoArgumentConstructor = bool.Parse(diagnostic.Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]);
+      var hasNonPublicNoArgumentConstructor = bool.Parse(
+        diagnostic.Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]);
 
-      if(hasNonPublicNoArgumentConstructor)
+      if (hasNonPublicNoArgumentConstructor)
       {
-        CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithUpdatingNonPublicConstructor(
-          context, root, diagnostic, classNode);
+        if (context.Document.SupportsSemanticModel)
+        {
+          var model = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+          CheckConstructorsAnalyzerPublicConstructorCodeFix.AddCodeFixWithUpdatingNonPublicConstructor(
+            context, root, diagnostic, classNode, model);
+        }
       }
       else
       {
@@ -92,34 +97,40 @@ namespace Csla.Analyzers
     }
 
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, ClassDeclarationSyntax classNode)
+      Diagnostic diagnostic, ClassDeclarationSyntax classNode, SemanticModel model)
     {
       var publicModifier = SyntaxFactory.Token(SyntaxKind.PublicKeyword);
-      var constructor = classNode.DescendantNodesAndSelf()
-        .Where(_ => _.IsKind(SyntaxKind.ConstructorDeclaration))
-        .Cast<ConstructorDeclarationSyntax>()
-        .Single(c => c.ParameterList.Parameters.Count == 0 &&
-          !c.Modifiers.Contains(SyntaxFactory.Token(SyntaxKind.PublicKeyword)));
+      var classSymbol = model.GetDeclaredSymbol(classNode);
 
-      var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
-      
-      if(constructor.HasLeadingTrivia)
+      if (classSymbol != null)
       {
-        newConstructor = newConstructor.WithLeadingTrivia(constructor.GetLeadingTrivia());
+        var constructor = classNode.DescendantNodesAndSelf()
+          .Where(_ => _.IsKind(SyntaxKind.ConstructorDeclaration))
+          .Cast<ConstructorDeclarationSyntax>()
+          .Single(c => model.GetDeclaredSymbol(c).ContainingType == classSymbol &&
+            c.ParameterList.Parameters.Count == 0 &&
+            !c.Modifiers.Contains(publicModifier));
+
+        var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
+
+        if (constructor.HasLeadingTrivia)
+        {
+          newConstructor = newConstructor.WithLeadingTrivia(constructor.GetLeadingTrivia());
+        }
+
+        if (constructor.HasTrailingTrivia)
+        {
+          newConstructor = newConstructor.WithTrailingTrivia(constructor.GetTrailingTrivia());
+        }
+
+        var newRoot = root.ReplaceNode(constructor, newConstructor);
+
+        context.RegisterCodeFix(
+          CodeAction.Create(
+            CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription,
+            _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
+            CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription), diagnostic);
       }
-
-      if (constructor.HasTrailingTrivia)
-      {
-        newConstructor = newConstructor.WithTrailingTrivia(constructor.GetTrailingTrivia());
-      }
-
-      var newRoot = root.ReplaceNode(constructor, newConstructor);
-
-      context.RegisterCodeFix(
-        CodeAction.Create(
-          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription,
-          _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription), diagnostic);
     }
   }
 }

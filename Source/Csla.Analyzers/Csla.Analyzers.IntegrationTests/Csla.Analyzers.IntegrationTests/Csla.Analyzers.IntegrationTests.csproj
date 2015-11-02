@@ -43,6 +43,7 @@
     <Compile Include="AnalyzerTests.cs" />
     <Compile Include="Cmd.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="NestedClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Csla.Net4.6\Csla.Net4.6.csproj">

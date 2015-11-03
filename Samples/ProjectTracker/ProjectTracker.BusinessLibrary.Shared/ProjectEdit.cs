@@ -184,7 +184,6 @@ namespace ProjectTracker.Library
       DataPortal.BeginDelete<ProjectEdit>(id, callback);
     }
 
-#if !WINDOWS_PHONE
     public async static System.Threading.Tasks.Task<ProjectEdit> NewProjectAsync()
     {
       return await DataPortal.CreateAsync<ProjectEdit>();
@@ -194,7 +193,7 @@ namespace ProjectTracker.Library
     {
       return await DataPortal.FetchAsync<ProjectEdit>(id);
     }
-#endif
+
 #if FULL_DOTNET
     public static ProjectEdit NewProject()
     {

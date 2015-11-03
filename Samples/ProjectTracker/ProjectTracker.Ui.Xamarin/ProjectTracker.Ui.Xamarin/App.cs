@@ -22,11 +22,13 @@ namespace ProjectTracker.Ui.Xamarin
       // Handle when your app starts
 
       Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://cslaprojecttracker.azurewebsites.net/api/DataPortal/PostAsync"; // MVC 5 and Web API
+      Csla.ApplicationContext.DataPortalUrlString = "http://cslaprojecttracker.azurewebsites.net/api/DataPortal/PostAsync";
 
       Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
 
       await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
+
+      await Library.RoleList.CacheListAsync();
 
       await startPage.LoadData();
     }

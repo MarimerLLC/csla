@@ -104,13 +104,6 @@ namespace Csla.Analyzers
 
       if (classSymbol != null)
       {
-        //var constructor = classNode.DescendantNodesAndSelf()
-        //  .Where(_ => _.IsKind(SyntaxKind.ConstructorDeclaration))
-        //  .Cast<ConstructorDeclarationSyntax>()
-        //  .Single(c => model.GetDeclaredSymbol(c).ContainingType == classSymbol &&
-        //    c.ParameterList.Parameters.Count == 0 &&
-        //    !c.Modifiers.Contains(publicModifier));
-
         var constructorSymbol = classSymbol.Constructors
           .Single(_ => _.Parameters.Count() == 0 &&
             !_.DeclaredAccessibility.HasFlag(Accessibility.Public));

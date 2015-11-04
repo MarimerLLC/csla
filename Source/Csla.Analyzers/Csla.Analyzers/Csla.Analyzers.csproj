@@ -35,6 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CslaMemberConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerMustBeReadOnlyConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerMustBeStaticConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerMustBePublicConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsWalker.cs" />
     <Compile Include="FindSetOrLoadInvocationsWalker.cs" />
     <Compile Include="FindGetOrReadInvocationsWalker.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerConstants.cs" />

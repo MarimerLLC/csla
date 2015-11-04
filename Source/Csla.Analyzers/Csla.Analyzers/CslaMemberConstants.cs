@@ -27,6 +27,7 @@
       public const string BusinessListBase = "BusinessListBase";
       public const string DynamicListBase = "DynamicListBase";
       public const string IBusinessObject = "IBusinessObject";
+      public const string IPropertyInfo = "IPropertyInfo";
     }
 
     public const string AssemblyName = "Csla";

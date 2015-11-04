@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FixingIsOneWay.Tests
+namespace Csla.Analyzers.Tests
 {
   [TestClass]
   public sealed class IsOperationMethodPublicMakeNonPublicCodeFixTests

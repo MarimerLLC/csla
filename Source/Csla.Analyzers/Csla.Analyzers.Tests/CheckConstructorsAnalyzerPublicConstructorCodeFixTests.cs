@@ -12,7 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FixingIsOneWay.Tests
+namespace Csla.Analyzers.Tests
 {
   [TestClass]
   public sealed class CheckConstructorsAnalyzerPublicConstructorCodeFixTests
@@ -134,14 +134,14 @@ namespace FixingIsOneWay.Tests
     }
 
     [TestMethod]
-    public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndClassHasNestedClasses()
+    public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses()
     {
       var code = File.ReadAllText(
-        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndClassHasNestedClasses))}.cs");
+        $@"Targets\{nameof(CheckConstructorsAnalyzerPublicConstructorCodeFixTests)}\{(nameof(this.VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses))}.cs");
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostic = (await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer()))
-        .Single(_ => _.Location.SourceSpan.End == 191 &&
+        .Single(_ => _.Location.SourceSpan.End == 184 &&
           _.Location.SourceSpan.Start == 114);
       var sourceSpan = diagnostic.Location.SourceSpan;
 

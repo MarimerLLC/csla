@@ -13,6 +13,14 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsBusinessBase());
     }
 
+    internal static bool IsIPropertyInfo(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.CslaTypeNames.IPropertyInfo &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsIPropertyInfo() || @this.Interfaces.Any(_ => _.IsIPropertyInfo()));
+    }
+
     internal static bool IsEditableStereotype(this ITypeSymbol @this)
     {
       return @this != null &&

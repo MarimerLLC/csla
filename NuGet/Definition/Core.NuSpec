@@ -76,7 +76,11 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
-    <!--<file src="..\..\Bin\Release\UWP\Csla\**" target="lib\uap10.0\Csla" />-->
+    <!-- aspnet 5.0 Client -->
+    <file src="..\..\Bin\Release\NetCore5.0\**\Csla.dll*" target="lib\dnxcore50" />
+    <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pdb*" target="lib\dnxcore50" />
+    <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pri*" target="lib\dnxcore50" />
+    <file src="..\..\Bin\Release\NetCore5.0\**\Csla.xml*" target="lib\dnxcore50" />
     <!-- Windows Runtime Phone Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />

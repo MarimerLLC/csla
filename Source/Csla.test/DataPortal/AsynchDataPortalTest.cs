@@ -795,36 +795,28 @@ namespace Csla.Test.DataPortal
       context.Complete();
     }
 
-#if !SILVERLIGHT
-    [TestMethod]
-    public void DeleteAsync_WithException()
-    {
-      var context = GetContext();
-      context.Assert.Try(() =>
-      {
-        var lck = new AutoResetEvent(false);
-        new Action(async () =>
-        {
-          try
-          {
-            await Csla.DataPortal.DeleteAsync<Single2>(555);
-            context.Assert.Fail("Expected exception not thrown");
-          }
-          catch (Exception ex)
-          {
-            context.Assert.IsTrue(ex.GetType() == typeof(Csla.DataPortalException));
-          }
-          finally
-          {
-            lck.Set();
-          }
-        }).Invoke();
-        lck.WaitOne();
-        context.Assert.Success();
-      });
-      context.Complete();
-    }
-#endif
+    //[TestMethod]
+    //public void DeleteAsync_WithException()
+    //{
+    //  var lck = new AutoResetEvent(false);
+    //  new Action(async () =>
+    //  {
+    //    try
+    //    {
+    //      await Csla.DataPortal.DeleteAsync<Single2>(555);
+    //      Assert.Fail("Expected exception not thrown");
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+    //    }
+    //    finally
+    //    {
+    //      lck.Set();
+    //    }
+    //  }).Invoke();
+    //  lck.WaitOne();
+    //}
 
     #endregion
 

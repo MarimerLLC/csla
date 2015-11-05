@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
@@ -12,34 +13,20 @@ namespace Csla.Analyzers
   public sealed class EvaluateManagedBackingFieldsAnalayzer
     : DiagnosticAnalyzer
   {
-    private static DiagnosticDescriptor mustBePublicRule = new DiagnosticDescriptor(
-      EvaluateManagedBackingFieldsAnalayzerMustBePublicConstants.DiagnosticId,
-      EvaluateManagedBackingFieldsAnalayzerMustBePublicConstants.Title,
-      EvaluateManagedBackingFieldsAnalayzerMustBePublicConstants.Message,
-      EvaluateManagedBackingFieldsAnalayzerMustBePublicConstants.Category,
-      DiagnosticSeverity.Error, true);
-
-    private static DiagnosticDescriptor mustBeStaticRule = new DiagnosticDescriptor(
-      EvaluateManagedBackingFieldsAnalayzerMustBeStaticConstants.DiagnosticId,
-      EvaluateManagedBackingFieldsAnalayzerMustBeStaticConstants.Title,
-      EvaluateManagedBackingFieldsAnalayzerMustBeStaticConstants.Message,
-      EvaluateManagedBackingFieldsAnalayzerMustBeStaticConstants.Category,
-      DiagnosticSeverity.Error, true);
-
-    private static DiagnosticDescriptor mustBeReadOnlyRule = new DiagnosticDescriptor(
-      EvaluateManagedBackingFieldsAnalayzerMustBeReadOnlyConstants.DiagnosticId,
-      EvaluateManagedBackingFieldsAnalayzerMustBeReadOnlyConstants.Title,
-      EvaluateManagedBackingFieldsAnalayzerMustBeReadOnlyConstants.Message,
-      EvaluateManagedBackingFieldsAnalayzerMustBeReadOnlyConstants.Category,
+    private static DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = new DiagnosticDescriptor(
+      EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId,
+      EvaluateManagedBackingFieldsAnalayzerConstants.Title,
+      EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+      EvaluateManagedBackingFieldsAnalayzerConstants.Category,
       DiagnosticSeverity.Error, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
     {
       get
       {
-        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicRule,
-          EvaluateManagedBackingFieldsAnalayzer.mustBeReadOnlyRule,
-          EvaluateManagedBackingFieldsAnalayzer.mustBeStaticRule);
+        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
+          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
+          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule);
       }
     }
 
@@ -95,29 +82,27 @@ namespace Csla.Analyzers
 
     private static void CheckForDiagnostics(SyntaxNodeAnalysisContext context, FieldDeclarationSyntax fieldNode, IFieldSymbol fieldSymbol)
     {
-      if (!fieldSymbol.IsStatic)
-      {
-        context.ReportDiagnostic(Diagnostic.Create(
-          EvaluateManagedBackingFieldsAnalayzer.mustBeStaticRule,
-          fieldNode.GetLocation()));
-      }
+      var isStatic = fieldSymbol.IsStatic;
+      var isPublic = fieldSymbol.DeclaredAccessibility.HasFlag(Accessibility.Public);
+      var isReadOnly = fieldSymbol.IsReadOnly;
 
-      if (!fieldSymbol.DeclaredAccessibility.HasFlag(Accessibility.Public))
+      if(!isStatic || !isPublic || !isReadOnly)
       {
-        context.ReportDiagnostic(Diagnostic.Create(
-          EvaluateManagedBackingFieldsAnalayzer.mustBePublicRule,
-          fieldNode.GetLocation()));
-      }
+        var properties = new Dictionary<string, string>()
+        {
+          [EvaluateManagedBackingFieldsAnalayzerConstants.IsStatic] = isStatic.ToString(),
+          [EvaluateManagedBackingFieldsAnalayzerConstants.IsPublic] = isPublic.ToString(),
+          [EvaluateManagedBackingFieldsAnalayzerConstants.IsReadonly] = isReadOnly.ToString()
+        }.ToImmutableDictionary();
 
-      if (!fieldSymbol.IsReadOnly)
-      {
         context.ReportDiagnostic(Diagnostic.Create(
-          EvaluateManagedBackingFieldsAnalayzer.mustBeReadOnlyRule,
-          fieldNode.GetLocation()));
+          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
+          fieldNode.GetLocation(), properties));
       }
     }
 
-    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, 
+      IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {

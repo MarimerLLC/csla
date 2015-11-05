@@ -14,7 +14,12 @@ namespace Csla.Analyzers.Extensions
         @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetProperty ||
         @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetPropertyAsync ||
         @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadPropertyAsync));
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadPropertyAsync ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyAsync ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyConvert ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.SetProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.SetPropertyConvert));
     }
 
     internal static bool IsDataPortalOperation(this IMethodSymbol @this)

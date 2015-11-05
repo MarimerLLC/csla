@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -224,72 +225,53 @@ namespace Csla.Analyzers.Tests.Extensions
         this._dpOperationPath, "Child_DeleteSelf")).IsDataPortalOperation());
     }
 
-    private async Task<IMethodSymbol> GetMethodSymbolAsync(string file, string name)
+    private static async Task<Tuple<SemanticModel, SyntaxNode>> ParseFileAsync(
+      string file, params PortableExecutableReference[] references)
     {
       var code = File.ReadAllText(file);
       var tree = CSharpSyntaxTree.ParseText(code);
+      var refs = new List<PortableExecutableReference> { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) };
+      refs.AddRange(references);
 
       var compilation = CSharpCompilation.Create(
         Guid.NewGuid().ToString("N"),
         syntaxTrees: new[] { tree },
-        references: new[]
-        {
-          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-        });
+        references: refs);
 
       var model = compilation.GetSemanticModel(tree);
-      var root = await tree.GetRootAsync().ConfigureAwait(false);
-      return IMethodSymbolExtensionsTests.FindMethodDeclaration(root, name, model);
+      return new Tuple<SemanticModel, SyntaxNode>(compilation.GetSemanticModel(tree),
+        await tree.GetRootAsync().ConfigureAwait(false));
     }
 
-    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string file, string name)
+    private async Task<IMethodSymbol> GetMethodSymbolAsync(string file, string name)
     {
-      var code = File.ReadAllText(file);
-      var tree = CSharpSyntaxTree.ParseText(code);
+      var results = await IMethodSymbolExtensionsTests.ParseFileAsync(file);
 
-      var compilation = CSharpCompilation.Create(
-        Guid.NewGuid().ToString("N"),
-        syntaxTrees: new[] { tree },
-        references: new[]
-        {
-          MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-          MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location)
-        });
-
-      var model = compilation.GetSemanticModel(tree);
-
-      foreach (var invocation in (await tree.GetRootAsync()).DescendantNodes().OfType<InvocationExpressionSyntax>())
+      foreach (var method in results.Item2.DescendantNodes().OfType<MethodDeclarationSyntax>())
       {
-        var methodNode = model.GetSymbolInfo(invocation);
+        var methodNode = results.Item1.GetDeclaredSymbol(method) as IMethodSymbol;
 
-        if (methodNode.Symbol != null && methodNode.Symbol.Name == name)
+        if (methodNode != null && methodNode.Name == name)
         {
-          return methodNode.Symbol as IMethodSymbol;
+          return methodNode;
         }
       }
 
       return null;
     }
 
-    private static IMethodSymbol FindMethodDeclaration(SyntaxNode node, string name, SemanticModel model)
+    private async Task<IMethodSymbol> GetMethodReferenceSymbolAsync(string file, string name)
     {
-      if (node.Kind() == SyntaxKind.MethodDeclaration)
+      var results = await IMethodSymbolExtensionsTests.ParseFileAsync(
+        file, MetadataReference.CreateFromFile(typeof(BusinessBase<>).Assembly.Location));
+
+      foreach (var invocation in results.Item2.DescendantNodes().OfType<InvocationExpressionSyntax>())
       {
-        var methodNode = model.GetDeclaredSymbol(node) as IMethodSymbol;
+        var methodNode = results.Item1.GetSymbolInfo(invocation);
 
-        if (methodNode.Name == name)
+        if (methodNode.Symbol != null && methodNode.Symbol.Name == name)
         {
-          return methodNode;
-        }
-      }
-
-      foreach (var childNode in node.ChildNodes())
-      {
-        var childMethodNode = IMethodSymbolExtensionsTests.FindMethodDeclaration(childNode, name, model);
-
-        if (childMethodNode != null)
-        {
-          return childMethodNode;
+          return methodNode.Symbol as IMethodSymbol;
         }
       }
 

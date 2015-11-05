@@ -92,7 +92,7 @@ namespace Csla.Test.DataPortal
 
       Csla.DataPortal.BeginCreate<Single>((o, e) =>
       {
-        var created = e.Object; 
+        var created = e.Object;
         context.Assert.IsNotNull(created);
         context.Assert.AreEqual(created.Id, 0);//DP_Create without criteria called
         context.Assert.IsNull(e.Error);
@@ -185,7 +185,7 @@ namespace Csla.Test.DataPortal
     public void CreateAsync_WithException()
     {
       var lck = new AutoResetEvent(false);
-      new Action(async () => 
+      new Action(async () =>
       {
         try
         {
@@ -244,7 +244,7 @@ namespace Csla.Test.DataPortal
     public void BeginFetch_overload_with_Crieria_only_passed_Results_in_UserState_defaulted_to_Null_and_Id_set()
     {
       var context = GetContext();
-      Csla.DataPortal.BeginFetch<Single>(5, 
+      Csla.DataPortal.BeginFetch<Single>(5,
         (o, e) =>
         {
           var fetched = e.Object;
@@ -278,7 +278,7 @@ namespace Csla.Test.DataPortal
     {
       var context = GetContext();
       object userState = "state";
-      Csla.DataPortal.BeginFetch<Single>(5, 
+      Csla.DataPortal.BeginFetch<Single>(5,
         (o, e) =>
         {
           var fetched = e.Object;
@@ -288,7 +288,7 @@ namespace Csla.Test.DataPortal
           context.Assert.AreEqual(userState, e.UserState);
           context.Assert.AreEqual("Fetched", fetched.MethodCalled);
           context.Assert.Success();
-        }, 
+        },
         userState);
       context.Complete();
     }
@@ -351,6 +351,8 @@ namespace Csla.Test.DataPortal
 
     #endregion
 
+#if DEBUG
+
     #region BeginSave
 
     [TestMethod]
@@ -381,21 +383,23 @@ namespace Csla.Test.DataPortal
     public void BeginSave_must_call_OnSaved_when_object_is_child_and_throws_error()
     {
       var context = GetContext();
-      Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
+      context.Assert.Try(() =>
       {
-        var test = e.Object;
-        test.SetAsChild();
-        context.Assert.IsNotNull(test);
-        context.Assert.AreEqual("Created", e.Object.MethodCalled);
-        test.Saved += ((o1, e1) =>
+        Csla.DataPortal.BeginCreate<SingleWithException>((o, e) =>
         {
-          var error = e1.Error;
-          context.Assert.IsNotNull(error);
-          context.Assert.AreEqual(typeof(InvalidOperationException), error.GetType());
-          context.Assert.Success();
+          var test = e.Object;
+          test.SetAsChild();
+          context.Assert.IsNotNull(test);
+          context.Assert.AreEqual("Created", e.Object.MethodCalled);
+          test.Saved += ((o1, e1) =>
+          {
+            var error = e1.Error;
+            context.Assert.IsNotNull(error);
+            context.Assert.AreEqual(typeof(InvalidOperationException), error.GetType());
+            context.Assert.Success();
+          });
+          test.BeginSave();
         });
-        test.BeginSave();
-
       });
       context.Complete();
     }
@@ -718,35 +722,43 @@ namespace Csla.Test.DataPortal
 #endif
 
     [TestMethod]
-    public async Task SaveAsyncWithException()
+    public void SaveAsyncWithException()
     {
-      var result = await Csla.DataPortal.CreateAsync<Single2>(555);
-      Assert.IsNotNull(result);
-      Assert.AreEqual(555, result.Id);
-      Assert.IsTrue(result.IsNew);
-      Assert.IsTrue(result.IsDirty);
-      var lck = new AutoResetEvent(false);
-      new Action(async () =>
+      var context = GetContext();
+      context.Assert.Try(async () =>
       {
-        try
+        var result = await Csla.DataPortal.CreateAsync<Single2>(555);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(555, result.Id);
+        Assert.IsTrue(result.IsNew);
+        Assert.IsTrue(result.IsDirty);
+        var lck = new AutoResetEvent(false);
+        new Action(async () =>
         {
-          result = await result.SaveAsync();
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
-        }
-        finally
-        {
-          lck.Set();
-        }
-      }).Invoke();
-      lck.WaitOne();
+          try
+          {
+            result = await result.SaveAsync();
+            Assert.Fail("Expected exception not thrown");
+          }
+          catch (Exception ex)
+          {
+            context.Assert.IsTrue(ex.GetType() == typeof(Csla.DataPortalException));
+          }
+          finally
+          {
+            lck.Set();
+          }
+        }).Invoke();
+        lck.WaitOne();
+        context.Assert.Success();
+      });
+      context.Complete();
     }
 #endif
 
     #endregion
+
+#endif
 
     #region Delete
 
@@ -754,13 +766,16 @@ namespace Csla.Test.DataPortal
     public void Delete_called_with_UserState_results_in_UserState_set_on_server()
     {
       var context = GetContext();
-      object userState = "state";
-      Single.DeleteObject(5, (o1, e1) =>
-                               {
-                                 context.Assert.IsNull(e1.Error);
-                                 context.Assert.AreEqual(userState, e1.UserState);
-                                 context.Assert.Success();
-                               }, userState);
+      context.Assert.Try(() =>
+      {
+        object userState = "state";
+        Single.DeleteObject(5, (o1, e1) =>
+                                 {
+                                   context.Assert.IsNull(e1.Error);
+                                   context.Assert.AreEqual(userState, e1.UserState);
+                                   context.Assert.Success();
+                                 }, userState);
+      });
       context.Complete();
     }
 
@@ -768,44 +783,46 @@ namespace Csla.Test.DataPortal
     public void Delete_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
     {
       var context = GetContext();
-      Single.DeleteObject(5, (o1, e1) =>
+      context.Assert.Try(() =>
+      {
+        Single.DeleteObject(5, (o1, e1) =>
                                {
                                  context.Assert.IsNull(e1.Error);
                                  context.Assert.IsNull(e1.UserState);
                                  context.Assert.Success();
                                });
+      });
       context.Complete();
     }
 
 #if !SILVERLIGHT
     [TestMethod]
-    public async Task DeleteAsync()
-    {
-      await Csla.DataPortal.DeleteAsync<Single2>(123);
-      Assert.Inconclusive("how to test when method is void?");
-    }
-
-    [TestMethod]
     public void DeleteAsync_WithException()
     {
-      var lck = new AutoResetEvent(false);
-      new Action(async () =>
+      var context = GetContext();
+      context.Assert.Try(() =>
       {
-        try
+        var lck = new AutoResetEvent(false);
+        new Action(async () =>
         {
-          await Csla.DataPortal.DeleteAsync<Single2>(555);
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
-        }
-        finally
-        {
-          lck.Set();
-        }
-      }).Invoke();
-      lck.WaitOne();
+          try
+          {
+            await Csla.DataPortal.DeleteAsync<Single2>(555);
+            context.Assert.Fail("Expected exception not thrown");
+          }
+          catch (Exception ex)
+          {
+            context.Assert.IsTrue(ex.GetType() == typeof(Csla.DataPortalException));
+          }
+          finally
+          {
+            lck.Set();
+          }
+        }).Invoke();
+        lck.WaitOne();
+        context.Assert.Success();
+      });
+      context.Complete();
     }
 #endif
 
@@ -882,7 +899,6 @@ namespace Csla.Test.DataPortal
     }
 #endif
     #endregion
-
 
     /// <summary>
     /// Create is an exception - called with SingleCriteria, if BO does not have DP_Create() overload

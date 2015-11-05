@@ -19,6 +19,22 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
+    public async Task IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo()
+    {
+      Assert.IsFalse((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo))).IsIPropertyInfo());
+    }
+
+    [TestMethod]
+    public async Task IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo))).IsIPropertyInfo());
+    }
+
+    [TestMethod]
     public async Task IsBusinessBaseWhenSymbolIsNotABusinessBase()
     {
       Assert.IsFalse((await this.GetTypeSymbolAsync(

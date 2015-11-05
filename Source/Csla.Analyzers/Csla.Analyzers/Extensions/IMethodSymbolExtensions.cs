@@ -4,22 +4,33 @@ namespace Csla.Analyzers.Extensions
 {
   internal static class IMethodSymbolExtensions
   {
+    internal static bool IsPropertyInfoManagementMethod(this IMethodSymbol @this)
+    {
+      return @this != null && (@this.ContainingType.Name == CslaMemberConstants.CslaTypeNames.BusinessBase &&
+        (@this.Name == CslaMemberConstants.CslaPropertyMethods.GetProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.GetPropertyConvert ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.ReadProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.ReadPropertyConvert ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetPropertyAsync ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadProperty ||
+        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadPropertyAsync));
+    }
+
     internal static bool IsDataPortalOperation(this IMethodSymbol @this)
     {
-      if (@this == null)
-      {
-        return false;
-      }
-      else
-      {
-        return @this.Name == "DataPortal_Create" || @this.Name == "DataPortal_Fetch" ||
-          @this.Name == "DataPortal_Insert" || @this.Name == "DataPortal_Update" ||
-          @this.Name == "DataPortal_Delete" || @this.Name == "DataPortal_DeleteSelf" ||
-          @this.Name == "DataPortal_Execute" ||
-          @this.Name == "Child_Create" || @this.Name == "Child_Fetch" ||
-          @this.Name == "Child_Insert" || @this.Name == "Child_Update" ||
-          @this.Name == "Child_DeleteSelf";
-      }
+      return @this != null && (@this.Name == CslaMemberConstants.CslaOperations.DataPortalCreate || 
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalFetch ||
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalInsert || 
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalUpdate ||
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalDelete || 
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalDeleteSelf ||
+        @this.Name == CslaMemberConstants.CslaOperations.DataPortalExecute ||
+        @this.Name == CslaMemberConstants.CslaOperations.ChildCreate || 
+        @this.Name == CslaMemberConstants.CslaOperations.ChildFetch ||
+        @this.Name == CslaMemberConstants.CslaOperations.ChildInsert || 
+        @this.Name == CslaMemberConstants.CslaOperations.ChildUpdate ||
+        @this.Name == CslaMemberConstants.CslaOperations.ChildDeleteSelf);
     }
   }
 }

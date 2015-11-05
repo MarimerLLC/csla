@@ -317,6 +317,9 @@
     <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\IMethodSymbolExtensionsTests\IsPropertyInfoManagementMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemDoesNotExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

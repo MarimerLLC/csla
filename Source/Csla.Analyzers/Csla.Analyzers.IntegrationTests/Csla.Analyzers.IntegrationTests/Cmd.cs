@@ -38,10 +38,11 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<string> MyTextProperty = 
       RegisterProperty<string>(c => c.MyText);
 
+    //public string MyText { get; set; }
     public string MyText
     {
-      get { return this.GetProperty(Data.MyTextProperty); }
-      set { this.SetProperty(Data.MyTextProperty, value); }
+      get { return this.GetProperty(MyTextProperty); }
+      set { this.SetProperty(MyTextProperty, value); }
     }
   }
 }

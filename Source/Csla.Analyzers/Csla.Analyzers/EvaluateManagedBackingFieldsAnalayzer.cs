@@ -24,9 +24,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
-          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
-          EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule);
+        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule);
       }
     }
 

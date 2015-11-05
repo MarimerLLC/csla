@@ -96,6 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />
     <Compile Include="EvaluateManagedBackingFieldsWalkerTests.cs" />
     <Compile Include="ContainsInvocationExpressionWalkerTests.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />
@@ -166,6 +167,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasNoInvocations.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotStatic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotPublic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldNotUsedByProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsNotUsedByPropertyInfoManagement.cs">

@@ -96,6 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EvaluateManagedBackingFieldsWalkerTests.cs" />
     <Compile Include="ContainsInvocationExpressionWalkerTests.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />
     <Compile Include="FindGetOrReadInvocationsWalkerTests.cs" />
@@ -165,6 +166,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasNoInvocations.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsNotUsedByPropertyInfoManagement.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsUsedByPropertyInfoManagement.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression.cs">

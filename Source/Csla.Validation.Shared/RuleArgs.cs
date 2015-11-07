@@ -53,7 +53,7 @@ namespace Csla.Validation
     /// the broken rule.</value>
     /// <remarks>
     /// Setting this property only has an effect if
-    /// the rule method returns <see langword="false" />.
+    /// the rule method returns false.
     /// </remarks>
     public string Description
     {
@@ -69,7 +69,7 @@ namespace Csla.Validation
     /// <value>The severity of the broken rule.</value>
     /// <remarks>
     /// Setting this property only has an effect if
-    /// the rule method returns <see langword="false" />.
+    /// the rule method returns false.
     /// </remarks>
     public RuleSeverity Severity
     {
@@ -82,11 +82,11 @@ namespace Csla.Validation
     /// broken rule should stop the processing of subsequent
     /// rules for this property.
     /// </summary>
-    /// <value><see langword="true" /> if no further
+    /// <value>true if no further
     /// rules should be process for this property.</value>
     /// <remarks>
     /// Setting this property only has an effect if
-    /// the rule method returns <see langword="false" />.
+    /// the rule method returns false.
     /// </remarks>
     public bool StopProcessing
     {

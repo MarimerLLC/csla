@@ -185,7 +185,7 @@ namespace Csla
     { }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
     /// <param name="property">Property to check.</param>
@@ -207,10 +207,10 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <returns>true if read is allowed.</returns>
     /// <param name="property">Property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -229,7 +229,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -240,7 +240,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -286,11 +286,11 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="method">Method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
@@ -307,10 +307,10 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     /// <param name="method">Method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -331,11 +331,11 @@ namespace Csla
 
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="methodName">Name of the method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {

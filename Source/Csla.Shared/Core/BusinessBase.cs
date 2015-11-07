@@ -124,8 +124,8 @@ namespace Csla.Core
     private bool _isDirty = true;
 
     /// <summary>
-    /// Returns <see langword="true" /> if this is a new object, 
-    /// <see langword="false" /> if it is a pre-existing object.
+    /// Returns true if this is a new object, 
+    /// false if it is a pre-existing object.
     /// </summary>
     /// <remarks>
     /// An object is considered to be new if its primary identifying (key) value 
@@ -144,14 +144,14 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object is marked for deletion.
+    /// Returns true if this object is marked for deletion.
     /// </summary>
     /// <remarks>
     /// CSLA .NET supports both immediate and deferred deletion of objects. This
     /// property is part of the support for deferred deletion, where an object
     /// can be marked for deletion, but isn't actually deleted until the object
     /// is saved to the database. This property indicates whether or not the
-    /// current object has been marked for deletion. If it is <see langword="true" />
+    /// current object has been marked for deletion. If it is true
     /// , the object will
     /// be deleted when it is saved to the database, otherwise it will be inserted
     /// or updated by the save operation.
@@ -165,7 +165,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object's 
+    /// Returns true if this object's 
     /// data, or any of its fields or child objects data, 
     /// has been changed.
     /// </summary>
@@ -191,7 +191,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object's data has been changed.
+    /// Returns true if this object's data has been changed.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -305,7 +305,7 @@ namespace Csla.Core
     /// Marks an object as being dirty, or changed.
     /// </summary>
     /// <param name="suppressEvent">
-    /// <see langword="true" /> to supress the PropertyChanged event that is otherwise
+    /// true to supress the PropertyChanged event that is otherwise
     /// raised to indicate that the object's state has changed.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -389,7 +389,7 @@ namespace Csla.Core
 
 
     /// <summary>
-    /// Forces the object's IsDirty flag to <see langword="false" />.
+    /// Forces the object's IsDirty flag to false.
     /// </summary>
     /// <remarks>
     /// This method is normally called automatically and is
@@ -408,13 +408,13 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// Returns true if this object is both dirty and valid.
     /// </summary>
     /// <remarks>
     /// An object is considered dirty (changed) if 
-    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
+    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns true. It is
     /// considered valid if IsValid
-    /// returns <see langword="true" />. The IsSavable property is
+    /// returns true. The IsSavable property is
     /// a combination of these two properties. 
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
@@ -453,7 +453,7 @@ namespace Csla.Core
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
     /// <param name="property">Property to check.</param>
@@ -478,10 +478,10 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// calling property.
     /// </summary>
-    /// <returns><see langword="true" /> if read is allowed.</returns>
+    /// <returns>true if read is allowed.</returns>
     /// <param name="property">Property to read.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -500,7 +500,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -511,7 +511,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to read the
+    /// Returns true if the user is allowed to read the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
@@ -532,7 +532,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// Returns true if the user is allowed to write the
     /// specified property.
     /// </summary>
     /// <param name="property">Property to write.</param>
@@ -556,10 +556,10 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// Returns true if the user is allowed to write the
     /// calling property.
     /// </summary>
-    /// <returns><see langword="true" /> if write is allowed.</returns>
+    /// <returns>true if write is allowed.</returns>
     /// <param name="property">Property to write.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -577,7 +577,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// Returns true if the user is allowed to write the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to write.</param>
@@ -588,7 +588,7 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to write the
+    /// Returns true if the user is allowed to write the
     /// specified property.
     /// </summary>
     /// <param name="propertyName">Name of the property to write.</param>
@@ -627,11 +627,11 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="method">Method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(Csla.Core.IMemberInfo method)
     {
@@ -652,10 +652,10 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     /// <param name="method">Method to execute.</param>
     /// <param name="throwOnFalse">Indicates whether a negative
     /// result should cause an exception.</param>
@@ -676,11 +676,11 @@ namespace Csla.Core
 
 
     /// <summary>
-    /// Returns <see langword="true" /> if the user is allowed to execute
+    /// Returns true if the user is allowed to execute
     /// the specified method.
     /// </summary>
     /// <param name="methodName">Name of the method to execute.</param>
-    /// <returns><see langword="true" /> if execute is allowed.</returns>
+    /// <returns>true if execute is allowed.</returns>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanExecuteMethod(string methodName)
     {
@@ -895,7 +895,7 @@ namespace Csla.Core
     private bool _isChild;
 
     /// <summary>
-    /// Returns <see langword="true" /> if this is a child (non-root) object.
+    /// Returns true if this is a child (non-root) object.
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
@@ -1155,9 +1155,9 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the object 
+    /// Returns true if the object 
     /// and its child objects are currently valid, 
-    /// <see langword="false" /> if the
+    /// false if the
     /// object or any of its child objects have broken 
     /// rules or are otherwise invalid.
     /// </summary>
@@ -1181,8 +1181,8 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the object is currently 
-    /// valid, <see langword="false" /> if the
+    /// Returns true if the object is currently 
+    /// valid, false if the
     /// object has broken rules or is otherwise invalid.
     /// </summary>
     /// <remarks>

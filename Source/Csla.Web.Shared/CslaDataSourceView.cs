@@ -274,7 +274,7 @@ namespace Csla.Web
     /// <summary>
     /// Gets a value indicating whether the data source can
     /// retrieve the total number of rows of data. Always
-    /// returns <see langword="true"/>.
+    /// returns true.
     /// </summary>
     public override bool CanRetrieveTotalRowCount
     {
@@ -283,7 +283,7 @@ namespace Csla.Web
 
     /// <summary>
     /// Gets a alue indicating whether the data source supports
-    /// sorting of the data. Always returns <see langword="false"/>.
+    /// sorting of the data. Always returns false.
     /// </summary>
     public override bool CanSort
     {

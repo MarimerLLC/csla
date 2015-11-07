@@ -40,7 +40,7 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if the 
+    /// Returns true if the 
     /// server-side DataPortal is running
     /// on a remote server via remoting.
     /// </summary>

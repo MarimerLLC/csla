@@ -388,7 +388,7 @@ namespace Csla.Data
     /// Gets a boolean value from the datareader.
     /// </summary>
     /// <remarks>
-    /// Returns <see langword="false" /> for null.
+    /// Returns false for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
     public bool GetBoolean(string name)
@@ -400,7 +400,7 @@ namespace Csla.Data
     /// Gets a boolean value from the datareader.
     /// </summary>
     /// <remarks>
-    /// Returns <see langword="false" /> for null.
+    /// Returns false for null.
     /// </remarks>
     /// <param name="i">Ordinal column position of the value.</param>
     public virtual bool GetBoolean(int i)

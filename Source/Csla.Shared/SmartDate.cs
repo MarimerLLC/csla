@@ -595,7 +595,7 @@ namespace Csla
     /// <param name="value">String containing the date value.</param>
     /// <returns>A new SmartDate containing the date value.</returns>
     /// <remarks>
-    /// EmptyIsMin will default to <see langword="true"/>.
+    /// EmptyIsMin will default to true.
     /// </remarks>
     public static SmartDate Parse(string value)
     {

@@ -94,15 +94,15 @@ namespace Csla
     /// to be inserted, updated or deleted within the database based on the
     /// object's current state.
     /// </para><para>
-    /// If <see cref="Core.BusinessBase.IsDeleted" /> is <see langword="true"/>
+    /// If <see cref="Core.BusinessBase.IsDeleted" /> is true
     /// the object will be deleted. Otherwise, if <see cref="Core.BusinessBase.IsNew" /> 
-    /// is <see langword="true"/> the object will be inserted. 
+    /// is true the object will be inserted. 
     /// Otherwise the object's data will be updated in the database.
     /// </para><para>
     /// All this is contingent on <see cref="Core.BusinessBase.IsDirty" />. If
-    /// this value is <see langword="false"/>, no data operation occurs. 
+    /// this value is false, no data operation occurs. 
     /// It is also contingent on <see cref="Core.BusinessBase.IsValid" />. 
-    /// If this value is <see langword="false"/> an
+    /// If this value is false an
     /// exception will be thrown to indicate that the UI attempted to save an
     /// invalid object.
     /// </para><para>
@@ -145,8 +145,8 @@ namespace Csla
     /// Saves the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     public async System.Threading.Tasks.Task<T> SaveAsync(bool forceUpdate)
     {
@@ -157,8 +157,8 @@ namespace Csla
     /// Saves the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="userState">User state data.</param>
     /// <param name="isSync">True if the save operation should be synchronous.</param>
@@ -210,11 +210,11 @@ namespace Csla
 
     /// <summary>
     /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// IsNew to false and IsDirty to True.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <returns>A new object containing the saved values.</returns>
     /// <remarks>
@@ -267,8 +267,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="handler">
     /// Method called when the operation is complete.
@@ -304,8 +304,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <remarks>
     /// This overload is designed for use in web applications
@@ -321,8 +321,8 @@ namespace Csla
     /// Starts an async operation to save the object to the database.
     /// </summary>
     /// <param name="forceUpdate">
-    /// If <see langword="true"/>, triggers overriding IsNew and IsDirty. 
-    /// If <see langword="false"/> then it is the same as calling Save().
+    /// If true, triggers overriding IsNew and IsDirty. 
+    /// If false then it is the same as calling Save().
     /// </param>
     /// <param name="handler">
     /// Delegate reference to a callback handler that will
@@ -340,7 +340,7 @@ namespace Csla
 
     /// <summary>
     /// Saves the object to the database, forcing
-    /// IsNew to <see langword="false"/> and IsDirty to True.
+    /// IsNew to false and IsDirty to True.
     /// </summary>
     /// <param name="handler">
     /// Delegate reference to a callback handler that will

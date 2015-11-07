@@ -16,9 +16,9 @@ namespace Csla.Core
   public interface ITrackStatus : INotifyBusy
   {
     /// <summary>
-    /// Returns <see langword="true" /> if the object 
+    /// Returns true if the object 
     /// and its child objects are currently valid, 
-    /// <see langword="false" /> if the
+    /// false if the
     /// object or any of its child objects have broken 
     /// rules or are otherwise invalid.
     /// </summary>
@@ -36,8 +36,8 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     bool IsValid { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if the object is currently 
-    /// valid, <see langword="false" /> if the
+    /// Returns true if the object is currently 
+    /// valid, false if the
     /// object has broken rules or is otherwise invalid.
     /// </summary>
     /// <remarks>
@@ -52,7 +52,7 @@ namespace Csla.Core
     /// <returns>A value indicating if the object is currently valid.</returns>
     bool IsSelfValid { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this object's 
+    /// Returns true if this object's 
     /// data, or any of its fields or child objects data, 
     /// has been changed.
     /// </summary>
@@ -72,7 +72,7 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     bool IsDirty { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this object's data has been changed.
+    /// Returns true if this object's data has been changed.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -90,14 +90,14 @@ namespace Csla.Core
     /// <returns>A value indicating if this object's data has been changed.</returns>
     bool IsSelfDirty { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this object is marked for deletion.
+    /// Returns true if this object is marked for deletion.
     /// </summary>
     /// <remarks>
     /// CSLA .NET supports both immediate and deferred deletion of objects. This
     /// property is part of the support for deferred deletion, where an object
     /// can be marked for deletion, but isn't actually deleted until the object
     /// is saved to the database. This property indicates whether or not the
-    /// current object has been marked for deletion. If it is <see langword="true" />
+    /// current object has been marked for deletion. If it is true
     /// , the object will
     /// be deleted when it is saved to the database, otherwise it will be inserted
     /// or updated by the save operation.
@@ -105,8 +105,8 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is marked for deletion.</returns>
     bool IsDeleted { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this is a new object, 
-    /// <see langword="false" /> if it is a pre-existing object.
+    /// Returns true if this is a new object, 
+    /// false if it is a pre-existing object.
     /// </summary>
     /// <remarks>
     /// An object is considered to be new if its primary identifying (key) value 
@@ -119,20 +119,20 @@ namespace Csla.Core
     /// <returns>A value indicating if this object is new.</returns>
     bool IsNew { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// Returns true if this object is both dirty and valid.
     /// </summary>
     /// <remarks>
     /// An object is considered dirty (changed) if 
-    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns <see langword="true" />. It is
+    /// <see cref="P:Csla.BusinessBase.IsDirty" /> returns true. It is
     /// considered valid if IsValid
-    /// returns <see langword="true" />. The IsSavable property is
+    /// returns true. The IsSavable property is
     /// a combination of these two properties. 
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     bool IsSavable { get; }
     /// <summary>
-    /// Returns <see langword="true" /> if this is a child object, 
-    /// <see langword="false" /> if it is a root object.
+    /// Returns true if this is a child object, 
+    /// false if it is a root object.
     /// </summary>
     /// <remarks>
     /// An object should be marked as a child object unless it is the

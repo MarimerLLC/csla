@@ -469,7 +469,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> since this object does raise the
+    /// Returns true since this object does raise the
     /// ListChanged event.
     /// </summary>
     public bool SupportsChangeNotification
@@ -492,7 +492,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true"/>. Sorting is supported.
+    /// Returns true. Sorting is supported.
     /// </summary>
     public bool SupportsSorting
     {

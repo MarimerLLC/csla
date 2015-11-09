@@ -101,6 +101,7 @@
     <Compile Include="ContainsInvocationExpressionWalkerTests.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />
     <Compile Include="FindGetOrReadInvocationsWalkerTests.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsCodeFixTests.cs" />
     <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests.cs" />
     <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
@@ -185,6 +186,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsNotUsedByPropertyInfoManagement.cs">

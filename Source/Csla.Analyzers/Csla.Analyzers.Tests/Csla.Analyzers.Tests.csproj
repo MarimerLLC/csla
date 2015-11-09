@@ -96,7 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerTests.cs" />
     <Compile Include="EvaluateManagedBackingFieldsWalkerTests.cs" />
     <Compile Include="ContainsInvocationExpressionWalkerTests.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />

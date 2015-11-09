@@ -39,13 +39,8 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
-    private static async Task RunAnalysisAsync(string path, string[] diagnosticIds)
-    {
-      await CheckConstructorsAnalyzerTests.RunAnalysisAsync(path, diagnosticIds, null);
-    }
-
     private static async Task RunAnalysisAsync(string path, string[] diagnosticIds,
-      Action<List<Diagnostic>> diagnosticInspector)
+      Action<List<Diagnostic>> diagnosticInspector = null)
     {
       var code = File.ReadAllText(path);
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(

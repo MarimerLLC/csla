@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,12 +29,20 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
-    private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount)
+    private static async Task RunAnalysisAsync(string path, string[] diagnosticIds,
+      Action<List<Diagnostic>> diagnosticInspector = null)
     {
       var code = File.ReadAllText(path);
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(
         code, new EvaluateManagedBackingFieldsAnalayzer());
-      Assert.AreEqual(expectedDiagnosticCount, diagnostics.Count, nameof(diagnostics.Count));
+      Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
+
+      foreach (var diagnosticId in diagnosticIds)
+      {
+        Assert.IsTrue(diagnostics.Any(_ => _.Id == diagnosticId), diagnosticId);
+      }
+
+      diagnosticInspector?.Invoke(diagnostics);
     }
 
     [TestMethod]
@@ -40,7 +50,7 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
-        0);
+        new string[0]);
     }
 
     [TestMethod]
@@ -48,7 +58,7 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldNotUsedByProperty))}.cs",
-        0);
+        new string[0]);
     }
 
     [TestMethod]
@@ -56,7 +66,7 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedProperty))}.cs",
-        0);
+        new string[0]);
     }
 
     [TestMethod]
@@ -64,7 +74,14 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotPublic))}.cs",
-        1);
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId }, 
+        diagnostics =>
+        {
+          var diagnostic = diagnostics[0];
+          Assert.IsFalse(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsPublic]));
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsReadonly]));
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsStatic]));
+        });
     }
 
     [TestMethod]
@@ -72,7 +89,14 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotStatic))}.cs",
-        1);
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId },
+        diagnostics =>
+        {
+          var diagnostic = diagnostics[0];
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsPublic]));
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsReadonly]));
+          Assert.IsFalse(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsStatic]));
+        });
     }
 
     [TestMethod]
@@ -80,7 +104,14 @@ namespace Csla.Analyzers.Tests
     {
       await EvaluateManagedBackingFieldsAnalayzerTests.RunAnalysisAsync(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
-        1);
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId },
+        diagnostics =>
+        {
+          var diagnostic = diagnostics[0];
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsPublic]));
+          Assert.IsFalse(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsReadonly]));
+          Assert.IsTrue(bool.Parse(diagnostic.Properties[EvaluateManagedBackingFieldsAnalayzerConstants.IsStatic]));
+        });
     }
   }
 }

@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,6 +34,22 @@ namespace Csla.Analyzers.Tests
         Assert.IsTrue(changes.Any(_ => _.NewText == expectedNewText), 
           string.Join($"{Environment.NewLine}{Environment.NewLine}", changes.Select(_ => $"Change text: {_.NewText}")));
       }
+    }
+
+    internal static async Task RunAnalysisAsync<T>(string path, string[] diagnosticIds,
+      Action<List<Diagnostic>> diagnosticInspector = null)
+      where T : DiagnosticAnalyzer, new()
+    {
+      var code = File.ReadAllText(path);
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new T());
+      Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
+
+      foreach (var diagnosticId in diagnosticIds)
+      {
+        Assert.IsTrue(diagnostics.Any(_ => _.Id == diagnosticId), diagnosticId);
+      }
+
+      diagnosticInspector?.Invoke(diagnostics);
     }
 
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)

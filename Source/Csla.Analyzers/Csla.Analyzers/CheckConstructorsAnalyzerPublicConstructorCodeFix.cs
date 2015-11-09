@@ -33,18 +33,12 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      if (context.CancellationToken.IsCancellationRequested) { return; }
 
       var diagnostic = context.Diagnostics.First();
       var classNode = root.FindNode(diagnostic.Location.SourceSpan) as ClassDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      if (context.CancellationToken.IsCancellationRequested) { return; }
 
       var hasNonPublicNoArgumentConstructor = bool.Parse(
         diagnostic.Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]);
@@ -94,6 +88,7 @@ namespace Csla.Analyzers
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription), diagnostic);
+
     }
 
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,

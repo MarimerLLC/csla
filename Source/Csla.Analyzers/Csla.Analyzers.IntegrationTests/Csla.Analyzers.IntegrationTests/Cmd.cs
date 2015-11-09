@@ -35,7 +35,7 @@ namespace ProjectTracker.Library
   public class Data
     : BusinessBase<Data>
   {
-    public static readonly PropertyInfo<string> MyTextProperty = 
+    public readonly static PropertyInfo<string> MyTextProperty = 
       RegisterProperty<string>(c => c.MyText);
 
     //public string MyText { get; set; }

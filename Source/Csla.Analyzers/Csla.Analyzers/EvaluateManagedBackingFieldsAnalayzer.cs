@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
@@ -86,16 +85,9 @@ namespace Csla.Analyzers
 
       if(!isStatic || !isPublic || !isReadOnly)
       {
-        var properties = new Dictionary<string, string>()
-        {
-          [EvaluateManagedBackingFieldsAnalayzerConstants.IsStatic] = isStatic.ToString(),
-          [EvaluateManagedBackingFieldsAnalayzerConstants.IsPublic] = isPublic.ToString(),
-          [EvaluateManagedBackingFieldsAnalayzerConstants.IsReadonly] = isReadOnly.ToString()
-        }.ToImmutableDictionary();
-
         context.ReportDiagnostic(Diagnostic.Create(
           EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
-          fieldNode.GetLocation(), properties));
+          fieldNode.GetLocation()));
       }
     }
 

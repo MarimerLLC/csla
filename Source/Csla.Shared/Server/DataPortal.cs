@@ -612,7 +612,12 @@ namespace Csla.Server
       ApplicationContext.SetContext(context.ClientContext, context.GlobalContext);
 
       // set the thread's culture to match the client
-#if NETFX_CORE
+#if NETCORE
+      System.Globalization.CultureInfo.CurrentCulture =
+        new System.Globalization.CultureInfo(context.ClientCulture); 
+      System.Globalization.CultureInfo.CurrentUICulture = 
+        new System.Globalization.CultureInfo(context.ClientUICulture);
+#elif NETFX_CORE
       var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientUICulture });
       Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
       list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { context.ClientCulture });

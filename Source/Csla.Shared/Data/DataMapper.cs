@@ -64,7 +64,7 @@ namespace Csla.Data
     /// <param name="target">An object with properties to be set from the dictionary.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
     /// <remarks>
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
@@ -127,7 +127,7 @@ namespace Csla.Data
     /// <param name="target">A name/value dictionary containing the source values.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
     public static void Map(
       object source, Dictionary<string, object> target,
       bool suppressExceptions,
@@ -199,7 +199,7 @@ namespace Csla.Data
     /// <param name="target">An object with properties to be set from the dictionary.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
     /// <remarks>
     /// <para>
     /// The property names and types of the source object must match the property names and types
@@ -260,7 +260,7 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="suppressExceptions">If <see langword="true" />, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
     /// <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
     /// <remarks>
     /// The property names and types of the source object must match the property names and types

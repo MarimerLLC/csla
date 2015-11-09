@@ -57,7 +57,6 @@ namespace Csla.Data.EF4.Test
                 }
             }
         }
-#endif
 
         [TestMethod]
         public void Table2_retreived_through_DbContextDataContext_has_records()
@@ -70,5 +69,6 @@ namespace Csla.Data.EF4.Test
                 Assert.IsTrue(query.Any(), "Data in table is missing");
             }
         }
-    }
+#endif
+  }
 }

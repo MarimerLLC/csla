@@ -148,7 +148,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if this object is both dirty and valid.
+    /// Returns true if this object is both dirty and valid.
     /// </summary>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
@@ -439,7 +439,7 @@ namespace Csla
     }
 
     /// <summary>
-    /// Returns <see langword="true"/> if the internal deleted list
+    /// Returns true if the internal deleted list
     /// contains the specified child object.
     /// </summary>
     /// <param name="item">Child object to check.</param>
@@ -811,9 +811,9 @@ namespace Csla
     /// each object's current state.
     /// </para><para>
     /// All this is contingent on <see cref="IsDirty" />. If
-    /// this value is <see langword="false"/>, no data operation occurs. 
+    /// this value is false, no data operation occurs. 
     /// It is also contingent on <see cref="IsValid" />. If this value is 
-    /// <see langword="false"/> an exception will be thrown to 
+    /// false an exception will be thrown to 
     /// indicate that the UI attempted to save an invalid object.
     /// </para><para>
     /// It is important to note that this method returns a new version of the

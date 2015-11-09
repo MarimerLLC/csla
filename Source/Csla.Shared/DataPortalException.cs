@@ -64,6 +64,7 @@ namespace Csla
     }
 
 #if !NETFX_PHONE
+#if !NETCORE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -73,6 +74,7 @@ namespace Csla
     {
       this.ErrorInfo = new Csla.Server.Hosts.HttpChannel.HttpErrorInfo(info);
     }
+#endif
 
     /// <summary>
     /// Creates an instance of the object.

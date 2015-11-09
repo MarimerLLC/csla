@@ -44,13 +44,8 @@ namespace Csla
       public Csla.Core.ContextDictionary GlobalContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
-#if NETFX_CORE
-      public string CurrentCulture;
-      public string CurrentUICulture;
-#else
       public CultureInfo CurrentCulture;
       public CultureInfo CurrentUICulture;
-#endif
 
       public DataPortalAsyncRequest(object argument, object userState)
       {
@@ -59,14 +54,8 @@ namespace Csla
         this.ClientContext = Csla.ApplicationContext.ClientContext;
         this.GlobalContext = Csla.ApplicationContext.GlobalContext;
         this.UserState = userState;
-#if NETFX_CORE
-        var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-        this.CurrentCulture = language;
-        this.CurrentUICulture = language;
-#else
-        this.CurrentCulture = Thread.CurrentThread.CurrentCulture;
-        this.CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
-#endif
+        this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
+        this.CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
       }
     }
 
@@ -95,10 +84,13 @@ namespace Csla
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       // set culture info for background thread 
-#if NETFX_CORE
-      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture });
+#if NETCORE
+      System.Globalization.CultureInfo.CurrentCulture = request.CurrentCulture;
+      System.Globalization.CultureInfo.CurrentUICulture = request.CurrentUICulture;
+#elif NETFX_CORE
+      var list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentUICulture.Name });
       Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
-      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture });
+      list = new System.Collections.ObjectModel.ReadOnlyCollection<string>(new List<string> { request.CurrentCulture.Name });
       Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages = list;
 #else
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;

@@ -416,13 +416,13 @@
     <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsStereotypeAndIsNotSerializable.cs">
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndIsNotSerializable.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsStereotypeAndIsSerializable.cs">
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndIsSerializable.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsSerializable.cs">

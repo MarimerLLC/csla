@@ -29,26 +29,26 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsNotStereotype()
+    public async Task AnalyzeWhenClassIsNotMobileObject()
     {
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotMobileObject))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndIsSerializable()
+    public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsSerializable))}.cs",
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsSerializable))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndIsNotSerializable()
+    public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsNotSerializable))}.cs",
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsNotSerializable))}.cs",
         new[] { IsBusinessObjectSerializableConstants.DiagnosticId });
     }
   }

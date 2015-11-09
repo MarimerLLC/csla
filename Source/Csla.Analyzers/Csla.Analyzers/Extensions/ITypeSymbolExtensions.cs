@@ -46,5 +46,13 @@ namespace Csla.Analyzers.Extensions
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           (@this.BaseType.IsStereotype() || @this.Interfaces.Any(_ => _.IsStereotype())));
     }
+
+    internal static bool IsMobileObject(this ITypeSymbol @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.CslaTypeNames.IMobileObject &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          (@this.BaseType.IsMobileObject() || @this.Interfaces.Any(_ => _.IsMobileObject())));
+    }
   }
 }

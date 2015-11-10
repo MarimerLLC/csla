@@ -28,36 +28,28 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
-    private static async Task RunAnalysisAsync(string path, int expectedDiagnosticCount)
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsNotMobileObject()
     {
-      var code = File.ReadAllText(path);
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync(
-        code, new IsBusinessObjectSerializableAnalyzer());
-      Assert.AreEqual(expectedDiagnosticCount, diagnostics.Count, nameof(diagnostics.Count));
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotMobileObject))}.cs",
+        new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsNotStereotype()
+    public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
-      await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
-        0);
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsSerializable))}.cs",
+        new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndIsSerializable()
+    public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
-      await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsSerializable))}.cs",
-        0);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndIsNotSerializable()
-    {
-      await IsBusinessObjectSerializableAnalyzerTests.RunAnalysisAsync(
-        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndIsNotSerializable))}.cs",
-        1);
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
+        $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsNotSerializable))}.cs",
+        new[] { IsBusinessObjectSerializableConstants.DiagnosticId });
     }
   }
 }

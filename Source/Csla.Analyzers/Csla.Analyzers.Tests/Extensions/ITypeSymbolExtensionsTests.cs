@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
@@ -16,6 +17,22 @@ namespace Csla.Analyzers.Tests.Extensions
     public void IsBusinessBaseWhenSymbolIsNull()
     {
       Assert.IsFalse((null as ITypeSymbol).IsBusinessBase());
+    }
+
+    [TestMethod]
+    public async Task IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo()
+    {
+      Assert.IsFalse((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo))).IsIPropertyInfo());
+    }
+
+    [TestMethod]
+    public async Task IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo))).IsIPropertyInfo());
     }
 
     [TestMethod]
@@ -150,28 +167,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
       var model = compilation.GetSemanticModel(tree);
       var root = await tree.GetRootAsync().ConfigureAwait(false);
-      return model.GetDeclaredSymbol(ITypeSymbolExtensionsTests.FindClassDeclaration(root, name));
-    }
 
-    private static ClassDeclarationSyntax FindClassDeclaration(SyntaxNode node, string name)
-    {
-      if (node.Kind() == SyntaxKind.ClassDeclaration)
+      foreach (var classNode in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
       {
-        var classNode = node as ClassDeclarationSyntax;
-
         if (classNode.Identifier.ValueText == name)
         {
-          return classNode;
-        }
-      }
-
-      foreach (var childNode in node.ChildNodes())
-      {
-        var childClassNode = ITypeSymbolExtensionsTests.FindClassDeclaration(childNode, name);
-
-        if (childClassNode != null)
-        {
-          return childClassNode;
+          return model.GetDeclaredSymbol(classNode);
         }
       }
 

@@ -5,11 +5,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Analyzers
 {
-  internal sealed class FindGetOrReadInvocationsWalker
+  internal sealed class EvaluateManagedBackingFieldsWalker
     : CSharpSyntaxWalker
   {
-    internal FindGetOrReadInvocationsWalker(SyntaxNode node, SemanticModel model)
+    internal EvaluateManagedBackingFieldsWalker(SyntaxNode node, SemanticModel model, IFieldSymbol fieldSymbol)
     {
+      this.FieldSymbol = fieldSymbol;
       this.Model = model;
       base.Visit(node);
     }
@@ -20,11 +21,16 @@ namespace Csla.Analyzers
 
       if (invocationSymbol.IsPropertyInfoManagementMethod())
       {
-        this.Invocation = node;
+        foreach (var argument in node.ArgumentList.Arguments)
+        {
+          var argumentSymbol = this.Model.GetSymbolInfo(argument.Expression).Symbol;
+          this.UsesField = argumentSymbol != null && argumentSymbol == this.FieldSymbol;
+        }
       }
     }
 
-    internal InvocationExpressionSyntax Invocation { get; private set; }
     private SemanticModel Model { get; }
+    private IFieldSymbol FieldSymbol { get; }
+    public bool UsesField { get; private set; }
   }
 }

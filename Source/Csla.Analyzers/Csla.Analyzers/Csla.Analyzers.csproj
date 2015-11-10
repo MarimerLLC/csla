@@ -34,7 +34,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EvaluateManagedBackingFieldsCodeFix.cs" />
     <Compile Include="CslaMemberConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerConstants.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsWalker.cs" />
     <Compile Include="FindSetOrLoadInvocationsWalker.cs" />
     <Compile Include="FindGetOrReadInvocationsWalker.cs" />
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerConstants.cs" />

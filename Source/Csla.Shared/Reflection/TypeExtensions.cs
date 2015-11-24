@@ -69,14 +69,14 @@ namespace Csla.Reflection
         throw new NotImplementedException();
       var ti = t.GetTypeInfo();
       var m = ti.DeclaredConstructors.Where(r => r.GetParameters().Count() == 0);
-      if ((bindingFlags & BindingFlags.Instance) > 0)
-        m = m.Where(r => !r.IsStatic);
-      if ((bindingFlags & BindingFlags.Static) > 0)
+      if (!((bindingFlags & BindingFlags.Instance) > 0))
         m = m.Where(r => r.IsStatic);
-      if ((bindingFlags & BindingFlags.Public) > 0)
-        m = m.Where(r => r.IsPublic);
-      if ((bindingFlags & BindingFlags.NonPublic) > 0)
+      if (!((bindingFlags & BindingFlags.Static) > 0))
+        m = m.Where(r => !r.IsStatic);
+      if (!((bindingFlags & BindingFlags.Public) > 0))
         m = m.Where(r => !r.IsPublic);
+      if (!((bindingFlags & BindingFlags.NonPublic) > 0))
+        m = m.Where(r => r.IsPublic);
       return m.FirstOrDefault();
     }
 

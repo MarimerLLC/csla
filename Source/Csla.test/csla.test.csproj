@@ -251,6 +251,7 @@
     <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
     <Compile Include="PropertyInfo\PropertyInfoRoot.cs" />
     <Compile Include="PropertyInfo\PropertyInfoTests.cs" />
+    <Compile Include="Reflection\GetConstructor.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />

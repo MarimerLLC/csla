@@ -17,4 +17,4 @@ More information about CSLA .NET is available from the following sources:
 License
 -------
 CSLA .NET is copyright Marimer LLC.
-Its use is governed by the [CSLA .NET license](https://github.com/MarimerLLC/csla/blob/master/license.txt).
+Its use is governed by the [CSLA .NET license](https://github.com/MarimerLLC/csla/blob/master/license.md).

@@ -19,20 +19,6 @@ namespace CslaTest
       catch (DataPortalException e)
       {
         Assert.IsInstanceOfType(e.BusinessException, typeof(InvalidOperationException));
-
-        /*
-Test Name:  TestMethod1
-Test FullName:  CslaTest.UnitTest1.
-Test Outcome:   Failed
-Test Duration:  0:00:00.3095317
-
-Result StackTrace:  at CslaTest.UnitTest1.TestMethod1() in UnitTest1.cs:line 21
-Result Message: 
-Assert.IsInstanceOfType failed.  
-Expected type:<System.InvalidOperationException>. 
-Actual type:<Csla.DataPortalException>.
-
-        */
       }
     }
   }

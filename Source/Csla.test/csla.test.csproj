@@ -161,6 +161,7 @@
     <Compile Include="DataPortal\AsynchDataPortalTest.cs" />
     <Compile Include="DataPortal\ChildEntity.cs" />
     <Compile Include="DataPortal\ChildEntityList.cs" />
+    <Compile Include="DataPortal\DataPortalExceptionTest.cs" />
     <Compile Include="DataPortal\InterceptorTests.cs" />
     <Compile Include="DataPortal\Legacy.cs" />
     <Compile Include="DataPortal\LegacySplit.cs" />

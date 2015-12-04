@@ -4,15 +4,14 @@ CSLA .NET
 
 CSLA .NET is a software development framework that helps you build a reusable, maintainable object-oriented business layer for your app. This framework reduces the cost of building and maintaining applications. 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/jl2k3pjvtqca4lei/branch/master?svg=true)](https://ci.appveyor.com/project/rockfordlhotka/csla/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/jl2k3pjvtqca4lei/branch/master?svg=true)](https://ci.appveyor.com/project/rockfordlhotka/csla/branch/master) [![Join the chat at https://gitter.im/MarimerLLC/cslaforum](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/cslaforum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![ZenHub] (https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)] (https://zenhub.io)
 
 More information about CSLA .NET is available from the following sources:
 
 * [CSLA .NET home page](http://www.cslanet.com)
 * [CSLA .NET wiki/FAQ](https://github.com/MarimerLLC/csla/wiki)
 * [Getting started with CSLA .NET](https://github.com/MarimerLLC/csla/wiki/Getting-started)
-* [CSLA .NET forum](https://github.com/marimerllc/cslaforum)
-* [![Join the chat at https://gitter.im/MarimerLLC/cslaforum](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarimerLLC/cslaforum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+* [CSLA .NET forum](https://github.com/marimerllc/cslaforum) 
 * [CSLA .NET training videos and ebooks](https://github.com/MarimerLLC/csla/wiki/Books-and-videos)
 
 License

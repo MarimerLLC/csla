@@ -1106,7 +1106,7 @@ namespace Csla.Rules
       {
         var nodeKey = counter++;
         var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj };
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);

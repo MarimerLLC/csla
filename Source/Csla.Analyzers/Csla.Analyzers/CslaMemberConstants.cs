@@ -20,6 +20,22 @@
       public const string SetPropertyConvert = "SetPropertyConvert";
     }
 
+    public static class CslaOperations
+    {
+      public const string DataPortalCreate = "DataPortal_Create";
+      public const string DataPortalFetch = "DataPortal_Fetch";
+      public const string DataPortalInsert = "DataPortal_Insert";
+      public const string DataPortalUpdate = "DataPortal_Update";
+      public const string DataPortalDelete = "DataPortal_Delete";
+      public const string DataPortalDeleteSelf = "DataPortal_DeleteSelf";
+      public const string DataPortalExecute = "DataPortal_Execute";
+      public const string ChildCreate = "Child_Create";
+      public const string ChildFetch = "Child_Fetch";
+      public const string ChildInsert = "Child_Insert";
+      public const string ChildUpdate = "Child_Update";
+      public const string ChildDeleteSelf = "Child_DeleteSelf";
+    }
+
     public static class CslaTypeNames
     {
       public const string BusinessBase = "BusinessBase";
@@ -27,6 +43,8 @@
       public const string BusinessListBase = "BusinessListBase";
       public const string DynamicListBase = "DynamicListBase";
       public const string IBusinessObject = "IBusinessObject";
+      public const string IMobileObject = "IMobileObject";
+      public const string IPropertyInfo = "IPropertyInfo";
     }
 
     public const string AssemblyName = "Csla";

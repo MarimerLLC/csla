@@ -2,7 +2,10 @@
 using System;
 using System.Threading.Tasks;
 
-[Serializable]
+public class SomeCriteria
+  : CriteriaBase<SomeCriteria>
+{ }
+
 public class MyCommandBase
   : CommandBase<MyCommandBase>
 {

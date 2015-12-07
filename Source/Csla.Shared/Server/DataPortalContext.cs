@@ -111,9 +111,8 @@ namespace Csla.Server
         _principal = principal;
         _remotePortal = isRemotePortal;
 #if NETFX_CORE
-        var language = Windows.ApplicationModel.Resources.Core.ResourceContext.GetForCurrentView().Languages[0];
-        _clientCulture = language;
-        _clientUICulture = language;
+        _clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+        _clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 #else
         _clientCulture = 
           System.Threading.Thread.CurrentThread.CurrentCulture.Name;

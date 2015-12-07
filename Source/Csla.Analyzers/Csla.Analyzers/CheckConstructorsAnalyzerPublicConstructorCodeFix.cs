@@ -33,18 +33,12 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      if (context.CancellationToken.IsCancellationRequested) { return; }
 
       var diagnostic = context.Diagnostics.First();
       var classNode = root.FindNode(diagnostic.Location.SourceSpan) as ClassDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      if (context.CancellationToken.IsCancellationRequested) { return; }
 
       var hasNonPublicNoArgumentConstructor = bool.Parse(
         diagnostic.Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]);
@@ -94,6 +88,7 @@ namespace Csla.Analyzers
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription,
           _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
           CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.AddPublicConstructorDescription), diagnostic);
+
     }
 
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,
@@ -104,12 +99,12 @@ namespace Csla.Analyzers
 
       if (classSymbol != null)
       {
-        var constructor = classNode.DescendantNodesAndSelf()
-          .Where(_ => _.IsKind(SyntaxKind.ConstructorDeclaration))
-          .Cast<ConstructorDeclarationSyntax>()
-          .Single(c => model.GetDeclaredSymbol(c).ContainingType == classSymbol &&
-            c.ParameterList.Parameters.Count == 0 &&
-            !c.Modifiers.Contains(publicModifier));
+        var constructorSymbol = classSymbol.Constructors
+          .Single(_ => _.Parameters.Count() == 0 &&
+            !_.DeclaredAccessibility.HasFlag(Accessibility.Public));
+
+        var constructor = constructorSymbol.DeclaringSyntaxReferences[0]
+          .GetSyntax(context.CancellationToken) as ConstructorDeclarationSyntax;
 
         var newConstructor = constructor.WithModifiers(SyntaxFactory.TokenList(publicModifier));
 

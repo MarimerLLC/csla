@@ -6,7 +6,7 @@
     <tags>CSLA Business Core</tags>
     <version>4.6.3-Beta2</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.txt</licenseUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
     <projectUrl>http://www.cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>

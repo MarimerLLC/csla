@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Web.Mvc5.Net4.6", "Csl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Web.Net4.6", "Csla.Web.Net4.6\Csla.Web.Net4.6.csproj", "{963430C1-39F4-4BB8-961D-185C5E813DAB}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{e6982b4d-d9be-4f70-ae2f-bb84763d317d}*SharedItemsImports = 4
@@ -59,6 +61,7 @@ Global
 		Csla.Web.Shared\Csla.Web.Shared.projitems*{963430c1-39f4-4bb8-961d-185c5e813dab}*SharedItemsImports = 4
 		Csla.Validation.Shared\Csla.Validation.Shared.projitems*{261a1902-bb71-4eda-b582-70890dae7d4b}*SharedItemsImports = 4
 		Csla.Data.EF4.Shared\Csla.Data.EF4.Shared.projitems*{ee1b7d74-2bc6-4bb0-b1f0-3491d354cb7e}*SharedItemsImports = 4
+		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{18ae6f5b-44b8-44b6-988e-5534620fb2e7}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{3c5930ae-fff0-4c05-9c63-efadd5fac75f}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{f468eb7c-bd08-476c-a615-298b541f1265}*SharedItemsImports = 4
@@ -249,6 +252,7 @@ Global
 		{F468EB7C-BD08-476C-A615-298B541F1265} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{3C5930AE-FFF0-4C05-9C63-EFADD5FAC75F} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{963430C1-39F4-4BB8-961D-185C5E813DAB} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
+		{EDACD58E-B295-4F3E-A263-5BD89FA51270} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = csla.test.vsmdi

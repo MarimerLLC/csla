@@ -64,7 +64,7 @@ namespace Csla
     }
 
 #if !NETFX_PHONE
-#if !NETCORE
+#if !NETCORE && !PCL46
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

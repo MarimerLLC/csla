@@ -121,7 +121,7 @@ namespace Csla.Server.Hosts.HttpChannel
     public HttpErrorInfo()
     { }
 
-#if !NETFX_PHONE && !NETCORE
+#if !NETFX_PHONE && !NETCORE && !PCL46
     /// <summary>
     /// Creates an instance of the type by copying
     /// the WcfErrorInfo data.

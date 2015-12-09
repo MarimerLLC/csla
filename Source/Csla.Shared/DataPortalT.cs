@@ -84,6 +84,7 @@ namespace Csla
       Csla.ApplicationContext.User = request.Principal;
       Csla.ApplicationContext.SetContext(request.ClientContext, request.GlobalContext);
       // set culture info for background thread 
+#if !PCL46 // rely on NuGet bait-and-switch for actual implementation
 #if NETCORE
       System.Globalization.CultureInfo.CurrentCulture = request.CurrentCulture;
       System.Globalization.CultureInfo.CurrentUICulture = request.CurrentUICulture;
@@ -96,11 +97,12 @@ namespace Csla
       Thread.CurrentThread.CurrentCulture = request.CurrentCulture;
       Thread.CurrentThread.CurrentUICulture = request.CurrentUICulture;
 #endif
+#endif
     }
 
-    #endregion
+#endregion
 
-    #region Create
+#region Create
 
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync)
     {
@@ -319,9 +321,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Fetch
+#region Fetch
 
     private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync)
     {
@@ -540,9 +542,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Update
+#region Update
 
     internal async Task<T> DoUpdateAsync(T obj, bool isSync)
     {
@@ -858,9 +860,9 @@ namespace Csla
       return await DoUpdateAsync(obj, false);
     }
 
-    #endregion
+#endregion
 
-    #region Delete
+#region Delete
 
     internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync)
     {
@@ -1046,9 +1048,9 @@ namespace Csla
       await DoDeleteAsync(typeof(T), criteria, false);
     }
 
-    #endregion
+#endregion
 
-    #region Execute
+#region Execute
 
     /// <summary>
     /// Event indicating an execute operation is complete.
@@ -1121,9 +1123,9 @@ namespace Csla
       return await DoUpdateAsync(command, false);
     }
 
-    #endregion
+#endregion
 
-    #region Proxy Factory
+#region Proxy Factory
 
     private static DataPortalClient.IDataPortalProxy GetDataPortalProxy(Type objectType, bool forceLocal)
     {
@@ -1141,9 +1143,9 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
 
-    #region Security
+#region Security
 
     private static System.Security.Principal.IPrincipal GetPrincipal()
     {
@@ -1159,6 +1161,6 @@ namespace Csla
       }
     }
 
-    #endregion
+#endregion
   }
 }

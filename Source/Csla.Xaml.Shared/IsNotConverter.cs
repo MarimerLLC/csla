@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE
+﻿#if !NETFX_CORE && !PCL36
 //-----------------------------------------------------------------------
 // <copyright file="IsNotConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

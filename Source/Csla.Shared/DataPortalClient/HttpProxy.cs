@@ -117,7 +117,7 @@ namespace Csla.DataPortalClient
       {
         request.Principal = MobileFormatter.Serialize(ApplicationContext.User);
       }
-#if NETCORE
+#if NETCORE || PCL46
       request.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       request.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 #elif NETFX_CORE || NETFX_PHONE

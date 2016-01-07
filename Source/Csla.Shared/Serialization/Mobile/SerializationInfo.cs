@@ -260,25 +260,25 @@ namespace Csla.Serialization.Mobile
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty });
     }
 
-		/// <summary>
-		/// Adds a value to the list of fields.
-		/// </summary>
-		/// <param name="name">
-		/// Name of the field.
-		/// </param>
-		/// <param name="value">
-		/// Value of the field.
-		/// </param>
-		/// <param name="isDirty">
-		/// Flag indicating whether the value is dirty.
-		/// </param>
-		/// <param name="enumTypeName">
-		/// Name of the enumeration
-		/// </param>
-		public void AddValue(string name, object value, bool isDirty, string enumTypeName)
-		{
-			_values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
-		}
+    /// <summary>
+    /// Adds a value to the list of fields.
+    /// </summary>
+    /// <param name="name">
+    /// Name of the field.
+    /// </param>
+    /// <param name="value">
+    /// Value of the field.
+    /// </param>
+    /// <param name="isDirty">
+    /// Flag indicating whether the value is dirty.
+    /// </param>
+    /// <param name="enumTypeName">
+    /// Name of the enumeration
+    /// </param>
+    public void AddValue(string name, object value, bool isDirty, string enumTypeName)
+    {
+      _values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
+    }
 
     /// <summary>
     /// Gets a value from the list of fields.

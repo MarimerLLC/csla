@@ -86,6 +86,8 @@ namespace Csla.Threading
           _currentThreadIsProcessingItems = false;
         }
       }, WorkItemPriority.Normal, WorkItemOptions.None);
+#else
+        _currentThreadIsProcessingItems = true;
 #endif
     }
 #elif (ANDROID || IOS || NETCORE)

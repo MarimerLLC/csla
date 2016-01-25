@@ -306,7 +306,6 @@ namespace Csla.Core
       OnDeserialized();
     }
 
-#if !NETFX_CORE && !(ANDROID || IOS)
     [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
@@ -315,7 +314,6 @@ namespace Csla.Core
 
       OnDeserialized();
     }
-#endif
 
     [NonSerialized]
     [NotUndoable]

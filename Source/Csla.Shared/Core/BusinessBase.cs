@@ -11,7 +11,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
@@ -1364,13 +1363,11 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new StreamingContext());
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
-    [OnDeserialized]
-#endif
-    private void OnDeserializedHandler(StreamingContext context)
+    [System.Runtime.Serialization.OnDeserialized]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       BusinessRules.SetTarget(this);
       if (_fieldManager != null)
@@ -1387,7 +1384,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     { }
 
     #endregion

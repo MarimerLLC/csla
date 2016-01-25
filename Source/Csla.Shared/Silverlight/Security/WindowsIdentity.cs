@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using Csla.Core;
+using System.Runtime.Serialization;
 
 namespace Csla.Silverlight.Security
 {
@@ -22,12 +23,6 @@ namespace Csla.Silverlight.Security
       System.Security.Principal.IIdentity, Csla.Security.ICheckRoles
   {
     #region Constructor, Helper Setter
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Creates an instance of the class.
-    /// </summary>
-    public WindowsIdentity() { }
-#else
     private static int _forceInit;
 
     /// <summary>
@@ -42,12 +37,11 @@ namespace Csla.Silverlight.Security
     /// Method invoked when the object is deserialized.
     /// </summary>
     /// <param name="context">Serialization context.</param>
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+    protected override void OnDeserialized(StreamingContext context)
     {
-      _forceInit = 0;
+      _forceInit = _forceInit + 0;
       base.OnDeserialized(context);
     }
-#endif
 
     private void SetWindowsIdentity(MobileList<string> roles, bool isAuthenticated, string name)
     {

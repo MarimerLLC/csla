@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
@@ -487,13 +486,11 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new StreamingContext());
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
-    [OnDeserialized()]
-#endif
-    private void OnDeserializedHandler(StreamingContext context)
+    [System.Runtime.Serialization.OnDeserialized()]
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
@@ -507,7 +504,7 @@ namespace Csla
     /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       // do nothing - this is here so a subclass
       // could override if needed

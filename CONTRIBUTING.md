@@ -5,6 +5,7 @@ CSLA .NET is developed and maintained by a [global development team](http://www.
 ## Getting started
 
 * Make sure you have a [GitHub account](https://github.com/signup/free)
+* We suggest this online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
 * Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/master/code_of_conduct.md)
 * Review and follow the [Coding standards](https://github.com/MarimerLLC/csla/wiki/Coding-standards) we use to maintain consistent code in the framework
 * Submit a ticket for your issue, assuming one does not already exist

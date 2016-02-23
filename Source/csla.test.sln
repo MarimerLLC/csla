@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,6 +54,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Web.Net4.6", "Csla.Web
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Data.EF7.Test", "Csla.Data.EF7.Test\Csla.Data.EF7.Test.csproj", "{48D5A833-1800-4284-81E8-CCA23BD0D7D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Data.EF7.Net4.6", "Csla.Data.EF7.Net4.6\Csla.Data.EF7.Net4.6.csproj", "{4EC3114B-E64B-409C-A97F-F414DBC45C54}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Csla.Windows.Shared\Csla.Windows.Shared.projitems*{e6982b4d-d9be-4f70-ae2f-bb84763d317d}*SharedItemsImports = 4
@@ -64,6 +68,7 @@ Global
 		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
 		Csla.Data.EF5.Shared\Csla.Data.EF5.Shared.projitems*{18ae6f5b-44b8-44b6-988e-5534620fb2e7}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{3c5930ae-fff0-4c05-9c63-efadd5fac75f}*SharedItemsImports = 4
+		Csla.Data.EF7.Shared\Csla.Data.EF7.Shared.projitems*{4ec3114b-e64b-409c-a97f-f414dbc45c54}*SharedItemsImports = 4
 		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{f468eb7c-bd08-476c-a615-298b541f1265}*SharedItemsImports = 4
 		Csla.Xaml.Shared\Csla.Xaml.Shared.projitems*{86d57709-004d-4195-a671-edc37eb57ed6}*SharedItemsImports = 4
 		Csla.Shared\Csla.Shared.projitems*{9da591ed-c570-47ac-8e5d-35b039e07973}*SharedItemsImports = 4
@@ -236,6 +241,26 @@ Global
 		{963430C1-39F4-4BB8-961D-185C5E813DAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{963430C1-39F4-4BB8-961D-185C5E813DAB}.Testing|Any CPU.ActiveCfg = Release|Any CPU
 		{963430C1-39F4-4BB8-961D-185C5E813DAB}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{48D5A833-1800-4284-81E8-CCA23BD0D7D1}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54}.Testing|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -253,6 +278,7 @@ Global
 		{3C5930AE-FFF0-4C05-9C63-EFADD5FAC75F} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{963430C1-39F4-4BB8-961D-185C5E813DAB} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 		{EDACD58E-B295-4F3E-A263-5BD89FA51270} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
+		{4EC3114B-E64B-409C-A97F-F414DBC45C54} = {01AA1A57-727E-4665-93FF-6E8BDD316ADE}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = csla.test.vsmdi

@@ -246,7 +246,7 @@ namespace Csla.Reflection
       return tinfo.IsSerializable;
 #elif NETFX_CORE
       var tinfo = t.GetTypeInfo();
-      var result = tinfo.GetCustomAttributes(typeof(SerializableAttribute), false);
+      var result = tinfo.CustomAttributes.Where(r => r.AttributeType.FullName == "System.SerializableAttribute");
       return (result != null && result.Count() > 0);
 #endif
     }

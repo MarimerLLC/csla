@@ -306,7 +306,9 @@ namespace Csla.Core
       OnDeserialized();
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
     [System.Runtime.Serialization.OnDeserialized]
+#endif 
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       foreach (T item in this)

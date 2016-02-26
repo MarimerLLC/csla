@@ -1366,7 +1366,9 @@ namespace Csla.Core
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       BusinessRules.SetTarget(this);

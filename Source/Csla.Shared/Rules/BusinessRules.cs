@@ -1037,13 +1037,15 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();
     }
 
-    #endregion
+#endregion
 
     #region Get All Broken Rules (tree)
 

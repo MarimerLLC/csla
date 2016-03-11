@@ -4,8 +4,8 @@ using System;
 namespace Csla.Analyzers.Tests.Targets.IsOperationMethodPublicAnalyzerTests
 {
   [Serializable]
-  public class AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation
-    : BusinessBase<AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation>
+  public class AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation
+    : BusinessBase<AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation>
   {
     public void AMethod() { }
   }

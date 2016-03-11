@@ -7,11 +7,10 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Csla.Analyzers
 {
-  [ExportCodeFixProvider(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, LanguageNames.CSharp)]
+  [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class EvaluateManagedBackingFieldsCodeFix
     : CodeFixProvider

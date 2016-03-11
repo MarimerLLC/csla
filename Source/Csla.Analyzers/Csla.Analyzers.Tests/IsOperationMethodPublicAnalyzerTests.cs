@@ -1,8 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
@@ -15,11 +13,9 @@ namespace Csla.Analyzers.Tests
     {
       var analyzer = new IsOperationMethodPublicAnalyzer();
       var diagnostics = analyzer.SupportedDiagnostics;
-      Assert.AreEqual(1, diagnostics.Length);
+      Assert.AreEqual(2, diagnostics.Length);
 
-      var diagnostic = diagnostics[0];
-      Assert.AreEqual(diagnostic.Id, IsOperationMethodPublicAnalyzerConstants.DiagnosticId,
-        nameof(DiagnosticDescriptor.Id));
+      var diagnostic = diagnostics.Single(_ => _.Id == IsOperationMethodPublicAnalyzerConstants.DiagnosticId);
       Assert.AreEqual(diagnostic.Title.ToString(), IsOperationMethodPublicAnalyzerConstants.Title,
         nameof(DiagnosticDescriptor.Title));
       Assert.AreEqual(diagnostic.MessageFormat.ToString(), IsOperationMethodPublicAnalyzerConstants.Message,
@@ -28,48 +24,66 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(diagnostic.DefaultSeverity, DiagnosticSeverity.Warning,
         nameof(DiagnosticDescriptor.DefaultSeverity));
+
+      var diagnosticForInterface = diagnostics.Single(_ => _.Id == IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId);
+      Assert.AreEqual(diagnosticForInterface.Title.ToString(), IsOperationMethodPublicAnalyzerConstants.Title,
+        nameof(DiagnosticDescriptor.Title));
+      Assert.AreEqual(diagnosticForInterface.MessageFormat.ToString(), IsOperationMethodPublicAnalyzerConstants.Message,
+        nameof(DiagnosticDescriptor.MessageFormat));
+      Assert.AreEqual(diagnosticForInterface.Category, IsOperationMethodPublicAnalyzerConstants.Category,
+        nameof(DiagnosticDescriptor.Category));
+      Assert.AreEqual(diagnosticForInterface.DefaultSeverity, DiagnosticSeverity.Warning,
+        nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsNotStereotype()
+    public async Task AnalyzeWhenTypeIsNotStereotype()
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsNotStereotype))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation()
+    public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation()
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic()
+    public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic()
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed()
+    public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed()
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
         new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticId },
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed()
+    public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed()
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
         new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticId },
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface()
+    {
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
+        $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface))}.cs",
+        new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId });
     }
   }
 }

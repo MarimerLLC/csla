@@ -1,6 +1,21 @@
 ﻿using Csla;
+using Csla.Core;
 using System;
 using System.Threading.Tasks;
+
+public interface IBO
+  : IBusinessObject
+{
+  void DataPortal_Create();
+}
+
+internal class x : IBO
+{
+  internal void DataPortal_Create()
+  {
+    throw new NotImplementedException();
+  }
+}
 
 public class SomeCriteria
   : CriteriaBase<SomeCriteria>

@@ -6,7 +6,7 @@
     <tags>CSLA Business Core</tags>
     <version>4.6.3-Beta2</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.txt</licenseUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
     <projectUrl>http://www.cslanet.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
@@ -81,6 +81,11 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pdb*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pri*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.xml*" target="lib\dnxcore50" />
+    <!-- PCL -->
+    <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
     <!-- Windows Runtime Phone Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />

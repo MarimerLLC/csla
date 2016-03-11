@@ -64,7 +64,7 @@ namespace Csla
     }
 
 #if !NETFX_PHONE
-#if !NETCORE
+#if !NETCORE && !PCL46
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -157,7 +157,14 @@ namespace Csla
     {
       get
       {
-        return this.InnerException.InnerException;
+        var result = this.InnerException.InnerException;
+        var dpe = result as DataPortalException;
+        if (dpe != null && dpe.InnerException != null)
+          result = dpe.InnerException;
+        var cme = result as Csla.Reflection.CallMethodException;
+        if (cme != null && cme.InnerException != null)
+          result = cme.InnerException;
+        return result;
       }
     }
 

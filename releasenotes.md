@@ -1,7 +1,7 @@
 This release adds powerful analyzers for Visual Studio 2015 to help developers avoid common coding mistakes when building CSLA .NET business classes. Many thanks to Jason Bock ([JasonBock](https://github.com/JasonBock)) for all the work putting these together (and for the planned future analyzers!).
 
 Version 4.6.200 also includes numerous important changes to support UWP apps, as well as some Xamarin scenarios. There are also some optimizations in MobileFormatter to help reduce the bytes transferred via the data portal.
- 
+
 This release is available via NuGet.
 
  - [#480](https://github.com/MarimerLLC/csla/pull/480) - #386 Get basic ProjectEdit working in Xamarin apps contributed by Rockford Lhotka ([rockfordlhotka](https://github.com/rockfordlhotka))
@@ -35,3 +35,5 @@ This release is available via NuGet.
 * Made progress updating `Samples\ProjectTracker` example *(note new path)*
 * Now using [AppVeyor](https://ci.appveyor.com/project/rockfordlhotka/csla) to build CSLA .NET and run unit tests
 * Now using [gitter](https://gitter.im/MarimerLLC/cslaforum) for real-time chat about CSLA .NET
+
+Commits: ...

@@ -1037,13 +1037,15 @@ namespace Csla.Rules
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
     [System.Runtime.Serialization.OnDeserialized]
+#endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       SyncRoot = new object();
     }
 
-    #endregion
+#endregion
 
     #region Get All Broken Rules (tree)
 
@@ -1106,7 +1108,7 @@ namespace Csla.Rules
       {
         var nodeKey = counter++;
         var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj };
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);

@@ -58,15 +58,25 @@ namespace Csla.Reflection
     /// Gets the type's constructor.
     /// </summary>
     /// <param name="t"></param>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
+    /// <param name="bindingFlags"></param>
+    /// <param name="paramTypes"></param>
     /// <param name="c"></param>
     /// <param name="d"></param>
     /// <returns></returns>
-    public static ConstructorInfo GetConstructor(this Type t, object a, object b, object c, object d)
+    public static ConstructorInfo GetConstructor(this Type t, BindingFlags bindingFlags, object c, Type[] paramTypes, object d)
     {
+      if (paramTypes.Length > 0)
+        throw new NotImplementedException();
       var ti = t.GetTypeInfo();
       var m = ti.DeclaredConstructors.Where(r => r.GetParameters().Count() == 0);
+      if (!((bindingFlags & BindingFlags.Instance) > 0))
+        m = m.Where(r => r.IsStatic);
+      if (!((bindingFlags & BindingFlags.Static) > 0))
+        m = m.Where(r => !r.IsStatic);
+      if (!((bindingFlags & BindingFlags.Public) > 0))
+        m = m.Where(r => !r.IsPublic);
+      if (!((bindingFlags & BindingFlags.NonPublic) > 0))
+        m = m.Where(r => r.IsPublic);
       return m.FirstOrDefault();
     }
 
@@ -236,7 +246,7 @@ namespace Csla.Reflection
       return tinfo.IsSerializable;
 #elif NETFX_CORE
       var tinfo = t.GetTypeInfo();
-      var result = tinfo.GetCustomAttributes(typeof(SerializableAttribute), false);
+      var result = tinfo.CustomAttributes.Where(r => r.AttributeType.FullName == "System.SerializableAttribute");
       return (result != null && result.Count() > 0);
 #endif
     }

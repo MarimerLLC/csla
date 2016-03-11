@@ -20,7 +20,7 @@ namespace Csla.Security
   /// authenticates against the ASP.NET membership provider.
   /// </summary>
 #if !(ANDROID || IOS) && !NETFX_CORE
-	[Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
+  [Csla.Server.MobileFactory("Csla.Web.Security.IdentityWebFactory,Csla.Web")]
   [Csla.Server.ObjectFactory("Csla.Web.Security.IdentityAppFactory,Csla.Web")]
 #endif
   [Serializable]
@@ -46,16 +46,6 @@ namespace Csla.Security
 
     #region OnDeserialized
 
-#if (ANDROID || IOS) || NETFX_CORE
-    /// <summary>
-    /// Method invoked when the object is deserialized.
-    /// </summary>
-    protected override void OnDeserialized(StreamingContext context)
-    {
-      _forceInit = _forceInit + 0;
-      base.OnDeserialized(context);
-    }
-#else
     /// <summary>
     /// Method invoked when the object is deserialized.
     /// </summary>
@@ -65,7 +55,6 @@ namespace Csla.Security
       _forceInit = _forceInit + 0;
       base.OnDeserialized(context);
     }
-#endif
 
     #endregion
 

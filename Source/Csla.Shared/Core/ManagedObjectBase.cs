@@ -467,7 +467,8 @@ namespace Csla.Core
 
     #region OnDeserialized
 
-#if !ANDROID && !IOS
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+
     [System.Runtime.Serialization.OnDeserialized()]
 #endif
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)

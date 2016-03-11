@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
@@ -24,6 +23,7 @@ using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
+using System.Collections.Concurrent;
 
 namespace Csla
 {
@@ -110,10 +110,10 @@ namespace Csla
 
     [NotUndoable()]
     [NonSerialized()]
-    private Dictionary<string, bool> _readResultCache;
+    private ConcurrentDictionary<string, bool> _readResultCache;
     [NotUndoable()]
     [NonSerialized()]
-    private Dictionary<string, bool> _executeResultCache;
+    private ConcurrentDictionary<string, bool> _executeResultCache;
     [NotUndoable()]
     [NonSerialized()]
     private System.Security.Principal.IPrincipal _lastPrincipal;
@@ -200,9 +200,8 @@ namespace Csla
       {
         result = BusinessRules.HasPermission(AuthorizationActions.ReadProperty, property);
         // store value in cache
-        _readResultCache[property.Name] = result;
+        _readResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
       }
-
       return result;
     }
 
@@ -273,9 +272,9 @@ namespace Csla
     private void VerifyAuthorizationCache()
     {
       if (_readResultCache == null)
-        _readResultCache = new Dictionary<string, bool>();
+        _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
-        _executeResultCache = new Dictionary<string, bool>();
+        _executeResultCache = new ConcurrentDictionary<string, bool>();
       if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
@@ -301,7 +300,7 @@ namespace Csla
       if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
         result = BusinessRules.HasPermission(AuthorizationActions.ExecuteMethod, method);
-        _executeResultCache[method.Name] = result;
+        _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
       }
       return result;
     }
@@ -487,13 +486,13 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new StreamingContext());
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
-    [OnDeserialized()]
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+    [System.Runtime.Serialization.OnDeserialized()]
 #endif
-    private void OnDeserializedHandler(StreamingContext context)
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
@@ -507,7 +506,7 @@ namespace Csla
     /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
       // do nothing - this is here so a subclass
       // could override if needed

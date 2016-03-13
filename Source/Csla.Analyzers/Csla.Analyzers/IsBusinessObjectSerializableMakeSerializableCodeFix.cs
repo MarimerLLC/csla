@@ -11,7 +11,7 @@ using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
 {
-  [ExportCodeFixProvider(IsBusinessObjectSerializableConstants.DiagnosticId, LanguageNames.CSharp)]
+  [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class IsBusinessObjectSerializableMakeSerializableCodeFix
     : CodeFixProvider

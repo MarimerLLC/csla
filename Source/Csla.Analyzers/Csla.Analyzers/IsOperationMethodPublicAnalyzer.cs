@@ -18,11 +18,18 @@ namespace Csla.Analyzers
       IsOperationMethodPublicAnalyzerConstants.Message, IsOperationMethodPublicAnalyzerConstants.Category,
       DiagnosticSeverity.Warning, true);
 
+    private static DiagnosticDescriptor makeNonPublicForInterfaceRule = new DiagnosticDescriptor(
+      IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId, IsOperationMethodPublicAnalyzerConstants.Title,
+      IsOperationMethodPublicAnalyzerConstants.Message, IsOperationMethodPublicAnalyzerConstants.Category,
+      DiagnosticSeverity.Warning, true);
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
     {
       get
       {
-        return ImmutableArray.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule);
+        return ImmutableArray.Create(
+          IsOperationMethodPublicAnalyzer.makeNonPublicRule,
+          IsOperationMethodPublicAnalyzer.makeNonPublicForInterfaceRule);
       }
     }
 
@@ -36,18 +43,27 @@ namespace Csla.Analyzers
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
-      var classSymbol = methodSymbol.ContainingType;
+      var typeSymbol = methodSymbol.ContainingType;
 
-      if (classSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation() &&
+      if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation() &&
         methodSymbol.DeclaredAccessibility == Accessibility.Public)
       {
-        var properties = new Dictionary<string, string>()
+        if(typeSymbol.TypeKind == TypeKind.Interface)
         {
-          [IsOperationMethodPublicAnalyzerConstants.IsSealed] = classSymbol.IsSealed.ToString()
-        }.ToImmutableDictionary();
+          context.ReportDiagnostic(Diagnostic.Create(
+            IsOperationMethodPublicAnalyzer.makeNonPublicForInterfaceRule,
+            methodNode.Identifier.GetLocation()));
+        }
+        else
+        {
+          var properties = new Dictionary<string, string>()
+          {
+            [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
+          }.ToImmutableDictionary();
 
-        context.ReportDiagnostic(Diagnostic.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule,
-          methodNode.Identifier.GetLocation(), properties));
+          context.ReportDiagnostic(Diagnostic.Create(IsOperationMethodPublicAnalyzer.makeNonPublicRule,
+            methodNode.Identifier.GetLocation(), properties));
+        }
       }
     }
   }

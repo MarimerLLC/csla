@@ -197,6 +197,12 @@
     <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsUsedByPropertyInfoManagement.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

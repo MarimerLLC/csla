@@ -1,8 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,6 +47,22 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasStaticProperty))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression))}.cs",
         new string[0]);
     }
 

@@ -3,6 +3,14 @@ using Csla.Core;
 using System;
 using System.Threading.Tasks;
 
+[Serializable]
+public class ExpressionBodiedMember
+  : BusinessBase<ExpressionBodiedMember>
+{
+  public readonly static PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+  public int ResourceId => ReadProperty(ResourceIdProperty);
+}
+
 public interface IBO
   : IBusinessObject
 {

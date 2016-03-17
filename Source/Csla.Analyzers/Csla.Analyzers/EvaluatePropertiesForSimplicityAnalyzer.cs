@@ -59,26 +59,18 @@ namespace Csla.Analyzers
 
     private static void AnalyzePropertyGetter(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)
     {
-      var getter = propertyNode.AccessorList.Accessors.Single(
-        _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
-
-      var getterWalker = new FindGetOrReadInvocationsWalker(getter, context.SemanticModel);
-
-      if(getterWalker.Invocation != null)
+      if(propertyNode.ExpressionBody == null)
       {
-        var getterStatements = getter.Statements;
+        var getter = propertyNode.AccessorList.Accessors.Single(
+          _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
 
-        if (getterStatements.Count != 1)
-        {
-          context.ReportDiagnostic(Diagnostic.Create(
-            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
-            getter.GetLocation()));
-        }
-        else
-        {
-          var returnNode = getterStatements[0] as ReturnStatementSyntax;
+        var getterWalker = new FindGetOrReadInvocationsWalker(getter, context.SemanticModel);
 
-          if(returnNode == null)
+        if (getterWalker.Invocation != null)
+        {
+          var getterStatements = getter.Statements;
+
+          if (getterStatements.Count != 1)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
@@ -86,14 +78,25 @@ namespace Csla.Analyzers
           }
           else
           {
-            var invocation = returnNode.ChildNodes().SingleOrDefault(
-              _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
+            var returnNode = getterStatements[0] as ReturnStatementSyntax;
 
-            if(invocation == null || invocation != getterWalker.Invocation)
+            if (returnNode == null)
             {
               context.ReportDiagnostic(Diagnostic.Create(
                 EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
                 getter.GetLocation()));
+            }
+            else
+            {
+              var invocation = returnNode.ChildNodes().SingleOrDefault(
+                _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
+
+              if (invocation == null || invocation != getterWalker.Invocation)
+              {
+                context.ReportDiagnostic(Diagnostic.Create(
+                  EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
+                  getter.GetLocation()));
+              }
             }
           }
         }

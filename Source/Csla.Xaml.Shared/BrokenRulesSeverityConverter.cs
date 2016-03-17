@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="BrokenRulesSeverityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -24,7 +24,7 @@ namespace Csla.Xaml
   /// </summary>
   public class BrokenRuleSeverityConverter : IValueConverter
   {
-    #region IValueConverter Members
+#region IValueConverter Members
 
     /// <summary>
     /// Converts validation severity values into corresponding
@@ -64,7 +64,7 @@ namespace Csla.Xaml
       return RuleSeverity.Error;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

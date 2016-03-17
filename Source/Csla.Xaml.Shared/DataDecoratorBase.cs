@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !PCL36
+#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="DataDecoratorBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -112,7 +112,7 @@ namespace Csla.Xaml
       }
     }
 
-    #region Hook/unhook events
+#region Hook/unhook events
 
     private void UnHookDataContextEvents(object oldValue)
     {
@@ -210,9 +210,9 @@ namespace Csla.Xaml
         newContext.CollectionChanged += DataObject_CollectionChanged;
     }
 
-    #endregion
+#endregion
 
-    #region Handle events
+#region Handle events
 
     private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
@@ -234,9 +234,9 @@ namespace Csla.Xaml
       DataObservableCollectionChanged(e);
     }
 
-    #endregion
+#endregion
 
-    #region Virtual methods
+#region Virtual methods
 
     /// <summary>
     /// This method is called when a property
@@ -279,9 +279,9 @@ namespace Csla.Xaml
       // may be overridden by subclass
     }
 
-    #endregion
+#endregion
 
-    #region FindingBindings
+#region FindingBindings
 
     /// <summary>
     /// Scans all child controls of this panel
@@ -332,7 +332,7 @@ namespace Csla.Xaml
     {
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

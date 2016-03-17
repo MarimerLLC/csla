@@ -1,4 +1,4 @@
-git log v4.5.701..HEAD --no-merges --format='%cn,%cE,%s' | awk '
+git log $1..HEAD --no-merges --format='%cn,%cE,%s' | awk '
 BEGIN {
     FS=","
 }

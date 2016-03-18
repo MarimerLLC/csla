@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Dashboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectEdit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResourceEdit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResourceList.cs" />
   </ItemGroup>

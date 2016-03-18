@@ -59,18 +59,58 @@ namespace Csla.Analyzers
 
     private static void AnalyzePropertyGetter(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)
     {
-      if(propertyNode.ExpressionBody == null)
+      if (propertyNode.ExpressionBody == null)
       {
-        var getter = propertyNode.AccessorList.Accessors.Single(
-          _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
+        EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyGetterWithGet(propertyNode, context);
+      }
+      else
+      {
+        EvaluatePropertiesForSimplicityAnalyzer.AnalyzePropertyGetterWithExpressionBody(propertyNode, context);
+      }
+    }
 
-        var getterWalker = new FindGetOrReadInvocationsWalker(getter, context.SemanticModel);
+    private static void AnalyzePropertyGetterWithExpressionBody(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)
+    {
+      var getterExpression = propertyNode.ExpressionBody.Expression;
+      var getterChildren = getterExpression.DescendantNodes(_ => true).ToImmutableArray();
 
-        if (getterWalker.Invocation != null)
+      if (getterChildren.Length > 1)
+      {
+        var getterWalker = new FindGetOrReadInvocationsWalker(
+          getterExpression, context.SemanticModel);
+
+        if (getterWalker.Invocation != null &&
+          getterChildren.Contains(getterWalker.Invocation))
         {
-          var getterStatements = getter.Statements;
+          context.ReportDiagnostic(Diagnostic.Create(
+            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
+            getterExpression.GetLocation()));
+        }
+      }
+    }
 
-          if (getterStatements.Count != 1)
+    private static void AnalyzePropertyGetterWithGet(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)
+    {
+      var getter = propertyNode.AccessorList.Accessors.Single(
+        _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
+
+      var getterWalker = new FindGetOrReadInvocationsWalker(getter, context.SemanticModel);
+
+      if (getterWalker.Invocation != null)
+      {
+        var getterStatements = getter.Statements;
+
+        if (getterStatements.Count != 1)
+        {
+          context.ReportDiagnostic(Diagnostic.Create(
+            EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
+            getter.GetLocation()));
+        }
+        else
+        {
+          var returnNode = getterStatements[0] as ReturnStatementSyntax;
+
+          if (returnNode == null)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
@@ -78,25 +118,14 @@ namespace Csla.Analyzers
           }
           else
           {
-            var returnNode = getterStatements[0] as ReturnStatementSyntax;
+            var invocation = returnNode.ChildNodes().SingleOrDefault(
+              _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
 
-            if (returnNode == null)
+            if (invocation == null || invocation != getterWalker.Invocation)
             {
               context.ReportDiagnostic(Diagnostic.Create(
                 EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
                 getter.GetLocation()));
-            }
-            else
-            {
-              var invocation = returnNode.ChildNodes().SingleOrDefault(
-                _ => _.IsKind(SyntaxKind.InvocationExpression)) as InvocationExpressionSyntax;
-
-              if (invocation == null || invocation != getterWalker.Invocation)
-              {
-                context.ReportDiagnostic(Diagnostic.Create(
-                  EvaluatePropertiesForSimplicityAnalyzer.onlyUseCslaPropertyMethodsInGetSetRule,
-                  getter.GetLocation()));
-              }
             }
           }
         }

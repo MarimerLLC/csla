@@ -35,106 +35,90 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasAbstractProperty()
+    public async Task AnalyzeWhenClassHasAbstractProperty()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasAbstractProperty))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasAbstractProperty))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasStaticProperty()
+    public async Task AnalyzeWhenClassHasStaticProperty()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasStaticProperty))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasStaticProperty))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall()
+    public async Task AnalyzeWhenClassHasGetterWithNoMethodCall()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithNoMethodCall))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression()
+    public async Task AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasGetterWithNoMethodCall()
+    public async Task AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasGetterWithNoMethodCall))}.cs",
-        new string[0]);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        new string[0]);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndMultipleStatements()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndMultipleStatements))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements))}.cs",
         new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression()
+    public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression))}.cs",
+        new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasSetterWithNoMethodCall()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithNoMethodCall))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
+        new string[0]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements))}.cs",
         new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnAndDirectInvocationExpression()
+    public async Task AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression()
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnAndDirectInvocationExpression))}.cs",
-        new string[0]);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasSetterWithNoMethodCall()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasSetterWithNoMethodCall))}.cs",
-        new string[0]);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallButIsNotCslaPropertyMethod()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        new string[0]);
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements))}.cs",
-        new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
-    }
-
-    [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression()
-    {
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression))}.cs",
+        $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression))}.cs",
         new string[0]);
     }
   }

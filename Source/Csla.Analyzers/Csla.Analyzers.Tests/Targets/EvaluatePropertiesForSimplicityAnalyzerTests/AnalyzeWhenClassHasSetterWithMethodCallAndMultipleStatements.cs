@@ -1,7 +1,7 @@
 ﻿namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerTests
 {
-  public class AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements
-    : BusinessBase<AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements>
+  public class AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements
+    : BusinessBase<AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements>
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
     private string _x;

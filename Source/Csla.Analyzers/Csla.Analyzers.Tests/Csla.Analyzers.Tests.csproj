@@ -197,43 +197,37 @@
     <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsUsedByPropertyInfoManagement.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPropertyUsingExpressionBodyWithNoMethodCall.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnAndDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndMultipleStatements.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithNoMethodCall.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithNoMethodCall.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithNoMethodCall.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasStaticProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithNoMethodCall.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasStaticProperty.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasAbstractProperty.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasAbstractProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">

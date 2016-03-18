@@ -99,8 +99,9 @@ namespace Csla.Analyzers
         var propertyNode = context.Node.SyntaxTree.GetRoot().FindNode(
           classProperty.Locations[0].SourceSpan) as PropertyDeclarationSyntax;
 
-        var getter = propertyNode.AccessorList.Accessors.Single(
-          _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
+        var getter = propertyNode.ExpressionBody as SyntaxNode ?? 
+          propertyNode.AccessorList.Accessors.Single(
+            _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
 
         if(new EvaluateManagedBackingFieldsWalker(getter, context.SemanticModel, fieldSymbol).UsesField)
         {

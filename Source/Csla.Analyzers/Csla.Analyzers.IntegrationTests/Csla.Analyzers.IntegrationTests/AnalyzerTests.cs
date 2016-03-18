@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public class ExpressionBodiedMember
   : BusinessBase<ExpressionBodiedMember>
 {
-  public readonly static PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+  public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
   public int ResourceId => ReadProperty(ResourceIdProperty);
 }
 

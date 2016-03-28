@@ -111,7 +111,7 @@ namespace Csla.Server
         _principal = principal;
         _remotePortal = isRemotePortal;
 #if NETFX_CORE
-        _clientCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+        _clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
         _clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 #else
         _clientCulture = 

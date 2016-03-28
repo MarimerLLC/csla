@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 
 namespace Csla.Analyzers
 {
-  [ExportCodeFixProvider(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, LanguageNames.CSharp)]
+  [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFix
     : CodeFixProvider

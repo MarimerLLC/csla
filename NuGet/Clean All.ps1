@@ -17,7 +17,7 @@ try
     $originalBackground = $host.UI.RawUI.BackgroundColor
     $originalForeground = $host.UI.RawUI.ForegroundColor
     $originalLocation = Get-Location
-    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "UWP", "Silverlight", "Windows Forms", "Windows Phone", "Windows Phone WinRT", "WPF", "Windows Runtime", "MonoAndroid", "MonoTouch", "Data EF4", "Data EF5", "Data EF6", "Templates", "UpdateValidation")
+    $packages = @("Core", "ASP.NET", "ASP.NET MVC 5", "ASP.NET MVC 4", "UWP", "Silverlight", "Windows Forms", "Windows Phone", "Windows Phone WinRT", "WPF", "Windows Runtime", "MonoAndroid", "MonoTouch", "Data EF4", "Data EF5", "Data EF6", "Data EF7", "Templates", "UpdateValidation")
     
     $host.UI.RawUI.BackgroundColor = [System.ConsoleColor]::Black
     $host.UI.RawUI.ForegroundColor = [System.ConsoleColor]::White

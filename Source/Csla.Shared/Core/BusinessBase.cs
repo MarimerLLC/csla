@@ -6,11 +6,11 @@
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
@@ -441,13 +441,13 @@ namespace Csla.Core
 
     [NotUndoable]
     [NonSerialized]
-    private Dictionary<string, bool> _readResultCache;
+    private ConcurrentDictionary<string, bool> _readResultCache;
     [NotUndoable]
     [NonSerialized]
-    private Dictionary<string, bool> _writeResultCache;
+    private ConcurrentDictionary<string, bool> _writeResultCache;
     [NotUndoable]
     [NonSerialized]
-    private Dictionary<string, bool> _executeResultCache;
+    private ConcurrentDictionary<string, bool> _executeResultCache;
     [NotUndoable]
     [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
@@ -460,7 +460,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
-      bool result = true;
+      var result = true;
 
       VerifyAuthorizationCache();
 
@@ -470,7 +470,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ReadProperty, property))
         {
           // store value in cache
-          _readResultCache[property.Name] = result;
+          _readResultCache.AddOrUpdate(property.Name, result, (a,b) => { return result; });
         }
       }
 
@@ -549,7 +549,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))
         {
           // store value in cache
-          _writeResultCache[property.Name] = result;
+          _writeResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
         }
       }
       return result;
@@ -611,11 +611,11 @@ namespace Csla.Core
     private void VerifyAuthorizationCache()
     {
       if (_readResultCache == null)
-        _readResultCache = new Dictionary<string, bool>();
+        _readResultCache = new ConcurrentDictionary<string, bool>();
       if (_writeResultCache == null)
-        _writeResultCache = new Dictionary<string, bool>();
+        _writeResultCache = new ConcurrentDictionary<string, bool>();
       if (_executeResultCache == null)
-        _executeResultCache = new Dictionary<string, bool>();
+        _executeResultCache = new ConcurrentDictionary<string, bool>();
       if (!ReferenceEquals(Csla.ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
@@ -645,7 +645,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ExecuteMethod, method))
         {
           // store value in cache
-          _executeResultCache[method.Name] = result;
+          _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
         }
       }
       return result;
@@ -1363,13 +1363,13 @@ namespace Csla.Core
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new StreamingContext());
+      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-#if !IOS
-    [OnDeserialized]
+#if !NETFX_CORE || PCL46 || WINDOWS_UWP
+    [System.Runtime.Serialization.OnDeserialized]
 #endif
-    private void OnDeserializedHandler(StreamingContext context)
+    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       BusinessRules.SetTarget(this);
       if (_fieldManager != null)
@@ -1386,7 +1386,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="context">Serialization context object.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(StreamingContext context)
+    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     { }
 
     #endregion

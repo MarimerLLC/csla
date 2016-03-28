@@ -41,13 +41,12 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
-      <Link>Properties\Resources.Designer.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Csla.Shared.Resources\CslaPrivate.resx">
@@ -107,11 +106,6 @@
     <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.pt.resx">
       <Link>Properties\Resources.pt.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.resx">
-      <Link>Properties\Resources.resx</Link>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ro.resx">
       <Link>Properties\Resources.ro.resx</Link>
     </EmbeddedResource>
@@ -139,9 +133,16 @@
     <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.zh-TW.resx">
       <Link>Properties\Resources.zh-TW.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>copy "$(SolutionDir)Csla.Shared.Resources\Resources.resx" "$(ProjectDir)Properties\Resources.resx"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

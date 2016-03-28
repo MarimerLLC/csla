@@ -161,6 +161,7 @@
     <Compile Include="DataPortal\AsynchDataPortalTest.cs" />
     <Compile Include="DataPortal\ChildEntity.cs" />
     <Compile Include="DataPortal\ChildEntityList.cs" />
+    <Compile Include="DataPortal\DataPortalExceptionTest.cs" />
     <Compile Include="DataPortal\InterceptorTests.cs" />
     <Compile Include="DataPortal\Legacy.cs" />
     <Compile Include="DataPortal\LegacySplit.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="PropertyGetSet\PropertyGetSetTests.cs" />
     <Compile Include="PropertyInfo\PropertyInfoRoot.cs" />
     <Compile Include="PropertyInfo\PropertyInfoTests.cs" />
+    <Compile Include="Reflection\GetConstructor.cs" />
     <Compile Include="RollBack\RollbackRoot.cs" />
     <Compile Include="RollBack\RollBackTests.cs" />
     <Compile Include="SafeDataReader\SafeDataReaderTests.cs" />

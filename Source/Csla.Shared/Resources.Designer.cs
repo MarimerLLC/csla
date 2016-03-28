@@ -28,10 +28,14 @@ namespace Csla.Properties
 
     private static string GetResourceString([CallerMemberName] string resourceName = null)
     {
+#if PCL46 // rely on NuGet bait-and-switch for actual implementation
+      return null;
+#else
 #pragma warning disable
       var loader = new Windows.ApplicationModel.Resources.ResourceLoader("Csla/Resources");
 #pragma warning enable
       return loader.GetString(resourceName);
+#endif
     }
 
     /// <summary>

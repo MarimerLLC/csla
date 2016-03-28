@@ -36,54 +36,54 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.1.0.0\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.1.1.1\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.0.0\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.1.1\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Collections.Immutable.1.1.36\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.AttributedModel, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.Convention, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+    <Reference Include="System.Composition.Convention, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.Hosting, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+    <Reference Include="System.Composition.Hosting, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.Runtime, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+    <Reference Include="System.Composition.Runtime, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Reflection.Metadata, Version=1.0.21.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Reflection.Metadata.1.0.21\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+    <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
@@ -170,19 +170,19 @@
     <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasNoInvocations.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotStatic.cs">
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotPublic.cs">
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedProperty.cs">
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldNotUsedByProperty.cs">
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
@@ -197,37 +197,37 @@
     <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsUsedByPropertyInfoManagement.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallAndMultipleStatements.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnAndDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallAndMultipleStatements.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasSetterWithNoMethodCall.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithNoMethodCall.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasGetterWithNoMethodCall.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithNoMethodCall.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasStaticProperty.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasStaticProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasAbstractProperty.cs">
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasAbstractProperty.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
@@ -356,6 +356,9 @@
     <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -401,19 +404,19 @@
     <Compile Include="Targets\IMethodSymbolExtensionsTests\IsDataPortalOperation.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsStereotypeAndMethodIsNotADataPortalOperation.cs">
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndIsNotSerializable.cs">
@@ -443,9 +446,6 @@
     <Compile Include="TestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Csla.Net4.6\Csla.Net4.6.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
       <Name>Csla</Name>
@@ -459,10 +459,13 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

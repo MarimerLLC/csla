@@ -811,7 +811,7 @@ namespace Csla.Xaml
     protected virtual void OnRefreshed()
     { }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS) && !NETFX_CORE && !PCL36
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.

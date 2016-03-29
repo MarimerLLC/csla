@@ -6,7 +6,7 @@ namespace Csla.Analyzers.IntegrationTests
   public partial class PartialClass
     : BusinessBase<PartialClass>
   {
-    public readonly static PropertyInfo<string> DataProperty = RegisterProperty<string>(p => p.Data);
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(p => p.Data);
     public string Data => GetProperty(DataProperty);
   }
 }

@@ -43,8 +43,8 @@ namespace Csla.Analyzers
 
       newFieldNode = newFieldNode.WithModifiers(SyntaxFactory.TokenList(
           SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword),
-          SyntaxFactory.Token(SyntaxKind.StaticKeyword)));
+          SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)));
 
       var newRoot = root.ReplaceNode(fieldNode, newFieldNode);
 

@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
@@ -91,54 +92,50 @@ namespace Csla.Analyzers
       }
     }
 
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, 
+      IFieldSymbol fieldSymbol, IPropertySymbol classProperty, 
+      Func<PropertyDeclarationSyntax, SyntaxNode> propertyBody)
+    {
+      var root = context.Node.SyntaxTree.GetRoot();
+      var rootSpan = root.FullSpan;
+      var classPropertyLocationSpan = classProperty.Locations[0].SourceSpan;
+
+      if (rootSpan.Contains(classPropertyLocationSpan))
+      {
+        var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
+
+        if (propertyNode != null)
+        {
+          var getter = propertyBody(propertyNode);
+
+          if (new EvaluateManagedBackingFieldsWalker(getter, context.SemanticModel, fieldSymbol).UsesField)
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
     private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
       IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {
-        var root = context.Node.SyntaxTree.GetRoot();
-        var rootSpan = root.FullSpan;
-        var classPropertyLocationSpan = classProperty.Locations[0].SourceSpan;
-
-        if (rootSpan.Contains(classPropertyLocationSpan))
-        {
-          var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
-
-          if (propertyNode != null)
-          {
-            var getter = propertyNode.ExpressionBody as SyntaxNode ??
-              propertyNode.AccessorList.Accessors.Single(
-                _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
-
-            if (new EvaluateManagedBackingFieldsWalker(getter, context.SemanticModel, fieldSymbol).UsesField)
-            {
-              return true;
-            }
-          }
-        }
+        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
+          context, fieldSymbol, classProperty,
+          propertyNode => propertyNode.ExpressionBody as SyntaxNode ??
+            propertyNode.AccessorList.Accessors.Single(
+              _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body);
       }
 
       if (classProperty.SetMethod != null)
       {
-        var root = context.Node.SyntaxTree.GetRoot();
-        var rootSpan = root.FullSpan;
-        var classPropertyLocationSpan = classProperty.Locations[0].SourceSpan;
-
-        if (rootSpan.Contains(classPropertyLocationSpan))
-        {
-          var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
-
-          if (propertyNode != null)
-          {
-            var setter = propertyNode.AccessorList.Accessors.Single(
-              _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body;
-
-            if (new EvaluateManagedBackingFieldsWalker(setter, context.SemanticModel, fieldSymbol).UsesField)
-            {
-              return true;
-            }
-          }
-        }
+        return EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
+          context, fieldSymbol, classProperty,
+          propertyNode => propertyNode.AccessorList.Accessors.Single(
+            _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body);
       }
 
       return false;

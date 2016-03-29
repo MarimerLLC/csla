@@ -32,12 +32,12 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested) { return; }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var fieldNode = root.FindNode(diagnostic.Location.SourceSpan) as FieldDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested) { return; }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var newFieldNode = fieldNode;
 

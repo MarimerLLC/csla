@@ -37,14 +37,14 @@ namespace Csla.Analyzers
     {
       var fieldNode = (FieldDeclarationSyntax)context.Node;
 
-      if(!fieldNode.ContainsDiagnostics)
+      if (!fieldNode.ContainsDiagnostics)
       {
-        foreach(var variable in fieldNode.Declaration.Variables)
+        foreach (var variable in fieldNode.Declaration.Variables)
         {
           var fieldSymbol = context.SemanticModel.GetDeclaredSymbol(variable) as IFieldSymbol;
           var classSymbol = fieldSymbol?.ContainingType;
 
-          if (context.CancellationToken.IsCancellationRequested) { break; }
+          context.CancellationToken.ThrowIfCancellationRequested();
 
           if (fieldSymbol != null && classSymbol != null &&
             classSymbol.IsStereotype())
@@ -62,7 +62,7 @@ namespace Csla.Analyzers
                     if (EvaluateManagedBackingFieldsAnalayzer.DetermineIfPropertyUsesField(
                       context, fieldSymbol, classProperty))
                     {
-                      if (context.CancellationToken.IsCancellationRequested) { break; }
+                      context.CancellationToken.ThrowIfCancellationRequested();
 
                       EvaluateManagedBackingFieldsAnalayzer.CheckForDiagnostics(
                         context, fieldNode, fieldSymbol);
@@ -83,7 +83,7 @@ namespace Csla.Analyzers
       var isPublic = fieldSymbol.DeclaredAccessibility.HasFlag(Accessibility.Public);
       var isReadOnly = fieldSymbol.IsReadOnly;
 
-      if(!isStatic || !isPublic || !isReadOnly)
+      if (!isStatic || !isPublic || !isReadOnly)
       {
         context.ReportDiagnostic(Diagnostic.Create(
           EvaluateManagedBackingFieldsAnalayzer.mustBePublicStaticAndReadonlyRule,
@@ -91,35 +91,53 @@ namespace Csla.Analyzers
       }
     }
 
-    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, 
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
       IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {
-        var propertyNode = context.Node.SyntaxTree.GetRoot().FindNode(
-          classProperty.Locations[0].SourceSpan) as PropertyDeclarationSyntax;
+        var root = context.Node.SyntaxTree.GetRoot();
+        var rootSpan = root.FullSpan;
+        var classPropertyLocationSpan = classProperty.Locations[0].SourceSpan;
 
-        var getter = propertyNode.ExpressionBody as SyntaxNode ?? 
-          propertyNode.AccessorList.Accessors.Single(
-            _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
-
-        if(new EvaluateManagedBackingFieldsWalker(getter, context.SemanticModel, fieldSymbol).UsesField)
+        if (rootSpan.Contains(classPropertyLocationSpan))
         {
-          return true;
+          var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
+
+          if (propertyNode != null)
+          {
+            var getter = propertyNode.ExpressionBody as SyntaxNode ??
+              propertyNode.AccessorList.Accessors.Single(
+                _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)).Body;
+
+            if (new EvaluateManagedBackingFieldsWalker(getter, context.SemanticModel, fieldSymbol).UsesField)
+            {
+              return true;
+            }
+          }
         }
       }
 
       if (classProperty.SetMethod != null)
       {
-        var propertyNode = context.Node.SyntaxTree.GetRoot().FindNode(
-          classProperty.Locations[0].SourceSpan) as PropertyDeclarationSyntax;
+        var root = context.Node.SyntaxTree.GetRoot();
+        var rootSpan = root.FullSpan;
+        var classPropertyLocationSpan = classProperty.Locations[0].SourceSpan;
 
-        var setter = propertyNode.AccessorList.Accessors.Single(
-          _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body;
-
-        if (new EvaluateManagedBackingFieldsWalker(setter, context.SemanticModel, fieldSymbol).UsesField)
+        if (rootSpan.Contains(classPropertyLocationSpan))
         {
-          return true;
+          var propertyNode = root.FindNode(classPropertyLocationSpan) as PropertyDeclarationSyntax;
+
+          if (propertyNode != null)
+          {
+            var setter = propertyNode.AccessorList.Accessors.Single(
+              _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)).Body;
+
+            if (new EvaluateManagedBackingFieldsWalker(setter, context.SemanticModel, fieldSymbol).UsesField)
+            {
+              return true;
+            }
+          }
         }
       }
 

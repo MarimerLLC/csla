@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for WinRT (Xaml)")]
-[assembly: AssemblyDescription("CSLA .NET Xaml")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (WinRT)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

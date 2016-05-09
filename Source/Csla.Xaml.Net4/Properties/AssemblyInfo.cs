@@ -15,7 +15,7 @@ using System.Windows.Markup;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for Windows (Xaml) for NET 4")]
-[assembly: AssemblyDescription("CSLA .NET Xaml for NET 4")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (NET 4)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

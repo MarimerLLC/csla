@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="PropertyStatus.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -62,7 +62,7 @@ namespace Csla.Xaml
     }
 
 
-    #region Constructors
+#region Constructors
 
     private bool _loading = true;
 
@@ -113,9 +113,9 @@ namespace Csla.Xaml
       UpdateState();
     }
 
-    #endregion
+#endregion
 
-    #region Source property
+#region Source property
 
     /// <summary>
     /// Gets or sets the source business
@@ -331,10 +331,10 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
 #if SILVERLIGHT4
-    #region MyDataContext Property
+#region MyDataContext Property
     /// <summary>   
     /// Workaround for DataContextChanged event that is intenal in SL4 to catch when the DataContext is changed   
     /// http://msmvps.com/blogs/theproblemsolver/archive/2008/12/29/how-to-know-when-the-datacontext-changed-in-your-control.aspx   
@@ -351,10 +351,10 @@ namespace Csla.Xaml
     }
 
 
-    #endregion
-#endif 
+#endregion
+#endif
 
-    #region BrokenRules property
+#region BrokenRules property
 
     /// <summary>
     /// Gets the broken rules collection from the
@@ -377,9 +377,9 @@ namespace Csla.Xaml
       private set { SetValue(BrokenRulesProperty, value); }
     }
 
-    #endregion
+#endregion
 
-    #region State properties
+#region State properties
 
     private bool _canRead = true;
     /// <summary>
@@ -497,9 +497,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Image
+#region Image
 
     private void EnablePopup(FrameworkElement image)
     {
@@ -585,9 +585,9 @@ namespace Csla.Xaml
       popup.IsOpen = false;
     }
 
-    #endregion
+#endregion
 
-    #region State management
+#region State management
 
     /// <summary>
     /// Updates the state on control Property.
@@ -706,9 +706,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Helpers
+#region Helpers
 
     /// <summary>
     /// Find child dependency property.
@@ -735,9 +735,9 @@ namespace Csla.Xaml
       return found;
     }
 
-    #endregion
+#endregion
 
-    #region INotifyPropertyChanged Members
+#region INotifyPropertyChanged Members
 
     /// <summary>
     /// Event raised when a property has changed.
@@ -754,7 +754,7 @@ namespace Csla.Xaml
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

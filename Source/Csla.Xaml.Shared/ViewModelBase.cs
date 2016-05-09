@@ -19,9 +19,9 @@ using Csla.Security;
 using Csla.Core;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Linq.Expressions;
 #if NETFX_CORE
 using Windows.UI.Xaml;
-using System.Linq.Expressions;
 #endif
 
 #if ANDROID
@@ -37,7 +37,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if ANDROID || IOS
+#if ANDROID || IOS || XAMARIN
     public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
@@ -103,7 +103,7 @@ namespace Csla.Xaml
       /// <summary>
       /// Gets or sets the Model object.
       /// </summary>
-#if ANDROID || IOS
+#if ANDROID || IOS || XAMARIN
     public object ModelProperty;
 #else
     public static readonly DependencyProperty ModelProperty =
@@ -111,11 +111,11 @@ namespace Csla.Xaml
 #endif
 #if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
-#elif ANDROID || IOS
+#elif ANDROID || IOS || XAMARIN
 #else
         new PropertyMetadata((o, e) =>
 #endif
-#if !ANDROID && !IOS
+#if !ANDROID && !IOS && !XAMARIN
         {
           var viewmodel = (ViewModelBase<T>)o;
           if (viewmodel.ManageObjectLifetime)
@@ -129,7 +129,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           viewmodel.OnPropertyChanged("Model");
 #endif
-#if !ANDROID && !IOS
+#if !ANDROID && !IOS && !XAMARIN
   }));
 #endif
     /// <summary>
@@ -137,7 +137,7 @@ namespace Csla.Xaml
     /// </summary>
     public T Model
     {
-#if ANDROID || IOS
+#if ANDROID || IOS || XAMARIN
       get { return (T)ModelProperty; }
       set
       {
@@ -162,7 +162,7 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if ANDROID || IOS
+#if ANDROID || IOS || XAMARIN
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
@@ -178,7 +178,7 @@ namespace Csla.Xaml
     [Display(AutoGenerateField = false)]
     public bool ManageObjectLifetime
     {
-#if ANDROID || IOS
+#if ANDROID || IOS || XAMARIN
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else
@@ -760,7 +760,7 @@ namespace Csla.Xaml
       var innerType = typeof(DataPortalResult<>).MakeGenericType(objectType);
       var args = typeof(EventHandler<>).MakeGenericType(innerType);
 
-#if NETFX_CORE
+#if NETFX_CORE || XAMARIN
       var target = Expression.Constant(this);
       var p1 = new ParameterExpression[] { Expression.Parameter(typeof(object), "sender"), Expression.Parameter(typeof(EventArgs), "args") };
       var call = Expression.Call(target, method, p1);
@@ -811,7 +811,7 @@ namespace Csla.Xaml
     protected virtual void OnRefreshed()
     { }
 
-#if !(ANDROID || IOS) && !NETFX_CORE && !PCL36
+#if !(ANDROID || IOS) && !NETFX_CORE && !PCL36 && !XAMARIN
     /// <summary>
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
@@ -980,7 +980,7 @@ namespace Csla.Xaml
       }
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS) || NETFX_CORE || XAMARIN
     /// <summary>
     /// Adds a new item to the Model (if it
     /// is a collection).

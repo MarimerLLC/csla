@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSLA .NET for UWP")]
-[assembly: AssemblyDescription("CSLA .NET Xaml")]
+[assembly: AssemblyTitle("CSLA .NET for UWP (Xaml)")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (UWP)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]

@@ -45,10 +45,7 @@ namespace Csla.Analyzers
 
       if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
       {
-        if (context.CancellationToken.IsCancellationRequested)
-        {
-          return;
-        }
+        context.CancellationToken.ThrowIfCancellationRequested();
 
         if (invocationSymbol?.Name == "Save")
         {

@@ -1,8 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -38,43 +35,43 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldNotUsedByProperty()
+    public async Task AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty()
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldNotUsedByProperty))}.cs",
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedProperty()
+    public async Task AnalyzeWhenClassHasManagedBackingFieldUsedProperty()
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedProperty))}.cs",
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedProperty))}.cs",
         new string[0]);
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotPublic()
+    public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic()
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotPublic))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic))}.cs",
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotStatic()
+    public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic()
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotStatic))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic))}.cs",
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotReadonly()
+    public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly()
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsStereotypeAndHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
+        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
     }
   }
 }

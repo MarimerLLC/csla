@@ -1,7 +1,7 @@
 ﻿namespace Csla.Analyzers.Tests.Targets.CheckConstructorsAnalyzerTests
 {
-  public class AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod
-    : BusinessBase<AnalyzeWhenClassIsStereotypeAndHasGetterWithMethodCallButIsNotCslaPropertyMethod>
+  public class AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod
+    : BusinessBase<AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod>
   {
     public string Data { get { return this.GetProperty(); } }
 

@@ -501,9 +501,30 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+        #endregion
 
-#region State properties
+    #region State properties
+
+    private object _value = null;
+
+    /// <summary>
+    /// Gets the value of the property 
+    /// from the business object.
+    /// </summary>
+    [Category("Property Status")]
+    public object Value
+    {
+      get { return _value; }
+      protected set
+      {
+        if (value != _value)
+        {
+          _value = value;
+          OnPropertyChanged("Value");
+        }
+      }
+    }
+
 
     private bool _canRead = true;
     /// <summary>
@@ -685,17 +706,19 @@ namespace Csla.Xaml
         RuleDescription = string.Empty;
         IsValid = true;
       }
+
+      Value = MethodCaller.CallPropertyGetter(Source, BindingPath);
     }
 
-#endregion
+        #endregion
 
-#region INotifyPropertyChanged Members
+        #region INotifyPropertyChanged Members
 
 #if !XAMARIN
-    /// <summary>
-    /// Event raised when a property has changed.
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Event raised when a property has changed.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
     /// Raises the PropertyChanged event.

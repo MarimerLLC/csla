@@ -1,26 +1,20 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Csla .NET Support classes for EF7 (server)")]
-[assembly: AssemblyDescription("CSLA .NET Entity Framework 7")]
+[assembly: AssemblyTitle("CSLA .NET for Xamarin Forms (Xaml)")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (Xamarin Forms)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marrimer LLC")]
-[assembly: AssemblyProduct("Csla.Data.EF7")]
-[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyCompany("Marimer LLC")]
+[assembly: AssemblyProduct("CSLA .NET")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4ec3114b-e64b-409c-a97f-f414dbc45c54")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // Version information for an assembly consists of the following four values:
 //

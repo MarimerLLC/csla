@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !PCL36
+#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataProvider.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -60,7 +60,7 @@ namespace Csla.Xaml
       BeginQuery();
     }
 
-    #region Properties
+#region Properties
 
     private Type _objectType = null;
     private bool _manageLifetime;
@@ -226,9 +226,9 @@ namespace Csla.Xaml
       ObjectInstance = tmp;
     }
 
-    #endregion
+#endregion
 
-    #region Query
+#region Query
 
     private bool _firstRun = true;
     private bool _init = false;
@@ -387,7 +387,7 @@ namespace Csla.Xaml
       OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
     }
 
-    #region QueryRequest Class
+#region QueryRequest Class
 
     private class QueryRequest
     {
@@ -425,11 +425,11 @@ namespace Csla.Xaml
 	
     }
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
-    #region Cancel/Update/New/Remove  
+#region Cancel/Update/New/Remove  
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -565,7 +565,7 @@ namespace Csla.Xaml
         list.Remove(item);
     }
 
-    #endregion
+#endregion
 
   }
 }

@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="TriggerAction.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -147,7 +147,7 @@ namespace Csla.Xaml
       }
     }
 
-    #region Properties
+#region Properties
 
     /// <summary>
     /// Gets or sets the target UI control.
@@ -248,9 +248,9 @@ namespace Csla.Xaml
       set { SetValue(RebindParameterDynamicallyProperty, value); }
     }
 
-    #endregion
+#endregion
 
-    #region GetMethodParameter
+#region GetMethodParameter
 
     private object GetMethodParameter()
     {
@@ -284,7 +284,7 @@ namespace Csla.Xaml
       return result;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

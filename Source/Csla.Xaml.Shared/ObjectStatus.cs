@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !PCL36
+#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="ObjectStatus.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -28,7 +28,7 @@ namespace Csla.Xaml
   /// </remarks>
   public class ObjectStatus : DataDecoratorBase
   {
-    #region Per-Type Dependency Properties
+#region Per-Type Dependency Properties
 
     private static readonly DependencyProperty CanCreateProperty =
       DependencyProperty.Register("CanCreateObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
@@ -107,9 +107,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Per-Instance Dependency Properties
+#region Per-Instance Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
       DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
@@ -206,9 +206,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Base Overrides 
+#region Base Overrides 
 
     /// <summary>
     /// This method is called when the data
@@ -315,7 +315,7 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

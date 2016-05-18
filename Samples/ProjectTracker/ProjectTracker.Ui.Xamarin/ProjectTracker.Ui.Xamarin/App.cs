@@ -7,40 +7,39 @@ using Xamarin.Forms;
 
 namespace ProjectTracker.Ui.Xamarin
 {
-  public class App : Application
-  {
-    private Dashboard startPage = new Dashboard();
-
-    public App ()
+    public class App : Application
     {
-      // The root page of your application
-      MainPage = new NavigationPage(startPage);
+        public App()
+        {
+            // The root page of your application
+            MainPage = new ContentPage
+            {
+                Content = new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    Children = {
+                        new Label {
+                            XAlign = TextAlignment.Center,
+                            Text = "Welcome to Xamarin Forms!"
+                        }
+                    }
+                }
+            };
+        }
+
+        protected override void OnStart()
+        {
+            // Handle when your app starts
+        }
+
+        protected override void OnSleep()
+        {
+            // Handle when your app sleeps
+        }
+
+        protected override void OnResume()
+        {
+            // Handle when your app resumes
+        }
     }
-
-    protected async override void OnStart()
-    {
-      // Handle when your app starts
-
-      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
-      Csla.ApplicationContext.DataPortalUrlString = "http://ptrackerserver.azurewebsites.net/api/DataPortal/PostAsync";
-
-      Csla.ApplicationContext.User = new Csla.Security.UnauthenticatedPrincipal();
-
-      await Library.Security.PTPrincipal.LoginAsync("manager", "manager");
-
-      await Library.RoleList.CacheListAsync();
-
-      await startPage.LoadData();
-    }
-
-    protected override void OnSleep ()
-    {
-      // Handle when your app sleeps
-    }
-
-    protected override void OnResume ()
-    {
-      // Handle when your app resumes
-    }
-  }
 }

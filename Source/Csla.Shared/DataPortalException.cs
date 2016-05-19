@@ -63,7 +63,7 @@ namespace Csla
       _innerStackTrace = ex.StackTrace;
     }
 
-#if !NETFX_PHONE
+#if !NETFX_PHONE || PCL46
 #if !NETCORE && !PCL46
     /// <summary>
     /// Creates an instance of the object.
@@ -76,11 +76,11 @@ namespace Csla
     }
 #endif
 
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="info">Info about the exception.</param>
-    public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
+        /// <summary>
+        /// Creates an instance of the object.
+        /// </summary>
+        /// <param name="info">Info about the exception.</param>
+        public DataPortalException(Csla.Server.Hosts.HttpChannel.HttpErrorInfo info)
       : base(info.Message)
     {
       this.ErrorInfo = info;

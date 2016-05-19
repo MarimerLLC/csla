@@ -9,16 +9,18 @@ namespace XamarinFormsUi.ViewModels
 {
   public class ProjectEdit : ViewModel<ProjectTracker.Library.ProjectEdit>
   {
-    private int _projectId;
+    public int ProjectId { get; set; }
+
+    public ProjectEdit() { }
 
     public ProjectEdit(int id)
     {
-      _projectId = id;
+      ProjectId = id;
     }
 
     protected override async Task<ProjectTracker.Library.ProjectEdit> DoInitAsync()
     {
-      Model = await ProjectTracker.Library.ProjectEdit.GetProjectAsync(_projectId);
+      Model = await ProjectTracker.Library.ProjectEdit.GetProjectAsync(ProjectId);
       return Model;
     }
   }

@@ -1,5 +1,5 @@
 using System;
-using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Serialization;
 
@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
   {
     public static PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-    [Display(Name = "Project id")]
+    //[Display(Name = "Project id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -18,7 +18,7 @@ namespace ProjectTracker.Library
     }
 
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-    [Display(Name = "Project name")]
+    //[Display(Name = "Project name")]
     public string Name
     {
       get { return GetProperty(NameProperty); }

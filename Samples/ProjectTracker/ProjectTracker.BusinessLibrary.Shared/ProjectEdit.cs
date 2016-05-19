@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations;
 using Csla;
 using Csla.Data;
 using Csla.Security;
@@ -23,7 +23,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-    [Display(Name = "Project id")]
+    //[Display(Name = "Project id")]
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -32,9 +32,9 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> NameProperty = 
       RegisterProperty<string>(c => c.Name);
-    [Display(Name = "Project name")]
-    [Required]
-    [StringLength(50)]
+    //[Display(Name = "Project name")]
+    //[Required]
+    //[StringLength(50)]
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -79,6 +79,7 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
       BusinessRules.AddRule(
         new StartDateGTEndDate { 
           PrimaryProperty = StartedProperty, 

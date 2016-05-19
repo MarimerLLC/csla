@@ -69,11 +69,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.6.400.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-160518\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-16051901\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Csla.Xaml, Version=4.6.400.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-160518\lib\portable-net45+win8+wpa81\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-16051901\lib\portable-net45+win8+wpa81\Csla.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -123,13 +123,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-160518\analyzers\c#\Csla.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\ProjectEdit.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-16051901\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

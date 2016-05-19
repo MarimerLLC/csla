@@ -7,7 +7,7 @@
       <DataTemplate>
         <ViewCell>
           <StackLayout Orientation="Horizontal">
-            <Button Text="Edit" Margin="3"/>
+            <Button Text="Edit" Margin="3" Clicked="EditItem"/>
             <Label Text="{Binding Name}" Margin="3"/>
           </StackLayout>
         </ViewCell>

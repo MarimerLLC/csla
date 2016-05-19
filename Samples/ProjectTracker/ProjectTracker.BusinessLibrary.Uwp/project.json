@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "CSLA-Core": "4.6.400-Beta-160518",
+    "CSLA-Core": "4.6.400-Beta-16051901",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.1.0"
   },
   "frameworks": {

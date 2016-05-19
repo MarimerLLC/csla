@@ -30,6 +30,11 @@ namespace XamarinFormsUi.ViewModels
       OnPropertyChanged("ItemList");
     }
 
+    internal async void EditItem(ProjectTracker.Library.ProjectInfo item)
+    {
+      await App.NavigateTo(typeof(Views.ProjectEdit), item.Id);
+    }
+
     public ObservableCollection<ProjectInfo> ItemList
     {
       get
@@ -75,10 +80,9 @@ namespace XamarinFormsUi.ViewModels
       {
       }
 
-      public void EditItem()
+      public async void EditItem()
       {
-        App.NavigateTo(typeof(Views.ProjectEdit), 1);
-
+        await App.NavigateTo(typeof(Views.ProjectEdit), 1);
       }
 
       public void RemoveItem()

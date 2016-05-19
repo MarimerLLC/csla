@@ -53,7 +53,7 @@ namespace XamarinFormsUi
       await NavigateTo(target);
     }
 
-    public static async void NavigateTo(Type page, object parameter)
+    public static async Task NavigateTo(Type page, object parameter)
     {
       var target = (Page)Activator.CreateInstance(page, parameter);
       await NavigateTo(target);

@@ -10,9 +10,28 @@ namespace XamarinFormsUi.Views
 {
   public partial class ProjectEdit : ContentPage
   {
+    public int ProjectId { get; private set; }
+
     public ProjectEdit(int id)
     {
+      ProjectId = id;
       InitializeComponent();
+    }
+
+    public async Task InitAsync()
+    {
+      ViewModels.ProjectEdit vm = null;
+      try
+      {
+        vm = new ViewModels.ProjectEdit();
+      }
+      catch (Exception ex)
+      {
+        var x = ex;
+      }
+      vm.ProjectId = ProjectId;
+      await vm.InitAsync();
+      BindingContext = vm;
     }
   }
 }

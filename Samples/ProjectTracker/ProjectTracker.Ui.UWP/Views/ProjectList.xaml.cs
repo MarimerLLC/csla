@@ -43,7 +43,7 @@ namespace UwpUI.Views
 
     private void EditItem(object sender, RoutedEventArgs e)
     {
-      var vm = (ViewModels.ProjectList.ProjectInfo)sender;
+      var vm = (ViewModels.ProjectList.ProjectInfo)((Button)sender).DataContext;
       vm.EditItem();
     }
   }

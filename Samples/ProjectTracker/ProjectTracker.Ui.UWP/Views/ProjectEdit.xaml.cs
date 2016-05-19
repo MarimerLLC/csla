@@ -24,10 +24,15 @@ namespace UwpUI.Views
   {
     public int ProjectId { get; set; }
 
-    public ProjectEdit(int id)
+    public ProjectEdit()
     {
-      ProjectId = id;
       this.InitializeComponent();
+    }
+
+    protected override void OnNavigatedTo(NavigationEventArgs e)
+    {
+      ProjectId = (int)e.Parameter;
+      base.OnNavigatedTo(e);
     }
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)

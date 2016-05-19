@@ -70,7 +70,7 @@ namespace UwpUI.ViewModels
 
       public void EditItem()
       {
-        App.RootFrame.Navigate(typeof(Views.ProjectEdit), 1);
+        App.NavigateTo(typeof(Views.ProjectEdit), 1);
 
       }
 

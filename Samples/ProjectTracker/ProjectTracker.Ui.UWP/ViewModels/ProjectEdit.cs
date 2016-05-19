@@ -15,6 +15,7 @@ namespace UwpUI.ViewModels
     {
       _projectId = id;
     }
+
     protected override async Task<ProjectTracker.Library.ProjectEdit> DoInitAsync()
     {
       Model = await ProjectTracker.Library.ProjectEdit.GetProjectAsync(_projectId);

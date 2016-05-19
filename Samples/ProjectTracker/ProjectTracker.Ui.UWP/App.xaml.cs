@@ -23,7 +23,17 @@ namespace UwpUI
   /// </summary>
   sealed partial class App : Application
   {
-    public static Frame RootFrame { get; private set; }
+    public static bool NavigateTo(Type page)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      return rootFrame.Navigate(page);
+    }
+
+    public static bool NavigateTo(Type page, object parameter)
+    {
+      var rootFrame = Window.Current.Content as Frame;
+      return rootFrame.Navigate(page, parameter);
+    }
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -57,10 +67,6 @@ namespace UwpUI
       //Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
       //Csla.DataPortalClient.WcfProxy.DefaultUrl = "http://localhost:11170/WcfMobilePortal.svc";
 
-      await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
-
-      await ProjectTracker.Library.RoleList.CacheListAsync();
-
       Frame rootFrame = Window.Current.Content as Frame;
 
       // Do not repeat app initialization when the Window already has content,
@@ -81,17 +87,19 @@ namespace UwpUI
         Window.Current.Content = rootFrame;
       }
 
+      await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
+
+      await ProjectTracker.Library.RoleList.CacheListAsync();
+
       if (rootFrame.Content == null)
       {
         // When the navigation stack isn't restored navigate to the first page,
         // configuring the new page by passing required information as a navigation
         // parameter
-        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+        NavigateTo(typeof(MainPage), e.Arguments);
       }
       // Ensure the current window is active
       Window.Current.Activate();
-
-      RootFrame = rootFrame;
     }
 
     /// <summary>

@@ -102,6 +102,10 @@
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>ProjectTracker.BusinessLibrary.Xamarin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XamarinFormsUi\XamarinFormsUi.csproj">
+      <Project>{8b6005ce-011e-4b47-b1c7-640acded6e36}</Project>
+      <Name>XamarinFormsUi</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />
@@ -123,11 +127,11 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.6.400.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-16050904\lib\Xamarin.iOS10\Csla.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-160518\lib\Xamarin.iOS10\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Csla.Xaml, Version=4.6.400.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-16050904\lib\Xamarin.iOS\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-160518\lib\Xamarin.iOS\Csla.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -152,7 +156,7 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-16050904\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-160518\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets" Condition="Exists('..\..\packages\Xamarin.Forms.2.2.0.31\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Xamarin.Forms.targets')" />

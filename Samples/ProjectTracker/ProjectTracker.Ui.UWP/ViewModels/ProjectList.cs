@@ -70,6 +70,8 @@ namespace UwpUI.ViewModels
 
       public void EditItem()
       {
+        App.RootFrame.Navigate(typeof(Views.ProjectEdit), 1);
+
       }
 
       public void RemoveItem()

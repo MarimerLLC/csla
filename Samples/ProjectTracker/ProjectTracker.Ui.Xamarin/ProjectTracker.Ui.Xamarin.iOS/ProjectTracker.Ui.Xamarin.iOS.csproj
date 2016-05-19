@@ -102,9 +102,6 @@
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>ProjectTracker.BusinessLibrary.Xamarin</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.csproj">
-      <Name>ProjectTracker.Ui.Xamarin</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Default-568h%402x.png" />

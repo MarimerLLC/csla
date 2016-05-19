@@ -139,8 +139,9 @@
       <Project>{67f9d3a8-f71e-4428-913f-c37ae82cdb24}</Project>
       <Name>ProjectTracker.BusinessLibrary.Xamarin</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTracker.Ui.Xamarin\ProjectTracker.Ui.Xamarin.csproj">
-      <Name>ProjectTracker.Ui.Xamarin</Name>
+    <ProjectReference Include="..\XamarinFormsUi\XamarinFormsUi.csproj">
+      <Project>{8b6005ce-011e-4b47-b1c7-640acded6e36}</Project>
+      <Name>XamarinFormsUi</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -5,11 +5,11 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{11499369-7808-4864-8D87-3FCB3C138D56}</ProjectGuid>
+    <ProjectGuid>{8B6005CE-011E-4B47-B1C7-640ACDED6E36}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ProjectTracker.Ui.Xamarin</RootNamespace>
-    <AssemblyName>ProjectTracker.Ui.Xamarin</AssemblyName>
+    <RootNamespace>XamarinFormsUi</RootNamespace>
+    <AssemblyName>XamarinFormsUi</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -35,15 +35,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="App.cs" />
-    <Compile Include="Dashboard.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HttpProxy.cs" />
-    <Compile Include="ProjectEdit.cs" />
-    <Compile Include="ProjectList.cs" />
+    <Compile Include="XamarinFormsUi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfo.cs" />
-    <Compile Include="ResourceEdit.cs" />
-    <Compile Include="ResourceList.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.6.400.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
@@ -69,6 +75,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="App.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-16050904\analyzers\c#\Csla.Analyzers.dll" />

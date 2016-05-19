@@ -23,6 +23,8 @@ namespace UwpUI
   /// </summary>
   sealed partial class App : Application
   {
+    public static Frame RootFrame { get; private set; }
+
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -88,6 +90,8 @@ namespace UwpUI
       }
       // Ensure the current window is active
       Window.Current.Activate();
+
+      RootFrame = rootFrame;
     }
 
     /// <summary>

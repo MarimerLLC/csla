@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -21,30 +20,20 @@ namespace UwpUI.Views
   /// <summary>
   /// An empty page that can be used on its own or navigated to within a Frame.
   /// </summary>
-  public sealed partial class ProjectList : Page
+  public sealed partial class ProjectEdit : Page
   {
-    public ProjectList()
-    {
-      this.InitializeComponent();
-    }
+    public int ProjectId { get; set; }
 
-    public Xaml.NavigationHelper NavigationHelper { get; private set; }
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    public ProjectEdit(int id)
     {
-      NavigationHelper = new Xaml.NavigationHelper().OnNavigatedTo(this, e);
-      base.OnNavigatedTo(e);
+      ProjectId = id;
+      this.InitializeComponent();
     }
 
     private async void Page_Loaded(object sender, RoutedEventArgs e)
     {
-      var vm = await new ViewModels.ProjectList().InitAsync();
+      var vm = await new ViewModels.ProjectEdit(ProjectId).InitAsync();
       DataContext = vm;
-    }
-
-    private void EditItem(object sender, RoutedEventArgs e)
-    {
-      var vm = (ViewModels.ProjectList.ProjectInfo)sender;
-      vm.EditItem();
     }
   }
 }

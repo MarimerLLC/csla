@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for Windows (ASP.NET MVC)")]
-[assembly: AssemblyDescription("CSLA .NET ASP.NET MVC")]
+[assembly: AssemblyDescription("CSLA .NET ASP.NET MVC 4")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

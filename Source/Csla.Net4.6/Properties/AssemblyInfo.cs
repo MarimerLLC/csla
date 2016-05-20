@@ -14,11 +14,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for Windows (server)")]
-[assembly: AssemblyDescription("CSLA .NET Framework")]
+[assembly: AssemblyDescription("CSLA .NET Framework (.NET 4.6)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

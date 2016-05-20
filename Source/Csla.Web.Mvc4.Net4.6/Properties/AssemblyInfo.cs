@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Csla.Web.Mvc4.Net4.6")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CSLA .NET for Windows (ASP.NET MVC)")]
+[assembly: AssemblyDescription("CSLA .NET ASP.NET MVC 4")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Csla.Web.Mvc4.Net4.6")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Marimer LLC")]
+[assembly: AssemblyProduct("CSLA .NET")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

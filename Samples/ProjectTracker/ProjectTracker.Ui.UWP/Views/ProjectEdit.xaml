@@ -33,7 +33,7 @@
       </Grid.RowDefinitions>
       <TextBlock Text="Name" Grid.Column="0" Grid.Row="0" Style="{StaticResource CaptionTextBlockStyle}" Margin="3"/>
       <Grid Grid.Column="1" Grid.Row="0" Margin="3">
-        <csla:PropertyInfo Property="{Binding Name}" Name="NameInfo"/>
+        <csla:PropertyInfo Property="{Binding Name}" x:Name="NameInfo"/>
         <Rectangle Fill="Red" 
                    Visibility="{Binding ElementName=NameInfo, Path=IsValid, Converter={StaticResource VisibilityConverter}}"/>
         <TextBox Text="{Binding Name, Mode=TwoWay}"

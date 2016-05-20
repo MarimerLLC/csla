@@ -1,7 +1,6 @@
 using System;
-//using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {
@@ -10,7 +9,9 @@ namespace ProjectTracker.Library
   {
     public static PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-    //[Display(Name = "Project id")]
+#if !XAMARIN
+    [Display(Name = "Project id")]
+#endif
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -18,7 +19,9 @@ namespace ProjectTracker.Library
     }
 
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-    //[Display(Name = "Project name")]
+#if !XAMARIN
+    [Display(Name = "Project name")]
+#endif
     public string Name
     {
       get { return GetProperty(NameProperty); }

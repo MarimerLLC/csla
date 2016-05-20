@@ -49,11 +49,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Csla, Version=4.6.400.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-16051901\lib\MonoAndroid10\Csla.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-Core.4.6.400-Beta-16052001\lib\MonoAndroid10\Csla.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Csla.Xaml, Version=4.6.400.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-16051901\lib\MonoAndroid10\Csla.Xaml.dll</HintPath>
+      <HintPath>..\..\packages\CSLA-XamarinForms.4.6.400-Beta-16052001\lib\MonoAndroid10\Csla.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FormsViewGroup, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -146,7 +146,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-16051901\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\CSLA-Core.4.6.400-Beta-16052001\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />

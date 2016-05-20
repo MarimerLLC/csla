@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Serialization;
 using System.ComponentModel;
 
 namespace ProjectTracker.Library
@@ -19,7 +18,9 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
+#if !XAMARIN
     [Display(Name = "Project id")]
+#endif
     public int ProjectId
     {
       get { return GetProperty(ProjectIdProperty); }
@@ -28,7 +29,9 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> ProjectNameProperty = 
       RegisterProperty<string>(c => c.ProjectName);
+#if !XAMARIN
     [Display(Name = "Project name")]
+#endif
     public string ProjectName
     {
       get { return GetProperty(ProjectNameProperty); }
@@ -43,14 +46,18 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<int> RoleProperty = RegisterProperty<int>(c => c.Role);
+#if !XAMARIN
     [Display(Name = "Role assigned")]
+#endif
     public int Role
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
     }
 
+#if !XAMARIN
     [Display(Name = "Role")]
+#endif
     public string RoleName
     {
       get

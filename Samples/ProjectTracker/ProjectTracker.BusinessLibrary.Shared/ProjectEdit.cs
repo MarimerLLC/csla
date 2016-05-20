@@ -1,10 +1,7 @@
 using System;
 using System.Linq;
-//using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Data;
-using Csla.Security;
-using Csla.Serialization;
 using System.ComponentModel;
 
 namespace ProjectTracker.Library
@@ -23,7 +20,9 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-    //[Display(Name = "Project id")]
+#if !XAMARIN
+    [Display(Name = "Project id")]
+#endif
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -32,9 +31,11 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> NameProperty = 
       RegisterProperty<string>(c => c.Name);
-    //[Display(Name = "Project name")]
-    //[Required]
-    //[StringLength(50)]
+#if !XAMARIN
+    [Display(Name = "Project name")]
+#endif
+    [Required]
+    [StringLength(50)]
     public string Name
     {
       get { return GetProperty(NameProperty); }

@@ -11,15 +11,16 @@ namespace XamarinFormsUi.ViewModels
   {
     protected override async Task<ProjectTracker.Library.ProjectList> DoInitAsync()
     {
+      ProjectTracker.Library.ProjectList obj = null;
       try
       {
-        Model = await ProjectTracker.Library.ProjectList.GetProjectListAsync();
+        obj = await ProjectTracker.Library.ProjectList.GetProjectListAsync();
       }
       catch (Exception ex)
       {
         var x = ex;
       }
-      return Model;
+      return obj;
     }
 
     protected override void OnModelChanged(ProjectTracker.Library.ProjectList oldValue, ProjectTracker.Library.ProjectList newValue)

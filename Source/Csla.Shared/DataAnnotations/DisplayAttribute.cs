@@ -57,4 +57,6 @@ namespace System.ComponentModel.DataAnnotations
     }
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute))]
 #endif

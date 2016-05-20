@@ -39,8 +39,6 @@ namespace System.ComponentModel
   }
 }
 #else
-using System.Runtime.CompilerServices;
-
-[assembly: TypeForwardedTo(typeof(System.ComponentModel.BrowsableAttribute))]
-[assembly: TypeForwardedTo(typeof(System.ComponentModel.CategoryAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.BrowsableAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.CategoryAttribute))]
 #endif

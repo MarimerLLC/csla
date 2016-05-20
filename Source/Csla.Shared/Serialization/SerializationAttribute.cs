@@ -19,4 +19,6 @@ namespace System
   {
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.SerializableAttribute))]
 #endif

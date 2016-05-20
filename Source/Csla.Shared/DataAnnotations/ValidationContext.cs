@@ -62,4 +62,6 @@ namespace System.ComponentModel.DataAnnotations
     public IDictionary<object, object> Items { get; protected set; }
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.DataAnnotations.ValidationContext))]
 #endif

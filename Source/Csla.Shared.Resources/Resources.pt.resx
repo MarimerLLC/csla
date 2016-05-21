@@ -134,7 +134,7 @@
     <comment>Changing an element is an invalid operation</comment>
   </data>
   <data name="ParentSetException" xml:space="preserve">
-    <value>Valor do objecto pai só pode ser atribuido aos objectos filho</value>
+    <value>Valor do objecto pai só pode ser atribuído aos objectos filho</value>
     <comment>Parent value can only be set for child objects</comment>
   </data>
   <data name="ChildDeleteException" xml:space="preserve">

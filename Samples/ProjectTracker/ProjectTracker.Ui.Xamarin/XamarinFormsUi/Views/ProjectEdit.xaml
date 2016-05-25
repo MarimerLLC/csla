@@ -2,28 +2,21 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="XamarinFormsUi.Views.ProjectEdit"
+             xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
              Title="Project Details">
   <ContentPage.ToolbarItems>
     <ToolbarItem Name="Save" Command="{Binding SaveItemCommand}"/>
     <ToolbarItem Name="Assign" Command="{Binding AssignResourceCommand}"/>
   </ContentPage.ToolbarItems>
-  <TableView Intent="Form">
-    <TableView.Root>
-      <TableSection Title="Project">
-        <EntryCell Label="Name" Text="{Binding Model.Name}"/>
-        <EntryCell Label="Description" Text="{Binding Model.Description}"/>
-        <ViewCell Label="Started">
-          <DatePicker Date="{Binding Model.Started}"/>
-        </ViewCell>
-        <ViewCell Label="Ended">
-          <DatePicker Date="{Binding Model.Ended}"/>
-        </ViewCell>
-      </TableSection>
-      <TableSection Title="Resources">
-        <ViewCell>
-          <Label Text="List of resources..."/>
-        </ViewCell>
-      </TableSection>
-    </TableView.Root>
-  </TableView>
+  <Grid>
+    <csla:PropertyInfo x:Name="NameInfo" Path="Model.Name"/>
+    <TableView Intent="Form">
+      <TableView.Root>
+        <TableSection Title="Project">
+          <EntryCell Label="Name" Text="{Binding Model.Name}"/>
+          <EntryCell Label="Description" Text="{Binding Model.Description}"/>
+        </TableSection>
+      </TableView.Root>
+    </TableView>
+  </Grid>
 </ContentPage>

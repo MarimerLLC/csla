@@ -20,18 +20,14 @@ namespace XamarinFormsUi.Views
 
     public async Task InitAsync()
     {
-      ViewModels.ProjectEdit vm = null;
       try
       {
-        vm = new ViewModels.ProjectEdit();
+        BindingContext = await new ViewModels.ProjectEdit(ProjectId).InitAsync();
       }
       catch (Exception ex)
       {
         var x = ex;
       }
-      vm.ProjectId = ProjectId;
-      await vm.InitAsync();
-      BindingContext = vm;
     }
   }
 }

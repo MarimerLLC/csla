@@ -20,9 +20,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<int> ResourceIdProperty = 
       RegisterProperty<int>(c => c.ResourceId);
-#if !XAMARIN
     [Display(Name = "Resource id")]
-#endif
     public int ResourceId
     {
       get { return GetProperty(ResourceIdProperty); }
@@ -31,9 +29,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> FirstNameProperty =
       RegisterProperty<string>(c => c.FirstName);
-#if !XAMARIN
     [Display(Name = "First name")]
-#endif
     public string FirstName
     {
       get { return GetProperty(FirstNameProperty); }
@@ -42,18 +38,14 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> LastNameProperty =
       RegisterProperty<string>(c => c.LastName);
-#if !XAMARIN
     [Display(Name = "Last name")]
-#endif
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }
       private set { LoadProperty(LastNameProperty, value); }
     }
 
-#if !XAMARIN
     [Display(Name = "Full name")]
-#endif
     public string FullName
     {
       get { return string.Format("{0}, {1}", LastName, FirstName); }
@@ -61,9 +53,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<DateTime> AssignedProperty =
       RegisterProperty<DateTime>(c => c.Assigned);
-#if !XAMARIN
     [Display(Name = "Date assigned")]
-#endif
     public DateTime Assigned
     {
       get { return GetProperty(AssignedProperty); }
@@ -72,18 +62,14 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<int> RoleProperty = 
       RegisterProperty<int>(c => c.Role);
-#if !XAMARIN
     [Display(Name = "Role assigned")]
-#endif
     public int Role
     {
       get { return GetProperty(RoleProperty); }
       set { SetProperty(RoleProperty, value); }
     }
 
-#if !XAMARIN
     [Display(Name = "Role")]
-#endif
     public string RoleName
     {
       get 

@@ -8,9 +8,7 @@ namespace ProjectTracker.Library
   public class ResourceInfo : ReadOnlyBase<ResourceInfo>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-#if !XAMARIN
     [Display(Name = "Resource id")]
-#endif
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -18,9 +16,7 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-#if !XAMARIN
     [Display(Name = "Resource name")]
-#endif
     public string Name
     {
       get { return GetProperty(NameProperty); }

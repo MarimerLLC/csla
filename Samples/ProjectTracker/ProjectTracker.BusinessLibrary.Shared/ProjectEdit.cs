@@ -20,9 +20,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(c => c.Id);
-#if !XAMARIN
     [Display(Name = "Project id")]
-#endif
     public int Id
     {
       get { return GetProperty(IdProperty); }
@@ -31,9 +29,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> NameProperty = 
       RegisterProperty<string>(c => c.Name);
-#if !XAMARIN
     [Display(Name = "Project name")]
-#endif
     [Required]
     [StringLength(50)]
     public string Name

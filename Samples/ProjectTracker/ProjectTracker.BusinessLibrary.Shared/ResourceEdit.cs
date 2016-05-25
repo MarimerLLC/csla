@@ -28,9 +28,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> LastNameProperty = 
       RegisterProperty<string>(c => c.LastName);
-#if !XAMARIN
     [Display(Name = "Last name")]
-#endif
     [Required]
     [StringLength(50)]
     public string LastName
@@ -41,9 +39,7 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> FirstNameProperty = 
       RegisterProperty<string>(c => c.FirstName);
-#if !XAMARIN
     [Display(Name = "First name")]
-#endif
     [Required]
     [StringLength(50)]
     public string FirstName
@@ -52,9 +48,7 @@ namespace ProjectTracker.Library
       set { SetProperty(FirstNameProperty, value); }
     }
 
-#if !XAMARIN
     [Display(Name = "Full name")]
-#endif
     public string FullName
     {
       get { return LastName + ", " + FirstName; }

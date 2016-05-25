@@ -16,15 +16,11 @@ namespace System.ComponentModel.DataAnnotations
   [AttributeUsage(AttributeTargets.Property)]
   public class DisplayAttribute : Attribute
   {
-    private string _name;
     /// <summary>
     /// User-friendly property name.
     /// </summary>
-    public string Name
-    {
-      get { return _name; }
-      set { _name = value; }
-    }
+    public string Name { get; set; }
+
     /// <summary>
     /// Gets the Name property value.
     /// </summary>
@@ -32,29 +28,44 @@ namespace System.ComponentModel.DataAnnotations
     {
       return Name;
     }
+
     /// <summary>
     /// User-friendly property name.
     /// </summary>
-    public string Description
-    {
-      get { return _name; }
-      set { _name = value; }
-    }
+    public string Description { get; set; }
+
     /// <summary>
     /// Gets or sets a value indicating whether to
     /// autogenerate the field.
     /// </summary>
     public bool AutoGenerateField { get; set; }
     /// <summary>
-    /// Creates an instance of the type.
+    /// Gets or sets a value that indicates whether filtering UI is automatically displayed
+    /// for this field.
     /// </summary>
-    /// <param name="AutoGenerateField">AutoGenerateField value.</param>
-    /// <param name="Name">Friendly name.</param>
-    public DisplayAttribute(bool AutoGenerateField = false, string Name = "")
-    {
-      this.AutoGenerateField = AutoGenerateField;
-      this.Name = Name;
-    }
+    public bool AutoGenerateFilter { get; set; }
+    /// <summary>
+    /// Gets or sets a value that is used to group fields in the UI.
+    /// </summary>
+    public string GroupName { get; set; }
+    /// <summary>
+    /// Gets or sets the order weight of the column.
+    /// </summary>
+    public int Order { get; set; }
+    /// <summary>
+    /// Gets or sets a value that will be used to set the watermark for prompts in the UI.
+    /// </summary>
+    public string Prompt { get; set; }
+    /// <summary>
+    /// Gets or sets the type that contains the resources for the System.ComponentModel.DataAnnotations.DisplayAttribute.ShortName,
+    /// System.ComponentModel.DataAnnotations.DisplayAttribute.Name, System.ComponentModel.DataAnnotations.DisplayAttribute.Prompt,
+    /// and System.ComponentModel.DataAnnotations.DisplayAttribute.Description properties.
+    /// </summary>
+    public Type ResourceType { get; set; }
+    /// <summary>
+    /// Gets or sets a value that is used for the grid column label.
+    /// </summary>
+    public string ShortName { get; set; }
   }
 }
 #else

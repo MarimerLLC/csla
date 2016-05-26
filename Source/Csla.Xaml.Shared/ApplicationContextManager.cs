@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 using System;
 using System.Collections.Generic;
 using System.Linq;

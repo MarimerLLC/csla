@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="ExecuteEventArgs.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

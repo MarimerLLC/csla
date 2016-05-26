@@ -15,24 +15,24 @@ namespace Csla.Analyzers.Tests
       var diagnostics = analyzer.SupportedDiagnostics;
       Assert.AreEqual(2, diagnostics.Length);
 
-      var diagnostic = diagnostics.Single(_ => _.Id == IsOperationMethodPublicAnalyzerConstants.DiagnosticId);
-      Assert.AreEqual(diagnostic.Title.ToString(), IsOperationMethodPublicAnalyzerConstants.Title,
+      var diagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
+      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Title, diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(diagnostic.MessageFormat.ToString(), IsOperationMethodPublicAnalyzerConstants.Message,
+      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(diagnostic.Category, IsOperationMethodPublicAnalyzerConstants.Category,
+      Assert.AreEqual(Constants.Categories.Design, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(diagnostic.DefaultSeverity, DiagnosticSeverity.Warning,
+      Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
 
-      var diagnosticForInterface = diagnostics.Single(_ => _.Id == IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId);
-      Assert.AreEqual(diagnosticForInterface.Title.ToString(), IsOperationMethodPublicAnalyzerConstants.Title,
+      var diagnosticForInterface = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
+      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Title, diagnosticForInterface.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(diagnosticForInterface.MessageFormat.ToString(), IsOperationMethodPublicAnalyzerConstants.Message,
+      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Message, diagnosticForInterface.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(diagnosticForInterface.Category, IsOperationMethodPublicAnalyzerConstants.Category,
+      Assert.AreEqual(Constants.Categories.Design, diagnosticForInterface.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(diagnosticForInterface.DefaultSeverity, DiagnosticSeverity.Warning,
+      Assert.AreEqual(DiagnosticSeverity.Warning, diagnosticForInterface.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
@@ -65,7 +65,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed))}.cs",
-        new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticId },
+        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
@@ -74,7 +74,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed))}.cs",
-        new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticId },
+        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
@@ -83,7 +83,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface))}.cs",
-        new[] { IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId });
+        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface });
     }
   }
 }

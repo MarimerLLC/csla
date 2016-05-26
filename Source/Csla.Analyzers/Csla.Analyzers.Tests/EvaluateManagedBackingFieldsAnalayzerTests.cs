@@ -15,14 +15,14 @@ namespace Csla.Analyzers.Tests
       var diagnostics = analyzer.SupportedDiagnostics;
       Assert.AreEqual(1, diagnostics.Length);
 
-      var diagnostic = diagnostics.Single(_ => _.Id == EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId);
-      Assert.AreEqual(diagnostic.Title.ToString(), EvaluateManagedBackingFieldsAnalayzerConstants.Title,
+      var diagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields);
+      Assert.AreEqual(EvaluateManagedBackingFieldsAnalayzerConstants.Title, diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(diagnostic.MessageFormat.ToString(), EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+      Assert.AreEqual(EvaluateManagedBackingFieldsAnalayzerConstants.Message, diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(diagnostic.Category, EvaluateManagedBackingFieldsAnalayzerConstants.Category,
+      Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category, 
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(diagnostic.DefaultSeverity, DiagnosticSeverity.Error,
+      Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
@@ -55,7 +55,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields });
     }
 
     [TestMethod]
@@ -63,7 +63,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields });
     }
 
     [TestMethod]
@@ -71,7 +71,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
-        new[] { EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields });
     }
   }
 }

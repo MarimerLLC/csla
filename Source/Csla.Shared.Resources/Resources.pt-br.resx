@@ -245,7 +245,7 @@
     <comment>An exception ocurred during the save operation</comment>
   </data>
   <data name="ExecuteBadParams" xml:space="preserve">
-    <value>Método a ser executado deve ter  0 ou 2 parâmetros</value>
+    <value>Método a ser executado deve ter 0 ou 2 parâmetros</value>
     <comment>Method to be executed must have 0 or 2 parameters</comment>
   </data>
   <data name="ExecuteBadTriggerEvent" xml:space="preserve">
@@ -462,7 +462,7 @@
     <comment>Indexed expressions must be closed - Csla.Mobile</comment>
   </data>
   <data name="ListItemNotAChildException" xml:space="preserve">
-    <value>Item de lista dever ser marcado como objeto filho</value>
+    <value>Item de lista deve ser marcado como objeto filho</value>
     <comment>List item must be marked as a child object</comment>
   </data>
   <data name="MemberNotFoundException" xml:space="preserve">
@@ -506,11 +506,11 @@
     <comment>Object type or assembly could not be loaded ({0})</comment>
   </data>
   <data name="PrivateFieldException" xml:space="preserve">
-    <value>Propriedade com campos de retaguarda privados devem ser marcados como Relationship.PrivateField</value>
+    <value>Nas propriedade com campos de retaguarda privados, estes devem ser marcados como Relationship.PrivateField</value>
     <comment>Properties with private backing fields must be marked as RelationshipTypes.PrivateField</comment>
   </data>
   <data name="PropertyIsPrivateField" xml:space="preserve">
-    <value>Tentativa de ler/carregar proriedade com campo privado  em propriedades gerenciadas.</value>
+    <value>Tentativa de ler/carregar propriedade com campo privado em propriedades gerenciadas.</value>
     <comment>Attempt to read/load private field property in managed properties.</comment>
   </data>
   <data name="PropertyLoadException" xml:space="preserve">
@@ -522,15 +522,15 @@
     <comment>Csla.Mobile - The specified property name '{0}' does not exist</comment>
   </data>
   <data name="PropertyNotRegistered" xml:space="preserve">
-    <value>Uma ou mais propriedades não registradas para esta tipo</value>
+    <value>Uma ou mais propriedades não registradas para este tipo</value>
     <comment>One or more properties are not registered for this type</comment>
   </data>
   <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
-    <value>Não se pode registrar propriedade  {0}, uma PropertyInfo com o mesmo nome já existe.</value>
+    <value>Não se pode registrar propriedade {0}, uma PropertyInfo com o mesmo nome já existe.</value>
     <comment>Cannot register property {0}, a PropertyInfo with the same name already exists.</comment>
   </data>
   <data name="PropertyRegisterNotAllowed" xml:space="preserve">
-    <value>Não se pode registrar propriedade {0} após o tipo que a contem ter sido instanciado</value>
+    <value>Não se pode registrar propriedade {0} após o tipo  ({1}) que a contem ter sido instanciado</value>
     <comment>Cannot register property {0} after containing type ({1}) has been instantiated</comment>
   </data>
   <data name="PropertyRequiresIndexArguments" xml:space="preserve">
@@ -538,7 +538,7 @@
     <comment>Csla.Mobile</comment>
   </data>
   <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
-    <value>PropertyName '{0}' não encontrado na lista</value>
+    <value>Nome da propriedade '{0}' não encontrado na lista</value>
     <comment>PropertyName '{0}' not found in list</comment>
   </data>
   <data name="SortingNotSupported" xml:space="preserve">
@@ -564,5 +564,38 @@
   <data name="Warning" xml:space="preserve">
     <value>Aviso</value>
     <comment>Warning</comment>
+  </data>
+  <data name="ObjectRulesCannotSetPrimaryProperty" xml:space="preserve">
+    <value>Regra de objeto não pode ter PrimaryPropery.</value>
+  </data>
+  <data name="UnandledKNownTypeException" xml:space="preserve">
+    <value>Foi encontrado um tipo CSLA conhecido que não é tratado</value>
+  </data>
+  <data name="BinaryWriterObjectSerializationException" xml:space="preserve">
+    <value>Serialização do tipo de objeto não é suportada.</value>
+  </data>
+  <data name="PropertyNotInAffectedPropertiesException" xml:space="preserve">
+    <value>Propriedade {0} tem que ser acrescentada às AffectedProperties. </value>
+  </data>
+  <data name="PropertyNameNotRegisteredException" xml:space="preserve">
+    <value>A propriedade '{0}' não está registada.</value>
+  </data>
+  <data name="RuleMessageRequired" xml:space="preserve">
+    <value>É requerida a mensagem para a regra violada. Regra: {0}</value>
+  </data>
+  <data name="TaskOfObjectException" xml:space="preserve">
+    <value>Método {0} deve retornar uma Task&lt;object&gt;</value>
+  </data>
+  <data name="AsyncLoadException" xml:space="preserve">
+    <value>Falha no carregamento assíncrono da propriedade {0}</value>
+  </data>
+  <data name="ActionExtenderErrorCaption" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="ActionExtenderInformationCaption" xml:space="preserve">
+    <value>Informação</value>
+  </data>
+  <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
+    <value>O objeto é válido</value>
   </data>
 </root>

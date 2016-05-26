@@ -19,7 +19,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(IsOperationMethodPublicAnalyzerConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
       }
     }
 
@@ -32,18 +32,12 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       IsOperationMethodPublicMakeNonPublicCodeFix.RegisterNewCodeFix(
         context, root, methodNode, SyntaxKind.PrivateKeyword,

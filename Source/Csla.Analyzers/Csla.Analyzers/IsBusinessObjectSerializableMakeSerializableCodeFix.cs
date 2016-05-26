@@ -20,7 +20,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(IsBusinessObjectSerializableConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable);
       }
     }
 
@@ -33,18 +33,12 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var classNode = root.FindNode(diagnostic.Location.SourceSpan) as ClassDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       IsBusinessObjectSerializableMakeSerializableCodeFix.AddCodeFix(
         context, root, diagnostic, classNode);

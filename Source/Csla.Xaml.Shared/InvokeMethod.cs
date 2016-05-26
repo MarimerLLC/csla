@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="InvokeMethod.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -22,7 +22,7 @@ namespace Csla.Xaml
   /// </summary>
   public class InvokeMethod : FrameworkElement
   {
-    #region Attached properties
+#region Attached properties
 
     /// <summary>
     /// Object containing the method to be invoked.
@@ -188,7 +188,7 @@ namespace Csla.Xaml
       return result;
     }
 
-    #endregion
+#endregion
 
     private UIElement _element;
 

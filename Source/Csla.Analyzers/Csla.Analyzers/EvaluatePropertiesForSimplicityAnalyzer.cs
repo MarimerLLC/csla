@@ -13,8 +13,8 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule = new DiagnosticDescriptor(
-      OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
-      OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Category,
+      Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
+      OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Warning, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

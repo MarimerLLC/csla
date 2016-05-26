@@ -29,6 +29,8 @@ Supports the creation of Xamarin iOS applications using the classic API.
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.dll.mdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.pdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.xml*" target="lib\MonoTouch10" />
+    <!-- Xamarin.Forms Csla.Xaml -->
+    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Iosui.Ios.Classic\**\*.cs" target="src" />
     <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />

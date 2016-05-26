@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for WinRT (Xaml)")]
-[assembly: AssemblyDescription("CSLA .NET Xaml")]
+[assembly: AssemblyDescription("CSLA .NET Xaml (WinRT)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.6.300.0")]
-[assembly: AssemblyFileVersion("4.6.300.0")]
+[assembly: AssemblyVersion("4.6.400.0")]
+[assembly: AssemblyFileVersion("4.6.400.0")]
 
 [assembly: ComVisible(false)]

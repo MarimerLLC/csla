@@ -19,7 +19,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(FindSaveAssignmentIssueAnalyzerConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue);
       }
     }
 
@@ -32,10 +32,7 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
@@ -48,10 +45,7 @@ namespace Csla.Analyzers
       var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());
       var newInvocationNode = invocationNode.ReplaceToken(invocationIdentifier, newInvocationIdentifier);
 
-      if (context.CancellationToken.IsCancellationRequested)
-      {
-        return;
-      }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var simpleAssignmentExpressionNode = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
         SyntaxFactory.IdentifierName(newInvocationIdentifier), newInvocationNode)

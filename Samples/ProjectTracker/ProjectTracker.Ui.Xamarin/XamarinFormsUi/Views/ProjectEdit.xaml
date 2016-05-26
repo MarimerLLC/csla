@@ -9,7 +9,7 @@
     <ToolbarItem Name="Assign" Command="{Binding AssignResourceCommand}"/>
   </ContentPage.ToolbarItems>
   <Grid>
-    <csla:PropertyInfo x:Name="NameInfo" Path="Model.Name"/>
+    <!--<csla:PropertyInfo x:Name="NameInfo" Path="Model.Name"/>-->
     <TableView Intent="Form">
       <TableView.Root>
         <TableSection Title="Project">

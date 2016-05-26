@@ -452,7 +452,7 @@ namespace Csla.Xaml
     }
 
     private void SetProperties()
-    {
+    { 
       ITrackStatus targetObject = Model as ITrackStatus;
       ICollection list = Model as ICollection;
       INotifyBusy busyObject = Model as INotifyBusy;

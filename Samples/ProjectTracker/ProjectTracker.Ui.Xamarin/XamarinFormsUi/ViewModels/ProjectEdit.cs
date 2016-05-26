@@ -25,8 +25,7 @@ namespace XamarinFormsUi.ViewModels
 
     protected override async Task<ProjectTracker.Library.ProjectEdit> DoInitAsync()
     {
-      var tmp = await ProjectTracker.Library.ProjectEdit.GetProjectAsync(ProjectId);
-      return tmp;
+      return await ProjectTracker.Library.ProjectEdit.GetProjectAsync(ProjectId);
     }
   }
 }

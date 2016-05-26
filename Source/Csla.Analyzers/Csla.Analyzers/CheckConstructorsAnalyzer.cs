@@ -13,12 +13,12 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = new DiagnosticDescriptor(
-      PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, PublicNoArgumentConstructorIsMissingConstants.Title,
-      PublicNoArgumentConstructorIsMissingConstants.Message, PublicNoArgumentConstructorIsMissingConstants.Category,
+      Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
+      PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
     private static DiagnosticDescriptor constructorHasParametersRule = new DiagnosticDescriptor(
-      ConstructorHasParametersConstants.DiagnosticId, ConstructorHasParametersConstants.Title,
-      ConstructorHasParametersConstants.Message, ConstructorHasParametersConstants.Category,
+      Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
+      ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Warning, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

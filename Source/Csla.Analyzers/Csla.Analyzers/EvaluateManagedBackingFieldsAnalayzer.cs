@@ -14,11 +14,10 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor mustBePublicStaticAndReadonlyRule = new DiagnosticDescriptor(
-      EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId,
+      Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
       EvaluateManagedBackingFieldsAnalayzerConstants.Title,
       EvaluateManagedBackingFieldsAnalayzerConstants.Message,
-      EvaluateManagedBackingFieldsAnalayzerConstants.Category,
-      DiagnosticSeverity.Error, true);
+      Constants.Categories.Usage, DiagnosticSeverity.Error, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
     {

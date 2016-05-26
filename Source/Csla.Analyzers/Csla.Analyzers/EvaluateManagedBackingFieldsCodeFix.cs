@@ -19,7 +19,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields);
       }
     }
 

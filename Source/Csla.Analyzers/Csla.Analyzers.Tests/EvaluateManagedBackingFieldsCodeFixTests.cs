@@ -24,8 +24,8 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId, ids[0],
-        nameof(EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId));
+      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
+        nameof(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields));
     }
 
     [TestMethod]

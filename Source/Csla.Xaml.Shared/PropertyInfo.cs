@@ -30,7 +30,7 @@ namespace Csla.Xaml
   /// Expose metastate information about a property.
   /// </summary>
 #if XAMARIN
-  public class PropertyInfo : Element, INotifyPropertyChanged
+  public class PropertyInfo : View, INotifyPropertyChanged
   {
 
 #else
@@ -204,6 +204,8 @@ namespace Csla.Xaml
 
     private void SetSource()
     {
+      if (BindingContext == null) return;
+      if (string.IsNullOrEmpty(Path)) return;
       try
       {
         Source = BindingContext;

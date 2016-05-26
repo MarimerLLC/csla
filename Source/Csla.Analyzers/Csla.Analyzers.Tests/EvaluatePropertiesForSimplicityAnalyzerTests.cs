@@ -15,14 +15,14 @@ namespace Csla.Analyzers.Tests
       var diagnostics = analyzer.SupportedDiagnostics;
       Assert.AreEqual(1, diagnostics.Length);
 
-      var ctorHasParametersDiagnostic = diagnostics.Single(_ => _.Id == OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId);
-      Assert.AreEqual(ctorHasParametersDiagnostic.Title.ToString(), OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
+      var ctorHasParametersDiagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule);
+      Assert.AreEqual(OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title, ctorHasParametersDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(ctorHasParametersDiagnostic.MessageFormat.ToString(), OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message,
+      Assert.AreEqual(OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, ctorHasParametersDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(ctorHasParametersDiagnostic.Category, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Category,
+      Assert.AreEqual(Constants.Categories.Usage, ctorHasParametersDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(ctorHasParametersDiagnostic.DefaultSeverity, DiagnosticSeverity.Warning,
+      Assert.AreEqual(DiagnosticSeverity.Warning, ctorHasParametersDiagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
@@ -71,7 +71,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements))}.cs",
-        new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
     }
 
     [TestMethod]
@@ -79,7 +79,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression))}.cs",
-        new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
     }
 
     [TestMethod]
@@ -111,7 +111,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements))}.cs",
-        new[] { OnlyUseCslaPropertyMethodsInGetSetRuleConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
     }
 
     [TestMethod]

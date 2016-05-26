@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Csla.Analyzers.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
 
@@ -9,9 +12,9 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor shouldUseSerializableTypesRule = new DiagnosticDescriptor(
-      Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
-      PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Design,
-      DiagnosticSeverity.Error, true);
+      Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
+      FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
+      DiagnosticSeverity.Warning, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
     {
@@ -23,6 +26,30 @@ namespace Csla.Analyzers
     }
 
     public override void Initialize(AnalysisContext context)
-    { }
+    {
+      context.RegisterSyntaxNodeAction<SyntaxKind>(
+        FindOperationsWithNonSerializableArgumentsAnalyzer.AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+    }
+
+    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+    {
+      var methodNode = (MethodDeclarationSyntax)context.Node;
+      var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      var typeSymbol = methodSymbol.ContainingType;
+
+      if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
+      {
+        foreach(var argument in methodSymbol.Parameters)
+        {
+          if(argument.Type.TypeKind != TypeKind.Interface &&
+            !argument.Type.IsSerializable())
+          {
+            context.ReportDiagnostic(Diagnostic.Create(
+              FindOperationsWithNonSerializableArgumentsAnalyzer.shouldUseSerializableTypesRule,
+              argument.Locations[0]));
+          }
+        }
+      }
+    }
   }
 }

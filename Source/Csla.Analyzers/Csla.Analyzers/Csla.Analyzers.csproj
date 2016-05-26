@@ -35,11 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="DotNetMemberConstants.cs" />
     <Compile Include="EvaluateManagedBackingFieldsCodeFix.cs" />
     <Compile Include="CslaMemberConstants.cs" />
     <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />
     <Compile Include="EvaluateManagedBackingFieldsAnalayzerConstants.cs" />
     <Compile Include="EvaluateManagedBackingFieldsWalker.cs" />
+    <Compile Include="Extensions\ISymbolExtensions.cs" />
     <Compile Include="FindOperationsWithNonSerializableArgumentsAnalyzerConstants.cs" />
     <Compile Include="FindOperationsWithNonSerializableArgumentsAnalyzer.cs" />
     <Compile Include="FindSetOrLoadInvocationsWalker.cs" />

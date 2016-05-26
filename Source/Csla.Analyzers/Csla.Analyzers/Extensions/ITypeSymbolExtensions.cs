@@ -34,8 +34,18 @@ namespace Csla.Analyzers.Extensions
 
     internal static bool IsSerializable(this ITypeSymbol @this)
     {
-      return @this != null &&
-        @this.GetAttributes().Any(_ => _.AttributeClass.Name == CslaMemberConstants.SerializableAttribute);
+      // Either the symbol is a value type,
+      // or it has the [SerializableAttribute]
+      // or one of its interfaces implements ISerializable
+      // (or one of the base interfaces implements ISerializable)
+      return @this != null && (
+        @this.IsValueType ||
+        @this.GetAttributes().Any(
+          _ => _.AttributeClass.Name == CslaMemberConstants.SerializableAttribute) ||
+        @this.Interfaces.Any(
+          _ => (_.Name == DotNetMemberConstants.Types.ISerializable && 
+            _.GetFullNamespace() == DotNetMemberConstants.Namespaces.ISerializable) ||
+            _.IsSerializable()));
     }
 
     internal static bool IsStereotype(this ITypeSymbol @this)

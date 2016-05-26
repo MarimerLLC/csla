@@ -175,12 +175,12 @@ namespace Csla.Server
 
             break;
           default:
-            portal = new DataPortalSelector();
+            portal = new DataPortalBroker();
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
-        portal = new DataPortalSelector();
+        portal = new DataPortalBroker();
         result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
@@ -264,12 +264,12 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalSelector();
+            portal = new DataPortalBroker();
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
-        portal = new DataPortalSelector();
+        portal = new DataPortalBroker();
         result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
@@ -401,12 +401,12 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalSelector();
+            portal = new DataPortalBroker();
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
-        portal = new DataPortalSelector();
+        portal = new DataPortalBroker();
         result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
@@ -500,12 +500,12 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
-            portal = new DataPortalSelector();
+            portal = new DataPortalBroker();
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
 #else
-        portal = new DataPortalSelector();
+        portal = new DataPortalBroker();
         result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
 #endif
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });

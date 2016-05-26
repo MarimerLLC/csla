@@ -51,7 +51,7 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { $@"    public readonly static " });
+        tree, new[] { $@"    public static readonly " });
     }
   }
 }

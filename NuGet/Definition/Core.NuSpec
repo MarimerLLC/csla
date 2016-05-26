@@ -81,11 +81,11 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pdb*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pri*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.xml*" target="lib\dnxcore50" />
-    <!-- PCL -->
-    <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
-    <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
-    <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
-    <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+dnxcore50+uap10.0+MonoAndroid10+MonoTouch10+Xamarin.iOS10+NetCore45" />
+    <!-- PCL Profile111 -->
+    <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+win8+wpa81" />
     <!-- Windows Runtime Phone Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />

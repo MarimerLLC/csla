@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !PCL36
+﻿#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="ErrorDialog.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -162,14 +162,14 @@ namespace Csla.Xaml
       }
     }
 
-    #region IErrorDialog Members
+#region IErrorDialog Members
 
     void IErrorDialog.Register(object source)
     {
       AttachSource(source);
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

@@ -232,6 +232,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Server\AuthorizeRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\ChildDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortal.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalBroker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Server\DataPortalExceptionHandler.cs" />

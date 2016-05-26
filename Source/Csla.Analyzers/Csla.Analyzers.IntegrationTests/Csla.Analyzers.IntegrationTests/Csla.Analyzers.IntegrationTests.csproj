@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="AnalyzerTests.cs" />
     <Compile Include="Cmd.cs" />
+    <Compile Include="PartialClass - File2.cs" />
+    <Compile Include="PartialClass - File1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NestedClass.cs" />
   </ItemGroup>

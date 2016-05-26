@@ -44,20 +44,17 @@ namespace UwpUI
 
     private void ShowProjectList(object sender, RoutedEventArgs e)
     {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.ProjectList));
+      App.NavigateTo(typeof(Views.ProjectList));
     }
 
     private void ShowResourceList(object sender, RoutedEventArgs e)
     {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.ResourceList));
+      App.NavigateTo(typeof(Views.ResourceList));
     }
 
     private void ViewRoles(object sender, RoutedEventArgs e)
     {
-      var rootFrame = Window.Current.Content as Frame;
-      rootFrame.Navigate(typeof(Views.RoleList));
+      App.NavigateTo(typeof(Views.RoleList));
     }
   }
 }

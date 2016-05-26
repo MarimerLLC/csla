@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Csla;
-using System.Collections.Generic;
 
 namespace ProjectTracker.Library.CslaBaseTypes
 {

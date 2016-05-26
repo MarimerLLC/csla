@@ -1,0 +1,47 @@
+﻿<Page
+    x:Class="UwpUI.Views.ProjectEdit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI.Views"
+    xmlns:this="using:UwpUI.Xaml"
+    xmlns:csla="using:Csla.Xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Loaded="Page_Loaded">
+
+  <Page.Resources>
+    <this:VisibilityConverter Invert="True" x:Key="VisibilityConverter"/>
+  </Page.Resources>
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" DataContext="{Binding Model}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <CommandBar Grid.Row="0">
+      <AppBarButton Name="SaveButton" Margin="3" IsEnabled="{Binding Path=CanSave}" Icon="Save" Label="Save" ToolTipService.ToolTip="Save changes"/>
+    </CommandBar>
+    <TextBlock Grid.Row="1" Text="Project details" Style="{StaticResource SubheaderTextBlockStyle}" Margin="3" />
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <TextBlock Text="Name" Grid.Column="0" Grid.Row="0" Style="{StaticResource CaptionTextBlockStyle}" Margin="3"/>
+      <Grid Grid.Column="1" Grid.Row="0" Margin="3">
+        <csla:PropertyInfo Property="{Binding Name}" x:Name="NameInfo"/>
+        <Rectangle Fill="Red" 
+                   Visibility="{Binding ElementName=NameInfo, Path=IsValid, Converter={StaticResource VisibilityConverter}}"/>
+        <TextBox Text="{Binding Name, Mode=TwoWay}"
+                 ToolTipService.ToolTip="{Binding ElementName=NameInfo, Path=RuleDescription}"
+                 ToolTipService.Placement="Bottom"/>
+      </Grid>
+      <TextBlock Text="Description" Grid.Column="0" Grid.Row="1" Style="{StaticResource CaptionTextBlockStyle}" Margin="3"/>
+      <TextBox Text="{Binding Description}" Grid.Column="1" Grid.Row="1" Margin="3"/>
+    </Grid>
+  </Grid>
+</Page>

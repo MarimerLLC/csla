@@ -40,5 +40,11 @@ namespace UwpUI.Views
       var vm = await new ViewModels.ProjectList().InitAsync();
       DataContext = vm;
     }
+
+    private void EditItem(object sender, RoutedEventArgs e)
+    {
+      var vm = (ViewModels.ProjectList.ProjectInfo)((Button)sender).DataContext;
+      vm.EditItem();
+    }
   }
 }

@@ -6,36 +6,36 @@ namespace Csla.Analyzers.Extensions
   {
     internal static bool IsPropertyInfoManagementMethod(this IMethodSymbol @this)
     {
-      return @this != null && (@this.ContainingType.Name == CslaMemberConstants.CslaTypeNames.BusinessBase &&
-        (@this.Name == CslaMemberConstants.CslaPropertyMethods.GetProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.GetPropertyConvert ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.ReadProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.ReadPropertyConvert ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyGetPropertyAsync ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LazyReadPropertyAsync ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyAsync ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyConvert ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.SetProperty ||
-        @this.Name == CslaMemberConstants.CslaPropertyMethods.SetPropertyConvert));
+      return @this != null && (@this.ContainingType.Name == CslaMemberConstants.Types.BusinessBase &&
+        (@this.Name == CslaMemberConstants.Properties.GetProperty ||
+        @this.Name == CslaMemberConstants.Properties.GetPropertyConvert ||
+        @this.Name == CslaMemberConstants.Properties.ReadProperty ||
+        @this.Name == CslaMemberConstants.Properties.ReadPropertyConvert ||
+        @this.Name == CslaMemberConstants.Properties.LazyGetProperty ||
+        @this.Name == CslaMemberConstants.Properties.LazyGetPropertyAsync ||
+        @this.Name == CslaMemberConstants.Properties.LazyReadProperty ||
+        @this.Name == CslaMemberConstants.Properties.LazyReadPropertyAsync ||
+        @this.Name == CslaMemberConstants.Properties.LoadProperty ||
+        @this.Name == CslaMemberConstants.Properties.LoadPropertyAsync ||
+        @this.Name == CslaMemberConstants.Properties.LoadPropertyConvert ||
+        @this.Name == CslaMemberConstants.Properties.SetProperty ||
+        @this.Name == CslaMemberConstants.Properties.SetPropertyConvert));
     }
 
     internal static bool IsDataPortalOperation(this IMethodSymbol @this)
     {
-      return @this != null && (@this.Name == CslaMemberConstants.CslaOperations.DataPortalCreate || 
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalFetch ||
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalInsert || 
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalUpdate ||
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalDelete || 
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalDeleteSelf ||
-        @this.Name == CslaMemberConstants.CslaOperations.DataPortalExecute ||
-        @this.Name == CslaMemberConstants.CslaOperations.ChildCreate || 
-        @this.Name == CslaMemberConstants.CslaOperations.ChildFetch ||
-        @this.Name == CslaMemberConstants.CslaOperations.ChildInsert || 
-        @this.Name == CslaMemberConstants.CslaOperations.ChildUpdate ||
-        @this.Name == CslaMemberConstants.CslaOperations.ChildDeleteSelf);
+      return @this != null && (@this.Name == CslaMemberConstants.Operations.DataPortalCreate || 
+        @this.Name == CslaMemberConstants.Operations.DataPortalFetch ||
+        @this.Name == CslaMemberConstants.Operations.DataPortalInsert || 
+        @this.Name == CslaMemberConstants.Operations.DataPortalUpdate ||
+        @this.Name == CslaMemberConstants.Operations.DataPortalDelete || 
+        @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
+        @this.Name == CslaMemberConstants.Operations.DataPortalExecute ||
+        @this.Name == CslaMemberConstants.Operations.ChildCreate || 
+        @this.Name == CslaMemberConstants.Operations.ChildFetch ||
+        @this.Name == CslaMemberConstants.Operations.ChildInsert || 
+        @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
+        @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf);
     }
   }
 }

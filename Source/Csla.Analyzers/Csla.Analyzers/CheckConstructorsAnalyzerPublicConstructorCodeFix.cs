@@ -20,7 +20,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing);
       }
     }
 

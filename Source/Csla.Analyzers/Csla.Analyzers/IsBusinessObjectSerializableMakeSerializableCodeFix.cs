@@ -20,7 +20,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(IsBusinessObjectSerializableConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable);
       }
     }
 

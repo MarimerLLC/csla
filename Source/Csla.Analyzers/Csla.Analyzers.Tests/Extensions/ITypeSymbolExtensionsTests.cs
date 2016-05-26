@@ -106,11 +106,29 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
-    public async Task IsSerializableWhenSymbolIsSerializable()
+    public async Task IsSerializableWhenSymbolHasSerializableAttribute()
     {
       Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsSerializable))}.cs",
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))).IsSerializable());
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolHasSerializableAttribute))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolHasSerializableAttribute))).IsSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSerializableWhenSymbolImplementsISerializable()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolImplementsISerializable))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolImplementsISerializable))).IsSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSerializableWhenSymbolIsValueType()
+    {
+      var x = typeof(Targets.ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsValueType);
+
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsValueType))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsValueType))).IsSerializable());
     }
 
     [TestMethod]
@@ -168,7 +186,7 @@ namespace Csla.Analyzers.Tests.Extensions
       var model = compilation.GetSemanticModel(tree);
       var root = await tree.GetRootAsync().ConfigureAwait(false);
 
-      foreach (var classNode in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
+      foreach (var classNode in root.DescendantNodes().OfType<TypeDeclarationSyntax>())
       {
         if (classNode.Identifier.ValueText == name)
         {

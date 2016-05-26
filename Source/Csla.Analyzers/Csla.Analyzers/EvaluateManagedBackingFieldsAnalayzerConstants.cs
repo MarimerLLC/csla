@@ -2,8 +2,6 @@
 {
   public static class EvaluateManagedBackingFieldsAnalayzerConstants
   {
-    public const string Category = "Usage";
-    public const string DiagnosticId = "CSLA0008";
     public const string Title = "Evaluate Managed Backing Fields";
     public const string IdentifierText = "ManagedBackingFieldMustBePublicStaticAndReadOnlyRule";
     public const string Message = "Managed backing fields must be public, static and read-only.";

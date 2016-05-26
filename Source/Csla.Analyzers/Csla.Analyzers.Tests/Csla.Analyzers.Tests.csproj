@@ -102,6 +102,7 @@
     <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />
     <Compile Include="FindGetOrReadInvocationsWalkerTests.cs" />
     <Compile Include="EvaluateManagedBackingFieldsCodeFixTests.cs" />
+    <Compile Include="FindOperationsWithNonSerializableArgumentsAnalyzerTests.cs" />
     <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests.cs" />
     <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests.cs" />
     <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
@@ -263,6 +264,21 @@
     <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithSerializableArgument.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNoArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsNotOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -386,6 +402,12 @@
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsNotABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsValueType.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolImplementsISerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -428,7 +450,7 @@
     <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsSerializable.cs">
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolHasSerializableAttribute.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsNotSerializable.cs">

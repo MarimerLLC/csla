@@ -24,8 +24,8 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(IsBusinessObjectSerializableConstants.DiagnosticId, ids[0],
-        nameof(IsBusinessObjectSerializableConstants.DiagnosticId));
+      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable,
+        nameof(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable));
     }
 
     [TestMethod]

@@ -3,5 +3,5 @@
 namespace Csla.Analyzers.Tests.Targets.ITypeSymbolExtensionsTests
 {
   [Serializable]
-  public class IsSerializableWhenSymbolIsSerializable { }
+  public class IsSerializableWhenSymbolHasSerializableAttribute { }
 }

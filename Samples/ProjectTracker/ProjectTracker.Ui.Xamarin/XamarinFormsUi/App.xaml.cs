@@ -32,7 +32,7 @@ namespace XamarinFormsUi
 
       await ProjectTracker.Library.Security.PTPrincipal.LoginAsync("manager", "manager");
 
-      //await RoleList.CacheListAsync();
+      await RoleList.CacheListAsync();
 
       await startPage.InitAsync();
     }

@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET PCL")]
-[assembly: AssemblyDescription("CSLA .NET Framework")]
+[assembly: AssemblyDescription("CSLA .NET Framework (Profile111)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

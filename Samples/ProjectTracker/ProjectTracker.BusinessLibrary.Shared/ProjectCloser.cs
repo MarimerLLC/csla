@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Csla;
-using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {

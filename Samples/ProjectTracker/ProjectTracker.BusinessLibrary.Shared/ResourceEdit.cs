@@ -2,9 +2,6 @@ using System;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Security;
-using Csla.Data;
-using Csla.Serialization;
 using System.ComponentModel;
 using System.Threading.Tasks;
 

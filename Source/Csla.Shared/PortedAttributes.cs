@@ -7,12 +7,8 @@
 // <summary>Placeholder for missing Browsable attribute from full .NET.</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Csla
+namespace System.ComponentModel
 {
   /// <summary>
   /// Placeholder for missing Browsable attribute from full .NET.
@@ -42,4 +38,7 @@ namespace Csla
     }
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.BrowsableAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.CategoryAttribute))]
 #endif

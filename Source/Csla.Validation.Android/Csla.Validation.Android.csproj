@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla.Android\Csla.Android.csproj">
-      <Project>{f38f7293-0b67-4f49-992b-b1a3036b7dd0}</Project>
+      <Project>{c2be0849-fee9-490d-8bbb-2a9ac301841e}</Project>
       <Name>Csla.Android</Name>
     </ProjectReference>
   </ItemGroup>

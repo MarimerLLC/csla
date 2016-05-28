@@ -1,7 +1,6 @@
 using Csla;
 using System.ComponentModel.DataAnnotations;
 using System;
-using Csla.Serialization;
 using System.ComponentModel;
 using Csla.Rules;
 

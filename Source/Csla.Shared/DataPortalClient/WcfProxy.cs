@@ -1,4 +1,4 @@
-#if !NETFX_PHONE && !NETCORE && !PCL46
+#if !NETFX_PHONE && !NETCORE && !PCL46 && !ANDROID
 //-----------------------------------------------------------------------
 // <copyright file="WcfProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

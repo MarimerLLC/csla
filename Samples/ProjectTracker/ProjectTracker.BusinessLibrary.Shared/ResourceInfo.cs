@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Serialization;
 
 namespace ProjectTracker.Library
 {

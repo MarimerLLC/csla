@@ -24,8 +24,8 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(FindSaveAssignmentIssueAnalyzerConstants.DiagnosticId, ids[0],
-        nameof(FindSaveAssignmentIssueAnalyzerConstants.DiagnosticId));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, ids[0],
+        nameof(Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue));
     }
 
     [TestMethod]

@@ -2,9 +2,6 @@ using System;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla;
-using Csla.Data;
-using Csla.Security;
-using Csla.Serialization;
 using System.ComponentModel;
 
 namespace ProjectTracker.Library
@@ -79,6 +76,7 @@ namespace ProjectTracker.Library
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
       BusinessRules.AddRule(
         new StartDateGTEndDate { 
           PrimaryProperty = StartedProperty, 

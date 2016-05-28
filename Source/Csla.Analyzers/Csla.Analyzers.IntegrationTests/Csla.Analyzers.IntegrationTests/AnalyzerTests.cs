@@ -1,6 +1,29 @@
 ﻿using Csla;
+using Csla.Core;
 using System;
 using System.Threading.Tasks;
+
+[Serializable]
+public class ExpressionBodiedMember
+  : BusinessBase<ExpressionBodiedMember>
+{
+  public static readonly PropertyInfo<int> ResourceIdProperty = RegisterProperty<int>(c => c.ResourceId);
+  public int ResourceId => ReadProperty(ResourceIdProperty);
+}
+
+public interface IBO
+  : IBusinessObject
+{
+  void DataPortal_Create();
+}
+
+internal class x : IBO
+{
+  internal void DataPortal_Create()
+  {
+    throw new NotImplementedException();
+  }
+}
 
 public class SomeCriteria
   : CriteriaBase<SomeCriteria>

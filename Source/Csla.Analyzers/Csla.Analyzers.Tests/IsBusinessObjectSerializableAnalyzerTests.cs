@@ -1,11 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
-  [TestClass]
+	[TestClass]
   public sealed class IsBusinessObjectSerializableAnalyzerTests
   {
     [TestMethod]
@@ -16,15 +15,15 @@ namespace Csla.Analyzers.Tests
       Assert.AreEqual(1, diagnostics.Length);
 
       var diagnostic = diagnostics[0];
-      Assert.AreEqual(diagnostic.Id, IsBusinessObjectSerializableConstants.DiagnosticId,
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(diagnostic.Title.ToString(), IsBusinessObjectSerializableConstants.Title,
+      Assert.AreEqual(IsBusinessObjectSerializableConstants.Title, diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(diagnostic.MessageFormat.ToString(), IsBusinessObjectSerializableConstants.Message,
+      Assert.AreEqual(IsBusinessObjectSerializableConstants.Message, diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(diagnostic.Category, IsBusinessObjectSerializableConstants.Category,
+      Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(diagnostic.DefaultSeverity, DiagnosticSeverity.Error,
+      Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
     }
 
@@ -49,7 +48,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         $@"Targets\{nameof(IsBusinessObjectSerializableAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndIsNotSerializable))}.cs",
-        new[] { IsBusinessObjectSerializableConstants.DiagnosticId });
+        new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
     }
   }
 }

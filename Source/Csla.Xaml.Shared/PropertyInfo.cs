@@ -16,6 +16,8 @@ using System.Reflection;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+#elif XAMARIN
+using Xamarin.Forms;
 #else
 using System.Windows.Controls;
 using System.Windows;
@@ -27,25 +29,37 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
+#if XAMARIN
+  public class PropertyInfo : View, INotifyPropertyChanged
+  {
+
+#else
   public class PropertyInfo : FrameworkElement, INotifyPropertyChanged
   {
-    private bool _loading = true;
     private const string _dependencyPropertySuffix = "Property";
+#endif
+    private bool _loading = true;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public PropertyInfo()
     {
+      BrokenRules = new ObservableCollection<BrokenRule>();
+#if XAMARIN
+      _loading = false;
+      BindingContextChanged += (o, e) => SetSource();
+      UpdateState();
+#else
       Visibility = Visibility.Collapsed;
       Height = 20;
       Width = 20;
-      BrokenRules = new ObservableCollection<BrokenRule>();
       Loaded += (o, e) =>
       {
         _loading = false;
         UpdateState();
       };
+#endif
     }
 
     /// <summary>
@@ -61,6 +75,23 @@ namespace Csla.Xaml
 
     #region BrokenRules property
 
+#if XAMARIN
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    public static readonly BindableProperty BrokenRulesProperty =
+      BindableProperty.Create("BrokenRules", typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    public ObservableCollection<BrokenRule> BrokenRules
+    {
+      get { return (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty); }
+      set { SetValue(BrokenRulesProperty, value); }
+    }
+#else
     /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
@@ -81,10 +112,14 @@ namespace Csla.Xaml
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
       private set { SetValue(BrokenRulesProperty, value); }
     }
+#endif
 
     #endregion
 
     #region MyDataContext Property
+
+#if XAMARIN
+#else
     /// <summary>
     /// Used to monitor for changes in the binding path.
     /// </summary>
@@ -102,10 +137,14 @@ namespace Csla.Xaml
     {
       ((PropertyInfo)sender).SetSource(true);
     }
+#endif
 
     #endregion
 
     #region RelativeBinding Property
+
+#if XAMARIN
+#else
 
     /// <summary>
     /// Used to monitor for changes in the binding path.
@@ -124,11 +163,69 @@ namespace Csla.Xaml
     {
       ((PropertyInfo)sender).SetSource(true);
     }
+#endif
 
     #endregion
 
     #region Source property
 
+    /// <summary>
+    /// Gets or sets the Source.
+    /// </summary>
+    /// <value>The source.</value>
+    protected object Source { get; set; }
+
+    /// <summary>
+    /// Gets or sets the binding path.
+    /// </summary>
+    /// <value>The binding path.</value>
+    protected string BindingPath { get; set; }
+
+#if XAMARIN
+    private string _bindingPath;
+    /// <summary>
+    /// Gets or sets the binding path used to bind this
+    /// control to the business object property relative
+    /// to the BindingContext.
+    /// </summary>
+    public string Path
+    {
+      get { return _bindingPath; }
+      set
+      {
+        if (_bindingPath != value)
+        {
+          _bindingPath = value;
+          OnPropertyChanged("Path");
+          SetSource();
+        }
+      }
+    }
+
+    private void SetSource()
+    {
+      if (BindingContext == null) return;
+      if (string.IsNullOrEmpty(Path)) return;
+      try
+      {
+        Source = BindingContext;
+        BindingPath = Path;
+        while (BindingPath.Contains("."))
+        {
+          var RefName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+          BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+          var prop = MethodCaller.GetProperty(Source.GetType(), RefName);
+          Source = MethodCaller.GetPropertyValue(Source, prop);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new InvalidOperationException(
+          string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+      }
+      UpdateState();
+    }
+#else
     /// <summary>
     /// Gets or sets the source business
     /// property to which this control is bound.
@@ -164,40 +261,6 @@ namespace Csla.Xaml
       {
         SetValue(PropertyProperty, value);
         SetSource(false);
-      }
-    }
-
-    private object _source = null;
-    /// <summary>
-    /// Gets or sets the Source.
-    /// </summary>
-    /// <value>The source.</value>
-    protected object Source
-    {
-      get
-      {
-        return _source;
-      }
-      set
-      {
-        _source = value;
-      }
-    }
-
-    private string _bindingPath = string.Empty;
-    /// <summary>
-    /// Gets or sets the binding path.
-    /// </summary>
-    /// <value>The binding path.</value>
-    protected string BindingPath
-    {
-      get
-      {
-        return _bindingPath;
-      }
-      set
-      {
-        _bindingPath = value;
       }
     }
 
@@ -400,6 +463,7 @@ namespace Csla.Xaml
 
       return null;
     }
+#endif
 
     private void HandleSourceEvents(object old, object source)
     {
@@ -461,6 +525,27 @@ namespace Csla.Xaml
     #endregion
 
     #region State properties
+
+    private object _value = null;
+
+    /// <summary>
+    /// Gets the value of the property 
+    /// from the business object.
+    /// </summary>
+    [Category("Property Status")]
+    public object Value
+    {
+      get { return _value; }
+      protected set
+      {
+        if (value != _value)
+        {
+          _value = value;
+          OnPropertyChanged("Value");
+        }
+      }
+    }
+
 
     private bool _canRead = true;
     /// <summary>
@@ -540,7 +625,7 @@ namespace Csla.Xaml
 
     private RuleSeverity _worst;
     /// <summary>
-    /// Gets a valud indicating the worst
+    /// Gets a value indicating the worst
     /// severity of all broken rules
     /// for this property (if IsValid is
     /// false).
@@ -593,8 +678,8 @@ namespace Csla.Xaml
       var iarw = Source as Csla.Security.IAuthorizeReadWrite;
       if (iarw != null)
       {
-        CanWrite = iarw.CanWriteProperty(_bindingPath);
-        CanRead = iarw.CanReadProperty(_bindingPath);
+        CanWrite = iarw.CanWriteProperty(BindingPath);
+        CanRead = iarw.CanReadProperty(BindingPath);
       }
 
       BusinessBase businessObject = Source as BusinessBase;
@@ -642,12 +727,15 @@ namespace Csla.Xaml
         RuleDescription = string.Empty;
         IsValid = true;
       }
+
+      Value = MethodCaller.CallPropertyGetter(Source, BindingPath);
     }
 
     #endregion
 
     #region INotifyPropertyChanged Members
 
+#if !XAMARIN
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
@@ -662,6 +750,7 @@ namespace Csla.Xaml
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
     }
+#endif
 
     #endregion
   }

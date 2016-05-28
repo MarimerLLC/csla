@@ -24,8 +24,8 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.DiagnosticId, ids[0],
-        nameof(IsOperationMethodPublicAnalyzerConstants.DiagnosticId));
+      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.IsOperationMethodPublic,
+        nameof(Constants.AnalyzerIdentifiers.IsOperationMethodPublic));
     }
 
     [TestMethod]

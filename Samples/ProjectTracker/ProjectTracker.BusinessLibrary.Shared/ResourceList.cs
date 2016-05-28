@@ -1,8 +1,6 @@
 using Csla;
-using Csla.Data;
 using System;
 using System.Linq;
-using Csla.Serialization;
 using System.Collections.Generic;
 
 namespace ProjectTracker.Library

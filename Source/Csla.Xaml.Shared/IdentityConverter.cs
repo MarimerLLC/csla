@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !PCL36
+#if !NETFX_CORE && !PCL36 && !XAMARIN
 //-----------------------------------------------------------------------
 // <copyright file="IdentityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -18,7 +18,7 @@ namespace Csla.Xaml
   /// </summary>
   public class IdentityConverter : IValueConverter
   {
-    #region IValueConverter Members
+#region IValueConverter Members
 
     /// <summary>
     /// Returns the unchanged value.
@@ -48,7 +48,7 @@ namespace Csla.Xaml
       return value;
     }
 
-    #endregion
+#endregion
   }
 }
 #endif

@@ -7,11 +7,10 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
-using Microsoft.CodeAnalysis.Formatting;
 
 namespace Csla.Analyzers
 {
-  [ExportCodeFixProvider(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, LanguageNames.CSharp)]
+  [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class EvaluateManagedBackingFieldsCodeFix
     : CodeFixProvider
@@ -20,7 +19,7 @@ namespace Csla.Analyzers
     {
       get
       {
-        return ImmutableArray.Create(EvaluateManagedBackingFieldsAnalayzerConstants.DiagnosticId);
+        return ImmutableArray.Create(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields);
       }
     }
 
@@ -33,19 +32,19 @@ namespace Csla.Analyzers
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-      if (context.CancellationToken.IsCancellationRequested) { return; }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var fieldNode = root.FindNode(diagnostic.Location.SourceSpan) as FieldDeclarationSyntax;
 
-      if (context.CancellationToken.IsCancellationRequested) { return; }
+      context.CancellationToken.ThrowIfCancellationRequested();
 
       var newFieldNode = fieldNode;
 
       newFieldNode = newFieldNode.WithModifiers(SyntaxFactory.TokenList(
           SyntaxFactory.Token(SyntaxKind.PublicKeyword),
-          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword),
-          SyntaxFactory.Token(SyntaxKind.StaticKeyword)));
+          SyntaxFactory.Token(SyntaxKind.StaticKeyword),
+          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)));
 
       var newRoot = root.ReplaceNode(fieldNode, newFieldNode);
 

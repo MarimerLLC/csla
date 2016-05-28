@@ -50,4 +50,6 @@ namespace System.ComponentModel.DataAnnotations
     public IEnumerable<string> MemberNames { get; protected set; }
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.DataAnnotations.ValidationResult))]
 #endif

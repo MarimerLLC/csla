@@ -13,12 +13,12 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor saveResultIsNotAssignedRule = new DiagnosticDescriptor(
-      FindSaveAssignmentIssueAnalyzerConstants.DiagnosticId, FindSaveAssignmentIssueAnalyzerConstants.Title,
-      FindSaveAssignmentIssueAnalyzerConstants.Message, FindSaveAssignmentIssueAnalyzerConstants.Category,
+      Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, FindSaveAssignmentIssueAnalyzerConstants.Title,
+      FindSaveAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
     private static DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new DiagnosticDescriptor(
-      FindSaveAsyncAssignmentIssueAnalyzerConstants.DiagnosticId, FindSaveAsyncAssignmentIssueAnalyzerConstants.Title,
-      FindSaveAsyncAssignmentIssueAnalyzerConstants.Message, FindSaveAsyncAssignmentIssueAnalyzerConstants.Category,
+      Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue, FindSaveAsyncAssignmentIssueAnalyzerConstants.Title,
+      FindSaveAsyncAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
@@ -45,10 +45,7 @@ namespace Csla.Analyzers
 
       if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
       {
-        if (context.CancellationToken.IsCancellationRequested)
-        {
-          return;
-        }
+        context.CancellationToken.ThrowIfCancellationRequested();
 
         if (invocationSymbol?.Name == "Save")
         {

@@ -19,4 +19,6 @@ namespace System
     object Clone();
   }
 }
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ICloneable))]
 #endif

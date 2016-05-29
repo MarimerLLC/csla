@@ -38,11 +38,10 @@
     <DocumentationFile>..\..\Bin\Release\Xamarin\Csla.Xaml.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CslaKey.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />

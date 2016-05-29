@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
-    <Compile Include="DotNetMemberConstants.cs" />
     <Compile Include="EvaluateManagedBackingFieldsCodeFix.cs" />
     <Compile Include="CslaMemberConstants.cs" />
     <Compile Include="EvaluateManagedBackingFieldsAnalayzer.cs" />

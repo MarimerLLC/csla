@@ -405,9 +405,6 @@
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsValueType.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolImplementsISerializable.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

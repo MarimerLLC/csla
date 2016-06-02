@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -133,10 +133,6 @@
     <value>Ändern eines Elementes ist eine ungültige Operation</value>
     <comment>Changing an element is an invalid operation</comment>
   </data>
-  <data name="ParentSetException" xml:space="preserve">
-    <value>Elternwert kann nur für Kindobjekte gesetzt werden</value>
-    <comment>Parent value can only be set for child objects</comment>
-  </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Kann ein Kindobjekt nicht direkt zum Löschen markieren - benutzen Sie die übergeordnete Liste</value>
     <comment>Can not directly mark a child object for deletion - use its parent collection</comment>
@@ -206,7 +202,7 @@
     <comment>No principal object should be passed to DataPortal when using Windows integrated security</comment>
   </data>
   <data name="BusinessPrincipalException" xml:space="preserve">
-    <value>Principal muss vom Typ BusinessPrincipal sein</value>
+    <value>Principal muss vom Typ BusinessPrincipal sein, nicht</value>
     <comment>Principal must be of type BusinessPrincipal, not</comment>
   </data>
   <data name="SmartDateT" xml:space="preserve">
@@ -254,7 +250,7 @@
     <comment>Invalid operation - execute not allowed</comment>
   </data>
   <data name="InsertNotSupportedException" xml:space="preserve">
-    <value>ungülitge Operation - Einfügen nicht erlaubt</value>
+    <value>Ungülitge Operation - Einfügen nicht erlaubt</value>
     <comment>Invalid operation - insert not allowed</comment>
   </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
@@ -266,7 +262,7 @@
     <comment>Property set not allowed</comment>
   </data>
   <data name="NothingNotValid" xml:space="preserve">
-    <value>Argument darf nicht Nothing sein</value>
+    <value>Argument darf nicht leer sein</value>
     <comment>Argument must not be Nothing</comment>
   </data>
   <data name="PropertyCopyFailed" xml:space="preserve">
@@ -278,7 +274,7 @@
     <comment>{0} can not exceed {1}</comment>
   </data>
   <data name="MinValueRule" xml:space="preserve">
-    <value>{0} kann nicht geringer sein als {1}</value>
+    <value>{0} kann nicht kleiner sein als {1}</value>
     <comment>{0} can not be less than {1}</comment>
   </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
@@ -290,7 +286,7 @@
     <comment>{0} required</comment>
   </data>
   <data name="RegExMatchRule" xml:space="preserve">
-    <value>{0} ist nicht regelgerecht</value>
+    <value>{0} entspricht nicht dem regulären Ausdruck</value>
     <comment>{0} does not match regular expression</comment>
   </data>
   <data name="TypeLoadException" xml:space="preserve">
@@ -334,7 +330,7 @@
     <comment>Filter parameter and filter provider are required</comment>
   </data>
   <data name="PropertyLoadException" xml:space="preserve">
-    <value>Laden oder Setzen einer Eigenschaft fehlgeschlagen für Eigenschaft {0} ({1})</value>
+    <value>Das Laden oder Setzen einer Eigenschaft ist fehlgeschlagen für Eigenschaft {0} ({1})</value>
     <comment>Property load or set failed for property {0} ({1})</comment>
   </data>
   <data name="PropertyNotRegistered" xml:space="preserve">
@@ -342,7 +338,7 @@
     <comment>One or more properties are not registered for this type</comment>
   </data>
   <data name="UserNotAuthorizedException" xml:space="preserve">
-    <value>Benutzer nicht berechtigt für Aktion {0} mit Objekttyp {1}</value>
+    <value>Der Benutzer ist nicht berechtigt für Aktion {0} mit Objekttyp {1}</value>
     <comment>User not authorized to {0} object type {1}</comment>
   </data>
   <data name="AuthenticationProviderDoesNotImplementIAuthorizeDataPortal" xml:space="preserve">
@@ -402,7 +398,7 @@
     <comment>Type {0} must implement IMobileObject</comment>
   </data>
   <data name="ObjectNotSerializableFormatted" xml:space="preserve">
-    <value>Objekt nicht serialisierbar ({0})</value>
+    <value>Das Objekt ist nicht serialisierbar ({0})</value>
     <comment>Object not serializable ({0})</comment>
   </data>
   <data name="ObjectTypeCouldNotBeLoaded" xml:space="preserve">
@@ -416,5 +412,153 @@
   <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
     <value>Update Methodenname in MobileFactory Attribut nicht angegeben</value>
     <comment>Update method name not specified in MobileFactory attribute</comment>
+  </data>
+  <data name="MemberNotFoundException" xml:space="preserve">
+    <comment>Member not found on object ({0})</comment>
+    <value>Ein Mitglied von Objekt ({0}) wurde nicht gefunden</value>
+  </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <comment>Target object must implement IManageProperties</comment>
+    <value>Das Zielobjekt muss IManageProperties implementieren</value>
+  </data>
+  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
+    <comment>Cannot register property {0} after containing type ({1}) has been instantiated</comment>
+    <value>Die Eigenschaft {0} kann nicht registriert werden nachdem der enthaltene Typ ({1}) instantiiert wurde</value>
+  </data>
+  <data name="IEditableCollectionRequiredException" xml:space="preserve">
+    <comment>Target object must implement IEditableCollection</comment>
+    <value>Das Zielobjekt muss IEditableCollection implementieren</value>
+  </data>
+  <data name="ActionExtenderCloseConfirmation" xml:space="preserve">
+    <comment>Are you sure you want to close?</comment>
+    <value>Sind Sie sicher, dass Sie schließen wollen?</value>
+  </data>
+  <data name="ActionExtenderDirtyWarningMessagePropertyDefault" xml:space="preserve">
+    <comment>Object is currently in a dirty changed.</comment>
+    <value>Das Objekt wurde verändert.</value>
+  </data>
+  <data name="ActionExtenderInvalidBindingSourceCast" xml:space="preserve">
+    <comment>DataSource does not cast to a BindingSource</comment>
+    <value>DataSource cann nicht in BindingSource gewandelt werden.</value>
+  </data>
+  <data name="ActionExtenderInvalidBusinessObjectBaseCast" xml:space="preserve">
+    <comment>The underlying data source does not cast to a CSLA BusinessBase object</comment>
+    <value>Das zugrunde liegende Datenobjekt kann nicht in ein CSLA BusinessBase Objekt gewandelt werden.</value>
+  </data>
+  <data name="ActionExtenderSourceMustBeBindingSource" xml:space="preserve">
+    <comment>DataSource must be a BindingSource control instance</comment>
+    <value>Die Datenquelle muss eine Instanz von BindingSource sein.</value>
+  </data>
+  <data name="ActionExtenderWarnOnCancelMessagePropertyDefault" xml:space="preserve">
+    <comment>Are you sure you want to revert to the previous values?</comment>
+    <value>Sind Sie sicher, dass Sie die aktuellen Änderungen verwerfen und zu den bisherigen Werten zurück kehren wollen?</value>
+  </data>
+  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
+    <comment>Cannot register property {0}, a PropertyInfo with the same name already exists.</comment>
+    <value>Die Eigenschaft {0} kann nicht registriert werden, da bereits eine PropertyInfo mit dem selben Namen existiert.</value>
+  </data>
+  <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
+    <comment>Indexed expressions must be closed</comment>
+    <value>Index-Ausdrücke müssen geschlossen sein.</value>
+  </data>
+  <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
+    <comment>Please set NavigatorProvider prior to TriggerEvent property.</comment>
+    <value>Bitte die Eigenschaft NavigatorProvider vor der TriggerEvent-Eigenschaft setzen.</value>
+  </data>
+  <data name="ObjectNotNull" xml:space="preserve">
+    <comment>Can not set property if data object is not null</comment>
+    <value>Die Eigenschaft kann nicht gesetzt werden wenn das Datenobjekt Null ist.</value>
+  </data>
+  <data name="PropertyNameDoesNotExist" xml:space="preserve">
+    <comment>The specified property name '{0}' does not exist</comment>
+    <value>Die angegebene Eigenschaft '{0}' existiert nicht.</value>
+  </data>
+  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
+    <comment>This property requires {0} index arguments, {1} were provided</comment>
+    <value>Die Eigenschaft benötigt {0} Indexeargumente, {1} wurden angegeben</value>
+  </data>
+  <data name="PropertyNotInAffectedPropertiesException" xml:space="preserve">
+    <comment>Property {0} must be added to AffectedProperties. </comment>
+    <value>Die Eigenschaft {0} muss zu AffectedProperties hinzugefügt werden.</value>
+  </data>
+  <data name="AsyncLoadException" xml:space="preserve">
+    <comment>Failed on async load of property {0}</comment>
+    <value>Fehler beim asynchronen Laden der Eigenschaft {0}.</value>
+  </data>
+  <data name="ExecuteBadParams" xml:space="preserve">
+    <comment>Method to be executed must have 0 or 2 parameters</comment>
+    <value>Die auszuführende Methode muss entweder 0 oder 2 Parameter haben.</value>
+  </data>
+  <data name="ExecuteBadTriggerEvent" xml:space="preserve">
+    <comment>Trigger event has an unsupported signature</comment>
+    <value>Die Signatur des Triggerereignises wird nicht unterstützt.</value>
+  </data>
+  <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
+    <comment>AddNewCore must be overridden</comment>
+    <value>AddNewCore muss überschrieben werden.</value>
+  </data>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <comment>Can not change a read-only list or collection</comment>
+    <value>Eine readonly Liste oder Collection kann nicht geändert werden.</value>
+  </data>
+  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
+    <comment>PropertyName '{0}' not found in list</comment>
+    <value>Der Eigenschaftsname '{0}' wurde in der Liste nicht gefunden</value>
+  </data>
+  <data name="NoSuchMethod" xml:space="preserve">
+    <comment>No such method {0}</comment>
+    <value>Methode {0} nicht gefunden.</value>
+  </data>
+  <data name="PropertyIsPrivateField" xml:space="preserve">
+    <comment>Attempt to read/load private field property in managed properties.</comment>
+    <value>Es wurde versucht das private Feld einer gemanagten Eigenschaft zu verändern.</value>
+  </data>
+  <data name="ListItemNotAChildException" xml:space="preserve">
+    <comment>List item must be marked as a child object</comment>
+    <value>Das Listitem muss als Kind-Objekt gekennzeichnet werden.</value>
+  </data>
+  <data name="PrivateFieldException" xml:space="preserve">
+    <comment>Properties with private backing fields must be marked as RelationshipTypes.PrivateField</comment>
+    <value>Eigenschaften mit privaten Feldern müssen als RelationshipTypes.PrivateField gekennzeichnet werden.</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <comment>Warning</comment>
+    <value>Warnung</value>
+  </data>
+  <data name="ObjectRulesCannotSetPrimaryProperty" xml:space="preserve">
+    <comment>Object rule can not have PrimaryPropery.</comment>
+    <value>Eine Objektregel kann kein PrimaryProperty haben.</value>
+  </data>
+  <data name="UnandledKNownTypeException" xml:space="preserve">
+    <comment>Unhandled CSLA Known type was found</comment>
+    <value>Eine UnandledKNownTypeException wurde gefunden</value>
+  </data>
+  <data name="BinaryWriterObjectSerializationException" xml:space="preserve">
+    <comment>Serialization of type object is not supported.</comment>
+    <value>Die Serialisation von Objekt-Type wird nicht unterstützt.</value>
+  </data>
+  <data name="PropertyNameNotRegisteredException" xml:space="preserve">
+    <comment>Property '{0}' not registered.</comment>
+    <value>Die Eigenschaft {0} ist nicht registriert.</value>
+  </data>
+  <data name="RuleMessageRequired" xml:space="preserve">
+    <comment>Message for broken rule is required. Rule: {0}</comment>
+    <value>Für die Regel {0} ist eine Meldung erforderlich.</value>
+  </data>
+  <data name="TaskOfObjectException" xml:space="preserve">
+    <comment>Method {0} must return Task&lt;object&gt;</comment>
+    <value>Die Methode {0} muss ein Task&lt;object&gt; zurück geben.</value>
+  </data>
+  <data name="ActionExtenderErrorCaption" xml:space="preserve">
+    <comment>Error</comment>
+    <value>Fehler</value>
+  </data>
+  <data name="ActionExtenderInformationCaption" xml:space="preserve">
+    <comment>Information</comment>
+    <value>Information</value>
+  </data>
+  <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
+    <comment>Object is valid</comment>
+    <value>Objekt ist gültig</value>
   </data>
 </root>

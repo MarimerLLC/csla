@@ -402,7 +402,10 @@
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsNotABusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsValueType.cs">
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsDelegate.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsEnum.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">

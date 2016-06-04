@@ -114,18 +114,8 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
-    public async Task IsSerializableWhenSymbolImplementsISerializable()
-    {
-      Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolImplementsISerializable))}.cs",
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolImplementsISerializable))).IsSerializable());
-    }
-
-    [TestMethod]
     public async Task IsSerializableWhenSymbolIsValueType()
     {
-      var x = typeof(Targets.ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsValueType);
-
       Assert.IsTrue((await this.GetTypeSymbolAsync(
         $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsValueType))}.cs",
         nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsValueType))).IsSerializable());

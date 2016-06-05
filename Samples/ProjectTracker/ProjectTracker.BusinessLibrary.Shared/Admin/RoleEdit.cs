@@ -16,14 +16,14 @@ namespace ProjectTracker.Library.Admin
       MarkAsChild();
     }
 
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public readonly static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { LoadProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(r => r.Name);
+    public readonly static PropertyInfo<string> NameProperty = RegisterProperty<string>(r => r.Name);
     [Required]
     public string Name
     {
@@ -31,7 +31,7 @@ namespace ProjectTracker.Library.Admin
       set { SetProperty(NameProperty, value); }
     }
 
-    public static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
+    public readonly static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public byte[] TimeStamp

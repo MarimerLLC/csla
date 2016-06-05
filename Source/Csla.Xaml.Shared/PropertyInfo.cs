@@ -30,7 +30,7 @@ namespace Csla.Xaml
   /// Expose metastate information about a property.
   /// </summary>
 #if XAMARIN
-  public class PropertyInfo : Element, INotifyPropertyChanged
+  public class PropertyInfo : View, INotifyPropertyChanged
   {
 
 #else
@@ -45,11 +45,12 @@ namespace Csla.Xaml
     /// </summary>
     public PropertyInfo()
     {
+      BrokenRules = new ObservableCollection<BrokenRule>();
 #if XAMARIN
       _loading = false;
+      BindingContextChanged += (o, e) => SetSource();
       UpdateState();
 #else
-      BrokenRules = new ObservableCollection<BrokenRule>();
       Visibility = Visibility.Collapsed;
       Height = 20;
       Width = 20;
@@ -72,7 +73,7 @@ namespace Csla.Xaml
       UpdateState();
     }
 
-#region BrokenRules property
+    #region BrokenRules property
 
 #if XAMARIN
     /// <summary>
@@ -113,9 +114,9 @@ namespace Csla.Xaml
     }
 #endif
 
-#endregion
+    #endregion
 
-#region MyDataContext Property
+    #region MyDataContext Property
 
 #if XAMARIN
 #else
@@ -140,7 +141,7 @@ namespace Csla.Xaml
 
     #endregion
 
-#region RelativeBinding Property
+    #region RelativeBinding Property
 
 #if XAMARIN
 #else
@@ -166,44 +167,64 @@ namespace Csla.Xaml
 
     #endregion
 
-#region Source property
+    #region Source property
 
-    private object _source = null;
     /// <summary>
     /// Gets or sets the Source.
     /// </summary>
     /// <value>The source.</value>
-    protected object Source
-    {
-      get
-      {
-        return _source;
-      }
-      set
-      {
-        _source = value;
-      }
-    }
+    protected object Source { get; set; }
 
-    private string _bindingPath = string.Empty;
     /// <summary>
     /// Gets or sets the binding path.
     /// </summary>
     /// <value>The binding path.</value>
-    protected string BindingPath
+    protected string BindingPath { get; set; }
+
+#if XAMARIN
+    private string _bindingPath;
+    /// <summary>
+    /// Gets or sets the binding path used to bind this
+    /// control to the business object property relative
+    /// to the BindingContext.
+    /// </summary>
+    public string Path
     {
-      get
-      {
-        return _bindingPath;
-      }
+      get { return _bindingPath; }
       set
       {
-        _bindingPath = value;
+        if (_bindingPath != value)
+        {
+          _bindingPath = value;
+          OnPropertyChanged("Path");
+          SetSource();
+        }
       }
     }
 
-#if XAMARIN
-    // TODO: set source and bindingpath properties
+    private void SetSource()
+    {
+      if (BindingContext == null) return;
+      if (string.IsNullOrEmpty(Path)) return;
+      try
+      {
+        Source = BindingContext;
+        BindingPath = Path;
+        while (BindingPath.Contains("."))
+        {
+          var RefName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+          BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+          var prop = MethodCaller.GetProperty(Source.GetType(), RefName);
+          Source = MethodCaller.GetPropertyValue(Source, prop);
+        }
+      }
+      catch (Exception ex)
+      {
+        throw new InvalidOperationException(
+          string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+      }
+      UpdateState();
+    }
 #else
     /// <summary>
     /// Gets or sets the source business
@@ -501,7 +522,7 @@ namespace Csla.Xaml
       }
     }
 
-        #endregion
+    #endregion
 
     #region State properties
 
@@ -642,9 +663,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region State management
+    #region State management
 
     /// <summary>
     /// Updates the state on control Property.
@@ -710,15 +731,15 @@ namespace Csla.Xaml
       Value = MethodCaller.CallPropertyGetter(Source, BindingPath);
     }
 
-        #endregion
+    #endregion
 
-        #region INotifyPropertyChanged Members
+    #region INotifyPropertyChanged Members
 
 #if !XAMARIN
-        /// <summary>
-        /// Event raised when a property has changed.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+    /// <summary>
+    /// Event raised when a property has changed.
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
 
     /// <summary>
     /// Raises the PropertyChanged event.
@@ -731,6 +752,6 @@ namespace Csla.Xaml
     }
 #endif
 
-#endregion
+    #endregion
   }
 }

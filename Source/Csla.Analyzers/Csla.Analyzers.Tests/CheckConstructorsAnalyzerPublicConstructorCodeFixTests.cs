@@ -24,8 +24,8 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId, ids[0],
-        nameof(PublicNoArgumentConstructorIsMissingConstants.DiagnosticId));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, ids[0],
+        nameof(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing));
     }
 
     [TestMethod]

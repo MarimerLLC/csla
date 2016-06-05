@@ -106,11 +106,27 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
-    public async Task IsSerializableWhenSymbolIsSerializable()
+    public async Task IsSerializableWhenSymbolHasSerializableAttribute()
     {
       Assert.IsTrue((await this.GetTypeSymbolAsync(
-        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsSerializable))}.cs",
-        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsSerializable))).IsSerializable());
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolHasSerializableAttribute))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolHasSerializableAttribute))).IsSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSerializableWhenSymbolIsEnum()
+    {
+      Assert.IsTrue((await this.GetEnumSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsEnum))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsEnum))).IsSerializable());
+    }
+
+    [TestMethod]
+    public async Task IsSerializableWhenSymbolIsDelegate()
+    {
+      Assert.IsTrue((await this.GetDelegateSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsSerializableWhenSymbolIsDelegate))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsSerializableWhenSymbolIsDelegate))).IsSerializable());
     }
 
     [TestMethod]
@@ -153,11 +169,58 @@ namespace Csla.Analyzers.Tests.Extensions
 
     private async Task<ITypeSymbol> GetTypeSymbolAsync(string file, string name)
     {
+      var rootAndModel = await this.GetRootAndModel(file, name);
+
+      foreach (var typeNode in rootAndModel.Item1
+        .DescendantNodes().OfType<TypeDeclarationSyntax>())
+      {
+        if (typeNode.Identifier.ValueText == name)
+        {
+          return rootAndModel.Item2.GetDeclaredSymbol(typeNode);
+        }
+      }
+
+      return null;
+    }
+
+    private async Task<ITypeSymbol> GetEnumSymbolAsync(string file, string name)
+    {
+      var rootAndModel = await this.GetRootAndModel(file, name);
+
+      foreach (var enumNode in rootAndModel.Item1
+        .DescendantNodes().OfType<EnumDeclarationSyntax>())
+      {
+        if (enumNode.Identifier.ValueText == name)
+        {
+          return rootAndModel.Item2.GetDeclaredSymbol(enumNode);
+        }
+      }
+
+      return null;
+    }
+
+    private async Task<ITypeSymbol> GetDelegateSymbolAsync(string file, string name)
+    {
+      var rootAndModel = await this.GetRootAndModel(file, name);
+
+      foreach (var delegateNode in rootAndModel.Item1
+        .DescendantNodes().OfType<DelegateDeclarationSyntax>())
+      {
+        if (delegateNode.Identifier.ValueText == name)
+        {
+          return rootAndModel.Item2.GetDeclaredSymbol(delegateNode);
+        }
+      }
+
+      return null;
+    }
+
+    private async Task<Tuple<SyntaxNode, SemanticModel>> GetRootAndModel(string file, string name)
+    {
       var code = File.ReadAllText(file);
       var tree = CSharpSyntaxTree.ParseText(code);
 
-      var compilation = CSharpCompilation.Create(
-        Guid.NewGuid().ToString("N"),
+      var compilation = CSharpCompilation.Create(Guid.NewGuid().ToString("N"),
         syntaxTrees: new[] { tree },
         references: new[]
         {
@@ -168,15 +231,7 @@ namespace Csla.Analyzers.Tests.Extensions
       var model = compilation.GetSemanticModel(tree);
       var root = await tree.GetRootAsync().ConfigureAwait(false);
 
-      foreach (var classNode in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
-      {
-        if (classNode.Identifier.ValueText == name)
-        {
-          return model.GetDeclaredSymbol(classNode);
-        }
-      }
-
-      return null;
+      return new Tuple<SyntaxNode, SemanticModel>(root, model);
     }
   }
 }

@@ -16,13 +16,13 @@
     <CommandBar Grid.Row="0">
       <AppBarButton Name="AddButton" Margin="3" IsEnabled="{Binding Path=CanAdd}" Icon="Add" Label="Add" ToolTipService.ToolTip="Add new project"/>
     </CommandBar>
-    <TextBlock Grid.Row="1" Text="Project list" FontSize="14" Style="{StaticResource HeaderTextBlockStyle}" Margin="3" />
+    <TextBlock Grid.Row="1" Text="Project list" Style="{StaticResource SubheaderTextBlockStyle}" Margin="3" />
     <ListBox Grid.Row="2" ItemsSource="{Binding Path=ItemList}" Name="modelListBox" Margin="3">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE18B;" Name="DisplayButton" Margin="3"/>
-            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE104;" Name="EditButton" IsEnabled="{Binding Path=CanEdit}" Margin="3"/>
+            <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE104;" Name="EditButton" IsEnabled="{Binding Path=CanEdit}" Margin="3" Click="EditItem"/>
             <Button Style="{ThemeResource NavigationBackButtonSmallStyle}" Content="&#xE107;" Name="RemoveButton" IsEnabled="{Binding Path=CanRemove}" Margin="3"/>
             <TextBlock Text="{Binding Path=Model.Name}" Margin="3"/>
           </StackPanel>

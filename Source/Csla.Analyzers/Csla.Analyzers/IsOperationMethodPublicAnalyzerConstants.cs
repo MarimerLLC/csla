@@ -2,9 +2,6 @@
 {
   public static class IsOperationMethodPublicAnalyzerConstants
   {
-    public const string Category = "Design";
-    public const string DiagnosticId = "CSLA0002";
-    public const string DiagnosticForInterfaceId = "CSLA0009";
     public const string Title = "Find CSLA Operations That are Public";
     public const string IdentifierText = "IsOperationMethodPublic";
     public const string IsSealed = "IsSealed";

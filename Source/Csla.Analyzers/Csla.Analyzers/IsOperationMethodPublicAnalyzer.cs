@@ -14,13 +14,13 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor makeNonPublicRule = new DiagnosticDescriptor(
-      IsOperationMethodPublicAnalyzerConstants.DiagnosticId, IsOperationMethodPublicAnalyzerConstants.Title,
-      IsOperationMethodPublicAnalyzerConstants.Message, IsOperationMethodPublicAnalyzerConstants.Category,
+      Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
+      IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
       DiagnosticSeverity.Warning, true);
 
     private static DiagnosticDescriptor makeNonPublicForInterfaceRule = new DiagnosticDescriptor(
-      IsOperationMethodPublicAnalyzerConstants.DiagnosticForInterfaceId, IsOperationMethodPublicAnalyzerConstants.Title,
-      IsOperationMethodPublicAnalyzerConstants.Message, IsOperationMethodPublicAnalyzerConstants.Category,
+      Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
+      IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
       DiagnosticSeverity.Warning, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

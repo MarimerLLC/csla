@@ -14,11 +14,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CSLA .NET for Windows (server)")]
-[assembly: AssemblyDescription("CSLA .NET Framework")]
+[assembly: AssemblyDescription("CSLA .NET Framework (.NET 4.5)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-15 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -42,5 +42,5 @@ using System.Windows;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("4.6.400.0")]
-[assembly: AssemblyFileVersion("4.6.400.0")]
+[assembly: AssemblyVersion("4.6.500.0")]
+[assembly: AssemblyFileVersion("4.6.500.0")]

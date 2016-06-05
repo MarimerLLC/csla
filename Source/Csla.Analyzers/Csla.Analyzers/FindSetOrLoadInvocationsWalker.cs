@@ -17,13 +17,13 @@ namespace Csla.Analyzers
     {
       var invocationSymbol = this.Model.GetSymbolInfo(node).Symbol;
 
-      if (invocationSymbol != null && invocationSymbol.ContainingType.Name == CslaMemberConstants.CslaTypeNames.BusinessBase &&
-        (invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.SetProperty ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.SetPropertyConvert ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LoadProperty ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyAsync ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyConvert ||
-        invocationSymbol.Name == CslaMemberConstants.CslaPropertyMethods.LoadPropertyMarkDirty))
+      if (invocationSymbol != null && invocationSymbol.ContainingType.Name == CslaMemberConstants.Types.BusinessBase &&
+        (invocationSymbol.Name == CslaMemberConstants.Properties.SetProperty ||
+        invocationSymbol.Name == CslaMemberConstants.Properties.SetPropertyConvert ||
+        invocationSymbol.Name == CslaMemberConstants.Properties.LoadProperty ||
+        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyAsync ||
+        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyConvert ||
+        invocationSymbol.Name == CslaMemberConstants.Properties.LoadPropertyMarkDirty))
       {
         this.Invocation = node;
       }

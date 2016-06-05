@@ -12,8 +12,8 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static DiagnosticDescriptor makeSerializableRule = new DiagnosticDescriptor(
-      IsBusinessObjectSerializableConstants.DiagnosticId, IsBusinessObjectSerializableConstants.Title,
-      IsBusinessObjectSerializableConstants.Message, IsBusinessObjectSerializableConstants.Category,
+      Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable, IsBusinessObjectSerializableConstants.Title,
+      IsBusinessObjectSerializableConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

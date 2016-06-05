@@ -1,4 +1,4 @@
-﻿#if !NETFX_PHONE
+﻿#if !NETFX_PHONE || PCL46
 //-----------------------------------------------------------------------
 // <copyright file="HttpProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

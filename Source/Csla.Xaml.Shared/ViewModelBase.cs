@@ -100,22 +100,45 @@ namespace Csla.Xaml
 
     #region Properties
 
-      /// <summary>
-      /// Gets or sets the Model object.
-      /// </summary>
 #if ANDROID || IOS || XAMARIN
-    public object ModelProperty;
+    /// <summary>
+    /// Placeholder for PCL and other platforms where this
+    /// value is unused.
+    /// </summary>
+    public static object ModelProperty;
+
+    private T _model;
+    /// <summary>
+    /// Gets or sets the Model object.
+    /// </summary>
+    public T Model
+    {
+      get { return _model; }
+      set
+      {
+        var oldValue = _model;
+        _model = value;
+        if (this.ManageObjectLifetime)
+        {
+          var undo = value as ISupportUndo;
+          if (undo != null)
+            undo.BeginEdit();
+        }
+        OnPropertyChanged("Model");
+        this.OnModelChanged((T)oldValue, _model);
+      }
+    }
 #else
+    /// <summary>
+    /// Gets or sets the Model object.
+    /// </summary>
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
-#endif
 #if NETFX_CORE
         new PropertyMetadata(default(T), (o, e) =>
-#elif ANDROID || IOS || XAMARIN
 #else
         new PropertyMetadata((o, e) =>
 #endif
-#if !ANDROID && !IOS && !XAMARIN
         {
           var viewmodel = (ViewModelBase<T>)o;
           if (viewmodel.ManageObjectLifetime)
@@ -125,37 +148,20 @@ namespace Csla.Xaml
               undo.BeginEdit();
           }
           viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
-#endif
 #if NETFX_CORE
           viewmodel.OnPropertyChanged("Model");
 #endif
-#if !ANDROID && !IOS && !XAMARIN
   }));
-#endif
+
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
     public T Model
     {
-#if ANDROID || IOS || XAMARIN
-      get { return (T)ModelProperty; }
-      set
-      {
-        var oldValue = ModelProperty;
-        ModelProperty = value;
-        if (this.ManageObjectLifetime)
-        {
-            var undo = value as ISupportUndo;
-            if (undo != null)
-                undo.BeginEdit();
-        }
-        this.OnModelChanged((T)oldValue, (T)ModelProperty);
-      }
-#else
       get { return (T)GetValue(ModelProperty); }
       set { SetValue(ModelProperty, value); }
-#endif
     }
+#endif
 
     /// <summary>
     /// Gets or sets a value indicating whether the
@@ -247,9 +253,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Can___ properties
+#region Can___ properties
 
     private bool _isDirty;
 
@@ -530,9 +536,9 @@ namespace Csla.Xaml
       }
     }
 
-    #endregion
+#endregion
 
-    #region Can methods that only account for user rights
+#region Can methods that only account for user rights
 
     private bool _canCreateObject;
 
@@ -629,9 +635,9 @@ namespace Csla.Xaml
       OnSetProperties();
     }
 
-    #endregion
+#endregion
 
-    #region Verbs
+#region Verbs
 
 #if !(ANDROID || IOS)
     /// <summary>
@@ -1049,9 +1055,9 @@ namespace Csla.Xaml
       ((Csla.Core.IEditableBusinessObject)Model).Delete();
     }
 
-    #endregion
+#endregion
 
-    #region INotifyPropertyChanged Members
+#region INotifyPropertyChanged Members
 
     /// <summary>
     /// Event raised when a property changes.
@@ -1068,9 +1074,9 @@ namespace Csla.Xaml
         PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
     }
 
-    #endregion
+#endregion
 
-    #region Model Changes Handling
+#region Model Changes Handling
 
     /// <summary>
     /// Invoked when the Model changes, allowing
@@ -1170,9 +1176,9 @@ namespace Csla.Xaml
       OnSetProperties();
     }
 
-    #endregion
+#endregion
 
-    #region IViewModel Members
+#region IViewModel Members
 
     object IViewModel.Model
     {
@@ -1180,6 +1186,6 @@ namespace Csla.Xaml
       set { Model = (T)value; }
     }
 
-    #endregion
+#endregion
   }
 }

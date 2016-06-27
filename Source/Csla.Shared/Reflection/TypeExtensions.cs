@@ -133,7 +133,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
     /// <summary>
     /// Gets a method.
     /// </summary>
@@ -169,7 +169,7 @@ namespace Csla.Reflection
     }
 #endif
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
     /// <summary>
     /// Gets a field.
     /// </summary>
@@ -251,7 +251,7 @@ namespace Csla.Reflection
 #endif
     }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
     /// <summary>
     /// Gets a value indicating whether the type
     /// is assignable to the target type.
@@ -302,7 +302,7 @@ namespace Csla.Reflection
       return ti.DeclaredProperties.ToArray();
     }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
     /// <summary>
     /// Gets declared properties.
     /// </summary>
@@ -546,10 +546,10 @@ namespace Csla.Reflection
   }
 #endif
 #else
-  /// <summary>
-  /// Contains extension methods for Type.
-  /// </summary>
-  public static class TypeExtensions
+    /// <summary>
+    /// Contains extension methods for Type.
+    /// </summary>
+    public static class TypeExtensions
   {
     /// <summary>
     /// Gets a value indicating whether this

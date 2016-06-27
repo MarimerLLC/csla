@@ -1,4 +1,4 @@
-﻿#if NETFX_PHONE || NETSTANDARD
+﻿#if NETFX_PHONE
 //-----------------------------------------------------------------------
 // <copyright file="RangeAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

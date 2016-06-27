@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0-*",
+
+  "buildOptions": {
+    "compile": [ "../Csla.Shared/**/*.cs", "../Csla.Shared.Resources/Resources.Designer.cs" ],
+    "define": [ "NETFX_CORE", "NETCORE", "NETSTANDARD" ],
+    "outputName": "Csla.dll"
+  },
+
+  "dependencies": {
+    "NETStandard.Library": "1.6.0",
+    "System.Runtime.Serialization.Primitives": "4.1.1",
+    "System.Security.Principal": "4.0.1",
+    "System.Runtime.Serialization.Xml": "4.1.1",
+    "System.Threading.ThreadPool": "4.0.10"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}
+

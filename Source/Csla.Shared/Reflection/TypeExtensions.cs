@@ -14,7 +14,7 @@ namespace Csla.Reflection
 {
 #if (!ANDROID && !IOS)
 #if NETFX_CORE
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
   /// <summary>
   /// Binding flags.
   /// </summary>
@@ -465,7 +465,7 @@ namespace Csla.Reflection
     }
   }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
   /// <summary>
   /// Type codes
   /// </summary>

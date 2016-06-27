@@ -42,3 +42,21 @@ namespace System.ComponentModel
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.BrowsableAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.CategoryAttribute))]
 #endif
+
+#if NETSTANDARD
+namespace System.ComponentModel
+{
+  /// <summary>
+  /// Provides the functionality to commit or rollback
+  /// changes to an object.
+  /// </summary>
+  public interface IEditableObject
+  {
+    void BeginEdit();
+    void CancelEdit();
+    void EndEdit();
+  }
+}
+#else
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.IEditableObject))]
+#endif

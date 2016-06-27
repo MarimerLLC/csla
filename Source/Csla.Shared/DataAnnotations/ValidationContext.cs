@@ -1,4 +1,4 @@
-﻿#if NETFX_PHONE
+﻿#if NETFX_PHONE || NETSTANDARD
 //-----------------------------------------------------------------------
 // <copyright file="ValidationContext.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -18,7 +18,6 @@ namespace System.ComponentModel.DataAnnotations
   /// </summary>
   public class ValidationContext
   {
-#if NETFX_PHONE
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
@@ -27,7 +26,7 @@ namespace System.ComponentModel.DataAnnotations
     {
       ObjectInstance = instance;
     }
-#endif
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>

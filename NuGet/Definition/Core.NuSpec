@@ -76,11 +76,15 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
-    <!-- aspnet 5.0 Client -->
+    <!-- NetCore50 Client -->
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.dll*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pdb*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.pri*" target="lib\dnxcore50" />
     <file src="..\..\Bin\Release\NetCore5.0\**\Csla.xml*" target="lib\dnxcore50" />
+    <!-- NetStandard Assembly -->
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.6\**\Csla.dll*" target="lib\netstandard1.6" />
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.6\**\Csla.pdb*" target="lib\netstandard1.6" />
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.6\**\Csla.xml*" target="lib\netstandard1.6" />
     <!-- PCL Profile111 -->
     <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />

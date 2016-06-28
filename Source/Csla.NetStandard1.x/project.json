@@ -1,10 +1,11 @@
 {
-  "version": "1.0.0-*",
+  "version": "4.6.500-*",
 
     "buildOptions": {
         "compile": [ "../Csla.Shared/**/*.cs", "../Csla.Shared.Resources/Resources.Designer.cs" ],
         "define": [ "NETFX_CORE", "NETCORE", "NETSTANDARD" ],
-        "outputName": "Csla"
+        "outputName": "Csla",
+        "xmlDoc": true
     },
 
   "dependencies": {

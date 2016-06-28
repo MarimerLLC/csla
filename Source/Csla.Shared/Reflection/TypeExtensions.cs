@@ -133,7 +133,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#if !WINDOWS_UWP && !NETSTANDARD
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets a method.
     /// </summary>
@@ -169,7 +169,7 @@ namespace Csla.Reflection
     }
 #endif
 
-#if !WINDOWS_UWP && !NETSTANDARD
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets a field.
     /// </summary>
@@ -251,7 +251,7 @@ namespace Csla.Reflection
 #endif
     }
 
-#if !WINDOWS_UWP && !NETSTANDARD
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a value indicating whether the type
     /// is assignable to the target type.
@@ -302,7 +302,7 @@ namespace Csla.Reflection
       return ti.DeclaredProperties.ToArray();
     }
 
-#if !WINDOWS_UWP && !NETSTANDARD
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets declared properties.
     /// </summary>

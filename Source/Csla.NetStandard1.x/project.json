@@ -8,14 +8,16 @@
         "xmlDoc": true
     },
 
-  "dependencies": {
-    "NETStandard.Library": "1.6.0",
-    "System.Runtime.Serialization.Primitives": "4.1.1",
-    "System.Security.Principal": "4.0.1",
-    "System.Runtime.Serialization.Xml": "4.1.1",
-    "System.Threading.ThreadPool": "4.0.10",
-    "Microsoft.AspNetCore.Mvc.DataAnnotations": "1.0.0"
-  },
+    "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Runtime.Serialization.Primitives": "4.1.1",
+        "System.Security.Principal": "4.0.1",
+        "System.Runtime.Serialization.Xml": "4.1.1",
+        "System.Threading.ThreadPool": "4.0.10",
+        "System.ComponentModel": "4.0.1",
+        "System.ComponentModel.Primitives": "4.1.0",
+        "System.ComponentModel.Annotations": "4.1.0"
+    },
 
   "frameworks": {
     "netstandard1.6": {

@@ -1,11 +1,11 @@
-﻿#if NETFX_CORE
-//-----------------------------------------------------------------------
-// <copyright file="PortedAttributes.cs" company="Marimer LLC">
+﻿//-----------------------------------------------------------------------
+// <copyright file="BrowsableAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Placeholder for missing Browsable attribute from full .NET.</summary>
 //-----------------------------------------------------------------------
+#if NETFX_CORE && !NETSTANDARD
 using System;
 
 namespace System.ComponentModel
@@ -41,22 +41,4 @@ namespace System.ComponentModel
 #else
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.BrowsableAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.CategoryAttribute))]
-#endif
-
-#if NETSTANDARD
-namespace System.ComponentModel
-{
-  /// <summary>
-  /// Provides the functionality to commit or rollback
-  /// changes to an object.
-  /// </summary>
-  public interface IEditableObject
-  {
-    void BeginEdit();
-    void CancelEdit();
-    void EndEdit();
-  }
-}
-#else
-[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.ComponentModel.IEditableObject))]
 #endif

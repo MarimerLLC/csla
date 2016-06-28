@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BusinessBindingListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusinessListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CommandBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComponentModel\BrowsableAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AddedNewEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\AsyncFactoryDelegates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BindableBase.cs" />
@@ -148,7 +149,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MethodInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NameValueListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NotUndoableAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PortedAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PropertyLoadException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBase.cs" />

@@ -11,13 +11,14 @@ using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
 using Csla.Rules;
-using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Collections.ObjectModel;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 #elif XAMARIN
 using Xamarin.Forms;
+using System.Collections.Generic;
 #else
 using System.Windows.Controls;
 using System.Windows;

@@ -3,6 +3,8 @@
   public class AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument
     : BusinessBase<AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument>
   {
-    private void DataPortal_Fetch(object x) { }
+    private void DataPortal_Fetch(NonSerializableClass x) { }
   }
+
+  public class NonSerializableClass { }
 }

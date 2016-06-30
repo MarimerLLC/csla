@@ -204,24 +204,24 @@ namespace Csla.Xaml
 
     private void SetSource()
     {
-      if (BindingContext == null) return;
-      if (string.IsNullOrEmpty(Path)) return;
-      try
+      Source = BindingContext;
+      BindingPath = Path;
+      if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
       {
-        Source = BindingContext;
-        BindingPath = Path;
-        while (BindingPath.Contains("."))
+        try
         {
-          var RefName = BindingPath.Substring(0, BindingPath.IndexOf("."));
-          BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
-          var prop = MethodCaller.GetProperty(Source.GetType(), RefName);
-          Source = MethodCaller.GetPropertyValue(Source, prop);
+          while (BindingPath.Contains(".") && Source != null)
+          {
+            var refName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+            BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+            Source = MethodCaller.CallPropertyGetter(Source, refName);
+          }
         }
-      }
-      catch (Exception ex)
-      {
-        throw new InvalidOperationException(
-          string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+        catch (Exception ex)
+        {
+          throw new InvalidOperationException(
+            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+        }
       }
       UpdateState();
     }
@@ -425,12 +425,9 @@ namespace Csla.Xaml
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
-         var rs = GetRealSource(
+         source = GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
           bindingPath.Substring(bindingPath.IndexOf('.') + 1));
-
-          if (rs != null)
-            return rs;
         }
       }
         
@@ -541,6 +538,8 @@ namespace Csla.Xaml
         if (value != _value)
         {
           _value = value;
+          if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+            MethodCaller.CallPropertySetter(Source, BindingPath, _value);
           OnPropertyChanged("Value");
         }
       }
@@ -673,7 +672,18 @@ namespace Csla.Xaml
     protected virtual void UpdateState()
     {
       if (_loading) return;
-      if (Source == null || string.IsNullOrEmpty(BindingPath)) return;
+
+      if (Source == null || string.IsNullOrEmpty(BindingPath))
+      {
+        CanWrite = false;
+        CanRead = false;
+        IsValid = false;
+        IsBusy = false;
+        BrokenRules.Clear();
+        RuleDescription = string.Empty;
+        Value = null;
+        return;
+      }
 
       var iarw = Source as Csla.Security.IAuthorizeReadWrite;
       if (iarw != null)
@@ -725,7 +735,6 @@ namespace Csla.Xaml
       {
         BrokenRules.Clear();
         RuleDescription = string.Empty;
-        IsValid = true;
       }
 
       Value = MethodCaller.CallPropertyGetter(Source, BindingPath);

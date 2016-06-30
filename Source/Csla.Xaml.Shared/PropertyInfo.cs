@@ -202,28 +202,67 @@ namespace Csla.Xaml
       }
     }
 
+    private class SourceReference
+    {
+      public SourceReference(PropertyInfo parent, object source, string propertyName)
+      {
+        Parent = parent;
+        Source = source;
+        PropertyName = propertyName;
+        var p = Source as INotifyPropertyChanged;
+        if (p != null)
+          p.PropertyChanged += P_PropertyChanged;
+      }
+
+      private void P_PropertyChanged(object sender, PropertyChangedEventArgs e)
+      {
+        if (e.PropertyName == PropertyName)
+          Parent.SetSource();
+      }
+
+      public void DetachHandlers()
+      {
+        var p = Source as INotifyPropertyChanged;
+        if (p != null)
+          p.PropertyChanged -= P_PropertyChanged;
+      }
+
+      public PropertyInfo Parent { get; private set; }
+      public object Source { get; private set; }
+      public string PropertyName { get; private set; }
+    }
+
+    private List<SourceReference> _sources = new List<SourceReference>();
+
     private void SetSource()
     {
-      if (BindingContext == null) return;
-      if (string.IsNullOrEmpty(Path)) return;
-      try
+      foreach (var item in _sources)
+        item.DetachHandlers();
+      _sources.Clear();
+      var oldSource = Source;
+      Source = BindingContext;
+      BindingPath = Path;
+      if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
       {
-        Source = BindingContext;
-        BindingPath = Path;
-        while (BindingPath.Contains("."))
+        try
         {
-          var RefName = BindingPath.Substring(0, BindingPath.IndexOf("."));
-          BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
-          var prop = MethodCaller.GetProperty(Source.GetType(), RefName);
-          Source = MethodCaller.GetPropertyValue(Source, prop);
+          while (BindingPath.Contains(".") && Source != null)
+          {
+            var refName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+            _sources.Add(new SourceReference(this, Source, refName));
+            BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+            Source = MethodCaller.CallPropertyGetter(Source, refName);
+          }
+        }
+        catch (Exception ex)
+        {
+          throw new InvalidOperationException(
+            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
         }
       }
-      catch (Exception ex)
-      {
-        throw new InvalidOperationException(
-          string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
-      }
+      HandleSourceEvents(oldSource, Source);
       UpdateState();
+      OnPropertyChanged("Value");
     }
 #else
     /// <summary>
@@ -425,12 +464,9 @@ namespace Csla.Xaml
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
-         var rs = GetRealSource(
+         source = GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
           bindingPath.Substring(bindingPath.IndexOf('.') + 1));
-
-          if (rs != null)
-            return rs;
         }
       }
         
@@ -502,7 +538,10 @@ namespace Csla.Xaml
     void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
+      {
+        OnPropertyChanged("Value");
         UpdateState();
+      }
     }
 
     void source_BusyChanged(object sender, BusyChangedEventArgs e)
@@ -526,23 +565,24 @@ namespace Csla.Xaml
 
     #region State properties
 
-    private object _value = null;
-
     /// <summary>
-    /// Gets the value of the property 
-    /// from the business object.
+    /// Gets and sets the value of the property 
+    /// on the business object.
     /// </summary>
     [Category("Property Status")]
     public object Value
     {
-      get { return _value; }
-      protected set
+      get
       {
-        if (value != _value)
-        {
-          _value = value;
-          OnPropertyChanged("Value");
-        }
+        object result = null;
+        if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+          result = MethodCaller.CallPropertyGetter(Source, BindingPath);
+        return result;
+      }
+      set
+      {
+        if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+          MethodCaller.CallPropertySetter(Source, BindingPath, value);
       }
     }
 
@@ -673,62 +713,70 @@ namespace Csla.Xaml
     protected virtual void UpdateState()
     {
       if (_loading) return;
-      if (Source == null || string.IsNullOrEmpty(BindingPath)) return;
 
-      var iarw = Source as Csla.Security.IAuthorizeReadWrite;
-      if (iarw != null)
+      if (Source == null || string.IsNullOrEmpty(BindingPath))
       {
-        CanWrite = iarw.CanWriteProperty(BindingPath);
-        CanRead = iarw.CanReadProperty(BindingPath);
+        CanWrite = false;
+        CanRead = false;
+        IsValid = false;
+        IsBusy = false;
+        BrokenRules.Clear();
+        RuleDescription = string.Empty;
       }
-
-      BusinessBase businessObject = Source as BusinessBase;
-      if (businessObject != null)
+      else
       {
-        var allRules = (from r in businessObject.BrokenRulesCollection
-                        where r.Property == BindingPath
-                        select r).ToArray();
-
-        var removeRules = (from r in BrokenRules
-                           where !allRules.Contains(r)
-                           select r).ToArray();
-
-        var addRules = (from r in allRules
-                        where !BrokenRules.Contains(r)
-                        select r).ToArray();
-
-        foreach (var rule in removeRules)
-          BrokenRules.Remove(rule);
-        foreach (var rule in addRules)
-          BrokenRules.Add(rule);
-
-        IsValid = BrokenRules.Count == 0;
-
-        if (!IsValid)
+        var iarw = Source as Csla.Security.IAuthorizeReadWrite;
+        if (iarw != null)
         {
-          BrokenRule worst = (from r in BrokenRules
-                              orderby r.Severity
-                              select r).FirstOrDefault();
+          CanWrite = iarw.CanWriteProperty(BindingPath);
+          CanRead = iarw.CanReadProperty(BindingPath);
+        }
 
-          if (worst != null)
+        BusinessBase businessObject = Source as BusinessBase;
+        if (businessObject != null)
+        {
+          var allRules = (from r in businessObject.BrokenRulesCollection
+                          where r.Property == BindingPath
+                          select r).ToArray();
+
+          var removeRules = (from r in BrokenRules
+                             where !allRules.Contains(r)
+                             select r).ToArray();
+
+          var addRules = (from r in allRules
+                          where !BrokenRules.Contains(r)
+                          select r).ToArray();
+
+          foreach (var rule in removeRules)
+            BrokenRules.Remove(rule);
+          foreach (var rule in addRules)
+            BrokenRules.Add(rule);
+
+          IsValid = BrokenRules.Count == 0;
+
+          if (!IsValid)
           {
-            RuleSeverity = worst.Severity;
-            RuleDescription = worst.Description;
+            BrokenRule worst = (from r in BrokenRules
+                                orderby r.Severity
+                                select r).FirstOrDefault();
+
+            if (worst != null)
+            {
+              RuleSeverity = worst.Severity;
+              RuleDescription = worst.Description;
+            }
+            else
+              RuleDescription = string.Empty;
           }
           else
             RuleDescription = string.Empty;
         }
         else
+        {
+          BrokenRules.Clear();
           RuleDescription = string.Empty;
+        }
       }
-      else
-      {
-        BrokenRules.Clear();
-        RuleDescription = string.Empty;
-        IsValid = true;
-      }
-
-      Value = MethodCaller.CallPropertyGetter(Source, BindingPath);
     }
 
     #endregion

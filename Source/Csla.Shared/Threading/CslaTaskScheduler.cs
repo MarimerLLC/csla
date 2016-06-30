@@ -46,7 +46,7 @@ namespace Csla.Threading
     /// <summary>
     /// Informs the ThreadPool that there's work to be executed for this scheduler.
     /// </summary>
-#if NETFX_CORE && !NETCORE
+#if NETFX_CORE && !NETCORE && !NETSTANDARD
     private void NotifyThreadPoolOfPendingWork()
     {
 #if !PCL46 // rely on NuGet bait-and-switch for actual implementation

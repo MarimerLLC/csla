@@ -14,7 +14,7 @@ namespace Csla.Reflection
 {
 #if (!ANDROID && !IOS)
 #if NETFX_CORE
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
   /// <summary>
   /// Binding flags.
   /// </summary>
@@ -133,7 +133,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets a method.
     /// </summary>
@@ -169,7 +169,7 @@ namespace Csla.Reflection
     }
 #endif
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets a field.
     /// </summary>
@@ -302,7 +302,7 @@ namespace Csla.Reflection
       return ti.DeclaredProperties.ToArray();
     }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP 
     /// <summary>
     /// Gets declared properties.
     /// </summary>
@@ -465,7 +465,7 @@ namespace Csla.Reflection
     }
   }
 
-#if !WINDOWS_UWP
+#if !WINDOWS_UWP && !NETSTANDARD
   /// <summary>
   /// Type codes
   /// </summary>
@@ -546,10 +546,10 @@ namespace Csla.Reflection
   }
 #endif
 #else
-  /// <summary>
-  /// Contains extension methods for Type.
-  /// </summary>
-  public static class TypeExtensions
+    /// <summary>
+    /// Contains extension methods for Type.
+    /// </summary>
+    public static class TypeExtensions
   {
     /// <summary>
     /// Gets a value indicating whether this

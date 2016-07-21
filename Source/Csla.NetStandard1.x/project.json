@@ -2,10 +2,14 @@
   "version": "4.6.500-*",
 
     "buildOptions": {
-        "compile": [ "../Csla.Shared/**/*.cs", "../Csla.Shared.Resources/Resources.Designer.cs" ],
+        "compile": [ "../Csla.Shared/**/*.cs" ],
         "define": [ "NETFX_CORE", "NETCORE", "NETSTANDARD" ],
         "outputName": "Csla",
         "xmlDoc": true
+    },
+
+    "scripts": {
+        "precompile": "copyResources.cmd"
     },
 
     "dependencies": {

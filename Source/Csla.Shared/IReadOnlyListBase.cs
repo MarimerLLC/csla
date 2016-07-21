@@ -15,7 +15,7 @@ namespace Csla
   /// of readonly objects should be derived.
   /// </summary>
   public interface IReadOnlyListBase<C>
-#if !NETFX_CORE && !(ANDROID || IOS)
+#if !NETFX_CORE && !ANDROID && !IOS || NETSTANDARD
  : IReadOnlyCollection, IBusinessObject, ICloneable, IObservableBindingList,
     INotifyBusy, INotifyUnhandledAsyncException, INotifyChildChanged, ISerializationNotification,
     IMobileObject, INotifyCollectionChanged, INotifyPropertyChanged,

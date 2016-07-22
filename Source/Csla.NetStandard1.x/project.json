@@ -3,6 +3,9 @@
 
     "buildOptions": {
         "compile": [ "../Csla.Shared/**/*.cs" ],
+        "embed": {
+            "include": [ "Properties/Resources.resx" ]
+        },
         "define": [ "NETFX_CORE", "NETCORE", "NETSTANDARD" ],
         "outputName": "Csla",
         "xmlDoc": true

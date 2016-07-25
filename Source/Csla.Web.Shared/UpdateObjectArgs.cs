@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Argument object used in the UpdateObject event.</summary>
 //-----------------------------------------------------------------------
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 
 namespace Csla.Web
@@ -86,3 +87,4 @@ namespace Csla.Web
 
   }
 }
+#endif

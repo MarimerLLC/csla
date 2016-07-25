@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Object providing access to schema information for</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 using System.Web.UI.Design;
 
 namespace Csla.Web.Design

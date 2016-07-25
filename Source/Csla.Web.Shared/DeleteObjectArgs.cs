@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Argument object used in the DeleteObject event.</summary>
 //-----------------------------------------------------------------------
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 
 namespace Csla.Web
@@ -69,3 +70,4 @@ namespace Csla.Web
 
   }
 }
+#endif

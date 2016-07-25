@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Object providing schema information for a</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Object responsible for providing details about</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 using System.Collections;
 using System.Web.UI.Design;

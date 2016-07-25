@@ -1,3 +1,4 @@
+#if !NETSTANDARD
 //-----------------------------------------------------------------------
 // <copyright file="CslaDataSourceConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -91,3 +92,4 @@ namespace Csla.Web.Design
 #endif
   }
 }
+#endif

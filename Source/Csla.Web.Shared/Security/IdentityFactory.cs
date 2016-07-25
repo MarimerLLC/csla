@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NETSTANDARD
+//-----------------------------------------------------------------------
 // <copyright file="IdentityFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -94,3 +95,4 @@ namespace Csla.Web.Security
     }
   }
 }
+#endif

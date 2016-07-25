@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements designer support for CslaDataSource.</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 using System.Web.UI;
 using System.Web.UI.Design;

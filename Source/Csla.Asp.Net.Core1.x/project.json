@@ -1,0 +1,21 @@
+﻿{
+  "version": "4.6.500-*",
+
+  "buildOptions": {
+    "compile": [ "../Csla.Web.Mvc.Shared/**/*.cs", "../Csla.Web.Mvc.Shared/**/*.cs" ],
+    "define": [ "NETSTANDARD" ],
+    "outputName": "Csla.Asp.Net.Core",
+    "xmlDoc": true
+  },
+
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

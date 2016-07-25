@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>The object responsible for managing data binding</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
-
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 using System.Collections;
 using System.Web.UI;

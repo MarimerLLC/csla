@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Argument object used in the InsertObject event.</summary>
 //-----------------------------------------------------------------------
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 
 namespace Csla.Web
@@ -57,3 +58,4 @@ namespace Csla.Web
 
   }
 }
+#endif

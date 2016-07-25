@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Argument object used in the SelectObject event.</summary>
 //-----------------------------------------------------------------------
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 using System;
 using System.ComponentModel;
 

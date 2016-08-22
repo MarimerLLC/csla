@@ -36,8 +36,13 @@ namespace Csla.Server.Hosts
     /// <returns>Results from the server-side data portal.</returns>
   public class HttpPortalController : ControllerBase
   {
+    /// <summary>
+    /// Entry point for all data portal operations.
+    /// </summary>
+    /// <param name="operation">Name of the data portal operation to perform.</param>
+    /// <returns>Results from the server-side data portal.</returns>
     [HttpPost]
-    public void Post([FromBody]string operation)
+    public async void Post([FromBody]string operation)
     {
       var requestData = await Request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
       var responseData = await InvokePortal(operation, requestData).ConfigureAwait(false);

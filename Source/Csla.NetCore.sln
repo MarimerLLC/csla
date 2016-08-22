@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Csla.NetStandard1.x", "Csla.NetStandard1.x\Csla.NetStandard1.x.xproj", "{B04B5ED0-8F76-44A0-AF36-A8B91DC4A9AD}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Csla.Asp.Net.Core1.x", "Csla.Asp.Net.Core1.x\Csla.Asp.Net.Core1.x.xproj", "{A35F6C07-624C-49F2-9F2D-33D6D01F0625}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Shared", "Csla.Shared\Csla.Shared.shproj", "{EDACD58E-B295-4F3E-A263-5BD89FA51270}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Shared", "Csla.Web.Shared\Csla.Web.Shared.shproj", "{64816801-0D82-4883-AEE5-82037D3EBADB}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Csla.Web.Mvc.Shared", "Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.shproj", "{BB7A0DB4-F7F4-4632-B6AE-1EDCDD758F16}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Csla.Web.Shared\Csla.Web.Shared.projitems*{64816801-0d82-4883-aee5-82037d3ebadb}*SharedItemsImports = 13
+		Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{bb7a0db4-f7f4-4632-b6ae-1edcdd758f16}*SharedItemsImports = 13
+		Csla.Shared\Csla.Shared.projitems*{edacd58e-b295-4f3e-a263-5bd89fa51270}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B04B5ED0-8F76-44A0-AF36-A8B91DC4A9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04B5ED0-8F76-44A0-AF36-A8B91DC4A9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04B5ED0-8F76-44A0-AF36-A8B91DC4A9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04B5ED0-8F76-44A0-AF36-A8B91DC4A9AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A35F6C07-624C-49F2-9F2D-33D6D01F0625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A35F6C07-624C-49F2-9F2D-33D6D01F0625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A35F6C07-624C-49F2-9F2D-33D6D01F0625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A35F6C07-624C-49F2-9F2D-33D6D01F0625}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -383,6 +383,9 @@ namespace Csla
     {
       return Save(forceUpdate);
     }
+#endif
+
+#if !(ANDROID || IOS) && !NETFX_CORE
 
     [NonSerialized]
     [NotUndoable]

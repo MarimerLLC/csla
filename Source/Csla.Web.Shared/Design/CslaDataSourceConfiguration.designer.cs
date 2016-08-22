@@ -1,4 +1,4 @@
-#if !CLIENTONLY
+#if !CLIENTONLY && !NETSTANDARD
 namespace Csla.Web.Design
 {
   partial class CslaDataSourceConfiguration

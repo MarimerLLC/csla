@@ -372,7 +372,7 @@ namespace Csla
       OnSaved(newObject, null, null);
     }
 
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if NETSTANDARD || (!(ANDROID || IOS) && !NETFX_CORE)
 
     object Csla.Core.ISavable.Save()
     {

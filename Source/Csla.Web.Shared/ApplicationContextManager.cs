@@ -10,7 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Core;
+#if NETSTANDARD
+using Microsoft.AspNetCore;
+#else
 using System.Web;
+#endif
 
 namespace Csla.Web
 {

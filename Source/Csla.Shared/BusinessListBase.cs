@@ -888,7 +888,7 @@ namespace Csla
 
     #region Data Access
 
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if NETSTANDARD || (!(ANDROID || IOS) && !NETFX_CORE)
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
@@ -1113,7 +1113,7 @@ namespace Csla
 
     #region ISavable Members
 
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if NETSTANDARD || (!(ANDROID || IOS) && !NETFX_CORE)
     object Csla.Core.ISavable.Save()
     {
       return Save();

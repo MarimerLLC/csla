@@ -15,7 +15,12 @@ using Csla.Server.Hosts.HttpChannel;
 using System.Web.Mvc;
 #endif
 using System.Net.Http;
+#if NETSTANDARD
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
+#else
 using System.Web.Http;
+#endif
 
 namespace Csla.Server.Hosts
 {
@@ -23,7 +28,24 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if MVC4
+#if MVC6
+    /// <summary>
+    /// Entry point for all data portal operations.
+    /// </summary>
+    /// <param name="operation">Name of the data portal operation to perform.</param>
+    /// <returns>Results from the server-side data portal.</returns>
+  public class HttpPortalController : ControllerBase
+  {
+    [HttpPost]
+    public void Post([FromBody]string operation)
+    {
+      var requestData = await Request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+      var responseData = await InvokePortal(operation, requestData).ConfigureAwait(false);
+      var response = Request.CreateResponse();
+      response.Content = new ByteArrayContent(responseData);
+      return response;
+    }
+#elif MVC4
   public class HttpPortalController : Controller
   {
     /// <summary>

@@ -1,16 +1,17 @@
-﻿{
+{
   "version": "4.6.500-*",
 
   "buildOptions": {
-    "compile": [ "../Csla.Web.Mvc.Shared/**/*.cs", "../Csla.Web.Mvc.Shared/**/*.cs" ],
-    "define": [ "NETSTANDARD" ],
-    "outputName": "Csla.Asp.Net.Core",
+    "compile": [ "../Csla.Web.Shared/**/*.cs", "../Csla.Web.Mvc.Shared/**/*.cs" ],
+    "define": [ "NETSTANDARD", "MVC6" ],
+    "outputName": "Csla.Web.Mvc",
     "xmlDoc": true
   },
 
   "dependencies": {
     "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "Csla.NetStandard1.x": "4.6.500-*"
   },
 
   "frameworks": {

@@ -16,18 +16,18 @@ namespace Csla.Core
   /// </summary>
   public interface ISavable
   {
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if NETSTANDARD || (!ANDROID && !IOS && !NETFX_CORE)
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <returns>A new object containing the saved values.</returns>
     object Save();
-		/// <summary>
-		/// Saves the object to the database.
-		/// </summary>
-		/// <returns>A new object containing the saved values.</returns>
-		/// <param name="forceUpdate">true to force the save to be an update.</param>
-		object Save(bool forceUpdate);
+    /// <summary>
+    /// Saves the object to the database.
+    /// </summary>
+    /// <returns>A new object containing the saved values.</returns>
+    /// <param name="forceUpdate">true to force the save to be an update.</param>
+    object Save(bool forceUpdate);
 #endif
     /// <summary>
     /// Saves the object to the database.

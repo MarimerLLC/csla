@@ -10,8 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Csla.Core;
-#if NETSTANDARD
+#if MVC6
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Http;
 #else
 using System.Web;
 #endif
@@ -28,6 +29,41 @@ namespace Csla.Web
     private const string _clientContextName = "Csla.ClientContext";
     private const string _globalContextName = "Csla.GlobalContext";
 
+#if MVC6
+    private static IHttpContextAccessor _httpContextAccessor;
+    /// <summary>
+    /// Configures the context manager for use within
+    /// ASP.NET MVC 6 environments.
+    /// </summary>
+    /// <param name="httpContextAccessor">The ASP.NET MVC context accessor object.</param>
+    /// <remarks>
+    /// Technique from
+    /// http://www.spaprogrammer.com/2015/07/mvc-6-httpcontextcurrent.html
+    /// </remarks>
+    public static void Configure(IHttpContextAccessor httpContextAccessor)
+    {
+      _httpContextAccessor = httpContextAccessor;
+    }
+#endif
+
+    /// <summary>
+    /// Gets a reference to the current HttpContext
+    /// object.
+    /// </summary>
+    public HttpContext CurrentHttpContext
+    {
+#if MVC6
+      get
+      {
+        if (_httpContextAccessor == null)
+          throw new NullReferenceException("HttpContextAccessor");
+        return _httpContextAccessor.HttpContext;
+      }
+#else
+      get { return HttpContext.Current; }
+#endif
+    }
+
     /// <summary>
     /// Gets a value indicating whether this
     /// context manager is valid for use in
@@ -35,7 +71,7 @@ namespace Csla.Web
     /// </summary>
     public bool IsValid 
     { 
-      get { return HttpContext.Current != null; }
+      get { return CurrentHttpContext != null; }
     }
 
     /// <summary>
@@ -43,7 +79,7 @@ namespace Csla.Web
     /// </summary>
     public System.Security.Principal.IPrincipal GetUser()
     {
-      return HttpContext.Current.User;
+      return CurrentHttpContext.User;
     }
 
     /// <summary>
@@ -52,7 +88,11 @@ namespace Csla.Web
     /// <param name="principal">Principal object.</param>
     public void SetUser(System.Security.Principal.IPrincipal principal)
     {
-      HttpContext.Current.User = principal;
+#if MVC6
+      CurrentHttpContext.User = (System.Security.Claims.ClaimsPrincipal)principal;
+#else
+      CurrentHttpContext.User = principal;
+#endif
     }
 
     /// <summary>
@@ -60,7 +100,7 @@ namespace Csla.Web
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-      return (ContextDictionary)HttpContext.Current.Items[_localContextName];
+      return (ContextDictionary)CurrentHttpContext.Items[_localContextName];
     }
 
     /// <summary>
@@ -69,7 +109,7 @@ namespace Csla.Web
     /// <param name="localContext">Local context.</param>
     public void SetLocalContext(ContextDictionary localContext)
     {
-      HttpContext.Current.Items[_localContextName] = localContext;
+      CurrentHttpContext.Items[_localContextName] = localContext;
     }
 
     /// <summary>
@@ -77,7 +117,7 @@ namespace Csla.Web
     /// </summary>
     public ContextDictionary GetClientContext()
     {
-      return (ContextDictionary)HttpContext.Current.Items[_clientContextName];
+      return (ContextDictionary)CurrentHttpContext.Items[_clientContextName];
     }
 
     /// <summary>
@@ -86,7 +126,7 @@ namespace Csla.Web
     /// <param name="clientContext">Client context.</param>
     public void SetClientContext(ContextDictionary clientContext)
     {
-      HttpContext.Current.Items[_clientContextName] = clientContext;
+      CurrentHttpContext.Items[_clientContextName] = clientContext;
     }
 
     /// <summary>
@@ -94,7 +134,7 @@ namespace Csla.Web
     /// </summary>
     public ContextDictionary GetGlobalContext()
     {
-      return (ContextDictionary)HttpContext.Current.Items[_globalContextName];
+      return (ContextDictionary)CurrentHttpContext.Items[_globalContextName];
     }
 
     /// <summary>
@@ -103,7 +143,7 @@ namespace Csla.Web
     /// <param name="globalContext">Global context.</param>
     public void SetGlobalContext(ContextDictionary globalContext)
     {
-      HttpContext.Current.Items[_globalContextName] = globalContext;
+      CurrentHttpContext.Items[_globalContextName] = globalContext;
     }
   }
 }

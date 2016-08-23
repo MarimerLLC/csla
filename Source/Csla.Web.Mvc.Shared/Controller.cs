@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if NETSTANDARD
+#if MVC6
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
@@ -21,12 +21,12 @@ namespace Csla.Web.Mvc
     /// Provides methods that respond to HTTP requests
     /// in an ASP.NET MVC web site.
     /// </summary>
-#if NETSTANDARD
-    public class Controller : Microsoft.AspNetCore.Mvc.ControllerBase
+#if MVC6
+    public class MyController : Microsoft.AspNetCore.Mvc.Controller
 #else
     public class Controller : System.Web.Mvc.Controller
 #endif
-    {
+  {
     /// <summary>
     /// Performs a Save() operation on an
     /// editable business object, with appropriate

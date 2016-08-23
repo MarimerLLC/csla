@@ -10,6 +10,7 @@
 
   "dependencies": {
     "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
     "NETStandard.Library": "1.6.0",
     "Csla.NetStandard1.x": "4.6.500-*"
   },

@@ -29,12 +29,7 @@ namespace Csla.Server.Hosts
   /// through HTTP request/response.
   /// </summary>
 #if MVC6
-    /// <summary>
-    /// Entry point for all data portal operations.
-    /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform.</param>
-    /// <returns>Results from the server-side data portal.</returns>
-  public class HttpPortalController : ControllerBase
+  public class HttpPortalController : Controller
   {
     /// <summary>
     /// Entry point for all data portal operations.
@@ -42,13 +37,9 @@ namespace Csla.Server.Hosts
     /// <param name="operation">Name of the data portal operation to perform.</param>
     /// <returns>Results from the server-side data portal.</returns>
     [HttpPost]
-    public async void Post([FromBody]string operation)
+    public async Task PostAsync([FromQuery]string operation)
     {
-      var requestData = await Request.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-      var responseData = await InvokePortal(operation, requestData).ConfigureAwait(false);
-      var response = Request.CreateResponse();
-      response.Content = new ByteArrayContent(responseData);
-      return response;
+      await InvokePortal(operation, Request.Body, Response.Body).ConfigureAwait(false);
     }
 #elif MVC4
   public class HttpPortalController : Controller
@@ -90,17 +81,36 @@ namespace Csla.Server.Hosts
     /// used to coordinate the data portal
     /// operations.
     /// </summary>
-    public HttpPortal Portal 
+    public HttpPortal Portal
     {
-      get 
+      get
       {
         if (_portal == null)
           _portal = new HttpPortal();
-        return _portal; 
+        return _portal;
       }
-      set { _portal = value; } 
+      set { _portal = value; }
     }
 
+#if MVC6
+    private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
+    {
+      var serializer = new MobileFormatter();
+      var result = new HttpResponse();
+      HttpErrorInfo errorData = null;
+      try
+      {
+        var request = serializer.Deserialize(requestStream);
+        result = await CallPortal(operation, request);
+      }
+      catch (Exception ex)
+      {
+        errorData = new HttpErrorInfo(ex);
+      }
+      var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
+      serializer.Serialize(responseStream, portalResult);
+    }
+#else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
       var result = new HttpResponse();
@@ -110,24 +120,7 @@ namespace Csla.Server.Hosts
         var buffer = new MemoryStream(data);
         buffer.Position = 0;
         var request = MobileFormatter.Deserialize(buffer.ToArray());
-        var portal = Portal;
-        switch (operation)
-        {
-          case "create":
-            result = await portal.Create((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          case "fetch":
-            result = await portal.Fetch((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          case "update":
-            result = await portal.Update((UpdateRequest)request).ConfigureAwait(false);
-            break;
-          case "delete":
-            result = await portal.Delete((CriteriaRequest)request).ConfigureAwait(false);
-            break;
-          default:
-            throw new InvalidOperationException(operation);
-        }
+        result = await CallPortal(operation, request);
       }
       catch (Exception ex)
       {
@@ -136,6 +129,31 @@ namespace Csla.Server.Hosts
       var portalResult = new HttpResponse { ErrorData = errorData, GlobalContext = result.GlobalContext, ObjectData = result.ObjectData };
       var bytes = MobileFormatter.Serialize(portalResult);
       return bytes;
+    }
+#endif
+
+    private async Task<HttpResponse> CallPortal(string operation, object request)
+    {
+      HttpResponse result = null;
+      var portal = Portal;
+      switch (operation)
+      {
+        case "create":
+          result = await portal.Create((CriteriaRequest)request).ConfigureAwait(false);
+          break;
+        case "fetch":
+          result = await portal.Fetch((CriteriaRequest)request).ConfigureAwait(false);
+          break;
+        case "update":
+          result = await portal.Update((UpdateRequest)request).ConfigureAwait(false);
+          break;
+        case "delete":
+          result = await portal.Delete((CriteriaRequest)request).ConfigureAwait(false);
+          break;
+        default:
+          throw new InvalidOperationException(operation);
+      }
+      return result;
     }
   }
 }

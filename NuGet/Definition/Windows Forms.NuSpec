@@ -4,11 +4,11 @@
     <id>CSLA-WindowsForms</id>
     <title>CSLA .NET - Windows Forms</title>
     <tags>CSLA Windows WinForms Forms</tags>
-    <version>4.5.700</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
-    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
-    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Windows Forms applications.
@@ -20,7 +20,7 @@ Supports the creation of Windows Forms applications.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
@@ -31,17 +31,18 @@ Supports the creation of Windows Forms applications.
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.Windows.xml*" target="lib\net40" />
     <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET\**\Csla.Windows.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Windows.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Windows.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Windows.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.Windows.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- > None -->
-    <!-- Windows Phone 7 Client -->
-    <!-- > None -->
+    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.Windows.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Windows.xml*" target="lib\net46" />
     <!-- Source Files for Symbol Server -->
-    <file src="..\..\Source\**\Csla.Windows\**\*.cs" target="src" />
-    <file src="..\..\Source\**\Csla.Windows.Net4\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Windows*\**\*.cs" target="src" />
   </files>
 </package>

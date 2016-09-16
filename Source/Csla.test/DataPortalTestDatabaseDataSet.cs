@@ -5,10 +5,11 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-namespace Csla.Test {
+namespace Csla.Test
+{
 
 
-    partial class DataPortalTestDatabaseDataSet
-    {
-    }
+  partial class DataPortalTestDatabaseDataSet
+  {
+  }
 }

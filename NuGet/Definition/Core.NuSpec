@@ -4,11 +4,11 @@
     <id>CSLA-Core</id>
     <title>CSLA .NET - Core</title>
     <tags>CSLA Business Core</tags>
-    <version>4.5.700</version>
+    <version>4.6.3-Beta2</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
-    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
-    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Class Library projects containing business domain classes, Windows Services, Console applications and other native Windows application models.
@@ -20,16 +20,37 @@ Supports the creation of Class Library projects containing business domain class
     </summary>
     <language>en-US</language>
     <dependencies>
+      <group targetFramework="net46" />
       <group targetFramework="net45" />
       <group targetFramework="net40">
         <dependency id="Microsoft.Bcl.Async" version="1.0.165" />
         <dependency id="Microsoft.Bcl" version="1.1.6" />
         <dependency id="Microsoft.Net.Http" version="2.2.28" />
       </group>
-      <group targetFramework="sl50">
-        <dependency id="Microsoft.Bcl.Async" version="1.0.165" />
-        <dependency id="Microsoft.Bcl" version="1.1.6" />
-        <dependency id="Microsoft.Net.Http" version="2.2.28" />
+      <group targetFramework="uap10.0">
+        <dependency id="System.Collections" version="4.0.10" />
+        <dependency id="System.ComponentModel.Annotations" version="4.0.10" />
+        <dependency id="System.Diagnostics.Debug" version="4.0.10" />
+        <dependency id="System.Linq" version="4.0.0" />
+        <dependency id="System.Linq.Expressions" version="4.0.10" />
+        <dependency id="System.ObjectModel" version="4.0.10" />
+        <dependency id="System.Reflection" version="4.0.10" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.0.0" />
+        <dependency id="System.Runtime" version="4.0.20" />
+        <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.0.0" />
+        <dependency id="System.Threading" version="4.0.10" />
+        <dependency id="System.Threading.Tasks" version="4.0.10" />
+      </group>
+      <group targetFramework="netstandard1.5">
+        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="System.Runtime.Serialization.Primitives" version="4.1.1" />
+        <dependency id="System.Security.Principal" version="4.0.1" />
+        <dependency id="System.Runtime.Serialization.Xml" version="4.1.1" />
+        <dependency id="System.Threading.ThreadPool" version="4.0.10" />
+        <dependency id="System.ComponentModel" version="4.0.1" />
+        <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
+        <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
+        <dependency id="System.Reflection" version="4.1.0" />
       </group>
     </dependencies>
   </metadata>
@@ -41,29 +62,40 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\NET4\**\Csla.resources.pdb*" target="lib\net40" />
     <file src="..\..\Bin\Release\NET4\**\Csla.xml*" target="lib\net40" />
     <!-- .NET 4.5 Client -->
-    <file src="..\..\Bin\Release\NET\**\Csla.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.resources.dll*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.resources.pdb*" target="lib\net45" />
-    <file src="..\..\Bin\Release\NET\**\Csla.xml*" target="lib\net45" />
-    <!-- Silverlight 4.0 Client -->
-    <!-- Silverlight 5.0 Client -->
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.dll*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.resources.pdb*" target="lib\sl50" />
-    <file src="..\..\Bin\Release\Silverlight\**\Csla.xml*" target="lib\sl50" />
-    <!-- Windows Phone 8 Silverlight Client -->
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.dll*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.pdb*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.dll*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.resources.pdb*" target="lib\wp8" />
-    <file src="..\..\Bin\Release\WinPRT\**\Csla.xml*" target="lib\wp8" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.resources.dll*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.resources.pdb*" target="lib\net45" />
+    <file src="..\..\Bin\Release\NET45\**\Csla.xml*" target="lib\net45" />
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.resources.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.resources.pdb*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.xml*" target="lib\net46" />
+    <!-- CSLA Analyzers -->
+    <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.dll*" target="analyzers\c#" />
+    <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.pdb*" target="analyzers\c#" />
+    <file src="..\..\Bin\Release\Analyzers\tools\*.ps1" target="tools\" />
     <!-- Windows Runtime Client -->
     <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.pri*" target="lib\NetCore45" />
     <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
+    <!-- UWP Client -->
+    <file src="..\..\Bin\Release\UWP\**\Csla.dll*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
+    <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
+    <!-- NetStandard Assembly -->
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.5\**\Csla.dll*" target="lib\netstandard1.5" />
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.5\**\Csla.xml*" target="lib\netstandard1.5" />
+    <file src="..\..\Source\Csla.NetStandard1.x\bin\Release\netstandard1.5\**\Csla.NetStandard1.x.resources.dll*" target="lib\netstandard1.5" />
+    <!-- PCL Profile111 -->
+    <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+win8+wpa81" />
+    <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+win8+wpa81" />
     <!-- Windows Runtime Phone Client -->
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
     <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />

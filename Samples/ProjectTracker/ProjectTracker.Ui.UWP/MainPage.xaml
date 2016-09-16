@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="UwpUI.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UwpUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:this="using:UwpUI.Xaml" Loaded="Page_Loaded"
+    mc:Ignorable="d">
+
+  <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0" Margin="10">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="40*"/>
+        <ColumnDefinition Width="60*"/>
+      </Grid.ColumnDefinitions>
+      <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="3"
+               Style="{StaticResource SubheaderTextBlockStyle}">Project Tracker</TextBlock>
+      <HyperlinkButton Grid.Row="1" Grid.Column="0" Margin="3" Click="ShowProjectList">Projects</HyperlinkButton>
+      <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" Text="{Binding Path=Model.ProjectCount}"/>
+      <HyperlinkButton Grid.Row="2" Grid.Column="0" Margin="3" Click="ShowProjectList">Open projects</HyperlinkButton>
+      <TextBlock Grid.Row="2" Grid.Column="1" Margin="3" Text="{Binding Path=Model.OpenProjectCount}"/>
+      <HyperlinkButton Grid.Row="3" Grid.Column="0" Margin="3" Click="ShowResourceList">Resources</HyperlinkButton>
+      <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" Text="{Binding Path=Model.ResourceCount}"/>
+      <ScrollViewer Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <TextBlock TextWrapping="Wrap" Name="ErrorText"/>
+      </ScrollViewer>
+    </Grid>
+    <CommandBar Grid.Row="1">
+      <AppBarButton Click="ViewRoles" Content="Roles" Name="RolesButton" Margin="3" Icon="Edit" Label="Roles" ToolTipService.ToolTip="Edit roles"/>
+    </CommandBar>
+  </Grid>
+</Page>

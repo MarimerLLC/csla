@@ -4,11 +4,11 @@
     <id>CSLA-iOS-Classic</id>
     <title>CSLA .NET - iOS Classic</title>
     <tags>CSLA iOS Classic</tags>
-    <version>4.5.700</version>
+    <version>4.6.3-Beta10</version>
     <authors>Marimer LLC</authors>
-    <licenseUrl>http://www.lhotka.net/cslanet/License.aspx</licenseUrl>
-    <projectUrl>http://www.lhotka.net/cslanet/</projectUrl>
-    <iconUrl>http://www.lhotka.net/images/csla.png</iconUrl>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 Supports the creation of Xamarin iOS applications using the classic API.
@@ -20,22 +20,20 @@ Supports the creation of Xamarin iOS applications using the classic API.
     </summary>
     <language>en-US</language>
     <dependencies>
-      <dependency id="CSLA-Core" version="[4.5.700]" />
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
     </dependencies>
   </metadata>
   <files>
-    <!-- .NET 4.0 Client -->
-    <!-- > None -->
-    <!-- Silverlight 4.0 Client -->
-    <!-- Silverlight 5.0 Client -->
-    <!-- Windows Phone 7 Client -->
     <!-- Xamarin iOS Client -->
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.dll*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.dll.mdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.pdb*" target="lib\MonoTouch10" />
     <file src="..\..\Bin\Release\iOSClassic\**\Csla.Iosui.xml*" target="lib\MonoTouch10" />
-    <!-- > None -->
+    <!-- Xamarin.Forms Csla.Xaml -->
+    <file src="..\..\Bin\Release\Xamarin\**\Csla.Xaml.*" target="lib\portable-net45+win8+wpa81" />
     <!-- Source Files for Symbol Server -->
     <file src="..\..\Source\**\Csla.Iosui.Ios.Classic\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Iosui.Ios\**\*.cs" target="src" />
+    <file src="..\..\Source\**\Csla.Xaml.Shared\**\*.cs" target="src" />
   </files>
 </package>

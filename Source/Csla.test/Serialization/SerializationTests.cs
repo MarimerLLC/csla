@@ -11,6 +11,7 @@ using System.Text;
 using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
+using Csla.Serialization;
 using Csla.Test.ValidationRules;
 using UnitDriven;
 
@@ -181,7 +182,48 @@ namespace Csla.Test.Serialization
 
       context.Assert.Success();
     }
-    
+
+    [TestMethod()]
+    public void TestSerializableEventsActionFails()
+    {
+      var root = new SerializationRoot();
+      var nonSerClass = new NonSerializedClass();
+      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      var method = typeof (Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
+      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof (PropertyChangedEventHandler), h);
+      root.PropertyChanged += delgate;
+      var b = new BinaryFormatterWrapper();
+      try
+      {
+        b.Serialize(new MemoryStream(), root);
+        Assert.Fail("Serialization should have thrown an exception");
+      }
+      catch (System.Runtime.Serialization.SerializationException ex)
+      {
+        // serialization failed as expected
+      }
+    }
+
+    [TestMethod()]
+    public void TestSerializableEventsActionSucceeds()
+    {
+      var root = new OverrideSerializationRoot();
+      var nonSerClass = new NonSerializedClass();
+
+      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      var method = typeof (Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
+      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof (PropertyChangedEventHandler), h);
+      root.PropertyChanged += delgate;
+
+      Action<object, PropertyChangingEventArgs> h1 = (sender, eventArgs) => { nonSerClass.Do(); };
+      var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
+      var delgate1 = (PropertyChangingEventHandler)(object)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
+      root.PropertyChanging += delgate1;
+
+      var b = new BinaryFormatterWrapper();
+      b.Serialize(new MemoryStream(), root);
+    }
+
     [TestMethod()]
     public void TestValidationRulesAfterSerialization()
     {
@@ -508,7 +550,43 @@ namespace Csla.Test.Serialization
       }
     }
 #endif
+
+#if !SILVERLIGHT && !NETFX_CORE
+    [TestMethod]
+    public void UseCustomSerializationFormatter()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "Csla.Serialization.NetDataContractSerializerWrapper, Csla";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.CustomFormatter);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
+
+    [TestMethod]
+    public void UseNetDataContractSerializer()
+    {
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "NetDataContractSerializer";
+      try
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter();
+
+        Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.NetDataContractSerializer);
+        Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      }
+      finally
+      {
+        System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
+      }
+    }
   }
+#endif
 
   [Serializable]
   public class TestCommand : CommandBase<TestCommand>

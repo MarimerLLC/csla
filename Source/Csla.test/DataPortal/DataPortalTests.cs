@@ -128,6 +128,7 @@ namespace Csla.Test.DataPortal
             ClearDataBase();
         }
 
+#if DEBUG
         [TestMethod()]
         public void TestTransactionScopeUpdate()
         {
@@ -202,6 +203,7 @@ namespace Csla.Test.DataPortal
 
             ClearDataBase();
         }
+#endif
 
         [TestMethod()]
         public void StronglyTypedDataPortalMethods()
@@ -282,6 +284,54 @@ namespace Csla.Test.DataPortal
                 Csla.DataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
                 Csla.DataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
             }
+        }
+
+        [TestMethod]
+        public void DataPortalBrokerTests()
+        {
+          ApplicationContext.GlobalContext.Clear();
+          Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer();
+
+          try
+          {
+            var single = Csla.Test.DataPortalTest.Single.NewObject();
+
+            Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Created");
+            Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Create Called");
+
+            ApplicationContext.GlobalContext.Clear();
+
+            single.Save();
+
+            Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Inserted");
+            Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Update Called");
+
+            ApplicationContext.GlobalContext.Clear();
+
+            single = Csla.Test.DataPortalTest.Single.GetObject(1);
+
+            Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Fetched");
+            Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Fetch Called");
+
+            ApplicationContext.GlobalContext.Clear();
+
+            single.Save();
+
+            Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Updated");
+            Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Update Called");
+
+            ApplicationContext.GlobalContext.Clear();
+
+            Csla.Test.DataPortalTest.Single.DeleteObject(1);
+
+            Assert.AreEqual(ApplicationContext.GlobalContext["Single"], "Deleted");
+            Assert.AreEqual(ApplicationContext.GlobalContext["CustomDataPortalServer"], "Delete Called");
+          }
+          finally
+          {
+            ApplicationContext.GlobalContext.Clear();
+            Csla.Server.DataPortalBroker.DataPortalServer = null;
+          }
         }
 
         [TestMethod]

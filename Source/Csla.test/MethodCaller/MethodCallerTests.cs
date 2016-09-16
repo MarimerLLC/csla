@@ -124,6 +124,7 @@ namespace Csla.Test.MethodCaller
       Assert.AreEqual(returnValue3, 2);
     }
 
+#if DEBUG
 #if !WINDOWS_PHONE
     [TestMethod]
 #if !SILVERLIGHT
@@ -153,6 +154,7 @@ namespace Csla.Test.MethodCaller
 
       Assert.IsTrue(dynamicTime < reflectionTime, string.Format("Dynamic {0} should be faster than reflection {1}", dynamicTime, reflectionTime));
     }
+#endif
 #endif
 
     [TestMethod]

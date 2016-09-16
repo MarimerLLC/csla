@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1F7F65F7-7EE5-4255-9A75-4CED8FCA1D77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
+    <RootNamespace>Csla</RootNamespace>
+    <AssemblyName>Csla</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\Debug\UWP\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Debug\UWP\Csla.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\Release\UWP\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Bin\Release\UWP\Csla.XML</DocumentationFile>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\Bin\Debug\UWP\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>..\..\Bin\Debug\UWP\Csla.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>..\..\Bin\Release\UWP\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DocumentationFile>..\..\Bin\Release\UWP\Csla.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="CslaKey.snk" />
+    <None Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\WcfPortal\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <PRIResource Include="Resources\ar\Resources.resw" />
+    <PRIResource Include="Resources\bs\Resources.resw" />
+    <PRIResource Include="Resources\ca-ES\Resources.resw" />
+    <PRIResource Include="Resources\da\Resources.resw" />
+    <PRIResource Include="Resources\de\Resources.resw" />
+    <PRIResource Include="Resources\el\Resources.resw" />
+    <PRIResource Include="Resources\en-US\Resources.resw" />
+    <PRIResource Include="Resources\en\Resources.resw" />
+    <PRIResource Include="Resources\es\Resources.resw" />
+    <PRIResource Include="Resources\es-ES\Resources.resw" />
+    <PRIResource Include="Resources\hr\Resources.resw" />
+    <PRIResource Include="Resources\hu\Resources.resw" />
+    <PRIResource Include="Resources\it\Resources.resw" />
+    <PRIResource Include="Resources\km-KH\Resources.resw" />
+    <PRIResource Include="Resources\nl\Resources.resw" />
+    <PRIResource Include="Resources\no\Resources.resw" />
+    <PRIResource Include="Resources\pt\Resources.resw" />
+    <PRIResource Include="Resources\pt-BR\Resources.resw" />
+    <PRIResource Include="Resources\ro\Resources.resw" />
+    <PRIResource Include="Resources\ru\Resources.resw" />
+    <PRIResource Include="Resources\sr\Resources.resw" />
+    <PRIResource Include="Resources\sv\Resources.resw" />
+    <PRIResource Include="Resources\tr\Resources.resw" />
+    <PRIResource Include="Resources\uk-ua\Resources.resw" />
+    <PRIResource Include="Resources\vi\Resources.resw" />
+    <PRIResource Include="Resources\zh-Hans\Resources.resw" />
+    <PRIResource Include="Resources\zh-TW\Resources.resw" />
+    <None Include="Service References\WcfPortal\App1.WcfPortal.WcfResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal.wsdl" />
+    <None Include="Service References\WcfPortal\SlPortal.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\SlPortal2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WcfPortal\WcfPortal.wsdl" />
+    <EmbeddedResource Include="Properties\Csla.Uwp.rd.xml" />
+    <PRIResource Include="Resources\fr\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WcfPortal\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WcfPortal\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WcfPortal\configuration.svcinfo" />
+    <None Include="Service References\WcfPortal\configuration91.svcinfo" />
+    <None Include="Service References\WcfPortal\SlPortal.disco" />
+  </ItemGroup>
+  <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>mkdir "$(ProjectDir)Resources\en"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.resx" "$(ProjectDir)resources\en\Resources.resw"
+mkdir "$(ProjectDir)resources\en-US"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.resx" "$(ProjectDir)resources\en-US\Resources.resw"
+mkdir "$(ProjectDir)resources\ar"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.ar.resx" "$(ProjectDir)resources\ar\Resources.resw"
+mkdir "$(ProjectDir)resources\bs"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.bs.resx" "$(ProjectDir)resources\bs\Resources.resw"
+mkdir "$(ProjectDir)resources\ca-ES"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.ca-ES.resx" "$(ProjectDir)resources\ca-ES\Resources.resw"
+mkdir "$(ProjectDir)resources\da"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.da.resx" "$(ProjectDir)resources\da\Resources.resw"
+mkdir "$(ProjectDir)resources\de"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.de.resx" "$(ProjectDir)resources\de\Resources.resw"
+mkdir "$(ProjectDir)resources\el"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.el.resx" "$(ProjectDir)resources\el\Resources.resw"
+mkdir "$(ProjectDir)resources\es"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.es.resx" "$(ProjectDir)resources\es\Resources.resw"
+mkdir "$(ProjectDir)resources\es-ES"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.es-ES.resx" "$(ProjectDir)resources\es-ES\Resources.resw"
+mkdir "$(ProjectDir)resources\fr"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.fr.resx" "$(ProjectDir)resources\fr\Resources.resw"
+mkdir "$(ProjectDir)resources\hr"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.hr.resx" "$(ProjectDir)resources\hr\Resources.resw"
+mkdir "$(ProjectDir)resources\hu"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.hu.resx" "$(ProjectDir)resources\hu\Resources.resw"
+mkdir "$(ProjectDir)resources\it"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.it.resx" "$(ProjectDir)resources\it\Resources.resw"
+mkdir "$(ProjectDir)resources\km-KH"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.km-KH.resx" "$(ProjectDir)resources\km-KH\Resources.resw"
+mkdir "$(ProjectDir)resources\nl"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.nl.resx" "$(ProjectDir)resources\nl\Resources.resw"
+mkdir "$(ProjectDir)resources\no"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.no.resx" "$(ProjectDir)resources\no\Resources.resw"
+mkdir "$(ProjectDir)resources\pt"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.pt.resx" "$(ProjectDir)resources\pt\Resources.resw"
+mkdir "$(ProjectDir)resources\pt-BR"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.pt-BR.resx" "$(ProjectDir)resources\pt-BR\Resources.resw"
+mkdir "$(ProjectDir)resources\ro"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.ro.resx" "$(ProjectDir)resources\ro\Resources.resw"
+mkdir "$(ProjectDir)resources\ru"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.ru.resx" "$(ProjectDir)resources\ru\Resources.resw"
+mkdir "$(ProjectDir)resources\sr"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.sr.resx" "$(ProjectDir)resources\sr\Resources.resw"
+mkdir "$(ProjectDir)resources\sv"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.sv.resx" "$(ProjectDir)resources\sv\Resources.resw"
+mkdir "$(ProjectDir)resources\tr"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.tr.resx" "$(ProjectDir)resources\tr\Resources.resw"
+mkdir "$(ProjectDir)resources\vi"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.vi.resx" "$(ProjectDir)resources\vi\Resources.resw"
+mkdir "$(ProjectDir)resources\zh-Hans"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.zh-Hans.resx" "$(ProjectDir)resources\zh-Hans\Resources.resw"
+mkdir "$(ProjectDir)resources\zh-TW"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.zh-TW.resx" "$(ProjectDir)resources\zh-TW\Resources.resw"
+mkdir "$(ProjectDir)resources\uk-ua"
+copy "$(SolutionDir)Csla.Shared.Resources\resources.uk-ua.resx" "$(ProjectDir)resources\uk-ua\Resources.resw"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

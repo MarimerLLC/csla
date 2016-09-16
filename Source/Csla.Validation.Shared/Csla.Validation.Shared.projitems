@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>f2ff4b77-a3c4-4810-a944-cd8230599b59</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Csla.Validation.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Upgrade.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AuthorizationRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BusinessBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CommonRules.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DecoratedRuleArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObjectAccessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PropertyHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ReadOnlyBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RuleArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RuleExtensions.cs" />
+  </ItemGroup>
+</Project>

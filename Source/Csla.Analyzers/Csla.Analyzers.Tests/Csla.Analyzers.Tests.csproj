@@ -1,0 +1,499 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{244F4A0B-E113-404E-8045-52A5E3392785}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Csla.Analyzers.Tests</RootNamespace>
+    <AssemblyName>Csla.Analyzers.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.1.1.1\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.1.1\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.1.1\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.AttributedModel, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Convention, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Hosting, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.Runtime, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts, Version=1.0.30.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.30\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.Metadata.1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EvaluateManagedBackingFieldsAnalayzerTests.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsWalkerTests.cs" />
+    <Compile Include="ContainsInvocationExpressionWalkerTests.cs" />
+    <Compile Include="EvaluatePropertiesForSimplicityAnalyzerTests.cs" />
+    <Compile Include="FindGetOrReadInvocationsWalkerTests.cs" />
+    <Compile Include="EvaluateManagedBackingFieldsCodeFixTests.cs" />
+    <Compile Include="FindOperationsWithNonSerializableArgumentsAnalyzerTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests.cs" />
+    <Compile Include="Extensions\IMethodSymbolExtensionsTests.cs" />
+    <Compile Include="Extensions\SyntaxNodeExtensionsTests.cs" />
+    <Compile Include="Extensions\ITypeSymbolExtensionsTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerTests.cs" />
+    <Compile Include="CheckConstructorsAnalyzerPublicConstructorCodeFixTests.cs" />
+    <Compile Include="FindSaveAssignmentIssueAnalyzerTests.cs" />
+    <Compile Include="FindSetOrLoadInvocationsWalkerTests.cs" />
+    <Compile Include="IsOperationMethodPublicMakeNonPublicCodeFixTests.cs" />
+    <Compile Include="IsBusinessObjectSerializableMakeSerializableCodeFixTests.cs" />
+    <Compile Include="IsOperationMethodPublicAnalyzerTests.cs" />
+    <Compile Include="IsBusinessObjectSerializableAnalyzerTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenPrivateConstructorNoArgumentsExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerPublicConstructorCodeFixTests\VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsBusinessBindingListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsCommandBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsDynamicListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsBusinessListBaseAndHasPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasStaticConstructor.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateConstructorWithArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructor.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsStereotypeAndHasPrivateNoArgumentConstructor.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\CheckConstructorsAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasInvocation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ContainsInvocationExpressionWalkerTests\WalkWhenNodeHasNoInvocations.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsNotUsedByPropertyInfoManagement.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsWalkerTests\WalkWhenFieldIsUsedByPropertyInfoManagement.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasSetterWithNoMethodCall.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasGetterWithNoMethodCall.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasStaticProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassHasAbstractProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluatePropertiesForSimplicityAnalyzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsReadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsGetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithSerializableArgument.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNoArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsNotOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixTests\VerifyGetFixes.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsNotAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerTests\AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyMarkDirty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadPropertyAsync.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLoadProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetPropertyConvert.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsSetProperty.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsBusinessBaseAndInvocationIsNotCslaMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindSetOrLoadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IMethodSymbolExtensionsTests\IsPropertyInfoManagementMethod.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemDoesNotExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableMakeSerializableCodeFixTests\VerifyGetFixesWhenUsingSystemExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsIPropertyInfoWhenSymbolDoesNotDeriveFromIPropertyInfo.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsACommandBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessBindingListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsADynamicListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsEditableStereotypeWhenSymbolIsABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsBusinessBaseWhenSymbolIsNotABusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsDelegate.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsEnum.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeHasUsingStatememt.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests\VerifyGetFixesWhenClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicMakeNonPublicCodeFixTests\VerifyGetFixesWhenClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IMethodSymbolExtensionsTests\IsDataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsOperationMethodPublicAnalyzerTests\AnalyzeWhenTypeIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndIsNotSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndIsSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\IsBusinessObjectSerializableAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolHasSerializableAttribute.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsSerializableWhenSymbolIsNotSerializable.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaBusinessBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsNotAStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="TestHelpers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Csla.Net4.6\Csla.Net4.6.csproj">
+      <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
+      <Name>Csla</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers.csproj">
+      <Project>{90324805-D023-4A43-8491-AF4EE7B5DFBD}</Project>
+      <Name>Csla.Analyzers</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

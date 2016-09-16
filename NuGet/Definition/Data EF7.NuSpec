@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-EF7</id>
+    <title>CSLA .NET - ADO.NET EF 7</title>
+    <tags>CSLA Windows ADO.NET EF</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the use of ADO.NET Entity Framework 7.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the use of ADO.NET Entity Framework 7.
+    </summary>
+    <language>en-US</language>
+    <dependencies>     
+      <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+      <dependency id="EntityFramework.Relational" version="7.0.0-rc1-final" />    
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- EF7 is only supported on .NET 4.5.1+ -->    
+    <!-- .NET 4.6 Client -->
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF7.dll*" target="lib\net46" />
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF7.pdb*" target="lib\net46" />  
+    <file src="..\..\Bin\Release\NET46\**\Csla.Data.EF7.xml*" target="lib\net46" />
+    <!-- Source Files for Symbol Server -->
+    <file src="..\..\Source\**\Csla.Data.EF7*\**\*.cs" target="src" />
+  </files>
+</package>

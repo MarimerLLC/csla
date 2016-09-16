@@ -36,6 +36,7 @@ namespace Csla.Data.EF4.Test
             }
         }
 
+#if DEBUG
         [TestMethod]
         [ExpectedException(typeof(EntityException))]
         public void ConnectionSetting_with_Invalid_DB_Throws_ConfigurationErrorsException_for_DbContextDataContext()
@@ -68,5 +69,6 @@ namespace Csla.Data.EF4.Test
                 Assert.IsTrue(query.Any(), "Data in table is missing");
             }
         }
-    }
+#endif
+  }
 }

@@ -12,6 +12,8 @@ TestResults
 *.suo
 *.user
 *.sln.docstates
+project.lock.json
+.vs
 
 # Build results
 [Dd]ebug/
@@ -152,3 +154,10 @@ Thumbs.db
 /XamarinPackage/*.xam
 
 *.userprefs
+/Source/Csla.WinRT/resources
+/Source/Csla.Uwp/resources
+/Samples/ProjectTracker/.vs
+project.lock.json
+/Source/.vs
+Source/UpgradeLog.htm
+/Source/Csla.NetStandard1.x/Properties/*.resx

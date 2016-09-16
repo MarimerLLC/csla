@@ -17,8 +17,8 @@
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <AndroidUseLatestPlatformSdk />
-    <TargetFrameworkVersion>v2.3</TargetFrameworkVersion>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,33 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla.Validation\AuthorizationRules.cs">
-      <Link>AuthorizationRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\BusinessBase.cs">
-      <Link>BusinessBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\CommonRules.cs">
-      <Link>CommonRules.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\DecoratedRuleArgs.cs">
-      <Link>DecoratedRuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ObjectAccessor.cs">
-      <Link>ObjectAccessor.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\PropertyHelper.cs">
-      <Link>PropertyHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\ReadOnlyBase.cs">
-      <Link>ReadOnlyBase.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleArgs.cs">
-      <Link>RuleArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla.Validation\RuleExtensions.cs">
-      <Link>RuleExtensions.cs</Link>
-    </Compile>
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -87,10 +60,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla.Android\Csla.Android.csproj">
-      <Project>{f38f7293-0b67-4f49-992b-b1a3036b7dd0}</Project>
+      <Project>{c2be0849-fee9-490d-8bbb-2a9ac301841e}</Project>
       <Name>Csla.Android</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\Csla.Validation.Shared\Csla.Validation.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

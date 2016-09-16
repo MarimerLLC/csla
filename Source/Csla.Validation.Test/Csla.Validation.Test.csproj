@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Csla.Validation.Test</RootNamespace>
     <AssemblyName>Csla.Validation.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -67,13 +67,13 @@
     <Compile Include="VPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Csla.Validation\Csla.Validation.csproj">
-      <Project>{2d4eb600-d8cb-4bc3-8fb9-e91df30cd693}</Project>
-      <Name>Csla.Validation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Csla\Csla.csproj">
+    <ProjectReference Include="..\Csla.Net4.6\Csla.Net4.6.csproj">
       <Project>{9da591ed-c570-47ac-8e5d-35b039e07973}</Project>
-      <Name>Csla</Name>
+      <Name>Csla.Net4.6</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Csla.Validation.Net4.6\Csla.Validation.Net4.6.csproj">
+      <Project>{261a1902-bb71-4eda-b582-70890dae7d4b}</Project>
+      <Name>Csla.Validation.Net4.6</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

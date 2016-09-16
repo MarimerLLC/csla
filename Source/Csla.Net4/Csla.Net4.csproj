@@ -11,7 +11,7 @@
     <RootNamespace>Csla</RootNamespace>
     <AssemblyName>Csla</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>Resources\favicon.ico</ApplicationIcon>
@@ -34,6 +34,8 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -123,6 +125,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
@@ -133,32 +139,37 @@
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.IO">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.IO.dll</HintPath>
+    <Reference Include="System.IO, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.IO.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http, Version=2.2.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net40\System.Net.Http.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net40\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Extensions">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net40\System.Net.Http.Extensions.dll</HintPath>
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net40\System.Net.Http.Extensions.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Primitives">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net40\System.Net.Http.Primitives.dll</HintPath>
+    <Reference Include="System.Net.Http.Primitives, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net40\System.Net.Http.Primitives.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.WebRequest, Version=2.2.20.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.20\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    <Reference Include="System.Net.Http.WebRequest, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Runtime">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Runtime.dll</HintPath>
+    <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Runtime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.8\lib\net40\System.Threading.Tasks.dll</HintPath>
+    <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Threading.Tasks.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Services" />
@@ -167,91 +178,20 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Csla\*.cs" />
-    <Compile Include="..\Csla\Core\*.cs">
-      <Link>Core\%(FileName)</Link>
+    <Compile Include="..\Csla.Shared.Resources\Resources1.Designer.cs">
+      <Link>Properties\Resources1.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="..\Csla\Core\FieldManager\*.cs">
-      <Link>Core\FieldManager\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Core\LoadManager\*.cs">
-      <Link>Core\LoadManager\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Core\TypeConverters\*.cs">
-      <Link>Core\TypeConverters\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Data\*.cs">
-      <Link>Data\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\DataPortalClient\*.cs">
-      <Link>DataPortalClient\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Reflection\*.cs">
-      <Link>Reflection\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Rules\*.cs">
-      <Link>Rules\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Security\*.cs">
-      <Link>Security\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Serialization\*.cs">
-      <Link>Serialization\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Serialization\Mobile\*.cs">
-      <Link>Serialization\Mobile\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\*.cs">
-      <Link>Server\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\*.cs">
-      <Link>Server\Hosts\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\HttpChannel\CriteriaRequest.cs">
-      <Link>Server\Hosts\HttpChannel\CriteriaRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpErrorInfo.cs">
-      <Link>Server\Hosts\HttpChannel\HttpErrorInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\HttpChannel\HttpResponse.cs">
-      <Link>Server\Hosts\HttpChannel\HttpResponse.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\HttpChannel\UpdateRequest.cs">
-      <Link>Server\Hosts\HttpChannel\UpdateRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\Mobile\*.cs">
-      <Link>Server\Hosts\Mobile\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Server\Hosts\WcfChannel\*.cs">
-      <Link>Server\Hosts\WcfChannel\%(FileName)</Link>
+    <Compile Include="..\Csla.Shared.Resources\Settings1.Designer.cs">
+      <Link>Properties\Settings1.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="..\Csla\Silverlight\*.cs">
       <Link>Silverlight\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Silverlight\Security\*.cs">
-      <Link>Silverlight\Security\%(FileName)</Link>
-    </Compile>
-    <Compile Include="..\Csla\Threading\BackgroundWorker.cs">
-      <Link>Threading\BackgroundWorker</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\Csla\Threading\BusyLock.cs">
-      <Link>Threading\BusyLock</Link>
-    </Compile>
-    <Compile Include="..\Csla\Threading\ContextParams.cs">
-      <Link>Threading\ContextParams</Link>
-    </Compile>
-    <Compile Include="..\Csla\Threading\CslaTaskScheduler.cs">
-      <Link>Threading\CslaTaskScheduler</Link>
-    </Compile>
-    <Compile Include="..\Csla\Properties\CslaPrivate.Designer.cs">
-      <Link>Properties\CslaPrivate.Designer.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Properties\Resources.Designer.cs">
-      <Link>Properties\Resources.Designer.cs</Link>
-    </Compile>
-    <Compile Include="..\Csla\Properties\Settings.Designer.cs">
-      <Link>Properties\Settings.Designer.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\WcfPortal\Reference.cs">
@@ -261,13 +201,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Csla\CslaKey.snk">
-      <Link>CslaKey.snk</Link>
-    </None>
-    <None Include="..\Csla\Properties\Settings.settings">
+    <None Include="..\Csla.Shared.Resources\Settings.settings">
       <Link>Properties\Settings.settings</Link>
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
     <None Include="app.config" />
+    <None Include="CslaKey.snk" />
     <None Include="packages.config" />
     <None Include="Service References\WcfPortal\Csla.WcfPortal.WcfResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -319,104 +259,108 @@
     <None Include="Service References\WcfPortal\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Csla\Properties\CslaPrivate.resx">
-      <Link>Properties\CslaPrivate.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.ar.resx">
-      <Link>Properties\Resources.ar.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.bs.resx">
-      <Link>Properties\Resources.bs.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.ca-ES.resx">
-      <Link>Properties\Resources.ca-ES.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.da.resx">
-      <Link>Properties\Resources.da.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.de.resx">
-      <Link>Properties\Resources.de.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.el.resx">
-      <Link>Properties\Resources.el.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.es-ES.resx">
-      <Link>Properties\Resources.es-ES.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.es.resx">
-      <Link>Properties\Resources.es.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.fr.resx">
-      <Link>Properties\Resources.fr.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.he-IL.resx">
-      <Link>Properties\Resources.he-IL.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.hr.resx">
-      <Link>Properties\Resources.hr.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.hu.resx">
-      <Link>Properties\Resources.hu.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.it.resx">
-      <Link>Properties\Resources.it.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.km-KH.resx">
-      <Link>Properties\Resources.km-KH.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.nl.resx">
-      <Link>Properties\Resources.nl.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.no.resx">
-      <Link>Properties\Resources.no.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.pt-br.resx">
-      <Link>Properties\Resources.pt-br.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.pt.resx">
-      <Link>Properties\Resources.pt.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.resx">
-      <Link>Properties\Resources.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.ro.resx">
-      <Link>Properties\Resources.ro.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.ru.resx">
-      <Link>Properties\Resources.ru.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.sr.resx">
-      <Link>Properties\Resources.sr.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.sv.resx">
-      <Link>Properties\Resources.sv.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.tr.resx">
-      <Link>Properties\Resources.tr.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.vi.resx">
-      <Link>Properties\Resources.vi.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-Hans.resx">
-      <Link>Properties\Resources.zh-CHS.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.zh-TW.resx">
-      <Link>Properties\Resources.zh-TW.resx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\Csla\Properties\Resources.uk-ua.resx">
-      <Link>Properties\Resources.uk-ua.resx</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadataStorage Include="Service References\WcfPortal\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\CslaPrivate.resx">
+      <Link>Properties\CslaPrivate.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ar.resx">
+      <Link>Properties\Resources.ar.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.bs.resx">
+      <Link>Properties\Resources.bs.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ca-ES.resx">
+      <Link>Properties\Resources.ca-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.da.resx">
+      <Link>Properties\Resources.da.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.de.resx">
+      <Link>Properties\Resources.de.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.el.resx">
+      <Link>Properties\Resources.el.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.es-ES.resx">
+      <Link>Properties\Resources.es-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.es.resx">
+      <Link>Properties\Resources.es.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.fr.resx">
+      <Link>Properties\Resources.fr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.he-IL.resx">
+      <Link>Properties\Resources.he-IL.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.hr.resx">
+      <Link>Properties\Resources.hr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.hu.resx">
+      <Link>Properties\Resources.hu.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.it.resx">
+      <Link>Properties\Resources.it.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.km-KH.resx">
+      <Link>Properties\Resources.km-KH.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.nl.resx">
+      <Link>Properties\Resources.nl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.no.resx">
+      <Link>Properties\Resources.no.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.pt-br.resx">
+      <Link>Properties\Resources.pt-br.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.pt.resx">
+      <Link>Properties\Resources.pt.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ro.resx">
+      <Link>Properties\Resources.ro.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.ru.resx">
+      <Link>Properties\Resources.ru.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.sr.resx">
+      <Link>Properties\Resources.sr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.sv.resx">
+      <Link>Properties\Resources.sv.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.tr.resx">
+      <Link>Properties\Resources.tr.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.uk-ua.resx">
+      <Link>Properties\Resources.uk-ua.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.vi.resx">
+      <Link>Properties\Resources.vi.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.zh-Hans.resx">
+      <Link>Properties\Resources.zh-Hans.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Csla.Shared.Resources\Resources.zh-TW.resx">
+      <Link>Properties\Resources.zh-TW.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
-  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
-    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
-    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

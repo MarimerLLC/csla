@@ -1,11 +1,11 @@
-﻿#if NETFX_CORE
-//-----------------------------------------------------------------------
-// <copyright file="PortedAttributes.cs" company="Marimer LLC">
+﻿//-----------------------------------------------------------------------
+// <copyright file="BrowsableAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
 // </copyright>
 // <summary>Placeholder for missing Browsable attribute from full .NET.</summary>
 //-----------------------------------------------------------------------
+#if NETFX_CORE && !NETSTANDARD
 using System;
 
 namespace System.ComponentModel

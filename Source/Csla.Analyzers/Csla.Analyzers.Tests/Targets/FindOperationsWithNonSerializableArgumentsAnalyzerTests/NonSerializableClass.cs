@@ -1,4 +1,4 @@
 ﻿namespace Csla.Analyzers.Tests.Targets.FindOperationsWithNonSerializableArgumentsAnalyzerTests
 {
-  public class AnalyzeWhenClassIsNotMobileObject { }
+  public class NonSerializableClass { }
 }

@@ -167,6 +167,14 @@ namespace Csla.Analyzers.Tests.Extensions
         nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsDynamicListBase))).IsStereotype());
     }
 
+    [TestMethod]
+    public async Task IsStereotypeWhenSymbolIsStereotypeViaCommandBase()
+    {
+      Assert.IsTrue((await this.GetTypeSymbolAsync(
+        $@"Targets\{nameof(ITypeSymbolExtensionsTests)}\{(nameof(this.IsStereotypeWhenSymbolIsStereotypeViaCommandBase))}.cs",
+        nameof(ITypeSymbolExtensionsTests.IsStereotypeWhenSymbolIsStereotypeViaCommandBase))).IsStereotype());
+    }
+
     private async Task<ITypeSymbol> GetTypeSymbolAsync(string file, string name)
     {
       var rootAndModel = await this.GetRootAndModel(file, name);

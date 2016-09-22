@@ -37,7 +37,7 @@ namespace Csla.Analyzers
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
       var typeSymbol = methodSymbol.ContainingType;
 
-      if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
+      if (typeSymbol.IsStereotype() && methodSymbol.IsRootDataPortalOperation())
       {
         foreach(var argument in methodSymbol.Parameters)
         {

@@ -11,6 +11,12 @@ namespace Csla.Analyzers.IntegrationTests
     private void DataPortal_Fetch(SerializedObject x) { }
 
     private void DataPortal_Fetch(NonSerializedObject x) { }
+
+    private void Child_Fetch(int x) { }
+
+    private void Child_Fetch(SerializedObject x) { }
+
+    private void Child_Fetch(NonSerializedObject x) { }
   }
 
   public class NonSerializedObject { }

@@ -1,4 +1,4 @@
-﻿#if NETFX_CORE && !WINDOWS_UWP && !PCL46
+﻿#if NETFX_CORE && !WINDOWS_UWP && !PCL46 && !NETSTANDARD
 //-----------------------------------------------------------------------
 // <copyright file="BackgroundWorkerBCL.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

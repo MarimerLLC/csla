@@ -3599,15 +3599,8 @@ namespace Csla.Core
     private bool _bypassPropertyChecks = false;
 
     /// <summary>
-    /// Is the business object currently bypassing property checks?
     /// </summary>
-    protected internal bool IsBypassingPropertyChecks
-    {
-      get
-      {
-        return _bypassPropertyChecks;
-      }
-    }
+    protected internal bool IsBypassingPropertyChecks { get { return _bypassPropertyChecks; } }
 	
     [NonSerialized]
     [NotUndoable]

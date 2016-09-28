@@ -45,6 +45,7 @@
       public const string IBusinessObject = "IBusinessObject";
       public const string IMobileObject = "IMobileObject";
       public const string IPropertyInfo = "IPropertyInfo";
+      public const string ManagedObjectBase = "ManagedObjectBase";
     }
 
     public const string AssemblyName = "Csla";

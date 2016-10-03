@@ -596,63 +596,72 @@ namespace Csla.Xaml
     {
       if (_loading) return;
 
-      if (Source == null || string.IsNullOrEmpty(PropertyName)) return;
-
       Popup popup = (Popup)FindChild(this, "popup");
       if (popup != null)
         popup.IsOpen = false;
 
-      var iarw = Source as Csla.Security.IAuthorizeReadWrite;
-      if (iarw != null)
+      if (Source == null || string.IsNullOrEmpty(PropertyName))
       {
-        CanWrite = iarw.CanWriteProperty(PropertyName);
-        CanRead = iarw.CanReadProperty(PropertyName);
+        BrokenRules.Clear();
+        RuleDescription = string.Empty;
+        IsValid = true;
+        CanWrite = false;
+        CanRead = false;
       }
-
-      BusinessBase businessObject = Source as BusinessBase;
-      if (businessObject != null)
+      else
       {
-        var allRules = (from r in businessObject.BrokenRulesCollection
-                        where r.Property == PropertyName
-                        select r).ToArray();
-
-        var removeRules = (from r in BrokenRules
-                           where !allRules.Contains(r)
-                           select r).ToArray();
-
-        var addRules = (from r in allRules
-                        where !BrokenRules.Contains(r)
-                        select r).ToArray();
-
-        foreach (var rule in removeRules)
-          BrokenRules.Remove(rule);
-        foreach (var rule in addRules)
-          BrokenRules.Add(rule);
-
-        IsValid = BrokenRules.Count == 0;
-
-        if (!IsValid)
+        var iarw = Source as Csla.Security.IAuthorizeReadWrite;
+        if (iarw != null)
         {
-          BrokenRule worst = (from r in BrokenRules
-                              orderby r.Severity
-                              select r).FirstOrDefault();
+          CanWrite = iarw.CanWriteProperty(PropertyName);
+          CanRead = iarw.CanReadProperty(PropertyName);
+        }
 
-          if (worst != null)
+        BusinessBase businessObject = Source as BusinessBase;
+        if (businessObject != null)
+        {
+          var allRules = (from r in businessObject.BrokenRulesCollection
+                          where r.Property == PropertyName
+                          select r).ToArray();
+
+          var removeRules = (from r in BrokenRules
+                             where !allRules.Contains(r)
+                             select r).ToArray();
+
+          var addRules = (from r in allRules
+                          where !BrokenRules.Contains(r)
+                          select r).ToArray();
+
+          foreach (var rule in removeRules)
+            BrokenRules.Remove(rule);
+          foreach (var rule in addRules)
+            BrokenRules.Add(rule);
+
+          IsValid = BrokenRules.Count == 0;
+
+          if (!IsValid)
           {
-            RuleSeverity = worst.Severity;
-            RuleDescription = worst.Description;
+            BrokenRule worst = (from r in BrokenRules
+                                orderby r.Severity
+                                select r).FirstOrDefault();
+
+            if (worst != null)
+            {
+              RuleSeverity = worst.Severity;
+              RuleDescription = worst.Description;
+            }
+            else
+              RuleDescription = string.Empty;
           }
           else
             RuleDescription = string.Empty;
         }
         else
+        {
+          BrokenRules.Clear();
           RuleDescription = string.Empty;
-      }
-      else
-      {
-        BrokenRules.Clear();
-        RuleDescription = string.Empty;
-        IsValid = true;
+          IsValid = true;
+        }
       }
       GoToState(true);
     }

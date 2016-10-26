@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
@@ -28,43 +29,67 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsNotMobileObject()
+    public async Task AnalyzeWithNotMobileObject()
     {
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotMobileObject))}.cs",
-        new string[0]);
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithNotMobileObject))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsMobileObjectAndMethodIsNotOperation()
+    public async Task AnalyzeWithMobileObjectAndMethodIsNotOperation()
     {
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndMethodIsNotOperation))}.cs",
-        new string[0]);
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsNotOperation))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNoArguments()
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNoArguments()
     {
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNoArguments))}.cs",
-        new string[0]);
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithNoArguments))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithSerializableArgument()
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgument()
     {
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithSerializableArgument))}.cs",
-        new string[0]);
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgument))}.cs",
+        Array.Empty<string>());
     }
 
     [TestMethod]
-    public async Task AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument()
+    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument()
     {
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument))}.cs",
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument))}.cs",
         new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments()
+    {
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments))}.cs",
+        Array.Empty<string>());
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithSerializableArgument()
+    {
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithSerializableArgument))}.cs",
+        Array.Empty<string>());
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument()
+    {
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        $@"Targets\{nameof(FindOperationsWithNonSerializableArgumentsAnalyzerTests)}\{(nameof(this.AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument))}.cs",
+        Array.Empty<string>());
     }
   }
 }

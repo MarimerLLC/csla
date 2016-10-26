@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -39,7 +40,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -47,7 +48,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedProperty))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -71,6 +72,14 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
+        new[] { Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenCommandHasManagedBackingFieldUsedPropertyAndIsNotReadonly()
+    {
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsAnalayzerTests)}\{(nameof(this.AnalyzeWhenCommandHasManagedBackingFieldUsedPropertyAndIsNotReadonly))}.cs",
         new[] { Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields });
     }
   }

@@ -1081,47 +1081,25 @@ namespace Csla.Reflection
     }
 
     /// <summary>
-    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
+    /// Returns true if the method provided is an async method returning a Task object.
     /// </summary>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <param name="obj">Object containing method.</param>
-    /// <param name="methodName">Name of the method.</param>
-    /// <returns></returns>
-    public static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName)
-    {
-      if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName))
-      {
-        throw new NotSupportedException(string.Format("Unable to synchronously call {0} which is an asynchronous method.", methodName));
-      }
-    }
-
-    /// <summary>
-    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
-    /// </summary>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    /// <param name="obj">Object containing method.</param>
-    /// <param name="methodName">Name of the method.</param>
-    /// <param name="parameters">
-    /// Parameters to pass to method.
+    /// <param name="method">Name of the method.</param>
     /// </param>
-    public static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName, params object[] parameters)
-    {
-      if (isSync
-        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
-      {
-        throw new NotSupportedException(string.Format("Unable to synchronously call {0} which is an asynchronous method.", methodName));
-      }
-    }
-
-    private static bool IsAsyncMethod(object obj, string method)
+    public static bool IsAsyncMethod(object obj, string method)
     {
       return IsAsyncMethod(obj, method, false, null);
     }
 
-    private static bool IsAsyncMethod(object obj, string method, params object[] parameters)
+    /// <summary>
+    /// Returns true if the method provided is an async method returning a Task object.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    public static bool IsAsyncMethod(object obj, string method, params object[] parameters)
     {
       return IsAsyncMethod(obj, method, true, parameters);
     }

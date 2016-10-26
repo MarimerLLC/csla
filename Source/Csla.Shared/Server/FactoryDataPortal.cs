@@ -67,7 +67,7 @@ namespace Csla.Server
       object result = null;
       try
       {
-        Csla.Reflection.MethodCaller.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
         var error = result as Exception;
@@ -98,7 +98,7 @@ namespace Csla.Server
       object result = null;
       try
       {
-        Csla.Reflection.MethodCaller.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(isSync, factory, methodName);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
         var error = result as Exception;

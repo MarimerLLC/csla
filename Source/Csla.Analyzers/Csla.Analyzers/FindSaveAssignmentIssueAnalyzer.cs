@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Csla.Analyzers.Extensions;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -42,30 +43,31 @@ namespace Csla.Analyzers
       // http://stackoverflow.com/questions/29614112/how-to-get-invoked-method-name-in-roslyn
       var invocationNode = (InvocationExpressionSyntax)context.Node;
 
-      if(!invocationNode.ContainsDiagnostics)
+      if (!invocationNode.ContainsDiagnostics)
       {
         var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression).Symbol;
 
         if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
         {
           context.CancellationToken.ThrowIfCancellationRequested();
+          var expressionStatementNode = invocationNode.FindParent<ExpressionStatementSyntax>();
 
           if (invocationSymbol?.Name == Constants.SaveMethodNames.Save)
           {
             FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
-              invocationNode.Parent, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
+              expressionStatementNode, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
           }
           else if (invocationSymbol?.Name == Constants.SaveMethodNames.SaveAsync)
           {
             FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
-              invocationNode.Parent?.Parent, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
+              expressionStatementNode, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
           }
         }
       }
     }
 
-    private static void CheckForCondition(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationNode, 
-      SyntaxNode expressionStatementParent, DiagnosticDescriptor descriptor)
+    private static void CheckForCondition(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationNode,
+      ExpressionStatementSyntax expressionStatementParent, DiagnosticDescriptor descriptor)
     {
       // Make sure the invocation's containing type is not the same as the class that contains it
       if ((invocationNode.DescendantNodesAndTokens().Any(_ => _.IsKind(SyntaxKind.DotToken)) &&
@@ -83,12 +85,12 @@ namespace Csla.Analyzers
       var parentNode = invocationNode?.Parent;
       var foundReturn = false;
 
-      while(parentNode != null && !(parentNode is BlockSyntax))
+      while (parentNode != null && !(parentNode is BlockSyntax))
       {
         foundReturn = parentNode is ReturnStatementSyntax ||
           parentNode is ParenthesizedLambdaExpressionSyntax;
 
-        if(foundReturn)
+        if (foundReturn)
         {
           break;
         }

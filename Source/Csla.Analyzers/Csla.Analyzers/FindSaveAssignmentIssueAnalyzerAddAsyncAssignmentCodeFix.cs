@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
+using Csla.Analyzers.Extensions;
 
 namespace Csla.Analyzers
 {
@@ -37,17 +38,10 @@ namespace Csla.Analyzers
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
 
-      var parentNode = invocationNode.Parent;
+      var awaitExpressionNode = invocationNode.FindParent<AwaitExpressionSyntax>();
 
-      while (parentNode != null && parentNode.Kind() != SyntaxKind.AwaitExpression)
+      if(awaitExpressionNode != null)
       {
-        parentNode = parentNode.Parent;
-      }
-
-      if(parentNode != null)
-      {
-        var awaitExpressionNode = parentNode as AwaitExpressionSyntax;
-
         var awaitKeyword = awaitExpressionNode.AwaitKeyword;
         var leadingTrivia = awaitKeyword.HasLeadingTrivia ?
           awaitKeyword.LeadingTrivia : new SyntaxTriviaList();

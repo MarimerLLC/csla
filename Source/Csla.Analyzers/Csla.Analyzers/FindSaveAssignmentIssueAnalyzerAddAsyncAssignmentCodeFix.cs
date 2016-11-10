@@ -37,30 +37,41 @@ namespace Csla.Analyzers
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
 
-      var awaitExpressionNode = invocationNode.Parent as AwaitExpressionSyntax;
-      var awaitKeyword = awaitExpressionNode.AwaitKeyword;
-      var leadingTrivia = awaitKeyword.HasLeadingTrivia ?
-        awaitKeyword.LeadingTrivia : new SyntaxTriviaList();
+      var parentNode = invocationNode.Parent;
 
-      var newAwaitExpressionNode = awaitExpressionNode.WithAwaitKeyword(
-        awaitKeyword.WithLeadingTrivia(new SyntaxTriviaList()));
-      var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
-        .Expression as IdentifierNameSyntax).Identifier;
-      var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());
+      while (parentNode != null && parentNode.Kind() != SyntaxKind.AwaitExpression)
+      {
+        parentNode = parentNode.Parent;
+      }
 
-      context.CancellationToken.ThrowIfCancellationRequested();
+      if(parentNode != null)
+      {
+        var awaitExpressionNode = parentNode as AwaitExpressionSyntax;
 
-      var simpleAssignmentExpressionNode = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
-        SyntaxFactory.IdentifierName(newInvocationIdentifier), newAwaitExpressionNode)
-        .WithLeadingTrivia(leadingTrivia);
+        var awaitKeyword = awaitExpressionNode.AwaitKeyword;
+        var leadingTrivia = awaitKeyword.HasLeadingTrivia ?
+          awaitKeyword.LeadingTrivia : new SyntaxTriviaList();
 
-      var newRoot = root.ReplaceNode(awaitExpressionNode, simpleAssignmentExpressionNode);
+        var newAwaitExpressionNode = awaitExpressionNode.WithAwaitKeyword(
+          awaitKeyword.WithLeadingTrivia(new SyntaxTriviaList()));
+        var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
+          .Expression as IdentifierNameSyntax).Identifier;
+        var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());
 
-      context.RegisterCodeFix(
-        CodeAction.Create(
-          FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription,
-          _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-          FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
+        context.CancellationToken.ThrowIfCancellationRequested();
+
+        var simpleAssignmentExpressionNode = SyntaxFactory.AssignmentExpression(SyntaxKind.SimpleAssignmentExpression,
+          SyntaxFactory.IdentifierName(newInvocationIdentifier), newAwaitExpressionNode)
+          .WithLeadingTrivia(leadingTrivia);
+
+        var newRoot = root.ReplaceNode(awaitExpressionNode, simpleAssignmentExpressionNode);
+
+        context.RegisterCodeFix(
+          CodeAction.Create(
+            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription,
+            _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
+            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
+      }
     }
   }
 }

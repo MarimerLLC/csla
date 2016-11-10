@@ -41,21 +41,25 @@ namespace Csla.Analyzers
     {
       // http://stackoverflow.com/questions/29614112/how-to-get-invoked-method-name-in-roslyn
       var invocationNode = (InvocationExpressionSyntax)context.Node;
-      var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression).Symbol;
 
-      if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
+      if(!invocationNode.ContainsDiagnostics)
       {
-        context.CancellationToken.ThrowIfCancellationRequested();
+        var invocationSymbol = context.SemanticModel.GetSymbolInfo(invocationNode.Expression).Symbol;
 
-        if (invocationSymbol?.Name == "Save")
+        if ((invocationSymbol?.ContainingType?.IsBusinessBase() ?? false))
         {
-          FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode, 
-            invocationNode.Parent, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
-        }
-        else if (invocationSymbol?.Name == "SaveAsync")
-        {
-          FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
-            invocationNode.Parent?.Parent, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
+          context.CancellationToken.ThrowIfCancellationRequested();
+
+          if (invocationSymbol?.Name == Constants.SaveMethodNames.Save)
+          {
+            FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
+              invocationNode.Parent, FindSaveAssignmentIssueAnalyzer.saveResultIsNotAssignedRule);
+          }
+          else if (invocationSymbol?.Name == Constants.SaveMethodNames.SaveAsync)
+          {
+            FindSaveAssignmentIssueAnalyzer.CheckForCondition(context, invocationNode,
+              invocationNode.Parent?.Parent, FindSaveAssignmentIssueAnalyzer.saveAsyncResultIsNotAssignedRule);
+          }
         }
       }
     }

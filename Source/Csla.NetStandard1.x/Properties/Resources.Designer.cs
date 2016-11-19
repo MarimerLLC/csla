@@ -1057,5 +1057,17 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///    Looks up a localized string similar to 
+        ///    Async Method On Sync Client Not Allowed.
+        /// </summary>
+        public static string AsyncMethodOnSyncClientNotAllowed
+        {
+            get
+            {
+                return ResourceManager.GetString("AsyncMethodOnSyncClientNotAllowed", resourceCulture);
+            }
+        }
     }
 }

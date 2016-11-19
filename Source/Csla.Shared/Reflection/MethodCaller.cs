@@ -1085,7 +1085,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Object containing method.</param>
     /// <param name="method">Name of the method.</param>
-    /// </param>
     public static bool IsAsyncMethod(object obj, string method)
     {
       return IsAsyncMethod(obj, method, false, null);

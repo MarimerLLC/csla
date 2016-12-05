@@ -10,7 +10,6 @@
 
 namespace Csla.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace Csla.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Csla.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -157,6 +156,15 @@ namespace Csla.Properties {
         public static string AsyncLoadException {
             get {
                 return ResourceManager.GetString("AsyncLoadException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot synchronously call {0} which is an asynchronous method.
+        /// </summary>
+        public static string AsyncMethodOnSyncClientNotAllowed {
+            get {
+                return ResourceManager.GetString("AsyncMethodOnSyncClientNotAllowed", resourceCulture);
             }
         }
         
@@ -872,7 +880,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message for broken rule is required. Rule:{0}.
+        ///   Looks up a localized string similar to Message for broken rule is required. Rule: {0}.
         /// </summary>
         public static string RuleMessageRequired {
             get {

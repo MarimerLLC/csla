@@ -224,8 +224,11 @@ namespace Csla
       {
 #if !NETFX_CORE
         TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
+        TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
           return cnv.ConvertFrom(value);
+        else if (cnv1 != null && cnv1.CanConvertTo(desiredType))
+          return cnv1.ConvertTo(value, desiredType);
         else
 #endif
           throw;

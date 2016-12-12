@@ -22,14 +22,14 @@ For more detailed information about using CSLA .NET please see the [Using CSLA .
 ## Creating the solution and Interface project
 Open Visual Studio and create a new _Console Application_ using the full .NET framework. Name it `CslaFastStart`.
 
-![](readme-images\CreateConsoleApp.png)
+![](readme-images/CreateConsoleApp.png)
 
 Add a NuGet reference to the `CSLA-Core` package to your console app project.
 
 ## Creating the Business layer project
 Add a new _Class Library_  project to the existing solution. Name it `BusinessLayer`.
 
-![](readme-images\CreateBusinessLayer.png)
+![](readme-images/CreateBusinessLayer.png)
 
 Add a NuGet reference to the `CSLA-Core` package to your class library project.
 
@@ -38,7 +38,7 @@ Return to your console app project and add a project reference to your new `Busi
 ## Creating the Data access layer project
 Add a new _Class Library_  project to the existing solution. Name it `DataAccessLayer`.
 
-![](readme-images\CreateDataAccessLayer.png)
+![](readme-images/CreateDataAccessLayer.png)
 
 Return to your `BusinessLayer` project and add a project reference to your new `DataAccessLayer` project.
 

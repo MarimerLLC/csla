@@ -157,7 +157,16 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("AsyncLoadException", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///    Looks up a localized string similar to Cannot synchronously call {0} which is an asynchronous method.
+        /// </summary>
+        public static string AsyncMethodOnSyncClientNotAllowed {
+            get {
+                return ResourceManager.GetString("AsyncMethodOnSyncClientNotAllowed", resourceCulture);
+            }
+        }
+    
         /// <summary>
         ///    Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
         /// </summary>

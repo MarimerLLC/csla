@@ -1226,6 +1226,17 @@ namespace Csla.Properties
         return GetResourceString();
       }
     }
+
+    /// <summary>
+    /// Looks up a localized string.
+    /// </summary>
+    public static string AsyncMethodOnSyncClientNotAllowed
+    {
+      get
+      {
+        return GetResourceString();
+      }
+    }
   }
 }
 #endif

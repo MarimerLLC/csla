@@ -14,7 +14,7 @@ namespace System
   /// Indicates that an object may be
   /// serialized by the MobileFormatter.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum)]
   public class SerializableAttribute : Attribute
   {
   }

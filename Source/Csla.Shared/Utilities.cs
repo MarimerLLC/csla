@@ -10,6 +10,7 @@ using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
 using System.Text;
+using Csla.Properties;
 #if NETFX_CORE && !NETFX_PHONE && !NETCORE && !PCL46
 using System.Text.RegularExpressions;
 using Csla.WcfPortal;
@@ -223,8 +224,11 @@ namespace Csla
       {
 #if !NETFX_CORE
         TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
+        TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
           return cnv.ConvertFrom(value);
+        else if (cnv1 != null && cnv1.CanConvertTo(desiredType))
+          return cnv1.ConvertTo(value, desiredType);
         else
 #endif
           throw;
@@ -357,6 +361,42 @@ namespace Csla
 
     #endregion
 #endif
+
+    /// <summary>
+    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
+    /// </summary>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="methodName">Name of the method.</param>
+    /// <returns></returns>
+    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName)
+    {
+      if (isSync
+        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && MethodCaller.IsAsyncMethod(obj, methodName))
+      {
+        throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
+      }
+    }
+
+    /// <summary>
+    /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
+    /// </summary>
+    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="methodName">Name of the method.</param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    internal static void ThrowIfAsyncMethodOnSyncClient(bool isSync, object obj, string methodName, params object[] parameters)
+    {
+      if (isSync
+        && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
+        && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
+      {
+        throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
+      }
+    }
   }
 
   /// <summary>

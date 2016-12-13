@@ -427,6 +427,15 @@
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaCommandBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentIsNull.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeDoesNotExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

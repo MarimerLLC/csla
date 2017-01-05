@@ -1,6 +1,4 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -51,7 +49,33 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.VerifyActionAsync(actions,
         EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
-        tree, new[] { $@"    public static readonly " });
+        tree, new[] { "    public static readonly " });
+    }
+
+    [TestMethod]
+    public async Task VerifyGetFixesWithTrivia()
+    {
+      var code = File.ReadAllText(
+        $@"Targets\{nameof(EvaluateManagedBackingFieldsCodeFixTests)}\{(nameof(this.VerifyGetFixesWithTrivia))}.cs");
+      var document = TestHelpers.Create(code);
+      var tree = await document.GetSyntaxTreeAsync();
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());
+      var sourceSpan = diagnostics[0].Location.SourceSpan;
+
+      var actions = new List<CodeAction>();
+      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+        (a, _) => { actions.Add(a); });
+
+      var fix = new EvaluateManagedBackingFieldsCodeFix();
+      var codeFixContext = new CodeFixContext(document, diagnostics[0],
+        codeActionRegistration, new CancellationToken(false));
+      await fix.RegisterCodeFixesAsync(codeFixContext);
+
+      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+
+      await TestHelpers.VerifyActionAsync(actions,
+        EvaluateManagedBackingFieldsCodeFixConstants.FixManagedBackingFieldDescription, document,
+        tree, new[] { "    #region Properties\r\n        public" });
     }
   }
 }

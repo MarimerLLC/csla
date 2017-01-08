@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rolodex.Silverlight</RootNamespace>
     <AssemblyName>Rolodex.WPF</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -52,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -61,13 +62,16 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\..\..\..\Bin\Debug\Server\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.6.500\lib\net45\Csla.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Csla.Xaml">
-      <HintPath>..\..\..\..\..\Bin\Debug\Client\Csla.Xaml.dll</HintPath>
+    <Reference Include="Csla.Xaml, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-WPF.4.6.500\lib\net45\Csla.Xaml.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Composite, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -132,6 +136,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Events\ShowCompaniesListEvent.cs" />
+    <Compile Include="ViewModels\WaitWindowViewModel.cs" />
+    <Compile Include="Views\IFocusable.cs" />
+    <Compile Include="Views\WaitWindowView.xaml.cs">
+      <DependentUpon>WaitWindowView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Shell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -184,69 +195,33 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Core\CoreDataGrid.cs" />
+    <Compile Include="Core\CslaDatePicker.cs" />
+    <Compile Include="Core\CslaTextBox.cs" />
+    <Compile Include="Core\DesignModeHelper.cs" />
+    <Compile Include="Core\ErrorHandler.cs" />
+    <Compile Include="Core\SecondaryModel.cs" />
+    <Compile Include="Core\ViewModel.cs" />
+    <Compile Include="Events\AddCompanyEvent.cs" />
+    <Compile Include="Events\CloseEditViewEvent.cs" />
+    <Compile Include="Events\EditCompanyEvent.cs" />
+    <Compile Include="Events\EditCompanyEventArgs.cs" />
+    <Compile Include="Events\WaitWindowEvent.cs" />
+    <Compile Include="Modules\CompaniesListModule.cs" />
+    <Compile Include="Modules\LoginModule.cs" />
+    <Compile Include="Modules\PleaseWaitModule.cs" />
     <Compile Include="Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\WaitWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Rolodex.Silverlight\Bootstrapper.cs">
-      <Link>Bootstrapper.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Constants.cs">
-      <Link>Constants.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\CoreDataGrid.cs">
-      <Link>Core\CoreDataGrid.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\CslaDatePicker.cs">
-      <Link>Core\CslaDatePicker.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\CslaTextBox.cs">
-      <Link>Core\CslaTextBox.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\DesignModeHelper.cs">
-      <Link>Core\DesignModeHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\ErrorHandler.cs">
-      <Link>Core\ErrorHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\SecondaryModel.cs">
-      <Link>Core\SecondaryModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Core\ViewModel.cs">
-      <Link>Core\ViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Events\AddCompanyEvent.cs">
-      <Link>Events\AddCompanyEvent.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Events\CloseEditViewEvent.cs">
-      <Link>Events\CloseEditViewEvent.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Events\EditCompanyEvent.cs">
-      <Link>Events\EditCompanyEvent.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Events\EditCompanyEventArgs.cs">
-      <Link>Events\EditCompanyEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Modules\CompaniesListModule.cs">
-      <Link>Modules\CompaniesListModule.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Modules\LoginModule.cs">
-      <Link>Modules\LoginModule.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\Modules\PleaseWaitModule.cs">
-      <Link>Modules\PleaseWaitModule.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\ViewModels\CompaniesListModel.cs">
-      <Link>ViewModels\CompaniesListModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\ViewModels\CompanyEditModel.cs">
-      <Link>ViewModels\CompanyEditModel.cs</Link>
-    </Compile>
-    <Compile Include="..\Rolodex.Silverlight\ViewModels\LoginViewModel.cs">
-      <Link>ViewModels\LoginViewModel.cs</Link>
-    </Compile>
     <Compile Include="Core\CslaComboBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -261,6 +236,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ViewModels\CompaniesListModel.cs" />
+    <Compile Include="ViewModels\CompanyEditModel.cs" />
+    <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="Views\CompaniesListView.xaml.cs">
       <DependentUpon>CompaniesListView.xaml</DependentUpon>
     </Compile>
@@ -278,6 +256,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -310,6 +289,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\CSLA-Core.4.6.500\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

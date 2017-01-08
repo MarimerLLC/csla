@@ -12,7 +12,8 @@
   mc:Ignorable="d"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:Rolodex.Silverlight.Core"
-  xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml">
+  xmlns:csla="clr-namespace:Csla;assembly=Csla"
+  xmlns:xaml="http://schemas.lhotka.net/4.2.0/xaml">
 
     <!-- Color Resources -->
 
@@ -734,18 +735,18 @@
                     </ControlTemplate.Resources>
                     <Grid Margin="0,0,0,0" x:Name="Grid">
                         <Rectangle x:Name="Background"
-							Fill="{StaticResource NormalBrush}"
-							StrokeThickness="2"
-							RadiusX="2"
-							RadiusY="2"
-							Stroke="{StaticResource NormalBorderBrush}" />
+                            Fill="{StaticResource NormalBrush}"
+                            StrokeThickness="2"
+                            RadiusX="2"
+                            RadiusY="2"
+                            Stroke="{StaticResource NormalBorderBrush}" />
                         <Rectangle x:Name="BackgroundMouseOver"
-							Fill="{StaticResource HoverBrush}"
-							Stroke="{x:Null}"
-							StrokeThickness="1"
-							RadiusX="1"
-							RadiusY="1"
-							Margin="2,2,2,2" Opacity="0" />
+                            Fill="{StaticResource HoverBrush}"
+                            Stroke="{x:Null}"
+                            StrokeThickness="1"
+                            RadiusX="1"
+                            RadiusY="1"
+                            Margin="2,2,2,2" Opacity="0" />
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True"/>
@@ -940,21 +941,21 @@
                         </Storyboard>
                     </ControlTemplate.Resources>
                     <Grid Background="{TemplateBinding Background}"
-						Margin="1,1,1,1" SnapsToDevicePixels="true" x:Name="grid">
+                        Margin="1,1,1,1" SnapsToDevicePixels="true" x:Name="grid">
                         <Rectangle x:Name="Background"
-							IsHitTestVisible="False"
-							Fill="{StaticResource SelectedBackgroundBrush}"
-							RadiusX="0"/>
+                            IsHitTestVisible="False"
+                            Fill="{StaticResource SelectedBackgroundBrush}"
+                            RadiusX="0"/>
                         <Rectangle x:Name="SelectedRectangle"
-							IsHitTestVisible="False"
-							Opacity="0"
-							Fill="{StaticResource NormalBrush}"
-							RadiusX="0"/>
+                            IsHitTestVisible="False"
+                            Opacity="0"
+                            Fill="{StaticResource NormalBrush}"
+                            RadiusX="0"/>
                         <Rectangle x:Name="HoverRectangle"
-							IsHitTestVisible="False"
-							Fill="{StaticResource HoverBrush}"
-							RadiusX="0"
-							Opacity="0"/>
+                            IsHitTestVisible="False"
+                            Fill="{StaticResource HoverBrush}"
+                            RadiusX="0"
+                            Opacity="0"/>
                         <ContentPresenter Margin="5,3,3,3" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" x:Name="contentPresenter"/>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -1641,7 +1642,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.1000000"
-									Value="1"/>
+                                    Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="HoverOff">
@@ -1649,7 +1650,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.3000000"
-									Value="0"/>
+                                    Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="FocusedOn">
@@ -1721,7 +1722,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.1000000"
-									Value="1"/>
+                                    Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="HoverOff">
@@ -1729,7 +1730,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.3000000"
-									Value="0"/>
+                                    Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="FocusedOn">
@@ -1806,7 +1807,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.1000000"
-									Value="1"/>
+                                    Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="HoverOff">
@@ -1814,7 +1815,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.3000000"
-									Value="0"/>
+                                    Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
                         </Storyboard>
                         <Storyboard x:Key="FocusedOn">
@@ -2560,13 +2561,13 @@
         <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}"/>
         <Setter Property="Template" Value="{DynamicResource ButtonTemplate}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
-						<Setter Property="FontSize" Value="10"/>
-				<Setter Property="MinHeight" Value="18"/>
-				<Setter Property="MinWidth" Value="50"/>
+                        <Setter Property="FontSize" Value="10"/>
+                <Setter Property="MinHeight" Value="18"/>
+                <Setter Property="MinWidth" Value="50"/>
     </Style>
 
     <Style x:Key="{x:Static ToolBar.RadioButtonStyleKey}" TargetType="{x:Type RadioButton}">
-			<Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="10"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="FocusVisualStyle" Value="{DynamicResource RadioButtonFocusVisual}"/>
         <Setter Property="Background" Value="{DynamicResource NormalBrush}"/>
@@ -2581,7 +2582,7 @@
     </Style>
 
     <Style x:Key="{x:Static ToolBar.CheckBoxStyleKey}" TargetType="{x:Type CheckBox}">
-			<Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="10"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="FocusVisualStyle" Value="{DynamicResource CheckBoxFocusVisual}"/>
         <Setter Property="Background" Value="{DynamicResource NormalBrush}"/>
@@ -2596,14 +2597,14 @@
     </Style>
 
     <Style x:Key="{x:Static ToolBar.ComboBoxStyleKey}" TargetType="{x:Type ComboBox}">
-			<Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="10"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         
 <Setter Property="Template" Value="{DynamicResource ComboBoxTemplate}" />
     </Style>
 
     <Style x:Key="{x:Static ToolBar.TextBoxStyleKey}" TargetType="{x:Type TextBox}">
-			<Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="10"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="AllowDrop" Value="true"/>
@@ -2982,25 +2983,25 @@
 
                         <Grid Margin="2,0,2,0">
                             <Rectangle x:Name="Background"
-							IsHitTestVisible="False"
-							Fill="{StaticResource SelectedBackgroundBrush}"
-							RadiusX="0"/>
+                            IsHitTestVisible="False"
+                            Fill="{StaticResource SelectedBackgroundBrush}"
+                            RadiusX="0"/>
                             <Rectangle x:Name="SelectedRectangle"
-							IsHitTestVisible="False"
-							Opacity="0"
-							Fill="{StaticResource NormalBrush}"
-							RadiusX="0"/>
+                            IsHitTestVisible="False"
+                            Opacity="0"
+                            Fill="{StaticResource NormalBrush}"
+                            RadiusX="0"/>
                             <GridViewRowPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Stretch" Margin="0,2,0,2" />
                             <Rectangle x:Name="HoverRectangle"
-                            	IsHitTestVisible="False"
-                            	Fill="{StaticResource HoverBrush}"
-                            	RadiusX="0"
-                            	Opacity="0"/>
+                                IsHitTestVisible="False"
+                                Fill="{StaticResource HoverBrush}"
+                                RadiusX="0"
+                                Opacity="0"/>
                             <Rectangle x:Name="SelectedHoverRectangle"
-                            	IsHitTestVisible="False"
-                            	Fill="{StaticResource HoverBrush}"
-                            	RadiusX="0"
-                            	Opacity="0"/>
+                                IsHitTestVisible="False"
+                                Fill="{StaticResource HoverBrush}"
+                                RadiusX="0"
+                                Opacity="0"/>
                         </Grid>
 
                     </Border>
@@ -3281,7 +3282,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                     <SplineDoubleKeyFrame KeyTime="00:00:00.1000000"
-									Value="1"/>
+                                    Value="1"/>
                 </DoubleAnimationUsingKeyFrames>
             </Storyboard>
             <Storyboard x:Key="HoverOff">
@@ -3289,7 +3290,7 @@
                                                    Storyboard.TargetName="HoverBorder"
                                                    Storyboard.TargetProperty="(UIElement.Opacity)">
                     <SplineDoubleKeyFrame KeyTime="00:00:00.3000000"
-									Value="0"/>
+                                    Value="0"/>
                 </DoubleAnimationUsingKeyFrames>
             </Storyboard>
             <Storyboard x:Key="FocusedOn">
@@ -3324,7 +3325,7 @@
             <Border x:Name="DisabledVisualElement" IsHitTestVisible="False" Opacity="0" Background="#FFFFFFFF" BorderBrush="#A5F7F7F7" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2,2,2,2"/>
             <Border x:Name="FocusVisualElement" IsHitTestVisible="False" Opacity="0" BorderBrush="{StaticResource NormalBrush}" BorderThickness="2.1,2.1,2.1,2.1" CornerRadius="0.2,0.2,0.2,0.2"/>
 
-            <csla:PropertyStatus 
+            <xaml:PropertyStatus 
                                 x:Name="PART_PropertyStatus"
                                 Grid.Column="1" 
                                 HorizontalAlignment="Left" 

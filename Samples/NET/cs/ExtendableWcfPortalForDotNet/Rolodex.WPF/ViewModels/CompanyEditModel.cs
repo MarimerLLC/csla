@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Csla.Rules;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Commands;

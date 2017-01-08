@@ -25,6 +25,33 @@ namespace Rolodex.Silverlight.Modules
 
     #endregion
 
+using Microsoft.Practices.Composite.Events;
+using Microsoft.Practices.Composite.Modularity;
+using Microsoft.Practices.Composite.Regions;
+using Rolodex.Silverlight.ViewModels;
+using Rolodex.Silverlight.Views;
+
+namespace Rolodex.Silverlight.Modules
+{
+  public class PleaseWaitModule : IModule
+  {
+    #region Private Members
+
+    private IRegionManager regionManager;
+    private IEventAggregator eventAggregator;
+
+    #endregion
+
+    #region Constructor
+
+    public PleaseWaitModule(IRegionManager regionManager, IEventAggregator eventAggregator)
+    {
+      this.regionManager = regionManager;
+      this.eventAggregator = eventAggregator;
+    }
+
+    #endregion
+
     #region IModule Members
 
     public void Initialize()

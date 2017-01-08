@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.Practices.Composite.Events;
 using Microsoft.Practices.Composite.Presentation.Commands;
@@ -58,25 +58,6 @@ namespace Rolodex.Silverlight.ViewModels
     private void Login(object parameter)
     {
       base.ShowPleaseWaitMessage();
-#if SILVERLIGHT
-            RolodexPrincipal.Login(_userID, ((LoginView)this.View).UserPwdBox.Password, (o, e) =>
-            {
-                if (e.Error != null)
-                    ErrorHandler.HandleException(e.Error);
-                else
-                {
-                    if (!e.Object.IsAuthenticated)
-                        Status = "Invalid user ID or password";
-                    else
-                        Status = "Login successfull.";
-                }
-                base.HidePleaseWaitMessage();
-                if (e.Object.IsAuthenticated)
-                {
-                    CurrentEventAggregator.GetEvent<ShowCompaniesListEvent>().Publish(EventArgs.Empty);
-                }
-            });
-#else
       try
       {
         RolodexPrincipal.Login(_userID, this.View.UserPwdBox.Password);
@@ -98,7 +79,6 @@ namespace Rolodex.Silverlight.ViewModels
       {
         ErrorHandler.HandleException(ex);
       }
-#endif
     }
 
     private bool CanLogin(object parameter)

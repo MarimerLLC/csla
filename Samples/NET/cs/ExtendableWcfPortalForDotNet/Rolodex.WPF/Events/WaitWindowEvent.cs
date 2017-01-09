@@ -2,7 +2,7 @@
 
 namespace Rolodex.Silverlight.Events
 {
-  public class EditCompanyEvent : CompositePresentationEvent<EditCompanyEventArgs>
+  public class WaitWindowEvent : CompositePresentationEvent<bool>
   {
   }
 }

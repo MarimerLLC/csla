@@ -3,7 +3,7 @@ using Microsoft.Practices.Composite.Presentation.Events;
 
 namespace Rolodex.Silverlight.Events
 {
-  public class CloseEditViewEvent : CompositePresentationEvent<EventArgs>
+  public class ShowCompaniesListEvent : CompositePresentationEvent<EventArgs>
   {
   }
 }

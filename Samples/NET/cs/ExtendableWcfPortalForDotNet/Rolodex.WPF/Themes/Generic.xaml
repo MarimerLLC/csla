@@ -5,9 +5,12 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                 xmlns:local="clr-namespace:Rolodex.Silverlight.Core"
                 xmlns:System_Windows_Controls_Primitives="clr-namespace:Microsoft.Windows.Controls.Primitives;assembly=WPFToolkit"
+                xmlns:Custom="http://schemas.microsoft.com/wpf/2008/toolkit" 
                 mc:Ignorable="d"
-                xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
-                xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Luna" x:Class="WpfControls.App">
+                xmlns:csla="clr-namespace:Csla;assembly=Csla"
+                xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Luna"
+                xmlns:xaml="http://schemas.lhotka.net/4.2.0/xaml"
+                x:Class="WpfControls.App">
     <SolidColorBrush x:Key="ListBorder" Color="#FF7F9DB9"/>
     
     <Style TargetType="{x:Type local:CslaTextBox}">
@@ -40,7 +43,7 @@
                                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                     Grid.Column="0"/>
                         </Border>
-                        <csla:PropertyStatus 
+                        <xaml:PropertyStatus 
                                 x:Name="PART_PropertyStatus"
                                 Grid.Column="1" 
                                 HorizontalAlignment="Left" 
@@ -189,7 +192,7 @@
                                 </Border>
                             </Microsoft_Windows_Themes:SystemDropShadowChrome>
                         </Popup>
-                        <csla:PropertyStatus 
+                        <xaml:PropertyStatus 
                             x:Name="PART_PropertyStatus" 
                             HorizontalAlignment="Left" 
                             Content="PropertyStatus" 
@@ -461,7 +464,7 @@
                                         </ControlTemplate>
                                     </Button.Template>
                                 </Button>
-                                <System_Windows_Controls_Primitives:DatePickerTextBox x:Name="PART_TextBox" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="0" Grid.Row="0"/>
+                                <Custom:DatePickerTextBox x:Name="PART_TextBox" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="0" Grid.Row="0"/>
                                 <Grid x:Name="PART_DisabledVisual" IsHitTestVisible="False" Opacity="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -473,7 +476,7 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                        <csla:PropertyStatus 
+                        <xaml:PropertyStatus 
                             x:Name="PART_PropertyStatus" 
                             Margin="0" 
                             Content="PropertyStatus" 

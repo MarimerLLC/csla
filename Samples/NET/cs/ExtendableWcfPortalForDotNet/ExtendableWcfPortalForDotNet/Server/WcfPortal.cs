@@ -1,11 +1,9 @@
 ﻿using System;
-using Csla.Server.Hosts;
+using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
-using Csla.Serialization;
-using System.IO;
-using System.Security.Principal;
 using Csla.Core;
+using Csla.Serialization;
 using Csla.Server;
 
 namespace ExtendableWcfPortalForDotNet.Server
@@ -27,34 +25,34 @@ namespace ExtendableWcfPortalForDotNet.Server
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Create(CriteriaRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
+      var portal = new DataPortal();
       Exception error = null;
-      DataPortalResult  result = null;
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
         request = ConvertRequest(request);
-        DataPortalContext context = new DataPortalContext(
-            formatter.Deserialize(request.Principal) as IPrincipal,
-            true,
-            request.ClientCulture,
-            request.ClientUICulture,
-            formatter.Deserialize(request.ClientContext) as ContextDictionary,
-            formatter.Deserialize(request.GlobalContext) as ContextDictionary);
-        result = portal.Create(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context);
+        var context = new DataPortalContext(
+          formatter.Deserialize(request.Principal) as IPrincipal,
+          true,
+          request.ClientCulture,
+          request.ClientUICulture,
+          formatter.Deserialize(request.ClientContext) as ContextDictionary,
+          formatter.Deserialize(request.GlobalContext) as ContextDictionary);
+        var result = portal.Create(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context,
+          true);
         response = new WcfResponse(
-            formatter.Serialize(result.ReturnObject),
-            formatter.Serialize(error),
-            formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          formatter.Serialize(result.Result.ReturnObject),
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       catch (Exception ex)
       {
         error = ex;
         response = new WcfResponse(
-           null,
-           formatter.Serialize(error),
-           formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          null,
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       return ConvertResponse(response);
     }
@@ -66,34 +64,34 @@ namespace ExtendableWcfPortalForDotNet.Server
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Fetch(CriteriaRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
+      var portal = new DataPortal();
       Exception error = null;
-      DataPortalResult result = null;
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
         request = ConvertRequest(request);
-        DataPortalContext context = new DataPortalContext(
-            formatter.Deserialize(request.Principal) as IPrincipal,
-            true,
-            request.ClientCulture,
-            request.ClientUICulture,
-            formatter.Deserialize(request.ClientContext) as ContextDictionary,
-            formatter.Deserialize(request.GlobalContext) as ContextDictionary);
-        result = portal.Fetch(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context);
+        var context = new DataPortalContext(
+          formatter.Deserialize(request.Principal) as IPrincipal,
+          true,
+          request.ClientCulture,
+          request.ClientUICulture,
+          formatter.Deserialize(request.ClientContext) as ContextDictionary,
+          formatter.Deserialize(request.GlobalContext) as ContextDictionary);
+        var result = portal.Fetch(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context,
+          true);
         response = new WcfResponse(
-            formatter.Serialize(result.ReturnObject),
-            formatter.Serialize(error),
-            formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          formatter.Serialize(result.Result.ReturnObject),
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       catch (Exception ex)
       {
         error = ex;
         response = new WcfResponse(
-           null,
-           formatter.Serialize(error),
-           formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          null,
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       return ConvertResponse(response);
     }
@@ -105,34 +103,33 @@ namespace ExtendableWcfPortalForDotNet.Server
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Update(UpdateRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
+      var portal = new DataPortal();
       Exception error = null;
-      DataPortalResult result = null;
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
         request = ConvertRequest(request);
-        DataPortalContext context = new DataPortalContext(
-            formatter.Deserialize(request.Principal) as IPrincipal,
-            true,
-            request.ClientCulture,
-            request.ClientUICulture,
-            formatter.Deserialize(request.ClientContext) as ContextDictionary,
-            formatter.Deserialize(request.GlobalContext) as ContextDictionary);
-        result = portal.Update(formatter.Deserialize(request.ObjectData), context);
+        var context = new DataPortalContext(
+          formatter.Deserialize(request.Principal) as IPrincipal,
+          true,
+          request.ClientCulture,
+          request.ClientUICulture,
+          formatter.Deserialize(request.ClientContext) as ContextDictionary,
+          formatter.Deserialize(request.GlobalContext) as ContextDictionary);
+        var result = portal.Update(formatter.Deserialize(request.ObjectData), context, true);
         response = new WcfResponse(
-            formatter.Serialize(result.ReturnObject),
-            formatter.Serialize(error),
-            formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          formatter.Serialize(result.Result.ReturnObject),
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       catch (Exception ex)
       {
         error = ex;
         response = new WcfResponse(
-           null,
-           formatter.Serialize(error),
-           formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          null,
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       return ConvertResponse(response);
     }
@@ -144,34 +141,34 @@ namespace ExtendableWcfPortalForDotNet.Server
     [OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
     public WcfResponse Delete(CriteriaRequest request)
     {
-      Csla.Server.DataPortal portal = new Csla.Server.DataPortal();
+      var portal = new DataPortal();
       Exception error = null;
-      DataPortalResult result = null;
-      WcfResponse response = null;
-      ISerializationFormatter formatter = SerializationFormatterFactory.GetFormatter();
+      WcfResponse response;
+      var formatter = SerializationFormatterFactory.GetFormatter();
       try
       {
         request = ConvertRequest(request);
-        DataPortalContext context = new DataPortalContext(
-            formatter.Deserialize(request.Principal) as IPrincipal,
-            true,
-            request.ClientCulture,
-            request.ClientUICulture,
-            formatter.Deserialize(request.ClientContext) as ContextDictionary,
-            formatter.Deserialize(request.GlobalContext) as ContextDictionary);
-        result = portal.Delete(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context);
+        var context = new DataPortalContext(
+          formatter.Deserialize(request.Principal) as IPrincipal,
+          true,
+          request.ClientCulture,
+          request.ClientUICulture,
+          formatter.Deserialize(request.ClientContext) as ContextDictionary,
+          formatter.Deserialize(request.GlobalContext) as ContextDictionary);
+        var result = portal.Delete(Type.GetType(request.TypeName), formatter.Deserialize(request.CriteriaData), context,
+          true);
         response = new WcfResponse(
-            formatter.Serialize(result.ReturnObject),
-            formatter.Serialize(error),
-            formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          formatter.Serialize(result.Result.ReturnObject),
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       catch (Exception ex)
       {
         error = ex;
         response = new WcfResponse(
-            null,
-            formatter.Serialize(error),
-            formatter.Serialize(Csla.ApplicationContext.GlobalContext));
+          null,
+          formatter.Serialize(error),
+          formatter.Serialize(Csla.ApplicationContext.GlobalContext));
       }
       return ConvertResponse(response);
     }
@@ -187,6 +184,7 @@ namespace ExtendableWcfPortalForDotNet.Server
     {
       return request;
     }
+
     protected virtual UpdateRequest ConvertRequest(UpdateRequest request)
     {
       return request;

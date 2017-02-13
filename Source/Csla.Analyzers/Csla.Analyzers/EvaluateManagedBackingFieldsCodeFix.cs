@@ -39,12 +39,12 @@ namespace Csla.Analyzers
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
-      var newFieldNode = fieldNode;
-
-      newFieldNode = newFieldNode.WithModifiers(SyntaxFactory.TokenList(
+      var newFieldNode = fieldNode
+        .WithModifiers(SyntaxFactory.TokenList(
           SyntaxFactory.Token(SyntaxKind.PublicKeyword),
           SyntaxFactory.Token(SyntaxKind.StaticKeyword),
-          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)));
+          SyntaxFactory.Token(SyntaxKind.ReadOnlyKeyword)))
+        .WithTriviaFrom(fieldNode);
 
       var newRoot = root.ReplaceNode(fieldNode, newFieldNode);
 

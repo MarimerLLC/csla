@@ -8,12 +8,13 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.ComponentModel;
+using System.Data.EntityClient;
 using System.Data.Objects;
 using System.Data.Objects.DataClasses;
-using System.Data.EntityClient;
-using System.ComponentModel;
-using System.Xml.Serialization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 [assembly: EdmSchemaAttribute()]
 #region EDM Relationship Metadata
@@ -150,6 +151,7 @@ namespace RolodexEF
         private ObjectSet<Users> _Users;
 
         #endregion
+
         #region AddTo Methods
     
         /// <summary>
@@ -193,11 +195,11 @@ namespace RolodexEF
         }
 
         #endregion
+
     }
-    
 
     #endregion
-    
+
     #region Entities
     
     /// <summary>
@@ -226,7 +228,8 @@ namespace RolodexEF
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -245,7 +248,7 @@ namespace RolodexEF
                 {
                     OnCompanyIdChanging(value);
                     ReportPropertyChanging("CompanyId");
-                    _CompanyId = StructuralObject.SetValidValue(value);
+                    _CompanyId = StructuralObject.SetValidValue(value, "CompanyId");
                     ReportPropertyChanged("CompanyId");
                     OnCompanyIdChanged();
                 }
@@ -270,7 +273,7 @@ namespace RolodexEF
             {
                 OnCompanyNameChanging(value);
                 ReportPropertyChanging("CompanyName");
-                _CompanyName = StructuralObject.SetValidValue(value, false);
+                _CompanyName = StructuralObject.SetValidValue(value, false, "CompanyName");
                 ReportPropertyChanged("CompanyName");
                 OnCompanyNameChanged();
             }
@@ -294,7 +297,7 @@ namespace RolodexEF
             {
                 OnDateAddedChanging(value);
                 ReportPropertyChanging("DateAdded");
-                _DateAdded = StructuralObject.SetValidValue(value);
+                _DateAdded = StructuralObject.SetValidValue(value, "DateAdded");
                 ReportPropertyChanged("DateAdded");
                 OnDateAddedChanged();
             }
@@ -304,7 +307,7 @@ namespace RolodexEF
         partial void OnDateAddedChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -330,6 +333,7 @@ namespace RolodexEF
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -358,7 +362,8 @@ namespace RolodexEF
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -377,7 +382,7 @@ namespace RolodexEF
                 {
                     OnCompanyContactPhoneIdChanging(value);
                     ReportPropertyChanging("CompanyContactPhoneId");
-                    _CompanyContactPhoneId = StructuralObject.SetValidValue(value);
+                    _CompanyContactPhoneId = StructuralObject.SetValidValue(value, "CompanyContactPhoneId");
                     ReportPropertyChanged("CompanyContactPhoneId");
                     OnCompanyContactPhoneIdChanged();
                 }
@@ -402,7 +407,7 @@ namespace RolodexEF
             {
                 OnPhoneNumberChanging(value);
                 ReportPropertyChanging("PhoneNumber");
-                _PhoneNumber = StructuralObject.SetValidValue(value, false);
+                _PhoneNumber = StructuralObject.SetValidValue(value, false, "PhoneNumber");
                 ReportPropertyChanged("PhoneNumber");
                 OnPhoneNumberChanged();
             }
@@ -426,7 +431,7 @@ namespace RolodexEF
             {
                 OnFaxNumberChanging(value);
                 ReportPropertyChanging("FaxNumber");
-                _FaxNumber = StructuralObject.SetValidValue(value, false);
+                _FaxNumber = StructuralObject.SetValidValue(value, false, "FaxNumber");
                 ReportPropertyChanged("FaxNumber");
                 OnFaxNumberChanged();
             }
@@ -436,7 +441,7 @@ namespace RolodexEF
         partial void OnFaxNumberChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -478,6 +483,7 @@ namespace RolodexEF
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -508,7 +514,8 @@ namespace RolodexEF
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -527,7 +534,7 @@ namespace RolodexEF
                 {
                     OnCompanyContactIdChanging(value);
                     ReportPropertyChanging("CompanyContactId");
-                    _CompanyContactId = StructuralObject.SetValidValue(value);
+                    _CompanyContactId = StructuralObject.SetValidValue(value, "CompanyContactId");
                     ReportPropertyChanged("CompanyContactId");
                     OnCompanyContactIdChanged();
                 }
@@ -552,7 +559,7 @@ namespace RolodexEF
             {
                 OnFirstNameChanging(value);
                 ReportPropertyChanging("FirstName");
-                _FirstName = StructuralObject.SetValidValue(value, false);
+                _FirstName = StructuralObject.SetValidValue(value, false, "FirstName");
                 ReportPropertyChanged("FirstName");
                 OnFirstNameChanged();
             }
@@ -576,7 +583,7 @@ namespace RolodexEF
             {
                 OnLastNameChanging(value);
                 ReportPropertyChanging("LastName");
-                _LastName = StructuralObject.SetValidValue(value, false);
+                _LastName = StructuralObject.SetValidValue(value, false, "LastName");
                 ReportPropertyChanged("LastName");
                 OnLastNameChanged();
             }
@@ -600,7 +607,7 @@ namespace RolodexEF
             {
                 OnBirthdayChanging(value);
                 ReportPropertyChanging("Birthday");
-                _Birthday = StructuralObject.SetValidValue(value);
+                _Birthday = StructuralObject.SetValidValue(value, "Birthday");
                 ReportPropertyChanged("Birthday");
                 OnBirthdayChanged();
             }
@@ -624,7 +631,7 @@ namespace RolodexEF
             {
                 OnBaseSalaryChanging(value);
                 ReportPropertyChanging("BaseSalary");
-                _BaseSalary = StructuralObject.SetValidValue(value);
+                _BaseSalary = StructuralObject.SetValidValue(value, "BaseSalary");
                 ReportPropertyChanged("BaseSalary");
                 OnBaseSalaryChanged();
             }
@@ -634,7 +641,7 @@ namespace RolodexEF
         partial void OnBaseSalaryChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -736,6 +743,7 @@ namespace RolodexEF
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -762,7 +770,8 @@ namespace RolodexEF
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -781,7 +790,7 @@ namespace RolodexEF
                 {
                     OnRankIdChanging(value);
                     ReportPropertyChanging("RankId");
-                    _RankId = StructuralObject.SetValidValue(value);
+                    _RankId = StructuralObject.SetValidValue(value, "RankId");
                     ReportPropertyChanged("RankId");
                     OnRankIdChanged();
                 }
@@ -806,7 +815,7 @@ namespace RolodexEF
             {
                 OnRankChanging(value);
                 ReportPropertyChanging("Rank");
-                _Rank = StructuralObject.SetValidValue(value, false);
+                _Rank = StructuralObject.SetValidValue(value, false, "Rank");
                 ReportPropertyChanged("Rank");
                 OnRankChanged();
             }
@@ -816,7 +825,7 @@ namespace RolodexEF
         partial void OnRankChanged();
 
         #endregion
-    
+
         #region Navigation Properties
     
         /// <summary>
@@ -842,6 +851,7 @@ namespace RolodexEF
         }
 
         #endregion
+
     }
     
     /// <summary>
@@ -872,7 +882,8 @@ namespace RolodexEF
         }
 
         #endregion
-        #region Primitive Properties
+
+        #region Simple Properties
     
         /// <summary>
         /// No Metadata Documentation available.
@@ -891,7 +902,7 @@ namespace RolodexEF
                 {
                     OnUserIdChanging(value);
                     ReportPropertyChanging("UserId");
-                    _UserId = StructuralObject.SetValidValue(value);
+                    _UserId = StructuralObject.SetValidValue(value, "UserId");
                     ReportPropertyChanged("UserId");
                     OnUserIdChanged();
                 }
@@ -916,7 +927,7 @@ namespace RolodexEF
             {
                 OnUserNameChanging(value);
                 ReportPropertyChanging("UserName");
-                _UserName = StructuralObject.SetValidValue(value, false);
+                _UserName = StructuralObject.SetValidValue(value, false, "UserName");
                 ReportPropertyChanged("UserName");
                 OnUserNameChanged();
             }
@@ -940,7 +951,7 @@ namespace RolodexEF
             {
                 OnPasswordChanging(value);
                 ReportPropertyChanging("Password");
-                _Password = StructuralObject.SetValidValue(value, false);
+                _Password = StructuralObject.SetValidValue(value, false, "Password");
                 ReportPropertyChanged("Password");
                 OnPasswordChanged();
             }
@@ -964,7 +975,7 @@ namespace RolodexEF
             {
                 OnRoleChanging(value);
                 ReportPropertyChanging("Role");
-                _Role = StructuralObject.SetValidValue(value, false);
+                _Role = StructuralObject.SetValidValue(value, false, "Role");
                 ReportPropertyChanged("Role");
                 OnRoleChanged();
             }
@@ -974,9 +985,9 @@ namespace RolodexEF
         partial void OnRoleChanged();
 
         #endregion
-    
+
     }
 
     #endregion
-    
+
 }

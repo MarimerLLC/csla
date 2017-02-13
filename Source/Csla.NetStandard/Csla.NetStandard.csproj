@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>4.6.500</VersionPrefix>
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <DefineConstants>$(DefineConstants);NETFX_CORE;NETCORE;NETSTANDARD</DefineConstants>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>Csla</AssemblyName>
+    <PackageId>Csla.NetStandard1.x</PackageId>
+    <NetStandardImplicitPackageVersion>1.6.0</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--<Compile Include="..\Csla.Shared\**\*.cs" Exclude="bin\**;obj\**;**\*.xproj;packages\**" />-->
+    <!--<EmbeddedResource Include="Properties\Resources.resx" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.1.1" />
+    <PackageReference Include="System.Security.Principal" Version="4.0.1" />
+    <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.1.1" />
+    <PackageReference Include="System.Threading.ThreadPool" Version="4.0.10" />
+    <PackageReference Include="System.ComponentModel" Version="4.0.1" />
+    <PackageReference Include="System.ComponentModel.Primitives" Version="4.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.1.0" />
+    <PackageReference Include="System.Reflection" Version="4.1.0" />
+  </ItemGroup>
+
+  <Target Name="PrecompileScript" BeforeTargets="BeforeBuild">
+    <Exec Command="copyResources.cmd" />
+  </Target>
+
+  <Import Project="..\Csla.Shared\Csla.Shared.projitems" Label="Shared" />
+
+</Project>

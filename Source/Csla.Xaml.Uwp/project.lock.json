@@ -1889,6 +1889,13 @@
             "rid": "win8-aot"
           }
         }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
+        }
       }
     },
     "UAP,Version=v10.0/win10-arm": {
@@ -3636,6 +3643,13 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
+        }
       }
     },
     "UAP,Version=v10.0/win10-arm-aot": {
@@ -5345,6 +5359,13 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
+        }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
         }
       }
     },
@@ -7100,6 +7121,13 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
+        }
       }
     },
     "UAP,Version=v10.0/win10-x64-aot": {
@@ -8809,6 +8837,13 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
+        }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
         }
       }
     },
@@ -10564,6 +10599,13 @@
         "runtime": {
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
+        }
       }
     },
     "UAP,Version=v10.0/win10-x86-aot": {
@@ -12273,6 +12315,13 @@
         },
         "runtime": {
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
+        }
+      },
+      "Csla.Uwp/1.0.0": {
+        "type": "project",
+        "framework": "UAP,Version=v10.0",
+        "dependencies": {
+          "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
         }
       }
     }
@@ -15533,6 +15582,11 @@
         "runtime.json",
         "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll"
       ]
+    },
+    "Csla.Uwp/1.0.0": {
+      "type": "project",
+      "path": "../Csla.Uwp/project.json",
+      "msbuildProject": "../Csla.Uwp/Csla.Uwp.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -15551,7 +15605,16 @@
       "projectName": "Csla.Xaml.Uwp",
       "projectPath": "G:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
       "projectJsonPath": "G:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\project.json",
-      "projectStyle": "ProjectJson"
+      "projectStyle": "ProjectJson",
+      "frameworks": {
+        "uap10.0": {
+          "projectReferences": {
+            "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj": {
+              "projectPath": "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj"
+            }
+          }
+        }
+      }
     },
     "dependencies": {
       "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",

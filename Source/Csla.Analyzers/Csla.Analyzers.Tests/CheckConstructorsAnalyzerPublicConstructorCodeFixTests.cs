@@ -1,6 +1,4 @@
-﻿using Csla.Analyzers;
-using Csla.Analyzers.Tests;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

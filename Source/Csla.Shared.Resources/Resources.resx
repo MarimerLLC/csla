@@ -457,4 +457,7 @@
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>Object is valid</value>
   </data>
+  <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
+    <value>Cannot synchronously call {0} which is an asynchronous method</value>
+  </data>
 </root>

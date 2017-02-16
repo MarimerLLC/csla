@@ -160,6 +160,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot synchronously call {0} which is an asynchronous method.
+        /// </summary>
+        public static string AsyncMethodOnSyncClientNotAllowed {
+            get {
+                return ResourceManager.GetString("AsyncMethodOnSyncClientNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Csla Authentication Provider specified does not implement IAuthorizeDataPortal.
         /// </summary>
         public static string AuthenticationProviderDoesNotImplementIAuthorizeDataPortal {
@@ -871,7 +880,7 @@ namespace Csla.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Message for broken rule is required. Rule:{0}.
+        ///   Looks up a localized string similar to Message for broken rule is required. Rule: {0}.
         /// </summary>
         public static string RuleMessageRequired {
             get {

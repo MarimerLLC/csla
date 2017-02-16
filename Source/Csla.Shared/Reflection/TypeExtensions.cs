@@ -12,7 +12,7 @@ using System.Reflection;
 
 namespace Csla.Reflection
 {
-#if (!ANDROID && !IOS)
+#if !ANDROID && !IOS
 #if NETFX_CORE
 #if !WINDOWS_UWP && !NETSTANDARD
   /// <summary>
@@ -133,7 +133,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#if !WINDOWS_UWP 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a method.
     /// </summary>
@@ -169,7 +169,7 @@ namespace Csla.Reflection
     }
 #endif
 
-#if !WINDOWS_UWP 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets a field.
     /// </summary>
@@ -241,13 +241,15 @@ namespace Csla.Reflection
     /// <returns></returns>
     public static bool IsSerializable(this Type t)
     {
-#if WINDOWS_UWP
+#if WINDOWS_UWP || NETSTANDARD
       var tinfo = t.GetTypeInfo();
       return tinfo.IsSerializable;
 #elif NETFX_CORE
       var tinfo = t.GetTypeInfo();
       var result = tinfo.CustomAttributes.Where(r => r.AttributeType.FullName == "System.SerializableAttribute");
       return (result != null && result.Count() > 0);
+#else
+      trigger compiler error if directives are wrong
 #endif
     }
 
@@ -302,7 +304,7 @@ namespace Csla.Reflection
       return ti.DeclaredProperties.ToArray();
     }
 
-#if !WINDOWS_UWP 
+#if !WINDOWS_UWP
     /// <summary>
     /// Gets declared properties.
     /// </summary>

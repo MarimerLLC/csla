@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsNotABusinessBase))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -49,7 +50,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsNotABusinessBase))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -57,7 +58,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -65,7 +66,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsAssigned))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -89,7 +90,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -97,7 +98,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturned))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -105,7 +106,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -113,7 +114,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambda))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -121,7 +122,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -129,7 +130,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnAnObjectThatIsABusinessBaseAndResultIsReturnedInLambdaWithBlock))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -137,7 +138,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectWithinItself))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -145,7 +146,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectWithinItself))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -153,7 +154,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectAsThis))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -161,7 +162,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsThis))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -169,7 +170,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveIsCalledOnABusinessObjectAsBase))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -177,7 +178,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
         $@"Targets\{nameof(FindSaveAssignmentIssueAnalyzerTests)}\{(nameof(this.AnalyzeWhenSaveAsyncIsCalledOnABusinessObjectAsBase))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
   }
 }

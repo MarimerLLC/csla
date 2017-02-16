@@ -21,5 +21,11 @@
       public const string Design = "Design";
       public const string Usage = "Usage";
     }
+
+    public static class SaveMethodNames
+    {
+      public const string Save = "Save";
+      public const string SaveAsync = "SaveAsync";
+    }
   }
 }

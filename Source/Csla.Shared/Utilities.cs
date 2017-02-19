@@ -183,7 +183,7 @@ namespace Csla
       }
 
 #if NETFX_CORE
-      if (desiredType.IsEnum()
+      if (desiredType.IsEnum())
 #else
       if (desiredType.IsEnum)
 #endif

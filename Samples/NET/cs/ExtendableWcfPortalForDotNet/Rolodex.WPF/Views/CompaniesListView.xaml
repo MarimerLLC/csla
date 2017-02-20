@@ -1,20 +1,20 @@
 ﻿<UserControl x:Class="Rolodex.Silverlight.Views.CompaniesListView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+    xmlns:csla="clr-namespace:Csla;assembly=Csla"
     xmlns:core="clr-namespace:Rolodex.Silverlight.Core"
-    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+    xmlns:controls="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
     xmlns:cal="clr-namespace:Microsoft.Practices.Composite.Presentation.Commands;assembly=Microsoft.Practices.Composite.Presentation"
     >
-  <Grid x:Name="LayoutRoot">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="35"/>
-    </Grid.RowDefinitions>
-    <core:CoreDataGrid 
+    <Grid x:Name="LayoutRoot">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <core:CoreDataGrid 
             VerticalAlignment="Stretch"
             SelectionMode="Single"
             x:Name="CompaniesGrid" 
@@ -23,14 +23,14 @@
             Grid.Row="0"
             Margin="6,6,6,6" 
             ItemsSource="{Binding Model}">
-      <core:CoreDataGrid.Columns>
-        <controls:DataGridTextColumn Binding="{Binding CompanyName, Mode=OneWay}" Header="Company"/>
-      </core:CoreDataGrid.Columns>
-    </core:CoreDataGrid>
-    <StackPanel x:Name="Buttons" Orientation="Horizontal" Grid.Column="0" Grid.Row="1" >
-      <Button x:Name="NewCompany" Content="  Add Company  " Margin="6,6,6,6" HorizontalAlignment="Left" Width="Auto"  cal:Click.Command="{Binding AddCompanyCommand}" />
-      <Button x:Name="EditCompany" Content="  Edit Company  " Margin="6,6,6,6" HorizontalAlignment="Left" Width="Auto" cal:Click.Command="{Binding EditCompanyCommand}" cal:Click.CommandParameter="{Binding ElementName=CompaniesGrid, Path=SelectedItem}"/>
-    </StackPanel>
-  </Grid>
-
+            <core:CoreDataGrid.Columns>
+                <controls:DataGridTextColumn Binding="{Binding CompanyName, Mode=OneWay}" Header="Company"/>
+            </core:CoreDataGrid.Columns>
+        </core:CoreDataGrid>
+        <StackPanel x:Name="Buttons" Orientation="Horizontal" Grid.Column="0" Grid.Row="1" >
+            <Button x:Name="NewCompany" Content="  Add Company  " Margin="6,6,6,6" HorizontalAlignment="Left" Width="Auto"  cal:Click.Command="{Binding AddCompanyCommand}" />
+            <Button x:Name="EditCompany" Content="  Edit Company  " Margin="6,6,6,6" HorizontalAlignment="Left" Width="Auto" cal:Click.Command="{Binding EditCompanyCommand}" cal:Click.CommandParameter="{Binding ElementName=CompaniesGrid, Path=SelectedItem}"/>
+        </StackPanel>
+    </Grid>
+   
 </UserControl>

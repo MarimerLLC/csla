@@ -192,6 +192,9 @@
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixesWithTrivia.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -425,6 +428,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaCommandBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentIsNull.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeDoesNotExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">

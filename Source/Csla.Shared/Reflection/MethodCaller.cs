@@ -1080,6 +1080,48 @@ namespace Csla.Reflection
       }
     }
 
+    /// <summary>
+    /// Returns true if the method provided is an async method returning a Task object.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="method">Name of the method.</param>
+    public static bool IsAsyncMethod(object obj, string method)
+    {
+      return IsAsyncMethod(obj, method, false, null);
+    }
+
+    /// <summary>
+    /// Returns true if the method provided is an async method returning a Task object.
+    /// </summary>
+    /// <param name="obj">Object containing method.</param>
+    /// <param name="method">Name of the method.</param>
+    /// <param name="parameters">
+    /// Parameters to pass to method.
+    /// </param>
+    public static bool IsAsyncMethod(object obj, string method, params object[] parameters)
+    {
+      return IsAsyncMethod(obj, method, true, parameters);
+    }
+
+    private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    {
+#if IOS
+        var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
+        if (info  == null)
+          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        var isAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
+        var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
+        
+        return isAsyncTask || isAsyncTaskObject;
+#else
+      var mh = GetCachedMethod(obj, method, hasParameters, parameters);
+      if (mh == null || mh.DynamicMethod == null)
+        throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+
+      return mh.IsAsyncTask || mh.IsAsyncTaskObject;
+#endif
+    }
+
 #if !NETFX_CORE
     /// <summary>
     /// Invokes a generic async static method by name

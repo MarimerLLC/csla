@@ -15486,14 +15486,14 @@
     "UAP,Version=v10.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Rockford\\.nuget\\packages\\": {}
+    "C:\\Users\\rocky\\.nuget\\packages\\": {}
   },
   "project": {
     "restore": {
-      "projectUniqueName": "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
+      "projectUniqueName": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
       "projectName": "Csla.Uwp",
-      "projectPath": "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
-      "projectJsonPath": "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\project.json",
+      "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
+      "projectJsonPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\project.json",
       "projectStyle": "ProjectJson",
       "frameworks": {
         "uap10.0": {

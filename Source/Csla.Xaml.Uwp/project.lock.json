@@ -15597,20 +15597,20 @@
     "UAP,Version=v10.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Rockford\\.nuget\\packages\\": {}
+    "C:\\Users\\rocky\\.nuget\\packages\\": {}
   },
   "project": {
     "restore": {
-      "projectUniqueName": "G:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
+      "projectUniqueName": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
       "projectName": "Csla.Xaml.Uwp",
-      "projectPath": "G:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
-      "projectJsonPath": "G:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\project.json",
+      "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
+      "projectJsonPath": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\project.json",
       "projectStyle": "ProjectJson",
       "frameworks": {
         "uap10.0": {
           "projectReferences": {
-            "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj": {
-              "projectPath": "G:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj"
+            "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj": {
+              "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj"
             }
           }
         }

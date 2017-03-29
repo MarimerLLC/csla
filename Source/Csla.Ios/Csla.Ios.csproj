@@ -43,10 +43,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="..\Csla.WinRT\Service References\WcfPortal\Reference.cs">
-      <Link>Service References\WfcPortal\Reference.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\WfcPortal\Reference.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="..\Csla.Silverlight\Resources\Error.png">

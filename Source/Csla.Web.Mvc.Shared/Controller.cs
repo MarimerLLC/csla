@@ -9,15 +9,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if MVC6
+using Microsoft.AspNetCore.Mvc;
+#else
 using System.Web.Mvc;
+#endif
 
 namespace Csla.Web.Mvc
 {
-  /// <summary>
-  /// Provides methods that respond to HTTP requests
-  /// in an ASP.NET MVC web site.
-  /// </summary>
-  public class Controller : System.Web.Mvc.Controller
+    /// <summary>
+    /// Provides methods that respond to HTTP requests
+    /// in an ASP.NET MVC web site.
+    /// </summary>
+#if MVC6
+    public class MyController : Microsoft.AspNetCore.Mvc.Controller
+#else
+    public class Controller : System.Web.Mvc.Controller
+#endif
   {
     /// <summary>
     /// Performs a Save() operation on an
@@ -30,7 +38,7 @@ namespace Csla.Web.Mvc
     /// <returns>true the Save() succeeds, false if not.</returns>
     protected virtual bool SaveObject<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
     {
-      return SaveObject(item, 
+      return SaveObject(item,
         null,
         forceUpdate);
     }
@@ -50,8 +58,7 @@ namespace Csla.Web.Mvc
       try
       {
         ViewData.Model = item;
-        if (updateModel != null)
-          updateModel(item);
+        updateModel?.Invoke(item);
         ViewData.Model = item.Save(forceUpdate);
         return true;
       }

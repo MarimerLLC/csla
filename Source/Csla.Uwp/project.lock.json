@@ -15490,16 +15490,11 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
+      "projectUniqueName": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
       "projectName": "Csla.Uwp",
-      "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
-      "projectJsonPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\project.json",
-      "projectStyle": "ProjectJson",
-      "frameworks": {
-        "uap10.0": {
-          "projectReferences": {}
-        }
-      }
+      "projectPath": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
+      "projectJsonPath": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\project.json",
+      "projectStyle": "ProjectJson"
     },
     "dependencies": {
       "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"

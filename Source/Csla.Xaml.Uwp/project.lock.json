@@ -15601,16 +15601,16 @@
   },
   "project": {
     "restore": {
-      "projectUniqueName": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
+      "projectUniqueName": "E:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
       "projectName": "Csla.Xaml.Uwp",
-      "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
-      "projectJsonPath": "C:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\project.json",
+      "projectPath": "E:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\Csla.Xaml.Uwp.csproj",
+      "projectJsonPath": "E:\\src\\rdl\\csla\\Source\\Csla.Xaml.Uwp\\project.json",
       "projectStyle": "ProjectJson",
       "frameworks": {
         "uap10.0": {
           "projectReferences": {
-            "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj": {
-              "projectPath": "C:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj"
+            "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj": {
+              "projectPath": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj"
             }
           }
         }

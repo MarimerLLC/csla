@@ -1,97 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
-using Csla.Security;
-using Csla.Core;
-using Csla.Serialization;
-using Csla.Silverlight;
-using Csla.Validation;
-
-#if!SILVERLIGHT
-using System.Data.SqlClient;
-using Rolodex.Business.Data;
 using Csla.Data;
-using RolodexEF;
-#endif
+using Csla.Rules;
+using Csla.Rules.CommonRules;
+using Rolodex.Business.Data;
 
 namespace Rolodex.Business.BusinessClasses
 {
   [Serializable]
   public class Rank : BusinessBase<Rank>
   {
-#if SILVERLIGHT
-    public Rank() { }
-#else
-    private Rank() { }
-#endif
-
     internal static Rank NewRank()
     {
       Rank returnValue = new Rank();
-      returnValue.ValidationRules.CheckRules();
+      returnValue.BusinessRules.CheckRules();
       return returnValue;
     }
 
-    private static PropertyInfo<int> RankIdProperty = RegisterProperty<int>(new PropertyInfo<int>("RankId", "Rank Id", 0));
+    public static readonly PropertyInfo<int> RankIdProperty =
+      RegisterProperty<int>(new PropertyInfo<int>("RankId", "Rank Id", 0));
+
     public int RankId
     {
-      get
-      {
-        return GetProperty(RankIdProperty);
-      }
+      get { return GetProperty(RankIdProperty); }
     }
 
-    private static PropertyInfo<string> RankNameProperty = RegisterProperty<string>(new PropertyInfo<string>("RankName", "Rank Name", string.Empty));
+    public static readonly PropertyInfo<string> RankNameProperty =
+      RegisterProperty<string>(new PropertyInfo<string>("RankName", "Rank Name", string.Empty));
+
     public string RankName
     {
-      get
-      {
-        return GetProperty(RankNameProperty);
-      }
-      set
-      {
-        SetProperty(RankNameProperty, value);
-      }
-    }
-
-    protected override void AddAuthorizationRules()
-    {
-      string[] canWrite = new string[] { "AdminUser", "RegularUser" };
-      string[] canRead = new string[] { "AdminUser", "RegularUser", "ReadOnlyUser" };
-      string[] admin = new string[] { "AdminUser" };
-
-      foreach (var item in this.FieldManager.GetRegisteredProperties())
-      {
-        AuthorizationRules.AllowWrite(item, canWrite);
-        AuthorizationRules.AllowRead(item, canRead);
-      }
+      get { return GetProperty(RankNameProperty); }
+      set { SetProperty(RankNameProperty, value); }
     }
 
     public static void AddObjectAuthorizationRules()
     {
-      string[] canWrite = new string[] { "AdminUser", "RegularUser" };
-      string[] canRead = new string[] { "AdminUser", "RegularUser", "ReadOnlyUser" };
-      string[] admin = new string[] { "AdminUser" };
-      AuthorizationRules.AllowCreate(typeof(Rank), admin);
-      AuthorizationRules.AllowDelete(typeof(Rank), admin);
-      AuthorizationRules.AllowEdit(typeof(Rank), canWrite);
-      AuthorizationRules.AllowGet(typeof(Rank), canRead);
+      var canWrite = new[] {"AdminUser", "RegularUser"};
+      var canRead = new[] {"AdminUser", "RegularUser", "ReadOnlyUser"};
+      var admin = new[] {"AdminUser"};
+
+      BusinessRules.AddRule(typeof(Rank), new IsInRole(AuthorizationActions.CreateObject, admin));
+      BusinessRules.AddRule(typeof(Rank), new IsInRole(AuthorizationActions.DeleteObject, admin));
+      BusinessRules.AddRule(typeof(Rank), new IsInRole(AuthorizationActions.EditObject, canWrite));
+      BusinessRules.AddRule(typeof(Rank), new IsInRole(AuthorizationActions.GetObject, canRead));
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs(RankNameProperty));
-      ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs(RankNameProperty, 20));
+      BusinessRules.AddRule(new Required(RankNameProperty));
+      BusinessRules.AddRule(new MaxLength(RankNameProperty, 20));
 
+      var canWrite = new[] {"AdminUser", "RegularUser"};
+      var canRead = new[] {"AdminUser", "RegularUser", "ReadOnlyUser"};
+
+      FieldManager.GetRegisteredProperties().ForEach(item =>
+      {
+        BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, item, canWrite));
+        BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, item, canRead));
+      });
     }
-
-#if !SILVERLIGHT
 
     protected override void DataPortal_Insert()
     {
-      using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+      using (var manager =
+        ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
       {
         RolodexEF.Ranks newRank = new RolodexEF.Ranks();
         newRank.Rank = ReadProperty(RankNameProperty);
@@ -100,11 +73,12 @@ namespace Rolodex.Business.BusinessClasses
         LoadProperty(RankIdProperty, newRank.RankId);
       }
     }
+
     protected override void DataPortal_Update()
     {
-      using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+      using (var manager =
+        ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
       {
-
         RolodexEF.Ranks newRank = new RolodexEF.Ranks();
         newRank.RankId = ReadProperty(RankIdProperty);
         newRank.EntityKey = new System.Data.EntityKey("RolodexEntities.Ranks", "RankId", newRank.RankId);
@@ -117,9 +91,10 @@ namespace Rolodex.Business.BusinessClasses
 
     protected override void DataPortal_DeleteSelf()
     {
-      if (!this.IsNew)
+      if (!IsNew)
       {
-        using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+        using (var manager =
+          ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
         {
           RolodexEF.Ranks deleted = new RolodexEF.Ranks();
           deleted.RankId = ReadProperty(RankIdProperty);
@@ -134,12 +109,10 @@ namespace Rolodex.Business.BusinessClasses
     internal static Rank GetRank(RolodexEF.Ranks rank)
     {
       Rank fetchedRank = new Rank();
-      fetchedRank.LoadProperty<int>(RankIdProperty, rank.RankId);
-      fetchedRank.LoadProperty<string>(RankNameProperty, rank.Rank);
+      fetchedRank.LoadProperty(RankIdProperty, rank.RankId);
+      fetchedRank.LoadProperty(RankNameProperty, rank.Rank);
       fetchedRank.MarkOld();
       return fetchedRank;
     }
-
-#endif
   }
 }

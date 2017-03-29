@@ -16,7 +16,7 @@ namespace CslaFastStart
       if (person.IsSavable)
       {
         person = person.Save();
-        Console.WriteLine("Added person with id {0}", person.Id);
+        Console.WriteLine("Added person with id {0}. First name = '{1}', last name = '{2}'.", person.Id, person.FirstName, person.LastName);
       }
       else
       {
@@ -40,12 +40,12 @@ namespace CslaFastStart
       temp = Console.ReadLine();
       if (!string.IsNullOrWhiteSpace(temp))
       {
-        person.FirstName = temp;
+        person.LastName = temp;
       }
       if (person.IsSavable)
       {
         person = person.Save();
-        Console.WriteLine("Updated person");
+        Console.WriteLine("Updated person with id {0}. First name = '{1}', last name = '{2}'.", person.Id, person.FirstName, person.LastName);
       }
       else
       {

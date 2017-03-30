@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#if !NETSTANDARD
+//-----------------------------------------------------------------------
 // <copyright file="ViewModelBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: http://www.lhotka.net/cslanet/
@@ -9,7 +10,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NETSTANDARD
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+#else
 using System.Web.Mvc;
+#endif
 
 namespace Csla.Web.Mvc
 {
@@ -67,3 +73,4 @@ namespace Csla.Web.Mvc
     }
   }
 }
+#endif

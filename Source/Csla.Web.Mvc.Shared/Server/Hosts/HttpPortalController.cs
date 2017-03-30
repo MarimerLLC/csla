@@ -28,7 +28,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if MVC6
+#if NETSTANDARD1_6
   public class HttpPortalController : Controller
   {
     /// <summary>
@@ -92,7 +92,7 @@ namespace Csla.Server.Hosts
       set { _portal = value; }
     }
 
-#if MVC6
+#if NETSTANDARD1_6
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = new MobileFormatter();

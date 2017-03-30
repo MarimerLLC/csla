@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-#if MVC6
+#if NETSTANDARD1_6
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
@@ -21,7 +21,7 @@ namespace Csla.Web.Mvc
     /// Provides methods that respond to HTTP requests
     /// in an ASP.NET MVC web site.
     /// </summary>
-#if MVC6
+#if NETSTANDARD1_6
     public class MyController : Microsoft.AspNetCore.Mvc.Controller
 #else
     public class Controller : System.Web.Mvc.Controller

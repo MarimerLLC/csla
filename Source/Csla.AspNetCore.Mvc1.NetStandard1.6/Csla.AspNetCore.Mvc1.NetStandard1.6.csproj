@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>Csla.Web.Mvc</AssemblyName>
+    <AssemblyName>Csla.AspNetCore.Mvc</AssemblyName>
     <RootNamespace>Csla.Web.Mvc</RootNamespace>
     <Authors>Marimer LLC</Authors>
     <Company>Marimer LLC</Company>
@@ -28,13 +28,20 @@
     <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD1_6</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\NetStandard\netstandard1.6\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Csla.NetStandard\Csla.NetStandard.csproj" />
+    <Reference Include="Csla">
+      <HintPath>..\..\Bin\Release\NetStandard\netstandard1.5\Csla.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

@@ -59,7 +59,11 @@ namespace Csla.Web.Mvc
       {
         ViewData.Model = item;
         updateModel?.Invoke(item);
+#if NETSTANDARD1_6
+        ViewData.Model = item.SaveAsync(forceUpdate).Result;
+#else
         ViewData.Model = item.Save(forceUpdate);
+#endif
         return true;
       }
       catch (Csla.DataPortalException ex)

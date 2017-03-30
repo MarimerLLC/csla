@@ -15494,7 +15494,12 @@
       "projectName": "Csla.Uwp",
       "projectPath": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\Csla.Uwp.csproj",
       "projectJsonPath": "E:\\src\\rdl\\csla\\Source\\Csla.Uwp\\project.json",
-      "projectStyle": "ProjectJson"
+      "projectStyle": "ProjectJson",
+      "frameworks": {
+        "uap10.0": {
+          "projectReferences": {}
+        }
+      }
     },
     "dependencies": {
       "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"

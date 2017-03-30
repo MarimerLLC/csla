@@ -29,6 +29,12 @@
     <PackageProjectUrl>http://cslanet.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
+    <RootNamespace>Csla</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\NetStandard\netstandard1.5\Csla.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -123,7 +123,7 @@ namespace Csla.Core
       CopyingState();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
       SerializationInfo state = new SerializationInfo(0);
       OnCopyState(state);
@@ -177,7 +177,7 @@ namespace Csla.Core
       UndoingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (parentEditLevel >= 0)
       {
@@ -232,7 +232,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
         _stateStack.Pop();
@@ -448,7 +448,7 @@ namespace Csla.Core
       HybridDictionary state = new HybridDictionary();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
       do
       {
@@ -533,7 +533,7 @@ namespace Csla.Core
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
         HybridDictionary state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
@@ -625,7 +625,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {

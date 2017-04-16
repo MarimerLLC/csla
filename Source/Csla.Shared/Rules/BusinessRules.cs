@@ -866,7 +866,7 @@ namespace Csla.Rules
     void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (((IUndoableObject)this).EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel - 1);
 
       SerializationInfo state = new SerializationInfo(0);
       OnGetState(state, StateMode.Undo);
@@ -885,7 +885,7 @@ namespace Csla.Rules
       if (((IUndoableObject)this).EditLevel > 0)
       {
         if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
 
         SerializationInfo state = _stateStack.Pop();
         OnSetState(state, StateMode.Undo);
@@ -906,7 +906,7 @@ namespace Csla.Rules
     void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (((IUndoableObject)this).EditLevel - 1 < parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, ((IUndoableObject)this).EditLevel, parentEditLevel + 1);
 
       if (((IUndoableObject)this).EditLevel > 0)
       {

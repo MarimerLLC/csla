@@ -18,15 +18,38 @@ namespace Csla.Core
   [Serializable()]
   public class UndoException : Exception
   {
+    /// <summary>
+    /// The type name of the object that caused this issue
+    /// </summary>
+    public string TypeName;
+    /// <summary>
+    /// The parent's type name of the object that caused this issue or null
+    /// </summary>
+    public string ParentTypeName;
+    /// <summary>
+    /// Object EditLevel
+    /// </summary>
+    public int CurrentEditLevel;
+    /// <summary>
+    /// Expected object EditLevel
+    /// </summary>
+    public int ExpectedEditLevel;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="message">Text describing the exception.</param>
-    public UndoException(string message)
+    /// <param name="typeName">The type name of the object that caused this issue</param>
+    /// <param name="parentTypeName">The parent's type name of the object that caused this issue or null</param>
+    /// <param name="currentEditLevel">Object EditLevel</param>
+    /// <param name="expectedEditLevel">Expected object EditLevel</param>
+    public UndoException(string message, string typeName, string parentTypeName, int currentEditLevel, int expectedEditLevel)
       : base(message)
     {
-
+      TypeName = typeName;
+      ParentTypeName = parentTypeName;
+      CurrentEditLevel = currentEditLevel;
+      ExpectedEditLevel = expectedEditLevel;
     }
 
     /// <summary>

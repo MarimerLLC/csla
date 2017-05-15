@@ -7,14 +7,14 @@ namespace BusinessLibrary
   [Serializable]
   public class MyExpensiveCommand : CommandBase<MyExpensiveCommand>
   {
-    public static PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(c => c.Result);
+    public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<bool>(c => c.Result);
     public bool Result
     {
       get { return ReadProperty(ResultProperty); }
       private set { LoadProperty(ResultProperty, value); }
     }
 
-    public static PropertyInfo<string> ResultTextProperty = RegisterProperty<string>(c => c.ResultText);
+    public static readonly PropertyInfo<string> ResultTextProperty = RegisterProperty<string>(c => c.ResultText);
     public string ResultText
     {
       get { return ReadProperty(ResultTextProperty); }

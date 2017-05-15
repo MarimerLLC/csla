@@ -10,21 +10,21 @@ namespace BusinessLibrary
   [Csla.Server.ObjectFactory("DataAccess.OrderFactory, DataAccess")]
   public class Order : BusinessBase<Order>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     public int Id
     {
       get { return GetProperty(IdProperty); }
       private set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
+    public static readonly PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
     public string LastName
     {
       get { return GetProperty(LastNameProperty); }
       set { SetProperty(LastNameProperty, value); }
     }
 
-    public static PropertyInfo<string> CustomerNameProperty = 
+    public static readonly PropertyInfo<string> CustomerNameProperty = 
       RegisterProperty<string>(p => p.CustomerName);
     [Display(Name = "Customer name")]
     [Required]
@@ -69,7 +69,7 @@ namespace BusinessLibrary
       }
     }
 
-    public static PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(p => p.LineItems, RelationshipTypes.LazyLoad);
+    public static readonly PropertyInfo<LineItems> LineItemsProperty = RegisterProperty<LineItems>(p => p.LineItems, RelationshipTypes.LazyLoad);
     public LineItems LineItems
     {
       get

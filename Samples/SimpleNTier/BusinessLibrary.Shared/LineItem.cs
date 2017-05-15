@@ -8,7 +8,7 @@ namespace BusinessLibrary
   [Csla.Server.ObjectFactory("DataAccess.LineItemFactory, DataAccess")]
   public class LineItem : BusinessBase<LineItem>
   {
-    public static PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
     [Range(1, 9999)]
 
     public int Id
@@ -17,7 +17,7 @@ namespace BusinessLibrary
       set { SetProperty(IdProperty, value); }
     }
 
-    public static PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
     [Required]
     public string Name
     {

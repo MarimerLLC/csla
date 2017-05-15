@@ -21,6 +21,7 @@ namespace Csla
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
+  [Obsolete("Use custom class derived from CriteriaBase e.g. ProjectCriteria : CriteriaBase<ProjectCriteria> instead.")]
   public class SingleCriteria<C> : CriteriaBase<SingleCriteria<C>>
   {
     private C _value;
@@ -122,6 +123,7 @@ namespace Csla
   /// </typeparam>
   /// <remarks></remarks>
   [Serializable()]
+  [Obsolete("Use custom class derived from CriteriaBase e.g. ProjectCriteria : CriteriaBase<ProjectCriteria> instead.")]
   public class SingleCriteria<B, C> : SingleCriteria<C>
   {
     /// <summary>

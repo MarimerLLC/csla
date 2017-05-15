@@ -183,6 +183,22 @@ namespace Csla
       }
 
 #if NETFX_CORE
+      if (desiredType.IsEnum())
+#else
+      if (desiredType.IsEnum)
+#endif
+      {
+        if (value is byte? && ((byte?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((byte?) value).Value.ToString());
+        if (value is short? && ((short?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((short?) value).Value.ToString());
+        if (value is int? && ((int?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((int?) value).Value.ToString());
+        if (value is long? && ((long?) value).HasValue)
+          return System.Enum.Parse(desiredType, ((long?) value).Value.ToString());
+      }
+
+#if NETFX_CORE
       if (desiredType.IsEnum() &&
 #else
       if (desiredType.IsEnum && 

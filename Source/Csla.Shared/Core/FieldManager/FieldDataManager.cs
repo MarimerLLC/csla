@@ -471,7 +471,7 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
 
 #if (ANDROID || IOS) || NETFX_CORE
       SerializationInfo state = new SerializationInfo(0);
@@ -533,7 +533,7 @@ namespace Csla.Core.FieldManager
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
 #if (ANDROID || IOS) || NETFX_CORE
         SerializationInfo state = _stateStack.Pop();
@@ -588,7 +588,7 @@ namespace Csla.Core.FieldManager
     void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {

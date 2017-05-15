@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Marimer LLC")]
 [assembly: AssemblyProduct("CSLA .NET")]
-[assembly: AssemblyCopyright("Copyright © 2010-16 Marimer LLC")]
+[assembly: AssemblyCopyright("Copyright © 2010-17 Marimer LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("Csla.Analyzers.Tests")]
 
-[assembly: AssemblyVersion("4.6.500.0")]
-[assembly: AssemblyFileVersion("4.6.500.0")]
+[assembly: AssemblyVersion("4.6.600.0")]
+[assembly: AssemblyFileVersion("4.6.600.0")]

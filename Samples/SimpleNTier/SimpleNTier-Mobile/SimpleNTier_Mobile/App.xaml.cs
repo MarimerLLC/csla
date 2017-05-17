@@ -19,6 +19,8 @@ namespace SimpleNTier_Mobile
     protected override void OnStart()
     {
       // Handle when your app starts
+      Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.HttpProxy).AssemblyQualifiedName;
+      Csla.ApplicationContext.DataPortalUrlString = "";
     }
 
     protected override void OnSleep()

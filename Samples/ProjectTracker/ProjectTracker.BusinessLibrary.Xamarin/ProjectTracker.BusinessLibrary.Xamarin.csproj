@@ -38,20 +38,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=4.6.400.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-Core.4.6.400-Beta-16052505\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Csla, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-Core.4.6.500\lib\portable-net45+win8+wpa81\Csla.dll</HintPath>
     </Reference>
-    <Reference Include="Csla.Xaml, Version=4.6.400.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CSLA-XamarinForms.4.6.400-Beta-16052505\lib\portable-net45+win8+wpa81\Csla.Xaml.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Csla.Xaml, Version=4.6.500.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
+      <HintPath>..\packages\CSLA-XamarinForms.4.6.500\lib\portable-net45+win8+wpa81\Csla.Xaml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\CSLA-Core.4.6.400-Beta-16052505\analyzers\c#\Csla.Analyzers.dll" />
+    <Analyzer Include="..\packages\CSLA-Core.4.6.500\analyzers\c#\Csla.Analyzers.dll" />
   </ItemGroup>
   <Import Project="..\ProjectTracker.BusinessLibrary.Shared\ProjectTracker.BusinessLibrary.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

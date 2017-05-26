@@ -160,5 +160,6 @@ Thumbs.db
 project.lock.json
 /Source/.vs
 Source/UpgradeLog.htm
-/Source/Csla.NetStandard1.x/Properties/*.resx
-/Source/Csla.NetStandard/Properties/*.resx
+/Source/Csla.NetStandard1.5/Properties/*.resx
+/Source/Csla.NetStandard1.6/Properties/*.resx
+

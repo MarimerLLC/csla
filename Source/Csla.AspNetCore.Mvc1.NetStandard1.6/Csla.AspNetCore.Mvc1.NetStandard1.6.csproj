@@ -30,7 +30,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\NetStandard\netstandard1.6\Csla.AspNetCore.Mvc.xml</DocumentationFile>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard1.6\Csla.AspNetCore.Mvc.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,9 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Csla">
-      <HintPath>..\..\Bin\Release\NetStandard\netstandard1.5\Csla.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Csla.NetStandard1.6\Csla.NetStandard1.6.csproj" />
   </ItemGroup>
 
   <Import Project="..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems" Label="Shared" />

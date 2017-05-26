@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>CSLA-ASPNETCORE-MVC</id>
+    <title>CSLA .NET - AspNetCore MVC</title>
+    <tags>CSLA ASP.NET MVC</tags>
+    <version>4.6.3-Beta10</version>
+    <authors>Marimer LLC</authors>
+    <licenseUrl>https://github.com/MarimerLLC/csla/blob/master/license.md</licenseUrl>
+    <projectUrl>http://www.cslanet.com/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+Supports the creation of AspNetCore applications.
+
+CSLA .NET is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.
+    </description>
+    <summary>
+Supports the creation of AspNetCore applications.
+    </summary>
+    <language>en-US</language>
+    <dependencies>
+      <group targetFramework="netstandard1.6">
+        <dependency id="CSLA-Core" version="[4.6.3-Beta10]" />
+        <dependency id="Microsoft.AspNetCore" version="1.1.1" />
+        <dependency id="Microsoft.AspNetCore.Mvc" version="1.1.2" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- NetStandard Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.AspNetCore.Mvc.*" target="lib\netstandard1.6" />
+  </files>
+</package>

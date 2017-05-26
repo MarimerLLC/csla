@@ -1,213 +1,134 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using Csla;
-using Csla.Security;
-using Csla.Validation;
-using Csla.Serialization;
-
-#if!SILVERLIGHT
-using Rolodex.Business.Data;
 using Csla.Data;
+using Csla.Rules;
+using Csla.Rules.CommonRules;
+using Rolodex.Business.Data;
+using Rolodex.Business.Rules;
 using RolodexEF;
-#endif
 
 namespace Rolodex.Business.BusinessClasses
 {
   [Serializable]
   public class Company : BusinessBase<Company>
   {
+    public static readonly PropertyInfo<int> CompanyIdProperty =
+      RegisterProperty(new PropertyInfo<int>("CompanyId", "Company Id", 0));
 
-#if SILVERLIGHT
-        public Company() { }
-#else
-    private Company() { }
-#endif
-
-
-    private static PropertyInfo<int> CompanyIdProperty = RegisterProperty(new PropertyInfo<int>("CompanyId", "Company Id", 0));
     public int CompanyId
     {
-      get
-      {
-        return GetProperty(CompanyIdProperty);
-      }
+      get { return GetProperty(CompanyIdProperty); }
     }
 
-    private static PropertyInfo<string> CompanyNameProperty = RegisterProperty(new PropertyInfo<string>("CompanyName", "Company Name", string.Empty));
+    public static readonly PropertyInfo<string> CompanyNameProperty =
+      RegisterProperty(new PropertyInfo<string>("CompanyName", "Company Name", string.Empty));
+
     public string CompanyName
     {
-      get
-      {
-        return GetProperty(CompanyNameProperty);
-      }
-      set
-      {
-        SetProperty(CompanyNameProperty, value);
-      }
+      get { return GetProperty(CompanyNameProperty); }
+      set { SetProperty(CompanyNameProperty, value); }
     }
 
-    private static PropertyInfo<SmartDate> DateAddedProperty = RegisterProperty(new PropertyInfo<SmartDate>("DateAdded", "Date Added"));
+    public static readonly PropertyInfo<SmartDate> DateAddedProperty =
+      RegisterProperty(new PropertyInfo<SmartDate>("DateAdded", "Date Added"));
+
     public DateTime? DateAdded
     {
-      get
-      {
-        return GetProperty(DateAddedProperty).ToNullableDate();
-      }
-      set
-      {
-        SetProperty(DateAddedProperty, new SmartDate(value));
-      }
+      get { return GetProperty(DateAddedProperty).ToNullableDate(); }
+      set { SetProperty(DateAddedProperty, new SmartDate(value)); }
     }
 
-    private static PropertyInfo<CompanyContactList> ContactsProperty = RegisterProperty(new PropertyInfo<CompanyContactList>("Contacts", "Contacts"));
+    public static readonly PropertyInfo<CompanyContactList> ContactsProperty =
+      RegisterProperty(new PropertyInfo<CompanyContactList>("Contacts", "Contacts"));
+
     public CompanyContactList Contacts
     {
-      get
-      {
-        return GetProperty(ContactsProperty);
-      }
+      get { return GetProperty(ContactsProperty); }
     }
 
-    private static PropertyInfo<Rolodex.Business.BusinessClasses.Ranks> RanksProperty = RegisterProperty(new PropertyInfo<Rolodex.Business.BusinessClasses.Ranks>("Ranks", "Ranks"));
-    public Rolodex.Business.BusinessClasses.Ranks Ranks
+    public static readonly PropertyInfo<Ranks> RanksProperty =
+      RegisterProperty(new PropertyInfo<Ranks>("Ranks", "Ranks"));
+
+    public Ranks Ranks
     {
-      get
-      {
-        return GetProperty(RanksProperty);
-      }
+      get { return GetProperty(RanksProperty); }
     }
 
-
-    protected override void AddAuthorizationRules()
+    protected static void AddObjectAuthorizationRules()
     {
-      string[] canWrite = new string[] { "AdminUser", "RegularUser" };
-      string[] canRead = new string[] { "AdminUser", "RegularUser", "ReadOnlyUser" };
+      var canWrite = new[] {"AdminUser", "RegularUser"};
+      var canRead = new[] {"AdminUser", "RegularUser", "ReadOnlyUser"};
+      var admin = new[] {"AdminUser"};
 
-
-      FieldManager.GetRegisteredProperties().ForEach(item =>
-      {
-        AuthorizationRules.AllowWrite(item, canWrite);
-        AuthorizationRules.AllowRead(item, canRead);
-      });
-    }
-
-    public static void AddObjectAuthorizationRules()
-    {
-      string[] canWrite = new string[] { "AdminUser", "RegularUser" };
-      string[] canRead = new string[] { "AdminUser", "RegularUser", "ReadOnlyUser" };
-      string[] admin = new string[] { "AdminUser" };
-      AuthorizationRules.AllowCreate(typeof(Company), admin);
-      AuthorizationRules.AllowDelete(typeof(Company), admin);
-      AuthorizationRules.AllowEdit(typeof(Company), canWrite);
-      AuthorizationRules.AllowGet(typeof(Company), canRead);
+      BusinessRules.AddRule(typeof(Company), new IsInRole(AuthorizationActions.CreateObject, admin));
+      BusinessRules.AddRule(typeof(Company), new IsInRole(AuthorizationActions.DeleteObject, admin));
+      BusinessRules.AddRule(typeof(Company), new IsInRole(AuthorizationActions.EditObject, canWrite));
+      BusinessRules.AddRule(typeof(Company), new IsInRole(AuthorizationActions.GetObject, canRead));
     }
 
     protected override void AddBusinessRules()
     {
-      ValidationRules.AddRule(CommonRules.StringRequired, new RuleArgs(CompanyNameProperty));
-      ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs(CompanyNameProperty, 50));
-      ValidationRules.AddRule<Company>(IsDateValid, DateAddedProperty);
-      ValidationRules.AddRule(IsDuplicateName, new AsyncRuleArgs(CompanyNameProperty, CompanyIdProperty));
-    }
+      base.AddBusinessRules();
 
-    private static void IsDuplicateName(AsyncValidationRuleContext context)
-    {
-      DuplicateCompanyCommand command = new DuplicateCompanyCommand(context.PropertyValues["CompanyName"].ToString(), (int)context.PropertyValues["CompanyId"]);
-      DataPortal<DuplicateCompanyCommand> dp = new DataPortal<DuplicateCompanyCommand>();
-      dp.ExecuteCompleted += (o, e) =>
-      {
-        if (e.Error != null)
-        {
-          context.OutArgs.Description = String.Format("Error checking for duplicate company name.  {0}", e.Error);
-          context.OutArgs.Severity = RuleSeverity.Error;
-          context.OutArgs.Result = false;
-        }
-        else
-        {
-          if (e.Object.IsDuplicate)
-          {
-            context.OutArgs.Description = "Duplicate company name.";
-            context.OutArgs.Severity = RuleSeverity.Error;
-            context.OutArgs.Result = false;
-          }
-          else
-          {
-            context.OutArgs.Result = true;
-          }
-        }
-        context.Complete();
-      };
-      dp.BeginExecute(command);
-    }
+      BusinessRules.AddRule(new Required(CompanyNameProperty));
+      BusinessRules.AddRule(new MaxLength(CompanyNameProperty, 50));
+      BusinessRules.AddRule(new Required(DateAddedProperty));
+      BusinessRules.AddRule(new IsDateValid(DateAddedProperty));
+      BusinessRules.AddRule(new IsDuplicateNameAsync(CompanyIdProperty, CompanyNameProperty));
 
-    private static bool IsDateValid(Company target, RuleArgs e)
-    {
-      SmartDate dateAdded = target.GetProperty(DateAddedProperty);
-      if (!dateAdded.IsEmpty)
+      var canWrite = new[] {"AdminUser", "RegularUser"};
+      var canRead = new[] {"AdminUser", "RegularUser", "ReadOnlyUser"};
+
+      FieldManager.GetRegisteredProperties().ForEach(item =>
       {
-        if (dateAdded.Date < (new DateTime(2000, 1, 1)))
-        {
-          e.Description = "Date must be greater that 1/1/2000!";
-          return false;
-        }
-        else if (dateAdded.Date > DateTime.Today)
-        {
-          e.Description = "Date cannot be greater than today!";
-          return false;
-        }
-      }
-      else
-      {
-        e.Description = "Date added is required!";
-        return false;
-      }
-      return true;
+        BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, item, canWrite));
+        BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, item, canRead));
+      });
     }
 
     public static void GetCompany(int companyId, EventHandler<DataPortalResult<Company>> handler)
     {
-      DataPortal<Company> dp = new DataPortal<Company>();
+      var dp = new DataPortal<Company>();
       dp.FetchCompleted += handler;
       dp.BeginFetch(new SingleCriteria<Company, int>(companyId));
     }
 
     public static void CreateCompany(EventHandler<DataPortalResult<Company>> handler)
     {
-      DataPortal<Company> dp = new DataPortal<Company>();
+      var dp = new DataPortal<Company>();
       dp.CreateCompleted += handler;
       dp.BeginCreate();
     }
 
-
-#if !SILVERLIGHT
-
     protected void DataPortal_Fetch(SingleCriteria<Company, int> criteria)
     {
-      using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+      using (var manager =
+        ObjectContextManager<RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
       {
-        Companies company = (from oneCompany in manager.ObjectContext.Companies
-                                 .Include("CompanyContacts")
-                                 .Include("CompanyContacts.Ranks")
-                                 .Include("CompanyContacts.CompanyContactPhones")
-                             where oneCompany.CompanyId == criteria.Value
-                             select oneCompany).FirstOrDefault();
+        var company = (from oneCompany in manager.ObjectContext.Companies
+            .Include("CompanyContacts")
+            .Include("CompanyContacts.Ranks")
+            .Include("CompanyContacts.CompanyContactPhones")
+          where oneCompany.CompanyId == criteria.Value
+          select oneCompany).FirstOrDefault();
         if (company != null)
         {
           LoadProperty<int>(CompanyIdProperty, company.CompanyId);
           LoadProperty<string>(CompanyNameProperty, company.CompanyName);
           LoadProperty<SmartDate>(DateAddedProperty, company.DateAdded);
           LoadProperty(ContactsProperty, CompanyContactList.GetCompanyContactList(company));
-
         }
       }
-      LoadProperty(RanksProperty, Rolodex.Business.BusinessClasses.Ranks.GetRanks());
+      LoadProperty(RanksProperty, Ranks.GetRanks());
     }
 
     protected override void DataPortal_Create()
     {
       LoadProperty<CompanyContactList>(ContactsProperty, CompanyContactList.NewCompanyContactList());
-      LoadProperty(RanksProperty, Rolodex.Business.BusinessClasses.Ranks.GetRanks());
-      ValidationRules.CheckRules();
+      LoadProperty(RanksProperty, Ranks.GetRanks());
+      BusinessRules.CheckRules();
     }
 
     //used for testing only
@@ -225,16 +146,15 @@ namespace Rolodex.Business.BusinessClasses
     //  }
     //}
 
-
-
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_DeleteSelf()
     {
       if (!IsNew)
       {
-        using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+        using (var manager =
+          ObjectContextManager<RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
         {
-          Companies deleted = new Companies();
+          var deleted = new Companies();
           deleted.CompanyId = CompanyId;
           deleted.EntityKey = new System.Data.EntityKey("RolodexEntities.Companies", "CompanyId", CompanyId);
           manager.ObjectContext.Attach(deleted);
@@ -247,9 +167,10 @@ namespace Rolodex.Business.BusinessClasses
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Insert()
     {
-      using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+      using (var manager =
+        ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
       {
-        Companies newCompany = new Companies();
+        var newCompany = new Companies();
         newCompany.CompanyName = ReadProperty(CompanyNameProperty);
         SmartDate added = ReadProperty(DateAddedProperty);
         if (!added.IsEmpty)
@@ -264,13 +185,11 @@ namespace Rolodex.Business.BusinessClasses
         manager.ObjectContext.SaveChanges();
         LoadProperty(CompanyIdProperty, newCompany.CompanyId);
       }
-
-
     }
 
-    void newCompany_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void newCompany_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-      Companies entityCompany = sender as Companies;
+      var entityCompany = sender as Companies;
       if (e.PropertyName == CompanyIdProperty.Name)
       {
         LoadProperty(CompanyIdProperty, entityCompany.CompanyId);
@@ -281,25 +200,22 @@ namespace Rolodex.Business.BusinessClasses
     [Transactional(TransactionalTypes.TransactionScope)]
     protected override void DataPortal_Update()
     {
-
-      using (ObjectContextManager<RolodexEntities> manager = ObjectContextManager<RolodexEF.RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
+      using (var manager =
+        ObjectContextManager<RolodexEntities>.GetManager(DataConnection.EFConnectionName, true))
       {
-        Companies newCompany = new Companies();
+        var newCompany = new Companies();
         newCompany.CompanyId = ReadProperty(CompanyIdProperty);
         newCompany.EntityKey = new System.Data.EntityKey("RolodexEntities.Companies", "CompanyId", newCompany.CompanyId);
         manager.ObjectContext.Attach(newCompany);
 
-
         newCompany.CompanyName = ReadProperty(CompanyNameProperty);
-        SmartDate added = ReadProperty(DateAddedProperty);
+        var added = ReadProperty(DateAddedProperty);
         if (!added.IsEmpty)
           newCompany.DateAdded = added.Date;
 
         DataPortal.UpdateChild(ReadProperty(ContactsProperty), this, newCompany);
         manager.ObjectContext.SaveChanges();
       }
-
     }
-#endif
   }
 }

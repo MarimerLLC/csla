@@ -12,6 +12,8 @@ namespace PTWin
     [STAThread]
     static void Main()
     {
+      Csla.ApplicationContext.ContextManager = new ApplicationContextManager();
+
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new MainForm());

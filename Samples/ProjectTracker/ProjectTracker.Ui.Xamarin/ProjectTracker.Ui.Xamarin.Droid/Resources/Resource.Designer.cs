@@ -29,7 +29,6 @@ namespace ProjectTracker.Ui.Xamarin.Droid
 			global::AttributeGetter.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
 			global::AttributeGetter.Resource.String.Hello = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.Hello;
 			global::Csla.Resource.String.ApplicationName = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.ApplicationName;
-			global::Csla.Resource.String.Hello = global::ProjectTracker.Ui.Xamarin.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::ProjectTracker.Ui.Xamarin.Droid.Resource.Attribute.actionBarSize;
 		}
 		

@@ -42,7 +42,7 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.Threading.Tasks" version="4.0.10" />
       </group>
       <group targetFramework="netstandard1.5">
-        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="NETStandard.Library" version="1.5.0" />
         <dependency id="System.Runtime.Serialization.Primitives" version="4.1.1" />
         <dependency id="System.Security.Principal" version="4.0.1" />
         <dependency id="System.Runtime.Serialization.Xml" version="4.1.1" />
@@ -51,6 +51,18 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
         <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
         <dependency id="System.Reflection" version="4.1.0" />
+      </group>
+      <group targetFramework="netstandard1.6">
+        <dependency id="NETStandard.Library" version="1.6.0" />
+        <dependency id="System.Runtime.Serialization.Primitives" version="4.3.0" />
+        <dependency id="System.Security.Principal" version="4.0.1" />
+        <dependency id="System.Runtime.Serialization.Xml" version="4.1.1" />
+        <dependency id="System.Threading.ThreadPool" version="4.0.10" />
+        <dependency id="System.ComponentModel" version="4.0.1" />
+        <dependency id="System.ComponentModel.Primitives" version="4.1.0" />
+        <dependency id="System.ComponentModel.Annotations" version="4.1.0" />
+        <dependency id="System.Reflection" version="4.3.0" />
+        <dependency id="System.Runtime.Serialization.Formatters" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>
@@ -87,10 +99,14 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.pri*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.xml*" target="lib\uap10.0" />
-    <!-- NetStandard Assembly -->
+    <!-- NetStandard 1.5 Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.dll*" target="lib\netstandard1.5" />
     <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.xml*" target="lib\netstandard1.5" />
     <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.NetStandard.resources.dll*" target="lib\netstandard1.5" />
+    <!-- NetStandard 1.6 Assembly -->
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.dll*" target="lib\netstandard1.6" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.xml*" target="lib\netstandard1.6" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.NetStandard.resources.dll*" target="lib\netstandard1.6" />
     <!-- PCL Profile111 -->
     <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />

@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="phonetext_extralargestyle">30sp</dimen>
-    <dimen name="phonetext_largestyle">20sp</dimen>
-    <dimen name="phonetext_normalstyle">12sp</dimen>
-    <dimen name="button_normalwidth">100px</dimen>
-    <dimen name="button_normalheight">75px</dimen>
-</resources>

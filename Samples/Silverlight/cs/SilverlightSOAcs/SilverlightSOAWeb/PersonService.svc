@@ -1,3 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" 
-    Service="SilverlightSOAWeb.PersonService" 
-    CodeBehind="PersonService.svc.cs" %>

@@ -29,19 +29,22 @@ namespace Csla
 #if !(ANDROID || IOS) && !NETFX_CORE
     private static IContextManager _webContextManager;
     private static Type _webManagerType;
-    private static Type _xamlManagerType;
 #endif
 
     static ApplicationContext()
     {
 #if !(ANDROID || IOS) && !NETFX_CORE
+      Type _contextManagerType = null;
       _webManagerType = Type.GetType("Csla.Web.ApplicationContextManager, Csla.Web");
-      _xamlManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
+      if (_contextManagerType == null)
+        _contextManagerType = Type.GetType("Csla.Windows.ApplicationContextManager, Csla.Windows");
+      if (_contextManagerType == null)
+        _contextManagerType = Type.GetType("Csla.Xaml.ApplicationContextManager, Csla.Xaml");
 
       if (_webManagerType != null)
         WebContextManager = (IContextManager)Activator.CreateInstance(_webManagerType);
-      if (_xamlManagerType != null)
-        _contextManager = (IContextManager)Activator.CreateInstance(_xamlManagerType);
+      if (_contextManagerType != null)
+        _contextManager = (IContextManager)Activator.CreateInstance(_contextManagerType);
 #endif
       if (_contextManager == null)
         _contextManager = new ApplicationContextManager();

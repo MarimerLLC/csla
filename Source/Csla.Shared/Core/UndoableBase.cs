@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 #if NETFX_CORE || IOS || ANDROID
 using System;
-#if !NETSTANDARD1_6
+#if !NETSTANDARD1_6 && !WINDOWS_UWP
 using Csla.Serialization.Mobile;
 #endif
 using System.ComponentModel;
@@ -127,7 +127,7 @@ namespace Csla.Core
       if (this.EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
-#if NETSTANDARD1_6
+#if NETSTANDARD1_6 || WINDOWS_UWP
       SerializationInfo state = new SerializationInfo(this.GetType(), null);
 #else
       SerializationInfo state = new SerializationInfo(0);
@@ -282,10 +282,10 @@ namespace Csla.Core
         child.CopyState(targetLevel, false);
     }
 
-      #endregion
+    #endregion
 
-#if !NETSTANDARD1_6
-      #region MobileObject overrides
+#if !NETSTANDARD1_6 && !WINDOWS_UWP
+    #region MobileObject overrides
 
     /// <summary>
     /// Gets the state of the object for serialization.
@@ -335,7 +335,7 @@ namespace Csla.Core
       base.OnSetState(info, mode);
     }
 
-      #endregion
+    #endregion
 #endif
   }
 }

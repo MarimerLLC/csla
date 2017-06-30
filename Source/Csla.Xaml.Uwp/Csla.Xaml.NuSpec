@@ -21,18 +21,18 @@ Supports the creation of UWP applications.
     <language>en-US</language>
     <dependencies>
       <group targetFramework="uap10.0">
-        <dependency id="System.Collections" version="4.0.10" />
+        <dependency id="System.Collections" version="4.3.0" />
         <dependency id="System.ComponentModel.Annotations" version="4.0.10" />
         <dependency id="System.Diagnostics.Debug" version="4.0.10" />
         <dependency id="System.Linq" version="4.0.0" />
         <dependency id="System.Linq.Expressions" version="4.0.10" />
         <dependency id="System.ObjectModel" version="4.0.10" />
-        <dependency id="System.Reflection" version="4.0.10" />
+        <dependency id="System.Reflection" version="4.3.0" />
         <dependency id="System.Reflection.TypeExtensions" version="4.0.0" />
-        <dependency id="System.Runtime" version="4.0.20" />
+        <dependency id="System.Runtime" version="4.3.0" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.0.0" />
         <dependency id="System.Threading" version="4.0.10" />
-        <dependency id="System.Threading.Tasks" version="4.0.10" />
+        <dependency id="System.Threading.Tasks" version="4.3.0" />
       </group>
     </dependencies>
   </metadata>

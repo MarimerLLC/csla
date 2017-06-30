@@ -89,11 +89,6 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.dll*" target="analyzers\c#" />
     <file src="..\..\Bin\Release\Analyzers\**\Csla.Analyzers.pdb*" target="analyzers\c#" />
     <file src="..\..\Bin\Release\Analyzers\tools\*.ps1" target="tools\" />
-    <!-- Windows Runtime Client -->
-    <file src="..\..\Bin\Release\WinRT\**\Csla.dll*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.pdb*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.pri*" target="lib\NetCore45" />
-    <file src="..\..\Bin\Release\WinRT\**\Csla.xml*" target="lib\NetCore45" />
     <!-- UWP Client -->
     <file src="..\..\Bin\Release\UWP\**\Csla.dll*" target="lib\uap10.0" />
     <file src="..\..\Bin\Release\UWP\**\Csla.pdb*" target="lib\uap10.0" />
@@ -112,11 +107,6 @@ Supports the creation of Class Library projects containing business domain class
     <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.pri*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.xml*" target="lib\portable-net45+win8+wpa81" />
-    <!-- Windows Runtime Phone Client -->
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.dll*" target="lib\wpa" />
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pdb*" target="lib\wpa" />
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.pri*" target="lib\wpa" />
-    <file src="..\..\Bin\Release\WinRT.Phone\**\Csla.xml*" target="lib\wpa" />
     <!-- Xamarin Android Client -->
     <file src="..\..\Bin\Release\Android\**\Csla.dll*" target="lib\MonoAndroid10" />
     <file src="..\..\Bin\Release\Android\**\Csla.pdb*" target="lib\MonoAndroid10" />

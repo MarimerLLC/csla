@@ -97,11 +97,11 @@ Supports the creation of Class Library projects containing business domain class
     <!-- NetStandard 1.5 Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.dll*" target="lib\netstandard1.5" />
     <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.xml*" target="lib\netstandard1.5" />
-    <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.NetStandard.resources.dll*" target="lib\netstandard1.5" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.5\**\Csla.resources.dll*" target="lib\netstandard1.5" />
     <!-- NetStandard 1.6 Assembly -->
     <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.dll*" target="lib\netstandard1.6" />
     <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.xml*" target="lib\netstandard1.6" />
-    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.NetStandard.resources.dll*" target="lib\netstandard1.6" />
+    <file src="..\..\bin\Release\netstandard\netstandard1.6\**\Csla.resources.dll*" target="lib\netstandard1.6" />
     <!-- PCL Profile111 -->
     <file src="..\..\Bin\Release\PCL\**\Csla.dll*" target="lib\portable-net45+win8+wpa81" />
     <file src="..\..\Bin\Release\PCL\**\Csla.pdb*" target="lib\portable-net45+win8+wpa81" />

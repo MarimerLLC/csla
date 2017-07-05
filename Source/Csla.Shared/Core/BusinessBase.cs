@@ -3598,6 +3598,11 @@ namespace Csla.Core
     [NotUndoable]
     private bool _bypassPropertyChecks = false;
 
+    /// <summary>
+    /// Gets a value whether the business object is currently bypassing property checks?
+    /// </summary>
+    protected internal bool IsBypassingPropertyChecks { get { return _bypassPropertyChecks; } }
+	
     [NonSerialized]
     [NotUndoable]
     private BypassPropertyChecksObject _bypassPropertyChecksObject = null;
@@ -3714,6 +3719,7 @@ namespace Csla.Core
 #if NETFX_CORE
     #region UndoableBase overrides
 
+#if !NETSTANDARD1_6 && !WINDOWS_UWP
     /// <summary>
     /// Copy object state.
     /// </summary>
@@ -3741,6 +3747,7 @@ namespace Csla.Core
 
       base.OnUndoChanges(state);
     }
+#endif
 
     /// <summary>
     /// Accept object state.
@@ -3754,7 +3761,7 @@ namespace Csla.Core
       base.AcceptingChanges();
     }
 
-    #endregion
+#endregion
 
 #if !ANDROID && !IOS
     #region INotifyDataErrorInfo

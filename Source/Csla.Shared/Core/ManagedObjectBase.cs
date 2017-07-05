@@ -89,6 +89,22 @@ namespace Csla.Core
     /// Indicates that the specified property belongs
     /// to the business object type.
     /// </summary>
+    /// <typeparam name="T">Type of Target</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns></returns>
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    {
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>

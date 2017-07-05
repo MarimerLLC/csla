@@ -98,7 +98,7 @@ public class UserCaller
     await this.SaveAsync();
 
     // This should have an error because it doesn't set the return value
-    await x.SaveAsync(true);
+    await x.SaveAsync(true).ConfigureAwait(false);
 
     x = await x.SaveAsync();
 

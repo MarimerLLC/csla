@@ -61,10 +61,14 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
-      RegisterProperty<ProjectResources>(p => p.Resources);
+      RegisterProperty<ProjectResources>(p => p.Resources, RelationshipTypes.Child | RelationshipTypes.LazyLoad);
     public ProjectResources Resources
     {
-      get { return LazyGetProperty(ResourcesProperty, DataPortal.CreateChild<ProjectResources>); }
+      get
+      {
+        return LazyGetProperty(ResourcesProperty,
+          () => DataPortal.Fetch<ProjectResources>(ReadProperty(IdProperty)));
+      }
       private set { LoadProperty(ResourcesProperty, value); }
     }
 

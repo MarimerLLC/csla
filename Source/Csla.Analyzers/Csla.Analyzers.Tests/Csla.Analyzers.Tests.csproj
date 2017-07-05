@@ -174,6 +174,9 @@
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenCommandHasManagedBackingFieldUsedPropertyAndIsNotReadonly.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -187,6 +190,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsAnalayzerTests\AnalyzeWhenClassIsNotStereotype.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixesWithTrivia.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\EvaluateManagedBackingFieldsCodeFixTests\VerifyGetFixes.cs">
@@ -264,21 +270,31 @@
     <Compile Include="Targets\FindGetOrReadInvocationsWalkerTests\WalkWhenContainingTypeIsNotBusinessBase.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNonSerializableArgument.cs">
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithSerializableArgument.cs">
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsChildOperationWithNonSerializableArgument.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsOperationWithNoArguments.cs">
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsRootOperationWithNonSerializableArgument.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsMobileObjectAndMethodIsNotOperation.cs">
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsChildOperationWithSerializableArgument.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWhenClassIsNotMobileObject.cs">
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgument.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsRootOperationWithNoArguments.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithMobileObjectAndMethodIsNotOperation.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\AnalyzeWithNotMobileObject.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\FindOperationsWithNonSerializableArgumentsAnalyzerTests\NonSerializableClass.cs" />
     <Compile Include="Targets\FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixTests\VerifyGetFixes.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -409,6 +425,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsDynamicListBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\ITypeSymbolExtensionsTests\IsStereotypeWhenSymbolIsStereotypeViaCommandBase.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentIsNull.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeDoesNotExists.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Targets\SyntaxNodeExtensionsTests\FindParentWhenParentTypeExists.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Targets\SyntaxNodeExtensionsTests\HasUsingWhenNodeDoesNotHaveUsingStatememt.cs">

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsNotStereotype))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -49,7 +50,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -57,7 +58,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
         $@"Targets\{nameof(IsOperationMethodPublicAnalyzerTests)}\{(nameof(this.AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]

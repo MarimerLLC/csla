@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassIsNotStereotype))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -39,7 +40,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasAbstractProperty))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -47,7 +48,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasStaticProperty))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -55,7 +56,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithNoMethodCall))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -63,7 +64,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -87,7 +88,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -95,7 +96,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithNoMethodCall))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -103,7 +104,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
 
     [TestMethod]
@@ -119,7 +120,7 @@ namespace Csla.Analyzers.Tests
     {
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         $@"Targets\{nameof(EvaluatePropertiesForSimplicityAnalyzerTests)}\{(nameof(this.AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression))}.cs",
-        new string[0]);
+        Array.Empty<string>());
     }
   }
 }

@@ -79,9 +79,11 @@ namespace PTWin
     {
       using (StatusBusy busy = new StatusBusy("Saving..."))
       {
-        RebindUI(true, false);
+        if (RebindUI(true, false))
+        {
+          this.Close();
+        }
       }
-      this.Close();
     }
 
     private void ApplyButton_Click(object sender, EventArgs e)
@@ -109,7 +111,7 @@ namespace PTWin
       this.ResourceBindingSource.DataSource = _resource;
     }
 
-    private void RebindUI(bool saveObject, bool rebind)
+    private bool RebindUI(bool saveObject, bool rebind)
     {
       // disable events
       this.ResourceBindingSource.RaiseListChangedEvents = false;
@@ -134,16 +136,20 @@ namespace PTWin
             MessageBox.Show(ex.BusinessException.ToString(),
               "Error saving", MessageBoxButtons.OK,
               MessageBoxIcon.Exclamation);
+            return false;
           }
           catch (Exception ex)
           {
             MessageBox.Show(ex.ToString(),
               "Error Saving", MessageBoxButtons.OK,
               MessageBoxIcon.Exclamation);
+            return false;
           }
         }
         else
           _resource.CancelEdit();
+
+        return true;
       }
       finally
       {

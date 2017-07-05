@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition="'$(NuGetPackageRoot)' == ''">
-    <NuGetPackageRoot>$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
-  <ImportGroup>
-    <Import Project="$(NuGetPackageRoot)\NuSpec.ReferenceGenerator\1.3.3\build\dotnet\NuSpec.ReferenceGenerator.targets" Condition="Exists('$(NuGetPackageRoot)\NuSpec.ReferenceGenerator\1.3.3\build\dotnet\NuSpec.ReferenceGenerator.targets')" />
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)nuspec.referencegenerator\1.3.3\build\dotnet\NuSpec.ReferenceGenerator.targets" Condition="Exists('$(NuGetPackageRoot)nuspec.referencegenerator\1.3.3\build\dotnet\NuSpec.ReferenceGenerator.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x86\1.6.1\build\Microsoft.Net.Native.SharedLibrary-x86.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x86\1.6.1\build\Microsoft.Net.Native.SharedLibrary-x86.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x64\1.6.1\build\Microsoft.Net.Native.SharedLibrary-x64.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-x64\1.6.1\build\Microsoft.Net.Native.SharedLibrary-x64.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-arm\1.6.1\build\Microsoft.Net.Native.SharedLibrary-arm.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.sharedlibrary-arm\1.6.1\build\Microsoft.Net.Native.SharedLibrary-arm.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.net.native.compiler\1.6.2\build\Microsoft.Net.Native.Compiler.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.net.native.compiler\1.6.2\build\Microsoft.Net.Native.Compiler.targets')" />
   </ImportGroup>
 </Project>

@@ -9,6 +9,7 @@
     <Import_RootNamespace>Csla.Windows.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BindingSourceHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BindingSourceNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BindingSourceRefresh.cs" />

@@ -1,168 +1,126 @@
 ﻿<UserControl x:Class="Rolodex.Silverlight.Views.CompanyEditView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+    xmlns:csla="clr-namespace:Csla;assembly=Csla"
     xmlns:core="clr-namespace:Rolodex.Silverlight.Core"
-    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
-    xmlns:cal="clr-namespace:Microsoft.Practices.Composite.Presentation.Commands;assembly=Microsoft.Practices.Composite.Presentation"
+    xmlns:controls="clr-namespace:Microsoft.Windows.Controls;assembly=WPFToolkit"
+    xmlns:cal="clr-namespace:Microsoft.Practices.Composite.Presentation.Commands;assembly=Microsoft.Practices.Composite.Presentation"    
     >
-  <UserControl.Resources>
-    <core:SecondaryModel x:Key="RanksModel"/>
-  </UserControl.Resources>
-  <Grid x:Name="LayoutRoot">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="35"/>
-    </Grid.RowDefinitions>
-    <Grid x:Name="EditGrid" DataContext="{Binding Model}">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="1*"/>
-        <RowDefinition Height="35"/>
-        <RowDefinition Height="1*"/>
-        <RowDefinition Height="35"/>
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto"/>
-        <ColumnDefinition Width="200"/>
-        <ColumnDefinition Width="*"/>
-        <ColumnDefinition Width="Auto"/>
-      </Grid.ColumnDefinitions>
-      <TextBlock Text="Company Name:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0" Margin="6,6,6,6" VerticalAlignment="Center"/>
+    <UserControl.Resources>
+        <core:SecondaryModel x:Key="RanksModel"/>
+    </UserControl.Resources>
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="EditGrid" DataContext="{Binding Model}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Company Name:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="0" Margin="6,6,6,6" VerticalAlignment="Center"/>
+            <core:CslaTextBox x:Name="CompanyNameTextbox" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="6,6,6,6" Text="{Binding Path=CompanyName, Mode=TwoWay}" VerticalAlignment="Center"/>
+            <TextBlock Text="Date Added:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1" Margin="6,6,6,6" VerticalAlignment="Center"/>
+            <core:CslaDatePicker x:Name="DateAddedTextbox" SelectedDate="{Binding DateAdded, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Margin="6,6,6,6" VerticalAlignment="Center"/>
 
-      <TextBox x:Name="CompanyNameTextbox" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Margin="6,6,6,6" Text="{Binding CompanyName, Mode=TwoWay}" VerticalAlignment="Center"/>
-      <csla:PropertyStatus Grid.Row="0" Grid.Column="3" Property="{Binding CompanyName}"/>
-      <TextBlock Text="Date Added:" TextAlignment="Right" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="1" Margin="6,6,6,6" VerticalAlignment="Center"/>
-      <controls:DatePicker x:Name="DateAddedTextbox" SelectedDate="{Binding DateAdded, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" Margin="6,6,6,6" VerticalAlignment="Center"/>
-      <csla:PropertyStatus Grid.Row="1" Grid.Column="3" Property="{Binding DateAdded}" />
-      <core:CoreDataGrid
-                x:Name="ContactsGrid"
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="6,6,6,6"
-                ItemsSource="{Binding Path=Contacts}"
-                AutoGenerateColumns="False"
-                HorizontalScrollBarVisibility="Hidden"
-                VerticalScrollBarVisibility="Visible"
+            <core:CoreDataGrid 
+                x:Name="ContactsGrid" 
+                Grid.Row="2" 
+                Grid.Column="0" 
+                Grid.ColumnSpan="3" 
+                Margin="6,6,6,6" 
+                ItemsSource="{Binding Path=Contacts}" 
+                AutoGenerateColumns="False" 
+                HorizontalScrollBarVisibility="Hidden" 
+                VerticalScrollBarVisibility="Visible" 
                 SelectionMode="Single"
                 SelectCommand="{Binding ElementName=LayoutRoot, Path=DataContext.SelectContactCommand}">
-        <core:CoreDataGrid.Columns>
-          <controls:DataGridTemplateColumn Header="First Name">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <TextBox Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"  Background="{x:Null}"/>
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding FirstName}" />
-                </Grid>
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-          <controls:DataGridTemplateColumn Header="Last Name">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <TextBox Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}"/>
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding LastName}" />
-                </Grid>
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-          <controls:DataGridTemplateColumn Header="Birthday">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <controls:DatePicker SelectedDate="{Binding Birthday, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" Foreground="Black"/>
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding Birthday}" />
-                </Grid>
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-          <controls:DataGridTemplateColumn Header="Rank">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <ComboBox SelectedValue="{Binding RankId, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}" SelectedValuePath="Key" DisplayMemberPath="Value" ItemsSource="{Binding Source={StaticResource RanksModel}, Path=Model}" Foreground="Black" />
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding RankId}" />
-                </Grid>
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-        </core:CoreDataGrid.Columns>
-      </core:CoreDataGrid>
+                <core:CoreDataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="First Name">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaTextBox Text="{Binding FirstName, Mode=TwoWay}" Background="{x:Null}"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="Last Name">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaTextBox Text="{Binding LastName, Mode=TwoWay}" Background="{x:Null}"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="Birthday">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaDatePicker SelectedDate="{Binding Birthday, Mode=TwoWay}" Background="{x:Null}" Foreground="Black"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="Rank">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaComboBox SelectedValue="{Binding RankId, Mode=TwoWay}" Background="{x:Null}" SelectedValuePath="Key" DisplayMemberPath="Value" ItemsSource="{Binding Source={StaticResource RanksModel}, Path=Model}" Foreground="Black" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                </core:CoreDataGrid.Columns>
+            </core:CoreDataGrid>
 
-      <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
-        <Button x:Name="AddContactButton" Content="  Add Contact  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.AddContactCommand}"/>
-        <Button x:Name="RemoveContactButton" Content="  Remove Contact  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.RemoveContactCommand}"/>
-      </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3">
+                <Button x:Name="AddContactButton" Content="  Add Contact  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.AddContactCommand}"/>
+                <Button x:Name="RemoveContactButton" Content="  Remove Contact  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.RemoveContactCommand}"/>
+            </StackPanel>
 
-      <core:CoreDataGrid
-                x:Name="ContactsPhonesGrid"
-                Grid.Row="4"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="6,6,6,6"
-                AutoGenerateColumns="False"
-                HorizontalScrollBarVisibility="Hidden"
+            <core:CoreDataGrid 
+                x:Name="ContactsPhonesGrid" 
+                Grid.Row="4" 
+                Grid.Column="0" 
+                Grid.ColumnSpan="3" 
+                Margin="6,6,6,6" 
+                AutoGenerateColumns="False" 
+                HorizontalScrollBarVisibility="Hidden" 
                 VerticalScrollBarVisibility="Visible"
                 SelectCommand="{Binding ElementName=LayoutRoot, Path=DataContext.SelectContactPhoneCommand}">
-        <core:CoreDataGrid.Columns>
-          <controls:DataGridTemplateColumn Header="Phone Number">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <TextBox Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}"/>
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding PhoneNumber}" />
-                </Grid>
-                
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-          <controls:DataGridTemplateColumn Header="Fax Number">
-            <controls:DataGridTemplateColumn.CellTemplate>
-              <DataTemplate>
-                <Grid>
-                  <TextBox Text="{Binding FaxNumber, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Background="{x:Null}"/>
-                  <csla:PropertyStatus Grid.Column="1" Property="{Binding FaxNumber}" />
-                </Grid>
-              </DataTemplate>
-            </controls:DataGridTemplateColumn.CellTemplate>
-          </controls:DataGridTemplateColumn>
-        </core:CoreDataGrid.Columns>
-      </core:CoreDataGrid>
+                <core:CoreDataGrid.Columns>
+                    <controls:DataGridTemplateColumn Header="Phone Number">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaTextBox Text="{Binding PhoneNumber, Mode=TwoWay}" Background="{x:Null}"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                    <controls:DataGridTemplateColumn Header="Fax Number">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <core:CslaTextBox Text="{Binding FaxNumber, Mode=TwoWay}" Background="{x:Null}"/>
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+                </core:CoreDataGrid.Columns>
+            </core:CoreDataGrid>
 
-      <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5">
-        <Button x:Name="AddContactPhoneButton" Content="  Add Phone  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.AddContactPhoneCommand}"/>
-        <Button x:Name="RemoveContactPhoneButton" Content="  Remove Phone  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.RemoveContactPhoneCommand}"/>
-      </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5">
+                <Button x:Name="AddContactPhoneButton" Content="  Add Phone  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.AddContactPhoneCommand}"/>
+                <Button x:Name="RemoveContactPhoneButton" Content="  Remove Phone  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding ElementName=LayoutRoot, Path=DataContext.RemoveContactPhoneCommand}"/>
+            </StackPanel>
 
+        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+            <Button x:Name="SaveButton" Content="  Save  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding SaveCommand}"/>
+            <Button x:Name="CancelButton" Content="  Cancel  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding CancelCommand}"/>
+            <Button x:Name="DeleteButton" Content="  Delete  " Width="Auto" Margin="6,6,6,6"  cal:Click.Command="{Binding DeleteCommand}"/>
+            <Button x:Name="CloseButton" Content="  Close  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding CloseCommand}"/>
+        </StackPanel>
     </Grid>
-    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
-      <Button x:Name="SaveButton" Content="  Save  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding SaveCommand}"/>
-      <Button x:Name="CancelButton" Content="  Cancel  " Width="Auto"  Margin="6,6,6,6"  cal:Click.Command="{Binding CancelCommand}"/>
-      <Button x:Name="DeleteButton" Content="  Delete  " Width="Auto" Margin="6,6,6,6"  cal:Click.Command="{Binding DeleteCommand}"/>
-      <Button x:Name="CloseButton" Content="  Close  " Width="Auto" Margin="6,6,6,6" cal:Click.Command="{Binding CloseCommand}"/>
-    </StackPanel>
-  </Grid>
 </UserControl>

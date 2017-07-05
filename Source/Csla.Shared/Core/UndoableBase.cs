@@ -7,7 +7,9 @@
 //-----------------------------------------------------------------------
 #if NETFX_CORE || IOS || ANDROID
 using System;
+#if !NETSTANDARD1_6 && !WINDOWS_UWP
 using Csla.Serialization.Mobile;
+#endif
 using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Properties;
@@ -123,9 +125,13 @@ namespace Csla.Core
       CopyingState();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
+#if NETSTANDARD1_6 || WINDOWS_UWP
+      SerializationInfo state = new SerializationInfo(this.GetType(), null);
+#else
       SerializationInfo state = new SerializationInfo(0);
+#endif
       OnCopyState(state);
       _stateStack.Push(state);
       
@@ -177,7 +183,7 @@ namespace Csla.Core
       UndoingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (parentEditLevel >= 0)
       {
@@ -232,7 +238,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new Core.UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
         _stateStack.Pop();
@@ -240,7 +246,7 @@ namespace Csla.Core
       AcceptChangesComplete();
     }
 
-#region Helper Functions
+      #region Helper Functions
 
     private static bool NotUndoableField(FieldInfo field)
     {
@@ -257,9 +263,9 @@ namespace Csla.Core
       return field.DeclaringType.FullName + "!" + field.Name;
     }
 
-#endregion
+      #endregion
 
-#region  Reset child edit level
+      #region  Reset child edit level
 
     internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
@@ -276,9 +282,10 @@ namespace Csla.Core
         child.CopyState(targetLevel, false);
     }
 
-#endregion
+    #endregion
 
-#region MobileObject overrides
+#if !NETSTANDARD1_6 && !WINDOWS_UWP
+    #region MobileObject overrides
 
     /// <summary>
     /// Gets the state of the object for serialization.
@@ -328,7 +335,8 @@ namespace Csla.Core
       base.OnSetState(info, mode);
     }
 
-#endregion
+    #endregion
+#endif
   }
 }
 #else
@@ -448,7 +456,7 @@ namespace Csla.Core
       HybridDictionary state = new HybridDictionary();
 
       if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
 
       do
       {
@@ -533,7 +541,7 @@ namespace Csla.Core
       if (EditLevel > 0)
       {
         if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"));
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
         HybridDictionary state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
@@ -625,7 +633,7 @@ namespace Csla.Core
       AcceptingChanges();
 
       if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"));
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {

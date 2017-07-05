@@ -182,7 +182,7 @@ namespace Csla.DataPortalClient
 #endif
 
 #if (ANDROID || IOS) || NETFX_CORE
-    #region Criteria
+#region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -234,7 +234,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-    #endregion
+#endregion
 #endif
 
     /// <summary>
@@ -859,7 +859,7 @@ namespace Csla.DataPortalClient
     }
 
 #if ANDROID || IOS || NETFX_CORE
-    #region Extension Method for Requests
+#region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -891,7 +891,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-    #endregion
+#endregion
 #endif
   }
 }

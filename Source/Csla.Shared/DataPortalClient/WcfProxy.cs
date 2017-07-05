@@ -35,19 +35,24 @@ namespace Csla.DataPortalClient
     /// </summary>
     public static System.ServiceModel.Channels.Binding DefaultBinding
     {
-      get 
+      get
       {
         if (_defaultBinding == null)
         {
-          _defaultBinding  = new BasicHttpBinding();
-          BasicHttpBinding binding = (BasicHttpBinding)_defaultBinding;
-          binding.MaxBufferSize = int.MaxValue;
-          binding.MaxReceivedMessageSize = int.MaxValue;
-          binding.ReceiveTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
-          binding.SendTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
-          binding.OpenTimeout = TimeSpan.FromMinutes(TimeoutInMinutes);
-        }; 
-        return _defaultBinding; 
+          _defaultBinding = new WSHttpBinding()
+          {
+            MaxReceivedMessageSize = int.MaxValue,
+            ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas()
+            {
+              MaxBytesPerRead = int.MaxValue,
+              MaxDepth = int.MaxValue,
+              MaxArrayLength = int.MaxValue,
+              MaxStringContentLength = int.MaxValue,
+              MaxNameTableCharCount = int.MaxValue
+            }
+          };
+        }
+        return _defaultBinding;
       }
       set { _defaultBinding = value; }
     }
@@ -86,7 +91,7 @@ namespace Csla.DataPortalClient
       this.Binding = WcfProxy.DefaultBinding;
       this.EndPoint = WcfProxy.DefaultEndPoint;
     }
-    
+
     /// <summary>
     /// Gets a value indicating whether the data portal
     /// is hosted on a remote server.
@@ -119,28 +124,16 @@ namespace Csla.DataPortalClient
     /// used by GetProxy() to create the WCF proxy
     /// object.
     /// </summary>
+    /// <remarks>
+    /// If DataPortalUrl is used, then use the default (likely wsHttp) binding,
+    /// otherwise use the endpoint configuration defined in the app/web.config
+    /// </remarks>
     protected virtual ChannelFactory<IWcfPortal> GetChannelFactory()
     {
-      // if dataportal url is specified use this with default wsHttBinding
       if (!string.IsNullOrEmpty(ApplicationContext.DataPortalUrlString))
-      {
-        var binding = new WSHttpBinding()
-        { 
-          MaxReceivedMessageSize = int.MaxValue, 
-          ReaderQuotas = new System.Xml.XmlDictionaryReaderQuotas() 
-          {
-            MaxBytesPerRead = int.MaxValue,
-            MaxDepth = int.MaxValue,
-            MaxArrayLength = int.MaxValue,
-            MaxStringContentLength = int.MaxValue,
-            MaxNameTableCharCount = int.MaxValue
-          }
-        };
-        return new ChannelFactory<IWcfPortal>(binding, new EndpointAddress(ApplicationContext.DataPortalUrl));
-      }
-
-      // else return a channelfactory that uses the endpoint configuration in app.config/web.config
-      return new ChannelFactory<IWcfPortal>(EndPoint);
+        return new ChannelFactory<IWcfPortal>(Binding, new EndpointAddress(ApplicationContext.DataPortalUrl));
+      else
+        return new ChannelFactory<IWcfPortal>(EndPoint);
     }
 
     /// <summary>
@@ -189,7 +182,7 @@ namespace Csla.DataPortalClient
 #endif
 
 #if (ANDROID || IOS) || NETFX_CORE
-#region Criteria
+    #region Criteria
 
     private WcfPortal.CriteriaRequest GetBaseCriteriaRequest()
     {
@@ -241,7 +234,7 @@ namespace Csla.DataPortalClient
       return request;
     }
 
-#endregion
+    #endregion
 #endif
 
     /// <summary>
@@ -866,7 +859,7 @@ namespace Csla.DataPortalClient
     }
 
 #if ANDROID || IOS || NETFX_CORE
-#region Extension Method for Requests
+    #region Extension Method for Requests
 
     /// <summary>
     /// Override this method to manipulate the message
@@ -898,7 +891,7 @@ namespace Csla.DataPortalClient
       return response;
     }
 
-#endregion
+    #endregion
 #endif
   }
 }

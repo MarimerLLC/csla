@@ -1050,7 +1050,7 @@ namespace Csla.Rules
     #region Get All Broken Rules (tree)
 
     /// <summary>
-    /// Gets all nodes in tree thar have IsValid = false (and all parents) 
+    /// Gets all nodes in tree that have IsValid = false (and all parents) 
     /// </summary>
     /// <param name="root">The root.</param>
     /// <returns>BrukenRulesTree list</returns>

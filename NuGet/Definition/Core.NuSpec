@@ -40,6 +40,7 @@ Supports the creation of Class Library projects containing business domain class
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.0.0" />
         <dependency id="System.Threading" version="4.0.10" />
         <dependency id="System.Threading.Tasks" version="4.0.10" />
+        <dependency id="System.Runtime.Serialization.Formatters" version="4.3.0" />
       </group>
       <group targetFramework="netstandard1.5">
         <dependency id="NETStandard.Library" version="1.5.0" />

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD1_6
+﻿#if !NETSTANDARD1_6 && !WINDOWS_UWP
 #if NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="SerializationAttribute.cs" company="Marimer LLC">

@@ -12,10 +12,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Csla.Properties;
 using System.Reflection;
-using System.IO;
-#if !ANDROID && !IOS
-using System.Runtime.Serialization;
-#endif
 
 namespace Csla.Core
 {
@@ -240,7 +236,7 @@ namespace Csla.Core
       AcceptChangesComplete();
     }
 
-#region Helper Functions
+      #region Helper Functions
 
     private static bool NotUndoableField(FieldInfo field)
     {
@@ -257,9 +253,9 @@ namespace Csla.Core
       return field.DeclaringType.FullName + "!" + field.Name;
     }
 
-#endregion
+      #endregion
 
-#region  Reset child edit level
+      #region  Reset child edit level
 
     internal static void ResetChildEditLevel(IUndoableObject child, int parentEditLevel, bool bindingEdit)
     {
@@ -276,9 +272,9 @@ namespace Csla.Core
         child.CopyState(targetLevel, false);
     }
 
-#endregion
+    #endregion
 
-#region MobileObject overrides
+    #region MobileObject overrides
 
     /// <summary>
     /// Gets the state of the object for serialization.
@@ -328,7 +324,7 @@ namespace Csla.Core
       base.OnSetState(info, mode);
     }
 
-#endregion
+    #endregion
   }
 }
 #else

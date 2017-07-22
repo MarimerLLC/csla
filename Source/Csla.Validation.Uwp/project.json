@@ -1,6 +1,7 @@
 ﻿{
   "dependencies": {
-    "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
+    "Microsoft.NETCore.UniversalWindowsPlatform": "5.3.3",
+    "System.Runtime.Serialization.Formatters": "4.3.0"
   },
   "frameworks": {
     "uap10.0": {}

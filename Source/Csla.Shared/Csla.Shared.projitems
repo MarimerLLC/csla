@@ -207,6 +207,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\BinaryFormatterWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ISerializationFormatter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\AssemblyNameTranslator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaKnownTypes.cs" />

@@ -82,6 +82,40 @@ namespace Csla.Core
 
     #endregion
 
+    #region Identity
+
+    private int _identity;
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        if (_identity <= 0)
+          _identity = ((IParent)this).GetNextIdentity();
+        return _identity;
+      }
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity()
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity();
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity();
+      }
+    }
+    
+    #endregion
+
     #region Parent/Child link
 
     [NotUndoable]
@@ -3505,6 +3539,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
       info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
     }
 
     /// <summary>
@@ -3529,6 +3564,7 @@ namespace Csla.Core
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
       if (mode != StateMode.Undo)
         _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
     }
 
     /// <summary>

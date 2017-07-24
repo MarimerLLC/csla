@@ -106,6 +106,18 @@ namespace Csla
 
     #endregion
 
+    #region Identity
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        return 0;
+      }
+    }
+
+    #endregion
+
     #region Authorization
 
     [NotUndoable()]

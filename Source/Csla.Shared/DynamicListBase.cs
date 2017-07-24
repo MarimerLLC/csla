@@ -48,7 +48,7 @@ namespace Csla
 #else
     ObservableBindingList<T>,
 #endif
-    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification
+    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification, IBusinessObject
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
@@ -69,6 +69,41 @@ namespace Csla
     /// </summary>
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
+
+    #endregion
+
+    #region Identity
+
+    private int _identity;
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        if (_identity <= 0)
+          _identity = ((IParent)this).GetNextIdentity();
+        return _identity;
+      }
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity()
+    {
+      var me = (IParent)this;
+      if (me.Parent != null)
+      {
+        return me.Parent.GetNextIdentity();
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity();
+      }
+    }
 
     #endregion
 
@@ -577,6 +612,36 @@ namespace Csla
 
     void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
+
+    #endregion
+
+    #region Mobile object overrides
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnGetState(SerializationInfo info)
+    {
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
+      base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialzation stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    protected override void OnSetState(SerializationInfo info)
+    {
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
+      base.OnSetState(info);
+    }
 
     #endregion
   }

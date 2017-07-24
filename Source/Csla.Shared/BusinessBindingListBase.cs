@@ -77,11 +77,45 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-#endregion
+    #endregion
 
-#region IsDirty, IsValid, IsSavable
+    #region Identity
 
-        /// <summary>
+    private int _identity;
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        if (_identity <= 0)
+          _identity = ((IParent)this).GetNextIdentity();
+        return _identity;
+      }
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity()
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity();
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity();
+      }
+    }
+
+    #endregion
+
+    #region IsDirty, IsValid, IsSavable
+
+    /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
     bool Core.ITrackStatus.IsSelfDirty
@@ -1331,6 +1365,7 @@ namespace Csla
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }
 
@@ -1346,6 +1381,7 @@ namespace Csla
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
 

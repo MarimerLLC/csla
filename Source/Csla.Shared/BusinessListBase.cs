@@ -64,6 +64,40 @@ namespace Csla
 
     #endregion
 
+    #region Identity
+
+    private int _identity;
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        if (_identity <= 0)
+          _identity = ((IParent)this).GetNextIdentity();
+        return _identity;
+      }
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity()
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity();
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity();
+      }
+    }
+
+    #endregion
+
     #region ICloneable
 
     object ICloneable.Clone()
@@ -606,6 +640,7 @@ namespace Csla
     {
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", _editLevel);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
 
@@ -621,6 +656,7 @@ namespace Csla
     {
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       _editLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }
 

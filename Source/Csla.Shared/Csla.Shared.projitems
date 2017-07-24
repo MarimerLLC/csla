@@ -142,6 +142,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ICommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IdentityManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LazySingleton.cs" />

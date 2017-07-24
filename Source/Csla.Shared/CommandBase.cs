@@ -73,6 +73,18 @@ namespace Csla
 
     #endregion
 
+    #region Identity
+
+    int IBusinessObject.Identity
+    {
+      get
+      {
+        return 0;
+      }
+    }
+
+    #endregion
+
     #region Data Access
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]

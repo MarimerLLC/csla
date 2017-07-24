@@ -7,30 +7,31 @@ using Csla.Reflection;
 namespace Csla.Serialization.Mobile
 {
   /// <summary>
-  /// This is a class that is responsible for serializing SerializationInfo objects 
-  /// into a Stream for sending the data t client / server
+  /// This is a legacy version of <see cref="CslaBinaryWriter"/>. You should
+  /// not use this type unless you have issues with the <see cref="CslaBinaryWriter"/>.
   /// </summary>
-  public class CslaBinaryWriter : ICslaWriter
+  public class CslaLegacyBinaryWriter : ICslaWriter
   {
     private readonly Dictionary<string, int> keywordsDictionary;
 
     /// <summary>
-    /// Create new instance of CslaBinaryWriter class
+    /// Creates new instance of <see cref="CslaLegacyBinaryWriter"/>
     /// </summary>
-    public CslaBinaryWriter()
+    public CslaLegacyBinaryWriter()
     {
       keywordsDictionary = new Dictionary<string, int>();
     }
 
+
     /// <summary>
-    /// Write a list of <see cref="SerializationInfo"/> objects into stream,
-    /// typically <see cref="MemoryStream"/>.
+    /// Write a list of SerializationInfo objects into stream,
+    /// typically MemoryStream
     /// </summary>
     /// <param name="serializationStream">Stream to write the data into</param>
-    /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
+    /// <param name="objectData">List of SerializationInfo objects to write to stream</param>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      this.keywordsDictionary.Clear();
+      keywordsDictionary.Clear();
       using (var writer = new CslaNonClosingBinaryWriter(serializationStream))
       {
         writer.Write(objectData.Count);
@@ -43,15 +44,15 @@ namespace Csla.Serialization.Mobile
           foreach (var childData in serializationInfo.Children)
           {
             WriteSystemString(childData.Key, writer);
-            writer.Write(childData.Value.IsDirty);
-            writer.Write(childData.Value.ReferenceId);
+            Write(childData.Value.IsDirty, writer);
+            Write(childData.Value.ReferenceId, writer);
           }
           writer.Write(serializationInfo.Values.Count);
           foreach (var valueData in serializationInfo.Values)
           {
             WriteSystemString(valueData.Key, writer);
             WriteSystemString(valueData.Value.EnumTypeName ?? string.Empty, writer);
-            writer.Write(valueData.Value.IsDirty);
+            Write(valueData.Value.IsDirty, writer);
             Write(valueData.Value.Value, writer);
           }
         }
@@ -78,8 +79,8 @@ namespace Csla.Serialization.Mobile
     private DictionaryCheckResult GetKey(string value)
     {
       DictionaryCheckResult returnValue;
-
-      if (keywordsDictionary.TryGetValue(value, out var key))
+      int key;
+      if (keywordsDictionary.TryGetValue(value, out key))
       {
         returnValue = new DictionaryCheckResult(false, key);
       }
@@ -149,55 +150,56 @@ namespace Csla.Serialization.Mobile
         {
           case TypeCode.Boolean:
             Write(CslaKnownTypes.Boolean, writer);
-            writer.Write((bool)target);
+            writer.Write((Boolean)target);
             break;
           case TypeCode.Char:
             Write(CslaKnownTypes.Char, writer);
-            writer.Write((char)target);
+            writer.Write((Char)target);
             break;
           case TypeCode.SByte:
             Write(CslaKnownTypes.SByte, writer);
-            writer.Write((sbyte)target);
+            writer.Write((SByte)target);
             break;
           case TypeCode.Byte:
             Write(CslaKnownTypes.Byte, writer);
-            writer.Write((byte)target);
+            writer.Write((Byte)target);
             break;
           case TypeCode.Int16:
             Write(CslaKnownTypes.Int16, writer);
-            writer.Write((short)target);
+            writer.Write((Int16)target);
             break;
           case TypeCode.UInt16:
             Write(CslaKnownTypes.UInt16, writer);
-            writer.Write((ushort)target);
+            writer.Write((UInt16)target);
             break;
           case TypeCode.Int32:
             Write(CslaKnownTypes.Int32, writer);
-            writer.Write((int)target);
+            writer.Write((Int32)target);
             break;
           case TypeCode.UInt32:
             Write(CslaKnownTypes.UInt32, writer);
-            writer.Write((uint)target);
+            writer.Write((UInt32)target);
             break;
           case TypeCode.Int64:
             Write(CslaKnownTypes.Int64, writer);
-            writer.Write((long)target);
+            writer.Write((Int64)target);
             break;
           case TypeCode.UInt64:
             Write(CslaKnownTypes.UInt64, writer);
-            writer.Write((ulong)target);
+            writer.Write((UInt64)target);
             break;
           case TypeCode.Single:
             Write(CslaKnownTypes.Single, writer);
-            writer.Write((float)target);
+            writer.Write((Single)target);
             break;
           case TypeCode.Double:
             Write(CslaKnownTypes.Double, writer);
-            writer.Write((double)target);
+            writer.Write((Double)target);
             break;
           case TypeCode.Decimal:
             Write(CslaKnownTypes.Decimal, writer);
             var bits = Decimal.GetBits((decimal)target);
+            writer.Write(bits.Length);
             foreach (var bit in bits)
             {
               writer.Write(bit);
@@ -210,7 +212,7 @@ namespace Csla.Serialization.Mobile
             break;
           case TypeCode.String:
             Write(CslaKnownTypes.String, writer);
-            writer.Write((string)target);
+            writer.Write((String)target);
             break;
           default:
             throw new NotSupportedException(Resources.BinaryWriterObjectSerializationException);

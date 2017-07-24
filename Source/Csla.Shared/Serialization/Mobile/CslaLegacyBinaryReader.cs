@@ -1,32 +1,32 @@
-﻿using Csla.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
   /// <summary>
-  /// This is a class that is responsible for deserializing <see cref="SerializationInfo"/> objects for
-  /// receiving the data from client / server.
+  /// This is a legacy version of <see cref="CslaBinaryReader"/>. You should
+  /// not use this type unless you have issues with the <see cref="CslaBinaryReader"/>.
   /// </summary>
-  public class CslaBinaryReader : ICslaReader
+  public class CslaLegacyBinaryReader : ICslaReader
   {
     private readonly Dictionary<int, string> keywordsDictionary;
 
     /// <summary>
-    /// Creates new instance of <see cref="CslaBinaryReader"/>
+    /// Creates new instance of <see cref="CslaLegacyBinaryReader"/>
     /// </summary>
-    public CslaBinaryReader()
+    public CslaLegacyBinaryReader()
     {
       keywordsDictionary = new Dictionary<int, string>();
     }
 
     /// <summary>
-    /// Read a data from a stream, typically <see cref="MemoryStream"/>, and convert it into 
-    /// a list of <see cref="SerializationInfo"/> objects
+    /// Read a data from a stream, typically MemoryStream, and convert it into 
+    /// a list of SerializationInfo objects
     /// </summary>
     /// <param name="serializationStream">Stream to read the data from</param>
-    /// <returns>List of <see cref="SerializationInfo"/> objects</returns>
+    /// <returns>List of SerializationInfo objects</returns>
     public List<SerializationInfo> Read(Stream serializationStream)
     {
       var returnValue = new List<SerializationInfo>();
@@ -34,34 +34,31 @@ namespace Csla.Serialization.Mobile
       string systemName, enumTypeName;
       bool isDirty;
       object value;
-      this.keywordsDictionary.Clear();
-
+      keywordsDictionary.Clear();
       using (var reader = new BinaryReader(serializationStream))
       {
         var totalCount = reader.ReadInt32();
         for (var counter = 0; counter < totalCount; counter++)
         {
-          var info = new SerializationInfo()
-          {
-            ReferenceId = reader.ReadInt32(),
-            TypeName = ReadString(reader)
-          };
+          var info = new SerializationInfo();
+          info.ReferenceId = reader.ReadInt32();
+          info.TypeName = (string)ReadObject(reader);
 
           childCount = reader.ReadInt32();
           for (var childCounter = 0; childCounter < childCount; childCounter++)
           {
-            systemName = ReadString(reader);
-            isDirty = reader.ReadBoolean();
-            referenceId = reader.ReadInt32();
+            systemName = (string)ReadObject(reader);
+            isDirty = (bool)ReadObject(reader);
+            referenceId = (int)ReadObject(reader);
             info.AddChild(systemName, referenceId, isDirty);
           }
 
           valueCount = reader.ReadInt32();
           for (var valueCounter = 0; valueCounter < valueCount; valueCounter++)
           {
-            systemName = ReadString(reader);
-            enumTypeName = ReadString(reader);
-            isDirty = reader.ReadBoolean();
+            systemName = (string)ReadObject(reader);
+            enumTypeName = (string)ReadObject(reader);
+            isDirty = (bool)ReadObject(reader);
             value = ReadObject(reader);
             info.AddValue(systemName, value, isDirty, string.IsNullOrEmpty(enumTypeName) ? null : enumTypeName);
           }
@@ -70,26 +67,6 @@ namespace Csla.Serialization.Mobile
       }
 
       return returnValue;
-    }
-
-    private string ReadString(BinaryReader reader) =>
-      this.ReadString(reader, (CslaKnownTypes)reader.ReadByte());
-
-    private string ReadString(BinaryReader reader, CslaKnownTypes knownType)
-    {
-      switch (knownType)
-      {
-        case CslaKnownTypes.String:
-          return reader.ReadString();
-        case CslaKnownTypes.StringWithDictionaryKey:
-          var systemString = reader.ReadString();
-          this.keywordsDictionary.Add(reader.ReadInt32(), systemString);
-          return systemString;
-        case CslaKnownTypes.StringDictionaryKey:
-          return this.keywordsDictionary[reader.ReadInt32()];
-        default:
-          throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
-      }
     }
 
     private object ReadObject(BinaryReader reader)
@@ -122,14 +99,17 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.Double:
           return reader.ReadDouble();
         case CslaKnownTypes.Decimal:
-          var decimalBits = new int[4];
-          for (var counter = 0; counter < 4; counter++)
+          var totalBits = reader.ReadInt32();
+          var decimalBits = new int[totalBits];
+          for (var counter = 0; counter < totalBits; counter++)
           {
             decimalBits[counter] = reader.ReadInt32();
           }
-          return new decimal(decimalBits);
+          return new Decimal(decimalBits);
         case CslaKnownTypes.DateTime:
           return new DateTime(reader.ReadInt64());
+        case CslaKnownTypes.String:
+          return reader.ReadString();
         case CslaKnownTypes.TimeSpan:
           return new TimeSpan(reader.ReadInt64());
         case CslaKnownTypes.DateTimeOffset:
@@ -141,22 +121,25 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.CharArray:
           return reader.ReadChars(reader.ReadInt32());
         case CslaKnownTypes.ListOfInt:
+          var returnValue = new List<int>();
           var total = reader.ReadInt32();
-          var buffer = new int[total];
           for (var counter = 0; counter < total; counter++)
           {
-            buffer[counter] = reader.ReadInt32();
+            returnValue.Add(reader.ReadInt32());
           }
-          return new List<int>(buffer);
+          return returnValue;
         case CslaKnownTypes.Null:
           return null;
-        case CslaKnownTypes.String:
         case CslaKnownTypes.StringWithDictionaryKey:
+          var systemString = reader.ReadString();
+          keywordsDictionary.Add(reader.ReadInt32(), systemString);
+          return systemString;
         case CslaKnownTypes.StringDictionaryKey:
-          return ReadString(reader, knownType);
+          return keywordsDictionary[reader.ReadInt32()];
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }
     }
+
   }
 }

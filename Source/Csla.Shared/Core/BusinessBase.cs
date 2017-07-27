@@ -64,6 +64,7 @@ namespace Csla.Core
     /// </summary>
     protected BusinessBase()
     {
+      InitializeIdentity();
       Initialize();
       InitializeBusinessRules();
     }
@@ -88,12 +89,12 @@ namespace Csla.Core
 
     int IBusinessObject.Identity
     {
-      get
-      {
-        if (_identity <= 0)
-          _identity = ((IParent)this).GetNextIdentity();
-        return _identity;
-      }
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity();
     }
 
     [NonSerialized]

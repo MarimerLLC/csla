@@ -48,6 +48,7 @@ namespace Csla
     /// </summary>
     protected BusinessListBase()
     {
+      InitializeIdentity();
       Initialize();
       AllowNew = true;
     }
@@ -70,12 +71,12 @@ namespace Csla
 
     int IBusinessObject.Identity
     {
-      get
-      {
-        if (_identity <= 0)
-          _identity = ((IParent)this).GetNextIdentity();
-        return _identity;
-      }
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity();
     }
 
     [NonSerialized]

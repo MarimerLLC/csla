@@ -85,7 +85,7 @@ namespace Csla.Core
 
     #region Identity
 
-    private int _identity;
+    private int _identity = -1;
 
     int IBusinessObject.Identity
     {

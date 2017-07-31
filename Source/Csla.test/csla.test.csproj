@@ -209,6 +209,7 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="GraphMerge\IdentityTests.cs" />
     <Compile Include="LazySingelton\LazySingeltonTest.cs" />
     <Compile Include="Linq\LinqObservableCollectionTest.cs" />
     <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />
@@ -465,6 +466,7 @@
       <Name>csla.silverlight.server.test</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

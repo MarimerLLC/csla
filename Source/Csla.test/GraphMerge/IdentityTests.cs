@@ -35,10 +35,49 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
+    public void IdentityNewBaseChild()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.AddChild();
+      Assert.IsTrue(((IBusinessObject)obj.Child).Identity >= 0);
+      Assert.IsTrue(((IBusinessObject)obj).Identity != ((IBusinessObject)obj.Child).Identity);
+    }
+
+    [TestMethod]
+    public void IdentityBaseClone()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.AddChild();
+      obj.Child.Name = "child";
+      var cloned = obj.Clone();
+      Assert.AreEqual(((IBusinessObject)obj).Identity, ((IBusinessObject)cloned).Identity, "root");
+      Assert.AreEqual(((IBusinessObject)obj.Child).Identity, ((IBusinessObject)cloned.Child).Identity, "child");
+    }
+
+    [TestMethod]
     public void IdentityInitializedBusinessListBase()
     {
       var obj = Csla.DataPortal.Create<FooList>();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
+    }
+
+    [TestMethod]
+    public void IdentityNewListChild()
+    {
+      var obj = Csla.DataPortal.Create<FooList>();
+      obj.AddNew();
+      Assert.IsTrue(((IBusinessObject)obj[0]).Identity >= 0);
+      Assert.IsTrue(((IBusinessObject)obj).Identity != ((IBusinessObject)obj[0]).Identity);
+    }
+
+    [TestMethod]
+    public void IdentityListClone()
+    {
+      var obj = Csla.DataPortal.Create<FooList>();
+      obj.AddNew();
+      var cloned = obj.Clone();
+      Assert.AreEqual(((IBusinessObject)obj).Identity, ((IBusinessObject)cloned).Identity, "root");
+      Assert.AreEqual(((IBusinessObject)obj[0]).Identity, ((IBusinessObject)cloned[0]).Identity, "child");
     }
 
     [TestMethod]
@@ -56,7 +95,7 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
-    public void IdentityInitializedDynamiceBindingListBase()
+    public void IdentityInitializedDynamicBindingListBase()
     {
       var obj = Csla.DataPortal.Create<FooDynamicBindingList>();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -65,7 +104,28 @@ namespace Csla.Test.GraphMerge
 
   [Serializable]
   public class Foo : BusinessBase<Foo>
-  { }
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public string Name
+    {
+      get { return GetProperty(NameProperty); }
+      set { SetProperty(NameProperty, value); }
+    }
+
+    public static readonly PropertyInfo<Foo> ChildProperty = RegisterProperty<Foo>(c => c.Child);
+    public Foo Child
+    {
+      get { return GetProperty(ChildProperty); }
+      set { SetProperty(ChildProperty, value); }
+    }
+
+    public void AddChild()
+    {
+      var child = Csla.DataPortal.Create<Foo>();
+      child.MarkAsChild();
+      LoadProperty(ChildProperty, child);
+    }
+  }
 
   [Serializable]
   public class FooList : BusinessListBase<FooList, Foo>

@@ -84,7 +84,8 @@ namespace Csla
 
     private void InitializeIdentity()
     {
-      _identity = ((IParent)this).GetNextIdentity();
+      if (_identity == -1)
+        _identity = ((IParent)this).GetNextIdentity();
     }
 
     [NonSerialized]

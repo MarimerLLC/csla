@@ -15,7 +15,7 @@ namespace Csla.Core
   /// </summary>
   public class IdentityManager
   {
-    private int _lastIdentity;
+    private int _nextIdentity;
 
     /// <summary>
     /// Gets and consumes the next available unique identity value 
@@ -25,7 +25,7 @@ namespace Csla.Core
     /// <returns>The next available identity value.</returns>
     public int GetNextIdentity()
     {
-      return _lastIdentity++;
+      return _nextIdentity++;
     }
   }
 }

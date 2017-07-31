@@ -91,7 +91,8 @@ namespace Csla
 
     private void InitializeIdentity()
     {
-      _identity = ((IParent)this).GetNextIdentity();
+      if (_identity == -1)
+        _identity = ((IParent)this).GetNextIdentity();
     }
 
     [NonSerialized]
@@ -733,6 +734,7 @@ namespace Csla
     /// </remarks>
     protected void MarkAsChild()
     {
+      _identity = -1;
       _isChild = true;
     }
 
@@ -1230,6 +1232,8 @@ namespace Csla
     protected virtual void SetParent(Core.IParent parent)
     {
       _parent = parent;
+      _identityManager = null;
+      InitializeIdentity();
     }
 
     /// <summary>

@@ -84,26 +84,25 @@ namespace Csla
 
     private void InitializeIdentity()
     {
-      if (_identity == -1)
-        _identity = ((IParent)this).GetNextIdentity();
+      _identity = ((IParent)this).GetNextIdentity(_identity);
     }
 
     [NonSerialized]
     [NotUndoable]
     private IdentityManager _identityManager;
 
-    int IParent.GetNextIdentity()
+    int IParent.GetNextIdentity(int current)
     {
       var me = (IParent)this;
       if (me.Parent != null)
       {
-        return me.Parent.GetNextIdentity();
+        return me.Parent.GetNextIdentity(current);
       }
       else
       {
         if (_identityManager == null)
           _identityManager = new IdentityManager();
-        return _identityManager.GetNextIdentity();
+        return _identityManager.GetNextIdentity(current);
       }
     }
 

@@ -81,6 +81,20 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
+    public void IdentityPostCloneIdentityManager()
+    {
+      var obj = Csla.DataPortal.Create<FooList>();
+      obj.AddNew();
+      var cloned = obj.Clone();
+      cloned.AddNew();
+      Assert.IsTrue(((IBusinessObject)cloned[1]).Identity > -1);
+      var identities = new List<int>();
+      identities.Add(((IBusinessObject)cloned).Identity);
+      identities.Add(((IBusinessObject)cloned[0]).Identity);
+      Assert.IsFalse(identities.Contains(((IBusinessObject)cloned[1]).Identity), "new identity a repeat");
+    }
+
+    [TestMethod]
     public void IdentityInitializedBusinessBindingListBase()
     {
       var obj = Csla.DataPortal.Create<FooBindingList>();

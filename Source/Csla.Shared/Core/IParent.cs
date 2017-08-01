@@ -42,7 +42,8 @@ namespace Csla.Core
     /// for an object instance in the object graph. Implemented by
     /// the root object of the graph.
     /// </summary>
+    /// <param name="current">Current identity</param>
     /// <returns>The next available identity value.</returns>
-    int GetNextIdentity();
+    int GetNextIdentity(int current);
   }
 }

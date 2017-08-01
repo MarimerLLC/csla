@@ -94,25 +94,24 @@ namespace Csla.Core
 
     private void InitializeIdentity()
     {
-      if (_identity == -1)
-        _identity = ((IParent)this).GetNextIdentity();
+      _identity = ((IParent)this).GetNextIdentity(_identity);
     }
 
     [NonSerialized]
     [NotUndoable]
     private IdentityManager _identityManager;
 
-    int IParent.GetNextIdentity()
+    int IParent.GetNextIdentity(int current)
     {
       if (this.Parent != null)
       {
-        return this.Parent.GetNextIdentity();
+        return this.Parent.GetNextIdentity(current);
       }
       else
       {
         if (_identityManager == null)
           _identityManager = new IdentityManager();
-        return _identityManager.GetNextIdentity();
+        return _identityManager.GetNextIdentity(current);
       }
     }
     

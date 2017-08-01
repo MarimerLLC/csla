@@ -209,7 +209,9 @@
     <Compile Include="EditableRootList\EditableRootListTests.cs" />
     <Compile Include="EditableRootList\ERitem.cs" />
     <Compile Include="EditableRootList\ERlist.cs" />
+    <Compile Include="GraphMerge\GraphMergerTests.cs" />
     <Compile Include="GraphMerge\IdentityTests.cs" />
+    <Compile Include="GraphMerge\TestClasses.cs" />
     <Compile Include="LazySingelton\LazySingeltonTest.cs" />
     <Compile Include="Linq\LinqObservableCollectionTest.cs" />
     <Compile Include="LogicalExecutionLocation\LocationBusinessBase.cs" />

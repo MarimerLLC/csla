@@ -37,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GraphMerger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBusinessObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICheckRules.cs" />

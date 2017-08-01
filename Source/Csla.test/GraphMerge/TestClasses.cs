@@ -66,7 +66,14 @@ namespace Csla.Test.GraphMerge
 
   [Serializable]
   public class FooList : BusinessListBase<FooList, Foo>
-  { }
+  {
+    public void MockUpdated()
+    {
+      foreach (var item in this)
+        item.MockUpdated();
+      DeletedList.Clear();
+    }
+  }
 
   [Serializable]
   public class FooBindingList : BusinessBindingListBase<FooBindingList, Foo>

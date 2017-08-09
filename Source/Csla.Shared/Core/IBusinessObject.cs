@@ -13,5 +13,11 @@ namespace Csla.Core
   /// </summary>
   public interface IBusinessObject
   {
+    /// <summary>
+    /// Gets a value representing this object instance's
+    /// unique identity value within the business object
+    /// graph.
+    /// </summary>
+    int Identity { get; }
   }
 }

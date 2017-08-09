@@ -64,6 +64,7 @@ namespace Csla.Core
     /// </summary>
     protected BusinessBase()
     {
+      InitializeIdentity();
       Initialize();
       InitializeBusinessRules();
     }
@@ -80,6 +81,40 @@ namespace Csla.Core
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
+    #endregion
+
+    #region Identity
+
+    private int _identity = -1;
+
+    int IBusinessObject.Identity
+    {
+      get { return _identity; }
+    }
+
+    private void InitializeIdentity()
+    {
+      _identity = ((IParent)this).GetNextIdentity(_identity);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private IdentityManager _identityManager;
+
+    int IParent.GetNextIdentity(int current)
+    {
+      if (this.Parent != null)
+      {
+        return this.Parent.GetNextIdentity(current);
+      }
+      else
+      {
+        if (_identityManager == null)
+          _identityManager = new IdentityManager();
+        return _identityManager.GetNextIdentity(current);
+      }
+    }
+    
     #endregion
 
     #region Parent/Child link
@@ -112,6 +147,8 @@ namespace Csla.Core
     protected virtual void SetParent(Core.IParent parent)
     {
       _parent = parent;
+      _identityManager = null;
+      InitializeIdentity();
     }
 
     #endregion
@@ -909,6 +946,7 @@ namespace Csla.Core
     /// </summary>
     protected void MarkAsChild()
     {
+      _identity = -1;
       _isChild = true;
     }
 
@@ -3505,6 +3543,7 @@ namespace Csla.Core
       info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
       info.AddValue("Csla.Core.BusinessBase._isChild", _isChild);
       info.AddValue("Csla.Core.BusinessBase._editLevelAdded", _editLevelAdded);
+      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
     }
 
     /// <summary>
@@ -3529,6 +3568,7 @@ namespace Csla.Core
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
       if (mode != StateMode.Undo)
         _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
     }
 
     /// <summary>

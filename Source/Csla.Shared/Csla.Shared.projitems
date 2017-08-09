@@ -37,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GraphMerger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBusinessObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICheckRules.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ICommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IdentityManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LazySingleton.cs" />

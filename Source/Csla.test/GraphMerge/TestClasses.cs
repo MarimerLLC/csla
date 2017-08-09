@@ -16,7 +16,8 @@ namespace Csla.Test.GraphMerge
       ChildList = new FooList();
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = 
+      RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -49,6 +50,7 @@ namespace Csla.Test.GraphMerge
       MarkOld();
       if (Child != null)
         Child.MockUpdated();
+      ChildList.MockUpdated();
     }
 
     public void MarkForDelete()
@@ -56,6 +58,7 @@ namespace Csla.Test.GraphMerge
       MarkDeleted();
       if (Child != null)
         Child.MarkForDelete();
+      ChildList.Clear();
     }
 
     public void MockDeleted()
@@ -63,6 +66,7 @@ namespace Csla.Test.GraphMerge
       MarkNew();
       if (Child != null)
         Child.MockDeleted();
+      ChildList.MockDeleted();
     }
 
     protected override void AddBusinessRules()
@@ -89,6 +93,12 @@ namespace Csla.Test.GraphMerge
     {
       foreach (var item in this)
         item.MockUpdated();
+      DeletedList.Clear();
+    }
+
+    internal void MockDeleted()
+    {
+      Clear();
       DeletedList.Clear();
     }
   }

@@ -258,5 +258,36 @@ namespace Csla.Test.GraphMerge
       Assert.AreEqual(cloned.IsDirty, obj.IsDirty);
       Assert.IsFalse(obj.IsDirty);
     }
+
+    [TestMethod]
+    public void MergeChildList()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.ChildList.AddNew();
+      obj.ChildList[0].Name = "1";
+      obj.ChildList.AddNew();
+      obj.ChildList[1].Name = "12";
+      obj.MockUpdated();
+      var cloned = obj.Clone();
+      cloned.ChildList[0].Name = "2";
+      cloned.ChildList.RemoveAt(1);
+      cloned.ChildList.AddNew();
+      cloned.ChildList[1].Name = "42";
+      cloned.MockUpdated();
+
+      var merger = new GraphMerger();
+      merger.MergeGraph(obj, cloned);
+      Assert.IsFalse(ReferenceEquals(obj.ChildList, cloned.ChildList), "ref");
+      Assert.AreEqual(2, obj.ChildList.Count, "count");
+      Assert.IsFalse(obj.ChildList[0].IsValid, "[0] isvalid");
+      Assert.IsTrue(obj.ChildList[1].IsValid, "[1] isvalid");
+      Assert.IsFalse(obj.ChildList.IsValid, "isvalid");
+      Assert.AreEqual("2", obj.ChildList[0].Name, "[0] name");
+      Assert.AreEqual("42", obj.ChildList[1].Name, "[1] name");
+      Assert.IsFalse(ReferenceEquals(obj.ChildList[0], cloned.ChildList[0]), "[0] ref");
+      Assert.IsTrue(ReferenceEquals(obj.ChildList[1], cloned.ChildList[1]), "[1] ref");
+      Assert.IsTrue(ReferenceEquals(obj.ChildList, obj.ChildList[1].Parent), "parent ref");
+    }
+
   }
 }

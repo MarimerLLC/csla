@@ -31,27 +31,27 @@ namespace Csla.Core
         var targetProperties = imp.GetManagedProperties();
         foreach (var item in targetProperties)
         {
-          var oldValue = ReadProperty(source, item);
-          var oldChild = oldValue as IEditableBusinessObject;
-          if (oldChild != null)
+          var sourceValue = ReadProperty(source, item);
+          var sourceChild = sourceValue as IEditableBusinessObject;
+          if (sourceChild != null)
           {
-            var targetValue = ReadProperty(target, item) as IEditableBusinessObject;
-            if (targetValue != null)
-              MergeGraph(targetValue, oldChild);
+            var targetChild = ReadProperty(target, item) as IEditableBusinessObject;
+            if (targetChild != null)
+              MergeGraph(targetChild, sourceChild);
             else
-              LoadProperty(target, item, oldChild);
+              LoadProperty(target, item, sourceChild);
           }
           else
           {
-            var oldList = oldValue as IEditableCollection;
-            if (oldList != null)
+            var sourceList = sourceValue as IEditableCollection;
+            if (sourceList != null)
             {
               var targetList = ReadProperty(target, item) as IEditableCollection;
-              MergeGraph(targetList, oldList);
+              MergeGraph(targetList, sourceList);
             }
             else
             {
-              LoadProperty(target, item, oldValue);
+              LoadProperty(target, item, sourceValue);
             }
           }
         }

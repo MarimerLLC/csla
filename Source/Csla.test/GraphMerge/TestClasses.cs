@@ -11,6 +11,11 @@ namespace Csla.Test.GraphMerge
   [Serializable]
   public class Foo : BusinessBase<Foo>
   {
+    public Foo()
+    {
+      ChildList = new FooList();
+    }
+
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
@@ -25,6 +30,13 @@ namespace Csla.Test.GraphMerge
       set { SetProperty(ChildProperty, value); }
     }
 
+    public static readonly PropertyInfo<FooList> ChildListProperty = RegisterProperty<FooList>(c => c.ChildList);
+    public FooList ChildList
+    {
+      get { return GetProperty(ChildListProperty); }
+      private set { LoadProperty(ChildListProperty, value); }
+    }
+
     public void AddChild()
     {
       var child = Csla.DataPortal.Create<Foo>();
@@ -35,16 +47,22 @@ namespace Csla.Test.GraphMerge
     public void MockUpdated()
     {
       MarkOld();
+      if (Child != null)
+        Child.MockUpdated();
     }
 
     public void MarkForDelete()
     {
       MarkDeleted();
+      if (Child != null)
+        Child.MarkForDelete();
     }
 
     public void MockDeleted()
     {
       MarkNew();
+      if (Child != null)
+        Child.MockDeleted();
     }
 
     protected override void AddBusinessRules()

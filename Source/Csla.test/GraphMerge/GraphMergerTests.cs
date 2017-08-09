@@ -123,6 +123,107 @@ namespace Csla.Test.GraphMerge
     }
 
     [TestMethod]
+    public void MergeChildInsert()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.Name = "1";
+      obj.AddChild();
+      obj.Child.Name = "42";
+      var cloned = obj.Clone();
+      cloned.Name = "2";
+      cloned.Child.Name = "43";
+      cloned.MockUpdated();
+
+      var changed = false;
+      obj.PropertyChanged += (o, e) => { changed = true; };
+
+      var merger = new GraphMerger();
+      merger.MergeGraph(obj, cloned);
+      Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
+      Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
+      Assert.AreEqual(cloned.Child.IsDirty, obj.Child.IsDirty, "isdirty");
+      Assert.AreEqual(cloned.Child.IsNew, obj.Child.IsNew, "isnew");
+      Assert.IsFalse(obj.Child.IsNew, "isnew false");
+      Assert.IsFalse(obj.Child.IsDirty, "isdirty false");
+      Assert.IsTrue(obj.Child.IsValid, "isvalid true");
+      Assert.IsTrue(changed, "changed");
+    }
+
+    [TestMethod]
+    public void MergeChildUpdate()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.Name = "1";
+      obj.AddChild();
+      obj.Child.Name = "42";
+      obj.MockUpdated();
+      var cloned = obj.Clone();
+      cloned.Name = "2";
+      cloned.Child.Name = "2";
+      cloned.MockUpdated();
+
+      var changed = false;
+      obj.PropertyChanged += (o, e) => { changed = true; };
+
+      var merger = new GraphMerger();
+      merger.MergeGraph(obj, cloned);
+      Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
+      Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
+      Assert.AreEqual(cloned.Child.IsDirty, obj.Child.IsDirty, "isdirty");
+      Assert.AreEqual(cloned.Child.IsNew, obj.Child.IsNew, "isnew");
+      Assert.IsFalse(obj.Child.IsNew, "isnew false");
+      Assert.IsFalse(obj.Child.IsDirty, "isdirty false");
+      Assert.IsFalse(obj.Child.IsValid, "isvalid false");
+      Assert.IsTrue(changed, "changed");
+    }
+
+    [TestMethod]
+    public void MergeNewChildUpdate()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.Name = "1";
+      obj.MockUpdated();
+      var cloned = obj.Clone();
+      cloned.AddChild();
+      cloned.Child.Name = "42";
+      cloned.MockUpdated();
+
+      var merger = new GraphMerger();
+      merger.MergeGraph(obj, cloned);
+      Assert.IsTrue(ReferenceEquals(obj.Child, cloned.Child), "ref");
+      Assert.ReferenceEquals(obj, obj.Child.Parent);
+    }
+
+    [TestMethod]
+    public void MergeChildDelete()
+    {
+      var obj = Csla.DataPortal.Create<Foo>();
+      obj.Name = "1";
+      obj.AddChild();
+      obj.Child.Name = "42";
+      obj.MockUpdated();
+      obj.MarkForDelete();
+      var cloned = obj.Clone();
+      cloned.Name = "2";
+      cloned.Child.Name = "43";
+      cloned.MockDeleted();
+
+      var changed = false;
+      obj.PropertyChanged += (o, e) => { changed = true; };
+
+      var merger = new GraphMerger();
+      merger.MergeGraph(obj, cloned);
+      Assert.IsFalse(ReferenceEquals(obj.Child, cloned.Child), "ref");
+      Assert.AreEqual(cloned.Child.Name, obj.Child.Name, "name");
+      Assert.AreEqual(cloned.Child.IsDirty, obj.Child.IsDirty, "isdirty");
+      Assert.AreEqual(cloned.Child.IsNew, obj.Child.IsNew, "isnew");
+      Assert.IsTrue(obj.Child.IsNew, "isnew true");
+      Assert.IsTrue(obj.Child.IsDirty, "isdirty true");
+      Assert.IsTrue(obj.Child.IsValid, "isvalid true");
+      Assert.IsTrue(changed, "changed");
+    }
+
+    [TestMethod]
     public void MergeList()
     {
       var obj = Csla.DataPortal.Create<FooList>();
@@ -135,7 +236,7 @@ namespace Csla.Test.GraphMerge
       Assert.AreEqual(3, obj.Count, "preclone count");
       var cloned = obj.Clone();
       Assert.AreEqual(3, cloned.Count, "postclone count");
-      cloned.Remove(cloned.Where(_=>_.Name== "remove in clone").First());
+      cloned.Remove(cloned.Where(_ => _.Name == "remove in clone").First());
       Assert.AreEqual(2, cloned.Count, "postclone count after removed obj");
       Assert.AreEqual(cloned[0].Name, obj[0].Name, "postclone [0]");
       Assert.AreEqual(cloned[1].Name, obj[1].Name, "postclone [1]");
@@ -148,7 +249,7 @@ namespace Csla.Test.GraphMerge
       obj.CollectionChanged += (o, e) => { changed = true; };
 
       var merger = new GraphMerger();
-      merger.MergeGraph<FooList, Foo>(obj, cloned);
+      merger.MergeBusinessListGraph<FooList, Foo>(obj, cloned);
       Assert.AreEqual(cloned.Count, obj.Count, "count");
       Assert.AreEqual(3, obj.Count, "count 3");
       Assert.AreEqual(cloned[0].Name, obj[0].Name, "[0]");

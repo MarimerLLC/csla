@@ -1170,6 +1170,39 @@ namespace Csla.Reflection
 #endif
 
     /// <summary>
+    /// Invokes a generic method by name
+    /// </summary>
+    /// <param name="target">Object containing method to invoke</param>
+    /// <param name="method">Method to invoke</param>
+    /// <param name="typeParams">Type parameters for method</param>
+    /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
+    /// <param name="parameters">Parameters for method</param>
+    /// <returns></returns>
+    public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
+    {
+      var objectType = target.GetType();
+      object result = null;
+      if (hasParameters)
+      {
+        var pTypes = GetParameterTypes(parameters);
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.Any, pTypes, null);
+        if (methodReference == null)
+          methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public);
+        if (methodReference == null)
+          throw new InvalidOperationException(objectType.Name + "." + method);
+        var gr = methodReference.MakeGenericMethod(typeParams);
+        result = gr.Invoke(target, parameters);
+      }
+      else
+      {
+        var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+        var gr = methodReference.MakeGenericMethod(typeParams);
+        result = gr.Invoke(target, null);
+      }
+      return result;
+    }
+
+    /// <summary>
     /// Invokes a static factory method.
     /// </summary>
     /// <param name="objectType">Business class where the factory is defined.</param>

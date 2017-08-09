@@ -25,7 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.GraphMerge
 {
   [TestClass()]
-  public class IdentityTests 
+  public class IdentityTests
   {
     [TestMethod]
     public void IdentityInitializedBusinessBase()

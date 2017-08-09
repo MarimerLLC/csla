@@ -23,15 +23,38 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public void MergeGraph<T>(T target, T source)
-      where T : BusinessBase<T>
+    public void MergeGraph(IEditableBusinessObject target, IEditableBusinessObject source)
     {
       var imp = target as IManageProperties;
       if (imp != null)
       {
         var targetProperties = imp.GetManagedProperties();
         foreach (var item in targetProperties)
-          LoadProperty(target, item, ReadProperty(source, item));
+        {
+          var oldValue = ReadProperty(source, item);
+          var oldChild = oldValue as IEditableBusinessObject;
+          if (oldChild != null)
+          {
+            var targetValue = ReadProperty(target, item) as IEditableBusinessObject;
+            if (targetValue != null)
+              MergeGraph(targetValue, oldChild);
+            else
+              LoadProperty(target, item, oldChild);
+          }
+          else
+          {
+            var oldList = oldValue as IEditableCollection;
+            if (oldList != null)
+            {
+              var targetList = ReadProperty(target, item) as IEditableCollection;
+              MergeGraph(targetList, oldList);
+            }
+            else
+            {
+              LoadProperty(target, item, oldValue);
+            }
+          }
+        }
         if (source.IsNew)
           MarkNew(target);
         else if (!source.IsDirty)
@@ -45,7 +68,21 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public void MergeGraph<T,C>(T target, T source)
+    private void MergeGraph(IEditableCollection target, IEditableCollection source)
+    {
+      var listType = target.GetType();
+      var childType = Utilities.GetChildItemType(listType);
+      Reflection.MethodCaller.CallGenericMethod(
+        this, "MergeBusinessListGraph", 
+        new [] { listType, childType }, true, target, source);
+    }
+
+    /// <summary>
+    /// Merges state from source graph into target graph.
+    /// </summary>
+    /// <param name="target">Target of merge.</param>
+    /// <param name="source">Source for merge.</param>
+    public void MergeBusinessListGraph<T,C>(T target, T source)
       where T : BusinessListBase<T,C> 
       where C : BusinessBase<C>, IBusinessObject
     {

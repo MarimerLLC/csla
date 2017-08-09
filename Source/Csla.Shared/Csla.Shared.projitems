@@ -37,6 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\FieldManager\PropertyInfoManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\GraphMerger.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBindingList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\IBusinessObject.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ICheckRules.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ICommandBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortal.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IDataPortalResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\IdentityManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IReadOnlyListBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LazySingleton.cs" />
@@ -207,6 +209,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\BinaryFormatterWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ISerializationFormatter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\AssemblyNameTranslator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaLegacyBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaBinaryWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Mobile\CslaKnownTypes.cs" />

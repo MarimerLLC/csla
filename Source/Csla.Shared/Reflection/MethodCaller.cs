@@ -1185,7 +1185,11 @@ namespace Csla.Reflection
       if (hasParameters)
       {
         var pTypes = GetParameterTypes(parameters);
+#if NETFX_CORE
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, pTypes, null);
+#else
         var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.Any, pTypes, null);
+#endif
         if (methodReference == null)
           methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public);
         if (methodReference == null)
@@ -1195,7 +1199,11 @@ namespace Csla.Reflection
       }
       else
       {
+#if NETFX_CORE
+        var methodReference = objectType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public, null, System.Type.EmptyTypes, null);
+#else
         var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+#endif
         var gr = methodReference.MakeGenericMethod(typeParams);
         result = gr.Invoke(target, null);
       }

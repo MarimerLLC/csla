@@ -162,6 +162,7 @@ project.lock.json
 Source/UpgradeLog.htm
 /Source/Csla.NetStandard1.5/Properties/*.resx
 /Source/Csla.NetStandard1.6/Properties/*.resx
+/Source/Csla.NetStandard2.0/Properties/*.resx
 
 project.lock.json
 *.nuget.props

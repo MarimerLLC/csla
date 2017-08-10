@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="UseNetDataContractAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -20,7 +20,7 @@ namespace Csla.Server.Hosts.WcfChannel
   /// </summary>
   public class UseNetDataContractAttribute : Attribute, IOperationBehavior
   {
-    #region IOperationBehavior Members
+#region IOperationBehavior Members
 
     /// <summary>
     /// Not implemented.
@@ -61,7 +61,7 @@ namespace Csla.Server.Hosts.WcfChannel
     {
     }
 
-    #endregion
+#endregion
 
     private static void ReplaceDataContractSerializerOperationBehavior(OperationDescription description)
     {

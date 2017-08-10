@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="NetDataContractSerializerWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -21,7 +21,7 @@ namespace Csla.Serialization
     private NetDataContractSerializer _formatter =
       new NetDataContractSerializer();
 
-    #region ISerializationFormatter Members
+#region ISerializationFormatter Members
 
     /// <summary>
     /// Converts a serialization stream into an
@@ -46,7 +46,7 @@ namespace Csla.Serialization
       _formatter.Serialize(serializationStream, graph);
     }
 
-    #endregion
+#endregion
 
     /// <summary>
     /// Gets a reference to the underlying

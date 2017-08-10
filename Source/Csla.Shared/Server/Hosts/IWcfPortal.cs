@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+#if !NETFX_CORE && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="IWcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

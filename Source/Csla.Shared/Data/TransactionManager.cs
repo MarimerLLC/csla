@@ -107,6 +107,9 @@ namespace Csla.Data
     {
       if (isDatabaseName)
       {
+#if NETSTANDARD2_0
+        throw new NotSupportedException("isDatabaseName==true");
+#else
         var connection = ConfigurationManager.ConnectionStrings[database];
         if (connection == null)
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
@@ -115,6 +118,7 @@ namespace Csla.Data
         if (string.IsNullOrEmpty(conn))
           throw new ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
         database = conn;
+#endif
       }
 
       lock (_lock)

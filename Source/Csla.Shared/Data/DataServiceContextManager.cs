@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !MONO && !(ANDROID || IOS)
+﻿#if !NETFX_CORE && !MONO && !(ANDROID || IOS) && !NETSTANDARD2_0
 //-----------------------------------------------------------------------
 // <copyright file="DataServiceContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

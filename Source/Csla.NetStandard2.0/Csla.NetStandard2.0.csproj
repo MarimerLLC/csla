@@ -23,8 +23,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\Bin\Release\netstandard\netstandard2.0\</OutputPath>
-    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\netstandard2.0\Csla.xml</DocumentationFile>
+    <OutputPath>..\..\Bin\Release\netstandard\</OutputPath>
+    <DocumentationFile>..\..\Bin\Release\netstandard\netstandard2.0\Csla.xml</DocumentationFile>
   </PropertyGroup>
 
   <Target Name="PrecompileScript" BeforeTargets="BeforeBuild">

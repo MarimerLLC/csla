@@ -20,7 +20,7 @@
     <PreBuildEvent></PreBuildEvent>
     <ApplicationIcon />
     <Win32Resource></Win32Resource>
-    <Version>4.6.600</Version>
+    <Version>4.7.100</Version>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>False</DelaySign>
